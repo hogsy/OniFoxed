@@ -246,7 +246,7 @@ TMiGame_Level_IsValid(
 	error = BFrFile_Open(inInstanceFileRef, "r", &datFile);
 	if (error != UUcError_None)
 	{
-		UUrDebuggerMessage("level %d: Can't open file", inLevelNumber);
+		UUrDebuggerMessage("level %d: Can't open file" UUmNL, inLevelNumber);
 		level_exists = UUcFalse;
 		goto done;
 	}
@@ -254,14 +254,14 @@ TMiGame_Level_IsValid(
 	error = TMiGame_InstanceFile_LoadHeader(datFile, &fileHeader, &needsSwapping);
 	if (error != UUcError_None)
 	{
-		UUrDebuggerMessage("level %d: Can't load header", inLevelNumber);
+		UUrDebuggerMessage("level %d: Can't load header" UUmNL, inLevelNumber);
 		level_exists = UUcFalse;
 		goto done;
 	}
 	
 	if(fileHeader.numTemplateDescriptors == 0)
 	{
-		UUrDebuggerMessage("level %d: no templates", inLevelNumber);
+		UUrDebuggerMessage("level %d: no templates" UUmNL, inLevelNumber);
 		level_exists = UUcFalse;
 		goto done;
 	}
@@ -269,7 +269,7 @@ TMiGame_Level_IsValid(
 	templateDescriptors = UUrMemory_Block_New(fileHeader.numTemplateDescriptors * sizeof(TMtTemplateDescriptor));
 	if(templateDescriptors == NULL)
 	{
-		UUrDebuggerMessage("level %d: out of memory", inLevelNumber);
+		UUrDebuggerMessage("level %d: out of memory" UUmNL, inLevelNumber);
 		level_exists = UUcFalse;
 		goto done;
 	}
@@ -285,7 +285,7 @@ TMiGame_Level_IsValid(
 				templateDescriptors);
 		if(error != UUcError_None)
 		{
-			UUrDebuggerMessage("level %d: can't read in template descriptors", inLevelNumber);
+			UUrDebuggerMessage("level %d: can't read in template descriptors" UUmNL, inLevelNumber);
 			level_exists = UUcFalse;
 			goto done;
 		}
@@ -301,7 +301,7 @@ TMiGame_Level_IsValid(
 			templatePtr = TMrUtility_Template_FindDefinition(templateDescriptors[itr].tag);
 			if(templatePtr == NULL)
 			{
-				UUrDebuggerMessage("level %d: can't find template %c%c%c%c",
+				UUrDebuggerMessage("level %d: can't find template %c%c%c%c" UUmNL,
 					inLevelNumber,
 					(templateDescriptors[itr].tag >> 24) & 0xFF,
 					(templateDescriptors[itr].tag >> 16) & 0xFF,
@@ -318,7 +318,7 @@ TMiGame_Level_IsValid(
 
 			if(templatePtr->checksum != templateDescriptors[itr].checksum)
 			{
-				UUrDebuggerMessage("level %d: template %c%c%c%c: checksums do not match",
+				UUrDebuggerMessage("level %d: template %c%c%c%c: checksums do not match" UUmNL,
 					inLevelNumber,
 					(templateDescriptors[itr].tag >> 24) & 0xFF,
 					(templateDescriptors[itr].tag >> 16) & 0xFF,
