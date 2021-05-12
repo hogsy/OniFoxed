@@ -76,7 +76,7 @@ OWiChooseFlag_Callback(
 
 					OBJrObject_GetObjectSpecificData(selected_object, &selected_object_specific_data);
 
-					if (initial_flag_id == selected_object_specific_data.flag_osd.id_number) {
+					if (initial_flag_id == selected_object_specific_data.osd.flag_osd.id_number) {
 						WMrMessage_Send(listbox, LBcMessage_SetSelection, UUcFalse, scan_itr);
 						break;
 					}
@@ -123,7 +123,7 @@ OWiChooseFlag_Callback(
 		UUtUns32 result_flag_id = WMrDialog_GetUserData(inDialog);
 
 		if (selected_object) {
-			result_flag_id = selected_object_specific_data.flag_osd.id_number;
+			result_flag_id = selected_object_specific_data.osd.flag_osd.id_number;
 		}
 
 		WMrDialog_ModalEnd(inDialog, result_flag_id);
@@ -178,7 +178,7 @@ OWiChoosePath_Callback(
 
 					OBJrObject_GetObjectSpecificData(selected_object, &selected_object_specific_data);
 
-					if (initial_path_id == selected_object_specific_data.patrolpath_osd.id_number) {
+					if (initial_path_id == selected_object_specific_data.osd.patrolpath_osd.id_number) {
 						WMrMessage_Send(listbox, LBcMessage_SetSelection, UUcFalse, scan_itr);
 						break;
 					}
@@ -228,7 +228,7 @@ OWiChoosePath_Callback(
 		UUtUns32 result_path_id = WMrDialog_GetUserData(inDialog);
 
 		if (selected_object && !cancel_dialog) {
-			result_path_id = selected_object_specific_data.patrolpath_osd.id_number;
+			result_path_id = selected_object_specific_data.osd.patrolpath_osd.id_number;
 		}
 
 		WMrDialog_ModalEnd(inDialog, result_path_id);
@@ -243,14 +243,14 @@ UUtInt16 OWrChooseFlag(UUtInt16 inFlagID)
 	OBJtOSD_All	object_specific_data;
 	UUtInt16 result = 0;
 
-	object_specific_data.flag_osd.id_number = inFlagID;
+	object_specific_data.osd.flag_osd.id_number = inFlagID;
 	object = OBJrObjectType_Search(OBJcType_Flag, OBJcSearch_FlagID, &object_specific_data);
 	
 	object = OWrSelectObject(OBJcType_Flag, object, UUcFalse, UUcTrue);
 
 	if (NULL != object) {
 		OBJrObject_GetObjectSpecificData(object, &object_specific_data);
-		result = object_specific_data.flag_osd.id_number;
+		result = object_specific_data.osd.flag_osd.id_number;
 	}
 
 	return result;
@@ -262,14 +262,14 @@ UUtUns16 OWrChoosePath(UUtUns16	inPathID)
 	OBJtOSD_All	object_specific_data;
 	UUtUns16 result = 0;
 
-	object_specific_data.patrolpath_osd.id_number = inPathID;
+	object_specific_data.osd.patrolpath_osd.id_number = inPathID;
 	object = OBJrObjectType_Search(OBJcType_PatrolPath, OBJcSearch_PatrolPathID, &object_specific_data);
 	
 	object = OWrSelectObject(OBJcType_PatrolPath, object, UUcFalse, UUcFalse);
 
 	if (NULL != object) {
 		OBJrObject_GetObjectSpecificData(object, &object_specific_data);
-		result = object_specific_data.patrolpath_osd.id_number;
+		result = object_specific_data.osd.patrolpath_osd.id_number;
 	}
 
 	return result;
@@ -281,7 +281,7 @@ static UUtBool OWiIsPathNameValid(WMtDialog *inDialog, char *inString)
 	OBJtOSD_All search_param;
 	OBJtObject *found_object;
 
-	UUrString_Copy(search_param.patrolpath_osd.name, inString, SLcScript_MaxNameLength);
+	UUrString_Copy(search_param.osd.patrolpath_osd.name, inString, SLcScript_MaxNameLength);
 	found_object = OBJrObjectType_Search(OBJcType_PatrolPath, OBJcSearch_PatrolPathName, &search_param);
 
 	string_is_valid = (NULL == found_object);
@@ -397,7 +397,7 @@ void OWrAI_FindCurrentPath(void)
 	OBJtObject					*object;
 	
 	// search for the currently selected patrol path
-	osd_all.patrolpath_osd.id_number = OWgCurrentPatrolPathID;
+	osd_all.osd.patrolpath_osd.id_number = OWgCurrentPatrolPathID;
 	
 	// find the object
 	object = OBJrObjectType_Search(OBJcType_PatrolPath, OBJcSearch_PatrolPathID, &osd_all);

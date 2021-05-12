@@ -1439,7 +1439,7 @@ OWrParticle_Appearance_Callback(
 					sprintf(number_user_data->title, "Edit %s lensflare fade-in frames", user_data->classptr->classname);
 					strcpy(number_user_data->editmsg, "Fade frames:");
 					number_user_data->is_float = UUcFalse;
-					number_user_data->numberptr = &user_data->classptr->definition->appearance.lens_inframes;
+					number_user_data->ptr.numberptr = &user_data->classptr->definition->appearance.lens_inframes;
 
 					// create the window
 					WMrDialog_Create(OWcDialog_Particle_Number, NULL,
@@ -1456,7 +1456,7 @@ OWrParticle_Appearance_Callback(
 					sprintf(number_user_data->title, "Edit %s max decals", user_data->classptr->classname);
 					strcpy(number_user_data->editmsg, "Max Decals:");
 					number_user_data->is_float = UUcFalse;
-					number_user_data->numberptr = &user_data->classptr->definition->appearance.max_decals;
+					number_user_data->ptr.numberptr = &user_data->classptr->definition->appearance.max_decals;
 
 					// create the window
 					WMrDialog_Create(OWcDialog_Particle_Number, NULL,
@@ -1473,7 +1473,7 @@ OWrParticle_Appearance_Callback(
 					sprintf(number_user_data->title, "Edit %s decal fade frames", user_data->classptr->classname);
 					strcpy(number_user_data->editmsg, "Decal Fade Frames:");
 					number_user_data->is_float = UUcFalse;
-					number_user_data->numberptr = &user_data->classptr->definition->appearance.decal_fadeframes;
+					number_user_data->ptr.numberptr = &user_data->classptr->definition->appearance.decal_fadeframes;
 
 					// create the window
 					WMrDialog_Create(OWcDialog_Particle_Number, NULL,
@@ -1490,7 +1490,7 @@ OWrParticle_Appearance_Callback(
 					sprintf(number_user_data->title, "Edit %s lensflare fade-out frames", user_data->classptr->classname);
 					strcpy(number_user_data->editmsg, "Fade frames:");
 					number_user_data->is_float = UUcFalse;
-					number_user_data->numberptr = &user_data->classptr->definition->appearance.lens_outframes;
+					number_user_data->ptr.numberptr = &user_data->classptr->definition->appearance.lens_outframes;
 
 					// create the window
 					WMrDialog_Create(OWcDialog_Particle_Number, NULL,
@@ -2611,7 +2611,7 @@ OWrParticle_Class_Callback(
 					sprintf(number_user_data->title, "Edit %s dodge radius", user_data->classptr->classname);
 					strcpy(number_user_data->editmsg, "Dodge Radius:");
 					number_user_data->is_float = UUcTrue;
-					number_user_data->floatptr = &user_data->classptr->definition->dodge_radius;
+					number_user_data->ptr.floatptr = &user_data->classptr->definition->dodge_radius;
 
 					// create the window
 					WMrDialog_Create(OWcDialog_Particle_Number, NULL,
@@ -2628,7 +2628,7 @@ OWrParticle_Class_Callback(
 					sprintf(number_user_data->title, "Edit %s alert radius", user_data->classptr->classname);
 					strcpy(number_user_data->editmsg, "Alert Radius:");
 					number_user_data->is_float = UUcTrue;
-					number_user_data->floatptr = &user_data->classptr->definition->alert_radius;
+					number_user_data->ptr.floatptr = &user_data->classptr->definition->alert_radius;
 
 					// create the window
 					WMrDialog_Create(OWcDialog_Particle_Number, NULL,
@@ -4337,9 +4337,9 @@ OWrParticle_Number_Callback(
 			edit_field = WMrDialog_GetItemByID(inDialog, OWcParticle_Number_EditField);
 			UUmAssert(edit_field != NULL);
 			if (user_data->is_float) {
-				sprintf(input_text, "%.3f", *(user_data->floatptr));
+				sprintf(input_text, "%.3f", *(user_data->ptr.floatptr));
 			} else {
-				sprintf(input_text, "%d", *(user_data->numberptr));
+				sprintf(input_text, "%d", *(user_data->ptr.numberptr));
 			}
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32) input_text, 0);
 		break;
@@ -4370,12 +4370,12 @@ OWrParticle_Number_Callback(
 							break;
 						}
 
-						if (!UUmFloat_CompareEqu(new_float, *(user_data->floatptr))) {
+						if (!UUmFloat_CompareEqu(new_float, *(user_data->ptr.floatptr))) {
 							// this particle class is now dirty. NB: must be called BEFORE we make any changes.
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							// set the new value
-							*(user_data->floatptr) = new_float;
+							*(user_data->ptr.floatptr) = new_float;
 
 							// notify the parent window to update itself
 							OWiParticle_NotifyParent(user_data->notify_struct.notify_window,
@@ -4392,12 +4392,12 @@ OWrParticle_Number_Callback(
 							break;
 						}
 
-						if (new_number != *(user_data->numberptr)) {
+						if (new_number != *(user_data->ptr.numberptr)) {
 							// this particle class is now dirty. NB: must be called BEFORE we make any changes.
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							// set the new value
-							*(user_data->numberptr) = new_number;
+							*(user_data->ptr.numberptr) = new_number;
 
 							// notify the parent window to update itself
 							OWiParticle_NotifyParent(user_data->notify_struct.notify_window,
@@ -5848,7 +5848,7 @@ OWrParticle_Emitters_Callback(
 									user_data->classptr->classname, emitter_index);
 							strcpy(number_user_data->editmsg, "Percentage chance:");
 							number_user_data->is_float = UUcTrue;
-							number_user_data->floatptr = &user_data->temp_percentage_chance;
+							number_user_data->ptr.floatptr = &user_data->temp_percentage_chance;
 
 							// create the window
 							WMrDialog_Create(OWcDialog_Particle_Number, NULL,
@@ -5865,7 +5865,7 @@ OWrParticle_Emitters_Callback(
 									user_data->classptr->classname, emitter_index);
 							strcpy(number_user_data->editmsg, "Burst size:");
 							number_user_data->is_float = UUcTrue;
-							number_user_data->floatptr = &emitter->burst_size;
+							number_user_data->ptr.floatptr = &emitter->burst_size;
 
 							// create the window
 							WMrDialog_Create(OWcDialog_Particle_Number, NULL,
@@ -5881,7 +5881,7 @@ OWrParticle_Emitters_Callback(
 									user_data->classptr->classname, emitter_index);
 							strcpy(number_user_data->editmsg, "Particle limit:");
 							number_user_data->is_float = UUcFalse;
-							number_user_data->numberptr = &emitter->particle_limit;
+							number_user_data->ptr.numberptr = &emitter->particle_limit;
 
 							// create the window
 							WMrDialog_Create(OWcDialog_Particle_Number, NULL,

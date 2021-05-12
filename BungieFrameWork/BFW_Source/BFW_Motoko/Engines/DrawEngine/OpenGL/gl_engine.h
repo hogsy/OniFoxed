@@ -9,7 +9,7 @@
 
 /*---------- headers */
 
-#include <gl.h>
+#include <GL/gl.h>
 #include "glext.h"
 
 #include "BFW_Motoko.h"

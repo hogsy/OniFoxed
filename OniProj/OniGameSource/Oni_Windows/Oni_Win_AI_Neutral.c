@@ -188,7 +188,7 @@ OWrEditNeutral_Callback(
 	OWtSelectResult		result;
 	
 	OBJrObject_GetObjectSpecificData(object, &object_specific_data);
-	neutral_osd = &object_specific_data.neutral_osd;
+	neutral_osd = &object_specific_data.osd.neutral_osd;
 
 	switch (inMessage)
 	{
@@ -610,15 +610,15 @@ UUtUns16 OWrChooseNeutral(UUtUns16 inNeutralID)
 	OBJtOSD_All	object_specific_data;
 	UUtUns16 result = (UUtUns16) -1;
 
-	object_specific_data.neutral_osd.id = inNeutralID;
+	object_specific_data.osd.neutral_osd.id = inNeutralID;
 	object = OBJrObjectType_Search(OBJcType_Neutral, OBJcSearch_NeutralID, &object_specific_data);
 	
 	object = OWrSelectObject(OBJcType_Neutral, object, UUcTrue, UUcFalse);
 
 	if (object != NULL) {
 		OBJrObject_GetObjectSpecificData(object, &object_specific_data);
-		UUmAssert(object_specific_data.neutral_osd.id != 0);
-		result = object_specific_data.neutral_osd.id;
+		UUmAssert(object_specific_data.osd.neutral_osd.id != 0);
+		result = object_specific_data.osd.neutral_osd.id;
 	}
 
 	return result;

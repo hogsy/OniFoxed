@@ -157,7 +157,7 @@ static boolean set_display_settings(
 	// ALOT of PC video cards punt. So, we have to catch that here.
 	if (success && (current_display_mode.dmBitsPerPel < depth))
 	{
-		depth= gl->bit_depth= (short)current_display_mode.dmBitsPerPel;
+		depth= gl->display_mode.bitDepth= (short)current_display_mode.dmBitsPerPel;
 	}
 
 	desired_display_mode.dmSize= sizeof(DEVMODE);
@@ -276,7 +276,7 @@ boolean gl_create_render_context(
 		PIXELFORMATDESCRIPTOR pfd;
 		short pixel_format;
 		
-		make_pixel_format_descriptor(&pfd, gl->bit_depth);
+		make_pixel_format_descriptor(&pfd, gl->display_mode.bitDepth);
 		pixel_format= GDI_FXN(ChoosePixelFormat)(gl->device_context, &pfd);
 		
 		if (pixel_format)
@@ -344,9 +344,9 @@ UUtBool gl_platform_initialize(
 	static word current_width= 0;
 	static word current_height= 0;
 	static word current_depth= 0;
-	word width= gl->width;
-	word height= gl->height;
-	word depth= gl->bit_depth;
+	word width= gl->display_mode.width;
+	word height= gl->display_mode.height;
+	word depth= gl->display_mode.bitDepth;
 
 	if (gl->device_context && // are we switching resolutions from within the game?
 		((width != current_width) || (height != current_height) || (depth != current_depth)))
@@ -397,7 +397,7 @@ UUtBool gl_platform_initialize(
 
 	if (success == FALSE)
 	{
-		if (gl->bit_depth != 16 || (width != 640) || (height != 480))
+		if (gl->display_mode.bitDepth != 16 || (width != 640) || (height != 480))
 		{
 			width= 640;
 			height= 480;
@@ -406,17 +406,17 @@ UUtBool gl_platform_initialize(
 			if (success)
 			{
 				// sure the higher level code thinks the bit depth is different, but who cares? not me!
-				gl->bit_depth= depth;
+				gl->display_mode.bitDepth= depth;
 			}
 		}
 	}
 
 	if (success)
 	{
-		if ((gl->width != current_width) || (gl->height != current_height))
+		if ((gl->display_mode.width != current_width) || (gl->display_mode.height != current_height))
 		{
 			SetWindowPos(ONgPlatformData.gameWindow, HWND_TOP,
-				0, 0, gl->width, gl->height,
+				0, 0, gl->display_mode.width, gl->display_mode.height,
 				SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER);
 		}
 		if (M3gResolutionSwitch)
@@ -445,7 +445,7 @@ UUtBool gl_platform_initialize(
 						success= set_display_settings(width, height, 16);
 						if (success)
 						{
-							gl->bit_depth= depth= 16;
+							gl->display_mode.bitDepth= depth= 16;
 							success= gl_create_render_context();
 						}
 					}
@@ -460,9 +460,9 @@ UUtBool gl_platform_initialize(
 	}
 	else
 	{
-		current_width= gl->width;
-		current_height= gl->height;
-		current_depth= gl->bit_depth;
+		current_width= gl->display_mode.width;
+		current_height= gl->display_mode.height;
+		current_depth= gl->display_mode.bitDepth;
 	}
 
 	return success;

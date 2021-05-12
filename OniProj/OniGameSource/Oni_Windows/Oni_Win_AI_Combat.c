@@ -81,7 +81,7 @@ OWrEditCombat_Callback(
 	OBJtOSD_Combat		*combat_osd;
 
 	OBJrObject_GetObjectSpecificData(object, &object_specific_data);
-	combat_osd = &object_specific_data.combat_osd;
+	combat_osd = &object_specific_data.osd.combat_osd;
 
 	{
 		UUtUns16 itr;
@@ -258,14 +258,14 @@ UUtUns16 OWrChooseCombat(UUtUns16 inBehaviorID)
 	OBJtOSD_All	object_specific_data;
 	UUtUns16 result = (UUtUns16) -1;
 
-	object_specific_data.combat_osd.id = inBehaviorID;
+	object_specific_data.osd.combat_osd.id = inBehaviorID;
 	object = OBJrObjectType_Search(OBJcType_Combat, OBJcSearch_CombatID, &object_specific_data);
 	
 	object = OWrSelectObject(OBJcType_Combat, object, UUcTrue, UUcFalse);
 
 	if (NULL != object) {
 		OBJrObject_GetObjectSpecificData(object, &object_specific_data);
-		result = object_specific_data.combat_osd.id;
+		result = object_specific_data.osd.combat_osd.id;
 	}
 
 	return result;

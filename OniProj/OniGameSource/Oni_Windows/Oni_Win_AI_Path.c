@@ -799,7 +799,7 @@ static void OWrPath_BuildListBox(
 	WMrMessage_Send(inWindow, LBcMessage_Reset, 0, 0);
 
 	OBJrObject_GetObjectSpecificData(inObject, &object_specific_data);
-	path = &object_specific_data.patrolpath_osd;
+	path = &object_specific_data.osd.patrolpath_osd;
 
 	for(itr = 0; itr < path->num_waypoints; itr++)
 	{
@@ -961,7 +961,7 @@ OWrPath_Edit_Callback(
 	}
 
 	OBJrObject_GetObjectSpecificData(object, &object_specific_data);
-	path = &object_specific_data.patrolpath_osd;
+	path = &object_specific_data.osd.patrolpath_osd;
 	waypoints = path->waypoints;
 	
 	if (LBcError != selected_index) {
@@ -972,9 +972,9 @@ OWrPath_Edit_Callback(
 	{
 		case WMcMessage_InitDialog:
 			{
-				WMrEditField_SetInt32(id_edit, object_specific_data.patrolpath_osd.id_number);
-				WMrEditField_SetText(name_edit, object_specific_data.patrolpath_osd.name);
-				WMrCheckBox_SetCheck(cb_nearest, ((object_specific_data.patrolpath_osd.flags & AI2cPatrolPathFlag_ReturnToNearest) > 0));
+				WMrEditField_SetInt32(id_edit, object_specific_data.osd.patrolpath_osd.id_number);
+				WMrEditField_SetText(name_edit, object_specific_data.osd.patrolpath_osd.name);
+				WMrCheckBox_SetCheck(cb_nearest, ((object_specific_data.osd.patrolpath_osd.flags & AI2cPatrolPathFlag_ReturnToNearest) > 0));
 				
 				dirty = UUcTrue;
 				object_name_changed = UUcTrue;
@@ -1062,9 +1062,9 @@ OWrPath_Edit_Callback(
 
 				case cPathEdit_CB_ReturnToNearest:
 					if (WMrCheckBox_GetCheck(cb_nearest)) {
-						object_specific_data.patrolpath_osd.flags |= AI2cPatrolPathFlag_ReturnToNearest;
+						object_specific_data.osd.patrolpath_osd.flags |= AI2cPatrolPathFlag_ReturnToNearest;
 					} else {
-						object_specific_data.patrolpath_osd.flags &= ~AI2cPatrolPathFlag_ReturnToNearest;
+						object_specific_data.osd.patrolpath_osd.flags &= ~AI2cPatrolPathFlag_ReturnToNearest;
 					}
 					dirty = UUcTrue;
 				break;
@@ -1105,12 +1105,12 @@ OWrPath_Edit_Callback(
 				break;
 
 				case cPathEdit_ID_Edit:
-					object_specific_data.patrolpath_osd.id_number = (UUtUns16) WMrEditField_GetInt32(id_edit);
+					object_specific_data.osd.patrolpath_osd.id_number = (UUtUns16) WMrEditField_GetInt32(id_edit);
 					object_name_changed = UUcTrue;
 				break;
 
 				case cPathEdit_Name_Edit:
-					WMrEditField_GetText(name_edit, object_specific_data.patrolpath_osd.name, SLcScript_MaxNameLength);
+					WMrEditField_GetText(name_edit, object_specific_data.osd.patrolpath_osd.name, SLcScript_MaxNameLength);
 					object_name_changed = UUcTrue;
 				break;
 
@@ -1138,7 +1138,7 @@ OWrPath_Edit_Callback(
 	if (object_name_changed) {
 		char title_buffer[WMcMaxTitleLength];
 
-		sprintf(title_buffer, "Edit Path %s", object_specific_data.patrolpath_osd.name);
+		sprintf(title_buffer, "Edit Path %s", object_specific_data.osd.patrolpath_osd.name);
 
 		WMrWindow_SetTitle(inDialog, title_buffer, WMcMaxTitleLength);
 
@@ -1215,7 +1215,7 @@ OWrAI_DropAndAddFlag(
 		OBJtObject					*object;
 
 		// we aren't using the newly created flag... delete it.
-		osd_all.flag_osd.id_number = flag_id;
+		osd_all.osd.flag_osd.id_number = flag_id;
 		object = OBJrObjectType_Search(OBJcType_Flag, OBJcSearch_FlagID, &osd_all);
 
 		if (object == NULL) {

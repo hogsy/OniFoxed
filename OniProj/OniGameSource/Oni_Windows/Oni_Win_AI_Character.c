@@ -184,7 +184,7 @@ static void OWiProp_Char_BuildClassListBox(WMtListBox *inListBox, OBJtOSD_All *i
 		WMrListBox_AddString(inListBox, class_name);
 		WMrListBox_SetItemData(inListBox, itr, itr);
 
-		if (UUmString_IsEqual(class_name, inObjectSpecificData->character_osd.character_class)) {
+		if (UUmString_IsEqual(class_name, inObjectSpecificData->osd.character_osd.character_class)) {
 			selection = itr;
 		}
 	}
@@ -218,11 +218,11 @@ OWiProp_Char_HandleCommand(
 
 		if ((inItemID >= OWTcCharProp_InvUse) && (inItemID < OWTcCharProp_InvUse + OBJcCharInv_Max)) {
 			is_inventory = UUcTrue;
-			dataptr = &object_specific_data.character_osd.inventory[inItemID - OWTcCharProp_InvUse][OBJcCharSlot_Use];
+			dataptr = &object_specific_data.osd.character_osd.inventory[inItemID - OWTcCharProp_InvUse][OBJcCharSlot_Use];
 
 		} else if ((inItemID >= OWTcCharProp_InvDrop) && (inItemID < OWTcCharProp_InvDrop + OBJcCharInv_Max)) {
 			is_inventory = UUcTrue;
-			dataptr = &object_specific_data.character_osd.inventory[inItemID - OWTcCharProp_InvDrop][OBJcCharSlot_Drop];
+			dataptr = &object_specific_data.osd.character_osd.inventory[inItemID - OWTcCharProp_InvDrop][OBJcCharSlot_Drop];
 		}
 
 		if (is_inventory) {
@@ -396,88 +396,88 @@ OWrProp_Char_Callback(
 		case WMcMessage_InitDialog:
 			if (NULL != team_menu) {
 				WMrPopupMenu_AppendStringList(team_menu, OBJcCharacter_TeamMaxNamed, OBJgCharacter_TeamName);
-				WMrPopupMenu_SetSelection(team_menu, (UUtUns16) object_specific_data.character_osd.team_number);
+				WMrPopupMenu_SetSelection(team_menu, (UUtUns16) object_specific_data.osd.character_osd.team_number);
 			}
 
 			if (NULL != job_menu) {
 				WMrPopupMenu_AppendStringList(job_menu, AI2cGoal_Max, OBJgJob_Name);
-				WMrPopupMenu_SetSelection(job_menu, (UUtUns16) object_specific_data.character_osd.job);
+				WMrPopupMenu_SetSelection(job_menu, (UUtUns16) object_specific_data.osd.character_osd.job);
 			}
 
 			if (NULL != initial_alert_menu) {
 				WMrPopupMenu_AppendStringList(initial_alert_menu, AI2cAlertStatus_Max, OBJgAlert_Name);
-				WMrPopupMenu_SetSelection(initial_alert_menu, (UUtUns16) object_specific_data.character_osd.initial_alert);
+				WMrPopupMenu_SetSelection(initial_alert_menu, (UUtUns16) object_specific_data.osd.character_osd.initial_alert);
 			}
 
 			if (NULL != minimum_alert_menu) {
 				WMrPopupMenu_AppendStringList(minimum_alert_menu, AI2cAlertStatus_Max, OBJgAlert_Name);
-				WMrPopupMenu_SetSelection(minimum_alert_menu, (UUtUns16) object_specific_data.character_osd.minimum_alert);
+				WMrPopupMenu_SetSelection(minimum_alert_menu, (UUtUns16) object_specific_data.osd.character_osd.minimum_alert);
 			}
 
 			if (NULL != jobstart_alert_menu) {
 				WMrPopupMenu_AppendStringList(jobstart_alert_menu, AI2cAlertStatus_Max, OBJgAlert_Name);
-				WMrPopupMenu_SetSelection(jobstart_alert_menu, (UUtUns16) object_specific_data.character_osd.jobstart_alert);
+				WMrPopupMenu_SetSelection(jobstart_alert_menu, (UUtUns16) object_specific_data.osd.character_osd.jobstart_alert);
 			}
 
 			if (NULL != investigate_alert_menu) {
 				WMrPopupMenu_AppendStringList(investigate_alert_menu, AI2cAlertStatus_Max, OBJgAlert_Name);
-				WMrPopupMenu_SetSelection(investigate_alert_menu, (UUtUns16) object_specific_data.character_osd.investigate_alert);
+				WMrPopupMenu_SetSelection(investigate_alert_menu, (UUtUns16) object_specific_data.osd.character_osd.investigate_alert);
 			}
 
 			if (NULL != strong_unseen_menu) {
 				WMrPopupMenu_AppendStringList(strong_unseen_menu, AI2cPursuitMode_Max, AI2cPursuitModeName);
-				WMrPopupMenu_SetSelection(strong_unseen_menu, (UUtUns16) object_specific_data.character_osd.pursue_strong_unseen);
+				WMrPopupMenu_SetSelection(strong_unseen_menu, (UUtUns16) object_specific_data.osd.character_osd.pursue_strong_unseen);
 			}
 
 			if (NULL != weak_unseen_menu) {
 				WMrPopupMenu_AppendStringList(weak_unseen_menu, AI2cPursuitMode_Max, AI2cPursuitModeName);
-				WMrPopupMenu_SetSelection(weak_unseen_menu, (UUtUns16) object_specific_data.character_osd.pursue_weak_unseen);
+				WMrPopupMenu_SetSelection(weak_unseen_menu, (UUtUns16) object_specific_data.osd.character_osd.pursue_weak_unseen);
 			}
 
 			if (NULL != strong_seen_menu) {
 				WMrPopupMenu_AppendStringList(strong_seen_menu, AI2cPursuitMode_Max, AI2cPursuitModeName);
-				WMrPopupMenu_SetSelection(strong_seen_menu, (UUtUns16) object_specific_data.character_osd.pursue_strong_seen);
+				WMrPopupMenu_SetSelection(strong_seen_menu, (UUtUns16) object_specific_data.osd.character_osd.pursue_strong_seen);
 			}
 
 			if (NULL != weak_seen_menu) {
 				WMrPopupMenu_AppendStringList(weak_seen_menu, AI2cPursuitMode_Max, AI2cPursuitModeName);
-				WMrPopupMenu_SetSelection(weak_seen_menu, (UUtUns16) object_specific_data.character_osd.pursue_weak_seen);
+				WMrPopupMenu_SetSelection(weak_seen_menu, (UUtUns16) object_specific_data.osd.character_osd.pursue_weak_seen);
 			}
 
 			if (NULL != pursue_lost_menu) {
 				WMrPopupMenu_AppendStringList(pursue_lost_menu, AI2cPursuitLost_Max, AI2cPursuitLostName);
-				WMrPopupMenu_SetSelection(pursue_lost_menu, (UUtUns16) object_specific_data.character_osd.pursue_lost);
+				WMrPopupMenu_SetSelection(pursue_lost_menu, (UUtUns16) object_specific_data.osd.character_osd.pursue_lost);
 			}
 
-			OWrProp_BuildWeaponMenu(weapon_menu, object_specific_data.character_osd.weapon_class_name);
+			OWrProp_BuildWeaponMenu(weapon_menu, object_specific_data.osd.character_osd.weapon_class_name);
 			OWiProp_Char_BuildClassListBox(character_class, &object_specific_data);
 
-			WMrEditField_SetText(character_name, object_specific_data.character_osd.character_name);
-			WMrEditField_SetInt32(hit_points, object_specific_data.character_osd.hit_points);
-			WMrEditField_SetInt32(ammo_percentage, object_specific_data.character_osd.ammo_percentage);
-			WMrEditField_SetText(spawn_script, object_specific_data.character_osd.spawn_script);
-			WMrEditField_SetText(die_script, object_specific_data.character_osd.die_script);
-			WMrEditField_SetText(combat_script, object_specific_data.character_osd.combat_script);
-			WMrEditField_SetText(alarm_script, object_specific_data.character_osd.alarm_script);
-			WMrEditField_SetText(hurt_script, object_specific_data.character_osd.hurt_script);
-			WMrEditField_SetText(defeated_script, object_specific_data.character_osd.defeated_script);
-			WMrEditField_SetText(outofammo_script, object_specific_data.character_osd.outofammo_script);
-			WMrEditField_SetText(nopath_script, object_specific_data.character_osd.nopath_script);
+			WMrEditField_SetText(character_name, object_specific_data.osd.character_osd.character_name);
+			WMrEditField_SetInt32(hit_points, object_specific_data.osd.character_osd.hit_points);
+			WMrEditField_SetInt32(ammo_percentage, object_specific_data.osd.character_osd.ammo_percentage);
+			WMrEditField_SetText(spawn_script, object_specific_data.osd.character_osd.spawn_script);
+			WMrEditField_SetText(die_script, object_specific_data.osd.character_osd.die_script);
+			WMrEditField_SetText(combat_script, object_specific_data.osd.character_osd.combat_script);
+			WMrEditField_SetText(alarm_script, object_specific_data.osd.character_osd.alarm_script);
+			WMrEditField_SetText(hurt_script, object_specific_data.osd.character_osd.hurt_script);
+			WMrEditField_SetText(defeated_script, object_specific_data.osd.character_osd.defeated_script);
+			WMrEditField_SetText(outofammo_script, object_specific_data.osd.character_osd.outofammo_script);
+			WMrEditField_SetText(nopath_script, object_specific_data.osd.character_osd.nopath_script);
 
-			WMrCheckBox_SetCheck(is_player, (object_specific_data.character_osd.flags & OBJcCharFlags_Player) > 0);
-			WMrCheckBox_SetCheck(random_costume, (object_specific_data.character_osd.flags & OBJcCharFlags_RandomCostume) > 0);
-			WMrCheckBox_SetCheck(not_present, (object_specific_data.character_osd.flags & OBJcCharFlags_NotInitiallyPresent) > 0);
-			WMrCheckBox_SetCheck(non_combatant, (object_specific_data.character_osd.flags & OBJcCharFlags_NonCombatant) > 0);
-			WMrCheckBox_SetCheck(spawn_multiple, (object_specific_data.character_osd.flags & OBJcCharFlags_SpawnMultiple) > 0);
-			WMrCheckBox_SetCheck(unkillable, (object_specific_data.character_osd.flags & OBJcCharFlags_Unkillable) > 0);
-			WMrCheckBox_SetCheck(infinite_ammo, (object_specific_data.character_osd.flags & OBJcCharFlags_InfiniteAmmo) > 0);
-			WMrCheckBox_SetCheck(omniscient, (object_specific_data.character_osd.flags & OBJcCharFlags_Omniscient) > 0);
-			WMrCheckBox_SetCheck(has_lsi, (object_specific_data.character_osd.flags & OBJcCharFlags_HasLSI) > 0);
-			WMrCheckBox_SetCheck(boss, (object_specific_data.character_osd.flags & OBJcCharFlags_Boss) > 0);
-			WMrCheckBox_SetCheck(upgrade_difficulty, (object_specific_data.character_osd.flags & OBJcCharFlags_UpgradeDifficulty) > 0);
-			WMrCheckBox_SetCheck(no_autodrop, (object_specific_data.character_osd.flags & OBJcCharFlags_NoAutoDrop) > 0);
+			WMrCheckBox_SetCheck(is_player, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_Player) > 0);
+			WMrCheckBox_SetCheck(random_costume, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_RandomCostume) > 0);
+			WMrCheckBox_SetCheck(not_present, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_NotInitiallyPresent) > 0);
+			WMrCheckBox_SetCheck(non_combatant, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_NonCombatant) > 0);
+			WMrCheckBox_SetCheck(spawn_multiple, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_SpawnMultiple) > 0);
+			WMrCheckBox_SetCheck(unkillable, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_Unkillable) > 0);
+			WMrCheckBox_SetCheck(infinite_ammo, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_InfiniteAmmo) > 0);
+			WMrCheckBox_SetCheck(omniscient, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_Omniscient) > 0);
+			WMrCheckBox_SetCheck(has_lsi, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_HasLSI) > 0);
+			WMrCheckBox_SetCheck(boss, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_Boss) > 0);
+			WMrCheckBox_SetCheck(upgrade_difficulty, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_UpgradeDifficulty) > 0);
+			WMrCheckBox_SetCheck(no_autodrop, (object_specific_data.osd.character_osd.flags & OBJcCharFlags_NoAutoDrop) > 0);
 
-			BitMaskToString(object_specific_data.character_osd.alarm_groups, string, 100);
+			BitMaskToString(object_specific_data.osd.character_osd.alarm_groups, string, 100);
 			WMrMessage_Send(alarm_groups, EFcMessage_SetText, (UUtUns32) string, 0);
 
 			{
@@ -487,17 +487,17 @@ OWrProp_Char_Callback(
 				for(item_id = OWTcCharProp_InvUse; item_id < (OWTcCharProp_InvUse + OBJcCharInv_Max); item_id++) 
 				{
 					set_edit_field = (WMtEditField *) WMrDialog_GetItemByID(inDialog, item_id);
-					WMrEditField_SetInt32(set_edit_field, object_specific_data.character_osd.inventory[item_id - OWTcCharProp_InvUse][OBJcCharSlot_Use]);
+					WMrEditField_SetInt32(set_edit_field, object_specific_data.osd.character_osd.inventory[item_id - OWTcCharProp_InvUse][OBJcCharSlot_Use]);
 				}
 
 				for(item_id = OWTcCharProp_InvDrop; item_id < (OWTcCharProp_InvDrop + OBJcCharInv_Max); item_id++) 
 				{
 					set_edit_field = (WMtEditField *) WMrDialog_GetItemByID(inDialog, item_id);
-					WMrEditField_SetInt32(set_edit_field, object_specific_data.character_osd.inventory[item_id - OWTcCharProp_InvDrop][OBJcCharSlot_Drop]);
+					WMrEditField_SetInt32(set_edit_field, object_specific_data.osd.character_osd.inventory[item_id - OWTcCharProp_InvDrop][OBJcCharSlot_Drop]);
 				}
 			}
 
-			WMrEditField_SetInt32(job_data_edit, object_specific_data.character_osd.job_specific_id);
+			WMrEditField_SetInt32(job_data_edit, object_specific_data.osd.character_osd.job_specific_id);
 			job_has_changed = UUcTrue;
 			combat_data_changed = UUcTrue;
 			melee_data_changed = UUcTrue;
@@ -509,16 +509,16 @@ OWrProp_Char_Callback(
 			switch(UUmLowWord(inParam1)) 
 			{
 				case OWTcCharProp_JobDataSelect:
-					if (AI2cGoal_Patrol == object_specific_data.character_osd.job) {
-						object_specific_data.character_osd.job_specific_id = OWrChoosePath(object_specific_data.character_osd.job_specific_id);
-						WMrEditField_SetInt32(job_data_edit, object_specific_data.character_osd.job_specific_id);
+					if (AI2cGoal_Patrol == object_specific_data.osd.character_osd.job) {
+						object_specific_data.osd.character_osd.job_specific_id = OWrChoosePath(object_specific_data.osd.character_osd.job_specific_id);
+						WMrEditField_SetInt32(job_data_edit, object_specific_data.osd.character_osd.job_specific_id);
 						job_data_changed = UUcTrue;
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_JobDataEdit:
-					object_specific_data.character_osd.job_specific_id = (UUtUns16) WMrEditField_GetInt32(job_data_edit);
+					object_specific_data.osd.character_osd.job_specific_id = (UUtUns16) WMrEditField_GetInt32(job_data_edit);
 					job_data_changed = UUcTrue;
 					dirty = UUcTrue;
 				break;
@@ -540,8 +540,8 @@ OWrProp_Char_Callback(
 							StringToBitMask(&alarm_bitmask, string);
 						}
 
-						if (object_specific_data.character_osd.alarm_groups != alarm_bitmask) {
-							object_specific_data.character_osd.alarm_groups = alarm_bitmask;
+						if (object_specific_data.osd.character_osd.alarm_groups != alarm_bitmask) {
+							object_specific_data.osd.character_osd.alarm_groups = alarm_bitmask;
 							dirty = UUcTrue;
 						}
 					}
@@ -549,222 +549,222 @@ OWrProp_Char_Callback(
 
 				case OWTcCharProp_Name:
 					if (EFcNotify_ContentChanged == UUmHighWord(inParam1)) {
-						WMrEditField_GetText(character_name, object_specific_data.character_osd.character_name, ONcMaxPlayerNameLength);
+						WMrEditField_GetText(character_name, object_specific_data.osd.character_osd.character_name, ONcMaxPlayerNameLength);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_SpawnScript:
 					if (EFcNotify_ContentChanged == UUmHighWord(inParam1)) {
-						WMrEditField_GetText(spawn_script, object_specific_data.character_osd.spawn_script, SLcScript_MaxNameLength);
+						WMrEditField_GetText(spawn_script, object_specific_data.osd.character_osd.spawn_script, SLcScript_MaxNameLength);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_DieScript:
 					if (EFcNotify_ContentChanged == UUmHighWord(inParam1)) {
-						WMrEditField_GetText(die_script, object_specific_data.character_osd.die_script, SLcScript_MaxNameLength);
+						WMrEditField_GetText(die_script, object_specific_data.osd.character_osd.die_script, SLcScript_MaxNameLength);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_CombatScript:
 					if (EFcNotify_ContentChanged == UUmHighWord(inParam1)) {
-						WMrEditField_GetText(combat_script, object_specific_data.character_osd.combat_script, SLcScript_MaxNameLength);
+						WMrEditField_GetText(combat_script, object_specific_data.osd.character_osd.combat_script, SLcScript_MaxNameLength);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_AlarmScript:
 					if (EFcNotify_ContentChanged == UUmHighWord(inParam1)) {
-						WMrEditField_GetText(spawn_script, object_specific_data.character_osd.alarm_script, SLcScript_MaxNameLength);
+						WMrEditField_GetText(spawn_script, object_specific_data.osd.character_osd.alarm_script, SLcScript_MaxNameLength);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_HurtScript:
 					if (EFcNotify_ContentChanged == UUmHighWord(inParam1)) {
-						WMrEditField_GetText(hurt_script, object_specific_data.character_osd.hurt_script, SLcScript_MaxNameLength);
+						WMrEditField_GetText(hurt_script, object_specific_data.osd.character_osd.hurt_script, SLcScript_MaxNameLength);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_DefeatedScript:
 					if (EFcNotify_ContentChanged == UUmHighWord(inParam1)) {
-						WMrEditField_GetText(defeated_script, object_specific_data.character_osd.defeated_script, SLcScript_MaxNameLength);
+						WMrEditField_GetText(defeated_script, object_specific_data.osd.character_osd.defeated_script, SLcScript_MaxNameLength);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_OutOfAmmoScript:
 					if (EFcNotify_ContentChanged == UUmHighWord(inParam1)) {
-						WMrEditField_GetText(outofammo_script, object_specific_data.character_osd.outofammo_script, SLcScript_MaxNameLength);
+						WMrEditField_GetText(outofammo_script, object_specific_data.osd.character_osd.outofammo_script, SLcScript_MaxNameLength);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_NoPathScript:
 					if (EFcNotify_ContentChanged == UUmHighWord(inParam1)) {
-						WMrEditField_GetText(nopath_script, object_specific_data.character_osd.nopath_script, SLcScript_MaxNameLength);
+						WMrEditField_GetText(nopath_script, object_specific_data.osd.character_osd.nopath_script, SLcScript_MaxNameLength);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_IsPlayer:
 					if (WMrCheckBox_GetCheck(is_player)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_Player;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_Player;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_Player;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_Player;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_RandomCostume:
 					if (WMrCheckBox_GetCheck(random_costume)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_RandomCostume;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_RandomCostume;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_RandomCostume;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_RandomCostume;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_NotPresent:
 					if (WMrCheckBox_GetCheck(not_present)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_NotInitiallyPresent;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_NotInitiallyPresent;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_NotInitiallyPresent;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_NotInitiallyPresent;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_NonCombatant:
 					if (WMrCheckBox_GetCheck(non_combatant)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_NonCombatant;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_NonCombatant;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_NonCombatant;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_NonCombatant;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_SpawnMultiple:
 					if (WMrCheckBox_GetCheck(spawn_multiple)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_SpawnMultiple;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_SpawnMultiple;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_SpawnMultiple;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_SpawnMultiple;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_Unkillable:
 					if (WMrCheckBox_GetCheck(unkillable)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_Unkillable;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_Unkillable;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_Unkillable;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_Unkillable;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_InfiniteAmmo:
 					if (WMrCheckBox_GetCheck(infinite_ammo)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_InfiniteAmmo;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_InfiniteAmmo;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_InfiniteAmmo;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_InfiniteAmmo;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_Omniscient:
 					if (WMrCheckBox_GetCheck(omniscient)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_Omniscient;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_Omniscient;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_Omniscient;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_Omniscient;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_HasLSI:
 					if (WMrCheckBox_GetCheck(has_lsi)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_HasLSI;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_HasLSI;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_HasLSI;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_HasLSI;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_Boss:
 					if (WMrCheckBox_GetCheck(boss)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_Boss;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_Boss;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_Boss;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_Boss;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_UpgradeDifficulty:
 					if (WMrCheckBox_GetCheck(upgrade_difficulty)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_UpgradeDifficulty;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_UpgradeDifficulty;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_UpgradeDifficulty;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_UpgradeDifficulty;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_NoAutoDrop:
 					if (WMrCheckBox_GetCheck(no_autodrop)) {
-						object_specific_data.character_osd.flags |= OBJcCharFlags_NoAutoDrop;
+						object_specific_data.osd.character_osd.flags |= OBJcCharFlags_NoAutoDrop;
 					}
 					else {
-						object_specific_data.character_osd.flags &= ~OBJcCharFlags_NoAutoDrop;
+						object_specific_data.osd.character_osd.flags &= ~OBJcCharFlags_NoAutoDrop;
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_Ammo:
 					if (EFcNotify_ContentChanged == UUmHighWord(inParam1)) {
-						object_specific_data.character_osd.ammo_percentage = WMrEditField_GetInt32(ammo_percentage);
+						object_specific_data.osd.character_osd.ammo_percentage = WMrEditField_GetInt32(ammo_percentage);
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_HitPoints:
 					if (EFcNotify_ContentChanged == UUmHighWord(inParam1)) {
-						object_specific_data.character_osd.hit_points = WMrEditField_GetInt32(hit_points);
+						object_specific_data.osd.character_osd.hit_points = WMrEditField_GetInt32(hit_points);
 					}
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_Class:
 					if (LBcNotify_SelectionChanged == UUmHighWord(inParam1)) {
-						WMrListBox_GetText(character_class, object_specific_data.character_osd.character_class, -1);
+						WMrListBox_GetText(character_class, object_specific_data.osd.character_osd.character_class, -1);
 					}
 					dirty = UUcTrue;
 				break;
 				
 				case OWTcCharProp_EditCombat:
-					object_specific_data.character_osd.combat_id = OWrChooseCombat(object_specific_data.character_osd.combat_id);
+					object_specific_data.osd.character_osd.combat_id = OWrChooseCombat(object_specific_data.osd.character_osd.combat_id);
 					combat_data_changed = UUcTrue;
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_EditMelee:
-					object_specific_data.character_osd.melee_id = OWrChooseMelee(object_specific_data.character_osd.melee_id);
+					object_specific_data.osd.character_osd.melee_id = OWrChooseMelee(object_specific_data.osd.character_osd.melee_id);
 					melee_data_changed = UUcTrue;
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_EditNeutral:
-					object_specific_data.character_osd.neutral_id = OWrChooseNeutral(object_specific_data.character_osd.neutral_id);
+					object_specific_data.osd.character_osd.neutral_id = OWrChooseNeutral(object_specific_data.osd.character_osd.neutral_id);
 					neutral_data_changed = UUcTrue;
 					dirty = UUcTrue;
 				break;
@@ -777,11 +777,11 @@ OWrProp_Char_Callback(
 
 						if ((item_id >= OWTcCharProp_InvUse) && (item_id < (OWTcCharProp_InvUse + OBJcCharInv_Max))) {
 							is_inventory = UUcTrue;
-							inventory_dataptr = &object_specific_data.character_osd.inventory[item_id - OWTcCharProp_InvUse][OBJcCharSlot_Use];
+							inventory_dataptr = &object_specific_data.osd.character_osd.inventory[item_id - OWTcCharProp_InvUse][OBJcCharSlot_Use];
 						}
 						else if ((item_id >= OWTcCharProp_InvDrop) && (item_id < (OWTcCharProp_InvDrop + OBJcCharInv_Max))) {
 							is_inventory = UUcTrue;
-							inventory_dataptr = &object_specific_data.character_osd.inventory[item_id - OWTcCharProp_InvDrop][OBJcCharSlot_Drop];
+							inventory_dataptr = &object_specific_data.osd.character_osd.inventory[item_id - OWTcCharProp_InvDrop][OBJcCharSlot_Drop];
 						}
 
 						if (is_inventory) {
@@ -801,82 +801,82 @@ OWrProp_Char_Callback(
 			switch (WMrWindow_GetID((WMtMenu *) inParam2))
 			{
 				case OWTcCharProp_Team:
-					object_specific_data.character_osd.team_number = UUmLowWord(inParam1);
+					object_specific_data.osd.character_osd.team_number = UUmLowWord(inParam1);
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_Weapon:
-					WMrPopupMenu_GetItemText(weapon_menu, UUmLowWord(inParam1), object_specific_data.character_osd.weapon_class_name);
+					WMrPopupMenu_GetItemText(weapon_menu, UUmLowWord(inParam1), object_specific_data.osd.character_osd.weapon_class_name);
 					dirty = UUcTrue;
 				break;
 
 				case OWTcCharProp_Job:
-					if (object_specific_data.character_osd.job != UUmLowWord(inParam1)) {
-						object_specific_data.character_osd.job = UUmLowWord(inParam1);
-						object_specific_data.character_osd.job_specific_id = 0;
+					if (object_specific_data.osd.character_osd.job != UUmLowWord(inParam1)) {
+						object_specific_data.osd.character_osd.job = UUmLowWord(inParam1);
+						object_specific_data.osd.character_osd.job_specific_id = 0;
 						job_has_changed = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_InitialAlert:
-					if (object_specific_data.character_osd.initial_alert != (AI2tAlertStatus) UUmLowWord(inParam1)) {
-						object_specific_data.character_osd.initial_alert = (AI2tAlertStatus) UUmLowWord(inParam1);
+					if (object_specific_data.osd.character_osd.initial_alert != (AI2tAlertStatus) UUmLowWord(inParam1)) {
+						object_specific_data.osd.character_osd.initial_alert = (AI2tAlertStatus) UUmLowWord(inParam1);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_MinimumAlert:
-					if (object_specific_data.character_osd.minimum_alert != (AI2tAlertStatus) UUmLowWord(inParam1)) {
-						object_specific_data.character_osd.minimum_alert = (AI2tAlertStatus) UUmLowWord(inParam1);
+					if (object_specific_data.osd.character_osd.minimum_alert != (AI2tAlertStatus) UUmLowWord(inParam1)) {
+						object_specific_data.osd.character_osd.minimum_alert = (AI2tAlertStatus) UUmLowWord(inParam1);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_JobStartAlert:
-					if (object_specific_data.character_osd.jobstart_alert != (AI2tAlertStatus) UUmLowWord(inParam1)) {
-						object_specific_data.character_osd.jobstart_alert = (AI2tAlertStatus) UUmLowWord(inParam1);
+					if (object_specific_data.osd.character_osd.jobstart_alert != (AI2tAlertStatus) UUmLowWord(inParam1)) {
+						object_specific_data.osd.character_osd.jobstart_alert = (AI2tAlertStatus) UUmLowWord(inParam1);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_InvestigateAlert:
-					if (object_specific_data.character_osd.investigate_alert != (AI2tAlertStatus) UUmLowWord(inParam1)) {
-						object_specific_data.character_osd.investigate_alert = (AI2tAlertStatus) UUmLowWord(inParam1);
+					if (object_specific_data.osd.character_osd.investigate_alert != (AI2tAlertStatus) UUmLowWord(inParam1)) {
+						object_specific_data.osd.character_osd.investigate_alert = (AI2tAlertStatus) UUmLowWord(inParam1);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_StrongUnseen:
-					if (object_specific_data.character_osd.pursue_strong_unseen != (AI2tPursuitMode) UUmLowWord(inParam1)) {
-						object_specific_data.character_osd.pursue_strong_unseen = (AI2tPursuitMode) UUmLowWord(inParam1);
+					if (object_specific_data.osd.character_osd.pursue_strong_unseen != (AI2tPursuitMode) UUmLowWord(inParam1)) {
+						object_specific_data.osd.character_osd.pursue_strong_unseen = (AI2tPursuitMode) UUmLowWord(inParam1);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_WeakUnseen:
-					if (object_specific_data.character_osd.pursue_weak_unseen != (AI2tPursuitMode) UUmLowWord(inParam1)) {
-						object_specific_data.character_osd.pursue_weak_unseen = (AI2tPursuitMode) UUmLowWord(inParam1);
+					if (object_specific_data.osd.character_osd.pursue_weak_unseen != (AI2tPursuitMode) UUmLowWord(inParam1)) {
+						object_specific_data.osd.character_osd.pursue_weak_unseen = (AI2tPursuitMode) UUmLowWord(inParam1);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_StrongSeen:
-					if (object_specific_data.character_osd.pursue_strong_seen != (AI2tPursuitMode) UUmLowWord(inParam1)) {
-						object_specific_data.character_osd.pursue_strong_seen = (AI2tPursuitMode) UUmLowWord(inParam1);
+					if (object_specific_data.osd.character_osd.pursue_strong_seen != (AI2tPursuitMode) UUmLowWord(inParam1)) {
+						object_specific_data.osd.character_osd.pursue_strong_seen = (AI2tPursuitMode) UUmLowWord(inParam1);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_WeakSeen:
-					if (object_specific_data.character_osd.pursue_weak_seen != (AI2tPursuitMode) UUmLowWord(inParam1)) {
-						object_specific_data.character_osd.pursue_weak_seen = (AI2tPursuitMode) UUmLowWord(inParam1);
+					if (object_specific_data.osd.character_osd.pursue_weak_seen != (AI2tPursuitMode) UUmLowWord(inParam1)) {
+						object_specific_data.osd.character_osd.pursue_weak_seen = (AI2tPursuitMode) UUmLowWord(inParam1);
 						dirty = UUcTrue;
 					}
 				break;
 
 				case OWTcCharProp_PursueLost:
-					if (object_specific_data.character_osd.pursue_lost != (AI2tPursuitLostBehavior) UUmLowWord(inParam1)) {
-						object_specific_data.character_osd.pursue_lost = (AI2tPursuitLostBehavior) UUmLowWord(inParam1);
+					if (object_specific_data.osd.character_osd.pursue_lost != (AI2tPursuitLostBehavior) UUmLowWord(inParam1)) {
+						object_specific_data.osd.character_osd.pursue_lost = (AI2tPursuitLostBehavior) UUmLowWord(inParam1);
 						dirty = UUcTrue;
 					}
 				break;
@@ -890,8 +890,8 @@ OWrProp_Char_Callback(
 	}
 
 	if (job_has_changed) {
-		UUtBool has_job_data = AIrJob_HasJobData(object_specific_data.character_osd.job);
-		UUtBool has_job_select = AIrJob_HasJobSelectButton(object_specific_data.character_osd.job);
+		UUtBool has_job_data = AIrJob_HasJobData(object_specific_data.osd.character_osd.job);
+		UUtBool has_job_select = AIrJob_HasJobSelectButton(object_specific_data.osd.character_osd.job);
 
 		WMrWindow_SetVisible(job_data_prompt, has_job_data);
 		WMrWindow_SetVisible(job_data_edit, has_job_data);
@@ -900,7 +900,7 @@ OWrProp_Char_Callback(
 		WMrWindow_SetTitle(job_data_description, "", WMcMaxTitleLength);
 
 		if (has_job_data) {
-			WMrEditField_SetInt32(job_data_edit, object_specific_data.character_osd.job_specific_id);
+			WMrEditField_SetInt32(job_data_edit, object_specific_data.osd.character_osd.job_specific_id);
 		}
 
 		job_data_changed = UUcTrue;
@@ -908,7 +908,7 @@ OWrProp_Char_Callback(
 
 		WMrWindow_SetTitle(job_data_description, "", WMcMaxTitleLength);
 		 
-		switch(object_specific_data.character_osd.job)
+		switch(object_specific_data.osd.character_osd.job)
 		{
 			case AI2cGoal_Patrol:
 				WMrWindow_SetTitle(job_data_description, "Patrols along an AI path.", WMcMaxTitleLength);
@@ -937,13 +937,13 @@ OWrProp_Char_Callback(
 		// setOSD may change our combat and melee settings, due to changing character class
 		char_osd = (OBJtOSD_Character *) object->object_data;
 
-		if (char_osd->combat_id != object_specific_data.character_osd.combat_id) {
-			object_specific_data.character_osd.combat_id = char_osd->combat_id;
+		if (char_osd->combat_id != object_specific_data.osd.character_osd.combat_id) {
+			object_specific_data.osd.character_osd.combat_id = char_osd->combat_id;
 			combat_data_changed = UUcTrue;
 		}
 
-		if (char_osd->melee_id != object_specific_data.character_osd.melee_id) {
-			object_specific_data.character_osd.melee_id = char_osd->melee_id;
+		if (char_osd->melee_id != object_specific_data.osd.character_osd.melee_id) {
+			object_specific_data.osd.character_osd.melee_id = char_osd->melee_id;
 			melee_data_changed = UUcTrue;
 		}
 	}
@@ -951,22 +951,22 @@ OWrProp_Char_Callback(
 	if (job_data_changed) {
 		char job_data_changed_buffer[256];
 
-		switch(object_specific_data.character_osd.job)
+		switch(object_specific_data.osd.character_osd.job)
 		{
 			case AI2cGoal_Patrol:
 				{
 					OBJtOSD_PatrolPath path;
 					UUtBool path_found;
 
-					path_found = ONrLevel_Path_ID_To_Path(object_specific_data.character_osd.job_specific_id, &path);
+					path_found = ONrLevel_Path_ID_To_Path(object_specific_data.osd.character_osd.job_specific_id, &path);
 
 					if (path_found) {
-						sprintf(job_data_changed_buffer, "Path: %s (ID %d)", path.name, object_specific_data.character_osd.job_specific_id);
+						sprintf(job_data_changed_buffer, "Path: %s (ID %d)", path.name, object_specific_data.osd.character_osd.job_specific_id);
 					}
 					else {
 						sprintf(job_data_changed_buffer, "Path: <none>");
-						if (object_specific_data.character_osd.job_specific_id != (UUtUns16) -1) {
-							sprintf(string, " (ID #%d not found)", object_specific_data.character_osd.job_specific_id);
+						if (object_specific_data.osd.character_osd.job_specific_id != (UUtUns16) -1) {
+							sprintf(string, " (ID #%d not found)", object_specific_data.osd.character_osd.job_specific_id);
 							strcat(job_data_changed_buffer, string);
 						}
 					}
@@ -982,19 +982,19 @@ OWrProp_Char_Callback(
 		char combat_description_buffer[256];
 		UUtBool combat_found; 
 
-		combat_found = ONrLevel_Combat_ID_To_Combat(object_specific_data.character_osd.combat_id, &combat);
+		combat_found = ONrLevel_Combat_ID_To_Combat(object_specific_data.osd.character_osd.combat_id, &combat);
 
 		if (combat_found) {
 			sprintf(combat_description_buffer, "Combat: %s", combat.name);
 			if (AI2gDebugShowSettingIDs) {
-				sprintf(string, " (ID %d)", object_specific_data.character_osd.combat_id);
+				sprintf(string, " (ID %d)", object_specific_data.osd.character_osd.combat_id);
 				strcat(combat_description_buffer, string);
 			}
 		}
 		else {
 			sprintf(combat_description_buffer, "Combat: <none>");
-			if (AI2gDebugShowSettingIDs && (object_specific_data.character_osd.combat_id != (UUtUns16) -1)) {
-				sprintf(string, " (ID #%d not found)", object_specific_data.character_osd.combat_id);
+			if (AI2gDebugShowSettingIDs && (object_specific_data.osd.character_osd.combat_id != (UUtUns16) -1)) {
+				sprintf(string, " (ID #%d not found)", object_specific_data.osd.character_osd.combat_id);
 				strcat(combat_description_buffer, string);
 			}
 		}
@@ -1007,19 +1007,19 @@ OWrProp_Char_Callback(
 		char melee_description_buffer[256];
 		UUtBool melee_found; 
 
-		melee_found = ONrLevel_Melee_ID_To_Melee_Ptr(object_specific_data.character_osd.melee_id, &profile);
+		melee_found = ONrLevel_Melee_ID_To_Melee_Ptr(object_specific_data.osd.character_osd.melee_id, &profile);
 
 		if (melee_found) {
 			sprintf(melee_description_buffer, "Melee: %s", profile->name);
 			if (AI2gDebugShowSettingIDs) {
-				sprintf(string, " (ID %d)", object_specific_data.character_osd.melee_id);
+				sprintf(string, " (ID %d)", object_specific_data.osd.character_osd.melee_id);
 				strcat(melee_description_buffer, string);
 			}
 		}
 		else {
 			sprintf(melee_description_buffer, "Melee: <none>");
-			if (AI2gDebugShowSettingIDs && (object_specific_data.character_osd.melee_id != (UUtUns16) -1)) {
-				sprintf(string, " (ID #%d not found)", object_specific_data.character_osd.melee_id);
+			if (AI2gDebugShowSettingIDs && (object_specific_data.osd.character_osd.melee_id != (UUtUns16) -1)) {
+				sprintf(string, " (ID #%d not found)", object_specific_data.osd.character_osd.melee_id);
 				strcat(melee_description_buffer, string);
 			}
 		}
@@ -1032,19 +1032,19 @@ OWrProp_Char_Callback(
 		char neutral_description_buffer[256];
 		UUtBool neutral_found; 
 
-		neutral_found = ONrLevel_Neutral_ID_To_Neutral(object_specific_data.character_osd.neutral_id, &neutral);
+		neutral_found = ONrLevel_Neutral_ID_To_Neutral(object_specific_data.osd.character_osd.neutral_id, &neutral);
 
 		if (neutral_found) {
 			sprintf(neutral_description_buffer, "Neutral: %s", neutral.name);
 			if (AI2gDebugShowSettingIDs) {
-				sprintf(string, " (ID %d)", object_specific_data.character_osd.neutral_id);
+				sprintf(string, " (ID %d)", object_specific_data.osd.character_osd.neutral_id);
 				strcat(neutral_description_buffer, string);
 			}
 		}
 		else {
 			sprintf(neutral_description_buffer, "Neutral: <none>");
-			if (AI2gDebugShowSettingIDs && (object_specific_data.character_osd.neutral_id != (UUtUns16) -1)) {
-				sprintf(string, " (ID #%d not found)", object_specific_data.character_osd.neutral_id);
+			if (AI2gDebugShowSettingIDs && (object_specific_data.osd.character_osd.neutral_id != (UUtUns16) -1)) {
+				sprintf(string, " (ID #%d not found)", object_specific_data.osd.character_osd.neutral_id);
 				strcat(neutral_description_buffer, string);
 			}
 		}

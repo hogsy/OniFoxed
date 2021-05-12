@@ -48,12 +48,14 @@ typedef struct BKtBuffer
 
 static void BKrBink_SetVolume(HBINK inBink)
 {
+#if 0
 	if (NULL != inBink) {
 		float float_volume = UUmPin(ONrPersist_GetOverallVolume(), 0.f, 1.f);
 		UUtInt32 bink_volume = MUrUnsignedSmallFloat_To_Uns_Round(float_volume * 32768);
 
 		BinkSetVolume(inBink, bink_volume);
 	}
+#endif
 
 	return;
 }
@@ -92,6 +94,7 @@ BKrBink_Open(
 	BFtFileRef					*inMovieRef,
 	UUtUns32					inFlags)
 {
+#if 0
 	HBINK						bink;
 	const char					*file_name;
 	LPDIRECTSOUND				direct_sound;
@@ -127,6 +130,9 @@ BKrBink_Open(
 	BKrBink_SetVolume(bink);
 	
 	return bink;
+#else
+	return NULL;
+#endif
 }
 
 #endif
@@ -142,6 +148,7 @@ BKiBuffer_CopyFromBink(
 	BKtBuffer					*inBuffer,
 	HBINK						inBink)
 {
+#if 0
 	BinkCopyToBuffer(
 		inBink,
 		inBuffer->bink_buffer->Buffer, 
@@ -150,6 +157,7 @@ BKiBuffer_CopyFromBink(
 		0,
 		0,
 		inBuffer->bink_buffer->SurfaceType);
+#endif
 }
 
 // ----------------------------------------------------------------------
@@ -157,6 +165,7 @@ static void
 BKiBuffer_Delete(
 	BKtBuffer					*inBuffer)
 {
+#if 0
 	UUmAssert(inBuffer);
 	
 	if (inBuffer->bink_buffer)
@@ -166,6 +175,7 @@ BKiBuffer_Delete(
 	}
         
 	UUrMemory_Block_Delete(inBuffer);
+#endif
 }
 
 // ----------------------------------------------------------------------
@@ -174,11 +184,13 @@ BKiBuffer_Draw(
 	BKtBuffer					*inBuffer,
 	HBINK						inBink)
 {
+#if 0
 	UUtUns32					num_rects;
 	
 	// blit the data onto the screen (only for off-screen and DIBs)
 	num_rects = BinkGetRects(inBink, inBuffer->bink_buffer->SurfaceType);
 	BinkBufferBlit(inBuffer->bink_buffer, inBink->FrameRects, num_rects);
+#endif
 }
 
 // ----------------------------------------------------------------------
@@ -188,6 +200,7 @@ BKiBuffer_New(
 	UUtInt32					inMovieWidth,
 	UUtInt32					inMovieHeight)
 {
+#if 0
 	BKtBuffer					*buffer;
 	HBINKBUFFER					bink_buffer;
 	UUtUns32					buffer_flags;
@@ -207,6 +220,9 @@ BKiBuffer_New(
 	buffer->bink_buffer = bink_buffer;
 	
 	return buffer;
+#else
+	return NULL;
+#endif
 }
 
 // ----------------------------------------------------------------------
@@ -214,6 +230,7 @@ static UUtBool
 BKiBuffer_Lock(
 	BKtBuffer					*inBuffer)
 {
+#if 0
 	UUtBool						result;
 
 	UUmAssert(inBuffer);
@@ -223,6 +240,9 @@ BKiBuffer_Lock(
 	result = (BinkBufferLock(inBuffer->bink_buffer) != 0);
 
 	return result;
+#else
+	return UUcFalse;
+#endif
 }
 
 // ----------------------------------------------------------------------
@@ -232,7 +252,9 @@ BKiBuffer_SetPosition(
 	UUtInt32					inX,
 	UUtInt32					inY)
 {
+#if 0
 	BinkBufferSetOffset(inBuffer->bink_buffer, inX, inY);
+#endif
 }
 
 // ----------------------------------------------------------------------
@@ -240,9 +262,11 @@ static void
 BKiBuffer_Unlock(
 	BKtBuffer					*inBuffer)
 {
+#if 0
 	UUmAssert(inBuffer);
 		
 	BinkBufferUnlock(inBuffer->bink_buffer);
+#endif
 }
 
 // ======================================================================
@@ -257,6 +281,7 @@ BKiBink_NextFrame(
 	BKtBuffer					*inBinkBuffer,
 	UUtWindow					inWindow)
 {
+#if 0
 	BinkDoFrame(inBink);
 	
 	if (BKiBuffer_Lock(inBinkBuffer) == UUcTrue)
@@ -272,11 +297,15 @@ BKiBink_NextFrame(
 	
 	BinkNextFrame(inBink);
 	return UUcTrue;
+#else
+	return UUcFalse;
+#endif
 }
 
 static UUtBool BKrBinkIsLoaded(
 	void)
 {
+#if 0
 	UUtBool loaded= UUcFalse;
 
 #if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
@@ -293,6 +322,9 @@ static UUtBool BKrBinkIsLoaded(
 #endif
 	
 	return loaded;
+#else
+	return UUcFalse;
+#endif
 }
 
 // ----------------------------------------------------------------------
@@ -347,6 +379,7 @@ BKrMovie_Play(
 	UUtWindow					inWindow,
 	BKtScale					inScale) // unused
 {
+#if 0
 	HBINK						bink;
 	BKtBuffer					*bink_buffer;
 	UUtBool						done;
@@ -453,6 +486,7 @@ cleanup:
 		BinkClose(bink);
 		bink = NULL;
 	}
+#endif
 
 	return UUcError_None;
 }
@@ -735,6 +769,7 @@ void gl_draw_bink_movie_frame(
 	UUtInt32 xofs,
 	UUtInt32 yofs)
 {
+#if 0
 	UUtUns32* ts, x, y;
 	float xp= 0.f, yp= 0.f;
 
@@ -795,6 +830,7 @@ void gl_draw_bink_movie_frame(
 			++ts;
 		}
 	}
+#endif
 
 	return;
 }
@@ -819,6 +855,7 @@ void gl_send_bink_textures(
 	HBINK bink,
 	HRADTEXTURES t)
 {
+#if 0
 	UUtUns32 *ts, x, y;
 	UUtUns8 *buffer;
 	UUtUns32 bufadj;
@@ -871,6 +908,7 @@ void gl_send_bink_textures(
 			++ts;
 		}
 	}
+#endif
 
 	return;
 }
@@ -898,6 +936,7 @@ static void gl_render_bink_movie_frame(
 	int xo,
 	int yo)
 {
+#if 0
 	// decompress a frame
 	BinkDoFrame(bink);
 
@@ -914,6 +953,7 @@ static void gl_render_bink_movie_frame(
 
 	// advance to the next Bink frame
 	BinkNextFrame(bink);
+#endif
 
 	return;
 }
@@ -1012,6 +1052,7 @@ static UUtError BKrMovie_Play_Software(
 	UUtWindow inWindow,
 	BKtScale inScale) // unused
 {
+#if 0
 	HBINK bink= NULL;
 	BKtBuffer *bink_buffer= NULL;
 	UUtBool done;
@@ -1146,6 +1187,7 @@ static UUtError BKrMovie_Play_Software(
 	{
 		BinkClose(bink);
 	}
+#endif
 
 	return UUcError_None;
 }
@@ -1161,6 +1203,7 @@ UUtError BKrMovie_Play_OpenGL(
 	UUtWindow window,
 	BKtScale scale_type)
 {
+#if 0
 	HBINK bink= NULL;
 	UUtBool done= UUcFalse;
 	LItMode mode;
@@ -1306,6 +1349,7 @@ UUtError BKrMovie_Play_OpenGL(
 			}
 		}
 	}
+#endif
 
 	return UUcError_None;
 }

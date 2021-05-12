@@ -597,7 +597,7 @@ OWiEditMelee_InitDialog(WMtDialog *inDialog)
 	OBJrObject_GetObjectSpecificData(user_data->object, &user_data->object_specific_data);
 
 	// currently we aren't displaying anything
-	user_data->profile = (AI2tMeleeProfile *) &user_data->object_specific_data.melee_osd;
+	user_data->profile = (AI2tMeleeProfile *) &user_data->object_specific_data.osd.melee_osd;
 	user_data->technique = NULL;
 	user_data->move = NULL;
 
@@ -1557,11 +1557,11 @@ OWrEditMelee_Callback(
 			// note: user_data may be null if we failed during initdialog
 			if (user_data != NULL) {
 				// delete our melee profile's variable-length arrays
-				if (user_data->object_specific_data.melee_osd.technique != NULL) {
-					UUrMemory_Block_Delete(user_data->object_specific_data.melee_osd.technique);
+				if (user_data->object_specific_data.osd.melee_osd.technique != NULL) {
+					UUrMemory_Block_Delete(user_data->object_specific_data.osd.melee_osd.technique);
 				}
-				if (user_data->object_specific_data.melee_osd.move != NULL) {
-					UUrMemory_Block_Delete(user_data->object_specific_data.melee_osd.move);
+				if (user_data->object_specific_data.osd.melee_osd.move != NULL) {
+					UUrMemory_Block_Delete(user_data->object_specific_data.osd.melee_osd.move);
 				}
 
 				// restore our user data pointer to what it was before we started monkeying with it
@@ -1602,14 +1602,14 @@ UUtUns16 OWrChooseMelee(UUtUns16 inProfileID)
 	OBJtOSD_All	object_specific_data;
 	UUtUns16 result = (UUtUns16) -1;
 
-	object_specific_data.melee_osd.id = inProfileID;
+	object_specific_data.osd.melee_osd.id = inProfileID;
 	object = OBJrObjectType_Search(OBJcType_Melee, OBJcSearch_MeleeID, &object_specific_data);
 	
 	object = OWrSelectObject(OBJcType_Melee, object, UUcTrue, UUcFalse);
 
 	if (NULL != object) {
 		OBJrObject_GetObjectSpecificData(object, &object_specific_data);
-		result = (UUtUns16) object_specific_data.melee_osd.id;
+		result = (UUtUns16) object_specific_data.osd.melee_osd.id;
 	}
 
 	return result;

@@ -1415,7 +1415,7 @@ OWiDuplicateSelectedObjects(
 		
 		// flags' id numbers must be unique
 		if (object_type == OBJcType_Flag) {
-			osd_all.flag_osd.id_number = OBJrFlag_GetUniqueID();
+			osd_all.osd.flag_osd.id_number = OBJrFlag_GetUniqueID();
 		}
 		
 		// offset the position in the direction the camera is facing

@@ -643,7 +643,9 @@ static void traverse_single_ray(raycast_block_type *in_block)
 	float parametric_end = 0.f;
 
 #if PERFORMANCE_TIMER
+#if 0 /* function impl seems to be missing :( */
 	UUrPerformanceTimer_Enter(AKg_RayCastOctTree_Timer_Single_Ray);
+#endif
 #endif
 
 	while(1)
@@ -1078,7 +1080,9 @@ static void traverse_single_ray(raycast_block_type *in_block)
 	}
 
 #if PERFORMANCE_TIMER
+#if 0 /* function impl seems to be missing :( */
 	UUrPerformanceTimer_Exit(AKg_RayCastOctTree_Timer_Single_Ray);
+#endif
 #endif
 
 	return;

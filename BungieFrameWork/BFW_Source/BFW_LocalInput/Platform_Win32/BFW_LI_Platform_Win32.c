@@ -15,6 +15,7 @@
 #include "BFW_Timer.h"
 #include "BFW_ScriptLang.h"
 
+#define DIRECTINPUT_VERSION 0x0700
 #include <dinput.h>
 
 

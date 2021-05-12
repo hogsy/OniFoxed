@@ -1544,7 +1544,7 @@ SSiSoundData_ProcessAIFF(
 			inFileDataLength,
 			UUcFile_BigEndian,
 			UUm4CharToUns32('F', 'O', 'R', 'M'),
-			&(/*(UUtUns8*)*/form),
+			&((UUtUns8*)form),
 			&form_size);
 	UUmError_ReturnOnErrorMsg(error, "Unable to find FORM tag");
 	
@@ -1584,7 +1584,7 @@ SSiSoundData_ProcessAIFF(
 			inFileDataLength,
 			UUcFile_BigEndian,
 			UUm4CharToUns32('S', 'S', 'N', 'D'),
-			&(/*(UUtUns8*)*/sound),
+			&((UUtUns8*)sound),
 			&sound_size);
 	UUmError_ReturnOnErrorMsg(error, "Unable to find SSND tag");
 	
