@@ -278,24 +278,19 @@ void UUrStallTimer_End(UUtStallTimer *inTimer, const char *inName)
 #endif
 #endif
 
-	if (duration > duration_threshold) {
-		COrConsole_Printf("stalled in %s for %f seconds", inName, duration / 60.f);
-
-
 #if SUPPORT_DEBUG_FILES
-		{
-			static BFtDebugFile *debug_file = NULL;
-			
-			if (NULL == debug_file) {
-				debug_file = BFrDebugFile_Open("stalls.txt");
-			}
-
-			if (NULL != debug_file) {
-				BFrDebugFile_Printf(debug_file, "stalled in %s for %f seconds\n", inName, duration / 60.f);
-			}
+	if (duration > duration_threshold) {
+		static BFtDebugFile *debug_file = NULL;
+		
+		if (NULL == debug_file) {
+			debug_file = BFrDebugFile_Open("stalls.txt");
 		}
-#endif
+
+		if (NULL != debug_file) {
+			BFrDebugFile_Printf(debug_file, "stalled in %s for %f seconds\n", inName, duration / 60.f);
+		}
 	}
+#endif
 
 	return;
 }
