@@ -768,6 +768,8 @@ MArMaterialType_IsBreakable(
 		return UUcFalse;
 
 	UUmAssert((inMaterialType >= 0) && (inMaterialType < MAgNumMaterials));
+	if( inMaterialType >= MAgNumMaterials )
+		return UUcFalse;
 
 	material = MAgMaterialArray[inMaterialType];
 	UUmAssertReadPtr(material, sizeof(MAtMaterial));
