@@ -15,7 +15,7 @@
 #include "BFW_Timer.h"
 #include "BFW_ScriptLang.h"
 
-#define DIRECTINPUT_VERSION 0x0700
+#define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
 
@@ -967,7 +967,7 @@ LIiPlatform_Devices_Initialize(
 	result =
 		IDirectInput_EnumDevices(
 			LIgDirectInput,
-			DIDEVTYPE_MOUSE,
+			DI8DEVCLASS_POINTER,
 			LIiPlatform_Mouse_Callback,
 			NULL,
 			DIEDFL_ATTACHEDONLY);
@@ -980,7 +980,7 @@ LIiPlatform_Devices_Initialize(
 	result =
 		IDirectInput_EnumDevices(
 			LIgDirectInput,
-			DIDEVTYPE_KEYBOARD,
+			DI8DEVCLASS_KEYBOARD,
 			LIiPlatform_Keyboard_Callback,
 			NULL,
 			DIEDFL_ATTACHEDONLY);
@@ -1197,9 +1197,10 @@ LIrPlatform_Initialize(
 	{
 		// start direct input
 		result =
-			DirectInputCreate(
+			DirectInput8Create(
 				inInstance,
 				DIRECTINPUT_VERSION,
+				&IID_IDirectInput8A,
 				&LIgDirectInput,
 				NULL);
 		if (result != DI_OK)
