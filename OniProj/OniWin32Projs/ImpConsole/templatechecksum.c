@@ -2,7 +2,7 @@
 #include "BFW_TemplateManager.h"
 #include "BFW_TM_Private.h"
 
-UUtUns64 TMgTemplateChecksum = 1234;
+UUtUns64 TMgTemplateChecksum = 0;
 UUtUns32 TMgNumTemplateDefinitions = 0;
 TMtTemplateDefinition* TMgTemplateDefinitionArray = NULL;
 

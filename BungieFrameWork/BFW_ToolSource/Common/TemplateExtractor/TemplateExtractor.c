@@ -25,6 +25,8 @@
 #include "TE_Extract.h"
 #include "Imp_Common.h"
 
+#include "Oni_Platform.h" // For ONtPlatformData
+
 #define TEcInputFileName				"..\\..\\TemplateFileList.txt"
 #define TEcTemplateDatFileName			"..\\..\\GameDataFolder\\template.dat"
 #define TEcTemplateNameDatFileName		"..\\..\\GameDataFolder\\template.nam"
@@ -32,6 +34,23 @@
 UUtBool		TEgError = UUcFalse;
 
 FILE*		TEgErrorFile = NULL;
+
+ONtPlatformData	ONgPlatformData; // Dummy
+
+void UUcArglist_Call Imp_PrintWarning( const char *format, ...)
+{
+	char buffer[512];
+	va_list arglist;
+	int return_value;
+
+	va_start(arglist, format);
+	return_value= vsprintf(buffer, format, arglist);
+	va_end(arglist);
+
+	fprintf(stderr, "%s"UUmNL, buffer);
+
+	AUrMessageBox(AUcMBType_OK, "%s", buffer);
+}
 
 static void
 TEiProcessMainInputFile(
@@ -366,3 +385,12 @@ errorExit:
 	return UUcError_Generic;
 }
 
+int main( int argc, char *argv[] ) {
+	UUtError error = TErRun();
+	if (UUcError_None != error) {
+		//Imp_PrintWarning("Errors with the template extractor");
+		return EXIT_FAILURE;
+	}
+
+	return EXIT_SUCCESS;
+}
