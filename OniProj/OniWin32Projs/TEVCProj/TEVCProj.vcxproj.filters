@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="BungieFrameWork">
+      <UniqueIdentifier>{153befc8-69b2-46c8-8015-83fca05f3281}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Headers">
+      <UniqueIdentifier>{13a8f80d-7c74-4ead-ae69-5c413b6e8faf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source">
+      <UniqueIdentifier>{33971c7d-28e3-451d-8e7c-ed44ceee0bcc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Utility">
+      <UniqueIdentifier>{34056a9e-811e-4adc-be44-18657e1850cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_FileManager">
+      <UniqueIdentifier>{a2be44e7-4e28-4684-b935-2aa88730922f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_TemplateManager">
+      <UniqueIdentifier>{0be30316-78f6-4e9a-9e6d-90b4735675cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_MathLib">
+      <UniqueIdentifier>{ad3ad3a1-6111-45e8-b186-d927e4fcefa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TemplateExtractor">
+      <UniqueIdentifier>{f21e808b-8c29-494d-bc7b-195c3ed1772f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_FileManager.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_TemplateManager.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Error.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Memory.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Platform.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TemplateManager\BFW_TM_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TemplateManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Parser.h">
+      <Filter>TemplateExtractor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Private.h">
+      <Filter>TemplateExtractor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Symbol.h">
+      <Filter>TemplateExtractor</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_AppUtilities\BFW_AppUtilities.c">
+      <Filter>BungieFrameWork\BFW_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_DebuggerSymbols\BFW_DebuggerSymbols_Win32.c">
+      <Filter>BungieFrameWork\BFW_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Group\BFW_Group.c">
+      <Filter>BungieFrameWork\BFW_Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_BitVector.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Error.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Memory.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\Platform_Win32\BFW_Platform_Win32.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_String.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Timer.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Utility.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileManager\BFW_FileManager_Common.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileManager\Platform_Win32\BFW_FileManager_Win32.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TemplateManager\BFW_TemplateManager.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TemplateManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TemplateManager\BFW_TM_Common.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TemplateManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TemplateManager\BFW_TM_Construction.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TemplateManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TemplateManager\BFW_TM_Game.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TemplateManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\BFW_MathLib.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\BFW_MathLib_Matrix.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\Decompose.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\EulerAngles.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Extract.c">
+      <Filter>TemplateExtractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Parser.c">
+      <Filter>TemplateExtractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Symbol.c">
+      <Filter>TemplateExtractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TemplateExtractor.c">
+      <Filter>TemplateExtractor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ImpConsole\templatechecksum.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\OniVCDirectories.txt" />
+  </ItemGroup>
+</Project>

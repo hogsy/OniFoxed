@@ -1,0 +1,1784 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="BungieFrameWork">
+      <UniqueIdentifier>{6b61ea8c-6c1a-45ca-93e7-5a907f902afd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Headers">
+      <UniqueIdentifier>{a4a92b5c-4cb4-4fb5-9d20-9350b7649392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source">
+      <UniqueIdentifier>{fc6f27b8-b4e7-422f-8d0f-d6ddb5cc9cce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Akira">
+      <UniqueIdentifier>{5c8351bc-c8e7-41ea-864a-dd9a18ee0b3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_FileManager">
+      <UniqueIdentifier>{c46c957f-7328-4f53-b8b8-764d3a0bec15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_LocalInput">
+      <UniqueIdentifier>{f858f1b4-b133-4194-9857-558d1b9d031f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Shared">
+      <UniqueIdentifier>{4f50c7ed-795a-46b1-ad6c-57add7f0c6d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_TemplateManager">
+      <UniqueIdentifier>{ba6b04e3-dba4-402a-88c2-f4cf58d05ef7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Utility">
+      <UniqueIdentifier>{5257cb5b-1520-49e1-94ab-8198eed0c6a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Totoro">
+      <UniqueIdentifier>{1e9568a4-a2f4-417d-9c55-d4dd192ed8da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_TextSystem">
+      <UniqueIdentifier>{6e0d584b-1117-4416-85f6-d792b9937a01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Console">
+      <UniqueIdentifier>{47ed22ef-afc6-43b4-8ab2-60a6ee9976fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Group">
+      <UniqueIdentifier>{2bed5235-32d4-428f-a603-a04f812576be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_MathLib">
+      <UniqueIdentifier>{6003f321-8595-42d3-a58d-1e41d16092ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_SoundSystem">
+      <UniqueIdentifier>{b819f228-b429-4fb8-9f8e-4ad2e42c5d9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_AppUtilities">
+      <UniqueIdentifier>{9606e7c5-d626-4622-8a7e-8e2741982b76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Object">
+      <UniqueIdentifier>{178e099a-7e66-4eb7-b9af-bb23fb7cdff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Path">
+      <UniqueIdentifier>{779305bc-a712-49cd-b349-53a53b7bc846}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Collision">
+      <UniqueIdentifier>{6f58d8e4-0717-4609-9a12-bcbd4aec97e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_FileFormat">
+      <UniqueIdentifier>{3fdf858b-096c-4596-8c74-ce254e7bbbad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_FileFormat\PSD">
+      <UniqueIdentifier>{57de09d8-7765-4861-b4df-b96f40affa92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_FileFormat\BMP">
+      <UniqueIdentifier>{da619726-42c8-4b02-b0a4-67bfa6e71d7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_FileFormat\DDS">
+      <UniqueIdentifier>{17838f66-697f-4ccf-ae59-322108661079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_CommandLine">
+      <UniqueIdentifier>{14db120c-96eb-495f-920e-8466cfe947c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_CommandLine\Platform_Win32">
+      <UniqueIdentifier>{da109f78-faa9-426b-9547-e23778a80e94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Motoko">
+      <UniqueIdentifier>{1661e573-1280-4b54-878c-444822c1e01f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Motoko\Engines">
+      <UniqueIdentifier>{29f053b4-5e55-4383-a4f7-eabd7ce0f57a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine">
+      <UniqueIdentifier>{6253cba8-d643-43d9-a5d3-ee7cabdbdd64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\StefanGL">
+      <UniqueIdentifier>{3a36c6c1-9eae-4992-bddf-16292538b393}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine">
+      <UniqueIdentifier>{75b054f3-3d38-49f6-92ef-bc88d40f2246}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1">
+      <UniqueIdentifier>{446efee4-cfa6-40bd-94ba-9a47f20f4c36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Motoko\Manager">
+      <UniqueIdentifier>{94f1a2d9-6eda-4692-93c6-9b94efe848b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Image">
+      <UniqueIdentifier>{5b52b20a-31d3-42cb-b356-b934b3305632}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Particle">
+      <UniqueIdentifier>{566dfb02-5b6c-45eb-89a1-2657a81ea4c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_DebuggerSymbols">
+      <UniqueIdentifier>{e2a391ae-0535-415e-8b53-0eac6ada9624}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Effect">
+      <UniqueIdentifier>{d4f69aa5-8711-459e-a09b-7d86025ab238}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_WindowManager">
+      <UniqueIdentifier>{f1203dd7-17f6-4586-b71f-a3779362e540}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Cursor">
+      <UniqueIdentifier>{a9ac7bd8-3192-48ce-90e0-f20f638b886e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Dialog">
+      <UniqueIdentifier>{fd91a1a3-7263-482d-8c6c-d0361009688a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_WindowManager\WM_DrawContext">
+      <UniqueIdentifier>{45a38a0e-c8df-4a6a-8b80-e52de16c3743}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_WindowManager\WM_PartSpecification">
+      <UniqueIdentifier>{07265a4c-3880-4127-a07c-354e6ba770da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Utilities">
+      <UniqueIdentifier>{c02e562d-6e80-4bd7-83f5-cee99141e024}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows">
+      <UniqueIdentifier>{b3a589d5-e64c-4d67-83b9-96f392c984d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_ScriptLang">
+      <UniqueIdentifier>{1528b02d-30b8-40b6-b706-26f86022de08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_BinaryData">
+      <UniqueIdentifier>{5c7ef450-b885-4f16-9739-4eda174738dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_SoundSystem2">
+      <UniqueIdentifier>{6ab01981-94f1-4e3b-97ef-27a92714918a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Materials">
+      <UniqueIdentifier>{09f35b5f-e28c-4aff-9610-a99ae0232103}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Bink">
+      <UniqueIdentifier>{de44631c-3bd3-4987-b04f-965138bba27a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BungieFrameWork\BFW_Source\BFW_Bink\BinkHeaders">
+      <UniqueIdentifier>{2ff077d9-528f-48ad-bb80-b8f531695a76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Importer">
+      <UniqueIdentifier>{9ca2a48f-9b9b-4131-bc98-62718a0b4fb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OniGameSource">
+      <UniqueIdentifier>{d55cbc63-6310-4bc1-9891-748fd8ac0621}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OniGameSource\Oni_AI">
+      <UniqueIdentifier>{f013fa54-fb97-4ad4-9144-dc59df21387c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OniGameSource\Oni_Windows">
+      <UniqueIdentifier>{d4016ddf-9cc7-4830-87bd-4bfefa0d861c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OniGameSource\Oni_Objects">
+      <UniqueIdentifier>{dcb67727-231f-44ea-885a-1fc046a7d63d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OniGameSource\Oni_Objects\Oni_ObjectTypes">
+      <UniqueIdentifier>{4d01007a-c3fe-4131-9736-75fb95d68036}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OniGameSource\Oni_BinaryData">
+      <UniqueIdentifier>{35c21e49-7c3b-4641-88c8-ea4d74a9f455}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OniGameSource\Oni_OutGameUI">
+      <UniqueIdentifier>{06be2f70-ef00-477e-9834-0ff5a2acd450}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LSPreperation">
+      <UniqueIdentifier>{6180c445-6d04-4385-9287-63cde956a45c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LSSolution">
+      <UniqueIdentifier>{9f01e76f-dc49-4899-9ffd-86bc9fb1accd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OniResources">
+      <UniqueIdentifier>{82ac1c6d-ed0f-41d4-b0c3-74bbc30f8aa3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Akira.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_AppUtilities.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_BinaryData.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Bink.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_BitVector.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Collision.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Console.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_EnvParticle.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_ErrorCodes.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_FileManager.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Group.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Image.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_LocalInput.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_MasterHeader.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Materials.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_MathLib.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Motoko.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Noise.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Object.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Particle3.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Path.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_RedPig.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_SoundSystem.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_SoundSystem2.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_TemplateManager.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_TextSystem.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Timer.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Totoro.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_Types.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Headers\BFW_WindowManager.h">
+      <Filter>BungieFrameWork\BFW_Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Akira\Akira_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Akira</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_LocalInput\BFW_LI_Platform.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_LocalInput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_LocalInput\Platform_MacOS\BFW_LI_Platform_MacOS.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_LocalInput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_LocalInput\Platform_Win32\BFW_LI_Platform_Win32.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_LocalInput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_LocalInput\BFW_LI_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_LocalInput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Shared\BFW_Shared_Camera.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Shared\BFW_Shared_Clip.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Shared\BFW_Shared_ClipCompPoint_c.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Shared\BFW_Shared_ClipPoly_c.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Shared\BFW_Shared_Math.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Shared\BFW_Shared_TriRaster.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Shared\BFW_Shared_TriRaster_c.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TemplateManager\BFW_TM_Construction.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TemplateManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TemplateManager\BFW_TM_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TemplateManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\3DFX_Glide\bfw_cseries.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Error.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Memory.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Platform.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\3DFX_Glide\lrar_cache.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Totoro\BFW_Totoro_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Totoro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TextSystem\BFW_TS_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TextSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\bfw_math.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\Decompose.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem\BFW_SS_IMA.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem\BFW_SS_Platform.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem\Platform_Win32\BFW_SS_Platform_Win32.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem\BFW_SS_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Object\BFW_Object_Templates.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileFormat\PSD\BFW_FF_PSD.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileFormat\PSD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileFormat\PSD\BFW_FF_PSD_Priv.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileFormat\PSD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileFormat\BMP\BFW_FF_BMP.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileFormat\BMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileFormat\BMP\BFW_FF_BMP_Priv.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileFormat\BMP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileFormat\DDS\BFW_FF_DDS.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileFormat\DDS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileFormat\DDS\BFW_FF_DDS_Priv.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileFormat\DDS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_CommandLine\Platform_Win32\BFW_CL_Platform_Win32.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_CommandLine\Platform_Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\OpenGL\gl_code_version.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\StefanGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\OpenGL\gl_engine.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\StefanGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\OpenGL\glext.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\StefanGL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Env_Clip.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Camera.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Env.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Frame.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Geometry.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Light.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Matrix.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_State.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_Geom_Clip.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_Geom_Shade.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_Geom_Transform.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GeomEngine_Method.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_DefaultFunctions.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Draw.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Manager.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Win32\Motoko_Platform_Win32.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Sort.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Verify.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_DebuggerSymbols\stack_walk_windows.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_DebuggerSymbols</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Effect\BFW_Effect_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\BFW_WindowManager_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\BFW_WindowManager_Public.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Cursor\WM_Cursor.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Dialog\WM_Dialog.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_DrawContext\WM_DrawContext.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_DrawContext</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_PartSpecification\WM_PartSpecification.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_PartSpecification</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Utilities\WM_Utilities.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Box.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Button.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_CheckBox.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_EditField.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_ListBox.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Menu.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_MenuBar.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Picture.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_PopupMenu.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_ProgressBar.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_RadioButton.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Scrollbar.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Slider.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Text.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Window.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Context.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Database.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Error.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Eval.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Expr.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Parse.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Scheduler.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Token.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem2\BFW_SS2_MSADPCM.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem2\BFW_SS2_Platform.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem2\Platform_Win32\BFW_SS2_Platform_Win32.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem2\BFW_SS2_Private.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Bink\BinkHeaders\bink.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Bink\BinkHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Bink\BinkHeaders\Rad.h">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Bink\BinkHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\LSSolutionFileIO\BFW_LSSolution.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_AI2.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_AI_HHT.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_AI_Script.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_BatchFile.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Character.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Common.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Console.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Cursor.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Descriptor.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_DialogData.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Door.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Env2.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Env2_Private.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_EnvParticle.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Font.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Furniture.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_FX.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_GameSettings.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_InGameUI.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Input.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Material.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_MenuStuff.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Model.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_ParseEnvFile.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Particle.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Particle2.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_PartSpec.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Path.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Sky.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Sound.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Sound2.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Texture.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_TextureFlags.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Trigger.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Turret.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_WaterSystem.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Weapon.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Extract.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Private.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Symbol.h">
+      <Filter>Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Aiming.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Camera.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\ONI_Character.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Cinematics.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Event.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Film.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_GameSettings.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_GameState.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_GameStatePrivate.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_ImpactEffect.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_InGameUI.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_KeyBindings.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Level.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Motoko.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Path.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Persistance.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Platform.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Platform_Win32\Oni_Platform_Win32.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Script.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Sound2.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Sound_Animation.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Sound_Private.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Speech.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Templates.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_TextureMaterials.h">
+      <Filter>OniGameSource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Alarm.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Alert.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Combat.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Error.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Executor.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Fight.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Guard.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Idle.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Knowledge.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_LocalPath.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Maneuver.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Melee.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_MeleeProfile.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Movement.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_MovementState.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_MovementStub.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Neutral.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Panic.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Path.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Patrol.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Pursuit.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Script.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Targeting.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI2_TeamBattle.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI_Behaviour.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI_Group.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI_Script.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AI_Setup.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_AI\Oni_AStar.h">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Windows\Oni_Win_AI.h">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Windows\Oni_Win_AI_Combat.h">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Windows\Oni_Win_AI_Melee.h">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Windows\Oni_Win_AI_Neutral.h">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Windows\Oni_Win_ImpactEffects.h">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Windows\Oni_Win_Particle.h">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Windows\Oni_Win_Sound2.h">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Windows\Oni_Win_TextureMaterials.h">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Windows\Oni_Win_Tools.h">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Windows.h">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Object\Oni_Object.h">
+      <Filter>OniGameSource\Oni_Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_Object\Oni_Object_Private.h">
+      <Filter>OniGameSource\Oni_Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_BinaryData\Oni_BinaryData.h">
+      <Filter>OniGameSource\Oni_BinaryData</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniGameSource\Oni_OutGameUI\Oni_OutGameUI.h">
+      <Filter>OniGameSource\Oni_OutGameUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\LSSolutionFileIO\LPWriter\BFW_LSPreperation.h">
+      <Filter>LSPreperation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\LSSolutionFileIO\LSReader\BFW_LSBuilder.h">
+      <Filter>LSSolution</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OniResources\resource.h">
+      <Filter>OniResources</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Akira\BFW_Akira.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Akira</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Akira\BFW_Akira_Collision.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Akira</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Akira\BFW_Akira_LightMap.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Akira</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Akira\BFW_Akira_Render.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Akira</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Akira\BFW_Akira_Template.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Akira</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileManager\BFW_FileManager_Common.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileManager\Platform_MacOS\BFW_FileManager_MacOS.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileManager\Platform_Win32\BFW_FileManager_Win32.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_LocalInput\Platform_MacOS\BFW_LI_Platform_MacOS.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_LocalInput</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_LocalInput\Platform_Win32\BFW_LI_Platform_Win32.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_LocalInput</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_LocalInput\BFW_LI_Translators.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_LocalInput</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_LocalInput\BFW_LocalInput.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_LocalInput</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_LocalInput\BFW_LocalInput_Template.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_LocalInput</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Shared\BFW_Shared_Clip.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Shared\BFW_Shared_Math.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TemplateManager\BFW_TM_Common.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TemplateManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TemplateManager\BFW_TM_Construction.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TemplateManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TemplateManager\BFW_TM_Game.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TemplateManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_BitVector.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Error.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Memory.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Noise.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\Platform_Win32\BFW_Platform_Win32.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_String.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Timer.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Utility\BFW_Utility.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\3DFX_Glide\lrar_cache2.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Totoro\BFW_Totoro.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Totoro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Totoro\BFW_Totoro_Template.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Totoro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TextSystem\BFW_TextSystem.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TextSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_TextSystem\BFW_TextSystem_Template.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_TextSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Console\BFW_Console.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Group\BFW_Group.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\bfw_math.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\bfw_math_3dnow.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\bfw_math_stdc.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\BFW_MathLib.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\BFW_MathLib_Matrix.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\Decompose.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_MathLib\EulerAngles.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_MathLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem\BFW_SoundSystem.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem\BFW_SoundSystem_Template.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem\BFW_SS_IMA.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem\Platform_Win32\BFW_SS_Platform_Win32.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_AppUtilities\BFW_AppUtilities.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_AppUtilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Object\BFW_Doors.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Object\BFW_Object.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Object\BFW_Physics.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Path\BFW_Path.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Path</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Collision\BFW_Collision.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileFormat\BFW_FileFormat.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileFormat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileFormat\PSD\BFW_FF_PSD.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileFormat\PSD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileFormat\BMP\BFW_FF_BMP.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileFormat\BMP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_FileFormat\DDS\BFW_FF_DDS.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_FileFormat\DDS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_CommandLine\BFW_CommandLine.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_CommandLine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_CommandLine\Platform_Win32\BFW_CL_Platform_Win32.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_CommandLine\Platform_Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\BFW_Motoko_Template.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\OpenGL\gl_engine.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\StefanGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\OpenGL\gl_mswindows.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\StefanGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\OpenGL\gl_utility.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\DrawEngine\StefanGL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Env_Clip.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Camera.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Env.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Frame.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Geometry.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Light.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Matrix.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_Pick.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GC_Method_State.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_Geom_Clip.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_Geom_Shade.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_Geom_Transform.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software\MS_GeomEngine_Method.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Engines\GeomEngine\Software No. 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_DefaultFunctions.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Draw.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Geom.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Geom_Camera.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Geom_Matrix.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Manager.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Win32\Motoko_Platform_Win32.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Sort.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_State_Draw.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_State_Geom.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Texture.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Utility.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Motoko\Manager\Motoko_Verify.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Motoko\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Image\BFW_Image.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Image\BFW_Image_Dither.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Image\BFW_Image_PixelConversion.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Image\BFW_Image_Scale_Box.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Particle\BFW_Decal.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Particle\BFW_EnvParticle.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Particle\BFW_Particle.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Particle\BFW_Particle2.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Particle\BFW_Particle3.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_DebuggerSymbols\BFW_DebuggerSymbols_Win32.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_DebuggerSymbols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_DebuggerSymbols\stack_walk_windows.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_DebuggerSymbols</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Effect\BFW_Effect.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\BFW_WindowManager.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Cursor\WM_Cursor.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Dialog\WM_Dialog.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_DrawContext\WM_DrawContext.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_DrawContext</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_PartSpecification\WM_PartSpecification.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_PartSpecification</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Utilities\WM_Utilities.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Box.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Button.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_CheckBox.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_EditField.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_ListBox.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Menu.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_MenuBar.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Picture.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_PopupMenu.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_ProgressBar.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_RadioButton.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Scrollbar.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Slider.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Text.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows\WM_Window.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_WindowManager\WM_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Context.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Database.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Error.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Eval.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Expr.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Parse.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Scheduler.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_ScriptLang\BFW_ScriptLang_Token.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_ScriptLang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_BinaryData\BFW_BinaryData.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_BinaryData\BFW_BinaryData_Template.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem2\BFW_SoundSystem2.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem2\BFW_SS2_IMA.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem2\BFW_SS2_MSADPCM.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem2\Platform_Win32\BFW_SS2_Platform_Win32.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_SoundSystem2\BFW_SS2_RegisterTemplate.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_SoundSystem2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Materials\BFW_Materials.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Materials</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_Source\BFW_Bink\BFW_Bink.c">
+      <Filter>BungieFrameWork\BFW_Source\BFW_Bink</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\LSSolutionFileIO\BFW_LSSolution.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_AI2.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_AI_HHT.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_AI_Script.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_ANSI.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_BatchFile.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Character.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Common.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Console.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Cursor.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Descriptor.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_DialogData.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Door.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Env2.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Env2_CreateInst.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Env2_Dirtmaps.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Env2_LightMaps2.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Env2_OctTree.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Env2_OctTree2.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Env2_Parse.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Env2_Process.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_EnvParticle.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Font.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Furniture.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_FX.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_GameSettings.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_InGameUI.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Input.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Material.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_MenuStuff.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Model.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_ParseEnvFile.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Particle.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Particle2.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_PartSpec.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Path.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Sky.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Sound.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Sound2.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Texture.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Texture_Big.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_TextureFlags.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Trigger.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Turret.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_WaterSystem.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\Imp\Imp_Weapon.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Extract.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Parser.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TE_Symbol.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\TemplateExtractor\TemplateExtractor.c">
+      <Filter>Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Aiming.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Camera.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Camera_Templates.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\ONI_Character.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Cinematics.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Combos.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_DataConsole.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Event.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Film.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_FX.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_GameSettings.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_GameState.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_ImpactEffect.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_InGameUI.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_KeyBindings.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Level.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Mechanics.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Motoko.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Particle3.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Path.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Persistance.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Platform_Win32\Oni_Platform_Win32.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Script.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Sky.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Sound2.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Sound_Animation.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Speech.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Templates.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_TextureMaterials.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Weapon.c">
+      <Filter>OniGameSource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Alarm.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Alert.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Combat.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Error.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Executor.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Fight.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Guard.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Idle.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Knowledge.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_LocalPath.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Maneuver.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Melee.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Movement.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_MovementState.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_MovementStub.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Neutral.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Panic.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Path.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Patrol.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Pursuit.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Script.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_Targeting.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI2_TeamBattle.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI_Learning.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AI_Script.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_AI\Oni_AStar.c">
+      <Filter>OniGameSource\Oni_AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_AI.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_AI_Character.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_AI_Combat.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_AI_Melee.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_AI_Neutral.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_AI_Path.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_ImpactEffects.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_Particle.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_Settings.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_Sound2.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_TextureMaterials.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows\Oni_Win_Tools.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Windows2.c">
+      <Filter>OniGameSource\Oni_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\Oni_Object.c">
+      <Filter>OniGameSource\Oni_Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\Oni_Object_RegisterTemplates.c">
+      <Filter>OniGameSource\Oni_Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\Oni_Object_Utils.c">
+      <Filter>OniGameSource\Oni_Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Character.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Combat.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Console.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Door.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Flags.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Furniture.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Melee.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Neutral.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Particle.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\OT_PatrolPoint.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_PowerUps.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Sound.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Trigger.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_TriggerVolume.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Turret.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_Object\object_types\OT_Weapon.c">
+      <Filter>OniGameSource\Oni_Objects\Oni_ObjectTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_BinaryData\Oni_BinaryData.c">
+      <Filter>OniGameSource\Oni_BinaryData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OniGameSource\Oni_OutGameUI\Oni_OutGameUI.c">
+      <Filter>OniGameSource\Oni_OutGameUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\LSSolutionFileIO\LPWriter\BFW_LSPreperation.cpp">
+      <Filter>LSPreperation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\LSSolutionFileIO\LSReader\BFW_LSBuilder.cpp">
+      <Filter>LSSolution</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\LSSolutionFileIO\LSReader\BFW_LSBuilderFactory.cpp">
+      <Filter>LSSolution</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\BungieFrameWork\BFW_ToolSource\Common\LSSolutionFileIO\LSReader\BFW_LSFileReader.cpp">
+      <Filter>LSSolution</Filter>
+    </ClCompile>
+    <ClCompile Include="templatechecksum.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\OniResources\importer.ico">
+      <Filter>OniResources</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\OniResources\OniResources.rc">
+      <Filter>OniResources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\OniVCDirectories.txt" />
+  </ItemGroup>
+</Project>
