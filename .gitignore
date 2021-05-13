@@ -9,3 +9,8 @@
 *.ncb
 *.pch
 *.exe
+
+# Ignore build output dirs
+**/Debug/
+**/Release/
+**_Debug**
