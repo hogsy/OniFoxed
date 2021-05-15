@@ -9,6 +9,8 @@
 *.ncb
 *.pch
 *.exe
+*.user
+*.suo
 
 # Ignore build output dirs
 **/Debug/

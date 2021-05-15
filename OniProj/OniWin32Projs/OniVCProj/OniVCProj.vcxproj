@@ -184,7 +184,7 @@
       <AdditionalOptions>%40../OniVCDirectories.txt %(AdditionalOptions)</AdditionalOptions>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <PreprocessorDefinitions>SHIPPING_VERSION=1;WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0400;DEBUG_EXTERNAL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SHIPPING_VERSION=1;WIN32;NDEBUG;_WINDOWS;_WIN32_WINNT=0x0400;DEBUG_EXTERNAL=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -201,10 +201,11 @@
     </ClCompile>
     <Link>
       <AdditionalOptions>/FIXED:NO %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>winmm.lib;MSACM32.LIB;BINKW32.LIB;Ws2_32.lib;dinput.lib;dsound.lib;dxguid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;MSACM32.LIB;Ws2_32.lib;dinput8.lib;dsound.lib;dxguid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>OniVCProj___Win32_ShippingVersion/Oni.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
@@ -240,7 +241,7 @@
       <ForcedIncludeFiles>BFW_MasterHeader.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>IMAGEHLP.lib;WINMM.LIB;Ws2_32.lib;dinput.lib;dsound.lib;dxguid.lib;odbc32.lib;odbccp32.lib;msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>IMAGEHLP.lib;WINMM.LIB;Ws2_32.lib;dinput8.lib;dsound.lib;dxguid.lib;odbc32.lib;odbccp32.lib;msacm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>OniVCProj___Win32_Debug/OniDbg.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>

@@ -57,7 +57,7 @@
     <ClCompile>
       <AdditionalOptions>%40../OniVCDirectories.txt %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;DEBUGGING=1;ONI_MAP_FILE="ImpConsoleDbg.map";IMPORTER=1;WIN32;_WINDOWS;_CONSOLE;_WIN32_WINNT=0x0400;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUGGING=1;ONI_MAP_FILE="ImpConsoleDbg.map";IMPORTER=1;WIN32;_WINDOWS;_CONSOLE;_WIN32_WINNT=0x0400;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader />
