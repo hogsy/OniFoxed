@@ -386,6 +386,9 @@ errorExit:
 }
 
 int main( int argc, char *argv[] ) {
+	extern void TMrTemplate_BuildList();
+	TMrTemplate_BuildList();
+
 	UUtError error = TErRun();
 	if (UUcError_None != error) {
 		//Imp_PrintWarning("Errors with the template extractor");
