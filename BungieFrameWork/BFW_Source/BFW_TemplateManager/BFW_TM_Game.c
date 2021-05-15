@@ -324,8 +324,10 @@ TMiGame_Level_IsValid(
 					(templateDescriptors[itr].tag >> 16) & 0xFF,
 					(templateDescriptors[itr].tag >> 8) & 0xFF,
 					(templateDescriptors[itr].tag >> 0) & 0xFF);
+#if !defined( DEBUGGING )
 				level_exists = UUcFalse;
 				goto done;
+#endif
 			}
 		}
 	
