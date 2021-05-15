@@ -516,7 +516,7 @@ UUtUns32
 UUrGetSecsSince1900(
 	void)
 {
-	UUtInt32 secs;
+	UUtUns32 secs;
 	SYSTEMTIME time;
 
 	// Get the time from Win32

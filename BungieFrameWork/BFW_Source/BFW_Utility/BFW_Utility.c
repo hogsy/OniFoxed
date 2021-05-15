@@ -274,7 +274,8 @@ UUrConvertSecsSince1900ToStr(
 {	
 	// NOTE: not internationalized, string length here is a magic, not reliable number
 	// from ctime implementation to ctime implementation
-	UUrString_Copy(inBuffer, ctime((const time_t *)&inSecs), 26);
+	time_t time = inSecs;
+	UUrString_Copy(inBuffer, ctime( &time ), 26 );
 
 	return;
 }
