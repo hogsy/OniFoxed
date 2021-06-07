@@ -320,6 +320,8 @@ add_executable(Oni WIN32
 
         ###############################################################################
 
+        ../../OniWin32Projs/ImpConsole/templatechecksum.c
+
         ../../OniGameSource/Oni_AI/Oni_AI.c
         ../../OniGameSource/Oni_AI/Oni_AI.h
         ../../OniGameSource/Oni_AI/Oni_AI2.c
@@ -505,12 +507,17 @@ add_executable(Oni WIN32
         ../../OniResources/OniResources.rc
         ../../OniResources/resource.h)
 
-if(WIN32)
-target_link_libraries(Oni winmm
-        MSACM32.LIB
-        BINKW32.LIB
+target_precompile_headers(Oni PRIVATE ../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h)
+target_compile_definitions(Oni PRIVATE ONI_MAP_FILE="OniDbg.map")
+
+if(MSVC)
+    target_compile_definitions(Oni PRIVATE /FI"../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h")
+
+    target_link_libraries(Oni 
+        winmm
+        msacm32
         Ws2_32
-        dinput
+        dinput8
         dsound
         dxguid
         odbc32
