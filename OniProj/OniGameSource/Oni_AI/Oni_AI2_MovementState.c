@@ -1558,6 +1558,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 				// what is our current turning radius?
 				if ((ioCharacter->inventory.weapons[0] == NULL) || (!currently_aiming)) {
 					have_weapon = UUcFalse;
+					have_twohanded_weapon = UUcFalse;
 				} else {
 					have_weapon = UUcTrue;
 					have_twohanded_weapon = (WPrGetClass(ioCharacter->inventory.weapons[0])->flags & WPcWeaponClassFlag_TwoHanded) > 0;
