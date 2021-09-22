@@ -546,6 +546,7 @@ SLiParameterSpec_Options_Build(
 			if(numLeftLists == 0 || numRightLists == 0)
 			{
 				outParamLists[numLeftLists + numRightLists].numParams = 0;
+				outParamLists[numLeftLists + numRightLists].hasRepeating = UUcFalse;
 				(*outNumParamLists)++;
 			}
 		}
