@@ -32,6 +32,12 @@ void
 SS2rPlatform_SoundChannel_Resume(
 	SStSoundChannel				*inSoundChannel);
 	
+#if UUmOpenAL
+UUtBool
+SS2rPlatform_SoundChannel_IsPlaying(
+	SStSoundChannel				*inSoundChannel);
+#endif
+	
 UUtBool
 SS2rPlatform_SoundChannel_SetSoundData(
 	SStSoundChannel				*inSoundChannel,

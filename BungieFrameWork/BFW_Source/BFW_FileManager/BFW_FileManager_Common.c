@@ -670,6 +670,8 @@ BFrPath_IsAbsolute(
 	return absolutePath;
 #elif UUmPlatform == UUmPlatform_Mac
         return UUcTrue;
+#elif UUmPlatform == UUmPlatform_Linux
+	return inPath[0] == '/';
 #else
         #error What does this filesystem look like?
 #endif

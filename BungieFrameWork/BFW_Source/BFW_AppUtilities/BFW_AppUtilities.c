@@ -2640,6 +2640,7 @@ AUtMB_ButtonChoice UUcArglist_Call AUrMessageBox(
 
 	return choice;
 }	
+//TODO: SDL_MessageBox
 #else
 AUtMB_ButtonChoice AUrMessageBox(AUtMB_ButtonType inButtonType, const char *format, ...)
 {
@@ -3062,6 +3063,7 @@ void AUrWindow_EORImage(
 	return;
 }
 
+//TODO: SDL AUrWindow()?
 #else
 
 UUtWindow

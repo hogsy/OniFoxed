@@ -322,7 +322,7 @@ boolean initialize_opengl(
 		if (strstr(gl->renderer, "3Dfx") || strstr(gl->renderer, "3dfx"))
 		{
 		// 3Dfx cards on Mac handle fog correctly (also, vendor string reported as "3dfx" instead of "3Dfx" but we don't want to rely on that)
-		#if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
+		#if defined(UUmPlatform) && (UUmPlatform != UUmPlatform_Mac)
 			gl->fog_disabled_3Dfx= TRUE;
 			gl->depth_buffer_reads_disabled= TRUE;
 			SLrGlobalVariable_Register_Bool("gl_fog_disabled", "fog disabled", &gl->fog_disabled_3Dfx);
@@ -378,7 +378,9 @@ static void *load_gl_extension_routine(
 
 	UUmAssert(extension_name);
 
-#if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
+#if UUmSDL
+	extension_routine= SDL_GL_GetProcAddress(extension_name);
+#elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
 	extension_routine= WGL_FXN(wglGetProcAddress)(extension_name);
 #elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
 	extension_routine = AGL_FXN(aglGetProcAddress)(extension_name);
@@ -1958,6 +1960,7 @@ void gl_sync_to_vtrace(
 		}
 	}
 #endif
+	//TODO: SDL_GL_SetSwapInterval()
 	
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
 

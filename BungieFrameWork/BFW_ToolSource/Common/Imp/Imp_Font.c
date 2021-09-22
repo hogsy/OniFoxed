@@ -65,16 +65,11 @@ iComputeNumLongsForCharacters(
 		bitmap_width = character->bitmap_width;
 		bitmap_height = character->bitmap_height;
 		
-		#if UUmPlatform == UUmPlatform_Win32
-		
-			#if UUmEndian == UUmEndian_Big
-				#error oops
-			#endif
-			
+		#if UUmEndian == UUmEndian_Little
 			UUrSwap_2Byte(&bitmap_width);
 			UUrSwap_2Byte(&bitmap_height);
 			
-		#endif /* UUmPlatform == UUmPlatform_Win32 */
+		#endif
 		
 		bitmap_size = bitmap_width * bitmap_height;
 		bitmap_size = sizeof(struct font_character) + bitmap_size + ((bitmap_size & 1) ? 1 : 0);
@@ -189,10 +184,7 @@ iProcessFont(
 	// go to specific location in the data
 	header = (tag_header*)data;
 	
-	#if UUmPlatform == UUmPlatform_Win32
-		#if UUmEndian == UUmEndian_Big
-			#error oops
-		#endif
+	#if UUmEndian == UUmEndian_Little
 		UUrSwap_4Byte(&header->group);
 		UUrSwap_4Byte(&header->subgroup);
 		UUrSwap_4Byte(&header->version);
@@ -202,20 +194,17 @@ iProcessFont(
 		UUrSwap_4Byte(&header->size);
 		UUrSwap_4Byte(&header->user_data);
 		UUrSwap_4Byte(&header->tag);
-	#endif /* UUmPlatform == UUmPlatform_Win32 */
+	#endif
 	
 	definition = (font_definition*)(data + SIZEOF_STRUCT_TAG_HEADER);	
 
-	#if UUmPlatform == UUmPlatform_Win32
-		#if UUmEndian == UUmEndian_Big
-			#error oops
-		#endif
+	#if UUmEndian == UUmEndian_Little
 		UUrSwap_4Byte(&definition->flags);
 		UUrSwap_2Byte(&definition->ascending_height);
 		UUrSwap_2Byte(&definition->descending_height);
 		UUrSwap_2Byte(&definition->leading_height);
 		UUrSwap_4Byte(&definition->number_of_characters);
-	#endif /* UUmPlatform == UUmPlatform_Win32 */
+	#endif
 
 	characters = data + SIZEOF_STRUCT_TAG_HEADER + SIZEOF_STRUCT_FONT_DEFINITION;
 	
@@ -249,17 +238,14 @@ iProcessFont(
 		// go through all the characters and copy the data into a glyph
 		for (i = 0; i < definition->number_of_characters; ++i)
 		{
-			#if UUmPlatform == UUmPlatform_Win32
-				#if UUmEndian == UUmEndian_Big
-					#error oops
-				#endif
+			#if UUmEndian == UUmEndian_Little
 				UUrSwap_2Byte(&character->character);
 				UUrSwap_2Byte(&character->character_width);
 				UUrSwap_2Byte(&character->bitmap_width);
 				UUrSwap_2Byte(&character->bitmap_height);
 				UUrSwap_2Byte(&character->bitmap_origin_x);
 				UUrSwap_2Byte(&character->bitmap_origin_y);
-			#endif /* UUmPlatform == UUmPlatform_Win32 */
+			#endif
 			
 			glyph_array_index = HIGH_BYTE(character->character);
 			

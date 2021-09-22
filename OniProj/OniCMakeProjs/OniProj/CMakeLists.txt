@@ -280,6 +280,8 @@ set(SOURCE_FILES
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SoundSystem2.c
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_IMA.c
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_IMA.h
+        ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_MSADPCM.c
+        ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_MSADPCM.h
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_Platform.h
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_Private.h
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_RegisterTemplate.c
@@ -476,18 +478,70 @@ set(SOURCE_FILES
         ../../OniGameSource/Oni_Weapon.c
         ../../OniGameSource/Oni_Weapon.h)
 
-if(WIN32)
+if(Platform_SDL)
+    find_package(OpenGL REQUIRED)
+    find_package(OpenAL REQUIRED)
+    find_package(SDL2 REQUIRED)
+    find_package(PkgConfig)
+    if(PKG_CONFIG_FOUND)
+        pkg_check_modules(LIBAV REQUIRED IMPORTED_TARGET libavcodec libavutil)
+        set(LIBAV PkgConfig::LIBAV)
+    else()
+        message(WARNING "No PkgConfig - don't know how to find libav{codec,util}")
+        set(LIBAV avcodec avutil)
+    endif()
+
+    if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+            set(OS_SOURCE_FILES
+                    ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/BFW_DebuggerSymbols_Win32.c
+                    ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_Linux/BFW_FileManager_Linux.c)
+    elseif(WIN32)
+            set(OS_SOURCE_FILES
+                    ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/BFW_DebuggerSymbols_Win32.c
+                    ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/stack_walk_windows.c
+                    ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/stack_walk_windows.h
+
+                    ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_Win32/BFW_FileManager_Win32.c)
+    elseif(APPLE)
+            set(OS_SOURCE_FILES
+                    ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/BFW_DebuggerSymbols_MacOS.c
+
+                    ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_MacOS/BFW_FileManager_MacOS.c
+
+                    ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/AltiVec/Motoko_SIMDCache_AltiVec.c
+                    ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/AltiVec/Motoko_SIMDCache_AltiVec.h)
+    endif()
+
+    add_executable(Oni
+            ${SOURCE_FILES}
+            ${OS_SOURCE_FILES}
+
+            ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_SDL/BFW_LI_Platform_SDL.c
+            ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_SDL/BFW_LI_Platform_SDL.h
+
+            ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Engines/DrawEngine/OpenGL/gl_sdl.c
+
+            ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_SDL/BFW_Platform_SDL.c
+
+            ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_OpenAL/BFW_SS2_Platform_OpenAL.c
+            ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_OpenAL/BFW_SS2_Platform_OpenAL.h
+
+            ../../OniGameSource/Platform_SDL/Oni_Platform_SDL.c
+            ../../OniGameSource/Platform_SDL/Oni_Platform_SDL.h)
+    target_include_directories(Oni PRIVATE ${OPENAL_INCLUDE_DIR})
+    target_compile_definitions(Oni PRIVATE UUmSDL=1 UUmOpenAL=1)
+    target_link_libraries(Oni PRIVATE
+            OpenGL::GL
+            SDL2::SDL2
+            ${OPENAL_LIBRARY}
+            ${LIBAV}
+    )
+elseif(WIN32)
     add_executable(Oni WIN32
             ${SOURCE_FILES}
 
             ../../../BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_Win32/BFW_CL_Platform_Win32.c
             ../../../BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_Win32/BFW_CL_Platform_Win32.h
-
-            ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/BFW_DebuggerSymbols_Win32.c
-            ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/stack_walk_windows.c
-            ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/stack_walk_windows.h
-
-            ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_Win32/BFW_FileManager_Win32.c
 
             ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_Win32/BFW_LI_Platform_Win32.c
             ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_Win32/BFW_LI_Platform_Win32.h
@@ -499,8 +553,6 @@ if(WIN32)
 
             ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_Win32/BFW_Platform_Win32.c
 
-            ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_MSADPCM.c
-            ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_MSADPCM.h
             ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_Win32/BFW_SS2_Platform_Win32.c
 
             ../../OniGameSource/Platform_Win32/Oni_Platform_Win32.c
@@ -509,32 +561,25 @@ if(WIN32)
             ../../OniResources/OniResources.rc
             ../../OniResources/resource.h)
     target_link_libraries(Oni
-        winmm
-        msacm32
-        ws2_32
-        dinput8
-        dsound
-        dxguid
-        odbc32
-        odbccp32
-        imagehlp)
+            winmm
+            msacm32
+            Ws2_32
+            dinput8
+            dsound
+            dxguid
+            odbc32
+            odbccp32
+            imagehlp)
 elseif(APPLE)
     add_executable(Oni
             ${SOURCE_FILES}
             ../../../BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_MacOS/BFW_CL_Platform_MacOS.c
             ../../../BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_MacOS/BFW_CL_Platform_MacOS.h
 
-            ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/BFW_DebuggerSymbols_MacOS.c
-
-            ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_MacOS/BFW_FileManager_MacOS.c
-
             ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_MacOS/BFW_LI_Platform_MacOS.c
             ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_MacOS/BFW_LI_Platform_MacOS.h
 
             ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Engines/DrawEngine/OpenGL/gl_macos.c
-
-            ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/AltiVec/Motoko_SIMDCache_AltiVec.c
-            ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/AltiVec/Motoko_SIMDCache_AltiVec.h
 
             ../../../BungieFrameWork/BFW_Headers/BFW_Platform_AltiVec.h
             ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_MacOS/BFW_Platform_AltiVec.c
@@ -555,11 +600,16 @@ target_compile_definitions(Oni
 		ONI_MAP_FILE="OniDbg.map"
 )
 
+# check if linking math library is required
+include(CheckLibraryExists)
+check_library_exists(m abs "" LIBM)
+
 target_link_libraries(Oni
 	PRIVATE
 		$<$<BOOL:${ONI_BINK_VIDEO}>:bink>
+        $<$<BOOL:${LIBM}>:m>
 )
 
 if(MSVC)
-    target_compile_definitions(Oni PRIVATE /FI"../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h")
+        target_compile_definitions(Oni PRIVATE /FI"../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h")
 endif()

@@ -88,7 +88,7 @@ ONtGraphicsQuality ONrPersistance_GraphicsQuality_GetDefault(void)
 #else
 ONtGraphicsQuality ONrPersistance_GraphicsQuality_GetDefault(void)
 {
-	ONtGraphicsQuality default_graphics_quality = ONcGraphicsQuality_2;
+	ONtGraphicsQuality default_graphics_quality = ONcGraphicsQuality_Default;
 
 	return default_graphics_quality;
 }
