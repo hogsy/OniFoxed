@@ -1,4 +1,3 @@
-#if UUmPlatform	== UUmPlatform_Mac
 
 /*
 	FILE:	BFW_FileManager_MacOS.c
@@ -1363,4 +1362,3 @@ BFrFile_UnMap(
 	return;
 }
 
-#endif // UUmPlatform	== UUmPlatform_Mac

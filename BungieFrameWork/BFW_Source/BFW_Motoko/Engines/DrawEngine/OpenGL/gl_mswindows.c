@@ -12,9 +12,6 @@
 #include "Oni_Platform.h"
 #include "Oni_Persistance.h"
 
-// allow file to be included in macintosh version of project
-#if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
-
 /*---------- prototypes */
 
 static boolean fullscreen_candidate(HWND hwnd);
@@ -1559,8 +1556,6 @@ static void gl_unload_opengl_dll(
 
 	return;
 }
-
-#endif // (UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
 
 #endif // __ONADA__
 

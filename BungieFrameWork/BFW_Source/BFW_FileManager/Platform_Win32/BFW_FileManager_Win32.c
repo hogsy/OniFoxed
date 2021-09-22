@@ -1,3 +1,4 @@
+
 /*
 	FILE:	BFW_FileManager_Win32.c
 	
@@ -1241,3 +1242,4 @@ BFrFileRef_GetParentDirectory(
 	
 	return UUcError_None;
 }
+

@@ -25,7 +25,6 @@ include_directories(
 	BungieFrameWork/BFW_Source/BFW_Group/
 	BungieFrameWork/BFW_Source/BFW_Effect/
 	BungieFrameWork/BFW_Source/BFW_LocalInput/
-	BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_Win32/
 	BungieFrameWork/BFW_Source/BFW_MathLib/
 	BungieFrameWork/BFW_Source/BFW_Motoko/
 	BungieFrameWork/BFW_Source/BFW_Motoko/Engines/OGL_Common/
@@ -44,9 +43,7 @@ include_directories(
 	BungieFrameWork/BFW_Source/BFW_RemoteInput/
 	BungieFrameWork/BFW_Source/BFW_Shared/
 	BungieFrameWork/BFW_Source/BFW_SoundSystem/
-	BungieFrameWork/BFW_Source/BFW_SoundSystem/Platform_Win32/
 	BungieFrameWork/BFW_Source/BFW_SoundSystem2/
-	BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_Win32/
 	BungieFrameWork/BFW_Source/BFW_TemplateManager/
 	BungieFrameWork/BFW_Source/BFW_TextSystem/
 	BungieFrameWork/BFW_Source/BFW_Totoro/
@@ -63,9 +60,7 @@ include_directories(
 	BungieFrameWork/BFW_ToolSource/Common/TemplateExtractor
 	BungieFrameWork/BFW_ToolSource/Win32/ModelExporter
 	BungieFrameWork/BFW_Source/BFW_CommandLine/
-	BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_Win32/
 	OniProj/OniGameSource/
-	OniProj/OniGameSource/Platform_Win32/
 	OniProj/OniGameSource/Oni_AI/
 	OniProj/OniGameSource/Oni_Networking/
 	OniProj/OniGameSource/Oni_Windows/
@@ -75,5 +70,22 @@ include_directories(
 	BungieFrameWork/BFW_ToolSource/Common/Imp
 	BungieFrameWork/BFW_Source/BFW_Motoko/Engines/DrawEngine/OpenGL/
 )
+if(WIN32)
+	include_directories(
+		BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_Win32/
+		BungieFrameWork/BFW_Source/BFW_SoundSystem/Platform_Win32/
+		BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_Win32/
+		BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_Win32/
+		OniProj/OniGameSource/Platform_Win32/
+	)
+elseif(APPLE)
+	include_directories(
+		BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_MacOS/
+		BungieFrameWork/BFW_Source/BFW_SoundSystem/Platform_MacOS/
+		BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_MacOS/
+		BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_MacOS/
+		OniProj/OniGameSource/Platform_MacOS/
+	)
+endif()
 
 add_subdirectory(OniProj/OniCMakeProjs/OniProj/)

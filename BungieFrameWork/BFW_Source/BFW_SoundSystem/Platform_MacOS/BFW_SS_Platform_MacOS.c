@@ -1,4 +1,3 @@
-#if UUmPlatform	== UUmPlatform_Mac
 
 // ======================================================================
 // BFW_SS_Platform_MacOS.c
@@ -526,4 +525,3 @@ SSrPlatform_Sound_ProcHandler(
 	return UUcError_None;
 }
 
-#endif // #if UUmPlatform	== UUmPlatform_Mac
