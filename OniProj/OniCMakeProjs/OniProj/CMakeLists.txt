@@ -447,8 +447,8 @@ add_executable(Oni WIN32
         ../../OniGameSource/Oni_Camera.c
         ../../OniGameSource/Oni_Camera.h
         ../../OniGameSource/Oni_Camera_Templates.c
-        ../../OniGameSource/ONI_Character.c
-        ../../OniGameSource/ONI_Character.h
+        ../../OniGameSource/Oni_Character.c
+        ../../OniGameSource/Oni_Character.h
         ../../OniGameSource/Oni_Character_Animation.h
         ../../OniGameSource/Oni_Cinematics.c
         ../../OniGameSource/Oni_Cinematics.h

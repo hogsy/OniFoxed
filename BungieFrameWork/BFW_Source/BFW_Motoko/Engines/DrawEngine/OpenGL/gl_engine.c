@@ -9,7 +9,7 @@
 /*---------- includes */
 
 #include "gl_engine.h"
-#include "BFW_Mathlib.h"
+#include "BFW_MathLib.h"
 #include "Oni_Motoko.h" // for graphics quality
 
 /*---------- prototypes */

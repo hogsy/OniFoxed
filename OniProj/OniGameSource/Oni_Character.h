@@ -23,7 +23,7 @@
 #include "BFW_Object_Templates.h"
 
 #include "Oni_Camera.h"
-#include "ONI_AI.h"
+#include "Oni_AI.h"
 #include "Oni_AI2.h"
 #include "Oni_Object.h"
 #include "Oni_Weapon.h"

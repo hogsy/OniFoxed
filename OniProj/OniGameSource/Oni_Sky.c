@@ -20,7 +20,7 @@
 #include "BFW_Noise.h"
 #include "Oni_Weapon.h"
 #include "Oni.h"
-#include "ONI_GameStatePrivate.h"
+#include "Oni_GameStatePrivate.h"
 #include "Oni_Sky.h"
 
 #include "Motoko_Manager.h"

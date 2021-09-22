@@ -6,7 +6,7 @@
 #include "BFW_Object.h"
 #include "Oni_Weapon.h"
 #include "Oni.h"
-#include "ONI_GameStatePrivate.h"
+#include "Oni_GameStatePrivate.h"
 #include "Oni_FX.h"
 
 UUtBool			FXgLaser_UseAlpha	= UUcFalse;

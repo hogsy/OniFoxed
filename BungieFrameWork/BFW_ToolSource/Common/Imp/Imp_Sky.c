@@ -3,7 +3,7 @@
 #include "BFW_AppUtilities.h"
 #include "BFW_Group.h"
 #include "BFW_TM_Construction.h"
-#include "BFW_Mathlib.h"
+#include "BFW_MathLib.h"
 #include "BFW_Object.h"
 #include "BFW_BitVector.h"
 #include "BFW_FileFormat.h"

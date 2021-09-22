@@ -1,5 +1,5 @@
 #include "BFW.h"
-#include "BFW_memory.h"
+#include "BFW_Memory.h"
 
 #include "Oni_Camera.h"
 #include "Oni_GameState.h"

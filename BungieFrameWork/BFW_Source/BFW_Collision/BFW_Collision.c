@@ -18,7 +18,7 @@
 
 #include "BFW_Console.h"
 #include "BFW_Collision.h"
-#include "BFW_Mathlib.h"
+#include "BFW_MathLib.h"
 #include "BFW_Akira.h"
 #include "BFW_AppUtilities.h"
 #include "BFW_Object.h"

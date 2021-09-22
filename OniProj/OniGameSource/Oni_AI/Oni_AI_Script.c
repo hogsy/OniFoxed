@@ -13,7 +13,7 @@
 
 #include "BFW.h"
 #include "BFW_Motoko.h"
-#include "BFW_Mathlib.h"
+#include "BFW_MathLib.h"
 #include "BFW_Console.h"
 #include "BFW_BitVector.h"
 #include "BFW_AppUtilities.h"
@@ -24,7 +24,7 @@
 #include "Oni.h"
 #include "Oni_AI.h"
 #include "Oni_AI_Script.h"
-#include "Oni_Astar.h"
+#include "Oni_AStar.h"
 #include "Oni_Character.h"
 #include "Oni_GameState.h"
 #include "Oni_GameStatePrivate.h"

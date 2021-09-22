@@ -17,7 +17,7 @@
 #include "BFW_ScriptLang.h"
 #include "BFW_Console.h"
 
-#include "Oni_Gamestate.h"
+#include "Oni_GameState.h"
 #include "Oni_Character.h"
 #include "Oni_Script.h"
 #include "Oni_AI_Setup.h"

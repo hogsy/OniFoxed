@@ -16,7 +16,7 @@
 #include "BFW_ScriptLang.h"
 #include "Oni_GameStatePrivate.h"
 #include "Oni_AI.h"
-#include "Oni_Astar.h"
+#include "Oni_AStar.h"
 #include "Oni_AI_Setup.h"
 #include "Oni_AI_Script.h"
 

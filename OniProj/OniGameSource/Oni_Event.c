@@ -23,7 +23,7 @@
 #include "Oni_Event.h"
 #include "Oni_Script.h"
 
-#include "ENVFileFormat.h"
+#include "EnvFileFormat.h"
 
 // ======================================================================
 // globals

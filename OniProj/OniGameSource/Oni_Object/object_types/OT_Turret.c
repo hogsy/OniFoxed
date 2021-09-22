@@ -21,7 +21,7 @@
 #include "Oni_Sound2.h"
 
 #include "Oni_AI2.h"
-#include "oni_fx.h"
+#include "Oni_FX.h"
 
 #include <ctype.h>
 #include "EulerAngles.h"

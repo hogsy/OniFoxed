@@ -19,9 +19,9 @@
 #include "Oni_Mechanics.h"
 #include "Oni_Sound2.h"
 
-#include "ONI_Script.h"
+#include "Oni_Script.h"
 
-#include "ONI_FX.h"
+#include "Oni_FX.h"
 
 #include "BFW_ScriptLang.h"
 

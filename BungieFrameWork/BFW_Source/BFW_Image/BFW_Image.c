@@ -13,7 +13,7 @@
 #include "BFW.h"
 #include "BFW_Image.h"
 #include "BFW_Image_Private.h"
-#include "BFW_Mathlib.h"
+#include "BFW_MathLib.h"
 #include "BFW_AppUtilities.h"
 #include "BFW_Timer.h"
 

@@ -18,7 +18,7 @@
 
 #include "WM_Box.h"
 #include "WM_Button.h"
-#include "WM_Checkbox.h"
+#include "WM_CheckBox.h"
 #include "WM_Dialog.h"
 #include "WM_EditField.h"
 #include "WM_ListBox.h"

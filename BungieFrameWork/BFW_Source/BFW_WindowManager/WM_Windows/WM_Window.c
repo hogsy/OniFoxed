@@ -9,7 +9,7 @@
 #include "BFW_WindowManager.h"
 #include "BFW_WindowManager_Private.h"
 #include "BFW_LocalInput.h"
-#include "BFW_TextSystem.H"
+#include "BFW_TextSystem.h"
 
 #include "WM_Window.h"
 
