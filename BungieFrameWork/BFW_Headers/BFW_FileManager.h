@@ -64,6 +64,15 @@ typedef struct BFtFileRef
 	
 } BFtFileRef;
 
+#elif UUmPlatform == UUmPlatform_Linux
+
+#define BFcPathSeparator '/'
+
+typedef struct BFtFileRef
+{
+	char	name[BFcMaxPathLength];
+} BFtFileRef;
+
 #else
 #error what is a BFtFileRef?
 #error what is BFcPathSeparator?
@@ -94,7 +103,7 @@ BFrFile_CompletionFunc_Bool(
 	BFrFileRef_GetFSSpec(
 		BFtFileRef		*inFileRef);
 	
-#elif UUmPlatform == UUmPlatform_Win32
+#elif UUmPlatform == UUmPlatform_Win32 || UUmPlatform == UUmPlatform_Linux
 
 #else
 

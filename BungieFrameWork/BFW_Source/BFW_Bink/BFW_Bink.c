@@ -13,6 +13,29 @@
 #include "Oni_Motoko.h"
 #include "Oni_Persistance.h"
 
+#if UUmPlatform == UUmPlatform_Linux
+//FIXME: Bink 1.0q, included here, does not support Linux
+#define __RAD__
+#define PTR4
+#define RADDEFFUNC
+#define RADDEFSTART
+#define RADDEFEND
+#define RADLINK
+#define RADEXPLINK
+#define RADEXPFUNC
+typedef struct{} *HWND;
+typedef struct{} *HCURSOR;
+#include <stdint.h>
+#define s8 int8_t
+#define u8 uint8_t
+#define u32 uint32_t
+#define s32 int32_t
+#define f32 float
+#define f64 double
+#define u64 uint64_t
+#define s64 int64_t
+#endif
+
 #include "bink.h"
 #include "Rad.h"
 
@@ -25,6 +48,8 @@
 #elif UUmPlatform == UUmPlatform_Win32
 
 #include "BFW_SS2_Platform_Win32.h"
+
+#elif UUmPlatform == UUmPlatform_Linux
 
 #else
 
@@ -134,6 +159,20 @@ BKrBink_Open(
 	BKrBink_SetVolume(bink);
 
 	return bink;
+#else
+	return NULL;
+#endif
+}
+
+#elif UUmPlatform == UUmPlatform_Linux
+
+static HBINK
+BKrBink_Open(
+	BFtFileRef					*inMovieRef,
+	UUtUns32					inFlags)
+{
+#if 0
+#error Bink for Linux
 #else
 	return NULL;
 #endif
@@ -335,7 +374,7 @@ static UUtBool BKrBinkIsLoaded(
 
 static void BKrMovie_Statistics(HBINK bink)
 {
-#if TOOL_VERSION
+#if defined(BINK_VIDEO) && BINK_VIDEO && TOOL_VERSION
 	BINKSUMMARY summary;
 
 	BinkGetSummary(bink, &summary);
@@ -999,7 +1038,7 @@ static void BKrForce32Bit(
 		}
 	}
 
-#else if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
+#elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
 
 #endif
 
@@ -1037,8 +1076,8 @@ static void BKrRestoreBitDepth(
 			}
 		}
 	}
-
-#else if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
+	
+#elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
 
 #endif
 

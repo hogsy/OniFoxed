@@ -1061,6 +1061,10 @@ ONiMain(
 	return UUcError_None;
 }
 
+#if UUmSDL
+#include "SDL2/SDL_main.h"
+#endif
+
 int UUcExternal_Call
 main(
 	int		argc,
