@@ -66,15 +66,16 @@ typedef struct BDtMethods
 #define BDmGetByteFromBuffer(src,dst,type,swap_it)					\
 			1;														\
 			do {													\
-			(dst) = *((type *)(src));								\
-			*(UUtUns8**)&(src) += 1;									\
+			memcpy(&(dst), (src), sizeof(type));					\
+			*(UUtUns8**)&(src) += 1;								\
 			} while (0)
 
 #define BDmWriteByteToBuffer(buf,val,type,num_bytes,write_big)		\
 			1;														\
 			do {													\
-			*((type*)(buf)) = (val);								\
-			*(UUtUns8**)&(buf) += 1;									\
+			type tmp = (val);										\
+			memcpy((buf), &tmp, sizeof(type));						\
+			*(UUtUns8**)&(buf) += 1;								\
 			UUmAssert(sizeof(type) == 1);							\
 			UUmAssert((num_bytes) >= 1);							\
 			(num_bytes) -= 1;										\
@@ -82,13 +83,13 @@ typedef struct BDtMethods
 
 #define BDmSkip4BytesFromBuffer(src)								\
 			4; do {													\
-			*(UUtUns8**)&(src) += 4;									\
+			*(UUtUns8**)&(src) += 4;								\
 			} while(0)	
 
 #define BDmGet4BytesFromBuffer(src,dst,type,swap_it)				\
 			4;														\
 			do {													\
-			(dst) = *((type*)(src));								\
+			memcpy(&(dst), (src), sizeof(type));					\
 			*(UUtUns8**)&(src) += sizeof(type);						\
 			if ((swap_it)) { UUrSwap_4Byte(&(dst)); }				\
 			} while (0)
@@ -96,7 +97,8 @@ typedef struct BDtMethods
 #define BDmWrite4BytesToBuffer(buf,val,type,num_bytes,write_big)	\
 			4;														\
 			do {													\
-			*((type*)(buf)) = (val);								\
+			type tmp = (val);										\
+			memcpy((buf), &tmp, sizeof(type));						\
 			if (write_big) { UUmSwapBig_4Byte(buf); } else { UUmSwapLittle_4Byte(buf); } \
 			*(UUtUns8**)&(buf) += sizeof(type);						\
 			UUmAssert((num_bytes) >= sizeof(type));					\
@@ -111,7 +113,7 @@ typedef struct BDtMethods
 #define BDmGet2BytesFromBuffer(src,dst,type,swap_it)				\
 			2;														\
 			do {													\
-			(dst) = *((type*)(src));								\
+			memcpy(&(dst), (src), sizeof(type));					\
 			*(UUtUns8**)&(src) += sizeof(type);						\
 			if ((swap_it)) { UUrSwap_2Byte(&(dst)); }				\
 			} while (0)
@@ -119,7 +121,8 @@ typedef struct BDtMethods
 #define BDmWrite2BytesToBuffer(buf,val,type,num_bytes,write_big)	\
 			2;														\
 			do {													\
-			*((type*)(buf)) = (val);								\
+			type tmp = (val);										\
+			memcpy((buf), &tmp, sizeof(type));						\
 			if (write_big) { UUmSwapBig_2Byte(buf); } else { UUmSwapLittle_2Byte(buf); } \
 			*(UUtUns8**)&(buf) += sizeof(type);						\
 			UUmAssert((num_bytes) >= sizeof(type));					\
