@@ -1213,7 +1213,7 @@ IMtShade ONrLevel_ObjectGunk_GetShade(ONtObjectGunk	*inObjectGunk)
 	UUmAssert(g <= 0xFF);
 	UUmAssert(b <= 0xFF);
 
-	shade = (0xFF << 24) | (r << 16) | (g << 8) | (b << 0);
+	shade = MakeShadeARGB(0xFF, (UUtUns8)r, (UUtUns8)g, (UUtUns8)b);
 
 exit:
 	return shade;
