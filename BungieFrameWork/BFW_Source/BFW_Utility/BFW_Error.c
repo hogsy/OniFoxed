@@ -491,7 +491,7 @@ void UUcArglist_Call UUrStartupMessage(
 	int return_value;
 	
 	va_start(arglist, format);
-	return_value= vsprintf(buffer, format, arglist);
+	return_value= vsnprintf(buffer, sizeof(buffer), format, arglist);
 	va_end(arglist);
 
 	if (NULL == stream) {
