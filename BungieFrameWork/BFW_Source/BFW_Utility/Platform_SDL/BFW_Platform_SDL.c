@@ -237,7 +237,8 @@ void UUrPlatform_Idle(UUtWindow mainWindow, UUtUns32 inIdleTime)
 #endif
 
 	if (inIdleTime > 0) { 
-		SDL_Delay(4);
+		//Win32 does this, not sure what use this serves
+		//SDL_Delay(4);
 	}
 
 
