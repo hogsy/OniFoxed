@@ -510,95 +510,100 @@ LIrPlatform_Update(
 	static Uint32 current_mouse_buttons = 0;
 	static Uint32 current_modifiers = 0;
 	
-	if (!SDL_PollEvent(&event)) {
-		return UUcFalse;
-	}
-	
-	switch (event.type)
+	//FIXME: Mac and Win32 only poll for a single event
+	//       however, input is laggy if that is done.
+	while (1)
 	{
-		case SDL_KEYDOWN:
-		case SDL_KEYUP:
-			eventType = (event.key.state == SDL_PRESSED) ? LIcInputEvent_KeyDown : LIcInputEvent_KeyUp;
-			
-			current_modifiers |= sdl_to_kmod(event.key.keysym.sym);
-			if (current_modifiers != event.key.keysym.mod)
-			{
-				UUmAssert(UUcFalse);
-				current_modifiers = event.key.keysym.mod;
-			}
-			
-			LIrInputEvent_Add(
-				eventType,
-				NULL,
-				sdl_to_oni_keycode(event.key.keysym.sym),
-				sdl_to_oni_key_modifiers(current_modifiers)
-			);
-		break;
-		case SDL_MOUSEMOTION:
-			where.x = event.motion.x;
-			where.y = event.motion.y;
-			
-			if (current_mouse_buttons != event.motion.state)
-			{
-				UUmAssert(UUcFalse);
-				current_mouse_buttons = event.motion.state;
-			}
-			
-			LIrInputEvent_Add(
-				LIcInputEvent_MouseMove,
-				&where,
-				sdl_to_oni_keycode(event.key.keysym.sym),
-				sdl_to_oni_mouse_modifiers(current_modifiers) | sdl_to_oni_mouse_button_modifiers(current_mouse_buttons)
-			);
-		break;
-		case SDL_MOUSEBUTTONDOWN:
-		case SDL_MOUSEBUTTONUP:
-			switch (event.button.button)
-			{
-				case SDL_BUTTON_LEFT:
-					eventType = (event.button.state == SDL_PRESSED) ? LIcInputEvent_LMouseDown : LIcInputEvent_LMouseUp;
-				break;
-				case SDL_BUTTON_RIGHT:
-					eventType = (event.button.state == SDL_PRESSED) ? LIcInputEvent_RMouseDown : LIcInputEvent_RMouseUp;
-				break;
-				case SDL_BUTTON_MIDDLE:
-					eventType = (event.button.state == SDL_PRESSED) ? LIcInputEvent_MMouseDown : LIcInputEvent_MMouseUp;
-				break;
-				default:
-					return UUcTrue;
-			}
-			
-			where.x = event.button.x;
-			where.y = event.button.y;
-			
-			if (event.button.state == SDL_PRESSED)
-			{
-				current_mouse_buttons |= sdl_to_oni_mouse_modifiers(SDL_BUTTON(event.button.button));
-			}
-			else
-			{
-				current_mouse_buttons &= ~sdl_to_oni_mouse_modifiers(SDL_BUTTON(event.button.button));
-			}
-			
-			LIrInputEvent_Add(
-				eventType,
-				&where,
-				0,
-				sdl_to_oni_mouse_modifiers(current_modifiers) | sdl_to_oni_mouse_button_modifiers(current_mouse_buttons)
-			);
-		break;
-		case SDL_MOUSEWHEEL:
-			//TODO: inputEvent
-			//TODO: regard event.wheel.direction?
-			vertical_wheel_scroll += (float)event.wheel.y;
-		break;
-		//FIXME: not input - should be Oni_Platform_SDL.c
-		case SDL_APP_DIDENTERFOREGROUND:
-			LIrGameIsActive(UUcTrue);
-		break;
-		case SDL_APP_WILLENTERBACKGROUND:
-			LIrGameIsActive(UUcFalse);
-		break;
+		if (!SDL_PollEvent(&event)) {
+			return UUcFalse;
+		}
+		
+		switch (event.type)
+		{
+			case SDL_KEYDOWN:
+			case SDL_KEYUP:
+				eventType = (event.key.state == SDL_PRESSED) ? LIcInputEvent_KeyDown : LIcInputEvent_KeyUp;
+				
+				current_modifiers |= sdl_to_kmod(event.key.keysym.sym);
+				if (current_modifiers != event.key.keysym.mod)
+				{
+					UUmAssert(UUcFalse);
+					current_modifiers = event.key.keysym.mod;
+				}
+				
+				LIrInputEvent_Add(
+					eventType,
+					NULL,
+					sdl_to_oni_keycode(event.key.keysym.sym),
+					sdl_to_oni_key_modifiers(current_modifiers)
+				);
+			break;
+			case SDL_MOUSEMOTION:
+				where.x = event.motion.x;
+				where.y = event.motion.y;
+				
+				if (current_mouse_buttons != event.motion.state)
+				{
+					UUmAssert(UUcFalse);
+					current_mouse_buttons = event.motion.state;
+				}
+				
+				LIrInputEvent_Add(
+					LIcInputEvent_MouseMove,
+					&where,
+					sdl_to_oni_keycode(event.key.keysym.sym),
+					sdl_to_oni_mouse_modifiers(current_modifiers) | sdl_to_oni_mouse_button_modifiers(current_mouse_buttons)
+				);
+			break;
+			case SDL_MOUSEBUTTONDOWN:
+			case SDL_MOUSEBUTTONUP:
+				switch (event.button.button)
+				{
+					case SDL_BUTTON_LEFT:
+						eventType = (event.button.state == SDL_PRESSED) ? LIcInputEvent_LMouseDown : LIcInputEvent_LMouseUp;
+					break;
+					case SDL_BUTTON_RIGHT:
+						eventType = (event.button.state == SDL_PRESSED) ? LIcInputEvent_RMouseDown : LIcInputEvent_RMouseUp;
+					break;
+					case SDL_BUTTON_MIDDLE:
+						eventType = (event.button.state == SDL_PRESSED) ? LIcInputEvent_MMouseDown : LIcInputEvent_MMouseUp;
+					break;
+					default:
+						return UUcTrue;
+				}
+				
+				where.x = event.button.x;
+				where.y = event.button.y;
+				
+				if (event.button.state == SDL_PRESSED)
+				{
+					current_mouse_buttons |= sdl_to_oni_mouse_modifiers(SDL_BUTTON(event.button.button));
+				}
+				else
+				{
+					current_mouse_buttons &= ~sdl_to_oni_mouse_modifiers(SDL_BUTTON(event.button.button));
+				}
+				
+				LIrInputEvent_Add(
+					eventType,
+					&where,
+					0,
+					sdl_to_oni_mouse_modifiers(current_modifiers) | sdl_to_oni_mouse_button_modifiers(current_mouse_buttons)
+				);
+			break;
+			case SDL_MOUSEWHEEL:
+				//TODO: inputEvent
+				//TODO: regard event.wheel.direction?
+				vertical_wheel_scroll += (float)event.wheel.y;
+			break;
+			//FIXME: not input - should be Oni_Platform_SDL.c
+			case SDL_APP_DIDENTERFOREGROUND:
+				LIrGameIsActive(UUcTrue);
+			break;
+			case SDL_APP_WILLENTERBACKGROUND:
+				LIrGameIsActive(UUcFalse);
+			break;
+		}
 	}
 	
 	return UUcTrue;
