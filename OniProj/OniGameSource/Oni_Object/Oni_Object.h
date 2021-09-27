@@ -25,6 +25,7 @@
 #include "Oni_AI2_Patrol.h"
 #include "Oni_AI2_MeleeProfile.h"
 #include "Oni_AI2_Pursuit.h"
+#include "Oni_AI2_Combat.h"
 
 #include "Oni_Event.h"
 
@@ -820,7 +821,7 @@ typedef struct OBJtOSD_Combat
 	UUtUns16				id;
 	UUtUns16				flags;
 	float					medium_range;
-	UUtUns32				behavior[5];
+	UUtUns32				behavior[AI2cCombatRange_NumStoredRanges];
 	UUtUns32				melee_when;
 	UUtUns32				no_gun;
 	float					short_range;

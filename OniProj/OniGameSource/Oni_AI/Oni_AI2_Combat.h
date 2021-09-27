@@ -169,7 +169,7 @@ typedef struct AI2tCombatSettings {
 	UUtUns16					pad;
 	float						medium_range;
 	float						short_range;
-	AI2tBehaviorType			behavior[AI2cCombatRange_Max];
+	AI2tBehaviorType			behavior[AI2cCombatRange_NumStoredRanges];
 	AI2tFightType				melee_when;
 	AI2tNoGunBehavior			no_gun;
 	float						pursuit_distance;
