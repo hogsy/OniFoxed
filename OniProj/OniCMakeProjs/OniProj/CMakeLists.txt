@@ -511,7 +511,7 @@ if(WIN32)
     target_link_libraries(Oni
         winmm
         msacm32
-        Ws2_32
+        ws2_32
         dinput8
         dsound
         dxguid
@@ -548,7 +548,17 @@ elseif(APPLE)
 endif()
 
 target_precompile_headers(Oni PRIVATE ../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h)
-target_compile_definitions(Oni PRIVATE ONI_MAP_FILE="OniDbg.map")
+
+target_compile_definitions(Oni
+	PRIVATE
+		BINK_VIDEO=$<BOOL:${ONI_BINK_VIDEO}>
+		ONI_MAP_FILE="OniDbg.map"
+)
+
+target_link_libraries(Oni
+	PRIVATE
+		$<$<BOOL:${ONI_BINK_VIDEO}>:bink>
+)
 
 if(MSVC)
     target_compile_definitions(Oni PRIVATE /FI"../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h")

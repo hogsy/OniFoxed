@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.16.0)
 
 project(OniAll LANGUAGES C)
 
+include(CMakeDependentOption)
+cmake_dependent_option(ONI_BINK_VIDEO "Build with Bink Video support" OFF "WIN32;CMAKE_SIZEOF_VOID_P EQUAL 4" OFF)
+
 # MSVC 19 finally
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED True)
@@ -88,4 +91,7 @@ elseif(APPLE)
 	)
 endif()
 
+if(ONI_BINK_VIDEO)
+	add_subdirectory(OniProj/OniCMakeProjs/BinkProj/)
+endif()
 add_subdirectory(OniProj/OniCMakeProjs/OniProj/)
