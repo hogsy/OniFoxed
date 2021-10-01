@@ -1,6 +1,6 @@
 project(Oni)
 
-set(BFW_SOURCE
+set(SOURCE_FILES
         #Bungie Framework
         ../../../BungieFrameWork/BFW_Headers/BFW.h
         ../../../BungieFrameWork/BFW_Headers/BFW_Akira.h
@@ -41,14 +41,8 @@ set(BFW_SOURCE
         ../../../BungieFrameWork/BFW_Headers/BFW_WindowManager.h
 
         ../../../BungieFrameWork/BFW_Source/BFW_FileManager/BFW_FileManager_Common.c
-        ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_MacOS/BFW_FileManager_MacOS.c
-        ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_Win32/BFW_FileManager_Win32.c
 
         ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/BFW_LI_Platform.h
-        ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_MacOS/BFW_LI_Platform_MacOS.c
-        ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_MacOS/BFW_LI_Platform_MacOS.h
-        ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_Win32/BFW_LI_Platform_Win32.c
-        ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_Win32/BFW_LI_Platform_Win32.h
         ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/BFW_LI_Private.h
         ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/BFW_LI_Translators.c
         ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/BFW_LocalInput.c
@@ -58,7 +52,6 @@ set(BFW_SOURCE
         ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Engines/DrawEngine/OpenGL/gl_engine.c
         ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Engines/DrawEngine/OpenGL/gl_engine.h
         ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Engines/DrawEngine/OpenGL/gl_geometry_draw_method.c
-        ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Engines/DrawEngine/OpenGL/gl_mswindows.c
         ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Engines/DrawEngine/OpenGL/gl_utility.c
         ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Engines/DrawEngine/OpenGL/glext.h
 
@@ -99,8 +92,6 @@ set(BFW_SOURCE
         ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/Motoko_Geom_Matrix.c
         ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/Motoko_Manager.c
         ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/Motoko_Manager.h
-        ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/Win32/Motoko_Platform_Win32.c
-        ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/Win32/Motoko_Platform_Win32.h
         ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/Motoko_Private.h
         ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/Motoko_Sort.c
         ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/Motoko_Sort.h
@@ -127,10 +118,6 @@ set(BFW_SOURCE
         ../../../BungieFrameWork/BFW_Source/BFW_Utility/BFW_Memory.h
         ../../../BungieFrameWork/BFW_Source/BFW_Utility/BFW_Noise.c
         ../../../BungieFrameWork/BFW_Source/BFW_Utility/BFW_Platform.h
-        ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_MacOS/BFW_Platform_AltiVec.c
-        ../../../BungieFrameWork/BFW_Headers/BFW_Platform_AltiVec.h
-        ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_MacOS/BFW_Platform_MacOS.c
-        ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_Win32/BFW_Platform_Win32.c
         ../../../BungieFrameWork/BFW_Source/BFW_Utility/BFW_String.c
         ../../../BungieFrameWork/BFW_Source/BFW_Utility/BFW_Timer.c
         ../../../BungieFrameWork/BFW_Source/BFW_Utility/BFW_Utility.c
@@ -171,9 +158,6 @@ set(BFW_SOURCE
 
         ../../../BungieFrameWork/BFW_Source/BFW_Collision/BFW_Collision.c
 
-        ../../../BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_Win32/BFW_CL_Platform_Win32.c
-        ../../../BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_Win32/BFW_CL_Platform_Win32.h
-
         ../../../BungieFrameWork/BFW_Source/BFW_CommandLine/BFW_CommandLine.c
 
         ../../../BungieFrameWork/BFW_Source/BFW_Akira/Akira_Private.h
@@ -207,10 +191,6 @@ set(BFW_SOURCE
         ../../../BungieFrameWork/BFW_Source/BFW_Particle/BFW_Decal.c
         ../../../BungieFrameWork/BFW_Source/BFW_Particle/BFW_EnvParticle.c
         ../../../BungieFrameWork/BFW_Source/BFW_Particle/BFW_Particle3.c
-
-        ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/BFW_DebuggerSymbols_Win32.c
-        ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/stack_walk_windows.c
-        ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/stack_walk_windows.h
 
         ../../../BungieFrameWork/BFW_Source/BFW_Shared/BFW_Shared_Camera.h
         ../../../BungieFrameWork/BFW_Source/BFW_Shared/BFW_Shared_Clip.c
@@ -300,11 +280,7 @@ set(BFW_SOURCE
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SoundSystem2.c
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_IMA.c
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_IMA.h
-        ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_MSADPCM.c
-        ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_MSADPCM.h
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_Platform.h
-        ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_MacOS/BFW_SS2_Platform_MacOS.c
-        ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_Win32/BFW_SS2_Platform_Win32.c
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_Private.h
         ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_RegisterTemplate.c
 
@@ -313,12 +289,10 @@ set(BFW_SOURCE
         ../../../BungieFrameWork/BFW_Source/BFW_Bink/BinkHeaders/bink.h
         ../../../BungieFrameWork/BFW_Source/BFW_Bink/BinkHeaders/Rad.h
 
-        ../../../BungieFrameWork/BFW_Source/BFW_Bink/BFW_Bink.c)
-
-add_executable(Oni WIN32
-        ${BFW_SOURCE}
+        ../../../BungieFrameWork/BFW_Source/BFW_Bink/BFW_Bink.c
 
         ###############################################################################
+        #Game code
 
         ../../OniWin32Projs/ImpConsole/templatechecksum.c
 
@@ -447,8 +421,8 @@ add_executable(Oni WIN32
         ../../OniGameSource/Oni_Camera.c
         ../../OniGameSource/Oni_Camera.h
         ../../OniGameSource/Oni_Camera_Templates.c
-        ../../OniGameSource/ONI_Character.c
-        ../../OniGameSource/ONI_Character.h
+        ../../OniGameSource/Oni_Character.c
+        ../../OniGameSource/Oni_Character.h
         ../../OniGameSource/Oni_Character_Animation.h
         ../../OniGameSource/Oni_Cinematics.c
         ../../OniGameSource/Oni_Cinematics.h
@@ -484,8 +458,6 @@ add_executable(Oni WIN32
         ../../OniGameSource/Oni_Persistance.c
         ../../OniGameSource/Oni_Persistance.h
         ../../OniGameSource/Oni_Platform.h
-        ../../OniGameSource/Platform_Win32/Oni_Platform_Win32.c
-        ../../OniGameSource/Platform_Win32/Oni_Platform_Win32.h
         ../../OniGameSource/Oni_Script.c
         ../../OniGameSource/Oni_Script.h
         ../../OniGameSource/Oni_Sky.c
@@ -502,18 +474,41 @@ add_executable(Oni WIN32
         ../../OniGameSource/Oni_TextureMaterials.c
         ../../OniGameSource/Oni_TextureMaterials.h
         ../../OniGameSource/Oni_Weapon.c
-        ../../OniGameSource/Oni_Weapon.h
+        ../../OniGameSource/Oni_Weapon.h)
 
-        ../../OniResources/OniResources.rc
-        ../../OniResources/resource.h)
+if(WIN32)
+    add_executable(Oni WIN32
+            ${SOURCE_FILES}
 
-target_precompile_headers(Oni PRIVATE ../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h)
-target_compile_definitions(Oni PRIVATE ONI_MAP_FILE="OniDbg.map")
+            ../../../BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_Win32/BFW_CL_Platform_Win32.c
+            ../../../BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_Win32/BFW_CL_Platform_Win32.h
 
-if(MSVC)
-    target_compile_definitions(Oni PRIVATE /FI"../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h")
+            ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/BFW_DebuggerSymbols_Win32.c
+            ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/stack_walk_windows.c
+            ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/stack_walk_windows.h
 
-    target_link_libraries(Oni 
+            ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_Win32/BFW_FileManager_Win32.c
+
+            ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_Win32/BFW_LI_Platform_Win32.c
+            ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_Win32/BFW_LI_Platform_Win32.h
+
+            ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Engines/DrawEngine/OpenGL/gl_mswindows.c
+
+            ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/Win32/Motoko_Platform_Win32.c
+            ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/Win32/Motoko_Platform_Win32.h
+
+            ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_Win32/BFW_Platform_Win32.c
+
+            ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_MSADPCM.c
+            ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/BFW_SS2_MSADPCM.h
+            ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_Win32/BFW_SS2_Platform_Win32.c
+
+            ../../OniGameSource/Platform_Win32/Oni_Platform_Win32.c
+            ../../OniGameSource/Platform_Win32/Oni_Platform_Win32.h
+
+            ../../OniResources/OniResources.rc
+            ../../OniResources/resource.h)
+    target_link_libraries(Oni
         winmm
         msacm32
         Ws2_32
@@ -523,4 +518,38 @@ if(MSVC)
         odbc32
         odbccp32
         imagehlp)
+elseif(APPLE)
+    add_executable(Oni
+            ${SOURCE_FILES}
+            ../../../BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_MacOS/BFW_CL_Platform_MacOS.c
+            ../../../BungieFrameWork/BFW_Source/BFW_CommandLine/Platform_MacOS/BFW_CL_Platform_MacOS.h
+
+            ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/BFW_DebuggerSymbols_MacOS.c
+
+            ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_MacOS/BFW_FileManager_MacOS.c
+
+            ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_MacOS/BFW_LI_Platform_MacOS.c
+            ../../../BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_MacOS/BFW_LI_Platform_MacOS.h
+
+            ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Engines/DrawEngine/OpenGL/gl_macos.c
+
+            ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/AltiVec/Motoko_SIMDCache_AltiVec.c
+            ../../../BungieFrameWork/BFW_Source/BFW_Motoko/Manager/AltiVec/Motoko_SIMDCache_AltiVec.h
+
+            ../../../BungieFrameWork/BFW_Headers/BFW_Platform_AltiVec.h
+            ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_MacOS/BFW_Platform_AltiVec.c
+            ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_MacOS/BFW_Platform_MacOS.c
+
+            ../../../BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_MacOS/BFW_SS2_Platform_MacOS.c
+
+            ../../OniGameSource/Platform_MacOS/Oni_Mac_Keys.h
+            ../../OniGameSource/Platform_MacOS/Oni_Platform_Mac.c
+            ../../OniGameSource/Platform_MacOS/Oni_Platform_Mac.h)
+endif()
+
+target_precompile_headers(Oni PRIVATE ../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h)
+target_compile_definitions(Oni PRIVATE ONI_MAP_FILE="OniDbg.map")
+
+if(MSVC)
+    target_compile_definitions(Oni PRIVATE /FI"../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h")
 endif()

@@ -1,4 +1,3 @@
-#if UUmPlatform == UUmPlatform_Win32 /* allows file to be included in macintosh version of project */
 
 /*
 rasterizer_opengl_windows.c
@@ -307,4 +306,3 @@ void make_pixel_format_descriptor(PIXELFORMATDESCRIPTOR *pfd, UUtInt32 bitDepth)
 
 #endif // __ONADA__
 
-#endif /* #ifdef windows */

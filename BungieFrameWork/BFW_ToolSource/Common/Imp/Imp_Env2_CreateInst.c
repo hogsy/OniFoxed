@@ -15,7 +15,7 @@
 #include "BFW_FileManager.h"
 #include "BFW_TemplateManager.h"
 #include "BFW_TM_Construction.h"
-#include "BFW_Mathlib.h"
+#include "BFW_MathLib.h"
 #include "BFW_Shared_TriRaster.h"
 #include "BFW_Timer.h"
 

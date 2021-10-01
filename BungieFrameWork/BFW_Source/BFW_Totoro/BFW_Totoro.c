@@ -4037,7 +4037,7 @@ void TRrAimingScreen_Apply(
 	float inElevation,
 	const M3tQuaternion *inQuaternions,
 	M3tQuaternion *outQuaternions,
-	short inNumParts)
+	UUtInt16 inNumParts)
 {
 	M3tQuaternion interpolated_quaternion[32];
 	TRtAnimation *animation = inAimingScreen->animation;

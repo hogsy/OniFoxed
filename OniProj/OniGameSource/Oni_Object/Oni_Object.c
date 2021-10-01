@@ -20,7 +20,7 @@
 #include "Oni_Win_Tools.h"
 #include "Oni_GameStatePrivate.h"
 
-#include "ENVFileFormat.h"
+#include "EnvFileFormat.h"
 #include "Oni_Mechanics.h"
 
 UUtInt32 OBJgNodeCount = 0;

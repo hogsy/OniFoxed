@@ -797,4 +797,3 @@ static char *exception_code_to_string(
 #pragma optimize ("", on)
 
 #endif // SHIPPING_VERSION
-

@@ -1,4 +1,3 @@
-#if UUmPlatform	== UUmPlatform_Mac
 
 // ======================================================================
 // GL_Platform_MacOS.c
@@ -122,4 +121,3 @@ GLrPlatform_DisplayBackBuffer(
 }
 
 
-#endif // UUmPlatform == UUmPlatform_Mac

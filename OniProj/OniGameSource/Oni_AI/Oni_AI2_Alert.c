@@ -12,7 +12,7 @@
 */
 
 #include "BFW.h"
-#include "BFW_Mathlib.h"
+#include "BFW_MathLib.h"
 
 #include "Oni_AI2.h"
 #include "Oni_Character.h"

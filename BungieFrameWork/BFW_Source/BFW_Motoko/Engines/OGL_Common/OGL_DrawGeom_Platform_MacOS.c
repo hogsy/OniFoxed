@@ -1,4 +1,3 @@
-#if UUmPlatform	== UUmPlatform_Mac
 
 /*
 	FILE:	OGL_DrawGeom_Platform_MacOS.c
@@ -58,4 +57,3 @@ OGLrCommon_Platform_GetFunction(
 	return function;
 }
 
-#endif // UUmPlatform	== UUmPlatform_Mac

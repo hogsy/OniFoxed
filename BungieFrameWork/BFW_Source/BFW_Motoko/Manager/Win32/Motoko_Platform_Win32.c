@@ -256,4 +256,3 @@ M3rPlatform_GetErrorMsg(HRESULT error)
 	}*/
 	return NULL;
 }
-

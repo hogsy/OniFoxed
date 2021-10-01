@@ -4,8 +4,6 @@
 
 #ifdef __ONADA__
 
-#if UUmPlatform	== UUmPlatform_Mac
-
 /*---------- headers */
 
 #define TARGET_API_MAC_CARBON	1
@@ -1137,5 +1135,4 @@ static void gl_macos_write_pref(
 }
 
 
-#endif // UUmPlatform == UUmPlatform_Mac
 #endif // __ONADA__

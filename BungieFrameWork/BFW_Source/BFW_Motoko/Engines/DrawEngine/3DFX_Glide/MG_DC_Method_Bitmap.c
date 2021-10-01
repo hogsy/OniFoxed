@@ -17,7 +17,7 @@
 #include "BFW.h"
 #include "BFW_Motoko.h"
 #include "BFW_TemplateManager.h"
-#include "BFW_Mathlib.h"
+#include "BFW_MathLib.h"
 #include "BFW_Console.h"
 
 #include "Motoko_Manager.h"

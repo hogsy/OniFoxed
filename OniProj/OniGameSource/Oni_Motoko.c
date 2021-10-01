@@ -20,7 +20,7 @@
 #include "Oni_GameState.h"
 #include "Oni_Platform.h"
 #include "Oni_Motoko.h"
-#include "ONI_GameStatePrivate.h"
+#include "Oni_GameStatePrivate.h"
 #include "Oni_Persistance.h"
 
 #include "Motoko_Manager.h"

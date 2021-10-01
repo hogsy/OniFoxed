@@ -1,4 +1,3 @@
-#if UUmPlatform	== UUmPlatform_Mac
 // ======================================================================
 // BFW_LI_Platform_MacOS.c
 // ======================================================================
@@ -1365,4 +1364,3 @@ UUtBool LIrPlatform_TestKey(
 	return down;
 }
 
-#endif // UUmPlatform	== UUmPlatform_Mac

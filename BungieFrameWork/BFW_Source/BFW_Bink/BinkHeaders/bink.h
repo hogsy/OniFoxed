@@ -6,7 +6,7 @@
 
 #ifndef __RADRES__
 
-#include "rad.h"
+#include "Rad.h"
 
 RADDEFSTART
 

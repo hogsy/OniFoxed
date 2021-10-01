@@ -1,4 +1,3 @@
-#if UUmPlatform == UUmPlatform_Mac
 
 /*
 	FILE:	BFW_Platform_AltiVec.c
@@ -476,4 +475,3 @@ UUrPlatform_SIMD_Initialize(
 }
 #endif
 
-#endif

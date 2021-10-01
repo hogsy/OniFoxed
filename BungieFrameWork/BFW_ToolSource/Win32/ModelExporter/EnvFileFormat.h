@@ -13,7 +13,7 @@
 
 #include "BFW.h"
 #include "BFW_Motoko.h"
-#include "BFW_Mathlib.h"
+#include "BFW_MathLib.h"
 
 #else
 

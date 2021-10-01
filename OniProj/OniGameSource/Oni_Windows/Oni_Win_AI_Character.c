@@ -30,7 +30,7 @@
 #include "WM_Menu.h"
 #include "WM_PopupMenu.h"
 #include "WM_EditField.h"
-#include "WM_Checkbox.h"
+#include "WM_CheckBox.h"
 #include "WM_ListBox.h"
 #include "WM_Text.h"
 #include "WM_Button.h"

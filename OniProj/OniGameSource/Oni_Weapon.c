@@ -22,7 +22,7 @@
 
 #include "Oni_Weapon.h"
 #include "Oni.h"
-#include "ONI_GameStatePrivate.h"
+#include "Oni_GameStatePrivate.h"
 #include "Oni_Character_Animation.h"
 #include "Oni_AI2_Knowledge.h"
 #include "Oni_Object.h"

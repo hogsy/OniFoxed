@@ -7,7 +7,7 @@
 // ======================================================================
 #include "BFW.h"
 #include "BFW_Motoko.h"
-#include "BFW_Mathlib.h"
+#include "BFW_MathLib.h"
 #include "BFW_ScriptLang.h"
 #include "WM_PartSpecification.h"
 

@@ -15,7 +15,7 @@
 #define __BFW_OBJECT_TEMPLATES_H__
 
 #include "BFW.h"
-#include "BFW_Mathlib.h"
+#include "BFW_MathLib.h"
 #include "BFW_Effect.h"
 #include "BFW_EnvParticle.h"
 

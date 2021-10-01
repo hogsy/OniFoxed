@@ -48,24 +48,24 @@
 
 #define UUmGet4BytesFromBuffer(src,dst,type,swap_it)				\
 			(dst) = *((type*)(src));								\
-			((UUtUns8*)(src)) += sizeof(type);						\
+			*(UUtInt8**)&(src) += sizeof(type);					\
 			if ((swap_it)) { UUrSwap_4Byte(&(dst)); }							
 
 #define UUmWrite4BytesToBuffer(buf,val,type,num_bytes,write_big)	\
 			*((type*)(buf)) = (val);								\
 			if (write_big) { UUmSwapBig_4Byte(buf); } else { UUmSwapLittle_4Byte(buf); } \
-			((UUtUns8*)(buf)) += sizeof(type);						\
+			*(UUtInt8**)&(buf) += sizeof(type);						\
 			(num_bytes) -= sizeof(type);
 
 #define UUmGet2BytesFromBuffer(src,dst,type,swap_it)				\
 			(dst) = *((type*)(src));								\
-			((UUtUns8*)(src)) += sizeof(type);						\
+			*(UUtInt8**)&(src) += sizeof(type);						\
 			if ((swap_it)) { UUrSwap_2Byte(&(dst)); }							
 
 #define UUmWrite2BytesToBuffer(buf,val,type,num_bytes,write_big)	\
 			*((type*)(buf)) = (val);								\
 			if (write_big) { UUmSwapBig_2Byte(buf); } else { UUmSwapLittle_2Byte(buf); } \
-			((UUtUns8*)(buf)) += sizeof(type);						\
+			*(UUtInt8**)&(buf) += sizeof(type);						\
 			(num_bytes) -= sizeof(type);
 
 #define UUmGet4CharsFromBuffer(buf,c0,c1,c2,c3)					\
@@ -73,14 +73,14 @@
 			(c1) = *((char*)(buf[1]));								\
 			(c2) = *((char*)(buf[2]));								\
 			(c3) = *((char*)(buf[3]));								\
-			((UUtUns8*)(buf)) += (sizeof(UUtUns8) * 4);
+			*(UUtUns8**)&(buf) += (sizeof(UUtUns8) * 4);
 
 #define UUmWrite4CharsToBuffer(buf,c0,c1,c2,c3,num_bytes)			\
 			*((UUtUns8*)(buf)) = (c0);								\
 			*((UUtUns8*)(buf + 1)) = (c1);							\
 			*((UUtUns8*)(buf + 2)) = (c2);							\
 			*((UUtUns8*)(buf + 3)) = (c3);							\
-			((UUtUns8*)(buf)) += (sizeof(UUtUns8) * 4);				\
+			*(UUtUns8**)&(buf) += (sizeof(UUtUns8) * 4);			\
 			(num_bytes) -= (sizeof(UUtUns8) * 4);
 
 // ======================================================================
@@ -1544,12 +1544,12 @@ SSiSoundData_ProcessAIFF(
 			inFileDataLength,
 			UUcFile_BigEndian,
 			UUm4CharToUns32('F', 'O', 'R', 'M'),
-			&((UUtUns8*)form),
+			(UUtUns8**)&form,
 			&form_size);
 	UUmError_ReturnOnErrorMsg(error, "Unable to find FORM tag");
 	
 	// back up 8 bytes to get to beginning of SStContainerChunk
-	(UUtUns8*)form -= (sizeof(UUtUns32) + sizeof(UUtInt32));
+	*(UUtInt8**)&form -= (sizeof(UUtUns32) + sizeof(UUtInt32));
 	
 	// determine if the AIFF is compressed or not
 	UUmSwapBig_4Byte(&form->formType);
@@ -1584,12 +1584,12 @@ SSiSoundData_ProcessAIFF(
 			inFileDataLength,
 			UUcFile_BigEndian,
 			UUm4CharToUns32('S', 'S', 'N', 'D'),
-			&((UUtUns8*)sound),
+			(UUtUns8**)&sound,
 			&sound_size);
 	UUmError_ReturnOnErrorMsg(error, "Unable to find SSND tag");
 	
 	// back up 8 bytes to get to beginning of SStContainerChunk
-	(UUtUns8*)sound -= (sizeof(UUtUns32) + sizeof(UUtInt32));
+	*(UUtInt8**)&sound -= (sizeof(UUtUns32) + sizeof(UUtInt32));
 	
 	// get the offset to the sound data
 	UUmSwapBig_4Byte(&sound->ckSize);

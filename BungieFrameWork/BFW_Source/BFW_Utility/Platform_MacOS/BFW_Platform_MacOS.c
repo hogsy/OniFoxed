@@ -1,4 +1,3 @@
-#if UUmPlatform	== UUmPlatform_Mac
 
 /*
 	FILE:	UU_Platform_MacOS.c
@@ -596,4 +595,3 @@ UUrWindow_GetSize(
 	return;
 }
 
-#endif UUmPlatform	== UUmPlatform_Mac
