@@ -207,7 +207,7 @@ extern "C" {
 // #pragma warning( 1 : 4244)			// conversion (possible loss of data)
 #pragma warning( 1 : 4305)			// '=' : truncation from 'const int ' to 'char '
 //#pragma warning( 1 : 4310)			// cast truncates constant value
-#pragma warning( disable : 4505)	// unrefenced local function
+#pragma warning( disable : 4505)	// unreferenced local function
 #pragma warning( disable : 4514)	// unreferenced inline function
 #pragma warning( error : 4700)		// local variable used without having been initialized
 //#pragma warning(1 : 4701)			// local variable may be used without having been initialized
