@@ -226,7 +226,7 @@ extern "C" {
 			#include <windows.h>
 		#endif
 
-		#include <WTYPES.h>	
+		#include <wtypes.h>
 		#include <ddraw.h>
 
 		#define DDPIXELFORMAT_dwRGBBitCount(x) (*(((DWORD *)&x) + 3))

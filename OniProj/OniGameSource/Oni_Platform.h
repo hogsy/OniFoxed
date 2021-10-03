@@ -20,11 +20,11 @@
 
 #if UUmPlatform == UUmPlatform_Mac
 
-#include "ONi_Platform_Mac.h"
+#include "Oni_Platform_Mac.h"
 
 #elif UUmPlatform == UUmPlatform_Win32
 
-#include "ONi_Platform_Win32.h"
+#include "Oni_Platform_Win32.h"
 
 #else
 
