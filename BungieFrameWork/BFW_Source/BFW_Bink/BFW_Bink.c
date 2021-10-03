@@ -1001,7 +1001,7 @@ static void BKrForce32Bit(
 		}
 	}
 
-#else if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
+#elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
 
 #endif
 
