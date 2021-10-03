@@ -335,6 +335,7 @@ static UUtBool BKrBinkIsLoaded(
 
 static void BKrMovie_Statistics(HBINK bink)
 {
+#if 0
 #if TOOL_VERSION
 	BINKSUMMARY summary;
 
@@ -372,6 +373,7 @@ static void BKrMovie_Statistics(HBINK bink)
 	UUrStartupMessage("HighestIOUsed %d", summary.HighestIOUsed);
 	UUrStartupMessage("Highest1SecRate %d", summary.Highest1SecRate);
 	UUrStartupMessage("Highest1SecFrame %d", summary.Highest1SecFrame);
+#endif
 #endif
 
 	return;
