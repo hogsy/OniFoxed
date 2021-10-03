@@ -952,24 +952,35 @@ RADEXPFUNC void RADEXPLINK radfree(void PTR4* ptr);
 // for multi-processor machines
 
 #ifdef __RADNT__
-  #define LockedIncrement(var) __asm { lock inc [var] }
-  #define LockedDecrement(var) __asm { lock dec [var] }
-  void __inline LockedIncrementFunc(void PTR4* var) {
-    __asm {
-      mov eax,[var]
-      lock inc [eax]
+  #ifdef _MSC_VER
+    #define LockedIncrement(var) __asm { lock inc [var] }
+    #define LockedDecrement(var) __asm { lock dec [var] }
+    void __inline LockedIncrementFunc(void PTR4* var) {
+      __asm {
+        mov eax,[var]
+        lock inc [eax]
+      }
     }
-  }
 
-  void __inline LockedDecrementFunc(void PTR4* var) {
-    __asm {
-       mov eax,[var]
-       lock dec [eax]
+    void __inline LockedDecrementFunc(void PTR4* var) {
+      __asm {
+         mov eax,[var]
+         lock dec [eax]
+      }
     }
-  }
+
+  #else
+
+    #define LockedIncrement(var) __sync_add_and_fetch(var, 1)
+    #define LockedIncrementFunc(var) __sync_fetch_and_add(var, 1)
+
+    #define LockedDecrement(var) __sync_sub_and_fetch(var, 1)
+    #define LockedDecrementFunc(var) __sync_fetch_and_sub(var, 1)
+
+  #endif
 
 #else
-  
+
   #if defined(__RADMAC__) || defined(__RADMACOSX__)
 
     #define LockedIncrement(var) {++(var);}
