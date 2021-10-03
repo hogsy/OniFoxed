@@ -508,16 +508,18 @@ if(WIN32)
 
             ../../OniResources/OniResources.rc
             ../../OniResources/resource.h)
-    target_link_libraries(Oni
-        winmm
-        msacm32
-        ws2_32
-        dinput8
-        dsound
-        dxguid
-        odbc32
-        odbccp32
-        imagehlp)
+	target_link_libraries(Oni
+		PRIVATE
+			winmm
+			msacm32
+			ws2_32
+			dinput8
+			dsound
+			dxguid
+			odbc32
+			odbccp32
+			imagehlp
+	)
 elseif(APPLE)
     add_executable(Oni
             ${SOURCE_FILES}
@@ -547,12 +549,14 @@ elseif(APPLE)
             ../../OniGameSource/Platform_MacOS/Oni_Platform_Mac.h)
 endif()
 
+set(ONI_MAP_PATH $<TARGET_FILE_DIR:Oni>/$<TARGET_FILE_NAME:Oni>.map)
+
 target_precompile_headers(Oni PRIVATE ../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h)
 
 target_compile_definitions(Oni
 	PRIVATE
 		BINK_VIDEO=$<BOOL:${ONI_BINK_VIDEO}>
-		ONI_MAP_FILE="OniDbg.map"
+		ONI_MAP_FILE="${ONI_MAP_PATH}"
 )
 
 target_link_libraries(Oni
@@ -561,5 +565,19 @@ target_link_libraries(Oni
 )
 
 if(MSVC)
-    target_compile_definitions(Oni PRIVATE /FI"../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h")
+	target_compile_options(Oni
+		PRIVATE
+			/FI../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h
+	)
+	target_link_options(Oni
+		PRIVATE
+			"/MAP:${ONI_MAP_PATH}"
+	)
+endif()
+
+if(CMAKE_C_COMPILER_ID MATCHES "GNU")
+	target_link_options(Oni
+		PRIVATE
+			"-Wl,-Map=${ONI_MAP_PATH}"
+	)
 endif()
