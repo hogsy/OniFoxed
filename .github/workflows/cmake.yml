@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: 'Configure cmake'
         run: |
-          cmake -S . -B build -A Win32
+          cmake -DCMAKE_SYSTEM_VERSION=10.0.19041.0 -S . -B build -A Win32
       - name: 'Build'
         run: |
           cmake --build build --parallel
