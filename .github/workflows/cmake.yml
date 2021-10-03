@@ -1,0 +1,31 @@
+name: "cmake"
+on:
+  pull_request:
+  push:
+
+jobs:
+  msvc:
+    runs-on: 'windows-latest'
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Configure cmake'
+        run: |
+          cmake -S . -B build -A Win32
+      - name: 'Build'
+        run: |
+          cmake --build build --parallel
+  mingw-linux:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Install MinGW'
+        run: |
+          sudo apt-get install gcc-mingw-w64-i686 g++-mingw-w64-i686
+      - name: 'Configure cmake'
+        run: |
+          cmake -S . -B build -DCMAKE_SYSTEM_NAME=Windows \
+            -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc-win32 \
+            -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++-win32
+      - name: 'Build'
+        run: |
+          cmake --build build --parallel
