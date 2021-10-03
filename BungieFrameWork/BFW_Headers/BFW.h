@@ -98,7 +98,7 @@ extern "C" {
 	#if !defined(UUmPlatform)
 		#if (defined(__MWERKS__) && defined(__POWERPC__)) || defined(__MRC__) || defined(__MOTO__)
 			#define UUmPlatform	UUmPlatform_Mac
-		#elif (defined(__MWERKS__) && defined(__INTEL__)) || defined(_MSC_VER) || defined(__WATCOMC__)
+		#elif (defined(__MWERKS__) && defined(__INTEL__)) || defined(_WIN32) || defined(__WATCOMC__)
 			#define UUmPlatform	UUmPlatform_Win32
 		#else
 			#error Unknown platform - please specify and then do a search on UUmPlatform to add the needed cases
