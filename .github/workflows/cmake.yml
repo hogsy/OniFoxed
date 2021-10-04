@@ -10,7 +10,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: 'Configure cmake'
         run: |
-          cmake -DCMAKE_SYSTEM_VERSION=10.0.19041.0 -S . -B build -A Win32
+          cmake -DCMAKE_SYSTEM_VERSION=10.0.19041.0 -DONI_BINK_VIDEO=ON `
+            -S . -B build -A Win32
       - name: 'Build'
         run: |
           cmake --build build --parallel
@@ -25,7 +26,8 @@ jobs:
         run: |
           cmake -S . -B build -DCMAKE_SYSTEM_NAME=Windows \
             -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc-win32 \
-            -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++-win32
+            -DCMAKE_CXX_COMPILER=i686-w64-mingw32-g++-win32 \
+            -DONI_BINK_VIDEO=ON
       - name: 'Build'
         run: |
           cmake --build build --parallel
