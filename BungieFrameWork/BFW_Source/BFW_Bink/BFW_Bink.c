@@ -37,8 +37,8 @@
 // ======================================================================
 typedef struct BKtBuffer
 {
-	HBINKBUFFER					bink_buffer;	
-	
+	HBINKBUFFER					bink_buffer;
+
 } BKtBuffer;
 
 // ======================================================================
@@ -48,7 +48,7 @@ typedef struct BKtBuffer
 
 static void BKrBink_SetVolume(HBINK inBink)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	if (NULL != inBink) {
 		float float_volume = UUmPin(ONrPersist_GetOverallVolume(), 0.f, 1.f);
 		UUtInt32 bink_volume = MUrUnsignedSmallFloat_To_Uns_Round(float_volume * 32768);
@@ -67,9 +67,10 @@ BKrBink_Open(
 	BFtFileRef					*inMovieRef,
 	UUtUns32					inFlags)
 {
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	HBINK						bink;
 	FSSpec						*movie_fsspec;
-	
+
 	// get a pointer to the fsspec of the BFtFileRef
 	movie_fsspec = BFrFileRef_GetFSSpec(inMovieRef);
 	if (movie_fsspec == NULL)
@@ -85,6 +86,9 @@ BKrBink_Open(
 	BKrBink_SetVolume(bink);
 
 	return bink;
+#else
+	return NULL;
+#endif
 }
 
 #elif UUmPlatform == UUmPlatform_Win32
@@ -94,7 +98,7 @@ BKrBink_Open(
 	BFtFileRef					*inMovieRef,
 	UUtUns32					inFlags)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	HBINK						bink;
 	const char					*file_name;
 	LPDIRECTSOUND				direct_sound;
@@ -106,7 +110,7 @@ BKrBink_Open(
 		UUrDebuggerMessage("bink movie file '%s' does not exist", inMovieRef->name);
 		return NULL;
 	}
-	
+
 	direct_sound = SS2rPlatform_GetDirectSound();
 	if (direct_sound != NULL)
 	{
@@ -119,7 +123,7 @@ BKrBink_Open(
 		UUrDebuggerMessage("could not get full path to bink movie '%s'", inMovieRef->name);
 		return NULL;
 	}
-	
+
 	bink= BinkOpen(file_name, inFlags);
 
 	if (bink && !direct_sound)
@@ -128,7 +132,7 @@ BKrBink_Open(
 	}
 
 	BKrBink_SetVolume(bink);
-	
+
 	return bink;
 #else
 	return NULL;
@@ -148,10 +152,10 @@ BKiBuffer_CopyFromBink(
 	BKtBuffer					*inBuffer,
 	HBINK						inBink)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	BinkCopyToBuffer(
 		inBink,
-		inBuffer->bink_buffer->Buffer, 
+		inBuffer->bink_buffer->Buffer,
 		inBuffer->bink_buffer->BufferPitch,
 		inBuffer->bink_buffer->Height,
 		0,
@@ -165,15 +169,15 @@ static void
 BKiBuffer_Delete(
 	BKtBuffer					*inBuffer)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	UUmAssert(inBuffer);
-	
+
 	if (inBuffer->bink_buffer)
 	{
 		BinkBufferClose(inBuffer->bink_buffer);
 		inBuffer->bink_buffer = NULL;
 	}
-        
+
 	UUrMemory_Block_Delete(inBuffer);
 #endif
 }
@@ -184,9 +188,9 @@ BKiBuffer_Draw(
 	BKtBuffer					*inBuffer,
 	HBINK						inBink)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	UUtUns32					num_rects;
-	
+
 	// blit the data onto the screen (only for off-screen and DIBs)
 	num_rects = BinkGetRects(inBink, inBuffer->bink_buffer->SurfaceType);
 	BinkBufferBlit(inBuffer->bink_buffer, inBink->FrameRects, num_rects);
@@ -200,14 +204,14 @@ BKiBuffer_New(
 	UUtInt32					inMovieWidth,
 	UUtInt32					inMovieHeight)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	BKtBuffer					*buffer;
 	HBINKBUFFER					bink_buffer;
 	UUtUns32					buffer_flags;
-	
+
 	buffer = (BKtBuffer*)UUrMemory_Block_New(sizeof(BKtBuffer));
 	if (buffer == NULL) { return NULL; }
-	
+
 	buffer_flags = (BINKBUFFERAUTO);
 	bink_buffer = BinkBufferOpen(inWindow, inMovieWidth, inMovieHeight, buffer_flags);
 	if (bink_buffer == NULL)
@@ -216,9 +220,9 @@ BKiBuffer_New(
 		buffer = NULL;
 		return NULL;
 	}
-	
+
 	buffer->bink_buffer = bink_buffer;
-	
+
 	return buffer;
 #else
 	return NULL;
@@ -230,13 +234,13 @@ static UUtBool
 BKiBuffer_Lock(
 	BKtBuffer					*inBuffer)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	UUtBool						result;
 
 	UUmAssert(inBuffer);
-	
+
 	if (inBuffer->bink_buffer == NULL) { return UUcFalse; }
-	
+
 	result = (BinkBufferLock(inBuffer->bink_buffer) != 0);
 
 	return result;
@@ -252,7 +256,7 @@ BKiBuffer_SetPosition(
 	UUtInt32					inX,
 	UUtInt32					inY)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	BinkBufferSetOffset(inBuffer->bink_buffer, inX, inY);
 #endif
 }
@@ -262,15 +266,15 @@ static void
 BKiBuffer_Unlock(
 	BKtBuffer					*inBuffer)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	UUmAssert(inBuffer);
-		
+
 	BinkBufferUnlock(inBuffer->bink_buffer);
 #endif
 }
 
 // ======================================================================
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 #pragma mark -
 #endif
 // ======================================================================
@@ -281,20 +285,20 @@ BKiBink_NextFrame(
 	BKtBuffer					*inBinkBuffer,
 	UUtWindow					inWindow)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	BinkDoFrame(inBink);
-	
+
 	if (BKiBuffer_Lock(inBinkBuffer) == UUcTrue)
 	{
 		BKiBuffer_CopyFromBink(inBinkBuffer, inBink);
 		BKiBuffer_Unlock(inBinkBuffer);
 	}
-	
+
 	BKiBuffer_Draw(inBinkBuffer, inBink);
-		
+
 	// stop if this was the last frame
 	if (inBink->FrameNum == (inBink->Frames - 1)) { return UUcFalse; }
-	
+
 	BinkNextFrame(inBink);
 	return UUcTrue;
 #else
@@ -305,7 +309,7 @@ BKiBink_NextFrame(
 static UUtBool BKrBinkIsLoaded(
 	void)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	UUtBool loaded= UUcFalse;
 
 #if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
@@ -320,7 +324,7 @@ static UUtBool BKrBinkIsLoaded(
 		loaded= UUcTrue;
 	}
 #endif
-	
+
 	return loaded;
 #else
 	return UUcFalse;
@@ -379,29 +383,29 @@ BKrMovie_Play(
 	UUtWindow					inWindow,
 	BKtScale					inScale) // unused
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	HBINK						bink;
 	BKtBuffer					*bink_buffer;
 	UUtBool						done;
 	LItMode						mode;
-	
+
 	UUtUns16					width;
 	UUtUns16					height;
-	
+
 	UUtInt32					x;
 	UUtInt32					y;
-	
+
 	UUtUns32					flags;
 
 	UUmAssert(inMovieRef);
 	UUmAssert(inWindow);
-	
+
 	if (!BKrBinkIsLoaded()) return UUcError_None;
-        
+
 	bink = NULL;
 	bink_buffer = NULL;
 	flags = 0;
-	
+
 	// create the bink handle
 	bink = BKrBink_Open(inMovieRef, 0);
 	if (bink == NULL) goto cleanup;
@@ -418,24 +422,24 @@ BKrMovie_Play(
 	// close bink
 	BinkClose(bink);
 	bink = NULL;
-	
+
 	// create the bink handle
 	bink = BKrBink_Open(inMovieRef, flags);
 	if (bink == NULL) goto cleanup;
-	
+
 	// create the buffer
 	bink_buffer = BKiBuffer_New(inWindow, bink->Width, bink->Height);
 	if (bink_buffer == NULL) goto cleanup;
-	
+
 	// set the position of the movie within the window
 	x = (UUtInt32)(((UUtUns32)width - bink->Width) >> 1);
 	y = (UUtInt32)(((UUtUns32)height - bink->Height) >> 1);
 	BKiBuffer_SetPosition(bink_buffer, x, y);
-	
+
 	// set the input mode to normal
 	mode = LIrMode_Get();
 	LIrMode_Set(LIcMode_Normal);
-        
+
 	// play the movie
 	done = UUcFalse;
 	do
@@ -443,7 +447,7 @@ BKrMovie_Play(
 		LItInputEvent				event;
 		UUtBool						was_event;
 
-#if 1		
+#if 0
 		// check for an event
 		was_event = LIrInputEvent_Get(&event);
 		if (was_event == UUcTrue)
@@ -459,7 +463,7 @@ BKrMovie_Play(
 #endif
 
 		if (done == UUcFalse)
-		{                        
+		{
 			// display the movie
 			if (BinkWait(bink) == UUcFalse)
 			{
@@ -468,7 +472,7 @@ BKrMovie_Play(
 		}
 	}
 	while (done == UUcFalse);
-	
+
 	// restore the input mode
 	LIrMode_Set(mode);
 
@@ -480,7 +484,7 @@ cleanup:
 		BKiBuffer_Delete(bink_buffer);
 		bink_buffer = NULL;
 	}
-	
+
 	if (bink != NULL)
 	{
 		BinkClose(bink);
@@ -542,7 +546,7 @@ static void gl_setup_bink_textures(
 	GL_FXN(glPixelStorei)(GL_UNPACK_ALIGNMENT, (texture->pitch % texture->pixel_size) + 1);
 
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
-	
+
 	return;
 }
 
@@ -580,7 +584,7 @@ static UUtUns32 next_power_of_two(
 }
 
 // open the RAD textures handle (which abstracts as one big texture)
-HRADTEXTURES gl_create_bink_textures(
+static HRADTEXTURES gl_create_bink_textures(
 	UUtUns32 maxsize,
 	UUtUns32 width,
 	UUtUns32 height,
@@ -689,12 +693,12 @@ HRADTEXTURES gl_create_bink_textures(
 	}
 
 	UUrMemory_Block_Delete(t);
-	
+
 	return (0);
 }
 
 // frees the RAD textures object (all textures and memory)
-void gl_dispose_bink_textures(
+static void gl_dispose_bink_textures(
 	HRADTEXTURES t)
 {
 	if (t)
@@ -713,7 +717,7 @@ void gl_dispose_bink_textures(
 }
 
 // send down the vertices for one block of the image
-void gl_draw_bink_movie_quad(
+static void gl_draw_bink_movie_quad(
 	int xp,
 	int yp,
 	int width,
@@ -763,18 +767,18 @@ void gl_draw_bink_movie_quad(
 
 
 // send down all the vertices for the entire image
-void gl_draw_bink_movie_frame(
+static void gl_draw_bink_movie_frame(
 	HBINK bink,
 	HRADTEXTURES t,
 	UUtInt32 xofs,
 	UUtInt32 yofs)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	UUtUns32* ts, x, y;
 	float xp= 0.f, yp= 0.f;
 
 	ts= t->textures;
-	
+
 	for (y=0; y<t->textures_down; y++)
 	{
 		for (x=0; x<t->textures_across; x++)
@@ -837,7 +841,7 @@ void gl_draw_bink_movie_frame(
 
 
 // send down the texture for one chunk of the image
-void gl_download_bink_texture(
+static void gl_download_bink_texture(
 	HRADTEXTURES t,
 	void* buffer,
 	UUtUns32 width,
@@ -851,11 +855,11 @@ void gl_download_bink_texture(
 
 
 // send down the entire image as multiple textures
-void gl_send_bink_textures(
+static void gl_send_bink_textures(
 	HBINK bink,
 	HRADTEXTURES t)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	UUtUns32 *ts, x, y;
 	UUtUns8 *buffer;
 	UUtUns32 bufadj;
@@ -914,7 +918,7 @@ void gl_send_bink_textures(
 }
 
 // draw a bitmap by sending down textures and vertices
-void gl_draw_bink_image(
+static void gl_draw_bink_image(
 	HBINK bink,
 	HRADTEXTURES t,
 	UUtInt32 updatetexture,
@@ -936,7 +940,7 @@ static void gl_render_bink_movie_frame(
 	int xo,
 	int yo)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	// decompress a frame
 	BinkDoFrame(bink);
 
@@ -983,7 +987,7 @@ static void BKrForce32Bit(
 			desired_display_mode.dmPelsWidth= current_display_mode.dmPelsWidth;
 			desired_display_mode.dmPelsHeight= current_display_mode.dmPelsHeight;
 			desired_display_mode.dmFields= DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-		
+
 			if (ChangeDisplaySettings(&desired_display_mode, CDS_TEST) == DISP_CHANGE_SUCCESSFUL)
 			{
 				if (ChangeDisplaySettings(&desired_display_mode, CDS_FULLSCREEN) == DISP_CHANGE_SUCCESSFUL)
@@ -1022,7 +1026,7 @@ static void BKrRestoreBitDepth(
 			desired_display_mode.dmPelsWidth= current_display_mode.dmPelsWidth;
 			desired_display_mode.dmPelsHeight= current_display_mode.dmPelsHeight;
 			desired_display_mode.dmFields= DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-			
+
 			if (ChangeDisplaySettings(&desired_display_mode, CDS_TEST) == DISP_CHANGE_SUCCESSFUL)
 			{
 				if (ChangeDisplaySettings(&desired_display_mode, CDS_FULLSCREEN) == DISP_CHANGE_SUCCESSFUL)
@@ -1033,7 +1037,7 @@ static void BKrRestoreBitDepth(
 			}
 		}
 	}
-	
+
 #else if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
 
 #endif
@@ -1052,29 +1056,29 @@ static UUtError BKrMovie_Play_Software(
 	UUtWindow inWindow,
 	BKtScale inScale) // unused
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	HBINK bink= NULL;
 	BKtBuffer *bink_buffer= NULL;
 	UUtBool done;
 	LItMode mode;
-	
+
 	UUtUns16 width;
 	UUtUns16 height;
-	
+
 	UUtUns32 flags= 0;
-	
+
 	UUmAssert(inMovieRef);
 	UUmAssert(inWindow);
-	
+
 	// create the bink handle
 	if (BKrBinkIsLoaded() && ((bink = BKrBink_Open(inMovieRef, 0)) != NULL))
 	{
-		// we must create a window specifically for playing Bink movies into 
-		// since you cannot reliably draw 2-D graphics using GDI or QuickDraw into a 
+		// we must create a window specifically for playing Bink movies into
+		// since you cannot reliably draw 2-D graphics using GDI or QuickDraw into a
 		// window being used as an OpenGL context
 		UUtWindow window= NULL;
 		UUtRect window_rect;
-		
+
 		// make the movie window the same dimensions as the size of the movie when played back
 		window_rect.top= window_rect.left= 0;
 		window_rect.right= (short)bink->Width;
@@ -1089,11 +1093,11 @@ static UUtError BKrMovie_Play_Software(
 			window_rect.right*= 2;
 			window_rect.bottom*= 2;
 		}
-		
+
 		// center window_rect inside of inWindow
 		{
 			int dx, dy;
-			
+
 			dx= (width - (window_rect.right - window_rect.left)) >> 1;
 			dy= (height - (window_rect.bottom - window_rect.top)) >> 1;
 			window_rect.top+= dy;
@@ -1101,7 +1105,7 @@ static UUtError BKrMovie_Play_Software(
 			window_rect.bottom+= dy;
 			window_rect.right+= dx;
 		}
-		
+
 		// close bink
 		BinkClose(bink);
 
@@ -1110,24 +1114,24 @@ static UUtError BKrMovie_Play_Software(
 	*/
 
 		// create the window, bink handle, buffer
-		
+
 		if (((window= (UUtWindow)AUrWindow_New(&window_rect)) != NULL) &&
 			((bink= BKrBink_Open(inMovieRef, flags)) != NULL) &&
 			((bink_buffer= BKiBuffer_New(window, bink->Width, bink->Height)) != NULL))
 		{
 			// set the position of the movie within the window
 			BKiBuffer_SetPosition(bink_buffer, 0, 0);
-			
+
 			// set the input mode to normal
 			mode= LIrMode_Get();
 			LIrMode_Set(LIcMode_Normal);
-			
+
 			// play the movie
 			done= UUcFalse;
 			do
 			{
 				LItInputEvent event= {0};
-				
+
 				// check for an event
 				if (LIrInputEvent_Get(&event) == UUcTrue)
 				{
@@ -1139,7 +1143,7 @@ static UUtError BKrMovie_Play_Software(
 						break;
 					}
 				}
-				
+
 				if (done == UUcFalse)
 				{
 					// display the movie
@@ -1163,7 +1167,7 @@ static UUtError BKrMovie_Play_Software(
 			#endif
 			}
 			while (done == UUcFalse);
-			
+
 			// restore the input mode
 			LIrMode_Set(mode);
 		}
@@ -1178,7 +1182,7 @@ static UUtError BKrMovie_Play_Software(
 	}
 
 	BKrMovie_Statistics(bink);
-	
+
 	if (bink_buffer != NULL)
 	{
 		BKiBuffer_Delete(bink_buffer);
@@ -1203,12 +1207,12 @@ UUtError BKrMovie_Play_OpenGL(
 	UUtWindow window,
 	BKtScale scale_type)
 {
-#if 0
+#if defined(BINK_VIDEO) && BINK_VIDEO
 	HBINK bink= NULL;
 	UUtBool done= UUcFalse;
 	LItMode mode;
 	UUtBool use_hardware= UUcTrue;
-	
+
 	UUmAssert(movie_ref);
 	UUmAssert(window);
 	UUmAssert(gl->engine_initialized);
@@ -1277,7 +1281,7 @@ UUtError BKrMovie_Play_OpenGL(
 				// set the input mode to normal
 				mode= LIrMode_Get();
 				LIrMode_Set(LIcMode_Normal);
-					
+
 				bink_rad_textures= gl_create_bink_textures(128, bink->Width, bink->Height, scale);
 				UUmAssert(gl_GetError() == GL_NO_ERROR);
 
@@ -1294,12 +1298,12 @@ UUtError BKrMovie_Play_OpenGL(
 					do
 					{
 						LItInputEvent event;
-						
+
 						// check for an event
 						done= (LIrInputEvent_Get(&event) &&
 							((event.type == LIcInputEvent_KeyDown) ||
 							(event.type == LIcInputEvent_LMouseDown)));
-							
+
 						if (!done)
 						{
 							// stop if this was the last frame
@@ -1312,7 +1316,7 @@ UUtError BKrMovie_Play_OpenGL(
 							{
 								UUtError err;
 								long unused;
-								
+
 								err= gl->draw_context_methods.frameStart(0);
 								UUmAssert(err == UUcError_None);
 								gl_render_bink_movie_frame(bink, xo, yo);
@@ -1335,12 +1339,12 @@ UUtError BKrMovie_Play_OpenGL(
 				{
 					UUrDebuggerMessage("could not create GL textures for bink movie");
 				}
-			
+
 				// restore the input mode
 				LIrMode_Set(mode);
 
 				BKrMovie_Statistics(bink);
-				
+
 				BinkClose(bink);
 			}
 			else
