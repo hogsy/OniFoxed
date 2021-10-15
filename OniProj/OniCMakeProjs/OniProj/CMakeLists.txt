@@ -1,4 +1,4 @@
-project(Oni)
+project(Oni LANGUAGES C)
 
 set(SOURCE_FILES
         #Bungie Framework
