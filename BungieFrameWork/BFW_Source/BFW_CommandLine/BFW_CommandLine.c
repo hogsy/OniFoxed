@@ -27,7 +27,12 @@ CLrGetCommandLine(
 	char*			inArgv[],
 	char			***outArgV)
 {
-#if UUmPlatform == UUmPlatform_Mac
+#if UUmSDL
+	//TODO: SDL startup dialog window?
+	//      Mac can set up bindings I guess, dunno what the Win32 one offers
+	*outArgV = inArgv;
+	return inArgc;
+#elif UUmPlatform == UUmPlatform_Mac
 	return CLrPlatform_GetCommandLine(outArgV);
 #elif UUmPlatform == UUmPlatform_Win32
 	return CLrPlatform_GetCommandLine(inArgc, inArgv, outArgV);

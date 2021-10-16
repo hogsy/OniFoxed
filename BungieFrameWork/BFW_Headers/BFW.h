@@ -74,6 +74,7 @@ extern "C" {
  */
 	#define UUmPlatform_Win32		1
 	#define UUmPlatform_Mac			2
+	#define UUmPlatform_Linux		3
 	
 	#define UUmProcessor_Pentium	1
 	#define UUmProcessor_PPC		2
@@ -100,6 +101,8 @@ extern "C" {
 			#define UUmPlatform	UUmPlatform_Mac
 		#elif (defined(__MWERKS__) && defined(__INTEL__)) || defined(_MSC_VER) || defined(__WATCOMC__)
 			#define UUmPlatform	UUmPlatform_Win32
+		#elif defined(__linux__)
+			#define UUmPlatform	UUmPlatform_Linux
 		#else
 			#error Unknown platform - please specify and then do a search on UUmPlatform to add the needed cases
 		#endif
@@ -115,7 +118,7 @@ extern "C" {
 				#define UUmSIMD		UUmSIMD_None
 			#endif
 			
-		#elif defined(i386)
+		#elif defined(i386) || defined(__i386__)
 			#define UUmProcessor	UUmProcessor_Pentium
 			#define UUmSIMD			UUmSIMD_None
 
@@ -221,7 +224,11 @@ extern "C" {
 /*
  * Include platform and system header files
  */
-	#if UUmPlatform == UUmPlatform_Win32
+	#if UUmSDL
+		#include <SDL2/SDL_assert.h>
+		#include <SDL2/SDL_video.h>
+		#include <SDL2/SDL_platform.h>
+	#elif UUmPlatform == UUmPlatform_Win32
 		#if UUmCompiler	!= UUmCompiler_MWerks	
 			#include <windows.h>
 		#endif
@@ -309,15 +316,27 @@ extern "C" {
  * ============================= Useful typedefs =============================
  */
  
+#if UUmCompiler_GCC
+	#include <stdint.h>
+
+	typedef int8_t				UUtInt8;
+	typedef uint8_t				UUtUns8;
+	typedef int16_t				UUtInt16;
+	typedef uint16_t			UUtUns16;
+	typedef int32_t				UUtInt32;
+	typedef uint32_t			UUtUns32;
+	typedef int64_t				UUtInt64;
+	typedef uint64_t			UUtUns64;
+
+	#define UUmFS_UUtUns64		"%qu"
+	#define UUmFS_UUtInt64		"%qd"
+#else
 	typedef unsigned long		UUtUns32;
 	typedef long				UUtInt32;
 	typedef unsigned short		UUtUns16;
 	typedef short				UUtInt16;
 	typedef unsigned char  		UUtUns8;
 	typedef signed char			UUtInt8;
-
-	typedef UUtUns8				UUtBool;
-	typedef UUtUns16			UUtError;
 
 #if UUmCompiler == UUmCompiler_MWerks || UUmCompiler == UUmCompiler_MrC
 
@@ -334,16 +353,12 @@ extern "C" {
 
 	#define UUmFS_UUtUns64		"%I64u"
 	#define UUmFS_UUtInt64		"%I64"
-        
-#elif UUmCompiler_GCC
-
-	typedef long long			UUtInt64;
-	typedef unsigned long long		UUtUns64;
-
-	#define UUmFS_UUtUns64		"%qu"
-	#define UUmFS_UUtInt64		"%qd"
 
 #endif
+#endif
+
+	typedef UUtUns8				UUtBool;
+	typedef UUtUns16			UUtError;
 
 	typedef tm_struct UUtRect
 	{
@@ -524,9 +539,11 @@ extern "C" {
 	int UUrEnterDebuggerInline(char *msg);
 
 	#if defined(DEBUGGING) && DEBUGGING
-		#if (UUmPlatform == UUmPlatform_Win32)
+		#if UUmSDL
+			#define UUmEnterDebugger SDL_TriggerBreakpoint()
+		#elif (UUmPlatform == UUmPlatform_Win32)
 			#define UUmEnterDebugger __asm { int 3 } UUmBlankFunction
-                #elif (UUmPlatform == UUmPlatform_Mac)
+		#elif (UUmPlatform == UUmPlatform_Mac)
 			#define UUmEnterDebugger DebugStr("\p")
 		#endif
 	#else
@@ -548,6 +565,12 @@ extern "C" {
 			
 				#define UUmAssertReadPtr(ptr, size) UUmAssert(!IsBadReadPtr(ptr, size));
 				#define UUmAssertWritePtr(ptr, size) UUmAssert(!IsBadWritePtr(ptr, size));
+			
+			#elif UUmPlatform == UUmPlatform_Linux
+			
+				//FIXME
+				#define UUmAssertReadPtr(ptr, size)
+				#define UUmAssertWritePtr(ptr, size)
 			
 			#endif
 
@@ -581,6 +604,12 @@ extern "C" {
 			
 				#define UUmAssertReadPtr(ptr, size) UUmAssert(!IsBadReadPtr(ptr, size) && (0xDDDDDDDD != ((UUtUns32) ptr)));
 				#define UUmAssertWritePtr(ptr, size) UUmAssert(!IsBadWritePtr(ptr, size) && (0xDDDDDDDD != ((UUtUns32) ptr)));
+			
+			#elif UUmPlatform == UUmPlatform_Linux
+			
+				//FIXME
+				#define UUmAssertReadPtr(ptr, size)
+				#define UUmAssertWritePtr(ptr, size)
 			
 			#endif
 
@@ -1408,6 +1437,10 @@ extern "C" {
 	
 			#define UUmNL	"\r\n"
 	
+	#elif UUmPlatform == UUmPlatform_Linux
+	
+			#define UUmNL	"\n"
+	
 	#else
 	
 		#error define me
@@ -1636,7 +1669,12 @@ FILE *UUrFOpen(
 /*
  * Application instance type
  */
-#if UUmPlatform == UUmPlatform_Win32
+#if UUmSDL
+
+	typedef struct {}			UUtAppInstance;
+	typedef SDL_Window*			UUtWindow;
+
+#elif UUmPlatform == UUmPlatform_Win32
 
 	typedef HINSTANCE			UUtAppInstance;
 	typedef HWND				UUtWindow;

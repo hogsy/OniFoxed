@@ -1919,7 +1919,11 @@ SSiSoundChannel_IsPlaying(
 	SStSoundChannel				*inSoundChannel)
 {
 	if (inSoundChannel == NULL) { return UUcFalse; }
+#if UUmOpenAL
+	return SS2rPlatform_SoundChannel_IsPlaying(inSoundChannel);
+#else
 	return ((inSoundChannel->status & SScSCStatus_Playing) != 0);
+#endif
 }
 
 // ----------------------------------------------------------------------

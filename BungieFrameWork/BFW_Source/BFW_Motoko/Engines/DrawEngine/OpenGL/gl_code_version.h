@@ -15,6 +15,8 @@
 #define __ONADA__
 #elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
 #define __ONADA__
+#elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Linux)
+#define __ONADA__
 #else
 #error "platform not defined"
 #endif

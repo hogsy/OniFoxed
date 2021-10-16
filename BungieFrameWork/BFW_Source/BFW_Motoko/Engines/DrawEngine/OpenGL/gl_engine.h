@@ -10,7 +10,11 @@
 /*---------- headers */
 
 #include <GL/gl.h>
+#if UUmPlatform != UUmPlatform_Linux
 #include "glext.h"
+#else
+#define GL_TEXTURE_IMAGE_SIZE_ARB GL_TEXTURE_COMPRESSED_IMAGE_SIZE_ARB
+#endif
 
 #include "BFW_Motoko.h"
 #include "Motoko_Manager.h"
@@ -687,7 +691,10 @@ struct gl_state_global {
 	void *converted_data_buffer;
 
 	// platform-specific parameters
-#if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
+#if UUmSDL
+	SDL_GLContext context;
+	boolean gl_vsync_enabled;
+#elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
 	HDC device_context;
 	HGLRC render_context;
 	boolean gl_vsync_enabled;
