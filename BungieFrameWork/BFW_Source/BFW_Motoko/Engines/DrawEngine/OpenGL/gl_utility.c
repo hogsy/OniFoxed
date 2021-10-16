@@ -12,6 +12,10 @@
 #include "BFW_ScriptLang.h" // for registering console variables
 #include "Oni_Motoko.h" // for graphics quality
 
+#if UUmSDL
+#include <SDL2/SDL_video.h>
+#endif
+
 /*---------- structures */
 
 struct gl_texel_type_info
@@ -1945,9 +1949,12 @@ void gl_sync_to_vtrace(
 	boolean enable)
 {
 
-#if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
-	if (enable && !gl->gl_vsync_enabled)
+#if UUmSDL || defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
+	if (enable != gl->gl_vsync_enabled)
 	{
+#if UUmSDL
+		gl->gl_vsync_enabled= SDL_GL_SetSwapInterval(enable ? 1 : 0) == 0;
+#elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
 		if (!GL_EXT(wglSwapIntervalEXT))
 		{
 			GL_EXT(wglSwapIntervalEXT)= load_gl_extension_routine("wglSwapIntervalEXT");
@@ -1955,12 +1962,13 @@ void gl_sync_to_vtrace(
 
 		if (GL_EXT(wglSwapIntervalEXT))
 		{
-			gl->gl_vsync_enabled= GL_EXT(wglSwapIntervalEXT)(1);
+			gl->gl_vsync_enabled= GL_EXT(wglSwapIntervalEXT)(enable ? 1 : 0);
 			UUrStartupMessage("wglSwapIntervalEXT supported; vsync= %d", gl->gl_vsync_enabled);
 		}
+#endif
 	}
 #endif
-	//TODO: SDL_GL_SetSwapInterval()
+	
 	
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
 

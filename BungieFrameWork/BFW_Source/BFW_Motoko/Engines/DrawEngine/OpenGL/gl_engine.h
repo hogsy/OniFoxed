@@ -693,6 +693,7 @@ struct gl_state_global {
 	// platform-specific parameters
 #if UUmSDL
 	SDL_GLContext context;
+	boolean gl_vsync_enabled;
 #elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
 	HDC device_context;
 	HGLRC render_context;
