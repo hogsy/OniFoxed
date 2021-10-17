@@ -450,7 +450,7 @@ int WINAPI WinMain(
 	argv[0] = "";
 	AUrBuildArgumentList(ssCmdLine, iMaxArguments, (UUtUns32*)&argc, argv + 1);
 
-#if (UUmCompiler != UUmCompiler_VisC) || (defined(DEBUGGING) && DEBUGGING)
+#if (UUmPlatform != UUmPlatform_Win32) || (defined(DEBUGGING) && DEBUGGING)
 
 	#ifdef ONI_MAP_FILE
 	__try {
@@ -473,10 +473,14 @@ int WINAPI WinMain(
 		success = EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &original_display_mode);
 		UUmAssert(success);
 
-		__try 
+	// FIXME: add SEH for mingw
+	#ifdef _MSC_VER
+		__try
+	#endif
 		{
 			main(argc + 1, argv);
 		}
+	#ifdef _MSC_VER
 	#ifdef ONI_MAP_FILE
 		__except (handle_exception(GetExceptionInformation())) {
 	#else
@@ -485,6 +489,7 @@ int WINAPI WinMain(
 			ChangeDisplaySettings(&original_display_mode, 0);
 			MessageBox(NULL, "Blam, Oni crashed", "damn!", MB_OK);
 		}
+	#endif
 	}
 #endif
 

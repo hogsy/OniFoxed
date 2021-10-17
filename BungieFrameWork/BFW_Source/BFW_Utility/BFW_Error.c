@@ -209,10 +209,7 @@ void UUrError_Report_Internal(
 		enter_debugger= iDebuggerMessageBox(buffer);
 		if (enter_debugger)
 		{
-			__asm
-			{
-				int 3
-			}
+			__debugbreak();
 		}
 	}
 	#elif (UUmPlatform == UUmPlatform_Mac)

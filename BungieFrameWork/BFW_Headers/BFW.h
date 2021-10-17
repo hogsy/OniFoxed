@@ -98,7 +98,7 @@ extern "C" {
 	#if !defined(UUmPlatform)
 		#if (defined(__MWERKS__) && defined(__POWERPC__)) || defined(__MRC__) || defined(__MOTO__)
 			#define UUmPlatform	UUmPlatform_Mac
-		#elif (defined(__MWERKS__) && defined(__INTEL__)) || defined(_MSC_VER) || defined(__WATCOMC__)
+		#elif (defined(__MWERKS__) && defined(__INTEL__)) || defined(_WIN32) || defined(__WATCOMC__)
 			#define UUmPlatform	UUmPlatform_Win32
 		#else
 			#error Unknown platform - please specify and then do a search on UUmPlatform to add the needed cases
@@ -207,7 +207,7 @@ extern "C" {
 // #pragma warning( 1 : 4244)			// conversion (possible loss of data)
 #pragma warning( 1 : 4305)			// '=' : truncation from 'const int ' to 'char '
 //#pragma warning( 1 : 4310)			// cast truncates constant value
-#pragma warning( disable : 4505)	// unrefenced local function
+#pragma warning( disable : 4505)	// unreferenced local function
 #pragma warning( disable : 4514)	// unreferenced inline function
 #pragma warning( error : 4700)		// local variable used without having been initialized
 //#pragma warning(1 : 4701)			// local variable may be used without having been initialized
@@ -226,7 +226,7 @@ extern "C" {
 			#include <windows.h>
 		#endif
 
-		#include <WTYPES.h>	
+		#include <wtypes.h>
 		#include <ddraw.h>
 
 		#define DDPIXELFORMAT_dwRGBBitCount(x) (*(((DWORD *)&x) + 3))
