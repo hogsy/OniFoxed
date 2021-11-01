@@ -1133,7 +1133,7 @@ UUtPerformanceTimer *P3g_ParticleCollision = NULL;
  * routines
  */
 
-static P3rPointVisible(M3tPoint3D *inPoint, float inTolerance)
+static UUtBool P3rPointVisible(M3tPoint3D *inPoint, float inTolerance)
 {
 	UUtBool lensflare_visible = AKrEnvironment_PointIsVisible(inPoint);
 

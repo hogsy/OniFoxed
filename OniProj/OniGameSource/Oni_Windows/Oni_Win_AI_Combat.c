@@ -54,8 +54,8 @@ OWrEditCombat_Callback(
 		cEditCombat_AlarmFightTimer	= 605
 	};
 
-	WMtPopupMenu *behavior_menu[5];
-	WMtText		 *behavior_prompt[5];
+	WMtPopupMenu *behavior_menu[AI2cCombatRange_NumStoredRanges];
+	WMtText		 *behavior_prompt[AI2cCombatRange_NumStoredRanges];
 	WMtEditField *id_edit				= WMrDialog_GetItemByID(inDialog, cEditCombat_ID);
 	WMtEditField *name_edit				= WMrDialog_GetItemByID(inDialog, cEditCombat_Name);
 	WMtEditField *range_edit			= WMrDialog_GetItemByID(inDialog, cEditCombat_MedRange);
@@ -86,7 +86,7 @@ OWrEditCombat_Callback(
 	{
 		UUtUns16 itr;
 
-		for(itr = 0; itr < 5; itr++) {
+		for(itr = 0; itr < AI2cCombatRange_NumStoredRanges; itr++) {
 			behavior_prompt[itr] = WMrDialog_GetItemByID(inDialog, cEditCombat_Prompt_Base + itr);
 			behavior_menu[itr] = WMrDialog_GetItemByID(inDialog, cEditCombat_Menu_Base + itr);
 		}
@@ -107,7 +107,7 @@ OWrEditCombat_Callback(
 			{
 				UUtUns32 init_itr;
 
-				for(init_itr = 0; init_itr < 5; init_itr++) 
+				for(init_itr = 0; init_itr < AI2cCombatRange_NumStoredRanges; init_itr++) 
 				{
 					WMrPopupMenu_AppendStringList(behavior_menu[init_itr], AI2cBehavior_Max, AI2cBehaviorName);
 					WMrPopupMenu_SetSelection(behavior_menu[init_itr], (UUtUns16) combat_osd->behavior[init_itr]);
@@ -147,7 +147,7 @@ OWrEditCombat_Callback(
 
 				dirty = UUcTrue;
 
-				if ((menu_window_id >= cEditCombat_Menu_Base) && (menu_window_id < (cEditCombat_Menu_Base + 5))) {
+				if ((menu_window_id >= cEditCombat_Menu_Base) && (menu_window_id < (cEditCombat_Menu_Base + AI2cCombatRange_NumStoredRanges))) {
 					combat_osd->behavior[menu_window_id - cEditCombat_Menu_Base] = menu_item;
 				}
 				else if (menu_window_id == cEditCombat_MeleeWhen) {

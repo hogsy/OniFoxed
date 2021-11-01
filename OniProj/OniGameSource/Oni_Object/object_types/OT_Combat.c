@@ -255,7 +255,7 @@ OBJiCombat_SetDefaults(
 
 	outOSD->osd.combat_osd.flags = 0;
 	outOSD->osd.combat_osd.medium_range = AI2cCombatSettings_DefaultMediumRange;
-	for (itr = 0; itr < 5; itr++) {
+	for (itr = 0; itr < AI2cCombatRange_NumStoredRanges; itr++) {
 		outOSD->osd.combat_osd.behavior[itr] = AI2cCombatSettings_DefaultBehavior;
 	}
 	outOSD->osd.combat_osd.melee_when = AI2cCombatSettings_DefaultMeleeWhen;
@@ -410,7 +410,7 @@ OBJiCombat_SetOSD(
 	com_osd->id = inOSD->osd.combat_osd.id;
 	com_osd->flags = inOSD->osd.combat_osd.flags;
 
-	for (itr = 0; itr < 5; itr++) {
+	for (itr = 0; itr < AI2cCombatRange_NumStoredRanges; itr++) {
 		com_osd->behavior[itr] = inOSD->osd.combat_osd.behavior[itr];
 	}
 

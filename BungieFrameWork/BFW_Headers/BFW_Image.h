@@ -51,6 +51,14 @@
 	#define IMcShade_Gray25				(0xFF3F3F3F)
 	typedef UUtUns32 IMtShade;
 
+	static inline IMtShade MakeShadeARGB(UUtUns8 a, UUtUns8 r, UUtUns8 g, UUtUns8 b)
+	{
+		return ((IMtShade)a << 24) |
+		       ((IMtShade)r << 16) |
+		       ((IMtShade)g <<  8) |
+		       ((IMtShade)b <<  0) ;
+	}
+
 	typedef tm_enum IMtPixelType
 	{
 		IMcPixelType_ARGB4444,		// 2bytes per pixel

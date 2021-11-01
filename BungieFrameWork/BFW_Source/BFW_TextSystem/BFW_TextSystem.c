@@ -726,6 +726,7 @@ TSiString_GetNextCharacter(
 	UUtUns16			character;
 	
 	character = (UUtUns16)((UUtUns8)inString[0] << 8);
+	if (character == 0)  return character;
 	character |= (UUtUns16)((UUtUns8)inString[1]);
 	
 	if (TSiCharacter_IsDoubleByte(character) == UUcFalse)
@@ -735,26 +736,6 @@ TSiString_GetNextCharacter(
 
 	return character;
 }
-
-// ----------------------------------------------------------------------
-static UUtUns16
-TSiString_GetPrevCharacter(
-	const char			*inString)
-{
-	UUtUns16			character;
-	
-	character = *((UUtUns16*)(inString - 2));
-	
-	if (TSiCharacter_IsDoubleByte(character) == UUcFalse)
-	{
-		character &= 0x00FF;
-	}
-	
-	return character;
-}
-
-
-
 
 // ======================================================================
 #if 0 

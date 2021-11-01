@@ -67,7 +67,7 @@ enum {
 // type of move
 #define AI2cMoveType_Shift				28
 #define AI2cMoveType_Bits				(32 - AI2cMoveType_Shift)
-#define AI2cMoveType_Mask				(((1 << AI2cMoveType_Bits) - 1) << AI2cMoveType_Shift)
+#define AI2cMoveType_Mask				(((1u << AI2cMoveType_Bits) - 1) << AI2cMoveType_Shift)
 
 enum {
 	AI2cMoveType_Attack								= (0 << AI2cMoveType_Shift),

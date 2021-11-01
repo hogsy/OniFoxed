@@ -873,7 +873,7 @@ UUtError AI2rInitializeCharacter(ONtCharacter *ioCharacter, const OBJtOSD_Charac
 		ioCharacter->ai2State.combatSettings.flags = combat_data.flags;
 		ioCharacter->ai2State.combatSettings.medium_range = combat_data.medium_range;
 		
-		for (itr = 0; itr < AI2cCombatRange_Max; itr++) {
+		for (itr = 0; itr < AI2cCombatRange_NumStoredRanges; itr++) {
 			ioCharacter->ai2State.combatSettings.behavior[itr] = (AI2tBehaviorType)combat_data.behavior[itr];
 		}
 
@@ -895,7 +895,7 @@ UUtError AI2rInitializeCharacter(ONtCharacter *ioCharacter, const OBJtOSD_Charac
 		// set up default combat settings
 		ioCharacter->ai2State.combatSettings.flags = 0;
 		ioCharacter->ai2State.combatSettings.medium_range = AI2cCombatSettings_DefaultMediumRange;
-		for (itr = 0; itr < AI2cCombatRange_Max; itr++) {
+		for (itr = 0; itr < AI2cCombatRange_NumStoredRanges; itr++) {
 			ioCharacter->ai2State.combatSettings.behavior[itr] = AI2cCombatSettings_DefaultBehavior;
 		}
 		ioCharacter->ai2State.combatSettings.melee_when = AI2cCombatSettings_DefaultMeleeWhen;

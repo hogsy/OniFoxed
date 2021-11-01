@@ -101,7 +101,7 @@ extern "C" {
 	#define M3cMaxNumEngines			(2)
 	#define M3cMaxNameLen				(64)
 	
-	#define M3cMaxAlpha					(255)
+	#define M3cMaxAlpha					((UUtUns32)255)
 	
 	#define M3cBBoxSideBV_PosX			1 // S.S. (1 << 0)
 	#define M3cBBoxSideBV_NegX			2 // S.S. (1 << 1)

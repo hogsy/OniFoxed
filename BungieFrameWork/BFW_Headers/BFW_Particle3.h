@@ -944,9 +944,9 @@ extern const P3tString P3gEventName[P3cMaxNumEvents];
 
 #define P3cLensFrames_TypeOffset	16
 #define P3cLensFrames_TypeBits		16
-#define P3cLensFrames_TypeMask		(((1 << P3cLensFrames_TypeBits) - 1) << P3cLensFrames_TypeOffset)
+#define P3cLensFrames_TypeMask		(((1u << P3cLensFrames_TypeBits) - 1) << P3cLensFrames_TypeOffset)
 #define P3cLensFrames_FrameBits		16
-#define P3cLensFrames_FrameMask		((1 << P3cLensFrames_FrameBits) - 1)
+#define P3cLensFrames_FrameMask		((1u << P3cLensFrames_FrameBits) - 1)
 
 enum {
 	P3cLensFrames_Unset			= (0 << P3cLensFrames_TypeOffset),
@@ -1962,7 +1962,7 @@ typedef UUtUns32 P3tParticleReference;
 #define P3cParticleReference_BlockMask		((1 << P3cParticleReference_BlockBits) - 1)
 
 #define P3cParticleReference_Null			0
-#define P3cParticleReference_Valid			(1 << 31)
+#define P3cParticleReference_Valid			(1u << 31)
 
 #define P3mUnpackParticleReference(ref, classptr, particleptr) {									\
 	UUtUns32 classval, indexval, blockval;															\

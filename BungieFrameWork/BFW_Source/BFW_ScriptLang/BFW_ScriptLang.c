@@ -223,7 +223,8 @@ SLrScript_ExecuteOnce(
 	SLtErrorContext				errorContext;
 	SLtParameter_Actual			local_buffer[SLcScript_MaxNumParams];
 
-	UUrMemory_MoveFast(inParameterList, local_buffer, sizeof(SLtParameter_Actual) * inParameterListLength);
+	if (inParameterListLength)
+		UUrMemory_MoveFast(inParameterList, local_buffer, sizeof(SLtParameter_Actual) * inParameterListLength);
 	
 	errorContext.fileName = "(called from engine)";
 	errorContext.funcName = UUrMemory_String_GetStr(SLgLexemMemory, inName);
