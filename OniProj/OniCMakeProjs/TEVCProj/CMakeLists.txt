@@ -21,7 +21,7 @@ set(BFW_SOURCE_FILES
         ../../../BungieFrameWork/BFW_ToolSource/Common/TemplateExtractor/TE_Extract.c
         ../../../BungieFrameWork/BFW_ToolSource/Common/TemplateExtractor/TE_Parser.c
         ../../../BungieFrameWork/BFW_ToolSource/Common/TemplateExtractor/TE_Symbol.c
-        )
+)
 
 if (WIN32)
     add_executable(TEVCProj
@@ -32,7 +32,7 @@ if (WIN32)
 
             # shoved here for now
             ../../OniWin32Projs/ImpConsole/templatechecksum.c
-            )
+    )
 endif ()
 
 target_precompile_headers(TEVCProj PRIVATE ../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h)
@@ -41,5 +41,21 @@ if (MSVC)
     target_compile_options(TEVCProj
             PRIVATE
             /FI../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h
-            )
+    )
+endif ()
+
+set(TEVCProjExecutable "")
+if (WIN32)
+    set(TEVCProjExecutable "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TEVCProj.exe")
+else ()
+    set(TEVCProjExecutable "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TEVCProj")
+endif ()
+
+if (EXISTS "${TEVCProjExecutable}")
+    message("Found TEVCProj under output directory, attempting to update templatechecksum.c")
+    execute_process(
+            COMMAND "${TEVCProjExecutable}"
+            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/OniProj/OniCMakeProjs/TEVCProj/")
+else ()
+    message("Failed to find TEVCProj under output directory (${CMAKE_RUNTIME_OUTPUT_DIRECTORY})!")
 endif ()
