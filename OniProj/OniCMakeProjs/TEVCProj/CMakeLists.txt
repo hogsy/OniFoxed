@@ -44,6 +44,7 @@ if (MSVC)
     )
 endif ()
 
+set(TEVCWorkingDirectory "${CMAKE_SOURCE_DIR}/OniProj/OniCMakeProjs/TEVCProj")
 set(TEVCProjExecutable "")
 if (WIN32)
     set(TEVCProjExecutable "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TEVCProj.exe")
@@ -55,7 +56,25 @@ if (EXISTS "${TEVCProjExecutable}")
     message("Found TEVCProj under output directory, attempting to update templatechecksum.c")
     execute_process(
             COMMAND "${TEVCProjExecutable}"
-            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/OniProj/OniCMakeProjs/TEVCProj/")
+            WORKING_DIRECTORY "${TEVCWorkingDirectory}")
+
+    # check if anything was spat out
+    if (EXISTS "${TEVCWorkingDirectory}/templatechecksum.c")
+        message("Overwriting templatechecksum.c with new copy...")
+        # remove it, overwrite is unreliable/unsupported with cmake?
+        file(REMOVE "${CMAKE_SOURCE_DIR}/OniProj/OniWin32Projs/ImpConsole/templatechecksum.c")
+        # and now copy the new file over
+        file(COPY_FILE
+                "${TEVCWorkingDirectory}/templatechecksum.c"
+                "${CMAKE_SOURCE_DIR}/OniProj/OniWin32Projs/ImpConsole/templatechecksum.c"
+                RESULT error
+        )
+        if (NOT ${error} EQUAL 0)
+            message(FATAL_ERROR "Failed to copy templatechecksum.c to destination!")
+        endif ()
+    else ()
+        message("No output found, likely checksum match.")
+    endif ()
 else ()
-    message("Failed to find TEVCProj under output directory (${CMAKE_RUNTIME_OUTPUT_DIRECTORY})!")
+    message(" Failed to find TEVCProj under output directory (${CMAKE_RUNTIME_OUTPUT_DIRECTORY}) !")
 endif ()
