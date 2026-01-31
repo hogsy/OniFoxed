@@ -1539,7 +1539,7 @@ void TRrQuatArray_Zero(
 #define PSX2_ASM_QUATERNION_LERPS
 #endif
 
-#if defined(UUmPlatform) && ((UUmPlatform == UUmPlatform_SonyPSX2) || (UUmPlatform == UUmPlatform_Win32) || (UUmPlatform == UUmPlatform_Mac))
+#if defined(UUmPlatform) && ((UUmPlatform == UUmPlatform_SonyPSX2) || (UUmPlatform == UUmPlatform_Win32) || (UUmPlatform == UUmPlatform_Mac) || (UUmPlatform == UUmPlatform_Linux))
 
 //
 // The Rock Star Canada animation uncompression routine.

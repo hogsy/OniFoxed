@@ -119,7 +119,7 @@ IMPiLM_Process_LSData_Read(
 	
 	UUtUns16				itr;
 
-	#if (UUmPlatform == UUmPlatform_Win32) && (UUmCompiler != UUmCompiler_MWerks)
+	#if ((UUmPlatform == UUmPlatform_Win32) || (UUmPlatform == UUmPlatform_Linux)) && (UUmCompiler != UUmCompiler_MWerks)
 	
 		error =
 			BFrFileRef_DuplicateAndReplaceName(
@@ -833,7 +833,7 @@ IMPrEnv_Process_LightMap(
 		{
 			UUtError error;
 
-			#if (UUmPlatform == UUmPlatform_Win32) && (UUmCompiler != UUmCompiler_MWerks)
+			#if ((UUmPlatform == UUmPlatform_Win32) || (UUmPlatform == UUmPlatform_Linux)) && (UUmCompiler != UUmCompiler_MWerks)
 			{
 				BFtFileRef*		lpOutputDir;
 				BFtFileRef*		curLPFileRef;

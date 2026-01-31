@@ -10,11 +10,13 @@
 #include "BFW.h"
 #include "BFW_SoundSystem2.h"
 
-#if UUmPlatform == UUmPlatform_Mac
+#if UUmOpenAL
+	#include "BFW_SS2_Platform_OpenAL.h"
+#elif UUmPlatform == UUmPlatform_Mac
 	#include "BFW_SS2_Platform_MacOS.h"
 #elif UUmPlatform == UUmPlatform_Win32
 	#include "BFW_SS2_Platform_Win32.h"
-#elif
+#else
 	#error Platform Undefined
 #endif
 

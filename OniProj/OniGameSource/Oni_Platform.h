@@ -18,7 +18,11 @@
 
 #include "BFW_Motoko.h"
 
-#if UUmPlatform == UUmPlatform_Mac
+#if UUmSDL
+
+#include "Oni_Platform_SDL.h"
+
+#elif UUmPlatform == UUmPlatform_Mac
 
 #include "Oni_Platform_Mac.h"
 

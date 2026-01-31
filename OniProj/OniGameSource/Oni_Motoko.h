@@ -33,7 +33,7 @@ typedef enum ONtGraphicsQuality
 	
 	ONcGraphicsQuality_Min = ONcGraphicsQuality_0,
 	ONcGraphicsQuality_Max = ONcGraphicsQuality_4,
-	ONcGraphicsQuality_Default = ONcGraphicsQuality_2
+	ONcGraphicsQuality_Default = ONcGraphicsQuality_Max
 
 } ONtGraphicsQuality;
 
