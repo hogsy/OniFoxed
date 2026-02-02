@@ -7,7 +7,7 @@
 **
 **	File:		FileCopy.h
 **
-**	Copyright © 1992-1999 Apple Computer, Inc.
+**	Copyright Â© 1992-1999 Apple Computer, Inc.
 **	All rights reserved.
 **
 **	You may incorporate this sample code into your applications without
@@ -43,7 +43,7 @@ pascal	OSErr	FileCopy(short srcVRefNum,
 						 void *copyBufferPtr,
 						 long copyBufferSize,
 						 Boolean preflight);
-/*	¦ Duplicate a file and optionally rename it.
+/*	Â¶ Duplicate a file and optionally rename it.
 	The FileCopy function duplicates a file and optionally renames it.
 	Since the PBHCopyFile routine is only available on some
 	AFP server volumes under specific conditions, this routine
@@ -83,14 +83,14 @@ pascal	OSErr	FileCopy(short srcVRefNum,
 	
 	Result Codes
 		noErr				0		No error
-		readErr				Ð19		Driver does not respond to read requests
-		writErr				Ð20		Driver does not respond to write requests
-		badUnitErr			Ð21		Driver reference number does not
+		readErr				â€“19		Driver does not respond to read requests
+		writErr				â€“20		Driver does not respond to write requests
+		badUnitErr			â€“21		Driver reference number does not
 									match unit table
-		unitEmptyErr		Ð22		Driver reference number specifies a
+		unitEmptyErr		â€“22		Driver reference number specifies a
 									nil handle in unit table
-		abortErr			Ð27		Request aborted by KillIO
-		notOpenErr			Ð28		Driver not open
+		abortErr			â€“27		Request aborted by KillIO
+		notOpenErr			â€“28		Driver not open
 		dskFulErr			-34		Destination volume is full
 		nsvErr				-35		No such volume
 		ioErr				-36		I/O error
@@ -132,7 +132,7 @@ pascal	OSErr	FSpFileCopy(const FSSpec *srcSpec,
 							void *copyBufferPtr,
 							long copyBufferSize,
 							Boolean preflight);
-/*	¦ Duplicate a file and optionally rename it.
+/*	Â¶ Duplicate a file and optionally rename it.
 	The FSpFileCopy function duplicates a file and optionally renames it.
 	Since the PBHCopyFile routine is only available on some
 	AFP server volumes under specific conditions, this routine
@@ -168,14 +168,14 @@ pascal	OSErr	FSpFileCopy(const FSSpec *srcSpec,
 	
 	Result Codes
 		noErr				0		No error
-		readErr				Ð19		Driver does not respond to read requests
-		writErr				Ð20		Driver does not respond to write requests
-		badUnitErr			Ð21		Driver reference number does not
+		readErr				â€“19		Driver does not respond to read requests
+		writErr				â€“20		Driver does not respond to write requests
+		badUnitErr			â€“21		Driver reference number does not
 									match unit table
-		unitEmptyErr		Ð22		Driver reference number specifies a
+		unitEmptyErr		â€“22		Driver reference number specifies a
 									nil handle in unit table
-		abortErr			Ð27		Request aborted by KillIO
-		notOpenErr			Ð28		Driver not open
+		abortErr			â€“27		Request aborted by KillIO
+		notOpenErr			â€“28		Driver not open
 		dskFulErr			-34		Destination volume is full
 		nsvErr				-35		No such volume
 		ioErr				-36		I/O error

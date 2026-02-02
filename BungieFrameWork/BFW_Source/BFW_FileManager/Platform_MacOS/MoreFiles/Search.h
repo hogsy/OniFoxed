@@ -7,7 +7,7 @@
 **
 **	File:		Search.h
 **
-**	Copyright © 1992-1999 Apple Computer, Inc.
+**	Copyright Â© 1992-1999 Apple Computer, Inc.
 **	All rights reserved.
 **
 **	You may incorporate this sample code into your applications without
@@ -35,7 +35,7 @@ extern "C" {
 
 pascal	OSErr	IndexedSearch(CSParamPtr pb,
 							  long dirID);
-/*	¦ Search in and below a directory.
+/*	Â¶ Search in and below a directory.
 	The IndexedSearch function performs an indexed search in and below the
 	specified directory using the same parameters (in pb) as is passed to
 	PBCatSearch. See Inside Macintosh: Files for a description of the
@@ -79,7 +79,7 @@ pascal	OSErr	IndexedSearch(CSParamPtr pb,
 /*****************************************************************************/
 
 pascal	OSErr	PBCatSearchSyncCompat(CSParamPtr paramBlock);
-/*	¦ Search a volume using PBCatSearch or IndexedSearch.
+/*	Â¶ Search a volume using PBCatSearch or IndexedSearch.
 	The PBCatSearchSyncCompat function uses PBCatSearch (if available) or
 	IndexedSearch (if PBCatSearch is not available) to search a volume
 	using a set of search criteria that you specify. It builds a list of all
@@ -130,7 +130,7 @@ pascal	OSErr	NameFileSearch(ConstStr255Param volName,
 							   long *actMatchCount,
 							   Boolean newSearch,
 							   Boolean partial);
-/*	¦ Search for files by file name with PBCatSearch.
+/*	Â¶ Search for files by file name with PBCatSearch.
 	The NameFileSearch function searches for files with a specific file
 	name on a volume that supports PBCatSearch.
 	Note: A result of catChangedErr means the catalog has changed between
@@ -187,7 +187,7 @@ pascal	OSErr	CreatorTypeFileSearch(ConstStr255Param volName,
 									  long reqMatchCount,
 									  long *actMatchCount,
 									  Boolean newSearch);
-/*	¦ Search for files by creator/fileType with PBCatSearch.
+/*	Â¶ Search for files by creator/fileType with PBCatSearch.
 	The CreatorTypeFileSearch function searches for files with a specific
 	creator or fileType on a volume that supports PBCatSearch.
 	Note: A result of catChangedErr means the catalog has changed between

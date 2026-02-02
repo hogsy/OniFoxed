@@ -5,7 +5,7 @@
 **
 **	File:		IterateDirectory.c
 **
-**	Copyright © 1995-1999 Jim Luther and Apple Computer, Inc.
+**	Copyright Â© 1995-1999 Jim Luther and Apple Computer, Inc.
 **	All rights reserved.
 **
 **	You may incorporate this sample code into your applications without

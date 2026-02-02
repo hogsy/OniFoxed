@@ -5,7 +5,7 @@
 **
 **	File:		IterateDirectory.h
 **
-**	Copyright © 1995-1999 Jim Luther and Apple Computer, Inc.
+**	Copyright Â© 1995-1999 Jim Luther and Apple Computer, Inc.
 **	All rights reserved.
 **
 **	You may incorporate this sample code into your applications without
@@ -33,7 +33,7 @@ extern "C" {
 typedef	pascal	void (*IterateFilterProcPtr) (const CInfoPBRec * const cpbPtr,
 											  Boolean *quitFlag,
 											  void *yourDataPtr);
-/*	¦ Prototype for the IterateFilterProc function IterateDirectory calls.
+/*	Â¶ Prototype for the IterateFilterProc function IterateDirectory calls.
 	This is the prototype for the IterateFilterProc function which is
 	called once for each file and directory found by IterateDirectory. The
 	IterateFilterProc gets a pointer to the CInfoPBRec that IterateDirectory
@@ -72,7 +72,7 @@ pascal	OSErr	IterateDirectory(short vRefNum,
 								 unsigned short maxLevels,
 								 IterateFilterProcPtr iterateFilter,
 								 void *yourDataPtr);
-/*	¦ Iterate (scan) through a directory's content.
+/*	Â¶ Iterate (scan) through a directory's content.
 	The IterateDirectory function performs a recursive iteration (scan) of
 	the specified directory and calls your IterateFilterProc function once
 	for each file and directory found.
@@ -121,7 +121,7 @@ pascal	OSErr	FSpIterateDirectory(const FSSpec *spec,
 									unsigned short maxLevels,
 									IterateFilterProcPtr iterateFilter,
 									void *yourDataPtr);
-/*	¦ Iterate (scan) through a directory's content.
+/*	Â¶ Iterate (scan) through a directory's content.
 	The FSpIterateDirectory function performs a recursive iteration (scan)
 	of the specified directory and calls your IterateFilterProc function once
 	for each file and directory found.
