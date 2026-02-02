@@ -2907,7 +2907,7 @@ AUrFlags_PrintFromValue(
 			}
 			inFlagList++;
 		}
-		fprintf(inFile, "???(%d)", inValue);
+		fprintf(inFile, "???" "(%d)", inValue);
 	}
 }
 
