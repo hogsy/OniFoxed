@@ -45,17 +45,11 @@ if (MSVC)
 endif ()
 
 set(TEVCWorkingDirectory "${CMAKE_SOURCE_DIR}/OniProj/OniCMakeProjs/TEVCProj")
-set(TEVCProjExecutable "")
-if (WIN32)
-    set(TEVCProjExecutable "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TEVCProj.exe")
-else ()
-    set(TEVCProjExecutable "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TEVCProj")
-endif ()
 
-if (EXISTS "${TEVCProjExecutable}")
+if (TARGET TEVCProj AND NOT CMAKE_CROSSCOMPILING)
     message("Found TEVCProj under output directory, attempting to update templatechecksum.c")
     execute_process(
-            COMMAND "${TEVCProjExecutable}"
+            COMMAND TEVCProj
             WORKING_DIRECTORY "${TEVCWorkingDirectory}")
 
     # check if anything was spat out
