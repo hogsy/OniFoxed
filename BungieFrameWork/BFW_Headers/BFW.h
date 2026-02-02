@@ -317,6 +317,7 @@ extern "C" {
  */
  
 #if UUmCompiler_GCC
+	#include <inttypes.h>
 	#include <stdint.h>
 
 	typedef int8_t				UUtInt8;
@@ -328,8 +329,8 @@ extern "C" {
 	typedef int64_t				UUtInt64;
 	typedef uint64_t			UUtUns64;
 
-	#define UUmFS_UUtUns64		"%qu"
-	#define UUmFS_UUtInt64		"%qd"
+	#define UUmFS_UUtUns64		"%" PRIu64
+	#define UUmFS_UUtInt64		"%" PRIs64
 #else
 	typedef unsigned long		UUtUns32;
 	typedef long				UUtInt32;
