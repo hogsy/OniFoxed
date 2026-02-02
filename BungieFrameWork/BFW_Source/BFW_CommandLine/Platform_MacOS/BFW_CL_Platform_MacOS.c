@@ -243,7 +243,7 @@ static char *key_labels[]= {
 	"control",
 	//{ "leftwindows", },
 	"option",
-	"ð (command)",
+	"\xf0 (command)",
 	"space",
 	//{ "rightalt",	},
 	//{ "rightoption",},
