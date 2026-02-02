@@ -329,9 +329,6 @@ TErExtract(
 			curSymbol = curSymbol->next;
 		}
 	
-	// if our total checksum has not changed then we are done
-		if(totalChecksum == TMgTemplateChecksum) return UUcError_None;
-	
 	// If we are here then we need to output templatechecksum.c
 	
 	// Write out the dumpfile
@@ -374,8 +371,11 @@ TErExtract(
 			}
 			curSymbol = curSymbol->next;
 		}
-		
-		BFrFile_Printf(logFile, "* Templates changed"UUmNL);
+
+		if(totalChecksum != TMgTemplateChecksum)
+		{
+			BFrFile_Printf(logFile, "* Templates changed"UUmNL);
+		}
 		curSymbol = TEgSymbolList;
 		while(curSymbol)
 		{
@@ -424,11 +424,14 @@ TErExtract(
 		BFrFile_Close(logFile);
 		BFrFileRef_Dispose(logFileRef);
 
+	if(totalChecksum != TMgTemplateChecksum)
+	{
+		fprintf(stderr, "*** TEMPLATE CHECKSUM CHANGED\n");
+	}
+
 	TMgTemplateChecksum = totalChecksum;
 	TMgNumTemplateDefinitions = (UUtUns32)totalChecksumFactor;
-	
-	fprintf(stderr, "*** TEMPLATE CHECKSUM CHANGED\n");
-	
+
 	error = BFrFileRef_MakeFromName("templatechecksum.c", &cFileRef);
 	UUmError_ReturnOnError(error);
 	error = BFrFile_Open(cFileRef, "w", &cFile);
