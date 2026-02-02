@@ -164,8 +164,8 @@ static char**					COgCompletionNames;
 static UUtUns16					COgNumCompletionNames;
 static UUtBool					COgPerformCompletionOnTab;
 
-extern IMtShade COgDefaultTextShade = IMcShade_White;
-extern IMtShade COgDefaultTextShadowShade = IMcShade_Gray25;
+IMtShade COgDefaultTextShade = IMcShade_White;
+IMtShade COgDefaultTextShadowShade = IMcShade_Gray25;
 
 
 // ======================================================================

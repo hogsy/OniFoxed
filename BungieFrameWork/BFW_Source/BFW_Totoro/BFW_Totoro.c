@@ -1759,24 +1759,24 @@ static void TRrQuatArray_SetAnimationInternal(
 						frame_vector[0]=into_gap;
 						frame_vector[1]=frame_gap;
 
-        				asm __volatile__("
-            				lqc2 vf01, 0(%0)
-            				lqc2 vf02, 0(%1)
-            				lqc2 vf29, 0(%3)
-            				vcallms quat_lerp
-							mtsab	$0,8
-            				qmfc2.i $6, vf13
-							qfsrv	$5, $5, $6
-							nop
-							nop
-							sdl $6, 0(%2)
-							sdr $6, 0(%2)
-							sdl $5, 8(%2)
-							sdr $5, 8(%2)
-							nop
-							nop
-							
-            				" :: "r" (interp), "r" (interp+1), "r" (quaternions+i), "r" (frame_vector): "$5","$6");
+        				asm __volatile__(
+            				"lqc2 vf01, 0(%0)\n\t"
+            				"lqc2 vf02, 0(%1)\n\t"
+            				"lqc2 vf29, 0(%3)\n\t"
+            				"vcallms quat_lerp\n\t"
+							"mtsab	$0,8\n\t"
+            				"qmfc2.i $6, vf13\n\t"
+							"qfsrv	$5, $5, $6\n\t"
+							"nop\n\t"
+							"nop\n\t"
+							"sdl $6, 0(%2)\n\t"
+							"sdr $6, 0(%2)\n\t"
+							"sdl $5, 8(%2)\n\t"
+							"sdr $5, 8(%2)\n\t"
+							"nop\n\t"
+							"nop\n\t"
+
+            				:: "r" (interp), "r" (interp+1), "r" (quaternions+i), "r" (frame_vector): "$5","$6");
 
 
 #else

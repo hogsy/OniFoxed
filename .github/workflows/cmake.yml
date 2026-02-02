@@ -7,7 +7,7 @@ jobs:
   msvc:
     runs-on: 'windows-latest'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
       - name: 'Configure cmake'
         run: |
           cmake -DCMAKE_SYSTEM_VERSION=10.0.19041.0 -DONI_BINK_VIDEO=ON `
@@ -18,7 +18,7 @@ jobs:
   mingw-linux:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v6
       - name: 'Install MinGW'
         run: |
           sudo apt-get install gcc-mingw-w64-i686 g++-mingw-w64-i686
