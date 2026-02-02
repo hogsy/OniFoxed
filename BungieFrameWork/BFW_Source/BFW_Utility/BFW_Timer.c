@@ -295,7 +295,7 @@ void UUrStallTimer_End(UUtStallTimer *inTimer, const char *inName)
 	return;
 }
 
-#endif TOOL_VERSION
+#endif // TOOL_VERSION
 
 #if PERFORMANCE_TIMER
 

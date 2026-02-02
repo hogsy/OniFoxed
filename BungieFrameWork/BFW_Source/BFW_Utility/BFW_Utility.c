@@ -28,10 +28,10 @@
 
 	UUtBool		UUgFalse = 0;
 	UUtError	UUgError_None = 0;
-	
+
 #endif
 
-	extern double UUgMachineTime_High_Frequency = 0;
+	double UUgMachineTime_High_Frequency = 0;
 
 // initialize random is internal
 void UUiRandom_Initialize(void);

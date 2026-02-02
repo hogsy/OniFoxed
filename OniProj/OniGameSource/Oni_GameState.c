@@ -155,7 +155,7 @@ UUtBool ONgFastLookups = UUcTrue;
 
 BFtFileRef ONgGameDataFolder;
 ONtGameState *ONgGameState = NULL;
-extern ONtLevel *ONgLevel = NULL;
+ONtLevel *ONgLevel = NULL;
 UUtBool					ONgTerminateGame;
 UUtBool					ONgRunMainMenu;
 M3tGeomContext			*ONgGeomContext = NULL;

@@ -107,7 +107,7 @@ struct WPtWeapon
 	UUtUns32 oct_tree_node_index[WPcWeaponNodeCount]; // S.S. length-prefixed list of oct tree nodes
 };
 
-extern const char *WPgPowerupName[WPcPowerup_NumTypes]
+const char *WPgPowerupName[WPcPowerup_NumTypes]
 	= {"ammo", "cell", "hypo", "shield", "invis", "lsi"};
 
 WPtWeapon WPgWeapons[WPcMaxWeapons];

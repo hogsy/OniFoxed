@@ -149,7 +149,7 @@ UUtBool M3rIntersect_BBox(
 	*/
 
 
-const extern UUtUns8 M3gBBox_EdgeList[12][2] = 
+const UUtUns8 M3gBBox_EdgeList[12][2] =
 {
 	0,1,	// 0
 	1,3,	// 1
@@ -165,7 +165,7 @@ const extern UUtUns8 M3gBBox_EdgeList[12][2] =
 	5,1		// 11
 };
 
-const extern M3tQuad M3gBBox_QuadList[6] =	// Do NOT make this UUtUns8
+const M3tQuad M3gBBox_QuadList[6] =	// Do NOT make this UUtUns8
 {		// Look-up table for which indices to use to form each box side
 	{ 0,1,3,2 }, // 0
 	{ 4,6,7,5 }, // 1

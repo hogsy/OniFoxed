@@ -569,7 +569,7 @@ elseif(WIN32)
 		PRIVATE
 			winmm
 			msacm32
-			Ws2_32
+			ws2_32
 			dinput8
 			dsound
 			dxguid

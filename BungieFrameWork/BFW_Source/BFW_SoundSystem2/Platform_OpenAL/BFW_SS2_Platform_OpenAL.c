@@ -198,7 +198,8 @@ SS2r_DecompressMSADPCM(
 		UUrPrintWarning("Failed to allocate ADPCM_MS codec context");
 		return UUcFalse;
 	}
-	c->channels = channels;
+	c->ch_layout.order = AV_CHANNEL_ORDER_UNSPEC;
+	c->ch_layout.nb_channels = channels;
 	c->sample_rate = SScSamplesPerSecond;
 	c->sample_fmt = SScBitsPerSample == 8 ? AV_SAMPLE_FMT_U8 : AV_SAMPLE_FMT_S16;
 	int ret = avcodec_open2(c, codec, NULL);
@@ -270,7 +271,7 @@ SS2r_DecompressMSADPCM(
 		}
 		int data_size = av_samples_get_buffer_size(
 			NULL,
-			decoded_frame->channels,
+			decoded_frame->ch_layout.nb_channels,
 			decoded_frame->nb_samples,
 			decoded_frame->format,
 			1

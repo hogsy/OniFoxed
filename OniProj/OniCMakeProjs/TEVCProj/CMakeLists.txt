@@ -33,9 +33,9 @@ if (WIN32)
             # shoved here for now
             ../../OniWin32Projs/ImpConsole/templatechecksum.c
     )
-endif ()
 
-target_precompile_headers(TEVCProj PRIVATE ../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h)
+    target_precompile_headers(TEVCProj PRIVATE ../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h)
+endif ()
 
 if (MSVC)
     target_compile_options(TEVCProj
