@@ -109,7 +109,7 @@ Derivation:
 	
 	If you take the time to solve M * (Cl + Vv), etc you will
 	find that you get the right answers(providing that you remember
-	that UvxVvx + UvyVvy + UvzVvz is equal to Uv ¥ Vv which by definition
+	that UvxVvx + UvyVvy + UvzVvz is equal to Uv â€¢ Vv which by definition
 	is 0)
 	
 */

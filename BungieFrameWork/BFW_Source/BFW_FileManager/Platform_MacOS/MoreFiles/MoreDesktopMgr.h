@@ -11,7 +11,7 @@
 **
 **	File:	MoreDesktopMgr.h
 **
-**	Copyright © 1992-1999 Apple Computer, Inc.
+**	Copyright Â© 1992-1999 Apple Computer, Inc.
 **	All rights reserved.
 **
 **	You may incorporate this sample code into your applications without
@@ -41,7 +41,7 @@ pascal	OSErr	DTOpen(ConstStr255Param volName,
 					   short vRefNum,
 					   short *dtRefNum,
 					   Boolean *newDTDatabase);
-/*	¦ Open a volume's desktop database and return the desktop database refNum.
+/*	Â¶ Open a volume's desktop database and return the desktop database refNum.
 	The DTOpen function opens a volume's desktop database. It returns
 	the reference number of the desktop database and indicates if the
 	desktop database was created as a result of this call (if it was created,
@@ -80,7 +80,7 @@ pascal	OSErr	DTXGetAPPL(ConstStr255Param volName,
 						   short *applVRefNum,
 						   long *applParID,
 						   Str255 applName);
-/*	¦ Find an application on a volume that can open a file with a given creator.
+/*	Â¶ Find an application on a volume that can open a file with a given creator.
 	The DTXGetAPPL function finds an application (file type 'APPL') with
 	the specified creator on the specified volume. It first tries to get
 	the application mapping from the desktop database. If that fails,
@@ -125,7 +125,7 @@ pascal	OSErr	FSpDTXGetAPPL(ConstStr255Param volName,
 							  OSType creator,
 							  Boolean searchCatalog,
 							  FSSpec *spec);
-/*	¦ Find an application on a volume that can open a file with a given creator.
+/*	Â¶ Find an application on a volume that can open a file with a given creator.
 	The FSpDTXGetAPPL function finds an application (file type 'APPL') with
 	the specified creator on the specified volume. It first tries to get
 	the application mapping from the desktop database. If that fails,
@@ -169,7 +169,7 @@ pascal	OSErr	DTGetAPPL(ConstStr255Param volName,
 						  short *applVRefNum,
 						  long *applParID,
 						  Str255 applName);
-/*	¦ Find an application on a volume that can open a file with a given creator.
+/*	Â¶ Find an application on a volume that can open a file with a given creator.
 	The DTGetAPPL function finds an application (file type 'APPL') with
 	the specified creator on the specified volume. It first tries to get
 	the application mapping from the desktop database. If that fails,
@@ -211,7 +211,7 @@ pascal	OSErr	FSpDTGetAPPL(ConstStr255Param volName,
 							 short vRefNum,
 							 OSType creator,
 							 FSSpec *spec);
-/*	¦ Find an application on a volume that can open a file with a given creator.
+/*	Â¶ Find an application on a volume that can open a file with a given creator.
 	The FSpDTGetAPPL function finds an application (file type 'APPL') with
 	the specified creator on the specified volume. It first tries to get
 	the application mapping from the desktop database. If that fails,
@@ -253,7 +253,7 @@ pascal	OSErr	DTGetIcon(ConstStr255Param volName,
 						  OSType fileCreator,
 						  OSType fileType,
 						  Handle *iconHandle);
-/*	¦ Get an icon from the desktop database or Desktop file.
+/*	Â¶ Get an icon from the desktop database or Desktop file.
 	The DTGetIcon function retrieves the specified icon and returns it in
 	a newly created handle. The icon is retrieves from the Desktop Manager
 	or if the Desktop Manager is not available, from the Finder's Desktop
@@ -296,7 +296,7 @@ pascal	OSErr	DTSetComment(short vRefNum,
 							 long dirID,
 							 ConstStr255Param name,
 							 ConstStr255Param comment);
-/*	¦ Set a file or directory's Finder comment field.
+/*	Â¶ Set a file or directory's Finder comment field.
 	The DTSetComment function sets a file or directory's Finder comment
 	field. The volume must support the Desktop Manager because you only
 	have read access to the Desktop file.
@@ -312,11 +312,11 @@ pascal	OSErr	DTSetComment(short vRefNum,
 		noErr				0		No error
 		nsvErr				-35		Volume not found
 		ioErr				-36		I/O error
-		fnfErr				Ð43		File or directory doesnÕt exist
+		fnfErr				â€“43		File or directory doesnâ€™t exist
 		paramErr			-50		Volume doesn't support this function
-		wPrErr				Ð44		Volume is locked through hardware
-		vLckdErr			Ð46		Volume is locked through software
-		rfNumErr			Ð51		Reference number invalid
+		wPrErr				â€“44		Volume is locked through hardware
+		vLckdErr			â€“46		Volume is locked through software
+		rfNumErr			â€“51		Reference number invalid
 		extFSErr			-58		External file system error - no file
 									system claimed this call.
 		desktopDamagedErr	-1305	The desktop database has become corrupted - 
@@ -334,7 +334,7 @@ pascal	OSErr	DTSetComment(short vRefNum,
 
 pascal	OSErr	FSpDTSetComment(const FSSpec *spec,
 								ConstStr255Param comment);
-/*	¦ Set a file or directory's Finder comment field.
+/*	Â¶ Set a file or directory's Finder comment field.
 	The FSpDTSetComment function sets a file or directory's Finder comment
 	field. The volume must support the Desktop Manager because you only
 	have read access to the Desktop file.
@@ -347,10 +347,10 @@ pascal	OSErr	FSpDTSetComment(const FSSpec *spec,
 		noErr				0		No error
 		nsvErr				-35		Volume not found
 		ioErr				-36		I/O error
-		fnfErr				Ð43		File or directory doesnÕt exist
-		wPrErr				Ð44		Volume is locked through hardware
-		vLckdErr			Ð46		Volume is locked through software
-		rfNumErr			Ð51		Reference number invalid
+		fnfErr				â€“43		File or directory doesnâ€™t exist
+		wPrErr				â€“44		Volume is locked through hardware
+		vLckdErr			â€“46		Volume is locked through software
+		rfNumErr			â€“51		Reference number invalid
 		paramErr			-50		Volume doesn't support this function
 		extFSErr			-58		External file system error - no file
 									system claimed this call.
@@ -371,7 +371,7 @@ pascal	OSErr	DTGetComment(short vRefNum,
 							 long dirID,
 							 ConstStr255Param name,
 							 Str255 comment);
-/*	¦ Get a file or directory's Finder comment field (if any).
+/*	Â¶ Get a file or directory's Finder comment field (if any).
 	The DTGetComment function gets a file or directory's Finder comment
 	field (if any) from the Desktop Manager or if the Desktop Manager is
 	not available, from the Finder's Desktop file.
@@ -394,7 +394,7 @@ pascal	OSErr	DTGetComment(short vRefNum,
 		ioErr				-36		I/O error
 		fnfErr				-43		File not found
 		paramErr			-50		Volume doesn't support this function
-		rfNumErr			Ð51		Reference number invalid
+		rfNumErr			â€“51		Reference number invalid
 		extFSErr			-58		External file system error - no file
 									system claimed this call.
 		desktopDamagedErr	-1305	The desktop database has become corrupted - 
@@ -413,7 +413,7 @@ pascal	OSErr	DTGetComment(short vRefNum,
 
 pascal	OSErr	FSpDTGetComment(const FSSpec *spec,
 								Str255 comment);
-/*	¦ Get a file or directory's Finder comment field (if any).
+/*	Â¶ Get a file or directory's Finder comment field (if any).
 	The FSpDTGetComment function gets a file or directory's Finder comment
 	field (if any) from the Desktop Manager or if the Desktop Manager is
 	not available, from the Finder's Desktop file.
@@ -433,7 +433,7 @@ pascal	OSErr	FSpDTGetComment(const FSSpec *spec,
 		ioErr				-36		I/O error
 		fnfErr				-43		File not found
 		paramErr			-50		Volume doesn't support this function
-		rfNumErr			Ð51		Reference number invalid
+		rfNumErr			â€“51		Reference number invalid
 		extFSErr			-58		External file system error - no file
 									system claimed this call.
 		desktopDamagedErr	-1305	The desktop database has become corrupted - 
@@ -456,7 +456,7 @@ pascal	OSErr	DTCopyComment(short srcVRefNum,
 							  short dstVRefNum,
 							  long dstDirID,
 							  ConstStr255Param dstName);
-/*	¦ Copy the file or folder comment from the source to the destination object.
+/*	Â¶ Copy the file or folder comment from the source to the destination object.
 	The DTCopyComment function copies the file or folder comment from the
 	source to the destination object.  The destination volume must support
 	the Desktop Manager because you only have read access to the Desktop file.
@@ -474,11 +474,11 @@ pascal	OSErr	DTCopyComment(short srcVRefNum,
 		noErr				0		No error
 		nsvErr				-35		Volume not found
 		ioErr				-36		I/O error
-		fnfErr				Ð43		File or directory doesnÕt exist
-		wPrErr				Ð44		Volume is locked through hardware
-		vLckdErr			Ð46		Volume is locked through software
+		fnfErr				â€“43		File or directory doesnâ€™t exist
+		wPrErr				â€“44		Volume is locked through hardware
+		vLckdErr			â€“46		Volume is locked through software
 		paramErr			-50		Volume doesn't support this function
-		rfNumErr			Ð51		Reference number invalid
+		rfNumErr			â€“51		Reference number invalid
 		paramErr			-50		Volume doesn't support this function
 		extFSErr			-58		External file system error - no file
 									system claimed this call.
@@ -498,7 +498,7 @@ pascal	OSErr	DTCopyComment(short srcVRefNum,
 
 pascal	OSErr	FSpDTCopyComment(const FSSpec *srcSpec,
 								 const FSSpec *dstSpec);
-/*	¦ Copy the desktop database comment from the source to the destination object.
+/*	Â¶ Copy the desktop database comment from the source to the destination object.
 	The FSpDTCopyComment function copies the desktop database comment from
 	the source to the destination object.  Both the source and the
 	destination volumes must support the Desktop Manager.
@@ -510,11 +510,11 @@ pascal	OSErr	FSpDTCopyComment(const FSSpec *srcSpec,
 		noErr				0		No error
 		nsvErr				-35		Volume not found
 		ioErr				-36		I/O error
-		fnfErr				Ð43		File or directory doesnÕt exist
-		wPrErr				Ð44		Volume is locked through hardware
-		vLckdErr			Ð46		Volume is locked through software
+		fnfErr				â€“43		File or directory doesnâ€™t exist
+		wPrErr				â€“44		Volume is locked through hardware
+		vLckdErr			â€“46		Volume is locked through software
 		paramErr			-50		Volume doesn't support this function
-		rfNumErr			Ð51		Reference number invalid
+		rfNumErr			â€“51		Reference number invalid
 		paramErr			-50		Volume doesn't support this function
 		extFSErr			-58		External file system error - no file
 									system claimed this call.

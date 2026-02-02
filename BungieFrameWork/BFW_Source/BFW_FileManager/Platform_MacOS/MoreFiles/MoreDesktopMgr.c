@@ -11,7 +11,7 @@
 **
 **	File:	MoreDesktopMgr.c
 **
-**	Copyright © 1992-1999 Apple Computer, Inc.
+**	Copyright Â© 1992-1999 Apple Computer, Inc.
 **	All rights reserved.
 **
 **	You may incorporate this sample code into your applications without
@@ -41,20 +41,20 @@
 
 /*	Desktop file notes:
 **
-**	¥	The Desktop file is owned by the Finder and is normally open by the
+**	â€¢	The Desktop file is owned by the Finder and is normally open by the
 **		Finder. That means that we only have read-only access to the Desktop
 **		file.
-**	¥	Since the Resource Manager doesn't support shared access to resource
+**	â€¢	Since the Resource Manager doesn't support shared access to resource
 **		files and we're using read-only access, we don't ever leave the
 **		Desktop file open.  We open a path to it, get the data we want out
 **		of it, and then close the open path. This is the only safe way to
 **		open a resource file with read-only access since some other program
 **		could have it open with write access.
-**	¥	The bundle related resources in the Desktop file are normally
+**	â€¢	The bundle related resources in the Desktop file are normally
 **		purgable, so when we're looking through them, we don't bother to
 **		release resources we're done looking at - closing the resource file
 **		(which we always do) will release them.
-**	¥	Since we can't assume the Desktop file is named "Desktop"
+**	â€¢	Since we can't assume the Desktop file is named "Desktop"
 **		(it probably is everywhere but France), we get the Desktop
 **		file's name by searching the volume's root directory for a file
 **		with fileType == 'FNDR' and creator == 'ERIK'. The only problem with

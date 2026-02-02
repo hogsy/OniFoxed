@@ -158,7 +158,7 @@ MSrDrawContext_Method_Line_Interpolate(
 	if (fabs_dx > fabs_dy)
 	{
 		/*
-		 * Æx is larger, so the major axis will be X.
+		 * Î”x is larger, so the major axis will be X.
 		 */
 		
 		rgbMajorIncrement = rgbPixelBytes;
@@ -193,7 +193,7 @@ MSrDrawContext_Method_Line_Interpolate(
 	else
 	{
 		/*
-		 * Æy is larger, so the major axis will be Y.
+		 * Î”y is larger, so the major axis will be Y.
 		 */
 		
 		rgbMajorIncrement = rgbRowBytes;
@@ -451,7 +451,7 @@ MSrDrawContext_Method_Line_Flat(
 	if (fabs_dx > fabs_dy)
 	{
 		/*
-		 * Æx is larger, so the major axis will be X.
+		 * Î”x is larger, so the major axis will be X.
 		 */
 		
 		rgbMajorIncrement = rgbPixelBytes;
@@ -482,7 +482,7 @@ MSrDrawContext_Method_Line_Flat(
 	else
 	{
 		/*
-		 * Æy is larger, so the major axis will be Y.
+		 * Î”y is larger, so the major axis will be Y.
 		 */
 		
 		rgbMajorIncrement = rgbRowBytes;

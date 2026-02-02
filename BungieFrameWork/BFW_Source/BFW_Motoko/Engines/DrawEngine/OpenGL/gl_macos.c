@@ -980,7 +980,7 @@ static Boolean FindBestMatch(
 	unsigned long horizontal,
 	unsigned long vertical)
 {
-	// ¥¥ do the big comparison ¥¥
+	// â€¢â€¢ do the big comparison â€¢â€¢
 	// first time only if	(no mode yet) and
 	//						(bounds are greater/equal or kMaximizeRes not set) and
 	//						(depth is less/equal or kShallowDepth not set) and
@@ -1042,7 +1042,7 @@ static Boolean FindBestMatch(
 		}
 		else
 		{
-			// match resolution: minimize Æh & Æv
+			// match resolution: minimize Î”h & Î”v
 			if	(	abs((requestRecPtr->reqHorizontal - horizontal)) <=
 					abs((requestRecPtr->reqHorizontal - requestRecPtr->availHorizontal)) &&
 					abs((requestRecPtr->reqVertical - vertical)) <=
