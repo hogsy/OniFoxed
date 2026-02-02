@@ -248,8 +248,14 @@ TEiExtract_WriteOutSwapCodes(
 	{
 		if(itr % 8 == 0) BFrFile_Printf(inFile, UUmNL"\t");
 		BFrFile_Printf(inFile, "0x%02x", *p);
-		
-		if(itr != inLength - 1) BFrFile_Printf(inFile, ", ");
+
+		if(itr != inLength - 1)
+		{
+			BFrFile_Printf(inFile, ",");
+			if ((itr + 1) % 8 != 0) {
+				BFrFile_Printf(inFile, " ");
+			}
+		}
 	}
 	BFrFile_Printf(inFile, UUmNL);
 	BFrFile_Printf(inFile, "};"UUmNL);
