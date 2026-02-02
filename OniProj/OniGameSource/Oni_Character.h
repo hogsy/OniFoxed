@@ -1,13 +1,13 @@
 #pragma once
 
 /*	FILE:	Oni_Character.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: January 8, 1998
-	
+
 	PURPOSE: control of characters in ONI
-	
+
 	Copyright 1998, 1999
 
 */
@@ -52,10 +52,10 @@ enum {
 	ONcRArm1_Index		= 16,		// 0x10000
 	ONcRArm2_Index		= 17,		// 0x20000
 	ONcRHand_Index		= 18,		// 0x40000
-	
-	ONcWeapon_Index		= 19,		
-	ONcMuzzle_Index		= 20	
-	
+
+	ONcWeapon_Index		= 19,
+	ONcMuzzle_Index		= 20
+
 };
 
 #define ONcCharacter_InactiveFrames		90
@@ -228,7 +228,7 @@ ONtCharacterVariant
 	tm_templateref					parent;				// pointer to parent at runtime
 	char							name[32];			// must match ONcMaxVariantNameLength above
 	char							upgrade_name[32];
-	
+
 } ONtCharacterVariant;
 
 #define ONcTemplate_VariantList		UUm4CharToUns32('O', 'N', 'V', 'L')
@@ -238,7 +238,7 @@ ONtVariantList
 	tm_pad								pad[20];
 	tm_varindex	UUtUns32				numVariants;
 	tm_vararray	ONtCharacterVariant		*variant[1];
-	
+
 } ONtVariantList;
 
 /*
@@ -270,7 +270,7 @@ ONtCharacterParticleArray
 	tm_pad								pad2[3];
 	tm_varindex	UUtUns32				numParticles;
 	tm_vararray	ONtCharacterParticle	particle[1];
-	
+
 } ONtCharacterParticleArray;
 
 /*
@@ -300,7 +300,7 @@ ONtCharacterImpactArray
 	tm_pad									pad2[3];
 	tm_varindex	UUtUns32					numImpacts;
 	tm_vararray	ONtCharacterAttackImpact	impact[1];
-	
+
 } ONtCharacterImpactArray;
 
 #define ONcAnimationImpact_None			((UUtUns16) -1)
@@ -359,7 +359,7 @@ ONtBodyPartImpacts
 	MAtImpact				*hit_impacts[19];		// must match ONcNumCharacterParts
 	MAtImpact				*blocked_impacts[19];	// must match ONcNumCharacterParts
 	MAtImpact				*killed_impacts[19];	// must match ONcNumCharacterParts
-	
+
 } ONtBodyPartImpacts;
 
 /*
@@ -470,7 +470,7 @@ ONtCharacterClass
 	// variant could pick comguy_1, comguy_2 or comguy_3 because they all have the same variant
 	// tag of "comguy".
 	ONtCharacterVariant		*variant;
-	
+
 	ONtCharacterParticleArray *particles;
 	ONtCharacterImpactArray	*impacts;			// attack impacts
 	ONtCharacterAnimationImpacts anim_impacts;	// animation impacts (footsteps, landing, etc)
@@ -496,7 +496,7 @@ ONtCharacterClass
 
 	TRtAnimationCollection	*animations;
 	TRtScreenCollection		*aimingScreens;
-	
+
 	UUtUns16				shottime;			// AI ROF
 	UUtUns16				death_deletedelay;	// frames after death to delete character
 	UUtBool					leftHanded;
@@ -517,12 +517,12 @@ typedef enum {
 	ONcCharacterFlag_Unkillable				=	0x00000020,	// the character cannot be killed, only defeated
 	ONcCharacterFlag_InfiniteAmmo			=	0x00000040,	// the character always has infinite ammo
 	ONcCharacterFlag_PleaseBlock			=	0x00000080,	// set if the character should block, cleared once block begins
-	
+
 	ONcCharacterFlag_Unstoppable			=	0x00000100,	// this character cannot be knocked down, staggered, stunned, etc
 	ONcCharacterFlag_ScriptControl			=	0x00000200,	// set if the character is completely under script control
 	ONcCharacterFlag_DeathLock				=	0x00000400,	// this character should never die all the way
 	ONcCharacterFlag_WasUpdated				=	0x00000800,	// this character's animation was changed
-		
+
 	ONcCharacterFlag_BeingThrown			=	0x00001000,	// this character is being thrown
 	ONcCharacterFlag_DontUseGunVarient		=	0x00002000,	// this character should not use a weapon varient
 	ONcCharacterFlag_Draw					=	0x00004000,	// DoFrame has been executed for this character
@@ -538,7 +538,7 @@ typedef enum {
 	ONcCharacterFlag_AIMovement				=	0x00400000,	// the character is using AI movement
 	ONcCharacterFlag_NeutralUninterruptable	=	0x00800000,	// running an uninterruptable neutral interaction
 
-	ONcCharacterFlag_NoShadow				=	0x01000000,	// 
+	ONcCharacterFlag_NoShadow				=	0x01000000,	//
 	ONcCharacterFlag_Invincible				=	0x02000000,	// character is invincible
 	ONcCharacterFlag_NoAutoDrop				=	0x04000000,	// character should not automatically drop items when killed (invisibility, shield, LSI)
 	ONcCharacterFlag_RestrictedMovement		=	0x08000000,	// character cannot move fast (used for player holding barabbas' gun)
@@ -612,7 +612,7 @@ typedef struct ONtHitTable
 } ONtHitTable;
 
 
-enum 
+enum
 {
 	ONcOverlayIndex_Recoil,
 	ONcOverlayIndex_InventoryManagement,
@@ -676,11 +676,11 @@ typedef struct ONtPainState
 
 struct ONtCharacter
 {
-	ONtCharacterIndexType	index;					// index in ONgGameState->characters list 
+	ONtCharacterIndexType	index;					// index in ONgGameState->characters list
 	ONtCharacterIndexType	active_index;			// index in ONgGameState->activeCharacters or ONcCharacterIndex_None
 
  	// general properties
-	UUtUns32				flags;	
+	UUtUns32				flags;
 	UUtUns32				flags2;
 	ONtCharacterClass *		characterClass;
 	UUtUns16				characterClassNumber;
@@ -754,14 +754,14 @@ struct ONtCharacter
 };
 
 struct ONtActiveCharacter {
-	ONtCharacterIndexType	index;					// parent's index in ONgGameState->characters list... may be 
-	ONtCharacterIndexType	active_index;			// index in ONgGameState->activeCharacters list 
+	ONtCharacterIndexType	index;					// parent's index in ONgGameState->characters list... may be
+	ONtCharacterIndexType	active_index;			// index in ONgGameState->activeCharacters list
 
 	/*
 	 * physics, collision, movement
 	 */
 
-	PHtPhysicsContext *		physics; 
+	PHtPhysicsContext *		physics;
 	PHtSphereTree			sphereTree[1];
 	PHtSphereTree			leafNodes[ONcSubSphereCount];
 	PHtSphereTree			midNodes[ONcSubSphereCount_Mid];
@@ -772,7 +772,7 @@ struct ONtActiveCharacter {
 	UUtBool					collidingWithTarget;
 	UUtUns8					pad0;
 
-	M3tVector3D				knockback;	
+	M3tVector3D				knockback;
 	M3tVector3D				movementThisFrame;
 	float					gravityThisFrame;
 	M3tVector3D				lastImpact;				// used for weapon and powerup dropping
@@ -783,7 +783,7 @@ struct ONtActiveCharacter {
 	UUtUns32				pickup_percentage;
 	UUtInt32				last_floor_gq;			// gq index or -1
 	float					deferred_maximum_height;
-	
+
 	M3tBoundingSphere		boundingSphere;
 	M3tPoint3D				trigger_points[2];
 	M3tBoundingSphere		trigger_sphere;
@@ -821,7 +821,7 @@ struct ONtActiveCharacter {
 
 	ONtStitchControl		stitch;
 	ONtOverlay				overlay[ONcOverlayIndex_Count];
-	
+
 	// timers
 	UUtUns16				animFrame;
 	UUtUns16				softPauseFrames;
@@ -859,7 +859,7 @@ struct ONtActiveCharacter {
 	UUtUns16				thrownBy;				// character index of who I am being thrown by
 	ONtCharacter *			throwTarget;
 	const TRtAnimation *	targetThrow;
-	
+
 	// aiming screens
 	const TRtAimingScreen *	aimingScreen;
 	UUtUns32				oldAimingScreenTime;
@@ -883,8 +883,8 @@ struct ONtActiveCharacter {
 	// aiming
 	UUtBool					isAiming;
 	M3tPoint3D				aimingTarget;
-	M3tVector3D				aimingVector;		
-	M3tVector3D				cameraVector;		
+	M3tVector3D				aimingVector;
+	M3tVector3D				cameraVector;
 	float					aimingLR;
 	float					aimingUD;
 	float					aimingVectorLR;
@@ -892,7 +892,7 @@ struct ONtActiveCharacter {
 	float					autoAimAdjustmentLR;
 	float					autoAimAdjustmentUD;
 	UUtBool					oldExactAiming;
-	UUtUns32				oldExactAimingTime; 
+	UUtUns32				oldExactAimingTime;
 
 	// action flags
 	UUtBool					pleaseJump;
@@ -910,7 +910,7 @@ struct ONtActiveCharacter {
 
 	// script control
 	LItButtonBits			keyHoldMask;
-	UUtUns16				keyHoldFrames;	
+	UUtUns16				keyHoldFrames;
 	ONtFilmState			filmState;
 
 
@@ -1013,7 +1013,7 @@ UUtUns16 ONrCharacter_ForcedFollowingAnimType(ONtCharacter *ioCharacter, UUtUns1
 void ONrCharacter_NextAnimation(ONtCharacter *ioCharacter, ONtActiveCharacter *ioActiveCharacter);
 
 //
-// === facing === 
+// === facing ===
 //
 
 //
@@ -1028,7 +1028,7 @@ void ONrCharacter_SetDesiredFacing(ONtCharacter *ioCharacter, float inFacing);
 void ONrCharacter_AdjustFacing(ONtCharacter *ioCharacter, float inFacingDelta);
 void ONrCharacter_AdjustDesiredFacing(ONtCharacter *ioCharacter, float inFacingDelta);
 
-// 
+//
 // gets the difference (in signed angle format) to add to reality to get the desire
 //
 // range is -2 Pi to + 2Pi and the direction around the circle we pick is the direction
@@ -1085,7 +1085,7 @@ ONrGameState_NewActiveCharacter(
 void
 ONrGameState_DeleteCharacter(
 	ONtCharacter				*inCharacter);
-	
+
 void
 ONrGameState_DeleteActiveCharacter(
 	ONtActiveCharacter			*ioActiveCharacter,
@@ -1195,7 +1195,7 @@ void ONrCharacter_ReleaseAlternateTrigger(ONtCharacter *ioCharacter, ONtActiveCh
 
 void ONrCharacters_Collision(	UUtUns16				inIgnoreCharacterIndex,
 								const M3tVector3D		*inVector,
-								const M3tMatrix4x3		*inGeometryMatrix,	
+								const M3tMatrix4x3		*inGeometryMatrix,
 								const M3tGeometry		*inGeometry,
 								ONtCharacter			**outCharacterPtr,
 								UUtUns16				*outPartIndex);
@@ -1213,7 +1213,7 @@ void ONrCharacter_Teleport_With_Collision(ONtCharacter *ioCharacter, M3tPoint3D 
 void ONrCharacter_FindOurNode(ONtCharacter *inCharacter);
 UUtBool ONrCharacter_LineOfSight(ONtCharacter *inLooker, ONtCharacter *inLookee);
 
-typedef enum 
+typedef enum
 {
 	ONcVision_UseVisionCone,
 	ONcVision_Look360
@@ -1242,7 +1242,7 @@ void ONrDrawSphere(
 	M3tTextureMap	*inTexture,
 	float			inScale,
 	M3tPoint3D		*inLocation);
-	
+
 void ONrCharacter_DoAiming(ONtCharacter *ioCharacter, ONtActiveCharacter *ioActiveCharacter);
 UUtBool ONiPointInSphere(const M3tPoint3D *inPoint, const M3tBoundingSphere *inSphere);
 UUtBool ONrAnimation_IsFlying(const TRtAnimation *inAnimation);
@@ -1268,7 +1268,7 @@ void
 ONrCharacter_SetHitPoints(
 	ONtCharacter		*ioCharacter,
 	UUtUns32			inHitPoints);
-	
+
 void
 ONrCharacter_Spawn(
 	ONtCharacter		*ioCharacter);
@@ -1339,7 +1339,7 @@ void ONrCharacter_PickupWeapon(
 void ONrCharacter_PickupPowerup(
 	ONtCharacter *inCharacter,
 	WPtPowerup *inPowerup);
-	
+
 float ONrCharacter_GetTorsoHeight(const ONtCharacter *inCharacter);
 float ONrCharacter_GetHeadHeight(const ONtCharacter *inCharacter);
 

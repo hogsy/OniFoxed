@@ -2,7 +2,7 @@
 
 /*
 	FILE:	Oni_Platform_SDL.h
-	
+
 	PURPOSE: SDL specific code
 
 */

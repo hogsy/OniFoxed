@@ -2,11 +2,11 @@
 	FILE:	BFW_Akira_Private.h
 
 	AUTHOR:	Brent H. Pease, Chris Butcher, Michael Evans
-	
+
 	CREATED: October 23, 1997
-	
+
 	PURPOSE: environment engine
-	
+
 	Copyright 1997, 2000
 
 */
@@ -47,7 +47,7 @@ extern UUtPerformanceTimer *AKg_IsBoundingBoxMinMaxVisible_Recursive_Timer;
 typedef struct AKtRay
 {
 	float	u, v;
-	
+
 } AKtRay;
 
 typedef struct AKtFrame
@@ -58,20 +58,20 @@ typedef struct AKtFrame
 
 typedef struct AKtEnvironment_Private
 {
-	
+
 	UUtUns32*		gqComputedBackFaceBV;
 	UUtUns32*		gqBackFaceBV;
 	UUtUns32*		gq2VisibilityVector;
 	UUtUns32*		ot2LeafNodeVisibility;
-	
+
 	M3tGeomCamera*	geomCamera;
-	
+
 	//UUtUns32*		alphaGQVisBV;
-	
+
 	UUtUns32		visGQ_Num;
 	UUtUns32*		visGQ_List;
 	UUtUns32		sky_visibility;
-	
+
 } AKtEnvironment_Private;
 
 extern UUtBool 			gEnvironmentCollision;
@@ -137,6 +137,6 @@ AKrRayCastCoefficients_Terminate(
 UUtError AKrCollision_LevelBegin(AKtEnvironment *inEnvironment);
 void AKrCollision_LevelEnd(void);
 
-	
+
 #endif /* BFW_AKIRA_PRIVATE_H */
 

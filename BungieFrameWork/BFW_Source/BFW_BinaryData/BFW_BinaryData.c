@@ -17,7 +17,7 @@ typedef struct BDtClass
 {
 	BDtClassType			class_type;
 	BDtMethods				methods;
-	
+
 } BDtClass;
 
 // ======================================================================
@@ -44,7 +44,7 @@ BDiBinaryData_ProcHandler(
 	void					*binary_storage;
 
 	binary_data = (BDtBinaryData*)inInstancePtr;
-	
+
 	switch (inMessage)
 	{
 		case TMcTemplateProcMessage_LoadPostProcess:
@@ -77,7 +77,7 @@ BDiBinaryData_ProcHandler(
 			}
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -91,7 +91,7 @@ BDrBinaryData_Write(
 {
 	UUtError				error;
 	BDtHeader				header;
-	
+
 	// fill in the header
 	header.class_type = inClassType;
 	header.data_size = inDataSize;
@@ -100,19 +100,19 @@ BDrBinaryData_Write(
 	UUrSwap_4Byte(&header.class_type);
 	UUrSwap_4Byte(&header.data_size);
 #endif
-	
+
 	// start at the beginning of the file
 	error =	BFrFile_SetPos(inFile, 0);
 	UUmError_ReturnOnError(error);
-	
+
 	// write the header
-	error = 
+	error =
 		BFrFile_Write(
 			inFile,
 			sizeof(BDtHeader),
 			&header);
 	UUmError_ReturnOnError(error);
-	
+
 	// write the data
 	error =
 		BFrFile_Write(
@@ -120,7 +120,7 @@ BDrBinaryData_Write(
 			inDataSize,
 			inData);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -144,27 +144,27 @@ BDrBinaryLoader(
 	UUtUns32				num_classes;
 	BDtClass				*class_list;
 	UUtUns32				i;
-	
+
 	// get a pointer to the data
 	data = (BDtData*)inBuffer;
-	
+
 #if (UUmEndian == UUmEndian_Big)
 	swap_it = UUcTrue;
-	
+
 	UUrSwap_4Byte(&data->header.class_type);
 	UUrSwap_4Byte(&data->header.data_size);
 #else
 	swap_it = UUcFalse;
 #endif
-	
+
 	// do a quick check
 	UUmAssert(inBufferSize == (data->header.data_size + sizeof(BDtHeader)));
-	
+
 	// find the appropriate class handler
 	num_classes = UUrMemory_Array_GetUsedElems(BDgClassArray);
 	class_list = (BDtClass*)UUrMemory_Array_GetMemory(BDgClassArray);
 	if (class_list == NULL) { return UUcError_Generic; }
-	
+
 	for (i = 0; i < num_classes; i++)
 	{
 		if (class_list[i].class_type == data->header.class_type)
@@ -177,14 +177,14 @@ BDrBinaryLoader(
 					inLocked,
 					inAllocated);
 			UUmError_ReturnOnError(error);
-			
+
 			break;
 		}
 	}
 
 	// CB: if we didn't recognise this class type, fire off an assertion
 	UUmAssert(i < num_classes);
-	
+
 	return UUcError_None;
 }
 
@@ -198,16 +198,16 @@ BDrRegisterClass(
 	BDtClass				*class_list;
 	UUtUns32				index;
 	UUtBool					mem_moved;
-	
+
 	UUmAssert(BDgClassArray);
 	UUmAssert(inMethods);
-	
+
 	class_list = (BDtClass*)UUrMemory_Array_GetMemory(BDgClassArray);
 	if (class_list)
 	{
 		UUtUns32				num_classes;
 		UUtUns32				i;
-		
+
 		// determine if another class of this type has already been registered
 		num_classes = UUrMemory_Array_GetUsedElems(BDgClassArray);
 		for (i = 0; i < num_classes; i++)
@@ -218,19 +218,19 @@ BDrRegisterClass(
 			}
 		}
 	}
-	
+
 	// get a space for the class
 	error = UUrMemory_Array_GetNewElement(BDgClassArray, &index, &mem_moved);
 	UUmError_ReturnOnError(error);
-	
+
 	// get a pointer to the class list, this is necessary because
 	// class_list may have been NULL the first time through
 	class_list = (BDtClass*)UUrMemory_Array_GetMemory(BDgClassArray);
-	
+
 	// add the class
 	class_list[index].class_type = inClassType;
 	class_list[index].methods = *inMethods;
-	
+
 	return UUcError_None;
 }
 
@@ -245,11 +245,11 @@ BDrInitialize(
 	void)
 {
 	UUtError				error;
-	
+
 	// register the templates
 	error = BDrRegisterTemplates();
 	UUmError_ReturnOnError(error);
-	
+
 	// install the proc handler
 	error =
 		TMrTemplate_PrivateData_New(
@@ -258,7 +258,7 @@ BDrInitialize(
 			BDiBinaryData_ProcHandler,
 			&BDgBinaryData_PrivateData);
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the memory array
 	BDgClassArray =
 		UUrMemory_Array_New(
@@ -267,7 +267,7 @@ BDrInitialize(
 			0,
 			0);
 	UUmError_ReturnOnNull(BDgClassArray);
-	
+
 	return UUcError_None;
 }
 

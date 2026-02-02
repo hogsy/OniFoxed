@@ -5,8 +5,8 @@
 
 	CREATED: Sept 3, 1997
 
-	PURPOSE: 
-	
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -69,7 +69,7 @@ float				IMPgEnv_LS_FieldAngle;
 
 extern GRtGroup*	gPreferencesGroup;
 
-AUtFlagElement	IMPgLSParamFlags[] = 
+AUtFlagElement	IMPgLSParamFlags[] =
 {
 	{
 		"not_occluding",
@@ -89,7 +89,7 @@ AUtFlagElement	IMPgLSParamFlags[] =
 	}
 };
 
-AUtFlagElement	IMPgGunkFlags[] = 
+AUtFlagElement	IMPgGunkFlags[] =
 {
 	{
 		"door",
@@ -165,7 +165,7 @@ AUtFlagElement	IMPgGunkFlags[] =
 	}
 };
 
-AUtFlagElement	IMPgLMFlags[] = 
+AUtFlagElement	IMPgLMFlags[] =
 {
 	{
 		"forceon",
@@ -225,7 +225,7 @@ AUtFlagElement IMPgGunkObjectFlags[] =
 	}
 };
 
-AUtFlagElement	IMPgBNVFlags[] = 
+AUtFlagElement	IMPgBNVFlags[] =
 {
 	{
 		"stairs",
@@ -254,8 +254,8 @@ static UUtUns32 IMPiEnv_Parse_GQ_ObjectTag( GRtGroup* inGroup, IMPtEnv_BuildData
 	UUtError		error;
 	UUtUns32		object_tag;
 
-	error  = GRrGroup_GetUns32(inGroup,"object_tag", &object_tag);	
-	if (error == UUcError_None) 
+	error  = GRrGroup_GetUns32(inGroup,"object_tag", &object_tag);
+	if (error == UUcError_None)
 	{
 		return object_tag;
 	}
@@ -267,7 +267,7 @@ void IMPrEnv_Add_ObjectTag( IMPtEnv_BuildData* inBuildData, UUtUns32 inTag, UUtU
 	UUtError		error;
 	UUtUns32*		array;
 	UUtUns32		new_index;
-	
+
 	UUmAssert( inBuildData->object_tags && inBuildData->object_quads );
 
 	error = UUrMemory_Array_GetNewElement( inBuildData->object_tags, &new_index, NULL );
@@ -288,25 +288,25 @@ IMPiEnv_Parse_Point(
 	const MXtPoint*			inPoint)
 {
 	UUtError			error;
-	
+
 	if(index >= IMPcEnv_MaxRemapPoints)
 	{
 		Imp_PrintWarning("exceeded max remap indices");
 		return UUcError_Generic;
 	}
-	
+
 	IMPgEnv_RawPoints[index] = inPoint->point;
 	AUrSharedPointArray_RoundPoint(IMPgEnv_RawPoints + index);
-	
+
 	error =
 		AUrSharedPointArray_AddPoint(
 			inBuildData->sharedPointArray,
 			inPoint->point.x, inPoint->point.y, inPoint->point.z,
 			&IMPgEnv_PointIndexRemap[index]);
 	UUmError_ReturnOnErrorMsg(error, "Could not add point");
-	
+
 	IMPgEnv_TextureCoords[index] = inPoint->uv;
-	
+
 	return UUcError_None;
 }
 
@@ -323,7 +323,7 @@ IMPiEnv_Parse_Point_ForFlag(
 	}
 
 	inFlagPoints[index] = inPoint->point;
-	
+
 	return UUcError_None;
 }
 
@@ -340,10 +340,10 @@ IMPiEnv_Parse_BNV_AddQuad(
 	UUtError			error;
 	UUtUns32			quadIndex;
 	IMPtEnv_BNV*		curBNV;
-	
+
 	UUtUns16			curSideIndex;
 	IMPtEnv_BNV_Side*	curSide;
-	
+
 	M3tPoint3D*			shared_point_list = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
 	M3tPoint3D*			curPoint;
 	float				d;
@@ -364,7 +364,7 @@ IMPiEnv_Parse_BNV_AddQuad(
 		ny = normal.y;
 		nz = normal.z;
 	}
-	
+
 	planeArray = AUrSharedPlaneEquArray_GetList(inBuildData->sharedPlaneEquArray);
 
 	// Add the quad
@@ -374,15 +374,15 @@ IMPiEnv_Parse_BNV_AddQuad(
 				ri0, ri1, ri2, ri3,
 				&quadIndex);
 		UUmError_ReturnOnErrorMsg(error, "Could not add quad");
-	
+
 	// Compute the temporary plane equation
 		curPoint = AUrSharedPointArray_GetList(inBuildData->sharedPointArray) + ri0;
-		
+
 		d = -(curPoint->x * nx + curPoint->y * ny + curPoint->z * nz);
-	
-	
+
+
 	curBNV = inBuildData->bnvList + inBuildData->numBNVs;
-	
+
 	// check for other quads on this plane
 	for(curSideIndex = 0, curSide = curBNV->sides;
 		curSideIndex < curBNV->numSides;
@@ -392,7 +392,7 @@ IMPiEnv_Parse_BNV_AddQuad(
 			curSide->planeEquIndex,
 			planeArray,
 			sideA, sideB, sideC, sideD);
-		
+
 		if(UUmFloat_CompareEqu(sideA, nx) &&
 			UUmFloat_CompareEqu(sideB, ny) &&
 			UUmFloat_CompareEqu(sideC, nz) &&
@@ -403,38 +403,38 @@ IMPiEnv_Parse_BNV_AddQuad(
 			{
 				UUmError_ReturnOnErrorMsg(UUcError_Generic, "Too many side BNV quads");
 			}
-			
+
 			curSide->bnvQuadList[curSide->numBNVQuads++] = quadIndex;
-			
+
 			return UUcError_None;
 		}
 	}
-	
+
 	if(curBNV->numSides >= IMPcEnv_MaxBNVSides)
 	{
 		UUmError_ReturnOnErrorMsgP(
-			UUcError_Generic, 
+			UUcError_Generic,
 			"Exceeeded max BNV sides on file \"%s\", thank Brent.",
 			(UUtUns32)curBNV->fileName, 0, 0);
 	}
-	
+
 	curSide = curBNV->sides + curBNV->numSides++;
-	
+
 	curSide->numGQGhostIndices = 0;
-	
+
 	curSide->numBNVQuads = 1;
 	curSide->bnvQuadList[0] = quadIndex;
-	
+
 	error =
 		AUrSharedPlaneEquArray_AddPlaneEqu(
 			inBuildData->sharedPlaneEquArray,
 			nx, ny, nz, d,
 			&curSide->planeEquIndex);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
-	
+
 static UUtError
 IMPiEnv_Parse_BNV_Quad(
 	IMPtEnv_BuildData*	inBuildData,
@@ -442,19 +442,19 @@ IMPiEnv_Parse_BNV_Quad(
 {
 	UUtError			error;
 	UUtUns32			ri0, ri1, ri2, ri3;
-	
+
 	ri0 = IMPgEnv_PointIndexRemap[inFace->indices[0]];
 	ri1 = IMPgEnv_PointIndexRemap[inFace->indices[1]];
 	ri2 = IMPgEnv_PointIndexRemap[inFace->indices[2]];
 	ri3 = IMPgEnv_PointIndexRemap[inFace->indices[3]];
-	
+
 	error =
 		IMPiEnv_Parse_BNV_AddQuad(
 			inBuildData,
 			ri0, ri1, ri2, ri3,
 			&inFace->dont_use_this_normal);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -465,34 +465,34 @@ IMPiEnv_Parse_BNV_Tri(
 {
 	UUtError			error;
 	UUtUns32			ri0, ri1, ri2, ri3;
-	
+
 	float				midX, midY, midZ;
 	M3tPoint3D*			sharedPoints;
-	
+
 	sharedPoints = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
-	
+
 	ri0 = IMPgEnv_PointIndexRemap[inFace->indices[0]];
 	ri1 = IMPgEnv_PointIndexRemap[inFace->indices[1]];
 	ri2 = IMPgEnv_PointIndexRemap[inFace->indices[2]];
-	
+
 	midX = (sharedPoints[ri0].x + sharedPoints[ri2].x) * 0.5f;
 	midY = (sharedPoints[ri0].y + sharedPoints[ri2].y) * 0.5f;
 	midZ = (sharedPoints[ri0].z + sharedPoints[ri2].z) * 0.5f;
-	
+
 	error =
 		AUrSharedPointArray_AddPoint(
 			inBuildData->sharedPointArray,
 			midX, midY, midZ,
 			&ri3);
 	UUmError_ReturnOnErrorMsg(error, "Could not add point");
-	
+
 	error =
 		IMPiEnv_Parse_BNV_AddQuad(
 			inBuildData,
 			ri0, ri1, ri2, ri3,
 			&inFace->dont_use_this_normal);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -512,7 +512,7 @@ IMPiEnv_Parse_BNV(
 	MXtNode*			curNode;
 	MXtPoint*			curPoint;
 	MXtFace*			curFace;
-	
+
 	UUtUns16			nodeItr;
 	UUtUns16			faceItr;
 	UUtUns16			pointItr;
@@ -521,7 +521,7 @@ IMPiEnv_Parse_BNV(
 	for(nodeItr = 0, curNode = inEnvData->nodes; nodeItr < inEnvData->numNodes;	nodeItr++, curNode++)
 	{
 		UUmAssert(inBuildData->numBNVs < inBuildData->maxBNVs);
-		
+
 		if (UUrString_HasPrefix(curNode->name, IMPcGunkFlagNamePrefix) ||
 			UUrString_HasPrefix(curNode->name, IMPcParticle2Prefix) ||
 			UUrString_HasPrefix(curNode->name, IMPcFXPrefix))
@@ -532,20 +532,20 @@ IMPiEnv_Parse_BNV(
 		}
 
 		curBNV = inBuildData->bnvList + inBuildData->numBNVs;
-		
+
 		bnvFlags = 0;
-		
+
 		// Read user data for BNVs
 		if(curNode->userDataCount > 0 && *curNode->userData != 0) {
 			// We have user data, so parse it
 			error = GRrGroup_Context_NewFromString(curNode->userData,gPreferencesGroup,NULL,&groupContext,&group);
 			UUmError_ReturnOnError(error);
-			
+
 			// Read off the BNV property flags
 			error = GRrGroup_GetElement(group, "type", &groupType, &groupFlags);
 
 			if(error == UUcError_None) {
-				error = 
+				error =
 					AUrFlags_ParseFromGroupArray(
 						IMPgBNVFlags,
 						groupType,
@@ -555,11 +555,11 @@ IMPiEnv_Parse_BNV(
 
 			GRrGroup_Context_Delete(groupContext);
 		}
-		
+
 		curBNV->flags = bnvFlags;
-				
-		// read the world 
-		
+
+		// read the world
+
 		curBNV->parent = 0xFFFFFFFF;
 		curBNV->level = 0xFFFFFFFF;
 		curBNV->child = 0xFFFFFFFF;
@@ -569,14 +569,14 @@ IMPiEnv_Parse_BNV(
 		curBNV->isLeaf = 0;
 		curBNV->error = UUcFalse;
 		curBNV->numGQs = 0;
-		
+
 		UUrString_Copy(curBNV->fileName, inFileName, IMPcEnv_MaxNameLength);
 		UUrString_Copy(curBNV->objName, curNode->name, IMPcEnv_MaxNameLength);
 
 		for(pointItr = 0, curPoint = curNode->points; pointItr < curNode->numPoints; pointItr++, curPoint++)
 		{
 			MUrMatrix_MultiplyPoint(&curPoint->point, &curNode->matrix,	&curPoint->point);
-			
+
 			error = IMPiEnv_Parse_Point(inBuildData, pointItr, curPoint);
 			UUmError_ReturnOnError(error);
 
@@ -599,7 +599,7 @@ IMPiEnv_Parse_BNV(
 			error = IMPiEnv_Parse_BNV_Tri(inBuildData, curFace);
 			UUmError_ReturnOnError(error);
 		}
-		
+
 		for(faceItr = 0, curFace = curNode->quads; faceItr < curNode->numQuads; faceItr++, curFace++)
 		{
 			MUrMatrix_MultiplyNormal(&curFace->dont_use_this_normal, &curNode->matrix, &curFace->dont_use_this_normal);
@@ -610,7 +610,7 @@ IMPiEnv_Parse_BNV(
 
 		inBuildData->numBNVs++;
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -618,12 +618,12 @@ IMPiEnv_Parse_BNV(
 static UUtUns16 IMPiEnv_Parse_GQ_AddTexture( IMPtEnv_BuildData* inBuildData, const char* inTextureName)
 {
 	UUtError				error;
-	
+
 	UUtUns16				newIndex;
 	char					fileName[BFcMaxFileNameLength];
-		
+
 	UUmAssert(*inTextureName != 0);
-	
+
 	if(1 || !(IMPg_Gunk_Flags & AKcGQ_Flag_NoTextureMask))
 	{
 		UUtUns32 temp;
@@ -631,8 +631,8 @@ static UUtUns16 IMPiEnv_Parse_GQ_AddTexture( IMPtEnv_BuildData* inBuildData, con
 		UUrString_Copy(fileName, inTextureName, BFcMaxFileNameLength);
 		UUrString_Capitalize(fileName, BFcMaxFileNameLength);
 		UUrString_StripExtension(fileName);
-		
-		error = 
+
+		error =
 			AUrSharedStringArray_AddString(
 				inBuildData->textureMapArray,
 				fileName,
@@ -651,7 +651,7 @@ static UUtUns16 IMPiEnv_Parse_GQ_AddTexture( IMPtEnv_BuildData* inBuildData, con
 	{
 		newIndex = 0xFFFF;
 	}
-	
+
 	return newIndex;
 }
 
@@ -682,9 +682,9 @@ IMPiEnv_Parse_GQ_AddQuadProperSize(
 	M3tVector3D		edge0, edge1, edge2;
 	M3tVector3D		normal0, normal1;
 	float			dot;
-	
+
 	pointArray = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
-	
+
 	// Check for degenerate quads
 		if(ri0 == ri1 || ri0 == ri2 || ri0 == ri3 ||
 			ri1 == ri2 || ri1 == ri3)
@@ -698,7 +698,7 @@ IMPiEnv_Parse_GQ_AddQuadProperSize(
 			}
 			return UUcError_None;
 		}
-			
+
 		if(ri2 == ri3 && !(localFlags & AKcGQ_Flag_Triangle))
 		{
 			// this GQ should be triangular
@@ -776,13 +776,13 @@ IMPiEnv_Parse_GQ_AddQuadProperSize(
 			MUmVector_Subtract(edge2, pointArray[ri3], pointArray[ri0]);
 
 			MUrVector_CrossProduct(&edge0, &edge1, &normal0);
-			MUrVector_CrossProduct(&edge1, &edge2, &normal1);			
+			MUrVector_CrossProduct(&edge1, &edge2, &normal1);
 
 			dot = MUrVector_DotProduct(&normal0, &normal1);
 			if(dot < 0)
 			{
 				IMPrEnv_LogError("pretzel quad, %s, %s, %s [norm012 %f %f %f, norm023 %f %f %f orig_n %f %f %f] dot %f...",
-								IMPg_Gunk_FileName, IMPg_Gunk_ObjName, IMPg_Gunk_TextureName, 
+								IMPg_Gunk_FileName, IMPg_Gunk_ObjName, IMPg_Gunk_TextureName,
 								normal0.x, normal0.y, normal0.z, normal1.x, normal1.y, normal1.z,
 								nx, ny, nz, dot);
 
@@ -808,23 +808,23 @@ IMPiEnv_Parse_GQ_AddQuadProperSize(
 		}
 
 		// FIXME: check for concave quads?
-			
-		
+
+
 	if(inBuildData->numGQs >= inBuildData->maxGQs)
 	{
 		UUmError_ReturnOnErrorMsgP(
-			UUcError_Generic, 
+			UUcError_Generic,
 			"Exceeeded max num GQs in file \"%s\".",
 			(UUtUns32)IMPg_Gunk_FileName, 0, 0);
 	}
-	
+
 	if (!(inBuildData->numGQs % 500)) Imp_PrintMessage(IMPcMsg_Important, ".");
 
 
 	curGQ = inBuildData->gqList + inBuildData->numGQs;
 
 	curGQ->object_tag = IMPg_Gunk_ObjectTag;
-	
+
 	curGQ->ghostUsed = UUcFalse;
 	curGQ->stairBNVIndex = (UUtUns32) -1;
 
@@ -832,38 +832,38 @@ IMPiEnv_Parse_GQ_AddQuadProperSize(
 	curGQ->visibleQuad.indices[1] = ri1;
 	curGQ->visibleQuad.indices[2] = ri2;
 	curGQ->visibleQuad.indices[3] = ri3;
-	
+
 	UUrMemory_Clear(curGQ->gqMaterialName, IMPcEnv_MaxNameLength);
-	
+
 	curTextureIndex = IMPiEnv_Parse_GQ_AddTexture(inBuildData, IMPg_Gunk_TextureName);
-	
+
 	if(!(IMPg_Gunk_Flags & AKcGQ_Flag_NoTextureMask))
 	{
-		error = 
+		error =
 			AUrSharedTexCoordArray_AddTexCoord(
 				inBuildData->sharedTextureCoordArray,
 				inBaseTextureCoords[0].u,
 				inBaseTextureCoords[0].v,
 				&curGQ->baseMapIndices.indices[0]);
 		UUmError_ReturnOnError(error);
-		
-		error = 
+
+		error =
 			AUrSharedTexCoordArray_AddTexCoord(
 				inBuildData->sharedTextureCoordArray,
 				inBaseTextureCoords[1].u,
 				inBaseTextureCoords[1].v,
 				&curGQ->baseMapIndices.indices[1]);
 		UUmError_ReturnOnError(error);
-		
-		error = 
+
+		error =
 			AUrSharedTexCoordArray_AddTexCoord(
 				inBuildData->sharedTextureCoordArray,
 				inBaseTextureCoords[2].u,
 				inBaseTextureCoords[2].v,
 				&curGQ->baseMapIndices.indices[2]);
 		UUmError_ReturnOnError(error);
-		
-		error = 
+
+		error =
 			AUrSharedTexCoordArray_AddTexCoord(
 				inBuildData->sharedTextureCoordArray,
 				inBaseTextureCoords[3].u,
@@ -873,31 +873,31 @@ IMPiEnv_Parse_GQ_AddQuadProperSize(
 	}
 	else
 	{
-		error = 
+		error =
 			AUrSharedTexCoordArray_AddTexCoord(
 				inBuildData->sharedTextureCoordArray,
 				0.0f,
 				0.0f,
 				&curGQ->baseMapIndices.indices[0]);
 		UUmError_ReturnOnError(error);
-		
-		error = 
+
+		error =
 			AUrSharedTexCoordArray_AddTexCoord(
 				inBuildData->sharedTextureCoordArray,
 				1.0f,
 				0.0f,
 				&curGQ->baseMapIndices.indices[1]);
 		UUmError_ReturnOnError(error);
-		
-		error = 
+
+		error =
 			AUrSharedTexCoordArray_AddTexCoord(
 				inBuildData->sharedTextureCoordArray,
 				1.0f,
 				1.0f,
 				&curGQ->baseMapIndices.indices[2]);
 		UUmError_ReturnOnError(error);
-		
-		error = 
+
+		error =
 			AUrSharedTexCoordArray_AddTexCoord(
 				inBuildData->sharedTextureCoordArray,
 				0.0f,
@@ -905,23 +905,23 @@ IMPiEnv_Parse_GQ_AddQuadProperSize(
 				&curGQ->baseMapIndices.indices[3]);
 		UUmError_ReturnOnError(error);
 	}
-			
+
 	curGQ->textureMapIndex = curTextureIndex;
-	
+
 /*	curGQ->adjGQIndices[0] = 0xFFFFFFFF;
 	curGQ->adjGQIndices[1] = 0xFFFFFFFF;
 	curGQ->adjGQIndices[2] = 0xFFFFFFFF;
 	curGQ->adjGQIndices[3] = 0xFFFFFFFF;*/
-	
+
 	curPoint = pointArray + curGQ->visibleQuad.indices[0];
 	//d = -(curPoint->x * nx + curPoint->y * ny + curPoint->z * nz);
-	error = 
+	error =
 		AUrSharedPlaneEquArray_AddPlaneEqu(
 			inBuildData->sharedPlaneEquArray,
 			nx, ny, nz, realD,
 			&curGQ->planeEquIndex);
 	UUmError_ReturnOnError(error);
-	
+
 	curGQ->flags		= IMPg_Gunk_Flags | localFlags;
 	curGQ->lmFlags		= IMPg_Gunk_LMFlags;
 	curGQ->scriptID		= IMPg_Gunk_ScriptID;
@@ -947,31 +947,31 @@ IMPiEnv_Parse_GQ_AddQuadProperSize(
 						pointArray[curGQ->visibleQuad.indices[3]].z);
 		return UUcError_None;
 	}
-	
+
 	UUrString_Copy(curGQ->fileName, IMPg_Gunk_FileName, IMPcEnv_MaxNameLength);
 	UUrString_Copy(curGQ->objName, IMPg_Gunk_ObjName, IMPcEnv_MaxNameLength);
 	UUrString_Copy(curGQ->materialName, IMPg_Gunk_MaterialName, IMPcEnv_MaxNameLength);
-	
+
 	// Add LS info
 	curGQ->fileRelativeGQIndex	= IMPg_Gunk_FileRelativeGQIndex++;
-	
+
 	curGQ->isLuminaire = IMPgEnv_LS;
 	if(curGQ->isLuminaire)
 	{
 		curGQ->filterColor[0] = IMPgEnv_LS_FilterColor[0];
 		curGQ->filterColor[1] = IMPgEnv_LS_FilterColor[1];
 		curGQ->filterColor[2] = IMPgEnv_LS_FilterColor[2];
-		
+
 		curGQ->lightType = IMPgEnv_LS_Type;
-		
+
 		curGQ->intensity = IMPgEnv_LS_Intensity;
-		
+
 		curGQ->distribution = IMPgEnv_LS_Distribution;
 		curGQ->beamAngle = IMPgEnv_LS_BeamAngle;
 		curGQ->fieldAngle = IMPgEnv_LS_FieldAngle;
 	}
 	curGQ->lightParams = IMPgEnv_LS_ParamFlags;
-	
+
 	// testing
 	if(0 && inBuildData->numGQs == 0)
 	{
@@ -982,16 +982,16 @@ IMPiEnv_Parse_GQ_AddQuadProperSize(
 		curGQ->lightType = IMPcLS_LightType_Area;
 		curGQ->intensity = 3800000;
 	}
-		
+
 	// check for nonplanar problems
 	planeProblem = UUcFalse;
 	maxDist = -1e13f;
 	for(i = 1; i < 4; i++)
 	{
 		curPoint = pointArray + curGQ->visibleQuad.indices[i];
-		
+
 		testD = -(curPoint->x * nx + curPoint->y * ny + curPoint->z * nz);
-		
+
 		curDist = (float)fabs(realD - testD);
 		if(curDist > 0.01f)
 		{
@@ -999,7 +999,7 @@ IMPiEnv_Parse_GQ_AddQuadProperSize(
 			if(curDist > maxDist) maxDist = curDist;
 		}
 	}
-	
+
 	if(planeProblem)
 	{
 		IMPrEnv_LogError(
@@ -1037,7 +1037,7 @@ IMPiEnv_Parse_GQ_AddQuad(
 {
 	UUtError		error;
 
-	error = 
+	error =
 		IMPiEnv_Parse_GQ_AddQuadProperSize(
 			inBuildData,
 			ri0,
@@ -1051,7 +1051,7 @@ IMPiEnv_Parse_GQ_AddQuad(
 			realD,
 			localFlags);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -1153,7 +1153,7 @@ exit:
 	return;
 }
 
-	
+
 
 static UUtError
 IMPiEnv_Parse_GQ_Quad(
@@ -1164,7 +1164,7 @@ IMPiEnv_Parse_GQ_Quad(
 	UUtUns32		ri0, ri1, ri2, ri3;
 	M3tPoint3D*		curPoint;
 	M3tTextureCoord	gqTexCoords[4];
-	
+
 	curPoint = IMPgEnv_RawPoints + inFace->indices[0];
 
 	ri0 = IMPgEnv_PointIndexRemap[inFace->indices[0]];
@@ -1176,14 +1176,14 @@ IMPiEnv_Parse_GQ_Quad(
 	gqTexCoords[1] = IMPgEnv_TextureCoords[inFace->indices[1]];
 	gqTexCoords[2] = IMPgEnv_TextureCoords[inFace->indices[2]];
 	gqTexCoords[3] = IMPgEnv_TextureCoords[inFace->indices[3]];
-	
-	
+
+
 	if(!(IMPg_Gunk_Flags & AKcGQ_Flag_NoTextureMask))
 	{
 		IMPg_Gunk_MaterialName = inNode->materials[inFace->material].name;
 
 		IMPg_Gunk_TextureName = inNode->materials[inFace->material].maps[MXcMapping_DI].name;
-		
+
 		if(!strcmp(IMPg_Gunk_TextureName, "<none>"))
 		{
 			IMPg_Gunk_TextureName = "NONE";
@@ -1198,11 +1198,11 @@ IMPiEnv_Parse_GQ_Quad(
 		IMPg_Gunk_TextureName = "BLUEGRID02.PSD";
 		IMPg_Gunk_MaterialName = "BLUEGRID02.PSD";
 	}
-	
+
 	UUrString_Capitalize(IMPg_Gunk_TextureName, BFcMaxFileNameLength);
-					
+
 	IMPiEnv_Parse_GQ_Quad_BuildNormal(inBuildData, ri0, ri1, ri2, ri3, gqTexCoords, &inFace->dont_use_this_normal);
-	
+
 	return UUcError_None;
 }
 
@@ -1215,7 +1215,7 @@ IMPiEnv_Parse_GQ_Tri(
 	UUtUns32			ri0, ri1, ri2;
 	M3tPoint3D*			curPoint;
 	M3tTextureCoord		gqTexCoords[4];
-	
+
 	curPoint = IMPgEnv_RawPoints + inFace->indices[0];
 
 	gqTexCoords[0] = IMPgEnv_TextureCoords[inFace->indices[0]];
@@ -1227,7 +1227,7 @@ IMPiEnv_Parse_GQ_Tri(
 	ri1 = IMPgEnv_PointIndexRemap[inFace->indices[1]];
 	ri2 = IMPgEnv_PointIndexRemap[inFace->indices[2]];
 
-	
+
 	if(!(IMPg_Gunk_Flags & AKcGQ_Flag_NoTextureMask))
 	{
 		IMPg_Gunk_MaterialName = inNode->materials[inFace->material].name;
@@ -1235,7 +1235,7 @@ IMPiEnv_Parse_GQ_Tri(
 		IMPg_Gunk_TextureName = inNode->materials[inFace->material].maps[MXcMapping_DI].name;
 
 		if(!strcmp(IMPg_Gunk_TextureName, "<none>"))
-		{		
+		{
 			IMPg_Gunk_TextureName = "NONE";
 		}
 		else if(!strcmp(IMPg_Gunk_MaterialName, "<none>"))
@@ -1248,11 +1248,11 @@ IMPiEnv_Parse_GQ_Tri(
 		IMPg_Gunk_TextureName = "BLUEGRID02.PSD";
 		IMPg_Gunk_MaterialName = "BLUEGRID02.PSD";
 	}
-	
+
 	UUrString_Capitalize(IMPg_Gunk_TextureName, BFcMaxFileNameLength);
-		
+
 	IMPiEnv_Parse_GQ_Tri_BuildNormal(inBuildData, ri0, ri1, ri2, gqTexCoords, &inFace->dont_use_this_normal);
-	
+
 	return UUcError_None;
 }
 
@@ -1273,8 +1273,8 @@ IMPiEnv_Parse_GQ_Flag(
 	error = UUrString_To_Int32(inNode->name + strlen(IMPcGunkFlagNamePrefix), &pFlag->idNumber);
 
 	if (error) {
-		Imp_PrintWarning("failed to parse flag %s in file %s", 
-			inNode->name, 
+		Imp_PrintWarning("failed to parse flag %s in file %s",
+			inNode->name,
 			BFrFileRef_GetLeafName(inFileRef));
 
 		//UUmError_ReturnOnError(error);
@@ -1282,9 +1282,9 @@ IMPiEnv_Parse_GQ_Flag(
 	}
 
 	pFlag->matrix = inNode->matrix;
-					
+
 	inBuildData->numFlags += 1;
-			
+
 	return UUcError_None;
 }
 
@@ -1310,7 +1310,7 @@ IMPiEnv_Parse_GQ_Object_GeometryList(
 	M3tGeometry			*objectGeometry;
 	MXtHeader*			geomData;
 	MXtNode*			curNode;
-	
+
 	// Determine where to find the geometries
 	error = GRrGroup_GetString(inBuildData->environmentGroup, "propsDirectory", &geometryFileDirName);
 
@@ -1321,19 +1321,19 @@ IMPiEnv_Parse_GQ_Object_GeometryList(
 		setupO->numDefGeometry = 0;
 		return UUcError_None;
 	}
-	
+
 	UUrString_Copy(munge, inNode->name + strlen(IMPcGunkObjectNamePrefix), 64);
-	
+
 	sprintf(geometryFileDirNameMunged,"%s\\%s", geometryFileDirName, munge);
-	
+
 	UUrString_NukeNumSuffix(geometryFileDirNameMunged, 128);
-	
+
 	// Fetch the list of geometries
 	UUmError_ReturnOnErrorMsg(error, "Could not get props texture file info");
 	error = BFrFileRef_MakeFromName(geometryFileDirNameMunged, &geometryFileDirRef);
 	UUmError_ReturnOnErrorMsg(error, "Could not make props texture file dir ref");
-	
-	error = 
+
+	error =
 		BFrDirectory_GetFileList(
 			geometryFileDirRef,
 			setupO->defGeomPrefix,
@@ -1349,7 +1349,7 @@ IMPiEnv_Parse_GQ_Object_GeometryList(
 		setupO->numDefGeometry = 0;
 		return UUcError_None;
 	}
-		
+
 	// Process and store the geometries
 	for(curEnvGeometryIndex = 0, curEnvGeometry = setupO->defGeomList;
 		curEnvGeometryIndex < numGeometryFiles;
@@ -1360,7 +1360,7 @@ IMPiEnv_Parse_GQ_Object_GeometryList(
 
 		UUrString_Copy(tempFileName, leafName, BFcMaxFileNameLength);
 		tempFileName[strlen(tempFileName)-5] = '\0'; // blow away the .env
-		
+
 		// Open the geometry file
 		error = Imp_ParseEnvFile(geometryFileRefArray[curEnvGeometryIndex], &geomData);
 		if (error != UUcError_None)
@@ -1368,9 +1368,9 @@ IMPiEnv_Parse_GQ_Object_GeometryList(
 			Imp_PrintWarning("Unable to find deformed geometry %s for object %s"UUmNL,tempFileName,inNode->name);
 			continue;
 		}
-		
+
 		curNode = geomData->nodes;
-					
+
 		if (curNode->userDataCount > 0 && *curNode->userData != 0)
 		{
 			error = GRrGroup_Context_NewFromString(curNode->userData,gPreferencesGroup,NULL,&groupContext,&group);
@@ -1385,28 +1385,28 @@ IMPiEnv_Parse_GQ_Object_GeometryList(
 		{
 			textureName = "NONE";
 		}
-		
+
 		if(textureName == NULL || *textureName == 0)
 		{
 			textureName = "NONE";
 		}
-		
-		
+
+
 		// Check to see if we have this geometry yet
 		if (IMPgConstructing && !TMrConstruction_Instance_CheckExists(M3cTemplate_Geometry,tempFileName))
 		{
 			M3tMatrix4x3 identity = {	1.0f,0,0,0,
 									0,1.0f,0,0,
 									0,0,1.0f,0 };
-									
+
 			error = TMrConstruction_Instance_Renew(M3cTemplate_Geometry,tempFileName,0,&objectGeometry);
 			UUmError_ReturnOnError(error);
-			
+
 			// Parse the geometry
 			error = Imp_Node_To_Geometry(geomData->nodes, objectGeometry);
 			UUmError_ReturnOnError(error);
-			
-			objectGeometry->geometryFlags = M3cGeometryFlag_None;			
+
+			objectGeometry->geometryFlags = M3cGeometryFlag_None;
 
 			// Add the texture placeholder
 			UUmAssert(strchr(textureName, '.') == NULL);
@@ -1414,20 +1414,20 @@ IMPiEnv_Parse_GQ_Object_GeometryList(
 			objectGeometry->baseMap = M3rTextureMap_GetPlaceholder(textureName);
 			UUmAssert(objectGeometry->baseMap);
 		}
-		
+
 		Imp_EnvFile_Delete(geomData);
-		
+
 		// Create the geometry placeholder
 		if(IMPgConstructing)
 		{
-			error = 
+			error =
 				TMrConstruction_Instance_GetPlaceHolder(
 					M3cTemplate_Geometry,
 					tempFileName,
 					(TMtPlaceHolder*)curEnvGeometry);
 		}
-		
-		// Make a note of the new deformed geometry entry	
+
+		// Make a note of the new deformed geometry entry
 		setupO->numDefGeometry++;
 		if (setupO->numDefGeometry > IMPcEnv_MaxDefGeometry) break;
 	}
@@ -1472,7 +1472,7 @@ IMPiEnv_Parse_GQ_Object(
 	setupO->bounces			= OBcInfinity;
 	setupO->hitpoints		= OBcInfinity;
 	setupO->scriptID		= OBcInfinity;
-	
+
 	animName[0] = '\0';
 	objectName = inNode->name+strlen(IMPcGunkObjectNamePrefix);
 
@@ -1497,58 +1497,58 @@ IMPiEnv_Parse_GQ_Object(
 		// grab the object tag if it exits...
 		tag = IMPiEnv_Parse_GQ_ObjectTag( group, inBuildData );
 		IMPrEnv_Add_ObjectTag( inBuildData, tag, 0xFFFFFFFF );
-		
+
 		// Read the optional fields
 		error = GRrGroup_GetElement(group, "lifespan", &groupType, &string);
 		if (UUcError_None == error) {
 			Imp_PrintMessage(IMPcMsg_Important, "object had obsolete field lifespan");
 		}
-		
+
 		error = GRrGroup_GetElement(group, "bouncelimit", &groupType, &string);
 		if (UUcError_None == error) {
 			Imp_PrintMessage(IMPcMsg_Important, "object had obsolete field bounce limit");
 		}
-		
+
 		error = GRrGroup_GetElement(group, "hitpoints", &groupType, &string);
 		if (UUcError_None == error) {
 			Imp_PrintMessage(IMPcMsg_Important, "object had obsolete field hitpoints");
 		}
-		
+
 		error = GRrGroup_GetElement(group, "damage", &groupType, &string);
 		if (UUcError_None == error) {
 			Imp_PrintMessage(IMPcMsg_Important, "object had obsolete field damage");
 		}
-		
+
 		error = GRrGroup_GetElement(group, "physics", &groupType, &string);
 		if (error == UUcError_None)  sscanf(string,"%u",&setupO->physicsLevel);
-		
+
 		error = GRrGroup_GetElement(group, "ref", &groupType, &string);
 		if (error == UUcError_None)  sscanf(string,"%u",&setupO->scriptID);
-		
+
 		error = GRrGroup_GetString(group, "anim", &string);
 		if (error == UUcError_None) UUrString_Copy(animName,string,OBcMaxObjectName);
-		
+
 		error = GRrGroup_GetElement(group, "node_index", &groupType, &string);
 		if (error == UUcError_None) sscanf(string,"%u",&node_index);
-	
+
 		// Read the deformation fields
 		error = GRrGroup_GetElement(group,"deftex",&groupType,&string);
 		if (error == UUcError_None) UUrString_Copy(setupO->defTexturePrefix,string,IMPcEnv_MaxPrefixLength);
 
 		error = GRrGroup_GetElement(group,"defgeom",&groupType,&string);
 		if (error == UUcError_None) UUrString_Copy(setupO->defGeomPrefix,string,IMPcEnv_MaxPrefixLength);
-		
+
 		IMPiEnv_Parse_GQ_Object_GeometryList(inBuildData,setupO,inNode);
-		
+
 		// Close off the user data
 		GRrGroup_Context_Delete(groupContext);
 	}
 	//else IMPrEnv_LogError("Object %s in file %s has no user data",inNode->name,inFileName);
-	
+
 	// Intelligently set the temp and bounce flags
-			
+
 	setupO->flags = flagResults;
-		
+
 	// find the original setup object if it exists
 	setup_original = NULL;
 
@@ -1560,10 +1560,10 @@ IMPiEnv_Parse_GQ_Object(
 			if( !UUrString_Compare_NoCase( inBuildData->objectList[i].objName, inNode->name ) )
 			{
 				setup_original = &inBuildData->objectList[i];
-			}			
+			}
 		}
 	}
-	
+
 	if( setup_original )
 	{
 		setupO = setup_original;
@@ -1586,10 +1586,10 @@ IMPiEnv_Parse_GQ_Object(
 			scanned					= sscanf(junk,"%d",&door);
 			setupO->door_id			= door;
 			if (!scanned)			return UUcError_Generic;
-			if (!(setupO->flags & OBcFlags_NoCollision)) 
+			if (!(setupO->flags & OBcFlags_NoCollision))
 				setupO->flags |= OBcFlags_FaceCollision;
 		}
-		
+
 		// Check to see if we have geometry for this object type yet
 		if( node_index == -1 )
 		{
@@ -1597,7 +1597,7 @@ IMPiEnv_Parse_GQ_Object(
 				storeGeom = UUcFalse;
 		}
 	}
-		
+
 	if (storeGeom)
 	{
 		// This object has geometry exported for it, so parse it
@@ -1608,34 +1608,34 @@ IMPiEnv_Parse_GQ_Object(
 
 		error = TMrConstruction_Instance_Renew(M3cTemplate_Geometry, geometry_name, 0, &objectGeometry);
 		UUmError_ReturnOnError(error);
-		objectGeometry->geometryFlags = M3cGeometryFlag_None;			
+		objectGeometry->geometryFlags = M3cGeometryFlag_None;
 
 		error = Imp_Node_To_Geometry(inNode, objectGeometry);
-		UUmError_ReturnOnError(error);		
+		UUmError_ReturnOnError(error);
 
 		textureName = inNode->materials->maps[MXcMapping_DI].name;
-		
+
 		if(!strcmp(inNode->materials->name, "<none>"))
 		{
 			textureName = "NONE";
 		}
-		
+
 		if(textureName == NULL || *textureName == 0)
 		{
 			textureName = "NONE";
 		}
-		
+
 		UUrString_Capitalize(textureName, BFcMaxFileNameLength);
-		
+
 		// Add the texture placeholder and note the texture for later creation
 		UUmAssert(strchr(textureName, '.') == NULL);
-		
+
 		objectGeometry->baseMap = M3rTextureMap_GetPlaceholder(textureName);
 		UUmAssert(objectGeometry->baseMap);
-		
-		if ((!textureName) || (textureName[0] == '\0')) 
+
+		if ((!textureName) || (textureName[0] == '\0'))
 			IMPg_Gunk_Flags = AKcGQ_Flag_NoTextureMask;
-		else 
+		else
 			IMPg_Gunk_Flags = 0;
 
 		IMPiEnv_Parse_GQ_AddTexture(inBuildData,textureName);
@@ -1644,13 +1644,13 @@ IMPiEnv_Parse_GQ_Object(
 	{
 		sprintf( geometry_name, "%s", objectName );
 	}
-	
+
 	if(IMPgConstructing)
 	{
 		// Create the geometry placeholder
 		error = TMrConstruction_Instance_GetPlaceHolder( M3cTemplate_Geometry, geometry_name, (TMtPlaceHolder*)&setupO->geometry_list[setupO->geometry_count++] );
 	}
-	
+
 	// Position the object
 	strip = inNode->matrix;
 	setupO->debugOrigMatrix = strip;
@@ -1659,15 +1659,15 @@ IMPiEnv_Parse_GQ_Object(
 
 	error = MUrMatrix_GetUniformScale(&strip, &setupO->scale);
 
-	if (error != UUcError_None) 
-	{ 
+	if (error != UUcError_None)
+	{
 		Imp_PrintMessage(IMPcMsg_Critical, "Detected non uniform scale in %s", inNode->name);
 		setupO->scale = 1.0f;
 	}
 
 	MUrMatrix_StripScale(&strip,&strip);
 	MUrMatrixToQuat(&strip,&setupO->orientation);
-	
+
 	// Check for animation
 	if (*animName && IMPgConstructing)
 	{
@@ -1678,7 +1678,7 @@ IMPiEnv_Parse_GQ_Object(
 		if (error != UUcError_None) setupO->animation = NULL;
 		else setupO->physicsLevel = PHcPhysics_Animate;
 	}
-	
+
 	// if this node has any markers traverse them
 	setupO->numParticles = 0;
 	skipFX = UUcFalse;
@@ -1709,7 +1709,7 @@ IMPiEnv_Parse_GQ_Object(
 			}
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1741,13 +1741,13 @@ UUtUns32 IMPrEnv_GetNodeFlags(MXtNode *inNode)
 		goto exit;
 	}
 
-	error = 
+	error =
 		AUrFlags_ParseFromGroupArray(
 			IMPgGunkFlags,
 			groupType,
 			groupFlags,
 			&gunkFlags);
-		
+
 	if (UUcError_None != error) {
 		Imp_PrintWarning("gunk in file %s, node %s had an invalid flag", IMPg_Gunk_FileName, inNode->name);
 	}
@@ -1773,13 +1773,13 @@ IMPrEnv_GetLSData(
 	UUtError				error;
 	GRtElementType			groupType;
 	GRtElementType			elemType;
-	
+
 	GRtElementArray*		filterColor;
 	char*					color;
 	char*					type;
 	char*					intensity;
 	UUtUns16				itr;
-	
+
 	// initialize
 	outFilterColor[0] = 0.0f;
 	outFilterColor[1] = 0.0f;
@@ -1789,29 +1789,29 @@ IMPrEnv_GetLSData(
 	*outIntensity = 0;
 	*outBeamAngle = 120.0f;
 	*outFieldAngle = 120.0f;
-	
+
 	// process group
 	error = GRrGroup_GetElement(inLSGroup, "filterColor", &groupType, &filterColor);
 	IMPmError_ReturnOnErrorMsg(error, "Could not parse filter color");
-	
+
 	if (GRrGroup_Array_GetLength(filterColor) != 3)
 	{
 		IMPmError_ReturnOnErrorMsg(
 			UUcError_Generic,
 			"Filter Color must only have 3 floats");
 	}
-	
+
 	for(itr = 0; itr < 3; itr++)
 	{
 		error = GRrGroup_Array_GetElement(filterColor, itr, &elemType, &color);
 		IMPmError_ReturnOnErrorMsg(error, "Could not parse filter color");
-		
+
 		sscanf(color, "%f", &outFilterColor[itr]);
 	}
-	
+
 	error = GRrGroup_GetElement(inLSGroup, "type", &elemType, &type);
 	IMPmError_ReturnOnErrorMsg(error, "Could not ls light type");
-	
+
 	if(!strcmp(type, "point"))
 	{
 		*outLightType = IMPcLS_LightType_Point;
@@ -1828,7 +1828,7 @@ IMPrEnv_GetLSData(
 	{
 		IMPmError_ReturnOnErrorMsg(UUcError_Generic, "unknown ls light type");
 	}
-	
+
 	error = GRrGroup_GetElement(inLSGroup, "distribution", &elemType, &type);
 	if(error == UUcError_None)
 	{
@@ -1851,19 +1851,19 @@ IMPrEnv_GetLSData(
 	{
 		sscanf(intensity, "%d", outIntensity);
 	}
-	
+
 	error = GRrGroup_GetElement(inLSGroup, "beamAngle", &elemType, &intensity);
 	if(error == UUcError_None)
 	{
 		sscanf(intensity, "%f", outBeamAngle);
 	}
-	
+
 	error = GRrGroup_GetElement(inLSGroup, "fieldAngle", &elemType, &intensity);
 	if(error == UUcError_None)
 	{
 		sscanf(intensity, "%f", outFieldAngle);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1883,12 +1883,12 @@ IMPiEnv_Parse_GQ(
 	UUtUns32			gunkFlags;
 	UUtUns32			lmFlags;
 	GRtGroup*			lsGroup;
-	
+
 	MXtNode*			curNode;
 	MXtPoint*			curPoint;
 	MXtFace*			curFace;
 	MXtMarker*			curMarker;
-	
+
 	UUtUns16			nodeItr;
 	UUtUns16			faceItr;
 	UUtUns16			pointItr;
@@ -1925,7 +1925,7 @@ IMPiEnv_Parse_GQ(
 		else if (UUrString_HasPrefix(curNode->name,IMPcGunkObjectNamePrefix))
 		{
 			// We have an object
-			
+
 			// hack- Parse non physics objects as gunk for Dec 1/98 deadline
 			// 07/99 - update- artists requested this hack be left in, and it doesn't hurt anything, so...
 			if (curNode->userDataCount > 0 && *curNode->userData != 0)
@@ -1934,7 +1934,7 @@ IMPiEnv_Parse_GQ(
 				continue;
 			}
 		}
-		
+
 		gunkFlags = 0;
 		lmFlags = 0;
 
@@ -1947,10 +1947,10 @@ IMPiEnv_Parse_GQ(
 			// We have user data, so parse it
 			error = GRrGroup_Context_NewFromString(curNode->userData,gPreferencesGroup,NULL,&groupContext,&group);
 			UUmError_ReturnOnError(error);
-			
+
 			error  = GRrGroup_GetUns16(group,"ref",&scriptID);
 			if (error != UUcError_None) scriptID = 0xFFFF;
-			
+
 			error  = GRrGroup_GetString(group,"material",&materialName);
 			if (error != UUcError_None) materialName = NULL;
 			else
@@ -1964,18 +1964,18 @@ IMPiEnv_Parse_GQ(
 			error = GRrGroup_GetElement(group, "lm", &groupType, &groupFlags);
 			if(error == UUcError_None)
 			{
-				error = 
+				error =
 					AUrFlags_ParseFromGroupArray(
 						IMPgLMFlags,
 						groupType,
 						groupFlags,
 						&lmFlags);
 			}
-			
+
 			error = GRrGroup_GetElement(group, "lsparams", &groupType, &groupFlags);
 			if(error == UUcError_None)
 			{
-				error = 
+				error =
 					AUrFlags_ParseFromGroupArray(
 						IMPgLSParamFlags,
 						groupType,
@@ -2001,18 +2001,18 @@ IMPiEnv_Parse_GQ(
 					IMPgEnv_LS = UUcTrue;
 				}
 			}
-			
+
 			// grab the object tag if it exits...
 			IMPg_Gunk_ObjectTag = IMPiEnv_Parse_GQ_ObjectTag( group, inBuildData );
 			GRrGroup_Context_Delete(groupContext);
 		}
-		
+
 		IMPg_Gunk_FileName	= inFileName;
 		IMPg_Gunk_ObjName	= curNode->name;
 		IMPg_Gunk_Flags		= gunkFlags;
 		IMPg_Gunk_LMFlags	= (UUtUns16) lmFlags;
 		IMPg_Gunk_ScriptID	= scriptID;
-		
+
 		for(pointItr = 0, curPoint = curNode->points;
 			pointItr < curNode->numPoints;
 			pointItr++, curPoint++)
@@ -2021,8 +2021,8 @@ IMPiEnv_Parse_GQ(
 				&curPoint->point,
 				&curNode->matrix,
 				&curPoint->point);
-			
-			error = 
+
+			error =
 				IMPiEnv_Parse_Point(
 					inBuildData,
 					pointItr,
@@ -2039,14 +2039,14 @@ IMPiEnv_Parse_GQ(
 				&curNode->matrix,
 				&curFace->dont_use_this_normal);
 
-			error = 
+			error =
 				IMPiEnv_Parse_GQ_Tri(
 					inBuildData,
 					curNode,
 					curFace);
 			UUmError_ReturnOnError(error);
 		}
-		
+
 		gq_index = inBuildData->numGQs;
 		lastGQ = inBuildData->gqList + inBuildData->numGQs;
 		for(faceItr = 0, curFace = curNode->quads; faceItr < curNode->numQuads; faceItr++, curFace++)
@@ -2069,7 +2069,7 @@ IMPiEnv_Parse_GQ(
 				}
 				else itrGQ->gqMaterialName[0] = '\0';
 			}
-		}		
+		}
 
 		// look for environmental-particle markers.
 		for (markerItr = 0, curMarker = curNode->markers; markerItr < curNode->numMarkers; markerItr++, curMarker++)
@@ -2094,7 +2094,7 @@ IMPiEnv_Parse_GQ(
 			}
 		}
 	}
-	
+
 	// eventually dispose envData
 
 	return UUcError_None;
@@ -2104,7 +2104,7 @@ IMPiEnv_Parse_GQ(
 static UUtUns32 IMPiEnv_Parse_ComputeNumGQsNeeded(MXtNode*	inNode)
 {
 	UUtUns32	max_gqs_needed = inNode->numTriangles + (inNode->numQuads * 2); // quads might be subdivided into 2 triangles
-	
+
 	return max_gqs_needed;
 }
 
@@ -2205,35 +2205,35 @@ IMPrEnv_Parse_Textures(
 	UUtBool				*ioBuildInstance)
 {
 	UUtError			error;
-	
+
 	char*				textureFileDirName;
 	BFtFileRef*			textureFileDirRef;
 	BFtFileRef*			textureFileRefArray[IMPcEnv_MaxTextures];
 	UUtUns16			numTextureFiles;
 	UUtUns16			curTextureIndex;
-	
+
 	UUtUns16			curFileIndex;
-	
+
 	char				tempFileName[BFcMaxFileNameLength];
 	char				suffix[4];
 
 	UUtUns32			numTextures;
 	AUtSharedString*	curEnvTextureRef;
 	IMPtEnv_Texture*	curEnvTexture;
-	
-	
+
+
 	AUtSharedString*		envTextureList;
 	AUtSharedString*		textureDirectoryList;
 	AUtSharedStringArray*	textureDirectoryArray;
 	UUtUns32				textureIndex;
-	
+
 	UUtUns32*			envTextureSortedIndices;
-	
+
 	const char*			textureRefSuffix;
 	//char*				string;
 
-	
-	
+
+
 	UUtInt64 time = UUrMachineTime_High();
 
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL"Environment Texturemap");
@@ -2247,8 +2247,8 @@ IMPrEnv_Parse_Textures(
 	// add the textures we require and the textures we will skip (just make placeholders for)
 	IMPiEnv_Add_Required_Textures(textureFileDirRef, inBuildData);
 	IMPiEnv_Add_Skip_Textures(textureFileDirRef, inBuildData);
-		
-	error = 
+
+	error =
 		BFrDirectory_GetFileList(
 			textureFileDirRef,
 			NULL,
@@ -2257,12 +2257,12 @@ IMPrEnv_Parse_Textures(
 			&numTextureFiles,
 			textureFileRefArray);
 	UUmError_ReturnOnErrorMsg(error, "Could not get files in bnv dir");
-	
+
 	BFrFileRef_Dispose(textureFileDirRef);
-	
+
 	textureDirectoryArray = AUrSharedStringArray_New();
 	UUmError_ReturnOnNull(textureDirectoryArray);
-			
+
 	for(curTextureIndex = 0; curTextureIndex < numTextureFiles; curTextureIndex++)
 	{
 		textureRefSuffix = BFrFileRef_GetSuffixName(textureFileRefArray[curTextureIndex]);
@@ -2274,20 +2274,20 @@ IMPrEnv_Parse_Textures(
 			suffix,
 			textureRefSuffix,
 			4);
-		
+
 		UUrString_Capitalize(suffix, 4);
-		
+
 		if(strncmp(suffix, "BMP", 3) && strncmp(suffix, "PSD", 3)) continue;
-		
+
 		UUrString_Copy(
 			tempFileName,
 			BFrFileRef_GetLeafName(textureFileRefArray[curTextureIndex]),
 			BFcMaxFileNameLength);
-		
+
 		UUrString_Capitalize(tempFileName, BFcMaxFileNameLength);
 		UUrString_StripExtension(tempFileName);
-		
-		error = 
+
+		error =
 			AUrSharedStringArray_AddString(
 				textureDirectoryArray,
 				tempFileName,
@@ -2295,11 +2295,11 @@ IMPrEnv_Parse_Textures(
 				NULL);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	numTextures = AUrSharedStringArray_GetNum(inBuildData->textureMapArray);
-	
+
 	textureDirectoryList = AUrSharedStringArray_GetList(textureDirectoryArray);
-	
+
 	for(curTextureIndex = 0,
 			curEnvTextureRef = AUrSharedStringArray_GetList(inBuildData->textureMapArray),
 			curEnvTexture = inBuildData->envTextureList;
@@ -2320,7 +2320,7 @@ IMPrEnv_Parse_Textures(
 		curEnvTexture->flags.flags = M3cTextureFlags_HasMipMap;
 
 		curEnvTexture->texture = NULL;
-		
+
 		if(AUrSharedStringArray_GetIndex(textureDirectoryArray, curEnvTextureRef->string, &textureIndex))
 		{
 			if(IMPgConstructing)
@@ -2331,7 +2331,7 @@ IMPrEnv_Parse_Textures(
 					UUmAssert(curEnvTexture->texture);
 				}
 				else {
-					error = 
+					error =
 						Imp_ProcessTexture(
 							textureFileRefArray[textureDirectoryList[textureIndex].data],
 							IMPgLowMemory ? 2 : 0,
@@ -2340,7 +2340,7 @@ IMPrEnv_Parse_Textures(
 							curEnvTextureRef->string,
 							IMPcIgnoreTextureRef);
 					IMPmError_ReturnOnErrorMsg(error, "Could not make texture");
-					
+
 					UUmAssert(strchr(curEnvTextureRef->string, '.') == NULL);
 
 					curEnvTexture->texture = M3rTextureMap_GetPlaceholder(curEnvTextureRef->string);
@@ -2359,23 +2359,23 @@ IMPrEnv_Parse_Textures(
 			IMPrEnv_LogError(
 				"Could not find texture %s",
 				curEnvTextureRef->string);
-				
+
 			curEnvTexture->texture = M3rTextureMap_GetPlaceholder("NONE");
 			UUmAssert(curEnvTexture->texture);
 		}
 	}
-	
+
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL);
 	fprintf(IMPgEnv_StatsFile, "**Texture Map stats"UUmNL);
-	
+
 	envTextureSortedIndices = AUrSharedStringArray_GetSortedIndexList(inBuildData->textureMapArray);
 	envTextureList = AUrSharedStringArray_GetList(inBuildData->textureMapArray);
-	
+
 	for(curTextureIndex = 0;
 		curTextureIndex < numTextures;
 		curTextureIndex++)
 	{
-		fprintf(IMPgEnv_StatsFile, "\t%s"UUmNL, 
+		fprintf(IMPgEnv_StatsFile, "\t%s"UUmNL,
 			envTextureList[envTextureSortedIndices[curTextureIndex]].string);
 	}
 
@@ -2385,7 +2385,7 @@ IMPrEnv_Parse_Textures(
 	{
 		BFrFileRef_Dispose(textureFileRefArray[curFileIndex]);
 	}
-			
+
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
 
@@ -2404,43 +2404,43 @@ IMPrEnv_Parse(
 
 	//char*				bnvFileDirName;
 	//char*				gqFileDirName;
-	
-	
+
+
 	UUtUns16			numBNVfiles;
 	BFtFileRef*			bnvFileDirRef;
 	BFtFileRef*			bnvFileRefArray[IMPcEnv_MaxFilesInDir];
 	MXtHeader*			bnvEnvDataArray[IMPcEnv_MaxFilesInDir];
-	
+
 	UUtUns16			numGQfiles;
 	BFtFileRef*			gqFileDirRef;
 	BFtFileRef*			gqFileRefArray[IMPcEnv_MaxFilesInDir];
 	MXtHeader*			gqEnvDataArray[IMPcEnv_MaxFilesInDir];
-		
+
 	UUtUns16			curFileIndex;
-	
+
 	UUtBool				buildInstance;
 	UUtUns32			createDate = 0;
 	UUtUns32			curModTime;
 
-	
+
 	M3tPoint3D			*pointList;
-	
-	
-	
+
+
+
 	UUtUns16			nodeItr;
 	MXtNode*			curNode;
 	const char*			leafName;
 	//char*				string;
 
 	UUtUns32			newIndex;
-	
+
 	M3tColorRGB			reflectivity_color;
-	
+
 	UUtUns32			numGQsNeeded;
 	UUtInt64			time;
-	
+
 	AUrSharedStringArray_Reset(inBuildData->textureMapArray);
-	
+
 	// setup default door frame texture
 	error = AUrSharedStringArray_AddString( inBuildData->textureMapArray, "_DOOR_FRAME", 0, &newIndex);
 	UUmAssert( error == UUcError_None );
@@ -2460,11 +2460,11 @@ IMPrEnv_Parse(
 			"Conversion_Files\\Gunk",
 			&gqFileDirRef);
 	UUmError_ReturnOnError(error);
-	
+
 	// Get the default reflectivity
 	inBuildData->reflectivity_specified = UUcFalse;
-	
-	error = 
+
+	error =
 		M3rGroup_GetColor(
 			inGroup,
 			"reflectivity",
@@ -2476,10 +2476,10 @@ IMPrEnv_Parse(
 
 		Imp_PrintMessage(IMPcMsg_Important, "reflectivity = %f,%f,%f"UUmNL, inBuildData->reflectivity_color.r, inBuildData->reflectivity_color.g, inBuildData->reflectivity_color.b);
 	}
-		
-	
+
+
 	// Get the file lists
-	error = 
+	error =
 		BFrDirectory_GetFileList(
 			bnvFileDirRef,
 			NULL,
@@ -2488,8 +2488,8 @@ IMPrEnv_Parse(
 			&numBNVfiles,
 			bnvFileRefArray);
 	UUmError_ReturnOnErrorMsg(error, "Could not get files in bnv dir");
-	
-	error = 
+
+	error =
 		BFrDirectory_GetFileList(
 			gqFileDirRef,
 			NULL,
@@ -2498,10 +2498,10 @@ IMPrEnv_Parse(
 			&numGQfiles,
 			gqFileRefArray);
 	UUmError_ReturnOnErrorMsg(error, "Could not get files in gq dir");
-			
-		
+
+
 	buildInstance = *ioBuildInstance;
-	
+
 	for(curFileIndex = 0; curFileIndex < numBNVfiles && !buildInstance; curFileIndex++)
 	{
 		error = BFrFileRef_GetModTime(bnvFileRefArray[curFileIndex], &curModTime);
@@ -2527,29 +2527,29 @@ IMPrEnv_Parse(
 	}
 	// Collect all the dirtmap file names
 	inBuildData->maxBNVs = 0;
-		
+
 	time = UUrMachineTime_High();
 	Imp_PrintMessage(IMPcMsg_Important, "Parsing BNVs");
-	
+
 	for(curFileIndex = 0; curFileIndex < numBNVfiles; curFileIndex++)
 	{
 		if((curFileIndex % 5) == 0)
 		{
 			Imp_PrintMessage(IMPcMsg_Important, ".");
 		}
-		
+
 		leafName = BFrFileRef_GetLeafName(bnvFileRefArray[curFileIndex]);
 		Imp_PrintMessage(IMPcMsg_Cosmetic, "%s"UUmNL, leafName);
 
 		error = Imp_ParseEnvFile(bnvFileRefArray[curFileIndex], &bnvEnvDataArray[curFileIndex]);
 		UUmError_ReturnOnError(error);
-		
+
 		inBuildData->maxBNVs += bnvEnvDataArray[curFileIndex]->numNodes;
 	}
-	
+
 	inBuildData->bnvList = UUrMemory_Block_New(sizeof(IMPtEnv_BNV) * inBuildData->maxBNVs);
 	UUmError_ReturnOnNull(inBuildData->bnvList);
-	
+
 	for(curFileIndex = 0; curFileIndex < numBNVfiles; curFileIndex++)
 	{
 		if((curFileIndex % 5) == 0)
@@ -2563,7 +2563,7 @@ IMPrEnv_Parse(
 				inBuildData);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	for(curFileIndex = 0; curFileIndex < numBNVfiles; curFileIndex++)
 	{
 		Imp_EnvFile_Delete(bnvEnvDataArray[curFileIndex]);
@@ -2571,15 +2571,15 @@ IMPrEnv_Parse(
 
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
-	
+
 	time = UUrMachineTime_High();
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL"GQs");
 
 	inBuildData->maxGQs = 0;
 	inBuildData->numGQFiles = numGQfiles;
-	
+
 	numGQsNeeded = 0;
-	
+
 	inBuildData->numMarkers = 0;
 	for(curFileIndex = 0; curFileIndex < numGQfiles; curFileIndex++)
 	{
@@ -2592,15 +2592,15 @@ IMPrEnv_Parse(
 
 		error = Imp_ParseEnvFile(gqFileRefArray[curFileIndex], &gqEnvDataArray[curFileIndex]);
 		UUmError_ReturnOnError(error);
-		
+
 		for(nodeItr = 0, curNode = gqEnvDataArray[curFileIndex]->nodes;
 			nodeItr < gqEnvDataArray[curFileIndex]->numNodes;
 			nodeItr++, curNode++)
 		{
 			inBuildData->maxGQs += curNode->numTriangles + curNode->numQuads;
-			
+
 			numGQsNeeded += IMPiEnv_Parse_ComputeNumGQsNeeded(curNode);
-			
+
 			for (newIndex=0; newIndex<curNode->numMarkers; newIndex++)
 			{
 				if (inBuildData->numMarkers >= IMPcEnv_MaxMarkerNodes) {
@@ -2613,30 +2613,30 @@ IMPrEnv_Parse(
 				inBuildData->numMarkers++;
 			}
 		}
-		
+
 		UUrString_Copy(inBuildData->gqFileNames[curFileIndex], BFrFileRef_GetLeafName(gqFileRefArray[curFileIndex]), BFcMaxFileNameLength);
 	}
 
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
-	
+
 
 	inBuildData->maxGQs = numGQsNeeded + (numGQsNeeded >> 1);
 
 	if(inBuildData->maxGQs < 4000) inBuildData->maxGQs = 4000;
-	
+
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL"max gqs = %d"UUmNL, inBuildData->maxGQs);
-			
+
 	inBuildData->gqList = UUrMemory_Block_New(sizeof(IMPtEnv_GQ) * inBuildData->maxGQs);
 	UUmError_ReturnOnNull(inBuildData->gqList);
-	
+
 	inBuildData->gqTakenBV = UUrBitVector_New(inBuildData->maxGQs);
 	UUmError_ReturnOnNull(inBuildData->gqTakenBV);
 
 	for(curFileIndex = 0; curFileIndex < numGQfiles; curFileIndex++)
 	{
 		IMPg_Gunk_FileRelativeGQIndex = 0;
-		
+
 		error =
 			IMPiEnv_Parse_GQ(
 				inBuildData,
@@ -2645,18 +2645,18 @@ IMPrEnv_Parse(
 				gqFileRefArray[curFileIndex]);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	Imp_PrintMessage(IMPcMsg_Important,UUmNL"%d found"UUmNL,inBuildData->numGQs);
 	pointList = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
-	
+
 
 	IMPrEnv_Parse_Textures(inSourceFileRef, curModTime, inGroup, inBuildData, ioBuildInstance);
-		
+
 	for(curFileIndex = 0; curFileIndex < numGQfiles; curFileIndex++)
 	{
 		BFrFileRef_Dispose(gqFileRefArray[curFileIndex]);
 	}
-	
+
 	for(curFileIndex = 0; curFileIndex < numBNVfiles; curFileIndex++)
 	{
 		BFrFileRef_Dispose(bnvFileRefArray[curFileIndex]);
@@ -2666,11 +2666,11 @@ IMPrEnv_Parse(
 	{
 		Imp_EnvFile_Delete(gqEnvDataArray[curFileIndex]);
 	}
-	
+
 	BFrFileRef_Dispose(gqFileDirRef);
 	BFrFileRef_Dispose(bnvFileDirRef);
-	
+
 	*ioBuildInstance = buildInstance;
-	
+
 	return UUcError_None;
 }

@@ -5,8 +5,8 @@
 
 	CREATED: Sept 3, 1997
 
-	PURPOSE: 
-	
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -62,12 +62,12 @@ iPrintSideIndices(
 	IMPtEnv_BSP_Plane*	inPlanes)
 {
 	UUtUns16	i;
-	
+
 	for(i = 0; i < inNumPlanes; i++)
 	{
 		fprintf(inFile, "%02d ", inPlanes[i].ref);
 	}
-	
+
 	fprintf(inFile, UUmNL);
 }
 
@@ -77,7 +77,7 @@ iPrintTabs(
 	UUtUns16	inNumTabs)
 {
 	UUtUns16	i;
-	
+
 	for(i = 0; i < inNumTabs; i++)
 	{
 		fprintf(inFile, "|\t");
@@ -92,35 +92,35 @@ IMPiEnv_Process_BSP_QuadAbsSide_Get(
 {
 	M3tQuad*		quadArray;
 	M3tQuad*		curQuad;
-	
+
 	M3tPlaneEquation*	planeEqu;
 	M3tPlaneEquation*	planeArray;
 	UUtUns32			numPoints;
 	float				a, b, c, d;
 	float				result;
-	
+
 	M3tPoint3D*			pointArray;
 	M3tPoint3D*			targetPoint;
-	
+
 	UUtUns16			numPos = 0;
 	UUtUns16			numNeg = 0;
 	UUtUns16			numEqual = 0;
-	
+
 	UUtUns16			i;
-	
-	
+
+
 	planeArray = AUrSharedPlaneEquArray_GetList(inBuildData->sharedPlaneEquArray);
 	pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
 	quadArray = AUrSharedQuadArray_GetList(inBuildData->bspQuadArray);
 	numPoints = AUrSharedPointArray_GetNum(inBuildData->sharedPointArray);
-	
+
 	planeEqu = planeArray + (inPlaneEquIndex & 0x7FFFFFFF);
-	
+
 	a = planeEqu->a;
 	b = planeEqu->b;
 	c = planeEqu->c;
 	d = planeEqu->d;
-	
+
 	if(inPlaneEquIndex & 0x80000000)
 	{
 		a = -a;
@@ -128,9 +128,9 @@ IMPiEnv_Process_BSP_QuadAbsSide_Get(
 		c = -c;
 		d = -d;
 	}
-	
+
 	curQuad = quadArray + inBSPQuadIndex;
-	
+
 	UUmAssert(curQuad->indices[0] != curQuad->indices[1]);
 	UUmAssert(curQuad->indices[0] != curQuad->indices[2]);
 	UUmAssert(curQuad->indices[0] != curQuad->indices[3]);
@@ -141,21 +141,21 @@ IMPiEnv_Process_BSP_QuadAbsSide_Get(
 	for(i = 0; i < 4; i++)
 	{
 		if(curQuad->indices[i] == UUcMaxUns32) continue;
-		
+
 		UUmAssert(curQuad->indices[i] < numPoints);
 
 		targetPoint = pointArray + curQuad->indices[i];
-		
+
 		result = targetPoint->x * a + targetPoint->y * b + targetPoint->z * c + d;
-		
+
 		if(UUmFloat_CompareEqu(result, 0.0f)) numEqual++;
-		
+
 		else if(result < 0.0f) numPos++;
 		else numNeg++;
 	}
-	
+
 	if(numEqual == 4) return IMPcAbsSide_Postive;
-	
+
 	if(numNeg == 0) return IMPcAbsSide_Postive;
 	if(numPos == 0) return IMPcAbsSide_Negative;
 	return IMPcAbsSide_BothPosNeg;
@@ -171,24 +171,24 @@ IMPiEnv_Process_BSP_PlaneAbsSide_Get(
 	IMPtEnv_BSP_AbsoluteSideFlag	absSide;
 	UUtUns16						numPos = 0;
 	UUtUns16						numNeg = 0;
-	
+
 	for(quadItr = 0; quadItr < inPlane->numQuads; quadItr++)
 	{
-		absSide = 
+		absSide =
 			IMPiEnv_Process_BSP_QuadAbsSide_Get(
 				inBuildData,
 				inPlaneEquIndex,
 				inPlane->quads[quadItr].bspQuadIndex);
-		
+
 		if(absSide == IMPcAbsSide_BothPosNeg) return IMPcAbsSide_BothPosNeg;
-		
+
 		if(absSide == IMPcAbsSide_Postive) numPos++;
 		else numNeg++;
 	}
-	
+
 	if(numPos == 0) return IMPcAbsSide_Negative;
 	if(numNeg == 0) return IMPcAbsSide_Postive;
-	
+
 	return IMPcAbsSide_BothPosNeg;
 }
 
@@ -199,41 +199,41 @@ IMPiEnv_Process_BSP_ChooseDividingPlane(
 	IMPtEnv_BSP_Plane*	inPlanes)
 {
 	UUtInt32						posNegDiff;
-	
+
 	UUtInt32						minDiff = UUcMaxInt32;
 	UUtUns32						minDiffPlaneIndex = UUcMaxUns32;
 	UUtUns32						itr0, itr1;
 	IMPtEnv_BSP_AbsoluteSideFlag	absSide;
 	UUtUns32						numBoth = 0;
-	
+
 	for(itr0 = 0; itr0 < inNumPlanes; itr0++)
 	{
 		posNegDiff = 0;
-		
+
 		for(itr1 = 0; itr1 < inNumPlanes; itr1++)
 		{
 			if(itr0 == itr1) continue;
-			
-			absSide = 
+
+			absSide =
 				IMPiEnv_Process_BSP_PlaneAbsSide_Get(
 					inBuildData,
 					inPlanes[itr0].planeEquIndex,
 					inPlanes + itr1);
-			
+
 			if(absSide == IMPcAbsSide_Postive) posNegDiff++;
 			else if(absSide == IMPcAbsSide_Negative) posNegDiff--;
 			else numBoth++;
 		}
-		
+
 		posNegDiff = abs(posNegDiff);
-		
+
 		if(posNegDiff < minDiff)
 		{
 			minDiff = posNegDiff;
 			minDiffPlaneIndex = itr0;
 		}
 	}
-	
+
 	return inPlanes + minDiffPlaneIndex;
 }
 
@@ -243,7 +243,7 @@ static UUtError
 IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 	IMPtEnv_BuildData*				inBuildData,
 	UUtUns32						inPlaneEquIndex,
-	IMPtEnv_BSP_AbsoluteSideFlag	inSideToKeep, 
+	IMPtEnv_BSP_AbsoluteSideFlag	inSideToKeep,
 	UUtUns32						inV0,
 	UUtUns32						inV1,
 	UUtUns32						inV2,
@@ -252,15 +252,15 @@ IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 	IMPtEnv_BSP_Plane				*ioPlane)
 {
 	UUtError	error;
-	UUtBool		added = UUcFalse;	
+	UUtBool		added = UUcFalse;
 	//IMPtEnv_BSP_AbsoluteSideFlag	debugSide;
-	
+
 	if(inV0 == inV1)
 	{
 		if(inV3 != UUcMaxUns32)
 		{
 			added = UUcTrue;
-			error = 
+			error =
 				AUrSharedQuadArray_AddQuad(
 					inBuildData->bspQuadArray,
 					inV0,
@@ -278,7 +278,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 	else if(inV0 == inV3)
 	{
 		added = UUcTrue;
-		error = 
+		error =
 			AUrSharedQuadArray_AddQuad(
 				inBuildData->bspQuadArray,
 				inV0,
@@ -293,7 +293,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 		if(inV3 != UUcMaxUns32)
 		{
 			added = UUcTrue;
-			error = 
+			error =
 				AUrSharedQuadArray_AddQuad(
 					inBuildData->bspQuadArray,
 					inV0,
@@ -307,7 +307,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 	else if(inV1 == inV3)
 	{
 		added = UUcTrue;
-		error = 
+		error =
 			AUrSharedQuadArray_AddQuad(
 				inBuildData->bspQuadArray,
 				inV0,
@@ -320,7 +320,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 	else if(inV2 == inV3)
 	{
 		added = UUcTrue;
-		error = 
+		error =
 			AUrSharedQuadArray_AddQuad(
 				inBuildData->bspQuadArray,
 				inV0,
@@ -333,7 +333,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 	else
 	{
 		added = UUcTrue;
-		error = 
+		error =
 			AUrSharedQuadArray_AddQuad(
 				inBuildData->bspQuadArray,
 				inV0,
@@ -343,61 +343,61 @@ IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 				&ioPlane->quads[ioPlane->numQuads].bspQuadIndex);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	if(added)
 	{
 		ioPlane->quads[ioPlane->numQuads].ref = inQuadRef;
 		ioPlane->numQuads++;
 	}
-	
+
 	return UUcError_None;
 }
 
 static UUtError
 IMPiEnv_Process_BSP_Quad_AddSplit(
 	IMPtEnv_BuildData*				inBuildData,
-	IMPtEnv_BSP_AbsoluteSideFlag	inSideToKeep, 
+	IMPtEnv_BSP_AbsoluteSideFlag	inSideToKeep,
 	UUtUns32						inPlaneEquIndex,
 	IMPtEnv_BSP_Plane				*ioPlane,
 	UUtUns32						inQuadToSplit,
 	UUtUns32						inQuadRef)
 {
 	UUtError			error;
-	
+
 	M3tPoint3D*			pointArray;
 	M3tPoint3D*			targetPoint;
-	
+
 	M3tQuad*		quadArray;
 	M3tQuad*		targetQuad;
-	
+
 	M3tPlaneEquation*	planeEqu;
 	M3tPlaneEquation*	planeArray;
 
 	UUtUns32			curPointIndex;
-	
+
 	UUtUns16			clipCode = 0;	// bit vector, 1 means out of bounds
-	
+
 	UUtUns32			n0, n1;
-	
+
 	float				a, b, c, d;
 	float				result;
-	
+
 	gUniqueNum++;
-	
+
 	planeArray = AUrSharedPlaneEquArray_GetList(inBuildData->sharedPlaneEquArray);
 	pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
 	quadArray = AUrSharedQuadArray_GetList(inBuildData->bspQuadArray);
 	targetQuad = AUrSharedQuadArray_GetList(inBuildData->bspQuadArray) + inQuadToSplit;
-	
+
 	UUmAssert(pointArray != NULL);
-	
+
 	planeEqu = planeArray + (inPlaneEquIndex & 0x7FFFFFFF);
-	
+
 	a = planeEqu->a;
 	b = planeEqu->b;
 	c = planeEqu->c;
 	d = planeEqu->d;
-	
+
 	if(inPlaneEquIndex & 0x80000000)
 	{
 		a = -a;
@@ -405,18 +405,18 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 		c = -c;
 		d = -d;
 	}
-	
-	
+
+
 	for(curPointIndex = 0; curPointIndex < 4; curPointIndex++)
 	{
 		if(targetQuad->indices[curPointIndex] == UUcMaxUns32) continue;
-		
+
 		targetPoint = pointArray + targetQuad->indices[curPointIndex];
-		
+
 		result = targetPoint->x * a + targetPoint->y * b + targetPoint->z * c + d;
-		
+
 		if(UUmFloat_CompareEqu(result, 0.0f)) continue;
-		
+
 		if(inSideToKeep == IMPcAbsSide_Postive)
 		{
 			if(result > 0.0f)
@@ -432,16 +432,16 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 			}
 		}
 	}
-	
+
 	if(targetQuad->indices[3] == UUcMaxUns32)
 	{
 		// CLIP A TRIANGLE
-		
+
 		/*
 			only a few possibilities here...
-			
+
 			1 is out, 0 is in
-			
+
 				v2	v1	v0
 				===========
 			0	0	0	0	<- Not Possible
@@ -453,14 +453,14 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 			6	1	1	0
 			7	1	1	1	<- Not Possible
 		*/
-		
+
 		switch(clipCode)
 		{
 			case 0x0:
 			case 0x7:
 				UUmAssert(!"Illegal case");
 				break;
-			
+
 			case 0x1:
 				// 0 is out, 1, 2 are in
 				//	  \	   *0
@@ -471,11 +471,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				//	  /    *n0
 				//	 /     |\
 				// 2*------*1\
-				
+
 				// Need to compute v1 -> v0 intersection, n0
 				// Need to compute v2 -> v0 intersection, n1
 				// New quad is (1, 2, n1, n0)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -485,7 +485,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				UUmError_ReturnOnError(error);
 
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -493,8 +493,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[0],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -507,7 +507,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-			
+
 			case 0x2:
 				// 1 is out, 0, 2 are in
 				//	  \	   *1
@@ -518,11 +518,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				//	  /    *n0
 				//	 /     |\
 				// 0*------*2\
-				
+
 				// Need to compute v2 -> v1 intersection, n0
 				// Need to compute v0 -> v1 intersection, n1
 				// New quad is (2, 0, n1, n0)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -532,7 +532,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				UUmError_ReturnOnError(error);
 
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -540,8 +540,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[1],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -554,7 +554,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-			
+
 			case 0x3:
 				// 0, 1 are out, 2 is in
 				//	  \	   *2
@@ -565,11 +565,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				//	  /    *n0
 				//	 /     |\
 				// 1*------*0\
-				
+
 				// Need to compute v2 -> v0 intersection, n0
 				// Need to compute v2 -> v1 intersection, n1
 				// New quad is (n0, n1, 2)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -579,7 +579,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				UUmError_ReturnOnError(error);
 
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -587,8 +587,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[1],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -601,7 +601,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-			
+
 			case 0x4:
 				// 2 is out, 0, 1 are in
 				//	  \	   *2
@@ -612,11 +612,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				//	  /    *n0
 				//	 /     |\
 				// 1*------*0\
-				
+
 				// Need to compute v0 -> v2 intersection, n0
 				// Need to compute v1 -> v2 intersection, n1
 				// New quad is (0, 1, n1, n0)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -626,7 +626,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				UUmError_ReturnOnError(error);
 
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -634,8 +634,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[2],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -648,7 +648,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-			
+
 			case 0x5:
 				// 0, 2 are out, 1 is in
 				//	  \	   *1
@@ -659,11 +659,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				//	  /    *n0
 				//	 /     |\
 				// 0*------*2\
-				
+
 				// Need to compute v1 -> v2 intersection, n0
 				// Need to compute v1 -> v0 intersection, n1
 				// New quad is (1, n0, n1)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -673,7 +673,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				UUmError_ReturnOnError(error);
 
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -681,8 +681,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[0],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -694,10 +694,10 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						inQuadRef,
 						ioPlane);
 				UUmError_ReturnOnError(error);
-				
-				#if defined(DEBUGGING) && DEBUGGING	
+
+				#if defined(DEBUGGING) && DEBUGGING
 				{
-					IMPtEnv_BSP_AbsoluteSideFlag debugSide; 
+					IMPtEnv_BSP_AbsoluteSideFlag debugSide;
 
 					debugSide =
 						IMPiEnv_Process_BSP_QuadAbsSide_Get(
@@ -709,7 +709,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				}
 				#endif
 				break;
-			
+
 			case 0x6:
 				// 1, 2 are out, 0 is in
 				//	  \	   *0
@@ -720,11 +720,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				//	  /    *n0
 				//	 /     |\
 				// 2*------*1\
-				
+
 				// Need to compute v0 -> v1 intersection, n0
 				// Need to compute v0 -> v2 intersection, n1
 				// New quad is (0, n0, n1)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -734,7 +734,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				UUmError_ReturnOnError(error);
 
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -742,8 +742,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[2],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -756,22 +756,22 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-			
+
 			default:
 				UUmAssert(0);
-				
+
 		}
-		
+
 	}
 	else
 	{
 		// CLIP A QUAD
-			
+
 		/*
 			only a few possibilities here...
-			
+
 			1 is out, 0 is in
-			
+
 				v3	v2	v1	v0
 				==============
 			0	0	0	0	0	<- Not Possible
@@ -791,7 +791,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 			E	1	1	1	0
 			F	1	1	1	1	<- Not Possible
 		*/
-		
+
 		switch(clipCode)
 		{
 			case 0x0:
@@ -800,7 +800,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 			case 0xF:
 				UUmAssert(!"Illegal case");
 				break;
-				
+
 			case 0x1:
 				// 0 is out, 1, 2, 3 is in
 				//		\
@@ -811,11 +811,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				//	|        n0
 				//	|        |\
 				// 2*--------*1\
-				
+
 				// Need to compute v1 -> v0 intersection, n0
 				// Need to compute v3 -> v0 intersection, n1
 				// New quads are (1, 2, n0) and (2, 3, n1, n0)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -823,9 +823,9 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[0],
 						&n0);
 				UUmError_ReturnOnError(error);
-				
+
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -833,8 +833,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[0],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -849,7 +849,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 
 				quadArray = AUrSharedQuadArray_GetList(inBuildData->bspQuadArray);
 				targetQuad = quadArray + inQuadToSplit;
-				error = 
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -862,7 +862,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case 0x2:
 				// 1 is out, 0, 2, 3 is in
 				//		\
@@ -873,11 +873,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				//	|        n0
 				//	|        |\
 				// 3*--------*2\
-				
+
 				// Need to compute v2 -> v1 intersection, n0
 				// Need to compute v0 -> v1 intersection, n1
 				// New quads are (2, 3, n0) and (3, 0, n1, n0)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -886,7 +886,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n0);
 				UUmError_ReturnOnError(error);
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -894,8 +894,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[1],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -910,8 +910,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 
 				quadArray = AUrSharedQuadArray_GetList(inBuildData->bspQuadArray);
 				targetQuad = quadArray + inQuadToSplit;
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -924,7 +924,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case 0x3:
 				// 0, 1 is out, 2, 3 is in
 				//		 |
@@ -940,7 +940,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				// Need to compute v2 -> v1 intersection, n0
 				// Need to compute v3 -> v0 intersection, n1
 				// New quads are (2, 3, n1, n0)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -949,7 +949,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n0);
 				UUmError_ReturnOnError(error);
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -957,8 +957,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[0],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -971,7 +971,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case 0x4:
 				// 2 is out, 0, 1, 3 is in
 				//		\
@@ -982,11 +982,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				//	|        n0
 				//	|        |\
 				// 0*--------*3\
-				
+
 				// Need to compute v3 -> v2 intersection, n0
 				// Need to compute v1 -> v2 intersection, n1
 				// New quads are (3, 0, n0) and (0, 1, n1, n0)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -995,7 +995,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n0);
 				UUmError_ReturnOnError(error);
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1003,8 +1003,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[2],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -1016,11 +1016,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						inQuadRef,
 						ioPlane);
 				UUmError_ReturnOnError(error);
-				
+
 				quadArray = AUrSharedQuadArray_GetList(inBuildData->bspQuadArray);
 				targetQuad = quadArray + inQuadToSplit;
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -1033,7 +1033,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case 0x6:
 				// 1, 2 is out, 0, 3 is in
 				//		 |
@@ -1049,7 +1049,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				// Need to compute v3 -> v2 intersection, n0
 				// Need to compute v0 -> v1 intersection, n1
 				// New quads are (3, 0, n1, n0)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1058,7 +1058,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n0);
 				UUmError_ReturnOnError(error);
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1066,8 +1066,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[1],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -1080,23 +1080,23 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case 0x7:
 				// 0, 1, 2 is out, 3 is in
-				//		 
+				//
 				// 0*--------*1
 				//	|        |
 				// \|        |
 				//  n0       |
 				//	|\       |
-				//	| \      | 
-				// 3*--n1----*2 
+				//	| \      |
+				// 3*--n1----*2
 				//      \
-				
+
 				// Need to compute v3 -> v0 intersection, n0
 				// Need to compute v3 -> v2 intersection, n1
 				// New quads are (3, n0, n1)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1105,7 +1105,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n0);
 				UUmError_ReturnOnError(error);
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1114,7 +1114,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n1);
 				UUmError_ReturnOnError(error);
 
-				error = 
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -1127,7 +1127,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case 0x8:
 				// 3 is out, 0, 1, 2 is in
 				//		\
@@ -1138,11 +1138,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				//	|        n0
 				//	|        |\
 				// 1*--------*0\
-				
+
 				// Need to compute v0 -> v3 intersection, n0
 				// Need to compute v2 -> v3 intersection, n1
 				// New quads are (0, 1, n0) and (1, 2, n1, n0)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1151,7 +1151,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n0);
 				UUmError_ReturnOnError(error);
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1159,8 +1159,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[3],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					AUrSharedQuadArray_AddQuad(
 						inBuildData->bspQuadArray,
 						targetQuad->indices[0],
@@ -1169,11 +1169,11 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						UUcMaxUns32,
 						&ioPlane->quads[ioPlane->numQuads].bspQuadIndex);
 				UUmError_ReturnOnError(error);
-				
+
 				quadArray = AUrSharedQuadArray_GetList(inBuildData->bspQuadArray);
 				targetQuad = quadArray + inQuadToSplit;
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -1186,7 +1186,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case 0x9:
 				// 0, 3 is out, 1, 2 is in
 				//		 |
@@ -1203,7 +1203,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				// Need to compute v2 -> v3 intersection, n1
 				// New quads are (1, 2, n1, n0)
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1212,7 +1212,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n0);
 				UUmError_ReturnOnError(error);
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1220,8 +1220,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[3],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -1234,23 +1234,23 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case 0xB:
 				// 0, 1, 3 is out, 2 is in
-				//		 
+				//
 				// 3*--------*0
 				//	|        |
 				// \|        |
 				//  n0       |
 				//	|\       |
-				//	| \      | 
+				//	| \      |
 				// 2*--n1----*1
 				//      \
-				
+
 				// Need to compute v2 -> v3 intersection, n0
 				// Need to compute v2 -> v1 intersection, n1
 				// New quads are (2, n0, n1)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1259,7 +1259,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n0);
 				UUmError_ReturnOnError(error);
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1268,7 +1268,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n1);
 				UUmError_ReturnOnError(error);
 
-				error = 
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -1281,7 +1281,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case 0xC:
 				// 2, 3 is out, 0, 1 is in
 				//		 |
@@ -1297,7 +1297,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 				// Need to compute v0 -> v3 intersection, n0
 				// Need to compute v1 -> v2 intersection, n1
 				// New quads are (0, 1, n1, n0)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1306,7 +1306,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n0);
 				UUmError_ReturnOnError(error);
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1314,8 +1314,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[2],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -1328,23 +1328,23 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case 0xD:
 				// 0, 2, 3 is out,1 is in
-				//		 
+				//
 				// 2*--------*3
 				//	|        |
 				// \|        |
 				//  n0       |
 				//	|\       |
-				//	| \      | 
+				//	| \      |
 				// 1*--n1----*0
 				//      \
-				
+
 				// Need to compute v1 -> v2 intersection, n0
 				// Need to compute v1 -> v0 intersection, n1
 				// New quads are (1, n0, n1)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1353,7 +1353,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n0);
 				UUmError_ReturnOnError(error);
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1361,8 +1361,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[0],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -1375,23 +1375,23 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case 0xE:
 				// 1, 2, 3 is out, 0 is in
-				//		 
+				//
 				// 1*--------*2
 				//	|        |
 				// \|        |
 				//  n0       |
 				//	|\       |
-				//	| \      | 
+				//	| \      |
 				// 0*--n1----*3
 				//      \
-				
+
 				// Need to compute v0 -> v1 intersection, n0
 				// Need to compute v0 -> v3 intersection, n1
 				// New quads are (0, n0, n1)
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1400,7 +1400,7 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						&n0);
 				UUmError_ReturnOnError(error);
 				pointArray = AUrSharedPointArray_GetList(inBuildData->bspPointArray);
-				error = 
+				error =
 					AUrSharedPointArray_InterpolatePoint(
 						inBuildData->bspPointArray,
 						a, b, c, d,
@@ -1408,8 +1408,8 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						pointArray + targetQuad->indices[3],
 						&n1);
 				UUmError_ReturnOnError(error);
-				
-				error = 
+
+				error =
 					IMPiEnv_Process_BSP_Quad_AddSplit_AddQuad(
 						inBuildData,
 						inPlaneEquIndex,
@@ -1422,12 +1422,12 @@ IMPiEnv_Process_BSP_Quad_AddSplit(
 						ioPlane);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			default:
 				UUmAssert(!"Illegal case");
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1442,19 +1442,19 @@ IMPiEnv_Process_BSP_Plane_Split(
 	UUtError						error;
 	UUtUns16						quadItr;
 	IMPtEnv_BSP_AbsoluteSideFlag	quadAbsSide;
-	
+
 	outResultPlane->planeEquIndex = inPlaneToSplit->planeEquIndex;
 	outResultPlane->ref = inPlaneToSplit->ref;
 	outResultPlane->numQuads = 0;
 
 	for(quadItr = 0; quadItr < inPlaneToSplit->numQuads; quadItr++)
 	{
-		quadAbsSide = 
+		quadAbsSide =
 			IMPiEnv_Process_BSP_QuadAbsSide_Get(
 				inBuildData,
 				inSplittingPlaneEquIndex,
 				inPlaneToSplit->quads[quadItr].bspQuadIndex);
-		
+
 		if(quadAbsSide == IMPcAbsSide_BothPosNeg)
 		{
 
@@ -1462,9 +1462,9 @@ IMPiEnv_Process_BSP_Plane_Split(
 			{
 				UUmError_ReturnOnErrorMsg(UUcError_Generic,"Too many quads on a plane");
 			}
-			
-			
-			error = 
+
+
+			error =
 				IMPiEnv_Process_BSP_Quad_AddSplit(
 					inBuildData,
 					inSideToKeep,
@@ -1473,7 +1473,7 @@ IMPiEnv_Process_BSP_Plane_Split(
 					inPlaneToSplit->quads[quadItr].bspQuadIndex,
 					inPlaneToSplit->quads[quadItr].ref);
 			UUmError_ReturnOnError(error);
-			
+
 		}
 		else if(quadAbsSide == inSideToKeep)
 		{
@@ -1481,11 +1481,11 @@ IMPiEnv_Process_BSP_Plane_Split(
 			{
 				UUmError_ReturnOnErrorMsg(UUcError_Generic,"Too many quads on a plane");
 			}
-			
+
 			outResultPlane->quads[outResultPlane->numQuads++] = inPlaneToSplit->quads[quadItr];
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1508,13 +1508,13 @@ IMPiEnv_Process_BSP_Plane_BuildNewList(
 	UUtUns32						numNewPlanes = 0;
 	IMPtEnv_BSP_AbsoluteSideFlag	absPlaneSide;
 	IMPtEnv_BSP_Plane*				newAllocatedList;
-	
+
 	planeEquIndex = inDividingPlane->planeEquIndex;
 
 	for(planeItr = 0; planeItr < inNumPlanes; planeItr++)
 	{
 		curPlane = inPlanes + planeItr;
-		
+
 		if(curPlane == inDividingPlane)
 		{
 			if(inSideToKeep == IMPcAbsSide_Postive && inDividingPlane->numQuads > 0)
@@ -1523,16 +1523,16 @@ IMPiEnv_Process_BSP_Plane_BuildNewList(
 			}
 			continue;
 		}
-		
+
 		absPlaneSide =
 			IMPiEnv_Process_BSP_PlaneAbsSide_Get(
 				inBuildData,
 				planeEquIndex,
 				curPlane);
-		
+
 		if(absPlaneSide == IMPcAbsSide_BothPosNeg)
 		{
-			error = 
+			error =
 				IMPiEnv_Process_BSP_Plane_Split(
 					inBuildData,
 					inSideToKeep,
@@ -1540,7 +1540,7 @@ IMPiEnv_Process_BSP_Plane_BuildNewList(
 					curPlane,
 					IMPgEnv_NewPlanes + numNewPlanes);
 			UUmError_ReturnOnError(error);
-			
+
 			if(IMPgEnv_NewPlanes[numNewPlanes].numQuads > 0) numNewPlanes++;
 		}
 		else if(absPlaneSide == inSideToKeep)
@@ -1548,11 +1548,11 @@ IMPiEnv_Process_BSP_Plane_BuildNewList(
 			IMPgEnv_NewPlanes[numNewPlanes++] = *curPlane;
 		}
 	}
-	
+
 	#if 0
 	for(planeItr = 0; planeItr < numNewPlanes; planeItr++)
 	{
-		absPlaneSide = 
+		absPlaneSide =
 			IMPiEnv_Process_BSP_PlaneAbsSide_Get(
 				inBuildData,
 				inDividingPlane->planeEquIndex,
@@ -1560,20 +1560,20 @@ IMPiEnv_Process_BSP_Plane_BuildNewList(
 		UUmAssert(absPlaneSide == inSideToKeep);
 	}
 	#endif
-	
+
 	// allocate and create new plane list
-	
-	newAllocatedList = 
+
+	newAllocatedList =
 		UUrMemory_Pool_Block_New(
 			IMPgEnv_MemoryPool,
 			numNewPlanes * sizeof(IMPtEnv_BSP_Plane));
 	UUmError_ReturnOnNull(newAllocatedList);
-	
+
 	UUrMemory_MoveFast(IMPgEnv_NewPlanes, newAllocatedList, numNewPlanes * sizeof(IMPtEnv_BSP_Plane));
-	
+
 	*outNumNewPlanes = numNewPlanes;
 	*outPlaneList = newAllocatedList;
-	
+
 	return UUcError_None;
 }
 
@@ -1591,36 +1591,36 @@ IMPiEnv_Process_BSP_Build_Recursive(
 	UUtUns32			numNewNegPlanes;
 	IMPtEnv_BSP_Plane*	newPosPlanes;
 	IMPtEnv_BSP_Plane*	newNegPlanes;
-	
+
 	IMPtEnv_BSP_Node*	newNode;
 	UUtUns32			length = 0;
 
 	if ((0 == inNumPlanes) && (NULL == outNewIndex)) {
 		return UUcError_None;
 	}
-		
+
 	// find dividing plane
 		divPlane =
 			IMPiEnv_Process_BSP_ChooseDividingPlane(
 				inBuildData,
 				inNumPlanes,
 				inPlanes);
-		
+
 		UUmAssert(divPlane->numQuads > 0);
-		
-	// create the node		
+
+	// create the node
 		if(inBuildData->numBSPNodes >= IMPcEnv_MaxNumBSPNodes)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Ran out of BSP nodes");
 		}
-		
+
 		newNode = inBuildData->bspNodes + inBuildData->numBSPNodes++;
-		
+
 		if((inBuildData->numBSPNodes % 50) == 0) Imp_PrintMessage(IMPcMsg_Important,".");
-		
+
 		newNode->splittingPlane = divPlane;
 		newNode->splittingQuad = divPlane->quads[--divPlane->numQuads];
-		
+
 		if(outNewIndex != NULL) *outNewIndex = inBuildData->numBSPNodes - 1;
 
 	// Find all the GQs on the positive div plane
@@ -1632,14 +1632,14 @@ IMPiEnv_Process_BSP_Build_Recursive(
 			inPlanes,
 			&numNewPosPlanes,
 			&newPosPlanes);
-		
+
 		if(numNewPosPlanes == 0)
 		{
 			newNode->posNodeIndex = 0xFFFFFFFF;
 		}
 		else
 		{
-			error = 
+			error =
 				IMPiEnv_Process_BSP_Build_Recursive(
 					inBuildData,
 					inLevel + 1,
@@ -1648,7 +1648,7 @@ IMPiEnv_Process_BSP_Build_Recursive(
 					&newNode->posNodeIndex);
 			UUmError_ReturnOnError(error);
 		}
-		
+
 	// Find all the GQs on the neg div plane
 		IMPiEnv_Process_BSP_Plane_BuildNewList(
 			inBuildData,
@@ -1658,14 +1658,14 @@ IMPiEnv_Process_BSP_Build_Recursive(
 			inPlanes,
 			&numNewNegPlanes,
 			&newNegPlanes);
-		
+
 		if(numNewNegPlanes == 0)
 		{
 			newNode->negNodeIndex = 0xFFFFFFFF;
 		}
 		else
 		{
-			error = 
+			error =
 				IMPiEnv_Process_BSP_Build_Recursive(
 					inBuildData,
 					inLevel + 1,
@@ -1674,9 +1674,9 @@ IMPiEnv_Process_BSP_Build_Recursive(
 					&newNode->negNodeIndex);
 			UUmError_ReturnOnError(error);
 		}
-		
+
 	UUmAssert((numNewPosPlanes + numNewNegPlanes) >= (inNumPlanes - 1));
-		
+
 	return UUcError_None;
 }
 
@@ -1686,26 +1686,26 @@ IMPiEnv_Process_BSP_BNV_Build(
 	IMPtEnv_BNV*		inBNV)
 {
 	UUtError				error;
-	
+
 	IMPtEnv_BSP_Plane*		bspPlaneList;
 	IMPtEnv_BSP_Plane*		curBSPPlane;
-	
+
 	UUtUns16				curBNVSideIndex;
 	IMPtEnv_BNV_Side*		curBNVSide;
-	
+
 	M3tPoint3D*				pointArray;
-	
+
 	UUtUns32				curQuadIndex;
-	
+
 	M3tQuad			newQuad;
-	
+
 	UUtUns32				curPointIndex;
 	M3tPoint3D*				targetPoint;
-	
+
 	M3tQuad*			curQuad;
 	M3tQuad*			quadArray;
 	UUtUns16				nodeItr;
-	
+
 	inBuildData->numBSPNodes = 0;
 
 	pointArray = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
@@ -1714,10 +1714,10 @@ IMPiEnv_Process_BSP_BNV_Build(
 	UUrMemory_Pool_Reset(IMPgEnv_MemoryPool);
 	AUrSharedPointArray_Reset(inBuildData->bspPointArray);
 	AUrSharedQuadArray_Reset(inBuildData->bspQuadArray);
-	
+
 	bspPlaneList = UUrMemory_Pool_Block_New(IMPgEnv_MemoryPool, inBNV->numSides * sizeof(IMPtEnv_BSP_Plane));
 	UUmError_ReturnOnNull(bspPlaneList);
-	
+
 	for(curBNVSideIndex = 0, curBNVSide = inBNV->sides, curBSPPlane = bspPlaneList;
 		curBNVSideIndex < inBNV->numSides;
 		curBNVSideIndex++, curBNVSide++, curBSPPlane++)
@@ -1725,16 +1725,16 @@ IMPiEnv_Process_BSP_BNV_Build(
 		curBSPPlane->numQuads = curBNVSide->numBNVQuads;
 		curBSPPlane->planeEquIndex = curBNVSide->planeEquIndex;
 		curBSPPlane->ref = curBNVSideIndex;
-		
+
 		for(curQuadIndex = 0; curQuadIndex < curBNVSide->numBNVQuads; curQuadIndex++)
 		{
 			curQuad = quadArray + curBNVSide->bnvQuadList[curQuadIndex];
-			
+
 			for(curPointIndex = 0; curPointIndex < 4; curPointIndex++)
 			{
 				targetPoint = pointArray + curQuad->indices[curPointIndex];
-				
-				error = 
+
+				error =
 					AUrSharedPointArray_AddPoint(
 						inBuildData->bspPointArray,
 						targetPoint->x,
@@ -1743,7 +1743,7 @@ IMPiEnv_Process_BSP_BNV_Build(
 						&newQuad.indices[curPointIndex]);
 				UUmError_ReturnOnError(error);
 			}
-			
+
 			UUmAssert(newQuad.indices[0] != newQuad.indices[1]);
 			UUmAssert(newQuad.indices[0] != newQuad.indices[2]);
 			UUmAssert(newQuad.indices[0] != newQuad.indices[3]);
@@ -1751,7 +1751,7 @@ IMPiEnv_Process_BSP_BNV_Build(
 			UUmAssert(newQuad.indices[1] != newQuad.indices[3]);
 			UUmAssert(newQuad.indices[2] != newQuad.indices[3]);
 
-			error = 
+			error =
 				AUrSharedQuadArray_AddQuad(
 					inBuildData->bspQuadArray,
 					newQuad.indices[0],
@@ -1760,12 +1760,12 @@ IMPiEnv_Process_BSP_BNV_Build(
 					newQuad.indices[3],
 					&curBSPPlane->quads[curQuadIndex].bspQuadIndex);
 			UUmError_ReturnOnError(error);
-			
+
 			curBSPPlane->quads[curQuadIndex].ref = 0xE1117E;
 		}
 	}
-	
-	error = 
+
+	error =
 		IMPiEnv_Process_BSP_Build_Recursive(
 			inBuildData,
 			0,
@@ -1773,22 +1773,22 @@ IMPiEnv_Process_BSP_BNV_Build(
 			bspPlaneList,
 			NULL);
 	UUmError_ReturnOnError(error);
-	
+
 	// convert to BNV bsp nodes
 	if(inBuildData->numBSPNodes > IMPcEnv_MaxNumBNVBSPNodes)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "too many bnv bsp nodes");
 	}
-	
+
 	inBNV->numNodes = inBuildData->numBSPNodes;
-	
+
 	for(nodeItr = 0; nodeItr < inBuildData->numBSPNodes; nodeItr++)
 	{
 		inBNV->bspNodes[nodeItr].planeEquIndex = inBuildData->bspNodes[nodeItr].splittingPlane->planeEquIndex;
 		inBNV->bspNodes[nodeItr].posNodeIndex = inBuildData->bspNodes[nodeItr].posNodeIndex;
 		inBNV->bspNodes[nodeItr].negNodeIndex = inBuildData->bspNodes[nodeItr].negNodeIndex;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1800,31 +1800,31 @@ IMPiEnv_Process_BSP_PointInBSP(
 	float				inTolerance)
 {
 	AKtBNV_BSPNode*		curNode;
-	
+
 	M3tPlaneEquation*	planeEqu;
 	M3tPlaneEquation*	planeArray;
-	
+
 	float				a, b, c, d, threshold;
 	UUtUns32			curNodeIndex;
 	static UUtBool		invalid_bnv_once = UUcTrue;
-	
+
 	UUmAssert(inBNV->numNodes > 0);
 	UUmAssert(inBNV->numSides > 0);
 
 	if (((0 == inBNV->numNodes) || (0 == inBNV->numSides)) && invalid_bnv_once) {
-		Imp_PrintWarning("BNV file %s object %s had %d nodes and %d sides, it should have atleast one of each.  You will only get this error once per importer session.", 
-			inBNV->fileName, 
+		Imp_PrintWarning("BNV file %s object %s had %d nodes and %d sides, it should have atleast one of each.  You will only get this error once per importer session.",
+			inBNV->fileName,
 			inBNV->objName,
 			inBNV->numNodes,
 			inBNV->numSides);
 
 		invalid_bnv_once = UUcFalse;
 	}
-	
+
 	planeArray = AUrSharedPlaneEquArray_GetList(inBuildData->sharedPlaneEquArray);
-	
+
 	curNodeIndex = 0;
-	
+
 	while(1)
 	{
 		UUmAssert(curNodeIndex < inBNV->numNodes);
@@ -1834,12 +1834,12 @@ IMPiEnv_Process_BSP_PointInBSP(
 		planeEqu = planeArray + (curNode->planeEquIndex & 0x7FFFFFFF);
 
 		UUmAssertReadPtr(planeEqu, sizeof(*planeEqu));
-		
+
 		a = planeEqu->a;
 		b = planeEqu->b;
 		c = planeEqu->c;
 		d = planeEqu->d;
-		
+
 		if(curNode->planeEquIndex & 0x80000000)
 		{
 			a = -a;
@@ -1847,11 +1847,11 @@ IMPiEnv_Process_BSP_PointInBSP(
 			c = -c;
 			d = -d;
 		}
-		
+
 		threshold = (curNode->negNodeIndex == 0xFFFFFFFF) ? inTolerance : 0.0f;
 
-		if(UUmFloat_CompareLE(inPoint->x * a + 
-								inPoint->y * b + 
+		if(UUmFloat_CompareLE(inPoint->x * a +
+								inPoint->y * b +
 								inPoint->z * c + d, threshold))
 		{
 			if(0xFFFFFFFF == curNode->posNodeIndex)
@@ -1892,24 +1892,24 @@ IMPiEnv_Process_Alpha_BSP_Build(
 	UUtUns32				gqItr;
 	UUtUns32				planeItr;
 	IMPtEnv_BSP_Quad*		curPlaneQuad;
-	
+
 	UUtUns32				numPlanes = 0;
 	IMPtEnv_BSP_Plane*		planes;
 	UUtUns16				nodeItr;
 	UUtInt64				time = UUrMachineTime_High();
-	
+
 	//return UUcError_None;
-	
+
 	Imp_PrintMessage(IMPcMsg_Important,"Building Alpha BSP tree (%d gqs)...", inNumGQs);
-	
+
 	inBuildData->numBSPNodes = 0;
-	
+
 	pointArray = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
 
 	UUrMemory_Pool_Reset(IMPgEnv_MemoryPool);
 	AUrSharedPointArray_Reset(inBuildData->bspPointArray);
 	AUrSharedQuadArray_Reset(inBuildData->bspQuadArray);
-	
+
 	planes =
 		UUrMemory_Pool_Block_New(
 			IMPgEnv_MemoryPool,
@@ -1918,11 +1918,11 @@ IMPiEnv_Process_Alpha_BSP_Build(
 		Imp_PrintWarning("failed to allocate %d bytes", inNumGQs * sizeof(IMPtEnv_BSP_Plane));
 		return UUcError_OutOfMemory;
 	}
-	
+
 	for(gqItr = 0; gqItr < inNumGQs; gqItr++)
 	{
 		curGQ = inBuildData->gqList + inGQIndices[gqItr];
-		
+
 		// check to see if an existing plane exists for this gq
 		for(planeItr = 0; planeItr < numPlanes; planeItr++)
 		{
@@ -1930,7 +1930,7 @@ IMPiEnv_Process_Alpha_BSP_Build(
 				break;
 			}
 		}
-			
+
 		// alloc new plane if needed
 		if(planeItr >= numPlanes)
 		{
@@ -1939,7 +1939,7 @@ IMPiEnv_Process_Alpha_BSP_Build(
 			planes[numPlanes].ref = 0x7175;	// this is not used
 			planeItr = numPlanes++;
 		}
-		
+
 		if(planes[planeItr].numQuads >= (IMPcEnv_MaxQuadsPerPlane / 2))
 		{
 			UUmAssert(0);
@@ -1948,17 +1948,17 @@ IMPiEnv_Process_Alpha_BSP_Build(
 			planes[numPlanes].ref = 0x7175;	// this is not used
 			planeItr = numPlanes++;
 		}
-		
+
 		// add this gq to this plane
 		curPlaneQuad = planes[planeItr].quads + planes[planeItr].numQuads++;
-		
+
 		curPlaneQuad->ref = inGQIndices[gqItr];
-	
+
 		for(curPointIndex = 0; curPointIndex < 4; curPointIndex++)
 		{
 			targetPoint = pointArray + curGQ->visibleQuad.indices[curPointIndex];
-			
-			error = 
+
+			error =
 				AUrSharedPointArray_AddPoint(
 					inBuildData->bspPointArray,
 					targetPoint->x,
@@ -1966,12 +1966,12 @@ IMPiEnv_Process_Alpha_BSP_Build(
 					targetPoint->z,
 					&newQuad.indices[curPointIndex]);
 			UUmError_ReturnOnError(error);
-				
+
 		}
-		
+
 		if(newQuad.indices[2] == newQuad.indices[3])
 		{
-			error = 
+			error =
 				AUrSharedQuadArray_AddQuad(
 					inBuildData->bspQuadArray,
 					newQuad.indices[0],
@@ -1982,8 +1982,8 @@ IMPiEnv_Process_Alpha_BSP_Build(
 			UUmError_ReturnOnError(error);
 		}
 		else
-		{	
-			error = 
+		{
+			error =
 				AUrSharedQuadArray_AddQuad(
 					inBuildData->bspQuadArray,
 					newQuad.indices[0],
@@ -1994,8 +1994,8 @@ IMPiEnv_Process_Alpha_BSP_Build(
 			UUmError_ReturnOnError(error);
 		}
 	}
-	
-	error = 
+
+	error =
 		IMPiEnv_Process_BSP_Build_Recursive(
 			inBuildData,
 			0,
@@ -2003,11 +2003,11 @@ IMPiEnv_Process_Alpha_BSP_Build(
 			planes,
 			NULL);
 	UUmError_ReturnOnError(error);
-	
+
 	// convert the bsp nodes into alpha bsp nodes
 	{
 		inBuildData->numAlphaBSPNodes = inBuildData->numBSPNodes;
-		
+
 		for(nodeItr = 0; nodeItr < inBuildData->numBSPNodes; nodeItr++)
 		{
 			inBuildData->alphaBSPNodes[nodeItr].gqIndex = inBuildData->bspNodes[nodeItr].splittingQuad.ref;
@@ -2016,7 +2016,7 @@ IMPiEnv_Process_Alpha_BSP_Build(
 			inBuildData->alphaBSPNodes[nodeItr].negNodeIndex = inBuildData->bspNodes[nodeItr].negNodeIndex;
 		}
 	}
-		
+
 	fprintf(IMPgEnv_StatsFile, "**Alpha BSP stats"UUmNL);
 	fprintf(IMPgEnv_StatsFile,"\tnodes = %d\n", inBuildData->numAlphaBSPNodes);
 
@@ -2036,17 +2036,17 @@ IMPiEnv_Process_BNV_ContainsBNV(
 	UUtUns32			curSideIndex;
 	UUtUns32			pointCount = 0;
 	IMPtEnv_BNV_Side*	curSide;
-	
+
 	M3tQuad*		quadList;
 	M3tQuad*		curQuad;
 	M3tPoint3D*			pointList;
 	M3tPoint3D			centerPoint = {0,0,0};
 	M3tPlaneEquation*	planeEquList;
-	
+
 	quadList = AUrSharedQuadArray_GetList(inBuildData->sharedBNVQuadArray);
 	pointList = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
 	planeEquList = AUrSharedPlaneEquArray_GetList(inBuildData->sharedPlaneEquArray);
-	
+
 	for(curSideIndex = 0, curSide = inChildBNV->sides;
 		curSideIndex < inChildBNV->numSides;
 		curSideIndex++, curSide++)
@@ -2054,7 +2054,7 @@ IMPiEnv_Process_BNV_ContainsBNV(
 		for(curQuadIndex = 0; curQuadIndex < curSide->numBNVQuads; curQuadIndex++)
 		{
 			curQuad = quadList + curSide->bnvQuadList[curQuadIndex];
-			
+
 			for(i = 0; i < 4; i++)
 			{
 				if (inChildBNV->flags & AKcBNV_Flag_Stairs)
@@ -2063,7 +2063,7 @@ IMPiEnv_Process_BNV_ContainsBNV(
 					MUmVector_Increment(centerPoint,*(pointList + curQuad->indices[i]));
 					pointCount++;
 				}
-	
+
 				else if(IMPiEnv_Process_BSP_PointInBSP(
 					inBuildData,
 					inParentBNV,
@@ -2074,7 +2074,7 @@ IMPiEnv_Process_BNV_ContainsBNV(
 			}
 		}
 	}
-	
+
 	if (inChildBNV->flags & AKcBNV_Flag_Stairs)
 	{
 		MUmVector_Scale(centerPoint,(1.0f / (float)pointCount));
@@ -2083,25 +2083,25 @@ IMPiEnv_Process_BNV_ContainsBNV(
 			inParentBNV,
 			&centerPoint, 0) == UUcFalse) return UUcFalse;
 	}
-	
+
 	return UUcTrue;
 }
-	
+
 static void
 IMPiEnv_Process_BNV_FindParents(
 	IMPtEnv_BuildData*	inBuildData)
 {
 	IMPtEnv_BNV*	curChildBNV;
 	IMPtEnv_BNV*	curParentBNV;
-	
+
 	UUtUns16	curChildIndex, curParentIndex;
-	
+
 	float		parentVolume;
 	UUtUns32	parentIndex;
-	
+
 	UUtBool		isLeaf;
 	UUtInt64	time = UUrMachineTime_High();
-	
+
 	Imp_PrintMessage(IMPcMsg_Important, "determining BNV parents");
 
 	for(
@@ -2113,11 +2113,11 @@ IMPiEnv_Process_BNV_FindParents(
 		{
 			Imp_PrintMessage(IMPcMsg_Important, ".");
 		}
-		
+
 		parentIndex = 0xFFFFFFFF;
 		parentVolume = UUcFloat_Max;
 		isLeaf = UUcTrue;
-		
+
 		// Idea here is to find the tightest fit enclosing BNV
 		for(
 			curParentIndex = 0, curParentBNV = inBuildData->bnvList;
@@ -2132,23 +2132,23 @@ IMPiEnv_Process_BNV_FindParents(
 					{
 						/// XXX preventing Power Plant from imping - Add this again someday? UUmAssert(curChildBNV->volume <= curParentBNV->volume);
 					}
-						
+
 					if(curParentBNV->volume < parentVolume)
 					{
 						parentVolume = curParentBNV->volume;
 						parentIndex = curParentIndex;
 					}
 				}
-				
+
 				if(IMPiEnv_Process_BNV_ContainsBNV(inBuildData, curChildBNV, curParentBNV))
 				{
 					//isLeaf = UUcFalse;
 				}
 			}
 		}
-		
+
 		curChildBNV->isLeaf = isLeaf;
-		
+
 		if(parentIndex == 0xFFFFFFFF)
 		{
 			curChildBNV->parent = 0xFFFFFFFF;
@@ -2158,7 +2158,7 @@ IMPiEnv_Process_BNV_FindParents(
 			curChildBNV->parent = parentIndex;
 		}
 	}
-	
+
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
 }
@@ -2173,9 +2173,9 @@ IMPiEnv_Process_BNV_AnalyzeParents_Recursive(
 	UUtUns16		curBNVIndex;
 	IMPtEnv_BNV*	curBNV;
 	UUtBool			foundChild;
-	
+
 	foundChild = UUcFalse;
-	
+
 	for(curBNVIndex = 0, curBNV = inBuildData->bnvList;
 		curBNVIndex < inBuildData->numBNVs;
 		curBNVIndex++, curBNV++)
@@ -2183,9 +2183,9 @@ IMPiEnv_Process_BNV_AnalyzeParents_Recursive(
 		if(curBNV->parent == inParent)
 		{
 			UUmAssert(0xFFFFFFFF == curBNV->level);
-			
+
 			foundChild = UUcTrue;
-			
+
 			curBNV->level = inLevel;
 			IMPiEnv_Process_BNV_AnalyzeParents_Recursive(
 				inBuildData,
@@ -2194,7 +2194,7 @@ IMPiEnv_Process_BNV_AnalyzeParents_Recursive(
 				inLevel+1);
 		}
 	}
-	
+
 	if(foundChild == UUcFalse)
 	{
 		UUmAssert(inBNV->isLeaf == UUcTrue);
@@ -2203,7 +2203,7 @@ IMPiEnv_Process_BNV_AnalyzeParents_Recursive(
 	{
 		//UUmAssert(inBNV->isLeaf == UUcFalse);
 	}
-	
+
 	if(inBNV->isLeaf == UUcTrue)
 	{
 		//UUmAssert(foundChild == UUcFalse);
@@ -2221,12 +2221,12 @@ IMPiEnv_Process_BNV_AnalyzeParents(
 //	IMPtEnv_BNV*	curChildBNV;
 	UUtUns16*		bnvInsertionArray;
 	UUtInt64		time = UUrMachineTime_High();
-	
+
 	Imp_PrintMessage(IMPcMsg_Important, "analyzing BNV parents");
 
 	bnvInsertionArray = UUrMemory_Block_NewClear(sizeof(UUtUns16) * inBuildData->numBNVs);
 	UUmError_ReturnOnNull(bnvInsertionArray);
-	
+
 	// compute the levels
 	for(curBNVIndex = 0, curBNV = inBuildData->bnvList;
 		curBNVIndex < inBuildData->numBNVs;
@@ -2240,11 +2240,11 @@ IMPiEnv_Process_BNV_AnalyzeParents(
 		if(0xFFFFFFFF == curBNV->parent)
 		{
 			curBNV->level = 0;
-			
+
 			IMPiEnv_Process_BNV_AnalyzeParents_Recursive(inBuildData, curBNV, curBNVIndex, 1);
 		}
 	}
-	
+
 	// Compute the child and next pointers
 	for(curBNVIndex = 0, curBNV = inBuildData->bnvList;
 		curBNVIndex < inBuildData->numBNVs;
@@ -2270,7 +2270,7 @@ IMPiEnv_Process_BNV_AnalyzeParents(
 			bnvInsertionArray[curBNV->parent] = curBNVIndex;
 		}
 	}
-	
+
 	// Do one more pass for room flag and error reporting
 	for(curBNVIndex = 0, curBNV = inBuildData->bnvList;
 		curBNVIndex < inBuildData->numBNVs;
@@ -2286,9 +2286,9 @@ IMPiEnv_Process_BNV_AnalyzeParents(
 			curBNV->flags |= AKcBNV_Flag_Room;
 		}
 	}
-	
+
 	UUrMemory_Block_Delete(bnvInsertionArray);
-	
+
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
 
@@ -2304,13 +2304,13 @@ IMPiEnv_Process_BNV_QuadLiesOnSide(
 {
 	UUtUns16			curPointIndex;
 	UUtUns16			curQuadIndex;
-	
+
 	M3tPoint3D*			pointArray;
 	M3tQuad*		quadArray;
-	
+
 	M3tPoint3D*			curPoint;
 	M3tPoint3D			centerPoint;
-	
+
 	float				minX, minY, minZ;
 	float				maxX, maxY, maxZ;
 
@@ -2321,7 +2321,7 @@ IMPiEnv_Process_BNV_QuadLiesOnSide(
 	{
 		return UUcFalse;
 	}
-	
+
 	// Compute center of this quad
 	curPoint = pointArray +	quadArray[inQuadIndex].indices[0];
 
@@ -2332,12 +2332,12 @@ IMPiEnv_Process_BNV_QuadLiesOnSide(
 	for(curPointIndex = 1; curPointIndex < 4; curPointIndex++)
 	{
 		curPoint = pointArray +	quadArray[inQuadIndex].indices[curPointIndex];
-		
+
 		UUmMinMax(curPoint->x, minX, maxX);
 		UUmMinMax(curPoint->y, minY, maxY);
 		UUmMinMax(curPoint->z, minZ, maxZ);
 	}
-	
+
 	centerPoint.x = (minX + maxX) * 0.5f;
 	centerPoint.y = (minY + maxY) * 0.5f;
 	centerPoint.z = (minZ + maxZ) * 0.5f;
@@ -2346,14 +2346,14 @@ IMPiEnv_Process_BNV_QuadLiesOnSide(
 	{
 		if(CLrQuad_PointInQuad(
 			CLcProjection_Unknown,
-			pointArray, 
+			pointArray,
 			quadArray + inBNVSide->bnvQuadList[curQuadIndex],
 			&centerPoint) == UUcTrue)
 		{
 			return UUcTrue;
 		}
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -2367,7 +2367,7 @@ IMPrEnv_Process_BNV_BuildBSP(
 
 
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL"computing BNV BSP trees");
-	
+
 	for(curBNVIndex = 0, curBNV = inBuildData->bnvList;
 		curBNVIndex < inBuildData->numBNVs;
 		curBNVIndex++, curBNV++)
@@ -2383,14 +2383,14 @@ IMPrEnv_Process_BNV_BuildBSP(
 
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
-	
+
 	return UUcError_None;
 }
 
 static UUtBool
 IsGhostQuadOnThisSide(
-	IMPtEnv_BuildData *inBuildData, 
-	IMPtEnv_BNV_Side *curSide, 
+	IMPtEnv_BuildData *inBuildData,
+	IMPtEnv_BNV_Side *curSide,
 	IMPtEnv_GQ *current_ghost_quad)
 {
 	// RULE #1 the planes must be almost coplanar (normal facing doesn't matter)
@@ -2423,7 +2423,7 @@ IsGhostQuadOnThisSide(
 		for(curQuadIndex = 0; curQuadIndex < curSide->numBNVQuads; curQuadIndex++)
 		{
 			M3tQuad *current_bnv_face_quad = sharedQuads + curSide->bnvQuadList[curQuadIndex];
-			
+
 			if (CLrQuad_PointInQuad(CLcProjection_Unknown, sharedPoints, current_bnv_face_quad, ghost_quad_vertex)) {
 				ghost_quad_vertex_lies_on_this_side = UUcTrue;
 				break;
@@ -2436,7 +2436,7 @@ IsGhostQuadOnThisSide(
 	}
 
 	is_ghost_quad_on_this_side = UUcTrue;
-		
+
 exit:
 	return is_ghost_quad_on_this_side;
 }
@@ -2445,7 +2445,7 @@ static void FindSpecialQuadsOnThisSide(IMPtEnv_BuildData *inBuildData, IMPtEnv_B
 {
 	UUtUns32 special_quad_itr;
 	M3tPoint3D *sharedPoints = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
-	
+
 	for(special_quad_itr = 0; special_quad_itr < num_special_quads; special_quad_itr++)
 	{
 		UUtUns32 current_ghost_index = special_quad_indicies[special_quad_itr];
@@ -2472,12 +2472,12 @@ static void FindSpecialQuadsOnThisSide(IMPtEnv_BuildData *inBuildData, IMPtEnv_B
 				continue;
 			}
 		}
-		
+
 		// if we get here then current_ghost_quad is on this side
 		if(curSide->numGQGhostIndices > IMPcEnv_MaxQuadsPerSide) {
 			Imp_PrintWarning("Exceeded max number of GQ ghost things FILE %s LINE %d",__FILE__, __LINE__);
 		}
-		
+
 		curSide->gqGhostIndices[curSide->numGQGhostIndices++] = current_ghost_index;
 	}
 
@@ -2510,7 +2510,7 @@ static void IMP_BNV_Compute_BoundingBox_And_Volume(IMPtEnv_BuildData *inBuildDat
 			for(curPointIndex = 0; curPointIndex < 4; curPointIndex++)
 			{
 				const M3tPoint3D *curPoint = sharedPoints + sharedQuads[curSide->bnvQuadList[curQuadIndex]].indices[curPointIndex];
-			
+
 				UUmMinMax(curPoint->x, curBNV->minX, curBNV->maxX);
 				UUmMinMax(curPoint->y, curBNV->minY, curBNV->maxY);
 				UUmMinMax(curPoint->z, curBNV->minZ, curBNV->maxZ);
@@ -2531,17 +2531,17 @@ IMPrEnv_Process_BNV_ComputeProperties(
 	UUtUns16			curBNVIndex, curSideIndex;
 	IMPtEnv_BNV*		curBNV;
 	IMPtEnv_BNV_Side*	curSide;
-	
+
 	M3tPoint3D*			curPoint;
 	M3tPoint3D*			sharedPoints;
 	M3tQuad*		sharedQuads;
-	
+
 	UUtUns32			curGQIndex;
 	UUtUns32			curVertexIndex;
-	
+
 	IMPtEnv_GQ*			curGQ;
-	
-	
+
+
 	M3tPlaneEquation*	planes;
 
 	UUtInt64			time;
@@ -2557,7 +2557,7 @@ IMPrEnv_Process_BNV_ComputeProperties(
 	sharedQuads = AUrSharedQuadArray_GetList(inBuildData->sharedBNVQuadArray);
 	sharedPoints = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
 	planes = AUrSharedPlaneEquArray_GetList(inBuildData->sharedPlaneEquArray);
-	
+
 	num_special_quads = 0;
 	for(curGQIndex = 0, curGQ = inBuildData->gqList; curGQIndex < inBuildData->numGQs; curGQIndex++, curGQ++)
 	{
@@ -2582,7 +2582,7 @@ IMPrEnv_Process_BNV_ComputeProperties(
 
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
-	
+
 	time = UUrMachineTime_High();
 	Imp_PrintMessage(IMPcMsg_Important, "computing BNV properties");
 
@@ -2593,23 +2593,23 @@ IMPrEnv_Process_BNV_ComputeProperties(
 		if((curBNVIndex % 10) == 0) {
 			Imp_PrintMessage(IMPcMsg_Important, ".");
 		}
-		
+
 		// Check for BNVs less then 5 sides
 		if(curBNV->numSides < 5) {
 			Imp_PrintWarning("BNV %d has less then 5 sides File: %s, Obj: %s", curBNVIndex, curBNV->fileName, curBNV->objName);
-		}			
+		}
 
-		// Compute bounding box		
+		// Compute bounding box
 		IMP_BNV_Compute_BoundingBox_And_Volume(inBuildData, curBNV);
 
 		// test the oct tree
 		IMPrFixedOctTree_Test(
-			inBuildData, 
-			curBNV->minX - 2.f, 
-			curBNV->maxX + 2.f, 
-			curBNV->minY - 2.f, 
-			curBNV->maxY + 2.f, 
-			curBNV->minZ - 2.f, 
+			inBuildData,
+			curBNV->minX - 2.f,
+			curBNV->maxX + 2.f,
+			curBNV->minY - 2.f,
+			curBNV->maxY + 2.f,
+			curBNV->minZ - 2.f,
 			curBNV->maxZ + 2.f);
 
 		// we are going to build up the gq ghost indices for each side of this BNV
@@ -2624,9 +2624,9 @@ IMPrEnv_Process_BNV_ComputeProperties(
 				continue;
 			}
 
-			FindSpecialQuadsOnThisSide(inBuildData, curBNV, curSide, special_quad_indicies, num_special_quads);			
+			FindSpecialQuadsOnThisSide(inBuildData, curBNV, curSide, special_quad_indicies, num_special_quads);
 		}
-		
+
 #if defined(DEBUGGING) && DEBUGGING
 		// CB: this test makes sure that a ghost quad isn't mistakenly added to multiple sides
 		for (curSideIndex = 0; curSideIndex < curBNV->numSides; curSideIndex++) {
@@ -2660,16 +2660,16 @@ IMPrEnv_Process_BNV_ComputeProperties(
 			}
 
 			curGQ = inBuildData->gqList + curGQIndex;
-						
+
 			for(curVertexIndex = 0; curVertexIndex < 4; curVertexIndex++)
 			{
 				curPoint = sharedPoints + curGQ->visibleQuad.indices[curVertexIndex];
-				
+
 				if (IMPiEnv_Process_BSP_PointInBSP(inBuildData, curBNV, curPoint, 0)) {
 
 					if (curBNV->numGQs >= IMPcEnv_MaxGQsPerBNV) {
-						Imp_PrintWarning("Exceeded IMPcEnv_MaxGQsPerBNV in FILE: \"%s\" OBJ: \"%s\" max is %d", 
-							curBNV->fileName, 
+						Imp_PrintWarning("Exceeded IMPcEnv_MaxGQsPerBNV in FILE: \"%s\" OBJ: \"%s\" max is %d",
+							curBNV->fileName,
 							curBNV->objName,
 							IMPcEnv_MaxGQsPerBNV);
 					}
@@ -2678,9 +2678,9 @@ IMPrEnv_Process_BNV_ComputeProperties(
 
 					break;
 				}
-			}			
+			}
 		}
-	
+
 		// Compute plane of stairs between bottoms of SATs for standard stairs
 		if (curBNV->flags & AKcBNV_Flag_Stairs_Standard) {
 			M3tPoint3D *a, *b, *up0,*up1,*dn0,*dn1, *ph0, *ph1, *ph2, *ph3;
@@ -2688,7 +2688,7 @@ IMPrEnv_Process_BNV_ComputeProperties(
 			float h0, h1, h2, h3;
 			UUtUns32 upsat_number = 0, downsat_number = 0;
 			IMPtEnv_GQ *upsat, *downsat;
-			
+
 			up0 = up1 = dn0 = dn1 = NULL;
 			upsat = downsat = NULL;
 			for(curSideIndex = 0, curSide = curBNV->sides;
@@ -2779,7 +2779,7 @@ IMPrEnv_Process_BNV_ComputeProperties(
 
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
-		
+
 	return UUcError_None;
 }
 
@@ -2788,18 +2788,18 @@ IMPrEnv_Process_BNV_ComputeAdjacency(
 	IMPtEnv_BuildData*	inBuildData)
 {
 	// Create the adjacency data for each node - Warning! Icky O(n^2) algorithm! Ew! Eek!
-	
+
 	UUtUns32 curBNVIndex,curSideIndex,curGQIndex;
 	UUtUns32 curBNVIndex2,curSideIndex2,curGQIndex2;
 	IMPtEnv_BNV *curBNV,*curBNV2;
 	IMPtEnv_BNV_Side *curSide,*curSide2;
 	IMPtEnv_GQ *curGQ;
 	UUtInt64 time = UUrMachineTime_High();
-	
+
 	//#define DEBUG_ADJ
 	Imp_PrintMessage(IMPcMsg_Important,"Finding adjacencies...");
 	IMPgEnv_VerifyAdjCount = 0;
-	
+
 	for(curBNVIndex = 0; curBNVIndex < inBuildData->numBNVs; curBNVIndex++)
 	{
 		if((curBNVIndex % 20) == 0)
@@ -2812,7 +2812,7 @@ IMPrEnv_Process_BNV_ComputeAdjacency(
 		Imp_PrintMessage(IMPcMsg_Important,"- Adjacency for node %d -"UUmNL,curBNVIndex);
 		#endif
 		curBNV = &inBuildData->bnvList[curBNVIndex];
-		
+
 		// Cycle through all the sides of the node
 		for (curSideIndex = 0; curSideIndex < curBNV->numSides; curSideIndex++)
 		{
@@ -2821,7 +2821,7 @@ IMPrEnv_Process_BNV_ComputeAdjacency(
 			curSide->numAdjacencies = 0;
 			if (!(curBNV->flags & AKcBNV_Flag_Room)) continue;	// Tree node sides are done now
 			if (curBNV->flags & AKcBNV_Flag_NonAI) continue;
-		
+
 			for (curGQIndex=0; curGQIndex<curSide->numGQGhostIndices; curGQIndex++)
 			{
 				// Now check all the other nodes for matching ghosts
@@ -2842,7 +2842,7 @@ IMPrEnv_Process_BNV_ComputeAdjacency(
 							{
 								// Found a shared ghost- make a note of it
 								Imp_Env_AddAdjacency(curSide,curBNV,curSide2,curBNVIndex2,curSide2->gqGhostIndices[curGQIndex2],0,inBuildData);
-								
+
 								#ifdef DEBUG_ADJ
 								Imp_PrintMessage(IMPcMsg_Important,"\tNode %d, sharing ghost #%d"UUmNL,curBNVIndex2,curSide2->gqGhostIndices[curGQIndex2]);
 								#endif
@@ -2853,8 +2853,8 @@ IMPrEnv_Process_BNV_ComputeAdjacency(
 			}
 		}
 	}
-	
-	// Check for stair adjacencies	
+
+	// Check for stair adjacencies
 	for(curBNVIndex = 0; curBNVIndex < inBuildData->numBNVs; curBNVIndex++)
 	{
 		if((curBNVIndex % 20) == 0)
@@ -2866,7 +2866,7 @@ IMPrEnv_Process_BNV_ComputeAdjacency(
 		if (!(curBNV->flags & AKcBNV_Flag_Room)) continue;	// Only room nodes from here on!
 		if (curBNV->flags & AKcBNV_Flag_Stairs) continue;	// Skip stairs at this stage
 		if (curBNV->flags & AKcBNV_Flag_NonAI) continue;	// Skip non AI
-		
+
 		for(curBNVIndex2 = 0; curBNVIndex2 < inBuildData->numBNVs; curBNVIndex2++)
 		{
 			if (curBNVIndex2 == curBNVIndex) continue;
@@ -2874,7 +2874,7 @@ IMPrEnv_Process_BNV_ComputeAdjacency(
 			if (!(curBNV2->flags & AKcBNV_Flag_Room)) continue;	// Only room nodes!
 			if (!(curBNV2->flags & AKcBNV_Flag_Stairs)) continue;	// Only stairs!
 			if (curBNV->flags & AKcBNV_Flag_NonAI) continue;	// Skip non AI
-			
+
 			for (curSideIndex2 = 0; curSideIndex2 < curBNV2->numSides; curSideIndex2++)
 			{
 				curSide2 = &curBNV2->sides[curSideIndex2];
@@ -2882,24 +2882,24 @@ IMPrEnv_Process_BNV_ComputeAdjacency(
 				{
 					M3tPoint3D centroid;
 					UUtUns32 curGQGlobalIndex;
-					
+
 					curGQGlobalIndex = curSide2->gqGhostIndices[curGQIndex2];
 					curGQ = &inBuildData->gqList[curGQGlobalIndex];
 					if (!(curGQ->flags & (AKcGQ_Flag_SAT_Up | AKcGQ_Flag_SAT_Down))) continue;
-					
+
 					AUrQuad_ComputeCenter(
 						AUrSharedPointArray_GetList(inBuildData->sharedPointArray),
 						&curGQ->visibleQuad,
 						&centroid.x,
 						&centroid.y,
 						&centroid.z);
-					
+
 					if (Imp_Env_PointInNode(&centroid,inBuildData,curBNV))
 					{
 						M3tPoint3D *lowPoint;
 						UUtUns32 adj_index, fwd_conn_toside;
 						UUtBool found_fwd_conn, found_back_conn;
-				
+
 						// Potential SAT- make sure SAT touches floor
 						AUrQuad_LowestPoints(&curGQ->visibleQuad,AUrSharedPointArray_GetList(inBuildData->sharedPointArray),&lowPoint,NULL);
 						if ((float)fabs(lowPoint->y - curBNV->origin.y) > IMPcGhostFloorThreshold)
@@ -2952,7 +2952,7 @@ IMPrEnv_Process_BNV_ComputeAdjacency(
 			}
 		}
 	}
-	
+
 #if defined(DEBUGGING) && DEBUGGING
 	// CB: this test makes sure that no BNVs have the same adjacency on multiple sides
 	for(curBNVIndex = 0; curBNVIndex < inBuildData->numBNVs; curBNVIndex++)
@@ -2995,9 +2995,9 @@ IMPrEnv_Process_BNV_ComputeAdjacency(
 
 
 void Imp_Env_AddAdjacency(
-	IMPtEnv_BNV_Side *inSrcSide, 
-	IMPtEnv_BNV *inSrcBNV, 
-	IMPtEnv_BNV_Side *inDestSide, 
+	IMPtEnv_BNV_Side *inSrcSide,
+	IMPtEnv_BNV *inSrcBNV,
+	IMPtEnv_BNV_Side *inDestSide,
 	UUtUns32 inDestBNVIndex,
 	UUtUns32 inConnectingGQIndex,
 	UUtUns16 inFlags,
@@ -3006,18 +3006,18 @@ void Imp_Env_AddAdjacency(
 	/***************
 	* Adds an adjacency from inSrcSide to inDestSide (which is part of inBNVIndex)
 	*/
-	
+
 	AKtAdjacency *adj = &inSrcSide->adjacencyList[inSrcSide->numAdjacencies];
-	
+
 	adj->adjacentBNVIndex = inDestBNVIndex;
 	adj->adjacentGQIndex = inConnectingGQIndex;
 	adj->adjacencyFlags = inFlags;
-	
+
 	inBuildData->gqList[inConnectingGQIndex].ghostUsed = UUcTrue;
-	
+
 	inSrcSide->numAdjacencies++;
 	IMPgEnv_VerifyAdjCount++;
-	
+
 	if (inSrcSide->numAdjacencies > IMPcEnv_MaxAdjacencies)
 	{
 		inSrcSide->numAdjacencies--;
@@ -3036,25 +3036,25 @@ IMPiEnv_Process_Stairs(
 	M3tPlaneEquation	*planeArray;
 	UUtUns32			curGQIndex;
 	IMPtEnv_GQ*			curGQ;
-		
+
 	M3tQuad*	quadArray;
-	
+
 	UUtUns32			curPointIndex;
-	
+
 	M3tPoint3D*			pointArray;
 	M3tPoint3D*			curPoint;
-	
+
 	UUtBool				gqIsEnclosed;
-	
+
 	UUtUns16			numStairGQs;
 	UUtInt64			time = UUrMachineTime_High();
-	
+
 	Imp_PrintMessage(IMPcMsg_Important, "Finding and processing stairs");
 
 	pointArray = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
 	quadArray = AUrSharedQuadArray_GetList(inBuildData->sharedBNVQuadArray);
 	planeArray = AUrSharedPlaneEquArray_GetList(inBuildData->sharedPlaneEquArray);
-	
+
 	for(curBNVIndex = 0, curBNV = inBuildData->bnvList;
 		curBNVIndex < inBuildData->numBNVs;
 		curBNVIndex++, curBNV++)
@@ -3070,13 +3070,13 @@ IMPiEnv_Process_Stairs(
 		// Next find the enclosed stairs
 		numStairGQs = 0;
 		for(curGQIndex = 0, curGQ = inBuildData->gqList; curGQIndex < inBuildData->numGQs; curGQIndex++, curGQ++)
-		{			
+		{
 			gqIsEnclosed = UUcTrue;
-			
+
 			for(curPointIndex = 0; curPointIndex < 4; curPointIndex++)
 			{
 				curPoint = pointArray + curGQ->visibleQuad.indices[curPointIndex];
-				
+
 				if(IMPiEnv_Process_BSP_PointInBSP(
 					inBuildData,
 					curBNV,
@@ -3086,13 +3086,13 @@ IMPiEnv_Process_Stairs(
 					goto gqDone;
 				}
 			}
-			
+
 gqDone:
 			if(gqIsEnclosed)
 			{
 				// This may be a stair- is it pointing up or down?
 				if ((float)fabs(planeArray[curGQ->planeEquIndex & 0x7FFFFFFF].b) > PHcFlatNormal)
-				{					
+				{
 					curGQ->flags |= AKcGQ_Flag_Stairs;
 					curGQ->used = UUcTrue;
 					numStairGQs++;
@@ -3100,7 +3100,7 @@ gqDone:
 				}
 			}
 		}
-		
+
 		if(numStairGQs == 0)
 		{
 			IMPrEnv_LogError(
@@ -3111,7 +3111,7 @@ gqDone:
 			curBNV->error = UUcTrue;
 		}
 	}
-	
+
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
 
@@ -3123,50 +3123,50 @@ IMPrEnv_Process_GQVis(
 	IMPtEnv_BuildData*	inBuildData)
 {
 	UUtError		error;
-	
+
 	UUtUns32		curGQIndex;
 	IMPtEnv_GQ*		curGQ;
 	IMPtEnv_GQ*		targetGQ;
-	
+
 	M3tPoint3D*		sharedPoints;
-	
+
 	UUtUns32*			gqTakenBV;
-	
+
 	IMPtEnv_GQPatch*	newPatch;
-	
+
 	UUtUns32			nextIndIndex;
-	
+
 	UUtUns32			newIndIndexIndex;
-	
+
 	UUtUns32			curPatchIndex;
 	IMPtEnv_GQPatch*	curPatch;
-	
+
 	UUtUns32			curIndIndex;
 	UUtUns32			nextGQIndex;
 	UUtUns32			curEdgeItr;
-		
-	
+
+
 	AUtEdge*			edgeList;
 	AUtEdge*			targetEdge;
-	
+
 	UUtUns32			targetGQIndex;
 	UUtUns32			curQuadItr;
 	UUtUns32			numEdges;
 	float				totalGQArea = 0.0f;
 	UUtInt64			time = UUrMachineTime_High();
-	
+
 	Imp_PrintMessage(IMPcMsg_Important, "Computing gq patches for visibility...");
 
 	inBuildData->numPatches = 0;
 	inBuildData->numPatchIndIndices = 0;
-	
+
 	sharedPoints = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
-	
+
 	gqTakenBV = UUrBitVector_New(inBuildData->numGQs);
 	UUmError_ReturnOnNull(gqTakenBV);
-	
+
 	UUrBitVector_ClearBitAll(gqTakenBV, inBuildData->numGQs);
-	
+
 	Imp_PrintMessage(IMPcMsg_Cosmetic, UUmNL "\tbuilding gq edge list");
 	for(curGQIndex = 0, curGQ = inBuildData->gqList;
 		curGQIndex < inBuildData->numGQs;
@@ -3181,10 +3181,10 @@ IMPrEnv_Process_GQVis(
 			UUrBitVector_SetBit(gqTakenBV, curGQIndex);
 			continue;
 		}
-		
+
 		if(curGQ->flags & AKcGQ_Flag_Triangle)
 		{
-			error = 
+			error =
 				AUrSharedEdgeArray_AddPoly(
 					inBuildData->edgeArray,
 					3,
@@ -3195,7 +3195,7 @@ IMPrEnv_Process_GQVis(
 		}
 		else
 		{
-			error = 
+			error =
 				AUrSharedEdgeArray_AddPoly(
 					inBuildData->edgeArray,
 					4,
@@ -3205,11 +3205,11 @@ IMPrEnv_Process_GQVis(
 			UUmError_ReturnOnError(error);
 		}
 	}
-	
+
 	Imp_PrintMessage(IMPcMsg_Cosmetic, UUmNL"\tbuilding patch list");
 
 	edgeList = AUrSharedEdgeArray_GetList(inBuildData->edgeArray);
-	
+
 	// Build a list of patches. each patch contains a list of gqs that share an edge
 	for(curGQIndex = 0, curGQ = inBuildData->gqList;
 		curGQIndex < inBuildData->numGQs;
@@ -3217,58 +3217,58 @@ IMPrEnv_Process_GQVis(
 	{
 		// look for a gq that has not been taken
 		if(UUrBitVector_TestAndSetBit(gqTakenBV, curGQIndex)) continue;
-		
+
 		// we now have a gq that has not been taken
-		
+
 		// get a new patch
 			if(inBuildData->numPatches >= IMPcEnv_MaxPatches)
 			{
 				UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Not enough patch memory");
 			}
-			
+
 			newPatch = inBuildData->patches + inBuildData->numPatches++;
-		
+
 		if((inBuildData->numPatches % 200) == 0) Imp_PrintMessage(IMPcMsg_Important,".");
-		
+
 		// get a new ind index
 			if(inBuildData->numPatchIndIndices >= IMPcEnv_MaxGQIndexArray)
 			{
 				UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Not enough patch indIndex memory");
 			}
 			newIndIndexIndex = inBuildData->numPatchIndIndices++;
-		
+
 		// start the new patch
 			nextIndIndex = newPatch->gqStartIndirectIndex = newIndIndexIndex;
 			newPatch->gqEndIndirectIndex = newIndIndexIndex + 1;
-			
+
 			inBuildData->patchIndIndices[newIndIndexIndex] = curGQIndex;
-		
+
 		// loop through all the gqs in the patch so far and look for adjacencies
 		// stop when no new gqs are added
 		while(nextIndIndex < newPatch->gqEndIndirectIndex)
 		{
 			targetGQIndex = inBuildData->patchIndIndices[nextIndIndex];
-			
+
 			targetGQ = inBuildData->gqList + targetGQIndex;
-			
+
 			numEdges = (targetGQ->flags & AKcGQ_Flag_Triangle) ? 3 : 4;
-			
+
 			for(curEdgeItr = 0; curEdgeItr < numEdges; curEdgeItr++)
 			{
 				targetEdge = edgeList + targetGQ->edgeIndices.indices[curEdgeItr];
-				
+
 				for(curQuadItr = 0; curQuadItr < AUcMaxQuadsPerEdge; curQuadItr++)
 				{
 					if(targetEdge->quadIndices[curQuadItr] == targetGQIndex) continue;
 					if(targetEdge->quadIndices[curQuadItr] == UUcMaxUns32) break;
-					
+
 					nextGQIndex = targetEdge->quadIndices[curQuadItr];
-					
+
 /*					if(curQuadItr < 2)
 					{
 						targetGQ->adjGQIndices[curEdgeItr] = nextGQIndex;
 					}*/
-					
+
 					if(!UUrBitVector_TestAndSetBit(gqTakenBV, nextGQIndex))
 					{
 						if(inBuildData->numPatchIndIndices >= IMPcEnv_MaxGQIndexArray)
@@ -3276,55 +3276,55 @@ IMPrEnv_Process_GQVis(
 							UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Not enough patch indIndex memory");
 						}
 						newIndIndexIndex = inBuildData->numPatchIndIndices++;
-						
+
 						newPatch->gqEndIndirectIndex = newIndIndexIndex + 1;
-						
+
 						inBuildData->patchIndIndices[newIndIndexIndex] = nextGQIndex;
 					}
 				}
 			}
-			
+
 			nextIndIndex++;
 		}
 	}
-	
+
 	Imp_PrintMessage(IMPcMsg_Cosmetic, UUmNL"\tanalyzing patch list"UUmNL);
-	
+
 	for(curPatchIndex = 0, curPatch = inBuildData->patches;
 		curPatchIndex < inBuildData->numPatches;
 		curPatchIndex++, curPatch++)
 	{
 		float				totalArea;
-			
+
 		totalArea = 0;
-		
+
 		for(curIndIndex = curPatch->gqStartIndirectIndex;
 			curIndIndex < curPatch->gqEndIndirectIndex;
 			curIndIndex++)
 		{
 			targetGQ = inBuildData->gqList + inBuildData->patchIndIndices[curIndIndex];
-			
-			totalArea += 
+
+			totalArea +=
 				MUrTriangle_Area(
 					sharedPoints + targetGQ->visibleQuad.indices[0],
 					sharedPoints + targetGQ->visibleQuad.indices[1],
-					sharedPoints + targetGQ->visibleQuad.indices[2]) + 
+					sharedPoints + targetGQ->visibleQuad.indices[2]) +
 				MUrTriangle_Area(
 					sharedPoints + targetGQ->visibleQuad.indices[0],
 					sharedPoints + targetGQ->visibleQuad.indices[2],
 					sharedPoints + targetGQ->visibleQuad.indices[3]);
 		}
-		
+
 		totalGQArea += totalArea;
 	}
-		
+
 	inBuildData->totalGQArea = totalGQArea;
-	
+
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
-	
+
 	UUrBitVector_Dispose(gqTakenBV);
-	
+
 	return UUcError_None;
 }
 
@@ -3335,7 +3335,7 @@ static UUtError IMPrEnv_Process_GQDoors( IMPtEnv_BuildData*	inBuildData )
 	UUtInt64			time = UUrMachineTime_High();
 //	UUtUns32			new_index;
 //	UUtError			error;
-	
+
 	Imp_PrintMessage(IMPcMsg_Important, "Processing door GQs...");
 
 	inBuildData->door_count	= 0;
@@ -3362,11 +3362,11 @@ static UUtError IMPrEnv_Process_GQDoors( IMPtEnv_BuildData*	inBuildData )
 
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, "   %d" UUmNL "total time = %f" UUmNL UUmNL, inBuildData->door_count, UUrMachineTime_High_To_Seconds(time));
-	
+
 	return UUcError_None;
 }
 
-	
+
 UUtBool
 Imp_Env_PointInNode(
 	M3tPoint3D*			inPoint,
@@ -3386,7 +3386,7 @@ IMPiEnv_Process_Flags(
 	for (i=0; i<inBuildData->numFlags; i++)
 	{
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -3405,7 +3405,7 @@ static IMPtEnv_Object *IMPiFindDoorOnQuad(
 	{
 		object = inBuildData->objectList + i;
 		AKmPlaneEqu_GetComponents(inGQ->planeEquIndex,planeList,plane.a,plane.b,plane.c,plane.d);
-	
+
 		if (AUrPlane_Distance_Squared(&plane,&object->position,NULL) < UUmSQR(IMPcDoorPlaneThresh)) {
 			return object;
 		}
@@ -3417,7 +3417,7 @@ static IMPtEnv_Object *IMPiFindDoorOnQuad(
 static UUtError
 IMPiCreateQuadRemapFile(
 	IMPtEnv_BuildData*	inBuildData)
-{		
+{
 	char			filename[64];
 	BFtFile			*outFile;
 	BFtFileRef		*fileRef;
@@ -3451,14 +3451,14 @@ IMPiCreateQuadRemapFile(
 
 	return UUcError_None;
 }
-		
+
 static UUtError
 IMPrEnv_Process_GQMinMax(
 	IMPtEnv_BuildData*	inBuildData)
 {
 	UUtUns32		curGQIndex;
 	IMPtEnv_GQ*		curGQ;
-		
+
 	IMPtEnv_Object	*object;
 	UUtInt64		time = UUrMachineTime_High();
 
@@ -3477,10 +3477,10 @@ IMPrEnv_Process_GQMinMax(
 	{
 		float			minX, minY, minZ;
 		float			maxX, maxY, maxZ;
-		
+
 		const M3tPoint3D*	curPoint;
 		UUtUns8				i;
-	
+
 		{
 			const float floor_angle = 0.5f;
 			M3tPlaneEquation*	planeEqu = planeArray + (curGQ->planeEquIndex & 0x7FFFFFFF);
@@ -3510,15 +3510,15 @@ IMPrEnv_Process_GQMinMax(
 		}
 
 		// Remap indices for scripting
-		if (curGQ->scriptID != 0xFFFF) 
+		if (curGQ->scriptID != 0xFFFF)
 		{
 			IMPrScript_AddQuadRemap(
 				curGQIndex,
 				curGQ->scriptID,
 				inBuildData->environmentGroup);
 		}
-		
-		// Quad extrema 
+
+		// Quad extrema
 		AUrQuad_HighestPoints(&curGQ->visibleQuad,sharedPoints,&curGQ->hi1,&curGQ->hi2);
 		AUrQuad_LowestPoints(&curGQ->visibleQuad,sharedPoints,&curGQ->lo1,&curGQ->lo2);
 
@@ -3527,7 +3527,7 @@ IMPrEnv_Process_GQMinMax(
 		minX = maxX = curPoint->x;
 		minY = maxY = curPoint->y;
 		minZ = maxZ = curPoint->z;
-	
+
 		for(i = 1; i < 4; i++)
 		{
 			float curX, curY, curZ;
@@ -3537,12 +3537,12 @@ IMPrEnv_Process_GQMinMax(
 			curX = curPoint->x;
 			curY = curPoint->y;
 			curZ = curPoint->z;
-			
+
 			UUmMinMax(curX, minX, maxX);
 			UUmMinMax(curY, minY, maxY);
 			UUmMinMax(curZ, minZ, maxZ);
 		}
-		
+
 		curGQ->bBox.minPoint.x = minX;
 		curGQ->bBox.minPoint.y = minY;
 		curGQ->bBox.minPoint.z = minZ;
@@ -3550,7 +3550,7 @@ IMPrEnv_Process_GQMinMax(
 		curGQ->bBox.maxPoint.y = maxY;
 		curGQ->bBox.maxPoint.z = maxZ;
 	}
-	
+
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
 
@@ -3570,7 +3570,7 @@ IMPiEnv_Process_CalculateOrigins(
 	for(curBNVIndex = 0; curBNVIndex < inBuildData->numBNVs; curBNVIndex++)
 	{
 		IMPtEnv_BNV *curNode = &inBuildData->bnvList[curBNVIndex];
-		
+
 		if((curBNVIndex % 10) == 0)
 		{
 			Imp_PrintMessage(IMPcMsg_Important, ".");
@@ -3582,7 +3582,7 @@ IMPiEnv_Process_CalculateOrigins(
 
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
-	
+
 	return UUcError_None;
 }
 
@@ -3594,7 +3594,7 @@ IMPrEnv_Process(
 	UUtError	error;
 	UUtUns32	gqItr;
 	IMPtEnv_GQ*	curGQ;
-	
+
 	// 1. Initialize stuff
 
 	error = IMPrEnv_Process_BNV_BuildBSP(inBuildData);
@@ -3609,20 +3609,20 @@ IMPrEnv_Process(
 	// loop through the gqs and set the proper flags based on the texture map
 	for(gqItr = 0, curGQ = inBuildData->gqList; gqItr < inBuildData->numGQs; gqItr++, curGQ++)
 	{
-		if(curGQ->textureMapIndex != 0xFFFF) 
+		if(curGQ->textureMapIndex != 0xFFFF)
 		{
-			if(IMrPixelType_HasAlpha(inBuildData->envTextureList[curGQ->textureMapIndex].flags.pixelType)) 
+			if(IMrPixelType_HasAlpha(inBuildData->envTextureList[curGQ->textureMapIndex].flags.pixelType))
 			{
-				curGQ->flags |= (AKcGQ_Flag_DrawBothSides | AKcGQ_Flag_Transparent);					
+				curGQ->flags |= (AKcGQ_Flag_DrawBothSides | AKcGQ_Flag_Transparent);
 			}
-		}	
-		if (curGQ->flags & AKcGQ_Flag_Transparent) 
+		}
+		if (curGQ->flags & AKcGQ_Flag_Transparent)
 		{
-			if (inBuildData->numAlphaQuads < IMPcEnv_MaxAlphaQuads) 
+			if (inBuildData->numAlphaQuads < IMPcEnv_MaxAlphaQuads)
 			{
 				inBuildData->alphaQuads[inBuildData->numAlphaQuads++] = gqItr;
 			}
-			else 
+			else
 			{
 				Imp_PrintMessage(IMPcMsg_Important, UUmNL"TOO MANY ALPHA QUADS"UUmNL);
 			}
@@ -3633,7 +3633,7 @@ IMPrEnv_Process(
 	{
 		error = IMPrEnv_Process_GQMinMax(inBuildData);
 		UUmError_ReturnOnError(error);
-		
+
 		#if 1
 		// 11. build the alpha quad bsp
 			IMPiEnv_Process_Alpha_BSP_Build(
@@ -3652,40 +3652,40 @@ IMPrEnv_Process(
 			Imp_PrintMessage(IMPcMsg_Important, UUmNL "time to build fixed node oct tree = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(fixed_oct_tree_time));
 		}
 
-		
-		// 2. Compute the BNV volume node tree	
+
+		// 2. Compute the BNV volume node tree
 		error = IMPrEnv_Process_BNV_ComputeProperties(inBuildData);
 		UUmError_ReturnOnError(error);
-		
+
 		IMPiEnv_Process_BNV_FindParents(inBuildData);
 		IMPiEnv_Process_BNV_AnalyzeParents(inBuildData);
-		
+
 		// 3. Process the stair GQs and BNVs
 		error = IMPiEnv_Process_Stairs(inBuildData);
 		UUmError_ReturnOnError(error);
-			
+
 		// 4. Calculate origins
 		error = IMPiEnv_Process_CalculateOrigins(inBuildData);
 		UUmError_ReturnOnError(error);
-			
+
 		// 5. Find adjacencies
-		IMPrEnv_Process_BNV_ComputeAdjacency(inBuildData);		
+		IMPrEnv_Process_BNV_ComputeAdjacency(inBuildData);
 
 	}
-	
+
 	// 6. Look for GQs that should be ignored
 	IMPrEnv_Process_GQVis(inBuildData);
-	
-	
+
+
 	if(IMPgConstructing)
 	{
 		IMPiCreateQuadRemapFile(inBuildData);
 	}
-	
+
 	// 9. lightmaps
 	error = IMPrEnv_Process_LightMap(inBuildData, inSourceFileRef);
 	UUmError_ReturnOnError(error);
-	
+
 	if(IMPgConstructing)
 	{
 		// 10. Process the marker flags and objects
@@ -3694,10 +3694,10 @@ IMPrEnv_Process(
 		error = IMPiEnv_Process_Flags(inBuildData);
 		UUmError_ReturnOnError(error);
 
-		Imp_PrintMessage(IMPcMsg_Important, "."UUmNL);		
+		Imp_PrintMessage(IMPcMsg_Important, "."UUmNL);
 		// 12. Clean up
 	}
-	
+
 	return UUcError_None;
-	
+
 }

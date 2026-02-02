@@ -45,7 +45,7 @@ Imp_Common_Scan_Group(
 
 UUtError Imp_OpenGroupStack(
 	BFtFileRef	*inSourceFileRef,
-	GRtGroup *ioGroup, 
+	GRtGroup *ioGroup,
 	GRtGroup_Context *inContext,
 	const char *parentVarName);
 
@@ -77,7 +77,7 @@ UUtError Imp_OpenGroupStack(
 			return error;																				\
 		} else {																						\
 			UUmError_ReturnOnErrorMsgP(error, msg, p0, p1, p2);											\
-		} 
+		}
 #endif
 
 void UUcArglist_Call Imp_PrintWarning(const char *format, ...);

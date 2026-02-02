@@ -1,12 +1,12 @@
 /*
 	FILE:	OG_GC_Method_Env.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -28,7 +28,7 @@
 #include "OG_GC_Method_Env.h"
 #include "OG_GC_Method_Camera.h"
 
-static UUtUns8	g2BitSubtractor[256] = 
+static UUtUns8	g2BitSubtractor[256] =
 {
     0x0,    //00000000 -> 00000000
     0x0,    //00000001 -> 00000000
@@ -292,7 +292,7 @@ UUtError
 OGrGeomContext_Method_Env_SetCamera(
 	M3tGeomCamera*		inCamera)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -310,23 +310,23 @@ OGrGeomContext_Method_Env_DrawGQList(
 	M3tPoint3D*				worldPoints;
 	M3tTextureCoord*		baseUVs;
 	M3tTextureMap**			baseMapArray;
-	
+
 	AKtGQ_General*			curGQGeneral;
 	AKtGQ_Render*			curGQRender;
 
 	UUtUns32				curGQIndex;
-	
+
 	UUtBool					useDebugMaps = UUcFalse;
 	UUtBool					drawGhostGQs = UUcFalse;
 	UUtUns32				debugState;
-	
+
 	M3tPoint3D*				tempPoints;
 	M3tTextureCoord*		tempBaseUVs;
 	M3tTextureCoord*		tempLightUVs;
 	M3tTextureMap**			tempBaseMaps;
-	
+
 	//UUtUns32				itr;
-	
+
 	UUtUns32				numGQBlock8;
 	UUtUns32				block8Itr;
 	UUtUns32				numGQLeftOver;
@@ -335,9 +335,9 @@ OGrGeomContext_Method_Env_DrawGQList(
 	UUtUns32				vertItr;
 
 	//return UUcError_None;
-	
+
 	if(OGgGeomContextPrivate.environment == NULL) return UUcError_None;
-	
+
 	UUmAssertReadPtr(OGgGeomContextPrivate.environment, sizeof(*OGgGeomContextPrivate.environment));
 
 	worldPoints		= OGgGeomContextPrivate.environment->pointArray->points;
@@ -346,39 +346,39 @@ OGrGeomContext_Method_Env_DrawGQList(
 	baseUVs			= OGgGeomContextPrivate.environment->textureCoordArray->textureCoords;
 	baseMapArray	= OGgGeomContextPrivate.environment->textureMapArray->maps;
 
-	
+
 	// debugState		= OGgGeomContextPrivate.stateInt[M3cGeomStateIntType_DebugMode];
 	debugState = 0;
-	
+
 	tempPoints		= OGgGeomContextPrivate.tempPoints;
 	tempBaseUVs		= OGgGeomContextPrivate.tempBaseUVs;
 	tempLightUVs	= OGgGeomContextPrivate.tempLightUVs;
 	tempBaseMaps	= OGgGeomContextPrivate.tempBaseMaps;
-		
+
 	useDebugMaps	= (UUtBool)((debugState & M3cGeomState_DebugMode_UseEnvDbgTexture) != 0);
 	drawGhostGQs	= (UUtBool)((debugState & M3cGeomState_DebugMode_DrawGhostGQs) != 0);
-		
+
 	if(inNumGQs == 0) return UUcError_None;
-	
+
 	OGLrCommon_Camera_Update(OGLcCameraMode_3D);
-	
+
 	#if 0
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
+
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_INDEX_ARRAY);
 	glDisableClientState(GL_EDGE_FLAG_ARRAY);
 	#endif
-	
+
 	// Idea here is to build up a list of 8 quads and submit their vertices at once
 	// and then submit the quads using glDrawArrays
-	
+
 	numGQBlock8 = inNumGQs >> 3;
 	numGQLeftOver = inNumGQs - (numGQBlock8 << 3);
 	numGQBlock8++;
-	
+
 	for(block8Itr = 0; block8Itr < numGQBlock8; block8Itr++)
 	{
 		if(block8Itr == numGQBlock8 - 1)
@@ -389,7 +389,7 @@ OGrGeomContext_Method_Env_DrawGQList(
 		{
 			numGQItrs = 8;
 		}
-		
+
 		//OGLgCommon.pglUnlockArraysEXT();
 
 		for(gqItr = 0, vertItr = 0; gqItr < numGQItrs; gqItr++, vertItr += 4)
@@ -398,22 +398,22 @@ OGrGeomContext_Method_Env_DrawGQList(
 
 			curGQGeneral = gqGeneralArray + curGQIndex;
 			curGQRender = gqRenderArray + curGQIndex;
-			
+
 			tempPoints[vertItr + 0] = worldPoints[curGQGeneral->m3Quad.vertexIndices.indices[0]];
 			tempPoints[vertItr + 1] = worldPoints[curGQGeneral->m3Quad.vertexIndices.indices[1]];
 			tempPoints[vertItr + 2] = worldPoints[curGQGeneral->m3Quad.vertexIndices.indices[2]];
 			tempPoints[vertItr + 3] = worldPoints[curGQGeneral->m3Quad.vertexIndices.indices[3]];
-			
+
 			tempBaseUVs[vertItr + 0] = baseUVs[curGQGeneral->m3Quad.baseUVIndices.indices[0]];
 			tempBaseUVs[vertItr + 1] = baseUVs[curGQGeneral->m3Quad.baseUVIndices.indices[1]];
 			tempBaseUVs[vertItr + 2] = baseUVs[curGQGeneral->m3Quad.baseUVIndices.indices[2]];
 			tempBaseUVs[vertItr + 3] = baseUVs[curGQGeneral->m3Quad.baseUVIndices.indices[3]];
-			
+
 			// set the proper base texture map
 			if((curGQGeneral->flags & AKcGQ_Flag_Draw_Flash))
 			{
 				curGQGeneral->flags &= ~AKcGQ_Flag_Draw_Flash;
-				
+
 				if(curGQGeneral->flags & AKcGQ_Flag_Flash_State)
 				{
 					curGQGeneral->flags &= ~AKcGQ_Flag_Flash_State;
@@ -430,13 +430,13 @@ OGrGeomContext_Method_Env_DrawGQList(
 				tempBaseMaps[gqItr] = baseMapArray[curGQRender->textureMapIndex];
 			}
 		}
-		
+
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glVertexPointer(3, GL_FLOAT, 0, tempPoints);
-		
+
 		glTexCoordPointer(2, GL_FLOAT, 0, tempBaseUVs);
-		
+
 		//OGLgCommon.pglLockArraysEXT(0, numGQItrs << 3);
 		for(gqItr = 0; gqItr < numGQItrs; gqItr++)
 		{
@@ -444,12 +444,12 @@ OGrGeomContext_Method_Env_DrawGQList(
 			{
 				OGLrCommon_TextureMap_Select(tempBaseMaps[gqItr], GL_TEXTURE0_ARB);
 			}
-					
+
 			glDrawArrays(GL_POLYGON, gqItr << 2, 4);
 			glFlush();
 		}
 	}
-	
+
 	return UUcError_None;
 }
 

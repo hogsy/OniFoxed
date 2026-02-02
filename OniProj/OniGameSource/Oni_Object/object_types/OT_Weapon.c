@@ -25,7 +25,7 @@ static UUtError
 OBJiWeapon_SetOSD(
 	OBJtObject				*inObject,
 	const OBJtOSD_All		*inOSD);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
@@ -35,7 +35,7 @@ OBJiWeapon_Delete(
 	OBJtObject				*inObject)
 {
 /*	OBJtOSD_Weapon			*weapon_osd;
-	
+
 	// get a pointer to the object osd
 	weapon_osd = (OBJtOSD_Weapon*)inObject->object_data;
 	if (weapon_osd->weapon)
@@ -61,14 +61,14 @@ OBJiWeapon_Draw(
 	M3rMatrixStack_Push();
 	M3rMatrixStack_ApplyTranslate(inObject->position);
 	M3rGeom_State_Commit();
-	
+
 	if (weapon_osd->weapon_class)
 	{
 		geometry = weapon_osd->weapon_class->geometry;
 		M3rMinMaxBBox_To_BBox(&geometry->pointArray->minmax_boundingBox, &bBox);
 		M3rBBox_Draw_Line(&bBox, IMcShade_White);
 	}
-	
+
 #if TOOL_VERSION
 	// draw the bounding box if this is the selected object
 	if ((inDrawFlags & OBJcDrawFlag_Selected) != 0)
@@ -79,7 +79,7 @@ OBJiWeapon_Draw(
 		OBJrObjectUtil_DrawRotationRings(inObject, &sphere, inDrawFlags);
 	}
 #endif
-	
+
 	M3rMatrixStack_Pop();
 }
 
@@ -94,7 +94,7 @@ OBJiWeapon_Enumerate(
 	UUtUns32						num_weapon_classes;
 	WPtWeaponClass					*weapon_class_list[128];
 	UUtUns32						i;
-	
+
 	error =
 		TMrInstance_GetDataPtr_List(
 			WPcTemplate_WeaponClass,
@@ -102,18 +102,18 @@ OBJiWeapon_Enumerate(
 			&num_weapon_classes,
 			weapon_class_list);
 	UUmError_ReturnOnError(error);
-	
+
 	for (i = 0; i < num_weapon_classes; i++)
 	{
 		UUtBool						result;
-		
+
 		result =
 			inEnumCallback(
 				TMrInstance_GetInstanceName(weapon_class_list[i]),
 				inUserData);
 		if (result == UUcFalse) { break; }
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -124,12 +124,12 @@ OBJiWeapon_GetBoundingSphere(
 	M3tBoundingSphere		*outBoundingSphere)
 {
 	OBJtOSD_Weapon			*weapon_osd;
-	
+
 	weapon_osd = (OBJtOSD_Weapon*)inObject->object_data;
 	if (weapon_osd->weapon_class != NULL)
 	{
 		M3tGeometry				*geometry;
-		
+
 		geometry = weapon_osd->weapon_class->geometry;
 		*outBoundingSphere = geometry->pointArray->boundingSphere;
 	}
@@ -168,7 +168,7 @@ OBJiWeapon_GetOSD(
 	OBJtOSD_Weapon			*weapon_osd;
 
 	weapon_osd = (OBJtOSD_Weapon*)inObject->object_data;
-	
+
 	outOSD->osd.weapon_osd = *weapon_osd;
 }
 
@@ -179,13 +179,13 @@ OBJiWeapon_GetOSDWriteSize(
 {
 	UUtUns32				size;
 	OBJtOSD_Weapon			*weapon_osd;
-	
+
 	weapon_osd = (OBJtOSD_Weapon*)inObject->object_data;
 
 	// save the weapon type
 	size =
 		WPcMaxWeaponName;				/* weapon class name */
-	
+
 	return size;
 }
 
@@ -197,16 +197,16 @@ OBJiWeapon_IntersectsLine(
 	const M3tPoint3D		*inEndPoint)
 {
 	M3tBoundingSphere		sphere;
-	
+
 	UUrMemory_Clear(&sphere, sizeof(M3tBoundingSphere));
-	
+
 	// get the bounding sphere
 	OBJrObject_GetBoundingSphere(inObject, &sphere);
-	
+
 	sphere.center.x += inObject->position.x;
 	sphere.center.y += inObject->position.y;
 	sphere.center.z += inObject->position.z;
-	
+
 	// do the fast test to see if the line is colliding with the bounding sphere
 	return CLrSphere_Line(inStartPoint, inEndPoint, &sphere);
 }
@@ -218,10 +218,10 @@ OBJiWeapon_SetDefaults(
 {
 	// clear the osd
 	UUrMemory_Clear(&outOSD->osd.weapon_osd, sizeof(OBJtOSD_Weapon));
-	
+
 	UUrString_Copy(outOSD->osd.weapon_osd.weapon_class_name, "w1_tap", WPcMaxWeaponName);
 //	outOSD->osd.weapon_osd.weapon = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -238,15 +238,15 @@ OBJiWeapon_New(
 	{
 		error = OBJiWeapon_SetDefaults(&osd_all);
 		UUmError_ReturnOnError(error);
-				
+
 		// send osd_all to OBJiWeapon_SetOSD()
 		inOSD = &osd_all;
 	}
-	
+
 	// set the object specific data and position
 	OBJiWeapon_SetOSD(inObject, inOSD);
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return UUcError_None;
 }
 
@@ -260,20 +260,20 @@ OBJiWeapon_Read(
 {
 	OBJtOSD_Weapon			*weapon_osd;
 	UUtUns32				read_bytes;
-	
+
 	weapon_osd = (OBJtOSD_Weapon*)inObject->object_data;
-	
+
 	read_bytes = 0;
-	
+
 	// read the weapon type
 	UUrString_Copy(weapon_osd->weapon_class_name, (char*)inBuffer, WPcMaxWeaponName);
 	inBuffer += WPcMaxWeaponName;
 	read_bytes += WPcMaxWeaponName;
-		
+
 	// set the osd and update the position
 	OBJiWeapon_SetOSD(inObject, (OBJtOSD_All*)inObject->object_data);
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return read_bytes;
 }
 
@@ -286,7 +286,7 @@ OBJiWeapon_SetOSD(
 	OBJtOSD_Weapon			*weapon_osd;
 //	WPtWeaponClass			*weapon_class;
 	UUtError				error;
-	
+
 	weapon_osd = (OBJtOSD_Weapon*)inObject->object_data;
 /*	if (weapon_osd->weapon)
 	{
@@ -294,16 +294,16 @@ OBJiWeapon_SetOSD(
 		WPrDelete(weapon_osd->weapon);
 		weapon_osd->weapon = NULL;
 	}*/
-	
+
 	UUrString_Copy(
 		weapon_osd->weapon_class_name,
 		inOSD->osd.weapon_osd.weapon_class_name,
 		WPcMaxWeaponName);
-		
+
 	error =
 		TMrInstance_GetDataPtr(
 			WPcTemplate_WeaponClass,
-			weapon_osd->weapon_class_name, 
+			weapon_osd->weapon_class_name,
 			&weapon_osd->weapon_class);
 	UUmError_ReturnOnError(error);
 
@@ -335,19 +335,19 @@ OBJiWeapon_Write(
 	UUtUns32				bytes_available;
 //	WPtWeaponClass			*weapon_class;
 //	char					*weapon_class_name;
-	
+
 	weapon_osd = (OBJtOSD_Weapon*)inObject->object_data;
-	
+
 	// set the number of bytes available
 	bytes_available = *ioBufferSize;
-	
+
 //	weapon_class = WPrGetClass(weapon_osd->weapon);
 //	weapon_class_name = TMrInstance_GetInstanceName(weapon_class);
-	
+
 	UUrString_Copy((char*)ioBuffer, weapon_osd->weapon_class_name, WPcMaxWeaponName);
 	ioBuffer += WPcMaxWeaponName;
 	bytes_available -= WPcMaxWeaponName;
-	
+
 	// set ioBufferSize to the number of bytes written to the buffer
 	*ioBufferSize = *ioBufferSize - bytes_available;
 
@@ -397,10 +397,10 @@ OBJrWeapon_Initialize(
 {
 	UUtError				error;
 	OBJtMethods				methods;
-	
+
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew				= OBJiWeapon_New;
 	methods.rSetDefaults		= OBJiWeapon_SetDefaults;
@@ -420,7 +420,7 @@ OBJrWeapon_Initialize(
 	methods.rGetClassVisible	= OBJiWeapon_GetVisible;
 	methods.rSearch				= OBJiWeapon_Search;
 	methods.rSetClassVisible	= OBJiWeapon_SetVisible;
-	
+
 	// register the furniture methods
 	error =
 		OBJrObjectGroup_Register(
@@ -431,6 +431,6 @@ OBJrWeapon_Initialize(
 			&methods,
 			OBJcObjectGroupFlag_None);
 	UUmError_ReturnOnError(error);
-		
+
 	return UUcError_None;
 }

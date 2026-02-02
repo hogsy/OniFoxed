@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Panic.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 16, 2000
-	
+
 	PURPOSE: Noncombatant AI for Oni
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */

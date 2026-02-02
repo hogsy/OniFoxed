@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: March 30, 2000
-	
+
 	PURPOSE: Shared BFW types
-	
+
 	Copyright (c) Bungie Software 2000
 
 */

@@ -47,26 +47,26 @@ BFiConvertWin2Unix(
 {
 	const char*	src;
 	char*		dst;
-	
+
 	src = inOrigName;
 	dst = outMungedName;
-	
+
 	while(*src != 0)
 	{
 		if(*src == '\\')
 		{
 			*dst++ = '/';
-			
+
 			src++;
 		}
 		else
 		{
 			*dst++ = *src;
-			
+
 			src++;
 		}
 	}
-	
+
 	*dst = 0;
 }
 
@@ -82,19 +82,19 @@ BFiCheckFileName(
 	const char		*inFileName)
 {
 	const char		*name;
-	
+
 	name = inFileName;
-	
+
 	/*
 	while (*name)
 	{
 		if (name[0] == '/')
 		{
 			char	illegal_char[2];
-			
+
 			illegal_char[0] = name[0];
 			illegal_char[1] = '\0';
-			
+
 			UUmError_ReturnOnErrorMsgP(
 				UUcError_Generic,
 				"Illegal character %s in file name.",
@@ -102,11 +102,11 @@ BFiCheckFileName(
 				0,
 				0);
 		}
-		
+
 		name++;
 	}
 	*/
-	
+
 	return UUcError_None;
 }
 
@@ -117,10 +117,10 @@ BFrFileRef_Set(
 {
 	UUtError	error;
 	char			mungedName[BFcMaxPathLength];
-	
+
 	UUmAssert(NULL != inFileRef);
 	UUmAssert(NULL != inFileName);
-		
+
 	if(strlen(inFileName) >= BFcMaxPathLength)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Path name too long");
@@ -129,19 +129,19 @@ BFrFileRef_Set(
 	/* Make sure the path name is valid */
 	error = BFiCheckFileName(inFileName);
 	UUmError_ReturnOnError(error);
-	
+
 	BFiConvertWin2Unix(inFileName, mungedName);
-	
+
 	if(BFiFileRef_PathNameExists(mungedName) == UUcFalse)
 	{
 		return BFcError_FileNotFound;
 	}
-			
+
 	UUrString_Copy(inFileRef->name, inFileName, BFcMaxPathLength);
-	
+
 	{
 		char *leaf_name = BFrPath_To_Name(inFileRef->name);
-	
+
 		if(strlen(leaf_name) >= BFcMaxFileNameLength)
 		{
 			UUmError_ReturnOnErrorMsgP(
@@ -150,7 +150,7 @@ BFrFileRef_Set(
 				(UUtUns32)leaf_name, BFcMaxFileNameLength-1, 0);
 		}
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -158,11 +158,11 @@ void
 BFrFileRef_Dispose(
 	BFtFileRef	*inFileRef)
 {
-	
+
 	UUmAssert(inFileRef != NULL);
-	
+
 	UUrMemory_Block_Delete(inFileRef);
-	
+
 }
 
 UUtError
@@ -171,17 +171,17 @@ BFrFileRef_Duplicate(
 	BFtFileRef	**outNewFileRef)
 {
 	UUtError error;
-	
+
 	UUmAssert(inOrigFileRef != NULL);
 	UUmAssert(outNewFileRef != NULL);
-	
+
 	error =
 		BFrFileRef_MakeFromName(
 			inOrigFileRef->name,
 			outNewFileRef);
 
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -200,7 +200,7 @@ BFrFileRef_GetLeafName(
 const char *
 BFrFileRef_GetFullPath(
 	const BFtFileRef*		inFileRef)
-{	
+{
 	return inFileRef->name;
 }
 
@@ -216,10 +216,10 @@ BFrFileRef_SetName(
 
 	UUmAssert(inFileRef != NULL);
 	UUmAssert(inName != NULL);
-	
+
 	error = BFiCheckFileName(inName);
 	UUmError_ReturnOnError(error);
-	
+
 	if (BFrPath_IsAbsolute(inName))
 	{
 		if(strlen(inName) >= BFcMaxPathLength)
@@ -239,7 +239,7 @@ BFrFileRef_SetName(
 
 		UUrString_Copy(leaf_name, inName, BFcMaxPathLength);
 	}
-	
+
 	{
 		char *leaf_name = BFrPath_To_Name(inFileRef->name);
 
@@ -251,12 +251,12 @@ BFrFileRef_SetName(
 				(UUtUns32)leaf_name, BFcMaxFileNameLength-1, 0);
 		}
 	}
-	
+
 	if(BFiFileRef_PathNameExists(inFileRef->name) == UUcFalse)
 	{
 		return BFcError_FileNotFound;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -273,21 +273,21 @@ BFrFile_Create(
 	BFtFileRef	*inFileRef)
 {
 	FILE	*file;
-	
+
 	UUmAssert(inFileRef != NULL);
 	UUmAssert(inFileRef->name[0] != '\0');
 
 	remove(inFileRef->name);
-	
+
 	file = fopen(inFileRef->name, "wb");
-	
+
 	if(file == NULL)
 	{
 		return UUcError_Generic; //XXX
 	}
-	
+
 	fclose(file);
-	
+
 	return UUcError_None;
 }
 
@@ -309,12 +309,12 @@ BFrFile_Open(
 	BFtFile		**outFile)
 {
 	const char	*mungedMode;
-	
+
 	UUmAssert(inFileRef != NULL);
 	UUmAssert(inFileRef->name[0] != '\0');
 	UUmAssert(inMode != NULL);
 	UUmAssert(outFile != NULL);
-	
+
 	if(!strcmp("r", inMode))
 	{
 		mungedMode = "rb";
@@ -331,14 +331,14 @@ BFrFile_Open(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Illegal file mode");
 	}
-	
+
 	*outFile = (BFtFile *) fopen(inFileRef->name, mungedMode);
 
 	if(*outFile == NULL)
 	{
 		return errno == ENOENT ? BFcError_FileNotFound : UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -358,8 +358,8 @@ BFrFile_Map(
 	BFtFileMapping *mapping;
 
 	mapping = UUrMemory_Block_New(sizeof(BFtFileMapping));
-	if (NULL == mapping) { 
-		error = UUcError_OutOfMemory; 
+	if (NULL == mapping) {
+		error = UUcError_OutOfMemory;
 		goto fail;
 	}
 
@@ -414,8 +414,8 @@ BFrFile_Map_Default(
 	BFtFileMapping *mappingRef;
 
 	mappingRef = UUrMemory_Block_New(sizeof(BFtFileMapping));
-	if (NULL == mappingRef) { 
-		error = UUcError_OutOfMemory; 
+	if (NULL == mappingRef) {
+		error = UUcError_OutOfMemory;
 		goto fail;
 	}
 
@@ -463,8 +463,8 @@ BFrFile_Map(
 
 	mappingRef = UUrMemory_Block_New(sizeof(BFtFileMapping));
 	if (NULL == mappingRef)
-	{ 
-		error = UUcError_OutOfMemory; 
+	{
+		error = UUcError_OutOfMemory;
 		goto fail;
 	}
 
@@ -547,7 +547,7 @@ BFrFile_UnMap(
 		}
 	}
 	BFrFile_Close(inMapping->file);
-	
+
 	UUrMemory_Block_Delete(inMapping);
 }
 #endif
@@ -559,7 +559,7 @@ BFrFile_Flush(
 	UUmAssert(NULL != inFile);
 
 	fflush((FILE *)inFile);
-	
+
 	return UUcError_None;
 }
 
@@ -570,7 +570,7 @@ BFrFile_Close(
 	UUmAssert(NULL != inFile);
 
 	fclose((FILE *)inFile);
-	
+
 }
 
 UUtBool
@@ -588,10 +588,10 @@ BFrFileRef_IsEqual(
 {
 	UUtInt32			result;
 	UUtBool				equal;
-	
+
 	result = UUrString_Compare_NoCase(inFileRef1->name, inFileRef2->name);
 	equal = (result == 0);
-	
+
 	return equal;
 }
 
@@ -601,7 +601,7 @@ BFrFileRef_IsLocked(
 {
 	return access(inFileRef->name, W_OK) != 0;
 }
-	
+
 UUtError
 BFrFile_GetLength(
 	BFtFile		*inFile,
@@ -612,9 +612,9 @@ BFrFile_GetLength(
 	if (fd < 0 || fstat(fd, &statbuf) != 0) {
 		UUmError_ReturnOnError(UUcError_Generic);
 	}
-	
+
 	*outLength = statbuf.st_size;
-	
+
 	return UUcError_None;
 }
 
@@ -627,7 +627,7 @@ BFrFile_GetPos(
 	UUmAssertWritePtr(outPos, sizeof(UUtUns32));
 
 	*outPos = ftell((FILE *) inFile);
-	
+
 	return UUcError_None;
 }
 
@@ -652,7 +652,7 @@ BFrFile_SetPos(
 
 	return error;
 }
-	
+
 UUtError
 BFrFile_Read(
 	BFtFile		*inFile,
@@ -688,11 +688,11 @@ BFrFile_Write(
 
 	UUmAssert(NULL != inFile);
 	UUmAssert((NULL != inData) || (0 == inLength));
-	
+
 	count = fwrite(inData, 1, inLength, (FILE *)inFile);
 
 	error = (count == inLength) ? UUcError_None : UUcError_Generic;
-	
+
 	return UUcError_None;
 }
 
@@ -710,7 +710,7 @@ BFrFileRef_GetModTime(
 	//TODO: duplicated with UUrGetSecsSince1900()
 	static const UUtUns32 secondsBetween1900And1970 = 2208988800;
 	*outSecsSince1900 = statbuf.st_mtime + secondsBetween1900And1970;
-	
+
 	return UUcError_None;
 }
 
@@ -730,9 +730,9 @@ iCheckFileNameValid(
 		{
 			return UUcFalse;
 		}
-		
+
 	}
-	
+
 	if(inSuffix != NULL)
 	{
 		// Check for suffix match
@@ -741,7 +741,7 @@ iCheckFileNameValid(
 			return UUcFalse;
 		}
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -758,11 +758,11 @@ BFrDirectory_GetFileList(
 	DIR *				directory;
 	struct dirent*		dirent;
 	char*				fileName;
-	
+
 	UUtUns32			curFileIndex;
 
 	char				fullFilePath[1024];
-	
+
 	AUtSharedStringArray*	stringArray;
 	UUtUns32				num;
 	UUtUns32*				sortedIndexList;
@@ -772,11 +772,11 @@ BFrDirectory_GetFileList(
 	UUtUns32				newIndex;
 
 	*outNumFiles = 0;
-	
+
 	curFileIndex = 0;
-	
+
 	stringArray = AUrSharedStringArray_New();
-	
+
 	directory = opendir(inDirectoryRef->name);
 	if(directory == NULL)
 	{
@@ -786,32 +786,32 @@ BFrDirectory_GetFileList(
 		}
 		return UUcError_Generic;
 	}
-	
+
 	while((dirent = readdir(directory)))
 	{
 		fileName = dirent->d_name;
-		
+
 		//TODO: symlink are probably fine as well if they resolve to a regular file
 		if(dirent->d_type != DT_REG || iCheckFileNameValid(fileName, inPrefix, inSuffix) == UUcFalse)
 		{
 			continue;
 		}
-		
+
 		if(curFileIndex >= inMaxFiles)
 		{
 			break;
 		}
-		
+
 		// make a new file ref
 		sprintf(fullFilePath, "%s/%s", inDirectoryRef->name, fileName);
 
-		error = 
+		error =
 			BFrFileRef_MakeFromName(
 				fullFilePath,
 				&newFileRef);
 		UUmError_ReturnOnErrorMsg(error, "Could not create file ref");
-		
-		error = 
+
+		error =
 			AUrSharedStringArray_AddString(
 				stringArray,
 				fileName,
@@ -820,29 +820,29 @@ BFrDirectory_GetFileList(
 		UUmError_ReturnOnErrorMsg(error, "Could not add file ref");
 
 		curFileIndex++;
-		
+
 	}
-	
+
 	closedir(directory);
-	
+
 	if (errno)
 	{
 		return UUcError_Generic;
 	}
-	
+
 	*outNumFiles = (UUtUns16)curFileIndex;
-	
+
 	num = AUrSharedStringArray_GetNum(stringArray);
 	UUmAssert(curFileIndex == num);
-	
+
 	strings = AUrSharedStringArray_GetList(stringArray);
 	sortedIndexList = AUrSharedStringArray_GetSortedIndexList(stringArray);
-	
+
 	for(itr = 0; itr < num; itr++)
 	{
 		outFileRefArray[itr] = (BFtFileRef*)strings[sortedIndexList[itr]].data;
 	}
-	
+
 	AUrSharedStringArray_Delete(stringArray);
 
 	return UUcError_None;
@@ -853,7 +853,7 @@ struct BFtFileIterator
 	BFtFileRef			fileRef;
 
 	DIR *				directory;
-	
+
 	char*				prefix;
 	char*				suffix;
 
@@ -878,7 +878,7 @@ BFrDirectory_FileIterator_New(
 	{
 		return UUcError_OutOfMemory;
 	}
-	
+
 	newFileIterator->fileRef = *inDirectoryRef;
 	newFileIterator->directory = NULL;
 	newFileIterator->prefix = inPrefix;
@@ -887,9 +887,9 @@ BFrDirectory_FileIterator_New(
 	if( inDirectoryRef->name[strlen(inDirectoryRef->name) - 1] != '/' ) {
 		sprintf(newFileIterator->fileRef.name, "%s/", inDirectoryRef->name);
 	}
-	
+
 	*outFileIterator = newFileIterator;
-	
+
 	return UUcError_None;
 }
 
@@ -900,31 +900,31 @@ BFrDirectory_FileIterator_Next(
 {
 	struct dirent*		dirent;
 	UUtBool				stop;
-	
+
 	UUmAssert(inFileIterator->fileRef.name[ strlen( inFileIterator->fileRef.name)-1 ] == '/');
-	
+
 	if(!inFileIterator->directory)
 	{
 		inFileIterator->directory = opendir(inFileIterator->fileRef.name);
-		
+
 		if(inFileIterator->directory == NULL)
 		{
 			return UUcError_Generic;
 		}
-		
+
 		stop = UUcFalse;
 	}
-	
+
 	while((dirent = readdir(inFileIterator->directory)))
 	{
 		if(dirent->d_type == DT_REG && iCheckFileNameValid(dirent->d_name, inFileIterator->prefix, inFileIterator->suffix))
-		{			
+		{
 			sprintf(outFileRef->name, "%s%s", inFileIterator->fileRef.name, dirent->d_name);
-			
+
 			return UUcError_None;
 		}
 	}
-	
+
 	return UUcError_Generic;
 }
 
@@ -954,20 +954,20 @@ BFrDirectory_DeleteContentsOnly(
 			NULL,
 			&fileIterator);
 	UUmError_ReturnOnError(error);
-	
+
 	while(1)
 	{
 		error =	BFrDirectory_FileIterator_Next(fileIterator, &curFileRefToDelete);
 		if(error != UUcError_None) break;
-		
-	
+
+
 		res = stat(curFileRefToDelete.name, &statbuf);
 		if(res != 0)
 		{
 			UUmAssert(UUcFalse);
 			statbuf.st_mode = 0;
 		}
-		
+
 		if(S_ISDIR(statbuf.st_mode))
 		{
 			BFrDirectory_DeleteDirectoryAndContents(&curFileRefToDelete);
@@ -977,7 +977,7 @@ BFrDirectory_DeleteContentsOnly(
 			BFrFile_Delete(&curFileRefToDelete);
 		}
 	}
-	
+
 	BFrDirectory_FileIterator_Delete(fileIterator);
 
 	return UUcError_None;
@@ -1020,7 +1020,7 @@ BFrDirectory_Create(
 		sprintf(buffer, "%s/%s", inDirRef->name, inDirName);
 		success = mkdir(buffer, 0777) == 0;
 	}
-	
+
 	if(success == UUcFalse) return UUcError_Generic;
 
 	return UUcError_None;
@@ -1034,25 +1034,25 @@ BFrFileRef_GetParentDirectory(
 	UUtError		error;
 	char			path[BFcMaxPathLength];
 	char			*last_dir;
-	
+
 	UUmAssert(inFileRef);
 	UUmAssert(outParentDirectory);
-	
+
 	// initialize
 	*outParentDirectory = NULL;
-	
+
 	UUrString_Copy(path, inFileRef->name, BFcMaxPathLength);
-	
+
 	last_dir = strrchr(path, BFcPathSeparator);
 	if (last_dir == NULL) {
 		return UUcError_Generic;
 	}
 
 	last_dir[0] = '\0';
-	
+
 	// create the texture directory file ref
 	error = BFrFileRef_MakeFromName(path, outParentDirectory);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }

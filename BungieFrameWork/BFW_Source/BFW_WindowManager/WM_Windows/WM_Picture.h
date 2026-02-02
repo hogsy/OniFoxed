@@ -20,7 +20,7 @@ enum
 	WMcPictureStyle_None			= (0x0000 << 16),
 	WMcPictureStyle_Scale			= (0x0001 << 16),
 	WMcPictureStyle_SetAtRuntime	= (0x0002 << 16)
-	
+
 };
 
 // ======================================================================
@@ -39,11 +39,11 @@ void
 WMrPicture_SetPartSpec(
 	WMtPicture				*inPicture,
 	void					*inPartSpec);
-	
+
 void
 WMrPicture_SetPicture(
 	WMtPicture				*inPicture,
 	void					*inTexture);
-	
+
 // ======================================================================
 #endif /* WM_PICTURE_H */

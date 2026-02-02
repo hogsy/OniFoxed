@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_GC_Method_Env.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Jan 14, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -16,7 +16,7 @@
 UUtError
 MSrGeomContext_Method_Env_SetCamera(
 	M3tGeomCamera*			inCamera);		// If null use active camera in geom context
-			
+
 UUtError
 MSrGeomContext_Method_Env_DrawGQList(
 	UUtUns32	inNumGQs,

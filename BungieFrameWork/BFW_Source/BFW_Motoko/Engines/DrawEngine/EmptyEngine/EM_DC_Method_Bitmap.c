@@ -1,12 +1,12 @@
 /*
 	FILE:	EM_DC_Method_Bitmap.c
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: Nov 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997, 1998
 
 */

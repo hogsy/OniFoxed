@@ -1,12 +1,12 @@
 /*
 	FILE:	Imp_AI2.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: April 11, 2000
-	
+
 	PURPOSE: Definitions for AI2 data importer
-	
+
 	Copyright (c) 2000 Bungie Software
 
 */

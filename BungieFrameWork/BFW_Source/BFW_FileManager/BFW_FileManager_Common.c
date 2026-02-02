@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_FileManager_Common.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: August 14, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -55,31 +55,31 @@ BFrFileRef_LoadIntoMemory(
 	UUmAssert(NULL != inFileRef);
 	UUmAssert(NULL != outFileLength);
 	UUmAssert(NULL != outMemory);
-	
+
 	*outMemory = NULL;
 	*outFileLength	= 0;
-	
+
 	error = BFrFile_Open(inFileRef, "r", &file);
 	if (error) { return error; }
-	
+
 	error = BFrFile_GetLength(file, outFileLength);
 	UUmError_ReturnOnError(error);
-	
+
 	newMemory = UUrMemory_Block_New(*outFileLength + 1);
 	if(newMemory == NULL)
 	{
 		UUmError_ReturnOnError(UUcError_OutOfMemory);
 	}
-	
+
 	error = BFrFile_Read(file, *outFileLength, newMemory);
 	UUmError_ReturnOnError(error);
-	
+
 	BFrFile_Close(file);
-	
+
 	newMemory[*outFileLength] = 0;
-	
+
 	*outMemory = newMemory;
-	
+
 	return UUcError_None;
 }
 
@@ -94,9 +94,9 @@ BFrFileRef_Search(
 	UUtUns16	i;
 	char		temp[BFcMaxPathLength];
 	char		temp2[BFcMaxPathLength];
-	
+
 	UUrString_Copy(temp, inFileName, BFcMaxPathLength);
-	
+
 	for(i = 0; i < BFcMaxSearchDepth; i++)
 	{
 		error = BFrFileRef_Set(outFileRef, temp);
@@ -110,27 +110,27 @@ BFrFileRef_Search(
 		sprintf(temp2, "..%c%s", BFcPathSeparator, temp);
 		UUrString_Copy(temp, temp2, BFcMaxPathLength);
 	}
-	
+
 	return BFcError_FileNotFound;
 }
-	
+
 void
 BFrFileRef_SetLeafNameSuffex(
 	BFtFileRef	*inFileRef,
 	const char	*inNewSuffix)
 {
 	UUtError	error;
-	
+
 	char		nameBuffer[BFcMaxPathLength];
 	const char	*origName;
 	char		*dotp;
-	
+
  	origName = BFrFileRef_GetLeafName(inFileRef);
- 	
+
 	UUrString_Copy(nameBuffer, origName, BFcMaxPathLength);
-	
+
 	if(*inNewSuffix == '.') inNewSuffix++;
-	
+
 	dotp = strrchr(nameBuffer, '.');
 	if(dotp == NULL)
 	{
@@ -144,7 +144,7 @@ BFrFileRef_SetLeafNameSuffex(
 		*dotp++ = *inNewSuffix++;
 		*dotp++ = *inNewSuffix++;
 	}
-	
+
  	error =
  		BFrFileRef_SetName(
 	 		inFileRef,
@@ -160,14 +160,14 @@ BFrFileRef_DuplicateAndReplaceSuffix(
 {
 	UUtError	error;
 	BFtFileRef*	newFileRef;
-	
+
 	error = BFrFileRef_Duplicate(inOrigFileRef, &newFileRef);
 	UUmError_ReturnOnError(error);
-	
+
 	BFrFileRef_SetLeafNameSuffex(newFileRef, inNewSuffix);
-	
+
 	*outNewFileRef = newFileRef;
-	
+
 	return UUcError_None;
 }
 
@@ -177,16 +177,16 @@ BFrFileRef_GetSuffixName(
 {
 	const char*	fileName;
 	char*	suffix;
-	
+
 	fileName = BFrFileRef_GetLeafName(inFileRef);
-	
+
 	suffix = strrchr(fileName, '.');
-	
+
 	if(suffix == NULL)
 	{
 		return NULL;
 	}
-	
+
 	return suffix+1;
 }
 
@@ -198,18 +198,18 @@ BFrFileRef_DuplicateAndReplaceName(
 {
 	UUtError	error;
 	BFtFileRef*	newFileRef;
-	
+
 	error = BFrFileRef_Duplicate(inOrigFileRef, &newFileRef);
 	UUmError_ReturnOnError(error);
-	
+
 	error = BFrFileRef_SetName(newFileRef, inReplaceName);
 	UUmError_ReturnOnError(error);
-	
+
 	*outNewFileRef = newFileRef;
-	
+
 	return UUcError_None;
 }
-	
+
 UUtError
 BFrFileRef_DuplicateAndAppendName(
 	const BFtFileRef*		inOrigFileRef,		// This had best be a directory...
@@ -220,22 +220,22 @@ BFrFileRef_DuplicateAndAppendName(
 	BFtFileRef*	newFileRef;
 	const char*		leafName;
 	char		newName[BFcMaxPathLength];
-	
+
 	error = BFrFileRef_Duplicate(inOrigFileRef, &newFileRef);
 	UUmError_ReturnOnError(error);
-	
+
 	leafName = BFrFileRef_GetLeafName(inOrigFileRef);
-	
+
 	sprintf(newName, "%s%c%s", leafName, BFcPathSeparator, inAppendName);
-	
+
 	error = BFrFileRef_SetName(newFileRef, newName);
 	UUmError_ReturnOnErrorMsgP(error, "Could not set name %s", (UUtUns32)newName, 0, 0);
-	
+
 	*outNewFileRef = newFileRef;
-	
+
 	return UUcError_None;
 }
-	
+
 UUtError
 BFrFileRef_AppendName(
 	BFtFileRef*		inFileRef,		// This had best be a directory...
@@ -244,14 +244,14 @@ BFrFileRef_AppendName(
 	UUtError	error;
 	const char*		leafName;
 	char		newName[BFcMaxPathLength];
-	
+
 	leafName = BFrFileRef_GetLeafName(inFileRef);
-	
+
 	sprintf(newName, "%s%c%s", leafName, BFcPathSeparator, inAppendName);
-	
+
 	error = BFrFileRef_SetName(inFileRef, newName);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -266,9 +266,9 @@ BFrTextFile_MapForRead(
 
 	UUmAssert(NULL != inFileRef);
 	UUmAssert(NULL != outTextFile);
-	
+
 	*outTextFile = NULL;
-	
+
 	newTextFile = UUrMemory_Block_New(sizeof(BFtTextFile));
 	if(newTextFile == NULL)
 	{
@@ -276,7 +276,7 @@ BFrTextFile_MapForRead(
 	}
 
 	error = BFrFile_Map(inFileRef, 0, &newTextFile->mapping, &newTextFile->fileMemory, &fileLength);
-	
+
 	// failed to load the file into memory free and return
 	if (UUcError_None != error)
 	{
@@ -286,12 +286,12 @@ BFrTextFile_MapForRead(
 
 	newTextFile->curStr = newTextFile->fileMemory;
 	newTextFile->endFile = newTextFile->fileMemory + fileLength;
-	
+
 	*outTextFile = newTextFile;
-	
+
 	return UUcError_None;
 }
-	
+
 UUtError
 BFrTextFile_OpenForRead(
 	BFtFileRef		*inFileRef,
@@ -303,17 +303,17 @@ BFrTextFile_OpenForRead(
 
 	UUmAssert(NULL != inFileRef);
 	UUmAssert(NULL != outTextFile);
-	
+
 	*outTextFile = NULL;
-	
+
 	newTextFile = UUrMemory_Block_New(sizeof(BFtTextFile));
 	if(newTextFile == NULL)
 	{
 		return UUcError_OutOfMemory;
 	}
-	
+
 	error = BFrFileRef_LoadIntoMemory(inFileRef, &fileLength, &newTextFile->fileMemory);
-	
+
 	// failed to load the file into memory free and return
 	if (UUcError_None != error)
 	{
@@ -324,9 +324,9 @@ BFrTextFile_OpenForRead(
 	newTextFile->mapping = NULL;
 	newTextFile->curStr = newTextFile->fileMemory;
 	newTextFile->endFile = newTextFile->fileMemory + fileLength;
-	
+
 	*outTextFile = newTextFile;
-	
+
 	return UUcError_None;
 }
 
@@ -340,27 +340,27 @@ BFrTextFile_MakeFromString(
 
 	UUmAssert(NULL != inString);
 	UUmAssert(NULL != outTextFile);
-	
+
 	*outTextFile = NULL;
-	
+
 	newTextFile = UUrMemory_Block_New(sizeof(BFtTextFile));
 	if(newTextFile == NULL)
 	{
 		return UUcError_OutOfMemory;
 	}
-	
+
 	newTextFile->mapping = NULL;
 	newTextFile->fileMemory = UUrMemory_Block_New(strlen(inString) + 1);
 	UUmError_ReturnOnNull(newTextFile->fileMemory);
-	
+
 	strcpy(newTextFile->fileMemory, inString);
 
 	newTextFile->curStr = newTextFile->fileMemory;
-	
+
 	newTextFile->endFile = newTextFile->fileMemory + strlen(newTextFile->fileMemory);
-	
+
 	*outTextFile = newTextFile;
-	
+
 	return UUcError_None;
 }
 
@@ -396,18 +396,18 @@ BFrTextFile_GetNextStr(
 {
 	char	*returnStr;
 	char	*p;
-	
+
 	UUmAssert(NULL != inTextFile);
 
 	p = returnStr = inTextFile->curStr;
-	
+
 	if(p >= inTextFile->endFile)
 	{
 		return NULL;
 	}
-	
+
 	while(*p != '\n' && *p != '\r' && *p != '\0' && p < inTextFile->endFile) p++;
-	
+
 	if(*p == '\r')
 	{
 		*p++ = 0;
@@ -422,11 +422,11 @@ BFrTextFile_GetNextStr(
 	{
 		// when we are doing this to file-mapped files, we are writing to 1 byte past the
 		// file, which is technically illegal. Fortunately Windows seems to be letting this slide.
-		*p= 0;	
+		*p= 0;
 	}
-	
+
 	inTextFile->curStr = p;
-	
+
 	return returnStr;
 }
 
@@ -438,26 +438,26 @@ BFrTextFile_GetNextNWords(
 	char	*returnStr;
 	char	*p;
 	short	n;
-	
+
 	UUmAssert(NULL != inTextFile);
 
 	p = returnStr = inTextFile->curStr;
-	
+
 	if(p >= inTextFile->endFile)
 	{
 		return NULL;
 	}
-	
+
 	for (n=0; n<inNumWordsToRead; n++)
 	{
 		while(*p != '\0' && !isspace(*p)) p++;
-		
+
 		if (n<inNumWordsToRead-1) while (isspace(*p)) *p++;
 	}
 	while (isspace(*p)) *p++ = 0;
-	
+
 	inTextFile->curStr = p;
-		
+
 	return returnStr;
 }
 
@@ -469,13 +469,13 @@ BFrTextFile_VerifyNextNWords(
 {
 	char *string;
 	UUtBool stringsAreEqual;
-	
+
 	string = BFrTextFile_GetNextNWords(inNumWordsToRead,inTextFile);
 	if (!string) return UUcError_Generic;
 
 	stringsAreEqual = (0 == strcmp(string,inMatchString));
 	if (!stringsAreEqual) return UUcError_Generic;
-	
+
 	return UUcError_None;
 }
 
@@ -491,7 +491,7 @@ BFrTextFile_GetUUtUns32(
 
 	line = BFrTextFile_GetNextStr(inTextFile);
 
-	fieldsScanned = sscanf(line, "%u", &scanned); 
+	fieldsScanned = sscanf(line, "%u", &scanned);
 
 	UUmAssert(1 == fieldsScanned);
 
@@ -512,7 +512,7 @@ BFrTextFile_GetUUtUns16(
 
 	line = BFrTextFile_GetNextStr(inTextFile);
 
-	fieldsScanned = sscanf(line, "%u", &scanned); 
+	fieldsScanned = sscanf(line, "%u", &scanned);
 
 	UUmAssert(1 == fieldsScanned);
 	UUmAssert(scanned >= UUcMinUns16);
@@ -535,7 +535,7 @@ BFrTextFile_GetUUtInt32(
 
 	line = BFrTextFile_GetNextStr(inTextFile);
 
-	fieldsScanned = sscanf(line, "%d", &scanned); 
+	fieldsScanned = sscanf(line, "%d", &scanned);
 
 	UUmAssert(1 == fieldsScanned);
 
@@ -557,7 +557,7 @@ BFrTextFile_GetUUtInt16(
 
 	line = BFrTextFile_GetNextStr(inTextFile);
 
-	fieldsScanned = sscanf(line, "%d", &scanned); 
+	fieldsScanned = sscanf(line, "%d", &scanned);
 
 	UUmAssert(1 == fieldsScanned);
 	UUmAssert(scanned >= UUcMinInt16);
@@ -579,7 +579,7 @@ BFrTextFile_GetFloat(
 
 	line = BFrTextFile_GetNextStr(inTextFile);
 
-	fieldsScanned = sscanf(line, "%f", &result); 
+	fieldsScanned = sscanf(line, "%f", &result);
 
 	UUmAssert(1 == fieldsScanned);
 
@@ -590,7 +590,7 @@ UUtUns32 BFrTextFile_GetOSType(BFtTextFile*	inTextFile)
 {
 	char *line;
 	UUtUns32  result;
-	
+
 	line = BFrTextFile_GetNextStr(inTextFile);
 	UUmAssert(line[0] != 0);
 	UUmAssert(line[1] != 0);
@@ -638,7 +638,7 @@ BFrTextFile_VerifyNextStr(
 			(UUtUns32)curLine,
 			0);*/
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -706,7 +706,7 @@ BFrFile_ReadPos(
 
 	error = BFrFile_SetPos(inFile, inStartPos);
 
-	if (UUcError_None == error) { 
+	if (UUcError_None == error) {
 		error = BFrFile_Read(inFile, inLength, inDataPtr);
 	}
 
@@ -725,7 +725,7 @@ BFrFile_WritePos(
 
 	error = BFrFile_SetPos(inFile, inStartPos);
 
-	if (UUcError_None == error) { 
+	if (UUcError_None == error) {
 		error = BFrFile_Write(inFile, inLength, inDataPtr);
 	}
 
@@ -746,7 +746,7 @@ BFrFile_Async_ReadPos(
 
 	error = BFrFile_SetPos(inFile, inStartPos);
 
-	if (UUcError_None == error) { 
+	if (UUcError_None == error) {
 		error = BFrFile_Async_Read(inFile, inLength, inDataPtr, inCompletionFunc, inRefCon);
 	}
 
@@ -766,7 +766,7 @@ BFrFile_Async_WritePos(
 
 	error = BFrFile_SetPos(inFile, inStartPos);
 
-	if (UUcError_None == error) { 
+	if (UUcError_None == error) {
 		error = BFrFile_Async_Write(inFile, inLength, inDataPtr, inCompletionFunc, inRefCon);
 	}
 
@@ -774,11 +774,11 @@ BFrFile_Async_WritePos(
 }
 #endif
 
-UUtError 
-UUcArglist_Call 
+UUtError
+UUcArglist_Call
 BFrFile_Printf(
 	BFtFile*	inFile,
-	const char *format, 
+	const char *format,
 	...)
 {
 	UUtError error;
@@ -791,7 +791,7 @@ BFrFile_Printf(
 	va_end(arglist);
 
 	error = BFrFile_Write(inFile, strlen(msg), msg);
-	
+
 	return error;
 }
 
@@ -811,7 +811,7 @@ BFrFile_MapClassic(
 	UUmAssert(NULL != inFileRef);
 	UUmAssert(NULL != outSize);
 	UUmAssert(NULL != outPtr);
-	
+
 	*outFile = NULL;
 	*outPtr = NULL;
 	*outSize = 0;
@@ -819,12 +819,12 @@ BFrFile_MapClassic(
 	if (!BFrFileRef_FileExists(inFileRef)) {
 		return BFcError_FileNotFound;
 	}
-	
+
 	// to mirror the behavior of windows, try "rw" then "r"
 	error = BFrFile_Open(inFileRef, "rw", &file);
 	if (UUcError_None != error) { error = BFrFile_Open(inFileRef, "r", &file); }
 	if (error) { return error; }
-	
+
 	error = BFrFile_GetLength(file, &size);
 	UUmError_ReturnOnError(error);
 
@@ -842,15 +842,15 @@ BFrFile_MapClassic(
 		{
 			UUmError_ReturnOnError(UUcError_OutOfMemory);
 		}
-	
+
 		error = BFrFile_ReadPos(file, inOffset, size, newMemory);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	*outFile = file;
 	*outPtr = newMemory;
 	*outSize = size;
-	
+
 	return UUcError_None;
 }
 
@@ -866,7 +866,7 @@ BFtFile *BFrFile_FOpen(char *inName, char *inMode)
 	}
 
 	error = BFrFile_Open(&fileRef, inMode, &file);
-	if (error != UUcError_None) { 
+	if (error != UUcError_None) {
 		goto errorExit;
 	}
 
@@ -917,11 +917,11 @@ BFtFileRef *BFrFileRef_MakeUnique(const char *prefix, const char *suffix, UUtInt
 		UUrString_PadNumber(count, max_digits, number_buffer);
 
 		sprintf(fileName, "%s%s%s", prefix, number_buffer, suffix);
-		
+
 		error = BFrFileRef_MakeFromName(fileName, &fileRef);
 
-		if (error) { 
-			break; 
+		if (error) {
+			break;
 		}
 
 		if (!BFrFileRef_FileExists(fileRef)) {
@@ -1002,21 +1002,21 @@ static UUtError BFrFileCache_Expand(BFtFileCache *inCache, BFtFileRef *inDirRef,
 {
 	UUtError				error;
 	BFtFileIterator			*file_iterator;
-	
+
 	// if we have previously been prepared for use, this invalidates our current state
 	inCache->preparedForUse = UUcFalse;
 
 	// create a file iterator for the binary directory
 	error =	BFrDirectory_FileIterator_New(inDirRef,	NULL, NULL,	&file_iterator);
 	UUmError_ReturnOnError(error);
-	
+
 	while (1)
 	{
 		BFtFileRef file_ref;
-		
+
 		error = BFrDirectory_FileIterator_Next(file_iterator, &file_ref);
 		if (error != UUcError_None) { break; }
-		
+
 		if (BFrFileRef_IsDirectory(&file_ref)) {
 			if (BFcFileCache_Recursive == inDepth) {
 				error = BFrFileCache_Expand(inCache, &file_ref, inDepth);
@@ -1030,14 +1030,14 @@ static UUtError BFrFileCache_Expand(BFtFileCache *inCache, BFtFileRef *inDirRef,
 			inCache->references[inCache->numEntries] = file_ref;
 			inCache->numEntries++;
 		}
-		
+
 		if (error != UUcError_None) { break; }
 	}
-	
+
 	// delete the file iterator
 	BFrDirectory_FileIterator_Delete(file_iterator);
 	file_iterator = NULL;
-	
+
 	return UUcError_None;
 }
 

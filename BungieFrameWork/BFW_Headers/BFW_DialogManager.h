@@ -34,7 +34,7 @@ enum
 	DMcMBFlag_None			= 0x00000000,
 	DMcMBFlag_Ok			= 0x00000001,
 	DMcMBFlag_OkCancel		= 0x00000003
-	
+
 };
 
 // Message Box Results
@@ -42,7 +42,7 @@ enum
 {
 	DMcMB_Ok				= 100,
 	DMcMB_Cancel			= 101
-	
+
 };
 
 // ======================================================================
@@ -62,7 +62,7 @@ typedef UUtBool
 typedef tm_struct DMtDialogRef
 {
 	tm_templateref			dialog_ref;
-	
+
 } DMtDialogRef;
 
 #define DMcTemplate_DialogList		UUm4CharToUns32('D', 'M', 'D', 'L')
@@ -70,12 +70,12 @@ typedef tm_template('D', 'M', 'D', 'L', "DM Dialog List")
 DMtDialogList
 {
 	tm_pad						pad0[22];
-	
+
 	tm_varindex UUtUns16		num_dialogs;
 	tm_vararray DMtDialogRef	dialogs[1];
-	
+
 } DMtDialogList;
-	
+
 // ======================================================================
 // typedefs
 // ======================================================================
@@ -83,20 +83,20 @@ void
 DMrDialog_ActivateTab(
 	DMtDialog				*inDialog,
 	UUtUns16				inTabID);
-	
+
 void
 DMrDialog_Display(
 	VMtView					*inView);
-	
+
 DMtDialog*
 DMrDialog_GetParentDialog(
 	VMtView					*inView);
-	
+
 VMtView*
 DMrDialog_GetViewByID(
 	DMtDialog				*inDialog,
 	UUtUns16				inViewID);
-	
+
 UUtBool
 DMrDialog_IsActive(
 	VMtView					*inView);
@@ -107,19 +107,19 @@ DMrDialog_MessageBox(
 	char					*inTitle,
 	char					*inMessage,
 	UUtUns32				inFlags);
-	
+
 UUtError
 DMrDialog_Load(
 	UUtUns16				inDialogID,
 	DMtDialogCallback		inDialogCallback,
 	DMtDialog				*inParent,
 	DMtDialog				**outDialog);
-	
+
 void
 DMrDialog_ReleaseMouseFocusView(
 	DMtDialog				*inDialog,
 	VMtView					*inView);
-	
+
 UUtError
 DMrDialog_Run(
 	UUtUns16				inDialogID,
@@ -136,16 +136,16 @@ void
 DMrDialog_SetMouseFocusView(
 	DMtDialog				*inDialog,
 	VMtView					*inView);
-	
+
 void
 DMrDialog_Stop(
 	DMtDialog				*inDialog,
 	UUtUns32				inMessage);
-	
+
 void
 DMrDialog_Update(
 	DMtDialog				*inDialog);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 DMrInitialize(

@@ -26,10 +26,10 @@ enum
 	WMcTextStyle_VBottom		= (0x0020 << 16),
 	WMcTextStyle_SingleLine		= (0x0040 << 16),
 	WMcTextStyle_OwnerDraw		= (0x0080 << 16),
-	
+
 	WMcTextStyle_Basic			= (WMcTextStyle_HLeft | WMcTextStyle_VTop),
 	WMcTextStyle_Standard		= (WMcTextStyle_HLeft | WMcTextStyle_VCenter)
-	
+
 };
 
 // ======================================================================
@@ -48,6 +48,6 @@ UUtBool
 WMrText_SetShade(
 	WMtWindow				*inWindow,
 	IMtShade				inShade);
-	
+
 // ======================================================================
 #endif /* WM_TEXT_H */

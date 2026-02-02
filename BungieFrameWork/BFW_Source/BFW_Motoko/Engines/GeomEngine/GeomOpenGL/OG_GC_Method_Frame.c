@@ -1,12 +1,12 @@
 /*
 	FILE:	OG_GC_Method_Frame.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -25,7 +25,7 @@ UUtError
 OGrGeomContext_Method_Frame_Start(
 	UUtUns32			inGameTime)
 {
-	
+
 	M3rDraw_Frame_Start(inGameTime);
 
 	return UUcError_None;

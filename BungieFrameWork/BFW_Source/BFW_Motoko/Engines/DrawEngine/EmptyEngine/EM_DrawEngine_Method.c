@@ -1,12 +1,12 @@
 /*
 	FILE:	EM_DrawEngine_Method.c
-	
+
 	AUTHOR:	Kevin Armstrong, Michael Evans
-	
+
 	CREATED: January 5, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1998
 
 */
@@ -76,7 +76,7 @@ EDrDrawEngine_Method_ContextPrivateNew(
 	EMgDrawContextMethods.screenCapture = NULL;
 	EMgDrawContextMethods.pointVisible = NULL;
 	EMgDrawContextMethods.textureFormatAvailable = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -103,7 +103,7 @@ static UUtError
 EDrDrawEngine_Method_Texture_Load(
 	M3tTextureMap*				inTextureMap)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -119,7 +119,7 @@ EDrDrawEngine_Method_Texture_Delete(
 	M3tTextureMap*				inTextureMap)
 {
 	//EDtTextureMapPrivate *private_texture = (EDtTextureMapPrivate*) (M3rManager_Texture_GetEnginePrivate(inTextureMap));
-	
+
 	return UUcError_None;
 }
 
@@ -129,28 +129,28 @@ EDrDrawEngine_Initialize(
 	void)
 {
 	UUtError error;
-	
+
 	M3tDrawEngineCaps		drawEngineCaps;
 	M3tDrawEngineMethods	drawEngineMethods;
-	
-	
+
+
 	drawEngineMethods.contextPrivateNew = EDrDrawEngine_Method_ContextPrivateNew;
 	drawEngineMethods.contextPrivateDelete = EDrDrawEngine_Method_ContextPrivateDelete;
 
 	drawEngineCaps.engineFlags = M3cDrawEngineFlag_3DOnly;
-	
+
 	strncpy(drawEngineCaps.engineName, M3cDrawEngine_RAVE, M3cMaxNameLen);
 	drawEngineCaps.engineDriver[0] = 0;
-	
+
 	drawEngineCaps.engineVersion = EMcSoftware_Version;
-	
+
 	// XXX - Someday make this more real
 	drawEngineCaps.numDisplayDevices = 1;
 	drawEngineCaps.displayDevices[0].numDisplayModes = 1;
 	drawEngineCaps.displayDevices[0].displayModes[0].width = 0;
 	drawEngineCaps.displayDevices[0].displayModes[0].height = 0;
 	drawEngineCaps.displayDevices[0].displayModes[0].bitDepth = 0;
-	
+
 	error =
 		M3rManager_Register_DrawEngine(
 			&drawEngineCaps,
@@ -179,13 +179,13 @@ EDrDrawContext_Method_Frame_Start(
 
 	return UUcError_None;
 }
-	
+
 // ----------------------------------------------------------------------
 UUtError
 EDrDrawContext_Method_Frame_End(
 	void)
 {
-	
+
 	return UUcError_None;
 }
 

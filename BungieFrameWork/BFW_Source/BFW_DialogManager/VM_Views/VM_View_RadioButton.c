@@ -23,7 +23,7 @@ VMiView_RadioButton_Create(
 	VMtView_RadioButton_PrivateData	*inPrivateData)
 {
 	UUtError						error;
-	
+
 	// ------------------------------
 	// setup the radiobutton
 	// ------------------------------
@@ -38,14 +38,14 @@ VMiView_RadioButton_Create(
 			inRadioButton->off->part_matrix_br[VMcColumn_Left][VMcRow_Top].y -
 			inRadioButton->off->part_matrix_tl[VMcColumn_Left][VMcRow_Top].y;
 	}
-	
+
 	// ------------------------------
 	// set up the title texture
 	// ------------------------------
 	if (inPrivateData->title_texture_ref == NULL)
 	{
 		UUtRect				bounds;
-		
+
 		// create the title_texture_ref
 		error =
 			VUrCreate_StringTexture(
@@ -53,11 +53,11 @@ VMiView_RadioButton_Create(
 				inRadioButton->flags,
 				&inPrivateData->title_texture_ref,
 				&bounds);
-		
+
 		// save the width and height of the title
 		inPrivateData->title_texture_width = bounds.right;
 		inPrivateData->title_texture_height = bounds.bottom;
-			
+
 		// calculate the text location
 		if (inRadioButton->off && inRadioButton->on)
 		{
@@ -65,7 +65,7 @@ VMiView_RadioButton_Create(
 			inPrivateData->title_location.x =
 				inPrivateData->radiobutton_width +
 				VMcRadioButton_TextOffset_X;
-				
+
 			// center it relative to the picture
 			inPrivateData->title_location.y =
 				(inPrivateData->radiobutton_height -
@@ -136,7 +136,7 @@ VMiView_RadioButton_Paint(
 		dest = *inDestination;
 		dest.x += (float)inPrivateData->title_location.x;
 		dest.y += (float)inPrivateData->title_location.y;
-		
+
 		VUrDrawTextureRef(
 			inPrivateData->title_texture_ref,
 			&dest,
@@ -162,21 +162,21 @@ VMrView_RadioButton_Callback(
 	VMtView_RadioButton				*radiobutton;
 	VMtView_RadioButton_PrivateData	*private_data;
 	VMtView_PrivateData				*view_private_data;
-	
+
 	// get pointers to the data
 	radiobutton = (VMtView_RadioButton*)inView->view_data;
 	private_data = (VMtView_RadioButton_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_RadioButton_PrivateData, radiobutton);
 	UUmAssert(private_data);
-			
+
 	view_private_data =
 		(VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
-			
+
 	switch (inMessage)
 	{
 		case VMcMessage_Create:
 			VMiView_RadioButton_Create(inView, radiobutton, private_data);
 		return 0;
-		
+
 		case VMcMessage_LMouseUp:
 			VMrView_SendMessage(
 				inView,
@@ -184,7 +184,7 @@ VMrView_RadioButton_Callback(
 				!private_data->radiobutton_state,
 				0);
 		return 0;
-		
+
 		case VMcMessage_Paint:
 			// draw the button
 			VMiView_RadioButton_Paint(
@@ -193,7 +193,7 @@ VMrView_RadioButton_Callback(
 				private_data,
 				(M3tPointScreen*)inParam2);
 		return 0;
-		
+
 		case VMcMessage_GetValue:
 		return (UUtUns32)private_data->radiobutton_state;
 
@@ -204,7 +204,7 @@ VMrView_RadioButton_Callback(
 			{
 				private_data->radiobutton_state = VMcRadioButton_On;
 			}
-			
+
 			if (view_private_data->parent != NULL)
 			{
 				if (private_data->radiobutton_state == VMcRadioButton_Off)
@@ -226,7 +226,7 @@ VMrView_RadioButton_Callback(
 			}
 		return 0;
 	}
-	
+
 	return VMrView_DefaultCallback(inView, inMessage, inParam1, inParam2);
 }
 
@@ -239,7 +239,7 @@ VMrView_RadioButton_ProcHandler(
 {
 	VMtView_RadioButton				*radiobutton;
 	VMtView_RadioButton_PrivateData	*private_data;
-	
+
 	// get pointers to the data
 	radiobutton = (VMtView_RadioButton*)inInstancePtr;
 	private_data = (VMtView_RadioButton_PrivateData*)inPrivateData;
@@ -255,17 +255,17 @@ VMrView_RadioButton_ProcHandler(
 			private_data->title_texture_width		= 0;
 			private_data->title_texture_height		= 0;
 		break;
-		
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 		break;
-		
+
 		case TMcTemplateProcMessage_Update:
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
 	}
-	
+
 	return UUcError_None;
 }

@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Particle3.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: Feb 03, 2000
-	
+
 	PURPOSE: routines for new particle system (iteration 3)
-	
+
 	Copyright 2000
 
  */
@@ -755,17 +755,17 @@ P3tActionTemplate P3gActionInfo[P3cNumActionTypes] = {
 		{"swirl deltarate",P3cDataType_Float},
 		{"swirl speed",	P3cDataType_Float},
 		VARS_4}},
-		
+
 	{P3cActionType_FloatAbovePlayer,			0,
 	 "Follow Player",P3iAction_FloatAbovePlayer,		0,	1, {
 		{"height",	P3cDataType_Float},
 		VARS_1}},
-		
+
 	{P3cActionType_StopIfSlow,					0,
 	 "Stop BelowSpeed",P3iAction_StopIfSlow,			0,	1, {
 		{"speed",	P3cDataType_Float},
 		VARS_1}},
-		
+
 	{P3cActionType_SuperParticle,				0,
 	 "Super Particle",	P3iAction_SuperParticle,		1,	4, {
 		{"variable",	P3cDataType_Float},
@@ -774,7 +774,7 @@ P3tActionTemplate P3gActionInfo[P3cNumActionTypes] = {
 		{"min value",P3cDataType_Float},
 		{"max value",P3cDataType_Float},
 		VARS_5}},
-		
+
 	/*
 	 *   link control
 	 */
@@ -834,8 +834,8 @@ P3tEnumTypeInfo P3gEnumTypeInfo[P3cEnumType_Max >> P3cEnumShift] = {
 #define END		{(UUtUns32) -1, "", 0, NO_PARAMS}
 
 
-P3tEmitterSettingDescription P3gEmitterRateDesc[] = {{P3cEmitterRate_Continuous, "continuous",	1, 
-														{{"emit interval", P3cDataType_Float},		
+P3tEmitterSettingDescription P3gEmitterRateDesc[] = {{P3cEmitterRate_Continuous, "continuous",	1,
+														{{"emit interval", P3cDataType_Float},
 														{"", P3cDataType_None},
 														{"", P3cDataType_None},
 														{"", P3cDataType_None}}},
@@ -863,33 +863,33 @@ P3tEmitterSettingDescription P3gEmitterPositionDesc[] = {{P3cEmitterPosition_Poi
 															{"", P3cDataType_None},
 															{"", P3cDataType_None},
 															{"", P3cDataType_None}}},
-														{P3cEmitterPosition_Circle, "circle",		2, 
-															{{"inner radius", P3cDataType_Float},		
+														{P3cEmitterPosition_Circle, "circle",		2,
+															{{"inner radius", P3cDataType_Float},
 															{"outer radius", P3cDataType_Float},
 															{"", P3cDataType_None},
 															{"", P3cDataType_None}}},
 														{P3cEmitterPosition_Sphere,	"sphere",		2,
-															{{"inner radius", P3cDataType_Float},		
+															{{"inner radius", P3cDataType_Float},
 															{"outer radius", P3cDataType_Float},
 															{"", P3cDataType_None},
 															{"", P3cDataType_None}}},
 														{P3cEmitterPosition_Offset,	"offset",		3,
-															{{"x", P3cDataType_Float},		
+															{{"x", P3cDataType_Float},
 															{"y", P3cDataType_Float},
 															{"z", P3cDataType_Float},
 															{"", P3cDataType_None}}},
 														{P3cEmitterPosition_Cylinder,"cylinder",	3,
-															{{"height", P3cDataType_Float},		
+															{{"height", P3cDataType_Float},
 															{"inner radius", P3cDataType_Float},
 															{"outer radius", P3cDataType_Float},
 															{"", P3cDataType_None}}},
 														{P3cEmitterPosition_BodySurface,"body-surface",	1,
-															{{"offsetradius", P3cDataType_Float},		
+															{{"offsetradius", P3cDataType_Float},
 															{"", P3cDataType_None},
 															{"", P3cDataType_None},
 															{"", P3cDataType_None}}},
 														{P3cEmitterPosition_BodyBones,"body-bones",	1,
-															{{"offsetradius", P3cDataType_Float},		
+															{{"offsetradius", P3cDataType_Float},
 															{"", P3cDataType_None},
 															{"", P3cDataType_None},
 															{"", P3cDataType_None}}},
@@ -897,31 +897,31 @@ P3tEmitterSettingDescription P3gEmitterPositionDesc[] = {{P3cEmitterPosition_Poi
 
 P3tEmitterSettingDescription P3gEmitterDirectionDesc[] = {{P3cEmitterDirection_Linear,	"straight",	0,  NO_PARAMS},
 														{P3cEmitterDirection_Random,	"random",	0, NO_PARAMS},
-														{P3cEmitterDirection_Conical,	"cone",		2, 
-															{{"angle", P3cDataType_Float},		
+														{P3cEmitterDirection_Conical,	"cone",		2,
+															{{"angle", P3cDataType_Float},
 															{"center bias", P3cDataType_Float},
 															{"", P3cDataType_None},
 															{"", P3cDataType_None}}},
-														{P3cEmitterDirection_Ring,		"ring",		2, 
-															{{"angle", P3cDataType_Float},		
+														{P3cEmitterDirection_Ring,		"ring",		2,
+															{{"angle", P3cDataType_Float},
 															{"offset", P3cDataType_Float},
 															{"", P3cDataType_None},
 															{"", P3cDataType_None}}},
 														{P3cEmitterDirection_OffsetDir,	"offset",		3,
-															{{"x", P3cDataType_Float},		
+															{{"x", P3cDataType_Float},
 															{"y", P3cDataType_Float},
 															{"z", P3cDataType_Float},
 															{"", P3cDataType_None}}},
 														{P3cEmitterDirection_Inaccurate,"inaccurate",	3,
-															{{"base angle", P3cDataType_Float},		
+															{{"base angle", P3cDataType_Float},
 															{"inaccuracy", P3cDataType_Float},
 															{"center bias", P3cDataType_Float},
 															{"", P3cDataType_None}}},
 														{P3cEmitterDirection_Attractor,	"attractor", 0,	NO_PARAMS},
 														END};
 
-P3tEmitterSettingDescription P3gEmitterSpeedDesc[] = {{P3cEmitterSpeed_Uniform,		"uniform",	1, 
-														{{"speed", P3cDataType_Float},		
+P3tEmitterSettingDescription P3gEmitterSpeedDesc[] = {{P3cEmitterSpeed_Uniform,		"uniform",	1,
+														{{"speed", P3cDataType_Float},
 														{"", P3cDataType_None},
 														{"", P3cDataType_None},
 														{"", P3cDataType_None}}},
@@ -1230,7 +1230,7 @@ UUtError P3rInitialize(void)
 
 	P3gDebugCollisionEnable = UUcFalse;
 	P3gDebugCollisionPoints = NULL;
-	
+
 	P3gNextTraverseIndex = 0;
 
 	P3gFirstActiveClass = P3cClass_None;
@@ -1265,11 +1265,11 @@ void P3rTerminate(void)
 		// dispose of memory allocated for the definition
 		mem_block = P3gClassTable[itr].memory.block;
 		if (mem_block != NULL)
-			UUrMemory_Block_Delete(mem_block);	
+			UUrMemory_Block_Delete(mem_block);
 
 		mem_block = P3gClassTable[itr].originalcopy.block;
 		if (mem_block != NULL)
-			UUrMemory_Block_Delete(mem_block);	
+			UUrMemory_Block_Delete(mem_block);
 	}
 	P3gNumClasses = 0;
 
@@ -1685,7 +1685,7 @@ P3tParticle *P3rCreateEffect(P3tEffectSpecification *inSpecification, P3tEffectD
 	UUmAssert( &P3gClassTable[particle->header.class_index] == new_class );
 
 	if (inData->parent_particle != NULL) {
-		if (inData->parent_particle->header.flags & P3cParticleFlag_Temporary) { 
+		if (inData->parent_particle->header.flags & P3cParticleFlag_Temporary) {
 			// temporary particles emit temporary particles
 			particle->header.flags |= P3cParticleFlag_Temporary;
 			new_class->non_persistent_flags |=
@@ -1696,7 +1696,7 @@ P3tParticle *P3rCreateEffect(P3tEffectSpecification *inSpecification, P3tEffectD
 		// this effect is being generated as a result of a cutscene killing some particles
 		particle->header.flags |= P3cParticleFlag_CutsceneKilled;
 	}
-	
+
 	p_position = P3rGetPositionPtr(new_class, particle, &is_dead);
 	if (is_dead) {
 		return NULL;
@@ -1797,7 +1797,7 @@ P3tParticle *P3rCreateEffect(P3tEffectSpecification *inSpecification, P3tEffectD
 				break;
 			}
 			// if we didn't succeed, fall through to the next type (P3cEnumCollisionOrientation_Unchanged)
-			
+
 		case P3cEnumCollisionOrientation_Unchanged:
 			if (inData->parent_orientation != NULL) {
 				// copy the parent's orientation
@@ -1941,7 +1941,7 @@ P3tParticle *P3rCreateEffect(P3tEffectSpecification *inSpecification, P3tEffectD
 
 		// get the decal's texture
 		error = TMrInstance_GetDataPtr(M3cTemplate_TextureMap, new_class->definition->appearance.instance, &texture);
-		if (error != UUcError_None) 
+		if (error != UUcError_None)
 		{
 			if ((new_class->non_persistent_flags & P3cParticleClass_NonPersistentFlag_WarnedAboutNotFound) == 0) {
 				COrConsole_Printf("DECAL TEXTURE NOT FOUND: decal '%s' texture '%s'", new_class->classname, new_class->definition->appearance.instance);
@@ -1994,7 +1994,7 @@ P3tParticle *P3rCreateEffect(P3tEffectSpecification *inSpecification, P3tEffectD
 		// calculate the coordinate system for this decal
 		UUmAssert(MUmVector_IsNormalized(inData->normal));
 		MUrVector_CrossProduct(&inData->normal, &inData->upvector, &right_dir);
-		
+
 		if (MUrVector_Normalize_ZeroTest(&right_dir)) {
 			// the upvector and the normal are aligned. try an upvector of world Y...
 			// cross product of a vector (vx, vy, vz) with (0, 1, 0) is (-vz, 0, vx)
@@ -2134,7 +2134,7 @@ void P3rDisposeParticle(P3tParticleClass *inClass, P3tParticle *inParticle)
 			}
 		}
 	}
-	
+
 	// if the particle is playing a sound, stop it
 	if (inParticle->header.flags & P3cParticleFlag_PlayingAmbientSound) {
 #if PERFORMANCE_TIMER
@@ -2176,7 +2176,7 @@ void P3rDeleteParticle(P3tParticleClass *inClass, P3tParticle *inParticle)
 	} else {
 		inParticle->header.prevptr->header.nextptr = inParticle->header.nextptr;
 	}
-	
+
 	UUmAssert(inClass->num_particles > 0);
 	UUmAssert(P3gTotalParticles > 0);
 	inClass->num_particles--;
@@ -2344,12 +2344,12 @@ void P3rListBrokenLinks(BFtFile *inFile)
 	char text[2048];
 	UUtUns32 itr;
 	P3tParticleClass *classptr;
-	
+
 	// printf a header
 	BFrFile_Printf(inFile, "********** Particle Sound Links **********"UUmNL);
 	BFrFile_Printf(inFile, "Particle Class\tType\tSound Name"UUmNL);
 	BFrFile_Printf(inFile, UUmNL);
-	
+
 	for (itr = 0, classptr = P3gClassTable; itr < P3gNumClasses; itr++, classptr++) {
 		UUtUns16 itr2;
 		P3tActionInstance *action;
@@ -2357,7 +2357,7 @@ void P3rListBrokenLinks(BFtFile *inFile)
 		if ((classptr->non_persistent_flags & P3cParticleClass_NonPersistentFlag_HasSoundPointers) == 0) {
 			continue;
 		}
-		
+
 		for (itr2 = 0, action = classptr->definition->action; itr2 < classptr->definition->num_actions; itr2++, action++) {
 			switch (action->action_type) {
 			case P3cActionType_SoundStart:
@@ -2400,7 +2400,7 @@ void P3rListCollision(void)
 	UUtBool collide_env, collide_char;
 	P3tParticleClass *classptr;
 	FILE *out_file;
-	
+
 	out_file = fopen("particle_collision.txt", "wt");
 	if (out_file == NULL) {
 		COrConsole_Printf("### could not open particle_collision.txt");
@@ -2410,7 +2410,7 @@ void P3rListCollision(void)
 	// printf a header
 	fprintf(out_file, "********** Particle Collision Info **********\n");
 	fprintf(out_file, "\n");
-	
+
 	for (itr = 0, classptr = P3gClassTable; itr < P3gNumClasses; itr++, classptr++) {
 		collide_env  = ((classptr->definition->flags & P3cParticleClassFlag_Physics_CollideEnv) > 0);
 		collide_char = ((classptr->definition->flags & P3cParticleClassFlag_Physics_CollideChar) > 0);
@@ -2454,20 +2454,20 @@ void P3rUpdateActionData(P3tParticleClass *inClass, P3tActionInstance *inAction)
 
 	switch(inAction->action_type) {
 	case P3cActionType_CreateDecal:
-		if (inAction->action_value[0].type == P3cValueType_String) 
+		if (inAction->action_value[0].type == P3cValueType_String)
 		{
 			UUtError		error;
 			M3tTextureMap	*texturemap;
 			P3iCalculateValue(NULL, &inAction->action_value[0], (void *) &classname);
 			error = TMrInstance_GetDataPtr(M3cTemplate_TextureMap, classname, &texturemap);
-			if (error != UUcError_None) 
+			if (error != UUcError_None)
 			{
 				COrConsole_Printf("DECAL TEXTURE NOT FOUND: particle class '%s': Create Decal action texture '%s'",
 									inClass->classname, classname);
 
 				// default texture if none can be found
 				error = TMrInstance_GetDataPtr(M3cTemplate_TextureMap, "notfoundtex", &texturemap);
-				if (error != UUcError_None) 
+				if (error != UUcError_None)
 				{
 					texturemap = NULL;
 				}
@@ -2489,7 +2489,7 @@ void P3rUpdateActionData(P3tParticleClass *inClass, P3tActionInstance *inAction)
 		}
 		break;
 
-	case P3cActionType_SoundStart:		
+	case P3cActionType_SoundStart:
 		if (inAction->action_value[0].type == P3cValueType_String) {
 			// look up the ambient sound with this name
 			inAction->action_data = (UUtUns32) OSrAmbient_GetByName(inAction->action_value[0].u.string_const.val);
@@ -2499,7 +2499,7 @@ void P3rUpdateActionData(P3tParticleClass *inClass, P3tActionInstance *inAction)
 		}
 		break;
 
-	case P3cActionType_ImpulseSound:		
+	case P3cActionType_ImpulseSound:
 		if (inAction->action_value[0].type == P3cValueType_String) {
 			// look up the impulse sound with this name
 			inAction->action_data = (UUtUns32) OSrImpulse_GetByName(inAction->action_value[0].u.string_const.val);
@@ -2666,7 +2666,7 @@ static UUtBool P3iProcessParticleClass(P3tParticleClass *inClass)
 			if (var_info->offset == P3cNoVar) {
 				continue;
 			}
-			
+
 			data_size = P3iGetDataSize(var_info->type);
 			if ((data_size == 0) || (var_info->offset < 0) || (sizeof(P3tParticleHeader) + var_info->offset + data_size > inClass->particle_size)) {
 				// this variable is corrupt, reset it
@@ -3123,7 +3123,7 @@ void P3rKillAll(void)
 
 	// delete all decal data that we missed in the previous pass (shouldn't be any, but be sure)
 	P3rDecalDeleteAllDynamic();
-	
+
 	// restore the memory manager to an empty state (but don't deallocate its memory)
 	P3gMemory.cur_block = 0;
 	P3gMemory.total_used = 0;
@@ -3147,9 +3147,9 @@ static void P3iRemoveDangerousProjectiles(void)
 	P3tParticle *particle, *next_particle;
 	UUtUns16 index;
 	UUtBool kill_particles;
-	
+
 	UUmAssert(P3gRemoveDangerousProjectiles == UUcTrue);
-	
+
 	P3iActiveList_Lock();
 
 	// make all particles with the 'dangerous projectile' flag set expire
@@ -3282,7 +3282,7 @@ static void P3iActiveList_Unlock(void)
 						P3cParticleClass_NonPersistentFlag_Active) == 0);
 			UUmAssert(P3gClassTable[particle_class->prev_active_class].num_particles > 0);
 
-			P3gClassTable[particle_class->prev_active_class].next_active_class = particle_class->next_active_class;			
+			P3gClassTable[particle_class->prev_active_class].next_active_class = particle_class->next_active_class;
 		} else {
 			P3gFirstDeferredActiveClass = particle_class->next_active_class;
 		}
@@ -3294,7 +3294,7 @@ static void P3iActiveList_Unlock(void)
 						P3cParticleClass_NonPersistentFlag_Active) == 0);
 			UUmAssert(P3gClassTable[particle_class->next_active_class].num_particles > 0);
 
-			P3gClassTable[particle_class->next_active_class].prev_active_class = P3cClass_None;			
+			P3gClassTable[particle_class->next_active_class].prev_active_class = P3cClass_None;
 		}
 
 		// remove this particle class from the deferred add list
@@ -3443,7 +3443,7 @@ static void P3iActiveClass_Remove(P3tParticleClass *inClass)
 			UUmAssert(P3gClassTable[inClass->prev_active_class].non_persistent_flags &
 						P3cParticleClass_NonPersistentFlag_DeferredAddMask);
 
-			P3gClassTable[inClass->prev_active_class].next_active_class = inClass->next_active_class;			
+			P3gClassTable[inClass->prev_active_class].next_active_class = inClass->next_active_class;
 		} else {
 			P3gFirstDeferredActiveClass = inClass->next_active_class;
 		}
@@ -3458,7 +3458,7 @@ static void P3iActiveClass_Remove(P3tParticleClass *inClass)
 			UUmAssert(P3gClassTable[inClass->next_active_class].non_persistent_flags &
 						P3cParticleClass_NonPersistentFlag_DeferredAddMask);
 
-			P3gClassTable[inClass->next_active_class].prev_active_class = inClass->prev_active_class;			
+			P3gClassTable[inClass->next_active_class].prev_active_class = inClass->prev_active_class;
 		}
 
 		inClass->prev_active_class = P3cClass_None;
@@ -3888,7 +3888,7 @@ static UUtError P3iUpdateVersion(const char *inIdentifier, P3tParticleDefinition
 		}
 
 		if (num_emitters > 0) {
-			// every emitter expands by several new variables - total of 
+			// every emitter expands by several new variables - total of
 			// 2 * sizeof(P3tEmitterOrientationType) + sizeof(float)
 			new_size = (*ioDefinition)->definition_size + num_emitters
 							* (2 * sizeof(P3tEmitterOrientationType) + sizeof(float));
@@ -3931,7 +3931,7 @@ static UUtError P3iUpdateVersion(const char *inIdentifier, P3tParticleDefinition
 						(2 * sizeof(P3tEmitterOrientationType) + sizeof(float)) - 2 * sizeof(P3tEmitterOrientationType));
 
 				copysize = sizeof(P3tEmitterLinkType) + sizeof(P3tEmitterRateType) +
-					sizeof(P3tEmitterPositionType) + sizeof(P3tEmitterDirectionType) + 
+					sizeof(P3tEmitterPositionType) + sizeof(P3tEmitterDirectionType) +
 					sizeof(P3tEmitterSpeedType);
 
 				UUrMemory_MoveOverlap(copyfrom, copyto, copysize);
@@ -3939,7 +3939,7 @@ static UUtError P3iUpdateVersion(const char *inIdentifier, P3tParticleDefinition
 				// move the data before burst_size
 				copyfrom	= (UUtUns8 *) &def_maxcontrail  ->emitter[itr];
 				copyto		= (UUtUns8 *) &def_emitterorient->emitter[itr];
-				UUmAssert((UUtUns32) (copyto - copyfrom) == itr * 
+				UUmAssert((UUtUns32) (copyto - copyfrom) == itr *
 					(2 * sizeof(P3tEmitterOrientationType) + sizeof(float)));
 
 				copysize = (P3cParticleClassNameLength + 1) + sizeof(P3tParticleClass *) +
@@ -3952,7 +3952,7 @@ static UUtError P3iUpdateVersion(const char *inIdentifier, P3tParticleDefinition
 				if (inSwapBytes) {
 					UUrSwap_2Byte((void *) &def_emitterorient->emitter[itr].emit_chance);
 				}
-				
+
 				// burst size is the floating-point equivalent of what it was before
 				if (inSwapBytes) {
 					UUrSwap_2Byte((void *) &burst_size);
@@ -4124,7 +4124,7 @@ static UUtError P3iUpdateVersion(const char *inIdentifier, P3tParticleDefinition
 		def_attractor->attractor.max_distance.u.float_const.val = 150.0f;
 		def_attractor->attractor.max_angle.type = P3cValueType_Float;
 		def_attractor->attractor.max_angle.u.float_const.val = 30.0f;
-		
+
 		if (inSwapBytes) {
 			UUrSwap_4Byte((void *) &def_attractor->attractor.iterator_type);
 			UUrSwap_4Byte((void *) &def_attractor->attractor.selector_type);
@@ -4165,7 +4165,7 @@ static UUtError P3iUpdateVersion(const char *inIdentifier, P3tParticleDefinition
 		def_attractorangle->attractor.select_thetamax.u.float_const.val = 20.0f;
 		def_attractorangle->attractor.select_thetaweight.type = P3cValueType_Float;
 		def_attractorangle->attractor.select_thetaweight.u.float_const.val = 3.0f;
-		
+
 		if (inSwapBytes) {
 			P3iSwap_Value((void *) &def_attractorangle->attractor.select_thetamin, UUcTrue);
 			P3iSwap_Value((void *) &def_attractorangle->attractor.select_thetamax, UUcTrue);
@@ -4456,7 +4456,7 @@ UUtError P3iSwap_ParticleDefinition(void *ioPtr, UUtBool inCurrentlyUsable)
 
 	P3iSwap_Value((void *) &definition->lifetime, inCurrentlyUsable);
 	P3iSwap_Value((void *) &definition->collision_radius, inCurrentlyUsable);
-	
+
 	UUrSwap_4Byte((void *) &definition->dodge_radius);
 	UUrSwap_4Byte((void *) &definition->alert_radius);
 
@@ -4527,9 +4527,9 @@ UUtError P3iSwap_Variable(void *ioPtr, UUtBool inCurrentlyUsable)
 UUtError P3iSwap_VarRef(void *ioPtr, UUtBool inCurrentlyUsable)
 {
 	P3tVariableReference *		varref = (P3tVariableReference *) ioPtr;
-	
+
 	UUrSwap_4Byte((void *) &varref->type);
-	
+
 	return UUcError_None;
 }
 
@@ -4607,7 +4607,7 @@ UUtError P3iSwap_EffectSpecification(void *ioPtr, UUtBool inCurrentlyUsable)
 	}
 	switch(effect_spec->location_type) {
 		case P3cEffectLocationType_Default:
-		case P3cEffectLocationType_AttachedToObject: 
+		case P3cEffectLocationType_AttachedToObject:
 			// nothing to swap
 			break;
 
@@ -4620,9 +4620,9 @@ UUtError P3iSwap_EffectSpecification(void *ioPtr, UUtBool inCurrentlyUsable)
 			UUrSwap_4Byte((void *) &effect_spec->location_data.findwall.radius);
 			break;
 
-		case P3cEffectLocationType_Decal: // S.S. no clue if this is correct ahem cough cough 
+		case P3cEffectLocationType_Decal: // S.S. no clue if this is correct ahem cough cough
 			break;
-		
+
 		default:
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "P3iSwap_EffectSpecification: unknown location type");
 			break;
@@ -4703,7 +4703,7 @@ UUtError P3iSwap_Value(void *ioPtr, UUtBool inCurrentlyUsable)
 	case P3cValueType_Enum:
 		UUrSwap_4Byte((void *) &value->u.enum_const.val);
 		break;
-		
+
 	default:
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "P3iSwap_Value: unknown patricle type");
 	}
@@ -4808,7 +4808,7 @@ M3tPoint3D *P3rGetPositionPtr(P3tParticleClass *inClass, P3tParticle *inParticle
 			if (P3gCurrentCollision.collided) {
 				MUmVector_Copy(inParticle->header.position, P3gCurrentCollision.hit_point);
 			}
-			
+
 			*inDead = P3rSendEvent(cur_class, cur_particle, P3cEvent_BrokenLink, cur_particle->header.current_time);
 			break;
 		}
@@ -4836,7 +4836,7 @@ UUtBool P3rGetRealPosition(P3tParticleClass *inClass, P3tParticle *inParticle, M
 	p_position = P3rGetPositionPtr(inClass, inParticle, &is_dead);
 	if (is_dead)
 		return UUcTrue;
-			
+
 	p_offset = P3rGetOffsetPosPtr(inClass, inParticle);
 	p_dynmatrix = P3rGetDynamicMatrixPtr(inClass, inParticle);
 	dynmatrix = (p_dynmatrix == NULL) ? NULL : *p_dynmatrix;
@@ -4895,7 +4895,7 @@ M3tVector3D *P3rGetRealVelocityPtr(P3tParticleClass *inClass, P3tParticle *inPar
 
 	if (cur_class->definition->flags & P3cParticleClassFlag_HasVelocity) {
 		vel_offset = cur_class->optionalvar_offset[P3cParticleOptionalVar_Velocity];
-		UUmAssert((vel_offset >= 0) && 
+		UUmAssert((vel_offset >= 0) &&
 				(vel_offset < (UUtUns16) (cur_class->particle_size - sizeof(P3tParticleHeader))));
 
 		return (M3tVector3D *) &cur_particle->vararray[vel_offset];
@@ -5079,7 +5079,7 @@ UUtBool P3iCalculateValue(P3tParticle *inParticle, P3tValue *inValueDef,
 	case P3cValueType_Enum:
 		*((UUtUns32 *) outStore) = inValueDef->u.enum_const.val;
 		break;
-	
+
 	// floating point value that cycles over gametime
 	case P3cValueType_FloatTimeBased:
 		cycle_val = P3gApproxCurrentTime / inValueDef->u.float_timebased.cycle_length;
@@ -5256,7 +5256,7 @@ static void P3iCheckEmitter(P3tParticleClass *inClass, P3tParticle *inParticle,
 			// we are recharging and cannot emit now
 			break;
 		}
-		
+
 		// find attractors nearby, and store them in the global buffer
 		check_ticks = MUrUnsignedSmallFloat_To_Uns_Round(check_attractor_time * UUcFramesPerSecond);
 		P3rIterateAttractors(inClass, inParticle, check_ticks);
@@ -5316,7 +5316,7 @@ static void P3iCheckEmitter(P3tParticleClass *inClass, P3tParticle *inParticle,
 		if (P3iCalculateValue(inParticle, &emitter->emitter_value[P3cEmitterValue_RateValOffset + 0],
 								(void *) &threshold) != UUcTrue)
 			break;
-		
+
 		ref = inEmitterData->last_particle;
 		if (ref == P3cParticleReference_Null) {
 			// we have not emitted a particle, emit one now
@@ -5328,7 +5328,7 @@ static void P3iCheckEmitter(P3tParticleClass *inClass, P3tParticle *inParticle,
 			if (is_dead) {
 				break;
 			}
-			
+
 			p_offset = P3rGetOffsetPosPtr(inClass, inParticle);
 			if (p_offset != NULL) {
 				MUmVector_Add(calculated_emitter_position, *emitter_position, *p_offset);
@@ -5351,7 +5351,7 @@ static void P3iCheckEmitter(P3tParticleClass *inClass, P3tParticle *inParticle,
 			if (is_dead) {
 				break;
 			}
-			
+
 			p_offset = P3rGetOffsetPosPtr(last_class, last_particle);
 			if (p_offset != NULL) {
 				MUmVector_Add(calculated_lastparticle_position, *p_position, *p_offset);
@@ -5446,7 +5446,7 @@ static UUtBool P3iEmitParticle(P3tParticleClass *inClass, P3tParticle *inParticl
 	IMtShade *					p_tint;
 
 	emitter_data = ((P3tParticleEmitterData *) inParticle->vararray) + inEmitterIndex;
-	
+
 	if (inEmitter->emittedclass == NULL)
 		return UUcFalse;
 
@@ -5479,7 +5479,7 @@ static UUtBool P3iEmitParticle(P3tParticleClass *inClass, P3tParticle *inParticl
 			num_particles++;
 	}
 
-	require_attractor = ((inEmitter->direction_type == P3cEmitterDirection_Attractor) || 
+	require_attractor = ((inEmitter->direction_type == P3cEmitterDirection_Attractor) ||
 						(inEmitter->emittedclass->definition->attractor.iterator_type == P3cAttractorIterator_EmittedTowards));
 	if (require_attractor) {
 		P3rIterateAttractors(inClass, inParticle, 0);
@@ -5673,11 +5673,11 @@ static UUtBool P3iEmitParticle(P3tParticleClass *inClass, P3tParticle *inParticl
 		case P3cEmitterDirection_Linear:
 			MUmVector_Set(particle_dir, 0, 1, 0);
 			break;
-			
+
 		case P3cEmitterDirection_Random:
 			P3rGetRandomUnitVector3D(&particle_dir);
 			break;
- 
+
 		case P3cEmitterDirection_Conical:
 			if ((P3iCalculateValue(inParticle, &inEmitter->emitter_value[P3cEmitterValue_DirectionValOffset + 0],
 				                  (void *) &r_outer) == UUcTrue) &&
@@ -5762,7 +5762,7 @@ static UUtBool P3iEmitParticle(P3tParticleClass *inClass, P3tParticle *inParticl
 			break;
 
 		default:
-			UUmAssert(!"unknown emitter direction type");	
+			UUmAssert(!"unknown emitter direction type");
 		}
 
 		// determine the particle's speed
@@ -5771,7 +5771,7 @@ static UUtBool P3iEmitParticle(P3tParticleClass *inClass, P3tParticle *inParticl
 			P3iCalculateValue(inParticle, &inEmitter->emitter_value[P3cEmitterValue_SpeedValOffset + 0],
 								(void *) &particle_speed);
 			break;
-			
+
 		case P3cEmitterSpeed_Stratified:
 			if (P3iCalculateValue(inParticle, &inEmitter->emitter_value[P3cEmitterValue_SpeedValOffset + 0],
 				                  (void *) &particle_speed) == UUcTrue) {
@@ -5787,7 +5787,7 @@ static UUtBool P3iEmitParticle(P3tParticleClass *inClass, P3tParticle *inParticl
 			break;
 
 		default:
-			UUmAssert(!"unknown emitter speed type");	
+			UUmAssert(!"unknown emitter speed type");
 		}
 
 		// create a new particle
@@ -5810,7 +5810,7 @@ static UUtBool P3iEmitParticle(P3tParticleClass *inClass, P3tParticle *inParticl
 			}
 		}
 
-		if (inParticle->header.flags & P3cParticleFlag_Temporary) { 
+		if (inParticle->header.flags & P3cParticleFlag_Temporary) {
 			// temporary particles emit temporary particles
 			new_particle->header.flags |= P3cParticleFlag_Temporary;
 			inEmitter->emittedclass->non_persistent_flags |=
@@ -5827,15 +5827,15 @@ static UUtBool P3iEmitParticle(P3tParticleClass *inClass, P3tParticle *inParticl
 		case P3cEmitterLinkType_None:
 			new_particle->header.user_ref = P3cParticleReference_Null;
 			break;
-			
+
 		case P3cEmitterLinkType_Emitter:
 			new_particle->header.user_ref = inParticle->header.self_ref;
 			break;
-			
+
 		case P3cEmitterLinkType_OurLink:
 			new_particle->header.user_ref = inParticle->header.user_ref;
 			break;
-			
+
 		default:
 			other_emitter_index = inEmitter->link_type - P3cEmitterLinkType_LastEmission;
 			if ((other_emitter_index < 0) || (other_emitter_index >= inClass->definition->num_emitters)) {
@@ -5860,7 +5860,7 @@ static UUtBool P3iEmitParticle(P3tParticleClass *inClass, P3tParticle *inParticl
 			}
 		}
 
-		parent_matrix = P3rGetDynamicMatrixPtr(inClass, inParticle);		
+		parent_matrix = P3rGetDynamicMatrixPtr(inClass, inParticle);
 		p_matrix = P3rGetDynamicMatrixPtr(inEmitter->emittedclass, new_particle);
 		if (override_matrix) {
 			if (p_matrix) {
@@ -6608,7 +6608,7 @@ void P3rConstructOrientation(P3tEmitterOrientationType inOrientDir, P3tEmitterOr
 void P3rDebugCollision(UUtBool inEnable)
 {
 	P3gDebugCollisionEnable = inEnable;
-	
+
 	if (P3gDebugCollisionEnable) {
 		if (P3gDebugCollisionPoints == NULL) {
 			P3gDebugCollisionPoints = UUrMemory_Block_New(P3cDebugCollisionMaxPoints * sizeof(M3tPoint3D));
@@ -6738,7 +6738,7 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 		// track this timestep's collision and store it in the global debugging buffer
 		P3gDebugCollisionPoints[P3gDebugCollision_NextPoint] = *complete_position;
 		MUmVector_Add(P3gDebugCollisionPoints[P3gDebugCollision_NextPoint + 1], *complete_position, P3gCurrentCollision.hit_direction);
-		
+
 		P3gDebugCollision_NextPoint += 2;
 		P3gDebugCollision_UsedPoints = UUmMax(P3gDebugCollision_UsedPoints, P3gDebugCollision_NextPoint);
 		if (P3gDebugCollision_NextPoint >= P3cDebugCollisionMaxPoints) {
@@ -6780,7 +6780,7 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 			}
 		} else {
 			P3mPerfTrack(inClass, P3cPerfEvent_EnvSphereCol);
-			AKrCollision_Sphere(environment, &particle_tree.sphere, &P3gCurrentCollision.hit_direction, 
+			AKrCollision_Sphere(environment, &particle_tree.sphere, &P3gCurrentCollision.hit_direction,
 								AKcGQ_Flag_Obj_Col_Skip, 1);
 		}
 
@@ -6838,7 +6838,7 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 		if (P3gCurrentCollision.collided) {
 			// we have collided already in this step. set our delta position correctly so that
 			// we don't go past this timepoint when looking for character collisions.
-			new_delta_t = P3gCurrentCollision.hit_t - inCurrentT;			
+			new_delta_t = P3gCurrentCollision.hit_t - inCurrentT;
 			MUmVector_Scale(P3gCurrentCollision.hit_direction, new_delta_t / delta_t);
 			delta_t = new_delta_t;
 		} else {
@@ -6904,7 +6904,7 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 						// we already have an earlier collision
 						continue;
 					}
-	
+
 					// use this newly found collision
 					P3gCurrentCollision.hit_t = thiscollision_t;
 					MUmVector_Copy(P3gCurrentCollision.hit_point, thiscollision_point);
@@ -6913,7 +6913,7 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 					P3gCurrentCollision.hit_normal.z = plane_equ.c;
 					MUmVector_Verify(P3gCurrentCollision.hit_normal);
 
-				} else {				
+				} else {
 					if (collide_context->callback->type == PHcCallback_Character) {
 						// perform exact intersection test with character's body parts
 						P3mPerfTrack(inClass, P3cPerfEvent_PhyCharCol);
@@ -6948,11 +6948,11 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 						// collide with a general physics context
 						P3mPerfTrack(inClass, P3cPerfEvent_PhySphereCol);
 						if (point_intersect) {
-							hit_context = PHrCollision_Point_SphereTree(complete_position, &P3gCurrentCollision.hit_direction, 
+							hit_context = PHrCollision_Point_SphereTree(complete_position, &P3gCurrentCollision.hit_direction,
 								collide_context->sphereTree, &hit_tree);
-						
+
 						} else {
-							hit_context = (NULL != PHrCollision_SphereTree_SphereTree(&particle_tree, &P3gCurrentCollision.hit_direction, 
+							hit_context = (NULL != PHrCollision_SphereTree_SphereTree(&particle_tree, &P3gCurrentCollision.hit_direction,
 								collide_context->sphereTree, &hit_tree));
 						}
 
@@ -6961,17 +6961,17 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 							continue;
 						}
 
-						// construct the hit point from the sphere that we hit				
+						// construct the hit point from the sphere that we hit
 						UUmAssert(hit_tree != NULL);
-							
+
 						// CB: none of this should be necessary, but the spheretree code is set up to only do
 						// bounding tests and not actual intersection tests. agh!
-							
+
 						// how far from the hit sphere is the particle center?
 						MUmVector_Subtract(vector_from_sphere, *complete_position, hit_tree->sphere.center);
 						d_from_sphere_sq = MUmVector_GetLengthSquared(vector_from_sphere);
 						d_from_sphere = MUrSqrt(d_from_sphere_sq);
-						
+
 						if (point_intersect) {
 							if (d_from_sphere < hit_tree->sphere.radius) {
 								// particle is inside the bounding sphere to start with
@@ -6980,7 +6980,7 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 									// we already have an earlier collision
 									continue;
 								}
-		
+
 								// use this newly found collision
 								P3gCurrentCollision.hit_t = thiscollision_t;
 								MUmVector_Copy(P3gCurrentCollision.hit_point, *complete_position);
@@ -6994,17 +6994,17 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 								equ_a = MUrVector_DotProduct(&P3gCurrentCollision.hit_direction, &P3gCurrentCollision.hit_direction);
 								equ_b = 2 * MUrVector_DotProduct(&P3gCurrentCollision.hit_direction, &vector_from_sphere);
 								equ_c = d_from_sphere_sq - UUmSQR(hit_tree->sphere.radius);
-								
+
 								// if particle is heading away from sphere, no intersection
 								if (equ_b > 0)
 									continue;
-								
+
 								disc = UUmSQR(equ_b) - 4 * equ_a * equ_c;
 								if (disc < 0)
 									continue; // this should never happen...
-								
+
 								temp_t = (- equ_b - MUrSqrt(disc)) / (2 * equ_a);
-								
+
 								// build the actual time of collision
 								thiscollision_t = temp_t;
 								thiscollision_t = inCurrentT + thiscollision_t * delta_t;
@@ -7013,17 +7013,17 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 									// we already have an earlier collision
 									continue;
 								}
-		
+
 								// use this newly found collision
 								P3gCurrentCollision.hit_t = thiscollision_t;
 
 								// build the hit point
 								MUmVector_ScaleCopy(P3gCurrentCollision.hit_point, temp_t, P3gCurrentCollision.hit_direction);
-								MUmVector_Add(P3gCurrentCollision.hit_point, P3gCurrentCollision.hit_point, *complete_position);							
+								MUmVector_Add(P3gCurrentCollision.hit_point, P3gCurrentCollision.hit_point, *complete_position);
 								MUmVector_Copy(P3gCurrentCollision.hit_normal, vector_from_sphere);
 								MUmVector_Verify(P3gCurrentCollision.hit_normal);
 							}
-							
+
 						} else {
 							// calculate the time of collision
 							if (stationary) {
@@ -7031,7 +7031,7 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 							} else {
 								d_from_sphere -= particle_tree.sphere.radius + hit_tree->sphere.radius;
 								thiscollision_t = d_from_sphere / MUmVector_GetLength(P3gCurrentCollision.hit_direction);
-		
+
 								thiscollision_t = inCurrentT + thiscollision_t * delta_t;
 								thiscollision_t = UUmPin(thiscollision_t, inCurrentT, *inEndT);
 							}
@@ -7039,24 +7039,24 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 								// we already have an earlier collision
 								continue;
 							}
-		
+
 							// use this newly found collision
 							P3gCurrentCollision.hit_t = thiscollision_t;
 
 							// an exact computation of the spheres' contact points is possible, but for now just take a
 							// point along the line that joins them. this point is defined at the ratio where they would be
 							// touching if the distance was right.
-							
+
 							totalrad = hit_tree->sphere.radius + particle_tree.sphere.radius;
-							
+
 							MUmVector_ScaleCopy(P3gCurrentCollision.hit_point, hit_tree->sphere.radius / totalrad,
 												*complete_position);
 							MUmVector_ScaleIncrement(P3gCurrentCollision.hit_point, particle_tree.sphere.radius / totalrad,
 													hit_tree->sphere.center);
-													
+
 							MUmVector_Copy(P3gCurrentCollision.hit_normal, vector_from_sphere);
 							MUmVector_Verify(P3gCurrentCollision.hit_normal);
-						}	
+						}
 					}
 				}
 
@@ -7082,7 +7082,7 @@ static UUtBool P3iCheckCollisions(P3tParticleClass *inClass, P3tParticle *inPart
 					delta_t = 0.0f;
 					break;
 				}
-	
+
 				MUmVector_Scale(P3gCurrentCollision.hit_direction, new_delta_t / delta_t);
 				delta_t = new_delta_t;
 
@@ -7229,7 +7229,7 @@ static void P3iUpdateParticleClass(P3tParticleClass *inClass, UUtUns32 inNewTime
 
 		last_t = 0.0f;
 		last_emit_num = UUcMaxUns16;
-		
+
 		while ((current_t < final_t - 0.001f) && (!is_dead)) {
 			UUmAssert((particle->header.flags & P3cParticleFlag_Deleted) == 0);
 
@@ -7248,7 +7248,7 @@ static void P3iUpdateParticleClass(P3tParticleClass *inClass, UUtUns32 inNewTime
 			/*
 			 * determine how long we should run the timestep for
 			 */
-			
+
 			// if this particle has emitters, call them to determine whether they will emit during this
 			// time period; if so, we need to only update until this time
 			if (check_emit) {
@@ -7257,7 +7257,7 @@ static void P3iUpdateParticleClass(P3tParticleClass *inClass, UUtUns32 inNewTime
 					itr < inClass->definition->num_emitters; itr++, emitter_data++) {
 					if (emitter_data->num_emitted == P3cEmitterDisabled)
 						continue;
-					
+
 					// check to see if we will emit before this time - sets do_emit, emit_num
 					// and changes run_t if yes
 					P3iCheckEmitter(inClass, particle, itr, emitter_data, current_t, &do_emit, &emit_num, &run_t);
@@ -7297,20 +7297,20 @@ static void P3iUpdateParticleClass(P3tParticleClass *inClass, UUtUns32 inNewTime
 
 			// run the particle up to this point
 			delta_t = run_t - current_t;
-			is_dead = P3iPerformActionList(inClass, particle, P3cEvent_Update, actionlist + P3cEvent_Update, current_t, delta_t, do_collide);				
+			is_dead = P3iPerformActionList(inClass, particle, P3cEvent_Update, actionlist + P3cEvent_Update, current_t, delta_t, do_collide);
 			if (is_dead) {
 				break;
 			}
 
 			// the particle has moved, the endpoint is no longer valid
 			P3gCurrentStep_EndPointValid = UUcFalse;
-			
+
 			// check to see if the particle's lifetime has expired
 			if (particle->header.lifetime != 0) {
 				particle->header.lifetime -= delta_t;
 				if (particle->header.lifetime < (1.0f / UUcFramesPerSecond)) {
 					particle->header.lifetime = 0;
-					
+
 					// if there is a 'lifetime' action list, run that. otherwise die.
 					// don't run the action list if we are already fading out or being chopped.
 					if (((particle->header.flags & (P3cParticleFlag_FadeOut | P3cParticleFlag_Chop)) == 0) &&
@@ -7327,7 +7327,7 @@ static void P3iUpdateParticleClass(P3tParticleClass *inClass, UUtUns32 inNewTime
 			if (is_dead) {
 				break;
 			}
-			
+
 			/*
 			 * perform post-update computation
 			 */
@@ -7339,7 +7339,7 @@ static void P3iUpdateParticleClass(P3tParticleClass *inClass, UUtUns32 inNewTime
 				p_velocity = (M3tVector3D *) &particle->vararray[vel_offset];
 				p_orientation = (M3tMatrix3x3 *) &particle->vararray[orient_offset];
 
-				P3rConstructOrientation(P3cEmitterOrientation_Velocity, P3cEmitterOrientation_ParentPosZ, 
+				P3rConstructOrientation(P3cEmitterOrientation_Velocity, P3cEmitterOrientation_ParentPosZ,
 										p_orientation, NULL, p_velocity, p_orientation);
 			}
 
@@ -7347,17 +7347,17 @@ static void P3iUpdateParticleClass(P3tParticleClass *inClass, UUtUns32 inNewTime
 			if (do_emit) {
 				UUmAssert((emit_num >= 0) && (emit_num < inClass->definition->num_emitters));
 				emitter = &inClass->definition->emitter[emit_num];
-				
+
 				is_dead = P3iEmitParticle(inClass, particle, emitter, emit_num, run_t);
 				if (is_dead) {
 					break;
 				}
-				
+
 				// track the number of particles that have been emitted
 				emitter_data = ((P3tParticleEmitterData *) particle->vararray) + emit_num;
 				if (emitter->flags & P3cEmitterFlag_IncreaseEmitCount) {
 					emitter_data->num_emitted++;
-					
+
 					if (emitter->flags & P3cEmitterFlag_DeactivateWhenEmitCountThreshold) {
 						if (emitter_data->num_emitted >= emitter->particle_limit) {
 							emitter_data->num_emitted = P3cEmitterDisabled;
@@ -7373,7 +7373,7 @@ static void P3iUpdateParticleClass(P3tParticleClass *inClass, UUtUns32 inNewTime
 				emitter_data->time_last_emission = run_t;
 				last_emit_num = emit_num;
 			}
-				
+
 			// run our deferred collision
 			if (do_collide) {
 				is_dead = P3iDoCollision(inClass, particle, run_t);
@@ -7391,7 +7391,7 @@ static void P3iUpdateParticleClass(P3tParticleClass *inClass, UUtUns32 inNewTime
 			if (((current_t - last_t) < 0.0001f) && (emit_num == last_emit_num)) {
 				current_t += 1.0f / UUcFramesPerSecond;
 			}
-			
+
 			last_t = current_t;
 
 			UUmAssert((particle->header.flags & P3cParticleFlag_Deleted) == 0);
@@ -7442,7 +7442,7 @@ static UUtBool P3iDecalFade(P3tParticleClass *inClass, P3tParticle *inParticle)
 	UUtBool returnval;
 	float current_alpha;
 
-	if ((inParticle->header.flags & P3cParticleFlag_FadeOut) || 
+	if ((inParticle->header.flags & P3cParticleFlag_FadeOut) ||
 		(inClass->definition->appearance.decal_fadeframes == 0)) {
 		// kill the decal
 		P3rKillParticle(inClass, inParticle);
@@ -7542,26 +7542,26 @@ static void P3iUpdateDecalClass(P3tParticleClass *inClass, UUtUns32 inNewTime)
 			particle->header.lifetime -= delta_t;
 			if (particle->header.lifetime < (1.0f / UUcFramesPerSecond)) {
 				particle->header.lifetime = 0;
-				
+
 				is_dead = P3iDecalFade(inClass, particle);
 			}
 		}
-		
+
 		if (!is_dead && ((particle->header.flags & P3cParticleFlag_FadeOut) == 0) && (itr < overflow_particles)) {
 			// fade out any non-faded particles that are over the limit, starting from the head
 			UUmAssertReadPtr(decal_data->decal_header, sizeof(M3tDecalHeader));
 			is_dead = P3iDecalFade(inClass, particle);
 		}
-				
+
 		if (!is_dead) {
 			UUmAssertReadPtr(decal_data->decal_header, sizeof(M3tDecalHeader));
-			if (particle->header.flags & P3cParticleFlag_FadeOut) 
+			if (particle->header.flags & P3cParticleFlag_FadeOut)
 			{
 				if ((decal_data != NULL) && (decal_data->decal_header != NULL)) {
 					decal_data->decal_header->alpha = (UUtUns16) MUrUnsignedSmallFloat_To_Uns_Round(M3cMaxAlpha * particle->header.lifetime
 																									/ particle->header.fadeout_time);
 				}
-			} 
+			}
 
 			particle->header.current_tick = inNewTime;
 			particle->header.current_time = final_t;
@@ -7715,7 +7715,7 @@ void P3rPerformanceEnd(void)
 				}
 			}
 		}
-		
+
 		for (itr = 0; itr < P3gPerfDisplayNumClasses; itr++) {
 			particle_class = P3gPerfDisplayClasses[itr];
 
@@ -7989,7 +7989,7 @@ UUtBool P3rRevert(P3tParticleClass *ioClass)
 		UUrMemory_Block_Delete(mem_block);
 
 	// the main particle class is now the copy that we made earlier.
-	// we no longer have a second copy	
+	// we no longer have a second copy
 	ioClass->memory = ioClass->originalcopy;
 	ioClass->originalcopy.size = 0;
 	ioClass->originalcopy.block = NULL;
@@ -8172,7 +8172,7 @@ UUtBool P3rDescribeEmitterLinkType(P3tParticleClass *inClass, P3tEmitter *inEmit
 	case P3cEmitterLinkType_None:
 		strcpy(outString, "none");
 		return UUcTrue;
-			
+
 	case P3cEmitterLinkType_Emitter:
 		strcpy(outString, "back to emitter");
 		return UUcTrue;
@@ -8180,7 +8180,7 @@ UUtBool P3rDescribeEmitterLinkType(P3tParticleClass *inClass, P3tEmitter *inEmit
 	case P3cEmitterLinkType_OurLink:
 		strcpy(outString, "same as us");
 		return UUcTrue;
-			
+
 	default:
 		emitter_index = inLinkType - P3cEmitterLinkType_LastEmission;
 		if ((emitter_index < 0) || (emitter_index >= inClass->definition->num_emitters)) {
@@ -8191,7 +8191,7 @@ UUtBool P3rDescribeEmitterLinkType(P3tParticleClass *inClass, P3tEmitter *inEmit
 			}
 			return UUcFalse;
 		} else {
-			sprintf(outString, "last particle emitted from %d: %s", 
+			sprintf(outString, "last particle emitted from %d: %s",
 				emitter_index, inClass->definition->emitter[emitter_index].classname);
 			return UUcTrue;
 		}
@@ -8285,7 +8285,7 @@ void P3rSetDefaultInitialiser(P3tDataType inVarType, P3tValue *outValue)
 
 // recurse over all action lists in the particle definition, and update their indices
 // so that they are still correct after a grow or shrink operation.
-static void P3iUpdateActionLists(P3tParticleDefinition *inDefinition, UUtUns16 inListIndex, 
+static void P3iUpdateActionLists(P3tParticleDefinition *inDefinition, UUtUns16 inListIndex,
 						  UUtUns16 inLocationIndex, UUtInt32 inOffsetIndex)
 {
 	UUtUns16 itr;
@@ -8323,7 +8323,7 @@ UUtError P3rClass_NewAction(P3tParticleClass *ioClass, UUtUns16 inListIndex, UUt
 
 	UUmAssert(P3mVerifyDefinitionSize(ioClass->definition));
 	UUmAssert((inActionIndex >= 0) && (inActionIndex <= ioClass->definition->num_actions));
-	UUmAssert((inActionIndex >= ioClass->definition->eventlist[inListIndex].start_index) && 
+	UUmAssert((inActionIndex >= ioClass->definition->eventlist[inListIndex].start_index) &&
 			  (inActionIndex <= ioClass->definition->eventlist[inListIndex].end_index));
 
 	// resize the particle class to accomodate the new action
@@ -8498,7 +8498,7 @@ UUtError P3rClass_DeleteAction(P3tParticleClass *ioClass, UUtUns16 inListIndex, 
 
 	UUmAssert((inActionIndex >= 0) && (inActionIndex < def->num_actions));
 	UUmAssert((inListIndex >= 0) && (inListIndex < P3cMaxNumEvents));
-	UUmAssert((inActionIndex >= ioClass->definition->eventlist[inListIndex].start_index) && 
+	UUmAssert((inActionIndex >= ioClass->definition->eventlist[inListIndex].start_index) &&
 			  (inActionIndex <  ioClass->definition->eventlist[inListIndex].end_index));
 
 	UUmAssert(P3mVerifyDefinitionSize(def));
@@ -8620,7 +8620,7 @@ static void P3iReallocateParticles(P3tParticleClass *ioClass, UUtUns16 new_size_
 
 		new_particle = P3rNewParticle(ioClass);
 		new_particle->header = particle->header;
-		
+
 		// map the new particle's variables to the old values
 		for (itr = 0; itr < new_vararray_size; itr++) {
 			from_index = remap_table[itr];
@@ -8657,7 +8657,7 @@ static void P3iReallocateParticles(P3tParticleClass *ioClass, UUtUns16 new_size_
 				new_particle->header.next_decorative->header.prev_decorative
 					= new_particle->header.prev_decorative;
 			}
-			
+
 			// add the new particle to the tail of the new decorative-particle list
 			new_particle->header.prev_decorative = new_sci->decorative_tail;
 			if (new_particle->header.prev_decorative == NULL) {
@@ -8775,7 +8775,7 @@ void P3rPackVariables(P3tParticleClass *ioClass, UUtBool inChangedVars)
 		// perform sanity checks on remap table
 		for (itr = 0; itr < new_particle_size - sizeof(P3tParticleHeader); itr++) {
 			UUmAssert((remap_table[itr] == P3cNoVar) ||
-					  ((remap_table[itr] >= 0) && 
+					  ((remap_table[itr] >= 0) &&
 					   (remap_table[itr] < ioClass->particle_size - sizeof(P3tParticleHeader))));
 		}
 #endif
@@ -8821,7 +8821,7 @@ void P3rTraverseVarRef(P3tParticleDefinition *inDefinition,
 	// traverse over all actions
 	for (itr = 0, action = inDefinition->action;
 		itr < inDefinition->num_actions; itr++, action++) {
-		
+
 		// traverse over all variables for each action
 		num_vars = P3gActionInfo[action->action_type].num_variables;
 		for (itr2 = 0; itr2 < num_vars; itr2++) {
@@ -8832,7 +8832,7 @@ void P3rTraverseVarRef(P3tParticleDefinition *inDefinition,
 			}
 			inProc(&action->action_var[itr2], location);
 		}
-		
+
 		// traverse over all parameters for each action - look for parameters that are a variable
 		num_params = P3gActionInfo[action->action_type].num_parameters;
 		for (itr2 = 0, val = action->action_value; itr2 < num_params; itr2++, val++) {
@@ -9091,7 +9091,7 @@ UUtBool P3rDescribeEnum(P3tParticleClass *inClass, P3tEnumType inType, UUtUns32 
 		}
 
 		sprintf(outDescription, "%d: %s", inVal, P3gActionInfo[action->action_type].name);
-		return UUcTrue;		
+		return UUcTrue;
 
 	case P3cEnumType_Emitter:
 		UUmAssert(inClass != NULL);
@@ -9103,7 +9103,7 @@ UUtBool P3rDescribeEnum(P3tParticleClass *inClass, P3tEnumType inType, UUtUns32 
 		} else {
 			sprintf(outDescription, "emitter %d (%s)", inVal, inClass->definition->emitter[inVal].classname);
 		}
-		return UUcTrue;		
+		return UUcTrue;
 
 	case P3cEnumType_Falloff:
 		switch(inVal) {
@@ -9229,7 +9229,7 @@ UUtBool P3rDescribeEnum(P3tParticleClass *inClass, P3tEnumType inType, UUtUns32 
 		}
 
 	default:
-		return UUcFalse;		
+		return UUcFalse;
 	}
 }
 
@@ -9265,7 +9265,7 @@ void P3iDisplayParticleClass(P3tParticleClass *inClass, UUtUns32 inCurrentTick, 
 			return;
 		}
 	}
-		
+
 	if (!inLensFlares && (inClass->definition->flags2 & P3cParticleClassFlag2_Appearance_LensFlare)) {
 		// this is a lens-flare class and must be drawn in a separate pass
 		if (P3gNumLensFlares >= P3cMaxLensFlares) {
@@ -9294,7 +9294,7 @@ void P3iDisplayParticleClass(P3tParticleClass *inClass, UUtUns32 inCurrentTick, 
 		sprite_mode = (M3tGeomState_SpriteMode)
 			((inClass->definition->flags & P3cParticleClassFlag_Appearance_SpriteTypeMask)
 			>> P3cParticleClassFlags_SpriteTypeShift);
-		
+
 		if ((sprite_mode == M3cGeomState_SpriteMode_Contrail) ||
 			(sprite_mode == M3cGeomState_SpriteMode_ContrailRotated)) {
 			if (inClass->definition->flags2 & P3cParticleClassFlag2_ContrailEmitter) {
@@ -9310,7 +9310,7 @@ void P3iDisplayParticleClass(P3tParticleClass *inClass, UUtUns32 inCurrentTick, 
 			} else {
 				P3rDisplayClass_Contrail(inClass, inCurrentTick, inDrawTicks, sprite_mode, UUcFalse);
 			}
-			
+
 		} else {
 			P3rDisplayClass_Sprite(inClass, inCurrentTick, inDrawTicks, sprite_mode);
 		}
@@ -9329,7 +9329,7 @@ void P3rDisplay( UUtBool inLensFlares )
 	UUtUns32			itr, draw_ticks, current_tick, num_contrailemitters;
 	P3tParticleClass *	current_class;
 	M3tGeomState_SpriteMode sprite_mode;
-        
+
 #if PARTICLE_PROFILE_DISPLAY
 	UUrProfile_State_Set(UUcProfile_State_On);
 #endif
@@ -9347,14 +9347,14 @@ void P3rDisplay( UUtBool inLensFlares )
 	M3rGeom_State_Set(M3cGeomStateIntType_SubmitMode, M3cGeomState_SubmitMode_SortAlphaTris);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_ZWrite, M3cDrawState_ZWrite_Off);
 	if (inLensFlares) {
-		M3rDraw_State_SetInt(M3cDrawStateIntType_ZCompare, M3cDrawState_ZCompare_Off);		
+		M3rDraw_State_SetInt(M3cDrawStateIntType_ZCompare, M3cDrawState_ZCompare_Off);
 	}
 	M3rGeom_State_Commit();
 
 	num_contrailemitters = 0;
 	if (inLensFlares) {
 		// draw the separate lensflare pass, which comes at the end of most other game display.
-		// the lensflares particle classes found here 
+		// the lensflares particle classes found here
 		for (itr = 0; itr < P3gNumLensFlares; itr++) {
 			P3iDisplayParticleClass(P3gLensFlares[itr], current_tick, draw_ticks, UUcTrue, &num_contrailemitters);
 		}
@@ -9393,7 +9393,7 @@ void P3rDisplay( UUtBool inLensFlares )
 		sprite_mode = (M3tGeomState_SpriteMode)
 			((current_class->definition->flags & P3cParticleClassFlag_Appearance_SpriteTypeMask)
 			>> P3cParticleClassFlags_SpriteTypeShift);
-			
+
 		P3rDisplayClass_Contrail(current_class, current_tick, draw_ticks, sprite_mode, UUcTrue);
 	}
 
@@ -9426,7 +9426,7 @@ static UUtUns16 P3rModifyAlphaByFogFromDepth(
 		alpha= (UUtUns16)((float)alpha * fog_factor);
 		alpha= UUmMin(alpha, 0xFF);
 	}
-	
+
 	return alpha;
 }
 
@@ -9455,7 +9455,7 @@ void P3rDisplayClass_Geometry(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 
 		if (inClass->definition->flags & P3cParticleClassFlag_HasLensFrames) {
 			lensframes_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_LensFrames];
-			UUmAssert((lensframes_offset >= 0) && 
+			UUmAssert((lensframes_offset >= 0) &&
 				(lensframes_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 		} else {
 			lensframes_offset = P3cNoVar;
@@ -9468,7 +9468,7 @@ void P3rDisplayClass_Geometry(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 		matrixtype = P3cMatrix_Orientation;
 
 		orient_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_Orientation];
-		UUmAssert((orient_offset >= 0) && 
+		UUmAssert((orient_offset >= 0) &&
 			(orient_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 
 	} else if (inClass->definition->flags & P3cParticleClassFlag_HasVelocity) {
@@ -9476,34 +9476,34 @@ void P3rDisplayClass_Geometry(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 		matrixtype = P3cMatrix_Velocity;
 
 		vel_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_Velocity];
-		UUmAssert((vel_offset >= 0) && 
+		UUmAssert((vel_offset >= 0) &&
   					(vel_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		// no orientation; use identity
 		matrixtype = P3cMatrix_Identity;
-					
+
 	}
 
 	// is there an offset position?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasOffsetPos) {
 		offsetpos_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_OffsetPos];
-		UUmAssert((offsetpos_offset >= 0) && 
+		UUmAssert((offsetpos_offset >= 0) &&
 			(offsetpos_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		offsetpos_offset = P3cNoVar;
 	}
-	
+
 	// is there a dynamic matrix?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasDynamicMatrix) {
 		dynmatrix_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_DynamicMatrix];
-		UUmAssert((dynmatrix_offset >= 0) && 
+		UUmAssert((dynmatrix_offset >= 0) &&
 			(dynmatrix_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		dynmatrix_offset = P3cNoVar;
 	}
-			
+
 	appearance_params = (P3tAppearance *) &inClass->definition->appearance;
-			
+
 	dynamic_scale = P3iValueIsDynamic(&appearance_params->scale);
 	if (dynamic_scale) {
 		do_scale = UUcTrue;
@@ -9515,7 +9515,7 @@ void P3rDisplayClass_Geometry(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 			do_scale = UUcTrue;
 		}
 	}
-	
+
 	dynamic_alpha = P3iValueIsDynamic(&appearance_params->alpha);
 	if (!dynamic_alpha) {
 		P3iCalculateValue(NULL, &appearance_params->alpha, (void *) &floatalpha);
@@ -9525,7 +9525,7 @@ void P3rDisplayClass_Geometry(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 
 		currentalpha = constalpha;
 	}
-	
+
 	error = TMrInstance_GetDataPtr(M3cTemplate_Geometry, appearance_params->instance, &geometry);
 	if (error != UUcError_None) {
 		if ((inClass->non_persistent_flags & P3cParticleClass_NonPersistentFlag_WarnedAboutNotFound) == 0) {
@@ -9540,21 +9540,21 @@ void P3rDisplayClass_Geometry(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 			return;
 		}
 	}
-	
-	
+
+
 	for (particle = inClass->headptr; particle != NULL; particle = next_particle) {
 		next_particle = particle->header.nextptr;
-		
+
 		if (particle->header.flags & P3cParticleFlag_Hidden)
 			continue;
-		
+
 		// calculate the translational component of the position matrix
 		// (offset position is taken care of below, when the matrix is actually computed)
 		positionptr = P3rGetPositionPtr(inClass, particle, &is_dead);
 		if (is_dead) {
 			continue;
 		}
-		
+
 		// if we are fading out then use the current lifetime and fade time to calculate alpha
 		if (particle->header.flags & P3cParticleFlag_FadeOut) {
 			realalpha = (UUtUns16)  (M3cMaxAlpha * particle->header.lifetime / particle->header.fadeout_time);
@@ -9562,7 +9562,7 @@ void P3rDisplayClass_Geometry(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 			M3rGeom_State_Commit();
 
 			currentalpha = realalpha;
-			
+
 		} else {
 			if (dynamic_alpha) {
 				P3iCalculateValue(particle, &appearance_params->alpha, (void *) &floatalpha);
@@ -9611,38 +9611,38 @@ void P3rDisplayClass_Geometry(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 		// evaluate any dynamic appearance parameters for this particle
 		if (dynamic_scale)
 			P3iCalculateValue(particle, &appearance_params->scale, (void *) &scale);
-		
+
 		switch(matrixtype) {
 		case P3cMatrix_Orientation:
 			UUrMemory_MoveFast(&particle->vararray[orient_offset], (M3tMatrix3x3 *) &geom_matrix,
 								sizeof(M3tMatrix3x3));
 			break;
-			
+
 		case P3cMatrix_Velocity:
 			// build an orientation matrix along velocity and upvector -> world Y
 			P3rConstructOrientation(P3cEmitterOrientation_Velocity, P3cEmitterOrientation_WorldPosY,
 									NULL, NULL, (M3tVector3D *) &particle->vararray[vel_offset],
 									(M3tMatrix3x3 *) &geom_matrix);
 			break;
-			
+
 		case P3cMatrix_Identity:
 			MUrMatrix3x3_Identity((M3tMatrix3x3 *) &geom_matrix);
 			break;
 		}
-		
+
 		geom_matrix.m[3][0] = positionptr->x;
 		geom_matrix.m[3][1] = positionptr->y;
 		geom_matrix.m[3][2] = positionptr->z;
-		if (offsetpos_offset != P3cNoVar) 
+		if (offsetpos_offset != P3cNoVar)
 		{
 			positionptr = (M3tVector3D *) &particle->vararray[offsetpos_offset];
 			geom_matrix.m[3][0] += positionptr->x;
 			geom_matrix.m[3][1] += positionptr->y;
 			geom_matrix.m[3][2] += positionptr->z;
 		}
-		
+
 		M3rMatrixStack_Push();
-		
+
 		// apply the dynamic matrix if there is one
 		if (dynmatrix_offset != P3cNoVar) {
 			matrixptr = *((M3tMatrix4x3 **) &particle->vararray[dynmatrix_offset]);
@@ -9650,13 +9650,13 @@ void P3rDisplayClass_Geometry(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 				M3rMatrixStack_Multiply(matrixptr);
 			}
 		}
-		
+
 		M3rMatrixStack_Multiply(&geom_matrix);
-		
+
 		if (do_scale) {
 			M3rMatrixStack_UniformScale(scale);
 		}
-		
+
 		M3rGeometry_Draw(geometry);
 		M3rMatrixStack_Pop();
 	}
@@ -9685,7 +9685,7 @@ void P3rDisplayClass_Vector(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 
 		if (inClass->definition->flags & P3cParticleClassFlag_HasLensFrames) {
 			lensframes_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_LensFrames];
-			UUmAssert((lensframes_offset >= 0) && 
+			UUmAssert((lensframes_offset >= 0) &&
 				(lensframes_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 		} else {
 			lensframes_offset = P3cNoVar;
@@ -9695,7 +9695,7 @@ void P3rDisplayClass_Vector(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 	// get the velocity
 	if (inClass->definition->flags & P3cParticleClassFlag_HasVelocity) {
 		vel_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_Velocity];
-		UUmAssert((vel_offset >= 0) && 
+		UUmAssert((vel_offset >= 0) &&
 			(vel_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		// vector particles cannot be drawn without a velocity!
@@ -9703,41 +9703,41 @@ void P3rDisplayClass_Vector(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 							inClass->classname);
 		return;
 	}
-	
+
 	// is there an offset position?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasOffsetPos) {
 		offsetpos_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_OffsetPos];
-		UUmAssert((offsetpos_offset >= 0) && 
+		UUmAssert((offsetpos_offset >= 0) &&
 			(offsetpos_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
-		
+
 		// set up for inside loop
 		positionptr = &calculatedposition;
 	} else {
 		offsetpos_offset = P3cNoVar;
 	}
-	
+
 	// is there a dynamic matrix?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasDynamicMatrix) {
 		dynmatrix_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_DynamicMatrix];
-		UUmAssert((dynmatrix_offset >= 0) && 
+		UUmAssert((dynmatrix_offset >= 0) &&
 			(dynmatrix_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		dynmatrix_offset = P3cNoVar;
 	}
-	
+
 	appearance_params = (P3tAppearance *) &inClass->definition->appearance;
-	
+
 	dynamic_scale = P3iValueIsDynamic(&appearance_params->scale);
 	if (dynamic_scale) {
 		do_scale = UUcTrue;
 	} else {
 		P3iCalculateValue(NULL, &appearance_params->scale, (void *) &scale);
 	}
-	
+
 	dynamic_tint = P3iValueIsDynamic(&appearance_params->tint);
 	if (!dynamic_tint)
 		P3iCalculateValue(NULL, &appearance_params->tint, (void *) &tint);
-	
+
 	dynamic_alpha = P3iValueIsDynamic(&appearance_params->alpha);
 	if (!dynamic_alpha) {
 		P3iCalculateValue(NULL, &appearance_params->alpha, (void *) &floatalpha);
@@ -9747,37 +9747,37 @@ void P3rDisplayClass_Vector(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 
 		currentalpha = constalpha;
 	}
-	
+
 	for (particle = inClass->headptr; particle != NULL; particle = next_particle) {
 		next_particle = particle->header.nextptr;
-		
+
 		if (particle->header.flags & P3cParticleFlag_Hidden)
 			continue;
-		
+
 		positionptr = P3rGetPositionPtr(inClass, particle, &is_dead);
 		if (is_dead) {
 			continue;
 		}
-		
+
 		if (offsetpos_offset != P3cNoVar) {
 			MUmVector_Add(calculatedposition, *positionptr,
 				*((M3tVector3D *) &particle->vararray[offsetpos_offset]));
 			positionptr = &calculatedposition;
 		}
-		
+
 		if (dynamic_scale)
 			P3iCalculateValue(particle, &appearance_params->scale, (void *) &scale);
-		
+
 		MUmVector_Copy(endpoint, *positionptr);
 		MUmVector_ScaleIncrement(endpoint, scale, *((M3tVector3D *) &particle->vararray[vel_offset]));
-		
+
 		if (dynmatrix_offset != P3cNoVar) {
 			matrixptr = (M3tMatrix4x3 *) &particle->vararray[dynmatrix_offset];
 			MUrMatrix_MultiplyPoint(positionptr, matrixptr, &calculatedposition);
 			positionptr = &calculatedposition;
 			MUrMatrix_MultiplyPoint(&endpoint, matrixptr, &endpoint);
 		}
-		
+
 		// if we are fading out then use the current lifetime and fade time to calculate alpha
 		if (particle->header.flags & P3cParticleFlag_FadeOut) {
 			realalpha = (UUtUns16)  (M3cMaxAlpha * particle->header.lifetime / particle->header.fadeout_time);
@@ -9785,7 +9785,7 @@ void P3rDisplayClass_Vector(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 			M3rGeom_State_Commit();
 
 			currentalpha = realalpha;
-			
+
 		} else {
 			if (dynamic_alpha) {
 				P3iCalculateValue(particle, &appearance_params->alpha, (void *) &floatalpha);
@@ -9825,7 +9825,7 @@ void P3rDisplayClass_Vector(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 		// evaluate any dynamic appearance parameters for this particle
 		if (dynamic_tint)
 			P3iCalculateValue(particle, &appearance_params->tint, (void *) &tint);
-		
+
 		M3rGeom_Line_Light(positionptr, &endpoint, tint);
 	}
 }
@@ -9861,7 +9861,7 @@ void P3rDisplayClass_Sprite(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 
 		if (inClass->definition->flags & P3cParticleClassFlag_HasLensFrames) {
 			lensframes_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_LensFrames];
-			UUmAssert((lensframes_offset >= 0) && 
+			UUmAssert((lensframes_offset >= 0) &&
 				(lensframes_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 		} else {
 			lensframes_offset = P3cNoVar;
@@ -9869,7 +9869,7 @@ void P3rDisplayClass_Sprite(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 	}
 
 	appearance_params = (P3tAppearance *) &inClass->definition->appearance;
-				
+
 	do_edgefade = ((inClass->definition->flags2 & P3cParticleClassFlag2_Appearance_EdgeFade) != 0);
 	twosided_edgefade = ((inClass->definition->flags2 & P3cParticleClassFlag2_Appearance_EdgeFade_OneSided) == 0);
 	if (do_edgefade) {
@@ -9895,7 +9895,7 @@ void P3rDisplayClass_Sprite(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 			} else {
 				// fall through to next case - which determines orientation
 			}
-					
+
 		case M3cGeomState_SpriteMode_Rotated:
 		case M3cGeomState_SpriteMode_Billboard :
 			// this sprite drawing mode requires an orientation, either from a 3x3 matrix or
@@ -9903,31 +9903,31 @@ void P3rDisplayClass_Sprite(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 			if (inClass->definition->flags & P3cParticleClassFlag_HasOrientation) {
 				// use matrix by preference, because it's already normalised
 				orient_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_Orientation];
-				UUmAssert((orient_offset >= 0) && 
+				UUmAssert((orient_offset >= 0) &&
 					(orient_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 				vel_offset = P3cNoVar;
-				
+
 			} else if (inClass->definition->flags & P3cParticleClassFlag_HasVelocity) {
 				// use velocity vector otherwise
 				vel_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_Velocity];
-				UUmAssert((vel_offset >= 0) && 
+				UUmAssert((vel_offset >= 0) &&
 					(vel_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 				orient_offset = P3cNoVar;
-						
+
 			} else {
 				COrConsole_Printf("### '%s' requires velocity or orientation to use this sprite mode!",
 					inClass->classname);
 				return;
 			}
 			break;
-					
+
 		case M3cGeomState_SpriteMode_Arrow:
 		case M3cGeomState_SpriteMode_Discus:
 		case M3cGeomState_SpriteMode_Flat:
 			// this sprite drawing mode requires an orientation matrix.
 			if (inClass->definition->flags & P3cParticleClassFlag_HasOrientation) {
 				orient_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_Orientation];
-				UUmAssert((orient_offset >= 0) && 
+				UUmAssert((orient_offset >= 0) &&
 					(orient_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 				vel_offset = P3cNoVar;
 			} else {
@@ -9936,94 +9936,94 @@ void P3rDisplayClass_Sprite(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 				return;
 			}
 			break;
-					
+
 		default:
 			COrConsole_Printf("### '%s' unknown sprite mode!", inClass->classname);
 			break;
 	}
-				
+
 	// is there an offset position?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasOffsetPos) {
 		offsetpos_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_OffsetPos];
-		UUmAssert((offsetpos_offset >= 0) && 
+		UUmAssert((offsetpos_offset >= 0) &&
 			(offsetpos_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		offsetpos_offset = P3cNoVar;
 	}
-				
+
 	// is there a dynamic matrix?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasDynamicMatrix) {
 		dynmatrix_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_DynamicMatrix];
-		UUmAssert((dynmatrix_offset >= 0) && 
+		UUmAssert((dynmatrix_offset >= 0) &&
 			(dynmatrix_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		dynmatrix_offset = P3cNoVar;
 	}
-	
+
 	// is there a texture index?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasTextureIndex) {
 		texindex_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_TextureIndex];
-		UUmAssert((texindex_offset >= 0) && 
+		UUmAssert((texindex_offset >= 0) &&
 			(texindex_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		texindex_offset = P3cNoVar;
-	}			
-				
+	}
+
 	// is there a texture time?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasTextureTime) {
 		textime_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_TextureTime];
-		UUmAssert((textime_offset >= 0) && 
+		UUmAssert((textime_offset >= 0) &&
 			(textime_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		textime_offset = P3cNoVar;
-	}			
-			
+	}
+
 	// set up drawing parameters for this class
 	M3rGeom_State_Set(M3cGeomStateIntType_SpriteMode, inMode);
 	M3rGeom_State_Commit();
-				
+
 	dynamic_scale = P3iValueIsDynamic(&appearance_params->scale);
 	if (!dynamic_scale)
 		P3iCalculateValue(NULL, &appearance_params->scale, (void *) &scale);
-				
+
 	dynamic_xoffset = P3iValueIsDynamic(&appearance_params->x_offset);
 	if (!dynamic_xoffset)
 		P3iCalculateValue(NULL, &appearance_params->x_offset, (void *) &x_offset);
-				
+
 	dynamic_xshorten = P3iValueIsDynamic(&appearance_params->x_shorten);
 	if (!dynamic_xshorten)
 		P3iCalculateValue(NULL, &appearance_params->x_shorten, (void *) &x_shorten);
-				
+
 	if (inClass->definition->flags & P3cParticleClassFlag_Appearance_UseSeparateYScale) {
 		use_yscale = UUcTrue;
-		
+
 		dynamic_yscale = P3iValueIsDynamic(&appearance_params->y_scale);
 		if (!dynamic_yscale)
 			P3iCalculateValue(NULL, &appearance_params->y_scale, (void *) &y_scale);
 	} else {
 		use_yscale = dynamic_yscale = UUcFalse;
 	}
-				
+
 	dynamic_rotation = P3iValueIsDynamic(&appearance_params->rotation);
 	if (!dynamic_rotation)
 		P3iCalculateValue(NULL, &appearance_params->rotation, (void *) &rotation);
-	
+
 	if (inClass->definition->flags & P3cParticleClassFlag_Appearance_ScaleToVelocity) {
 		scale_to_velocity = UUcTrue;
 	} else {
 		scale_to_velocity = UUcFalse;
 	}
-				
+
 	dynamic_alpha = P3iValueIsDynamic(&appearance_params->alpha);
 	if (!dynamic_alpha) {
 		P3iCalculateValue(NULL, &appearance_params->alpha, (void *) &floatalpha);
 		constalpha = (UUtUns16) (floatalpha * M3cMaxAlpha);
 	}
-				
+
 	dynamic_tint = P3iValueIsDynamic(&appearance_params->tint);
 	if (!dynamic_tint)
 		P3iCalculateValue(NULL, &appearance_params->tint, (void *) &tint);
-				
+
 	error = TMrInstance_GetDataPtr(M3cTemplate_TextureMap, appearance_params->instance, &texturemap);
 	if (error != UUcError_None) {
 		if ((inClass->non_persistent_flags & P3cParticleClass_NonPersistentFlag_WarnedAboutNotFound) == 0) {
@@ -10038,14 +10038,14 @@ void P3rDisplayClass_Sprite(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 			return;
 		}
 	}
-				
-				
+
+
 	for (particle = inClass->headptr; particle != NULL; particle = next_particle) {
 		next_particle = particle->header.nextptr;
-		
+
 		if (particle->header.flags & P3cParticleFlag_Hidden)
 			continue;
-		
+
 		// calculate this particle's position
 		positionptr = P3rGetPositionPtr(inClass, particle, &is_dead);
 		if (is_dead) {
@@ -10064,13 +10064,13 @@ void P3rDisplayClass_Sprite(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 				*((M3tVector3D *) &particle->vararray[offsetpos_offset]));
 			positionptr = &calculatedposition;
 		}
-		
+
 		// apply the dynamic matrix to the position
 		if (matrixptr) {
 			MUrMatrix_MultiplyPoint(positionptr, matrixptr, &calculatedposition);
 			positionptr = &calculatedposition;
 		}
-		
+
 		if (dynamic_alpha) {
 			P3iCalculateValue(particle, &appearance_params->alpha, (void *) &floatalpha);
 			realalpha = (UUtUns16) (floatalpha * M3cMaxAlpha);
@@ -10103,22 +10103,22 @@ void P3rDisplayClass_Sprite(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 		// evaluate any dynamic appearance parameters for this particle
 		if (dynamic_scale)
 			P3iCalculateValue(particle, &appearance_params->scale, (void *) &scale);
-		
+
 		if (dynamic_xoffset)
 			P3iCalculateValue(particle, &appearance_params->x_offset, (void *) &x_offset);
-		
+
 		if (dynamic_xshorten)
 			P3iCalculateValue(particle, &appearance_params->x_shorten, (void *) &x_shorten);
-		
+
 		if (dynamic_rotation)
 			P3iCalculateValue(particle, &appearance_params->rotation, (void *) &rotation);
-		
+
 		if (dynamic_yscale)
 			P3iCalculateValue(particle, &appearance_params->y_scale, (void *) &y_scale);
-		
+
 		if (dynamic_tint)
 			P3iCalculateValue(particle, &appearance_params->tint, (void *) &tint);
-		
+
 		// calculate the velocity and orientation
 		if (vel_offset == P3cNoVar) {
 			velocityptr = NULL;
@@ -10130,12 +10130,12 @@ void P3rDisplayClass_Sprite(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 		} else {
 			orientationptr = (M3tMatrix3x3 *) &particle->vararray[orient_offset];
 		}
-		
+
 		currentscale = scale;
 		if (scale_to_velocity && (velocityptr != NULL)) {
 			currentscale *= 1.0f + MUmVector_GetLength(*velocityptr);
 		}
-		
+
 		// apply the dynamic matrix to the velocity and orientation if there is one
 		// this is done in a different place to the matrix application to position to speed
 		// up lensflare culling
@@ -10149,19 +10149,19 @@ void P3rDisplayClass_Sprite(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 				orientationptr = &new_orientation;
 			}
 		}
-		
+
 		// set up the texture instance index
 		if (texindex_offset != P3cNoVar) {
 			texval = *((UUtUns32 *) &particle->vararray[texindex_offset]);
 			M3rDraw_State_SetInt(M3cDrawStateIntType_TextureInstance, texval);
 		}
-		
+
 		// set up the texture time index
 		if (textime_offset != P3cNoVar) {
 			texval = *((UUtUns32 *) &particle->vararray[textime_offset]);
 			M3rDraw_State_SetInt(M3cDrawStateIntType_Time, inTime - texval);
 		}
-		
+
 		// if we are fading out then use the current lifetime and fade time to calculate alpha
 		// NB: this does *NOT* use the previous value of realalpha because when fading out, we calculate
 		// fadeout_time to take our dynamic alpha into account. this means that lensflares can't fade out
@@ -10169,14 +10169,14 @@ void P3rDisplayClass_Sprite(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns32
 		if (particle->header.flags & P3cParticleFlag_FadeOut) {
 			realalpha = (UUtUns16) (M3cMaxAlpha * particle->header.lifetime / particle->header.fadeout_time);
 		}
-		
+
 		// are we being chopped?
 		if (particle->header.flags & P3cParticleFlag_Chop) {
 			chopval = 1.0f - particle->header.lifetime / particle->header.fadeout_time;
 		} else {
 			chopval = 0.0f;
 		}
-		
+
 		if (do_edgefade) {
 			MUmVector_Subtract(cameraDir, cameraPos, *positionptr);
 			MUmVector_Normalize(cameraDir);
@@ -10295,14 +10295,14 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 	}
 
 	contraildata_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_ContrailData];
-	UUmAssert((contraildata_offset >= 0) && 
+	UUmAssert((contraildata_offset >= 0) &&
 			(contraildata_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
-				
+
 	if (inMode == M3cGeomState_SpriteMode_Contrail) {
 		// this sprite drawing mode requires an orientation matrix
 		if (inClass->definition->flags & P3cParticleClassFlag_HasOrientation) {
 			orient_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_Orientation];
-			UUmAssert((orient_offset >= 0) && 
+			UUmAssert((orient_offset >= 0) &&
 				(orient_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 		} else {
 			COrConsole_Printf("### '%s' requires orientation to use this contrail mode!",
@@ -10312,7 +10312,7 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 	} else {
 		orient_offset = P3cNoVar;
 	}
-				
+
 	is_lensflare = ((inClass->definition->flags2 & P3cParticleClassFlag2_Appearance_LensFlare) != 0);
 	lensflare_tolerance = 0.0f;
 	if (is_lensflare) {
@@ -10320,7 +10320,7 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 
 		if (inClass->definition->flags & P3cParticleClassFlag_HasLensFrames) {
 			lensframes_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_LensFrames];
-			UUmAssert((lensframes_offset >= 0) && 
+			UUmAssert((lensframes_offset >= 0) &&
 				(lensframes_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 		} else {
 			lensframes_offset = P3cNoVar;
@@ -10330,56 +10330,56 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 	// is there an offset position?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasOffsetPos) {
 		offsetpos_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_OffsetPos];
-		UUmAssert((offsetpos_offset >= 0) && 
+		UUmAssert((offsetpos_offset >= 0) &&
 			(offsetpos_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		offsetpos_offset = P3cNoVar;
 	}
-				
+
 	// is there a dynamic matrix?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasDynamicMatrix) {
 		dynmatrix_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_DynamicMatrix];
-		UUmAssert((dynmatrix_offset >= 0) && 
+		UUmAssert((dynmatrix_offset >= 0) &&
 				(dynmatrix_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		dynmatrix_offset = P3cNoVar;
 	}
-				
+
 	// is there a texture index?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasTextureIndex) {
 		texindex_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_TextureIndex];
-		UUmAssert((texindex_offset >= 0) && 
+		UUmAssert((texindex_offset >= 0) &&
 				(texindex_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		texindex_offset = P3cNoVar;
-	}			
-				
+	}
+
 	// is there a texture time?
 	if (inClass->definition->flags & P3cParticleClassFlag_HasTextureTime) {
 		textime_offset = inClass->optionalvar_offset[P3cParticleOptionalVar_TextureTime];
-		UUmAssert((textime_offset >= 0) && 
+		UUmAssert((textime_offset >= 0) &&
 				(textime_offset < (UUtUns16) (inClass->particle_size - sizeof(P3tParticleHeader))));
 	} else {
 		textime_offset = P3cNoVar;
-	}			
-				
+	}
+
 	appearance_params = (P3tAppearance *) &inClass->definition->appearance;
-				
+
 	// set up drawing parameters for this class
 	dynamic_scale = P3iValueIsDynamic(&appearance_params->scale);
 	if (!dynamic_scale)
 		P3iCalculateValue(NULL, &appearance_params->scale, (void *) &scale);
-				
+
 	dynamic_alpha = P3iValueIsDynamic(&appearance_params->alpha);
 	if (!dynamic_alpha) {
 		P3iCalculateValue(NULL, &appearance_params->alpha, (void *) &floatalpha);
 		constalpha = (UUtUns16) (floatalpha * M3cMaxAlpha);
 	}
-				
+
 	dynamic_tint = P3iValueIsDynamic(&appearance_params->tint);
 	if (!dynamic_tint)
 		P3iCalculateValue(NULL, &appearance_params->tint, (void *) &tint);
-			
+
 	do_edgefade = ((inClass->definition->flags2 & P3cParticleClassFlag2_Appearance_EdgeFade) != 0);
 	if (do_edgefade) {
 		if (P3iValueIsDynamic(&appearance_params->edgefade_min) || P3iValueIsDynamic(&appearance_params->edgefade_max)) {
@@ -10414,7 +10414,7 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 			return;
 		}
 	}
-	
+
 	// do we need to know where the camera is?
 	if ((inMode == M3cGeomState_SpriteMode_ContrailRotated) || (do_edgefade)) {
 		// get the camera's location
@@ -10454,13 +10454,13 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 
 		if (link_class->definition->flags & P3cParticleClassFlag_HasContrailData) {
 			linkcontraildata_offset = link_class->optionalvar_offset[P3cParticleOptionalVar_ContrailData];
-			UUmAssert((linkcontraildata_offset >= 0) && 
+			UUmAssert((linkcontraildata_offset >= 0) &&
 					(linkcontraildata_offset < (UUtUns16) (link_class->particle_size - sizeof(P3tParticleHeader))));
 		} else {
 			COrConsole_Printf("### '%s': emitted contrail particle has no contrail data!", inClass->classname);
 			return;
 		}
-				
+
 
 	} else {
 		linkcontraildata_offset = contraildata_offset;
@@ -10470,13 +10470,13 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 	// set up drawing parameters for this class
 	M3rGeom_State_Set(M3cGeomStateIntType_SpriteMode, inMode);
 	M3rGeom_State_Commit();
-								
+
 	for (particle = inClass->headptr; particle != NULL; particle = next_particle) {
 		next_particle = particle->header.nextptr;
-					
+
 		if (particle->header.flags & P3cParticleFlag_Hidden)
 			continue;
-					
+
 		// calculate this particle's position
 		positionptr = P3rGetPositionPtr(inClass, particle, &is_dead);
 		if (is_dead) {
@@ -10499,7 +10499,7 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 			MUmVector_Add(contraildataptr->position, contraildataptr->position,
 				*((M3tVector3D *) &particle->vararray[offsetpos_offset]));
 		}
-		
+
 		// apply the dynamic matrix to position
 		if (matrixptr) {
 			MUrMatrix_MultiplyPoint(&contraildataptr->position, matrixptr, &contraildataptr->position);
@@ -10536,26 +10536,26 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 
 		if (dynamic_scale)
 			P3iCalculateValue(particle, &appearance_params->scale, (void *) &scale);
-					
+
 		// calculate the orientation
 		if (orient_offset == P3cNoVar) {
 			orientationptr = NULL;
 		} else {
 			orientationptr = (M3tMatrix3x3 *) &particle->vararray[orient_offset];
 		}
-					
+
 		// apply the dynamic matrix to orientation
 		if (matrixptr && (orientationptr != NULL)) {
 			MUrMatrix3x3_Multiply((M3tMatrix3x3 *) matrixptr, orientationptr, &new_orientation);
 			orientationptr = &new_orientation;
 		}
-					
+
 		if (dynamic_tint) {
 			P3iCalculateValue(particle, &appearance_params->tint, (void *) &contraildataptr->tint);
 		} else {
 			contraildataptr->tint = tint;
 		}
-					
+
 		// if we are fading out then use the current lifetime and fade time to calculate alpha
 		if (particle->header.flags & P3cParticleFlag_FadeOut) {
 			contraildataptr->alpha = (UUtUns16) (M3cMaxAlpha * particle->header.lifetime
@@ -10563,7 +10563,7 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 		} else {
 			contraildataptr->alpha = realalpha;
 		}
-		
+
 		if (inEmitter) {
 			emitter_data = ((P3tParticleEmitterData *) particle->vararray) + emit_num;
 
@@ -10595,7 +10595,7 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 			ref = particle->header.user_ref;
 			if (ref == P3cParticleReference_Null)
 				continue;
-			
+
 			P3mUnpackParticleReference(ref, link_class, link_particle);
 			if (link_class != inClass) {
 				COrConsole_Printf("### '%s' contrail-link points to a different class!", inClass->classname);
@@ -10640,10 +10640,10 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 			MUrVector_CrossProduct(&contrailDir, &cameraDir, &contraildataptr->width);
 			contrail_width = MUmVector_GetLength(contraildataptr->width);
 
-			if (contrail_width > 0.01f) 
+			if (contrail_width > 0.01f)
 				MUmVector_Scale(contraildataptr->width, scale / contrail_width);
 		}
-			
+
 		// if we are the first section of the contrail (i.e. our linked particle has a link to
 		// a null reference) then our linked particle never got to set up its contraildata's width.
 		// copy ours.
@@ -10703,13 +10703,13 @@ void P3rDisplayClass_Contrail(P3tParticleClass *inClass, UUtUns32 inTime, UUtUns
 			texval = *((UUtUns32 *) &particle->vararray[texindex_offset]);
 			M3rDraw_State_SetInt(M3cDrawStateIntType_TextureInstance, texval);
 		}
-					
+
 		// set up the texture time index
 		if (textime_offset != P3cNoVar) {
 			texval = *((UUtUns32 *) &particle->vararray[textime_offset]);
 			M3rDraw_State_SetInt(M3cDrawStateIntType_Time, inTime - texval);
 		}
-					
+
 #if 0
 		if ((inTime % 30) == 0) {
 		//	COrConsole_Printf("draw %f - %f", contraildataptr->position.x, linkcontraildataptr->position.x);
@@ -10855,46 +10855,46 @@ void P3rEmitterSubsection(UUtUns16 inSection, P3tEmitter *inEmitter, UUtUns32 **
 		*outOffset = P3cEmitterValue_RateValOffset;
 		strcpy(outDesc, "rate");
 		break;
-		
+
 	case 1:
 		*outPropertyPtr = (UUtUns32 *)&inEmitter->position_type;
 		*outClass = P3gEmitterPositionDesc;
 		*outOffset = P3cEmitterValue_PositionValOffset;
 		strcpy(outDesc, "position");
 		break;
-		
+
 	case 2:
 		*outPropertyPtr = (UUtUns32 *)&inEmitter->direction_type;
 		*outClass = P3gEmitterDirectionDesc;
 		*outOffset = P3cEmitterValue_DirectionValOffset;
 		strcpy(outDesc, "direction");
 		break;
-		
+
 	case 3:
 		*outPropertyPtr = (UUtUns32 *)&inEmitter->speed_type;
 		*outClass = P3gEmitterSpeedDesc;
 		*outOffset = P3cEmitterValue_SpeedValOffset;
 		strcpy(outDesc, "speed");
 		break;
-		
+
 	case 4:
 		*outPropertyPtr = (UUtUns32 *)&inEmitter->orientdir_type;
 		*outClass = P3gEmitterOrientationDesc;
 		*outOffset = P3cEmitterValue_OrientationValOffset;
 		strcpy(outDesc, "orient dir");
 		break;
-		
+
 	case 5:
 		*outPropertyPtr = (UUtUns32 *)&inEmitter->orientup_type;
 		*outClass = P3gEmitterOrientationDesc;
 		*outOffset = P3cEmitterValue_OrientationValOffset;
 		strcpy(outDesc, "orient up");
 		break;
-		
+
 	default:
 		UUmAssert(0);
 	}
-}	
+}
 
 // create space for a new particle class
 static P3tParticleClass *P3iAllocateParticleClass(void)
@@ -11074,7 +11074,7 @@ P3tParticleClass *P3rDuplicateParticleClass(P3tParticleClass *inClass, char *inN
 	new_class->prev_active_class = new_class->next_active_class = P3cClass_None;
 	new_class->particle_size = inClass->particle_size;
 	new_class->size_class = inClass->size_class;
-	
+
 	// there must be enough room for the incoming class in the block that it has had allocated
 	UUmAssert(inClass->memory.size >= inClass->definition->definition_size);
 
@@ -11228,7 +11228,7 @@ UUtBool P3rDecodeAttractorIndex(UUtUns32 inAttractorID, UUtBool inPredictVelocit
 	} else if (inAttractorID & P3cAttractor_ParticleReference) {
 		P3tParticleClass *classptr;
 		P3tParticle *particle;
-		
+
 		P3mUnpackParticleReference(inAttractorID, classptr, particle);
 		if ((particle->header.self_ref != inAttractorID) || (P3rGetRealPosition(classptr, particle, outPoint))) {
 			// attractor is dead
@@ -11305,7 +11305,7 @@ void P3rIterateAttractors(P3tParticleClass *inClass, P3tParticle *inParticle, UU
 	// nothing found yet
 	P3gAttractorBuf_NumAttractors = 0;
 	P3gAttractorBuf_Valid = UUcTrue;
-	
+
 	if (iterator_func == NULL) {
 		if (attractor_data->index != (UUtUns32) -1) {
 			P3gAttractorBuf_Storage[0] = attractor_data->index;
@@ -11450,7 +11450,7 @@ void P3rFindAttractor(P3tParticleClass *inClass, P3tParticle *inParticle, UUtUns
 
 	// nothing found yet
 	attractor_index = (UUtUns32) -1;
-	
+
 	P3mAssertFloatValue(attractor->max_distance);
 	P3iCalculateValue(inParticle, &attractor->max_distance, (void *) &max_distance);
 
@@ -11755,7 +11755,7 @@ UUtBool P3iAttractorSelector_Distance(P3tParticleClass *inClass, P3tParticle *in
 	M3tVector3D delta_pos;
 
 	// static selection-sequence state variables
-	static float current_score;	
+	static float current_score;
 	static UUtUns32 previous_id;
 	static M3tPoint3D our_point;
 	static AKtEnvironment *env;
@@ -12651,7 +12651,7 @@ UUtBool P3iAction_MoveSpiral(P3tParticleClass *inClass, P3tParticle *inParticle,
 	} else {
 		orientation = (M3tMatrix3x3 *) &inParticle->vararray[ori_offset];
 		UUmAssertReadPtr(orientation, sizeof(M3tMatrix3x3));
-		
+
 		// set up offset position directly from orientation's X and Z axes
 		offsetpos->x = radius * (costheta * orientation->m[0][0] - sintheta * orientation->m[2][0]);
 		offsetpos->y = radius * (costheta * orientation->m[0][1] - sintheta * orientation->m[2][1]);
@@ -12834,7 +12834,7 @@ UUtBool P3iAction_ChangeClass(P3tParticleClass *inClass, P3tParticle *inParticle
 
 	p_matrix = P3rGetDynamicMatrixPtr(new_class, new_particle);
 	if (p_matrix != NULL) {
-		our_matrix = P3rGetDynamicMatrixPtr(inClass, inParticle);		
+		our_matrix = P3rGetDynamicMatrixPtr(inClass, inParticle);
 		if (our_matrix == NULL) {
 			*p_matrix = NULL;
 		} else {
@@ -13043,7 +13043,7 @@ UUtBool P3iAction_Bounce(P3tParticleClass *inClass, P3tParticle *inParticle,
 	if (!p_velocity) {
 		return UUcFalse;
 	}
-	
+
 #if 0 && defined(DEBUGGING) && DEBUGGING
 	{
 		float mag_0, mag_1;
@@ -13066,7 +13066,7 @@ UUtBool P3iAction_Bounce(P3tParticleClass *inClass, P3tParticle *inParticle,
 		mag_1 = MUmVector_GetLength(*p_velocity);
 
 		if ((mag_0 / mag_1 > 1.01f) || (mag_0 / mag_1 < 0.99f)) {
-			COrConsole_Printf("### bounce %f -> %f, norm %f %f %f (%s)", mag_0, mag_1, 
+			COrConsole_Printf("### bounce %f -> %f, norm %f %f %f (%s)", mag_0, mag_1,
 				P3gCurrentCollision.hit_normal.x, P3gCurrentCollision.hit_normal.y, P3gCurrentCollision.hit_normal.z,
 				(P3gCurrentCollision.env_collision) ? "env" : "phy");
 
@@ -13139,7 +13139,7 @@ UUtBool P3iAction_StickToWall(P3tParticleClass *inClass, P3tParticle *inParticle
 		inParticle->header.flags |= (P3cParticleFlag_VelocityChanged | P3cParticleFlag_Stopped);
 		inParticle->header.flags &= ~P3cParticleFlag_OrientToVelocity;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -13367,7 +13367,7 @@ UUtBool P3iAction_ImpactEffect(P3tParticleClass *inClass, P3tParticle *inParticl
 			// FIXME: get the material for this physics context (somehow)
 			// this is tricky because it might be a character, which has materials, or some
 			// other kind of physics context
-			
+
 			material_type = P3iPhysicsGetMaterialType(effect_data.cause_data.particle_physics.context);
 		}
 	} else {
@@ -13406,7 +13406,7 @@ UUtBool P3iAction_DamageChar(P3tParticleClass *inClass, P3tParticle *inParticle,
 		// don't kill people with exploding munitions caused by a cutscene
 		return UUcFalse;
 	}
-	
+
 	if ((!P3gCurrentCollision.collided) || (P3gCurrentCollision.env_collision) ||
 		(P3gCurrentCollision.damaged_hit) || (P3gCurrentCollision.hit_context->callback->type != PHcCallback_Character))
 		return UUcFalse;
@@ -13423,12 +13423,12 @@ UUtBool P3iAction_DamageChar(P3tParticleClass *inClass, P3tParticle *inParticle,
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[0], (void *) &damage);
 	if (!returnval)
 		return UUcFalse;
-	
+
 	P3mAssertFloatValue(inAction->action_value[1]);
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[1], (void *) &stundamage);
 	if (!returnval)
 		return UUcFalse;
-	
+
 	P3mAssertFloatValue(inAction->action_value[2]);
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[2], (void *) &knockback);
 	if (!returnval)
@@ -13445,7 +13445,7 @@ UUtBool P3iAction_DamageChar(P3tParticleClass *inClass, P3tParticle *inParticle,
 
 	P3mAssertEnumValue(inAction->action_value[4], P3cEnumType_Bool);
 	self_immune = (UUtBool) inAction->action_value[4].u.enum_const.val;
-	
+
 	if (inAction->action_value[5].type == P3cValueType_Enum) {
 		P3mAssertEnumValue(inAction->action_value[5], P3cEnumType_Bool);
 		can_damage_multiple = (UUtBool) inAction->action_value[5].u.enum_const.val;
@@ -13456,7 +13456,7 @@ UUtBool P3iAction_DamageChar(P3tParticleClass *inClass, P3tParticle *inParticle,
 	p_owner = P3rGetOwnerPtr(inClass, inParticle);
 	if (NULL == p_owner) {
 		owner = 0;
-	} 
+	}
 	else {
 		owner = *p_owner;
 	}
@@ -13468,7 +13468,7 @@ UUtBool P3iAction_DamageChar(P3tParticleClass *inClass, P3tParticle *inParticle,
 
 		owner = 0;
 	}
-	
+
 	if (WPcDamageOwner_Falling == (owner & WPcDamageOwner_TypeMask)) {
 		COrConsole_Printf("particle %s doing 'Falling' damage", inClass->classname) ;
 
@@ -13510,25 +13510,25 @@ UUtBool P3iAction_DamageBlast(P3tParticleClass *inClass, P3tParticle *inParticle
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[0], (void *) &damage);
 	if (!returnval)
 		return UUcFalse;
-	
+
 	P3mAssertFloatValue(inAction->action_value[1]);
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[1], (void *) &stundamage);
 	if (!returnval)
 		return UUcFalse;
-	
+
 	P3mAssertFloatValue(inAction->action_value[2]);
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[2], (void *) &knockback);
 	if (!returnval)
 		return UUcFalse;
-	
+
 	P3mAssertFloatValue(inAction->action_value[3]);
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[3], (void *) &radius);
 	if (!returnval)
 		return UUcFalse;
-	
+
 	P3mAssertEnumValue(inAction->action_value[4], P3cEnumType_Falloff);
 	falloff_type = (P3tEnumFalloff)inAction->action_value[4].u.enum_const.val;
-	
+
 	if (inAction->action_value[5].type == P3cValueType_Enum) {
 		damage_type = (P3tEnumDamageType) inAction->action_value[5].u.enum_const.val;
 		if ((damage_type < 0) || (damage_type >= P3cEnumDamageType_Max)) {
@@ -13540,7 +13540,7 @@ UUtBool P3iAction_DamageBlast(P3tParticleClass *inClass, P3tParticle *inParticle
 
 	P3mAssertEnumValue(inAction->action_value[6], P3cEnumType_Bool);
 	self_immune = (UUtBool) inAction->action_value[6].u.enum_const.val;
-	
+
 	if (inAction->action_value[7].type == P3cValueType_Enum) {
 		P3mAssertEnumValue(inAction->action_value[7], P3cEnumType_Bool);
 		damage_environment = (UUtBool) inAction->action_value[7].u.enum_const.val;
@@ -13566,7 +13566,7 @@ UUtBool P3iAction_DamageBlast(P3tParticleClass *inClass, P3tParticle *inParticle
 #endif
 				hit = P3gCurrentCollision.hit_context->callbackData;
 			}
-		} 
+		}
 	}
 
 	// look for all quads within the blast radius and damage them
@@ -13614,7 +13614,7 @@ UUtBool P3iAction_DamageBlast(P3tParticleClass *inClass, P3tParticle *inParticle
 #endif
 		return UUcFalse;
 	}
-	
+
 	// COrConsole_Printf("p3 blast damage %s %d", inClass->classname, damage_type);
 
 #if PARTICLE_DEBUG_BLAST
@@ -13623,7 +13623,7 @@ UUtBool P3iAction_DamageBlast(P3tParticleClass *inClass, P3tParticle *inParticle
 						radius, damage, stundamage, knockback);
 #endif
 	WPrBlast(&blast_sphere.center, damage_type, damage, stundamage, knockback, radius,
-			falloff_type, owner, hit, inParticle->header.self_ref, self_immune);			
+			falloff_type, owner, hit, inParticle->header.self_ref, self_immune);
 
 	return UUcFalse;
 }
@@ -13648,12 +13648,12 @@ UUtBool P3iAction_GlassCharge(P3tParticleClass *inClass, P3tParticle *inParticle
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[0], (void *) &blast_vel);
 	if (!returnval)
 		return UUcFalse;
-	
+
 	P3mAssertFloatValue(inAction->action_value[1]);
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[1], (void *) &radius);
 	if (!returnval)
 		return UUcFalse;
-	
+
 	// create blast at current location
 	blast_sphere.radius = radius;
 	is_dead = P3rGetRealPosition(inClass, inParticle, &blast_sphere.center);
@@ -13717,7 +13717,7 @@ UUtBool P3iAction_DamageEnvironment(P3tParticleClass *inClass, P3tParticle *inPa
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[0], (void *) &damage);
 	if (!returnval)
 		return UUcFalse;
-	
+
 	// damage just the quad that we hit
 	env = ONrGameState_GetEnvironment();
 	P3iDamageQuad(env, P3gCurrentCollision.hit_gqindex, damage, NULL, NULL, 0, UUcFalse);
@@ -14325,7 +14325,7 @@ UUtBool P3iAction_Chop(P3tParticleClass *inClass, P3tParticle *inParticle,
 	inParticle->header.fadeout_time = chop_time;
 	inParticle->header.flags |= P3cParticleFlag_Chop;
 
-	return UUcFalse;	
+	return UUcFalse;
 }
 
 // make a particle fly away from its spiral path. called once - translates spiral position into linear velocity
@@ -14565,7 +14565,7 @@ static UUtBool P3iAmbientSound_Update(P3tParticleClass *inClass, P3tParticle *in
 	UUtBool is_dead;
 	M3tMatrix3x3 *p_orientation;
 	M3tVector3D position, *directionptr, direction, *velocityptr;
-	
+
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Enter(P3g_ParticleSound);
 #endif
@@ -14603,7 +14603,7 @@ static UUtBool P3iAmbientSound_Update(P3tParticleClass *inClass, P3tParticle *in
 	COrConsole_Printf("P3iAmbientSound_Update (%s | %d) from 0x%08X", (inAmbientSound == NULL) ? "update" : inAmbientSound->ambient_name,
 						inParticle->header.current_sound, inParticle->header.self_ref);
 #endif
-	
+
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Exit(P3g_ParticleSound);
 #endif
@@ -14647,7 +14647,7 @@ UUtBool P3iAction_ImpulseSound(P3tParticleClass *inClass, P3tParticle *inParticl
 	M3tMatrix3x3 *p_orientation;
 	M3tVector3D position, *directionptr, direction, *velocityptr;
 	SStImpulse *impulse_sound;
-	
+
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Enter(P3g_ParticleSound);
 #endif
@@ -14660,7 +14660,7 @@ UUtBool P3iAction_ImpulseSound(P3tParticleClass *inClass, P3tParticle *inParticl
 #endif
 		return UUcFalse;
 	}
-	
+
 	// find the particle's real position
 	is_dead = P3rGetRealPosition(inClass, inParticle, &position);
 	if (is_dead) {
@@ -14683,7 +14683,7 @@ UUtBool P3iAction_ImpulseSound(P3tParticleClass *inClass, P3tParticle *inParticl
 	velocityptr = P3rGetVelocityPtr(inClass, inParticle);
 
 	OSrImpulse_Play(impulse_sound, &position, directionptr, velocityptr, NULL);
-	
+
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Exit(P3g_ParticleSound);
 #endif
@@ -14881,7 +14881,7 @@ UUtBool P3iAction_AttractHoming(P3tParticleClass *inClass, P3tParticle *inPartic
 	if (q_angle > turn_speed) {
 		MUrQuat_SetValue(&rotate_q, qx, qy, qz, turn_speed);
 	}
-	
+
 	MUrQuatToMatrix(&rotate_q, &rotate_matrix);
 	MUrMatrix3x3_MultiplyPoint(velocity, (M3tMatrix3x3 *) &rotate_matrix, velocity);
 
@@ -15232,7 +15232,7 @@ UUtBool P3iAction_FloatAbovePlayer(P3tParticleClass *inClass, P3tParticle *inPar
 	float height;
 	UUtBool returnval;
 	ONtCharacter *player_character;
-	
+
 	P3mAssertFloatValue(inAction->action_value[0]);
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[0], (void *) &height);
 	if (!returnval)
@@ -15255,7 +15255,7 @@ UUtBool P3iAction_StopIfSlow(P3tParticleClass *inClass, P3tParticle *inParticle,
 	float speed, cur_speed;
 	UUtBool returnval;
 	M3tVector3D *velocity;
-	
+
 	P3mAssertFloatValue(inAction->action_value[0]);
 	returnval = P3iCalculateValue(inParticle, &inAction->action_value[0], (void *) &speed);
 	if (!returnval)

@@ -30,7 +30,7 @@ enum
 {
 	ONcIEVersion_1			= 1,
 	ONcIEVersion_2			= 2,
-	
+
 	ONcIECurrentVersion		= ONcIEVersion_2
 };
 
@@ -174,7 +174,7 @@ static UUtError ONiImpactEffect_MakeDynamicArray(
 		// already dynamic
 		return UUcError_None;
 	}
-	
+
 	// impact entries
 	new_array = UUrMemory_Array_New(inFinalSize, ONcIE_ChunkSize, inNumElements, inNumElements + ONcIE_ChunkSize);
 	UUmError_ReturnOnNull(new_array);
@@ -406,7 +406,7 @@ ONrImpactEffect_VerifyStructure(
 	// check particles
 	particle = ONiImpactEffect_GetParticle(0, 0);
 	for (itr = 0; itr < ONgNumImpactParticles; itr++, particle++) {
-		UUmAssert((particle->effect_spec.collision_orientation >= 0) && 
+		UUmAssert((particle->effect_spec.collision_orientation >= 0) &&
 				(particle->effect_spec.collision_orientation < P3cEnumCollisionOrientation_Max));
 		UUmAssert((particle->effect_spec.location_type >= 0) &&
 				(particle->effect_spec.location_type < P3cEffectLocationType_Max));
@@ -431,9 +431,9 @@ ONrImpactEffect_VerifyStructure(
 		if (entry->sound_index != ONcIESound_None) {
 			UUmAssert((entry->sound_index >= 0) && (entry->sound_index < ONgNumImpactSounds));
 		}
-			
+
 		if (entry->num_particles > 0) {
-			UUmAssert((entry->particle_baseindex >= 0) && 
+			UUmAssert((entry->particle_baseindex >= 0) &&
 					(entry->particle_baseindex + entry->num_particles <= ONgNumImpactParticles));
 		}
 	}
@@ -504,7 +504,7 @@ ONiImpactEffect_NewParticle(
 	particle = ONiImpactEffect_GetParticle(move_index, inNumParticles);
 	UUrMemory_MoveOverlap(particle, particle + inNumParticles, (ONgNumImpactParticles - move_index - inNumParticles) * sizeof(ONtIEParticle));
 	*outParticle = particle;
-	
+
 	// update all impact entries' particle indices
 	entry = ONiImpactEffect_GetEntry(0, 0);
 	for (itr = 0; itr < ONgNumImpactEntries; itr++, entry++) {
@@ -546,7 +546,7 @@ ONiImpactEffect_DeleteParticle(
 	particle = ONiImpactEffect_GetParticle(inParticleIndex, inNumParticles);
 	UUrMemory_MoveOverlap(particle + inNumParticles, particle, (ONgNumImpactParticles - inParticleIndex - inNumParticles) * sizeof(ONtIEParticle));
 	ONgNumImpactParticles -= inNumParticles;
-	
+
 	// update all impact entries' particle indices
 	found_entry = UUcFalse;
 	entry = ONiImpactEffect_GetEntry(0, 0);
@@ -632,7 +632,7 @@ ONrImpactEffect_DeleteSound(
 	sound = ONiImpactEffect_GetSound(inSoundIndex, 1);
 	UUrMemory_MoveOverlap(sound + 1, sound, (ONgNumImpactSounds - inSoundIndex - 1) * sizeof(ONtIESound));
 	ONgNumImpactSounds -= 1;
-	
+
 	// update all impact entries' sound indices
 	found_entry = UUcFalse;
 	entry = ONiImpactEffect_GetEntry(0, 0);
@@ -693,7 +693,7 @@ ONiImpactEffect_NewEntry(
 	UUrMemory_MoveOverlap(entry, entry + 1, (ONgNumImpactEntries - move_index - 1) * sizeof(ONtImpactEntry));
 	*outEntryIndex = move_index;
 	*outEntry = entry;
-	
+
 	// update all material indices' entry indices
 	matindex = ONiImpactEffect_GetMaterialIndex(0, 0);
 	for (itr = 0; itr < ONgNumImpactMaterialIndices; itr++, matindex++) {
@@ -752,7 +752,7 @@ ONiImpactEffect_DeallocateEntry(
 	// move all impact entries after this one up
 	UUrMemory_MoveOverlap(entry + 1, entry, (ONgNumImpactEntries - inEntryIndex - 1) * sizeof(ONtImpactEntry));
 	ONgNumImpactEntries -= 1;
-	
+
 	// update all material indices' impact entry indices
 	found_matindex = UUcFalse;
 	if (outMaterialIndex) {
@@ -818,7 +818,7 @@ ONiImpactEffect_NewMaterialIndex(
 	UUrMemory_MoveOverlap(matindex, matindex + 1, (ONgNumImpactMaterialIndices - inDesiredIndex - 1)
 														* sizeof(ONtImpactMaterialIndex));
 	*outMaterialIndex = matindex;
-	
+
 	// update the lookup table's material indices
 	lookup = ONgImpactLookupTable;
 	for (itr = 0; itr < num_types; itr++, lookup++) {
@@ -868,7 +868,7 @@ ONiImpactEffect_DeleteMaterialIndex(
 	// move all material indices after this one up
 	UUrMemory_MoveOverlap(matindex + 1, matindex, (ONgNumImpactMaterialIndices - inMaterialIndex - 1) * sizeof(ONtImpactMaterialIndex));
 	ONgNumImpactMaterialIndices -= 1;
-	
+
 	// update the lookup table's material indices
 	found_lookup = UUcFalse;
 	lookup = ONgImpactLookupTable;
@@ -928,7 +928,7 @@ OWiImpactEffect_AllocateSpecificEntry(
 	// get this impact type's lookup element
 	UUmAssert((inImpactType >= 0) && (inImpactType < MArImpacts_GetNumTypes()));
 	lookup = ONgImpactLookupTable + inImpactType;
-	
+
 	// find the material index that corresponds to this material type
 	matindex = ONiImpactEffect_GetMaterialIndex(lookup->index_base, lookup->num_indices);
 	for (itr = 0; itr < lookup->num_indices; itr++, matindex++) {
@@ -1047,7 +1047,7 @@ ONrImpactEffect_GetImpactEntries(
 	// get this impact type's lookup element
 	UUmAssert((inImpactType >= 0) && (inImpactType < MArImpacts_GetNumTypes()));
 	lookup = ONgImpactLookupTable + inImpactType;
-	
+
 	// find the first material index that hasn't yet been returned.
 	matindex = ONiImpactEffect_GetMaterialIndex(lookup->index_base, lookup->num_indices);
 	for (itr = 0; itr < lookup->num_indices; itr++, matindex++) {
@@ -1388,7 +1388,7 @@ ONrImpactEffect(
 
 	for (itr = 0; itr < ONcIEComponent_Max; itr++) {
 		// play each component of the effect
-		if (found_indices[itr] == (UUtUns32) -1) 
+		if (found_indices[itr] == (UUtUns32) -1)
 			continue;
 
 		entry = ONiImpactEffect_GetEntry(found_indices[itr], 1);
@@ -1479,7 +1479,7 @@ ONrImpactEffect_Lookup(
 		material_type = inMaterialType;
 
 		for (itr = lookup->num_indices - 1; itr >= 0; ) {
-			
+
 			if (matindex->material > material_type) {
 				// keep looking further up the array
 				itr--;
@@ -1487,7 +1487,7 @@ ONrImpactEffect_Lookup(
 				continue;
 
 			}
-			
+
 			if (matindex->material == material_type) {
 				// we have found a material that has impact entries for this impact type.
 				entry = ONiImpactEffect_GetEntry(matindex->entry_index, matindex->num_entries);
@@ -1599,7 +1599,7 @@ ONiIESwap_Particles(
 
 	for (itr = 0; itr < inNumParticles; itr++, particle++) {
 		if (inSwap) {
-			P3iSwap_EffectSpecification((void *) &particle->effect_spec, !inLoad);			
+			P3iSwap_EffectSpecification((void *) &particle->effect_spec, !inLoad);
 		}
 
 		if (inLoad) {
@@ -1733,7 +1733,7 @@ ONiIESwap_Entries(
 
 			if (entry->num_particles > 0) {
 				// check that this is a valid index into the particle array
-				if ((entry->particle_baseindex < 0) || 
+				if ((entry->particle_baseindex < 0) ||
 					(entry->particle_baseindex + (UUtUns32) entry->num_particles > ONgNumImpactParticles)) {
 					UUrDebuggerMessage("Impact Effect Load: entry %d particle index %d len %d outside array bounds (%d)!\n",
 										itr, entry->particle_baseindex, entry->num_particles, ONgNumImpactParticles);
@@ -1841,7 +1841,7 @@ ONiIESwap_MaterialIndices(
 			}
 
 			// check that this is a valid index into the impact entry array
-			if ((matindex->entry_index < 0) || 
+			if ((matindex->entry_index < 0) ||
 				(matindex->entry_index + matindex->num_entries > ONgNumImpactEntries)) {
 				UUrDebuggerMessage("Impact Effect Load: materialindex %d entry index %d len %d outside array bounds (%d)!\n",
 									itr, matindex->entry_index, matindex->num_entries, ONgNumImpactEntries);
@@ -2010,10 +2010,10 @@ UUtError ONrIEBinaryData_Process(void)
 	if (NULL == ONgImpactEffectsBuffer) {
 		return UUcError_Generic;
 	}
-	
+
 	buffer = ONgImpactEffectsBuffer;
 	buffer_size = ONgImpactEffectsBuffer_Size;
-	
+
 	// read the version number
 	buffer_size -= OBDmGet4BytesFromBuffer(buffer, version, UUtUns32, ONgImpactEffectsBuffer_SwapIt);
 
@@ -2089,7 +2089,7 @@ UUtError ONrIEBinaryData_Process(void)
 	/*
 	 * read the translation tables
 	 */
-	
+
 	ONgIE_ImpactTranslation = (ONtImpactTranslator *) buffer;
 	buffer += ONgIE_FileNumImpactTypes * sizeof(ONtImpactTranslator);
 	ONiIEReadImpactTranslation();
@@ -2141,7 +2141,7 @@ UUtError ONrIEBinaryData_Process(void)
 	/*
 	 * read the particles
 	 */
-	
+
 	ONgImpactParticles = (ONtIEParticle *) buffer;
 	buffer += ONgNumImpactParticles * sizeof(ONtIEParticle);
 	error = ONiIESwap_Particles(ONgNumImpactParticles, ONiImpactEffect_GetParticle(0, 0), ONgImpactEffectsBuffer_SwapIt, UUcTrue);
@@ -2154,7 +2154,7 @@ UUtError ONrIEBinaryData_Process(void)
 	/*
 	 * read the sounds
 	 */
-	
+
 	if (version >= ONcIEVersion_2) {
 		// sounds are the correct size, no padding necessary. we can byte-swap in place.
 		ONgImpactSounds = (ONtIESound *) buffer;
@@ -2179,7 +2179,7 @@ UUtError ONrIEBinaryData_Process(void)
 	/*
 	 * read the impact entries
 	 */
-	
+
 	ONgImpactEntries = (ONtImpactEntry *) buffer;
 	buffer += ONgNumImpactEntries * sizeof(ONtImpactEntry);
 	error = ONiIESwap_Entries(ONgNumImpactEntries, ONiImpactEffect_GetEntry(0, 0), ONgImpactEffectsBuffer_SwapIt, UUcTrue);
@@ -2192,7 +2192,7 @@ UUtError ONrIEBinaryData_Process(void)
 	/*
 	 * read the material indices
 	 */
-	
+
 	ONgImpactMaterialIndices = (ONtImpactMaterialIndex *) buffer;
 	buffer += ONgNumImpactMaterialIndices * sizeof(ONtImpactMaterialIndex);
 	error = ONiIESwap_MaterialIndices(ONgNumImpactMaterialIndices, ONiImpactEffect_GetMaterialIndex(0, 0),
@@ -2253,7 +2253,7 @@ ONiIEWriteImpactTranslation(
 {
 	ONtImpactTranslator *translator = (ONtImpactTranslator *) *inBuffer;
 	UUtUns32 itr, write_size, num_types = MArImpacts_GetNumTypes();
-	
+
 	write_size = num_types * sizeof(ONtImpactTranslator);
 	UUmAssert(*ioNumBytes >= write_size);
 
@@ -2275,7 +2275,7 @@ ONiIEWriteMaterialTranslation(
 {
 	ONtMaterialTranslator *translator = (ONtMaterialTranslator *) *inBuffer;
 	UUtUns32 itr, write_size, num_types = MArMaterials_GetNumTypes();
-	
+
 	write_size = num_types * sizeof(ONtMaterialTranslator);
 	UUmAssert(*ioNumBytes >= write_size);
 
@@ -2309,13 +2309,13 @@ ONiIEBinaryData_Save(
 	num_impact_types = MArImpacts_GetNumTypes();
 	num_material_types = MArMaterials_GetNumTypes();
 
-		
+
 #if UUmEndian == UUmEndian_Big
 	swap_data = UUcTrue;
 #elif UUmEndian == UUmEndian_Little
 	swap_data = UUcFalse;
 #else
-	#pragma error 
+	#pragma error
 #endif
 
 	if (ONgNumImpactEntries == 0) {
@@ -2339,7 +2339,7 @@ ONiIEBinaryData_Save(
 		UUrDebuggerMessage("Impact Effect Save: can't allocate buffer for data save!\n");
 		goto cleanup;
 	}
-	
+
 	// set up to write at the start of this block
 	buffer = data;
 	num_bytes = data_size;
@@ -2357,7 +2357,7 @@ ONiIEBinaryData_Save(
 	/*
 	 * write the translation tables
 	 */
-	
+
 	error = ONiIEWriteImpactTranslation(&buffer, &num_bytes);
 	if (error != UUcError_None) {
 		UUrDebuggerMessage("Impact Effect Save: could not write impact-type translation!\n");
@@ -2386,12 +2386,12 @@ ONiIEBinaryData_Save(
 	}
 	num_bytes -= write_size;
 	buffer += write_size;
-	
+
 
 	/*
 	 * write the particles
 	 */
-	
+
 	write_size = ONgNumImpactParticles * sizeof(ONtIEParticle);
 	UUmAssert(num_bytes >= write_size);
 	UUrMemory_MoveFast(ONiImpactEffect_GetParticle(0, 0), buffer, write_size);
@@ -2404,11 +2404,11 @@ ONiIEBinaryData_Save(
 	num_bytes -= write_size;
 	buffer += write_size;
 
-	
+
 	/*
 	 * write the sounds
 	 */
-	
+
 	write_size = ONgNumImpactSounds * sizeof(ONtIESound);
 	UUmAssert(num_bytes >= write_size);
 	UUrMemory_MoveFast(ONiImpactEffect_GetSound(0, 0), buffer, write_size);
@@ -2420,11 +2420,11 @@ ONiIEBinaryData_Save(
 	}
 	num_bytes -= write_size;
 	buffer += write_size;
-	
+
 	/*
 	 * write the impact entries
 	 */
-	
+
 	write_size = ONgNumImpactEntries * sizeof(ONtImpactEntry);
 	UUmAssert(num_bytes >= write_size);
 	UUrMemory_MoveFast(ONiImpactEffect_GetEntry(0, 0), buffer, write_size);
@@ -2436,12 +2436,12 @@ ONiIEBinaryData_Save(
 	}
 	num_bytes -= write_size;
 	buffer += write_size;
-	
-	
+
+
 	/*
 	 * write the material indices
 	 */
-	
+
 	write_size = ONgNumImpactMaterialIndices * sizeof(ONtImpactMaterialIndex);
 	UUmAssert(num_bytes >= write_size);
 	UUrMemory_MoveFast(ONiImpactEffect_GetMaterialIndex(0, 0), buffer, write_size);
@@ -2460,7 +2460,7 @@ ONiIEBinaryData_Save(
 	 * save the data
 	 */
 	UUmAssert(num_bytes == 0);
-	error = 
+	error =
 		OBDrBinaryData_Save(
 			ONcIEBinaryDataClass,
 			"impact_effects",
@@ -2478,7 +2478,7 @@ ONiIEBinaryData_Save(
 	if (inAutoSave == UUcFalse) {
 		ONgImpactEffect_Dirty = UUcFalse;
 	}
-	
+
 	ONgImpactEffect_AutomaticModificationsOnly = UUcFalse;
 	return UUcError_None;
 
@@ -2510,7 +2510,7 @@ ONiIEClearStorage(
 	ONgNumImpactSounds = 0;
 	ONgNumImpactParticles = 0;
 	ONgNumImpactMaterialIndices = 0;
-	
+
 	ONgImpactEntries = NULL;
 	ONgImpactSounds = NULL;
 	ONgImpactParticles = NULL;
@@ -2575,12 +2575,12 @@ ONiIEBinaryData_Register(
 {
 	UUtError					error;
 	BDtMethods					methods;
-	
+
 	methods.rLoad = ONiIEBinaryData_Load;
-	
+
 	error =	BDrRegisterClass(ONcIEBinaryDataClass, &methods);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -2593,31 +2593,31 @@ ONrImpactEffects_ListBrokenLinks(
 	UUtUns32					num_impacts;
 	UUtUns32					num_materials;
 	UUtUns16					i;
-	
+
 	// sprintf a header
 	sprintf(text, "********** Animation Sound Links **********\n\n");
 	BFrFile_Write(inFile, strlen(text), text);
 	sprintf(text, "Impact\tMaterial\tModifier\tImpulse Sound Name\n");
 	BFrFile_Write(inFile, strlen(text), text);
-	
+
 	num_impacts = MArImpacts_GetNumTypes();
 	num_materials = MArMaterials_GetNumTypes();
-	
+
 	for (i = 0; i < num_impacts; i++)
 	{
 		UUtUns16				j;
-		
+
 		for (j = 0; j < num_materials; j++)
 		{
 			UUtUns16				k;
-			
+
 			for (k = 0; k < ONcIEModType_NumTypes; k++)
 			{
 				UUtUns32				itr;
 				UUtUns32				found_indices[ONcIEComponent_Max];
-				
+
 				ONrImpactEffect_Lookup(i, j, k, found_indices);
-				
+
 				for (itr = 0; itr < ONcIEComponent_Max; itr++)
 				{
 					ONtImpactEntry			*entry;
@@ -2626,23 +2626,23 @@ ONrImpactEffects_ListBrokenLinks(
 					const char				*material_name;
 					const char				*mod_name;
 					SStImpulse				*impulse;
-					
+
 					// get the entry
 					if (found_indices[itr] == (UUtUns32) -1) { continue; }
 					entry = ONiImpactEffect_GetEntry(found_indices[itr], 1);
 					if (entry == NULL) { continue; }
 					if (entry->sound_index == ONcIESound_None) { continue; }
-					
+
 					// get teh impact effect sound
 					sound = ONiImpactEffect_GetSound(entry->sound_index, 1);
-					impulse = OSrImpulse_GetByName(sound->sound_name); 
+					impulse = OSrImpulse_GetByName(sound->sound_name);
 					if (impulse != NULL) { continue; }
-					
+
 					// get the names
 					impact_name = MArImpactType_GetName(entry->impact_type);
 					material_name = MArMaterialType_GetName(entry->material_type);
 					mod_name = ONgIEModTypeName[entry->modifier];
-					
+
 					sprintf(
 						text,
 						"%s\t%s\t%s\t%s\n",
@@ -2667,13 +2667,13 @@ ONrImpactEffects_Initialize(
 	void)
 {
 	UUtError					error;
-	
+
 	// register the binary data
 	error = ONiIEBinaryData_Register();
 	UUmError_ReturnOnError(error);
-	
+
 	ONiIEClearStorage();
-	
+
 	return UUcError_None;
 }
 
@@ -2722,7 +2722,7 @@ ONrImpactEffects_CreateBlank(
 	void)
 {
 	UUtUns32					itr, num_types;
-	
+
 	if (ONgImpactEffect_Loaded)
 		return UUcError_None;
 
@@ -2753,7 +2753,7 @@ ONrImpactEffects_CreateBlank(
 
 	return UUcError_None;
 }
-	
+
 
 // ======================================================================
 #if 0
@@ -2772,15 +2772,15 @@ ONiImpactEffect_Write(
 	const char				*sound_name;
 	char					string[2048];
 	UUtUns32				i;
-	
+
 	impact_name = MArImpactType_GetName(inEntry->impact_type);
 	material_name = MArMaterialType_GetName(inEntry->material_type);
 	mod_name = ONgIEModTypeName[inEntry->modifier];
-	
+
 	if (inEntry->sound_index != ONcIESound_None)
 	{
 		ONtIESound				*sound;
-		
+
 		sound = ONiImpactEffect_GetSound(inEntry->sound_index, 1);
 		sound_name = sound->sound_name;
 	}
@@ -2788,17 +2788,17 @@ ONiImpactEffect_Write(
 	{
 		sound_name = "(NONE)";
 	}
-	
+
 	sprintf(string, "%s\t%s\t%s\t%s\n", impact_name, material_name, mod_name, sound_name);
 	BFrFile_Write(inFile, strlen(string), string);
-	
+
 	for (i = 0; i < inEntry->num_particles; i++)
 	{
 		ONtIEParticle			*particle;
-		
+
 		particle = ONiImpactEffect_GetParticle(inEntry->particle_baseindex, inEntry->num_particles);
 		if (particle == NULL) { continue; }
-		
+
 		sprintf(string, "%d\t%s\n", i, particle->particle_class_name);
 		BFrFile_Write(inFile, strlen(string), string);
 	}
@@ -2812,34 +2812,34 @@ ONiImpactEffects_Write(
 	UUtUns32				num_impacts;
 	UUtUns32				num_materials;
 	UUtUns16				i;
-	
+
 	num_impacts = MArImpacts_GetNumTypes();
 	num_materials = MArMaterials_GetNumTypes();
-	
+
 	for (i = 0; i < num_impacts; i++)
 	{
 		UUtUns16				j;
-		
+
 		for (j = 0; j < num_materials; j++)
 		{
 			UUtUns16				k;
-			
+
 			for (k = 0; k < ONcIEModType_NumTypes; k++)
 			{
 				UUtUns32				itr;
 				UUtUns32				found_indices[ONcIEComponent_Max];
-				
+
 				ONrImpactEffect_Lookup(i, j, k, found_indices);
-				
+
 				for (itr = 0; itr < ONcIEComponent_Max; itr++)
 				{
 					ONtImpactEntry			*entry;
-					
+
 					if (found_indices[itr] == (UUtUns32) -1) { continue; }
-					
+
 					entry = ONiImpactEffect_GetEntry(found_indices[itr], 1);
 					if (entry == NULL) { continue; }
-					
+
 					ONiImpactEffect_Write(inFile, entry);
 				}
 			}
@@ -2855,11 +2855,11 @@ ONrImpactEffects_WriteTextFile(
 	UUtError				error;
 	BFtFileRef				*file_ref;
 	BFtFile					*file;
-	
+
 	// create the file ref
 	error = BFrFileRef_MakeFromName("ImpactEffects.txt", &file_ref);
 	UUmError_ReturnOnError(error);
-	
+
 	// create the .TXT file if it doesn't already exist
 	if (BFrFileRef_FileExists(file_ref) == UUcFalse)
 	{
@@ -2867,28 +2867,28 @@ ONrImpactEffects_WriteTextFile(
 		error = BFrFile_Create(file_ref);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	// open the file
 	error = BFrFile_Open(file_ref, "rw", &file);
 	UUmError_ReturnOnError(error);
-	
+
 	// set the position to 0
 	error = BFrFile_SetPos(file, 0);
 	UUmError_ReturnOnError(error);
-	
+
 	// write the items
 	ONiImpactEffects_Write(file);
-	
+
 	// set the end of the file
 	BFrFile_SetEOF(file);
-	
+
 	// close the file
 	BFrFile_Close(file);
 	file = NULL;
-	
+
 	// delete the file ref
 	BFrFileRef_Dispose(file_ref);
 	file_ref = NULL;
-	
+
 	return UUcError_None;
 }

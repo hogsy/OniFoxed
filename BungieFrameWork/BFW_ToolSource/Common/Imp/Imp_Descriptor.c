@@ -34,16 +34,16 @@ Imp_AddLevelDescriptor(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(ONcTemplate_Level_Descriptor, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		ONtLevel_Descriptor		*descriptor;
 		char					*level_name;
-		
+
 		// create a template instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -52,12 +52,12 @@ Imp_AddLevelDescriptor(
 				0,
 				&descriptor);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create a descriptor template");
-		
+
 		// default initialization
 //		descriptor->default_reverb	= SScRP_None;
 		descriptor->level_number	= 0;
 		descriptor->level_name[0]	= '\0';
-		
+
 		// get the default reverb
 /*		error =
 			IMPrProcessReverb(
@@ -66,7 +66,7 @@ Imp_AddLevelDescriptor(
 				SScRP_None,
 				&descriptor->default_reverb);
 		IMPmError_ReturnOnErrorMsg(error, "Could not process the default reverb");*/
-				
+
 		// get the level number
 		error =
 			GRrGroup_GetUns16(
@@ -74,7 +74,7 @@ Imp_AddLevelDescriptor(
 				"level_number",
 				&descriptor->level_number);
 		IMPmError_ReturnOnErrorMsg(error, "Could not get the descriptor's level number");
-		
+
 		error =
 			GRrGroup_GetUns16(
 				inGroup,
@@ -95,6 +95,6 @@ Imp_AddLevelDescriptor(
 		UUrString_Copy(descriptor->level_name, level_name, ONcMaxLevelName);
 
 	}
-	
+
 	return UUcError_None;
 }

@@ -2,13 +2,13 @@
 
 /*
 	FILE:	Oni_GameState.h
-	
+
 	AUTHOR:	Brent Pease, Michael Evans, Quinn Dunki, Kevin Armstrong
-	
+
 	CREATED: May 31, 1997
-	
+
 	PURPOSE:
-	
+
 	Copyright 1997 - 2000
 
 */
@@ -28,11 +28,11 @@ typedef enum ONtDifficultyLevel
 	ONcDifficultyLevel_Normal	= 1,// medium
 	ONcDifficultyLevel_Hard		= 2,// hard
 	ONcDifficultyLevel_Count	= 3,
-	
+
 	ONcDifficultyLevel_Min		= ONcDifficultyLevel_Easy,
 	ONcDifficultyLevel_Default	= ONcDifficultyLevel_Normal,
 	ONcDifficultyLevel_Max		= ONcDifficultyLevel_Hard
-	
+
 } ONtDifficultyLevel;
 
 typedef struct ONtGameState ONtGameState;
@@ -126,7 +126,7 @@ extern ONtGameState *ONgGameState;
 UUtError
 ONrGameState_Initialize(
 	void);
-	
+
 void
 ONrGameState_Terminate(
 	void);
@@ -151,7 +151,7 @@ UUtError ONrGameState_LevelBegin_Objects(
 	void);
 void ONrGameState_LevelEnd_Objects(
 	void);
-	
+
 void ONrGameState_Delete(
 	ONtGameState*	inGameState);
 
@@ -229,15 +229,15 @@ ONrGameState_GetGameTime(
 PHtGraph*
 ONrGameState_GetGraph(
 	void);
-	
+
 ONtCharacter*
 ONrGameState_GetPlayerCharacter(
 	void);
-	
+
 UUtUns16
 ONrGameState_GetPlayerNum(
 	void);
-	
+
 UUtUns16
 ONrGameState_GetNumCharacters(
 	void);
@@ -245,7 +245,7 @@ ONrGameState_GetNumCharacters(
 struct OBtObjectList*
 ONrGameState_GetObjectList(
 	void);
-	
+
 ONtLetterBox *ONrGameState_GetLetterBox(void);
 
 void
@@ -255,7 +255,7 @@ ONrGameState_SetPlayerNum(
 UUtBool
 ONrGameState_IsPaused(
 	void);
-	
+
 UUtBool
 ONrGameState_IsSingleStep(
 	void);

@@ -35,9 +35,9 @@ enum
 	OScModType_HeavyDamage,
 	OScModType_MediumDamage,
 	OScModType_LightDamage,
-	
+
 	OScModType_NumTypes,
-	
+
 	OScModType_None					= 0xFFFFFFFF
 
 };
@@ -80,9 +80,9 @@ enum
 	OScAnimType_Powerup,
 	OScAnimType_Roll,
 	OScAnimType_FallingFlail,
-	
+
 	OScAnimType_NumTypes,
-	
+
 	OScAnimType_None				= 0xFFFFFFFF
 
 };
@@ -103,7 +103,7 @@ typedef struct OStSoundAnimation
 	TRtAnimation			*animation;
 	char					anim_name[OScMaxAnimNameLength];
 	char					impulse_name[SScMaxNameLength];
-	
+
 } OStSoundAnimation;
 
 // ======================================================================
@@ -116,15 +116,15 @@ OSrAnimType_GetName(
 OStAnimType
 OSrAnimType_GetByName(
 	const char					*inAnimTypeName);
-	
+
 const char*
 OSrModType_GetName(
 	OStModType					inModType);
-	
+
 OStModType
 OSrModType_GetByName(
 	const char					*inModTypeName);
-	
+
 // ----------------------------------------------------------------------
 void
 OSrSoundAnimation_Play(
@@ -156,29 +156,29 @@ void
 OSrVariant_SoundAnimation_DeleteByIndex(
 	OStVariant					*ioVariant,
 	UUtUns32					inIndex);
-	
+
 const OStSoundAnimation*
 OSrVariant_SoundAnimation_GetByIndex(
 	OStVariant					*inVariant,
 	UUtUns32					inIndex);
-	
+
 // ----------------------------------------------------------------------
 UUtUns32
 OSrVariantList_GetNumVariants(
 	void);
-	
+
 UUtError
 OSrVariantList_Save(
 	UUtBool						inAutoSave);
-	
+
 OStVariant*
 OSrVariantList_Variant_GetByIndex(
 	UUtUns32					inIndex);
-	
+
 OStVariant*
 OSrVariantList_Variant_GetByName(
 	const char					*inVariantName);
-	
+
 OStVariant*
 OSrVariantList_Variant_GetByVariant(
 	const ONtCharacterVariant	*inCharacterVariant);
@@ -187,7 +187,7 @@ void
 OSrVariantList_UpdateImpulseName(
 	const char					*inOldImpulseName,
 	const char					*inNewImpulseName);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OSrSA_Initialize(
@@ -196,10 +196,10 @@ OSrSA_Initialize(
 void
 OSrSA_ListBrokenSounds(
 	BFtFile						*inFile);
-	
+
 void
 OSrSA_UpdatePointers(
 	void);
-	
+
 // ======================================================================
 #endif /* ONI_SOUND_ANIMATION_H */

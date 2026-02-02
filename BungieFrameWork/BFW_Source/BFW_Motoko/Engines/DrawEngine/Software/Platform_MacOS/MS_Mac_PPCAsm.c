@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_Mac_PPCAsm.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: April 2, 1997
-	
+
 	PURPOSE: platform specific parts
-	
+
 	Copyright 1997
 
 */
@@ -53,20 +53,20 @@ void MSrPPCAsm_BuildOp_LI(
 	UUtUns32	value)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 14, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gpr, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( value, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
 	{
 		*procSize += 4;
 	}
-	
+
 }
 
 void MSrPPCAsm_BuildOp_L32(
@@ -77,20 +77,20 @@ void MSrPPCAsm_BuildOp_L32(
 	UUtUns32	value)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 15, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gpr, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( (value >> 16) & 0xFFFF, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
-		
+
 		instruction  = MiPPCAsm_ShiftValue( 24, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gpr, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( gpr, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( value & 0xFFFF, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -108,14 +108,14 @@ void MSrPPCAsm_BuildOp_MTCTR(
 	UUtUns32	gpr)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 31, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gpr, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( 288, 11, 20 );
 		instruction |= MiPPCAsm_ShiftValue( 467, 21, 30 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -131,13 +131,13 @@ void MSrPPCAsm_BuildOp_BDNZ(
 	UUtUns32	*pc)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 16, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( 16, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( pc - *curInstrPtr, 16, 29 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -152,13 +152,13 @@ void MSrPPCAsm_BuildOp_BLR(
 	UUtUns32	*procSize)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 19, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( 20, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( 16, 21, 30 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -176,14 +176,14 @@ void MSrPPCAsm_BuildOp_ADDI(
 	UUtUns32	value)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 14, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gprDest, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( gprA, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( value, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -201,14 +201,14 @@ void MSrPPCAsm_BuildOp_STB(
 	UUtUns32	disp)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 38, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gprS, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( gprAddr, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( disp, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -226,14 +226,14 @@ void MSrPPCAsm_BuildOp_STH(
 	UUtUns32	disp)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 44, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gprS, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( gprAddr, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( disp, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -251,14 +251,14 @@ void MSrPPCAsm_BuildOp_STW(
 	UUtUns32	disp)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 36, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gprS, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( gprAddr, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( disp, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -276,14 +276,14 @@ void MSrPPCAsm_BuildOp_STFD(
 	UUtUns32	disp)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 54, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( fS, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( gprAddr, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( disp, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -301,14 +301,14 @@ void MSrPPCAsm_BuildOp_LBZ(
 	UUtUns32	disp)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 34, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gprD, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( gprAddr, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( disp, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -326,14 +326,14 @@ void MSrPPCAsm_BuildOp_LHZ(
 	UUtUns32	disp)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 40, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gprD, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( gprAddr, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( disp, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -351,14 +351,14 @@ void MSrPPCAsm_BuildOp_LWZ(
 	UUtUns32	disp)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 32, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gprD, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( gprAddr, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( disp, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -376,14 +376,14 @@ void MSrPPCAsm_BuildOp_LFD(
 	UUtUns32	disp)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 50, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( fD, 6, 10 );
 		instruction |= MiPPCAsm_ShiftValue( gprAddr, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( disp, 16, 31 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -400,14 +400,14 @@ void MSrPPCAsm_BuildOp_DCBZ(
 	UUtUns32	gprB)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 31, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gprA, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( gprB, 16, 20 );
 		instruction |= MiPPCAsm_ShiftValue( 1014, 21, 30 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else
@@ -424,14 +424,14 @@ void MSrPPCAsm_BuildOp_DCBT(
 	UUtUns32	gprB)
 {
 	UUtUns32	instruction;
-	
+
 	if(generateCode)
 	{
 		instruction  = MiPPCAsm_ShiftValue( 31, 0, 5 );
 		instruction |= MiPPCAsm_ShiftValue( gprA, 11, 15 );
 		instruction |= MiPPCAsm_ShiftValue( gprB, 16, 20 );
 		instruction |= MiPPCAsm_ShiftValue( 278, 21, 30 );
-		
+
 		*(*curInstrPtr)++ = instruction;
 	}
 	else

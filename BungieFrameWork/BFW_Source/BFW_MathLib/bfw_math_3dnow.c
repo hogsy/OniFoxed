@@ -36,7 +36,7 @@ int load_3dnow_math(
 {
 	HMODULE dll= NULL;
 	int dll_loaded= FALSE;
-	
+
 	if ((dll == NULL) &&
 		(((dll= GetModuleHandle("math.dll")) != NULL) ||
 		((dll= LoadLibrary("math.dll"))) != NULL) &&

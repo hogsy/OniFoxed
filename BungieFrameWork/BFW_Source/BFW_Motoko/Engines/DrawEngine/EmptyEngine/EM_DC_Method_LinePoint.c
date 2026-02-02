@@ -4,9 +4,9 @@
 	AUTHOR:	Brent H. Pease
 
 	CREATED: Sept 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -27,7 +27,7 @@ EDrDrawContext_Method_Point(
 
 }
 
-void 
+void
 EDrDrawContext_Method_Line_Interpolate(
 	UUtUns16		inVIndex0,
 	UUtUns16		inVIndex1)
@@ -35,7 +35,7 @@ EDrDrawContext_Method_Line_Interpolate(
 
 }
 
-void 
+void
 EDrDrawContext_Method_Line_Flat(
 	UUtUns16		inVIndex0,
 	UUtUns16		inVIndex1)

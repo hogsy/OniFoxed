@@ -31,6 +31,6 @@ ONrMovie_Play_Hardware(
 UUtError
 ONrMovie_Initialize(
 	void);
-	
+
 // ======================================================================
 #endif /* ONI_BINK */

@@ -1,6 +1,6 @@
 /*
 	FILE:	Oni_Platform_SDL.c
-	
+
 	PURPOSE: SDL specific code
 
 */
@@ -65,11 +65,11 @@ UUtError ONrPlatform_Initialize(
 	ONtPlatformData			*outPlatformData)
 {
 	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_TIMER);
-	
+
 	ONiPlatform_CreateWindow(outPlatformData);
 
 	SDL_ShowCursor(SDL_FALSE);
-	
+
 	return UUcError_None;
 }
 
@@ -90,7 +90,7 @@ void ONrPlatform_Terminate(
 	{
 		fclose(ONgErrorFile);
 	}
-	
+
 	SDL_Quit();
 }
 
@@ -117,7 +117,7 @@ void ONrPlatform_ErrorHandler(
 			/* XXX - Someday bitch really loudly */
 		}
 	}
-	
+
 	fprintf(ONgErrorFile, "InternalError: %s, %s\n\r", debugDescription, message);
 }
 
@@ -127,7 +127,7 @@ ONrPlatform_CopyAkiraToScreen(
 	UUtUns16	inBufferHeight,
 	UUtUns16	inRowBytes,
 	UUtUns16*	inBaseAdddr);
-	
+
 void
 ONrPlatform_CopyAkiraToScreen(
 	UUtUns16	inBufferWidth,

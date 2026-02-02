@@ -1,12 +1,12 @@
 /*
 	FILE:	MD_DrawContext_Private.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 17, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -32,19 +32,19 @@ typedef struct MDtDrawContextPrivate
 	UUtInt32					height;					// width of front buffer
 	UUtInt32					bpp;					// bits per pixel
 	UUtInt32					zbpp;					// bits per pixel of zBuffer
-	
+
 	UUtBool						isHardware;				// d3d_device is a hardware device
-	
+
 	M3tDrawContextType			contextType;
 	M3tDrawContextScreenFlags	screenFlags;
-	
+
 	// DirectX data
 	LPDIRECTDRAW				dd;						// DirectDraw device
 	LPDIRECTDRAW2				dd2;					// DirectDraw 2 device
 	LPDIRECT3D2					d3d2;					// Direct3D2
 	LPDIRECT3DDEVICE2			d3d_device2;			// Direct3D Device2
 	LPDIRECT3DVIEWPORT2			d3d_viewport2;			// Direct3D Viewport2
-	
+
 	// Draw data
 	LPDIRECTDRAWSURFACE			frontBuffer;			// buffer displayed on the screen
 	LPDIRECTDRAWSURFACE			backBuffer;				// buffer to draw into
@@ -52,11 +52,11 @@ typedef struct MDtDrawContextPrivate
 	RECT						rect;
 	DWORD						top;
 	DWORD						left;
-	
+
 	// Array data
 	void*						statePtr[M3cDrawStatePtrType_NumTypes];
 	UUtInt32					stateInt[M3cDrawStateIntType_NumTypes];
-		
+
 } MDtDrawContextPrivate;
 
 // ----------------------------------------------------------------------
@@ -73,7 +73,7 @@ typedef struct MDtTextureMapPrivate
 	D3DTEXTUREHANDLE			texture_handle;
 	LPDIRECTDRAWSURFACE3		memory_surface;
 	LPDIRECTDRAWSURFACE3		device_surface;
-	
+
 } MDtTextureMapPrivate;
 
 // ======================================================================

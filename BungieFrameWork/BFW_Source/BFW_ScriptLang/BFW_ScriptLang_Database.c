@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_ScriptLang_Database.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -44,7 +44,7 @@ SLiSymbol_Find(
 {
 	SLtSymbol*	curSymbol;
 	UUtInt16	curLevel;
-	
+
 	if(inContext != NULL)
 	{
 		for(curLevel = inContext->curFuncState->scopeLevel + 1; curLevel-- > 0;)
@@ -60,12 +60,12 @@ SLiSymbol_Find(
 	{
 		if(!strcmp(curSymbol->name, inName) && curSymbol->kind == inKind) return curSymbol;
 	}
-	
+
 	for(curSymbol = SLgPermanentSymbolList; curSymbol; curSymbol = curSymbol->next)
 	{
 		if(!strcmp(curSymbol->name, inName) && curSymbol->kind == inKind) return curSymbol;
 	}
-	
+
 	return NULL;
 }
 
@@ -79,27 +79,27 @@ SLiSymbol_New_AddToScope(
 	SLtSymbol*		symbol;
 	UUtUns16		scopeLevel;
 	UUtBool			makePerm;
-	
+
     if (inContext)
 		scopeLevel = inContext->curFuncState->scopeLevel;
     else
 		scopeLevel = 0;
     makePerm = (inKind == SLcSymbolKind_Func_Command || inKind == SLcSymbolKind_Iterator || inKind == SLcSymbolKind_VarAddr);
-        
+
 	// first make sure that this name does not exist at this level
 	symbol = SLiSymbol_Find(inContext, inName, inKind);
 	if(symbol != NULL && symbol->scopeLevel == scopeLevel)
 	{
 		// error duplicate symbol
 		SLrScript_Error_Semantic(inErrorContext, "Identifer \"%s\" already declared", inName);
-		
+
 		return NULL;
 	}
-	
+
 	if(makePerm == UUcTrue)
 	{
 		SLgPermanentSymbolList_Dirty = UUcTrue;
-		
+
 		symbol = UUrMemory_Pool_Block_New(SLgPermanentMem, sizeof(SLtSymbol));
 		if(symbol == NULL) return NULL;
 	}
@@ -108,20 +108,20 @@ SLiSymbol_New_AddToScope(
 		symbol = UUrMemory_Heap_Block_New(SLgDatabaseHeap, sizeof(SLtSymbol));
 		if(symbol == NULL) return NULL;
 	}
-	
+
 	symbol->name = inName;
 	if(symbol->name == NULL) return NULL;
-	
+
 	symbol->fileName = inErrorContext->fileName;
 	if(symbol->fileName == NULL) return NULL;
 
 	symbol->kind = inKind;
 	symbol->scopeLevel = scopeLevel;
 	symbol->line = inErrorContext->line;
-	
+
 	if(inContext == NULL)
 	{
-		
+
 		if(makePerm == UUcTrue)
 		{
 			symbol->next = SLgPermanentSymbolList;
@@ -130,7 +130,7 @@ SLiSymbol_New_AddToScope(
 			{
 				SLgPermanentSymbolList->prev = symbol;
 			}
-			
+
 			SLgPermanentSymbolList = symbol;
 		}
 		else
@@ -141,7 +141,7 @@ SLiSymbol_New_AddToScope(
 			{
 				SLgGlobalSymbolList->prev = symbol;
 			}
-			
+
 			SLgGlobalSymbolList = symbol;
 		}
 	}
@@ -149,15 +149,15 @@ SLiSymbol_New_AddToScope(
 	{
 		symbol->next = inContext->curFuncState->symbolList[scopeLevel];
 		symbol->prev = NULL;
-		
+
 		if(inContext->curFuncState->symbolList[scopeLevel] != NULL)
 		{
 			inContext->curFuncState->symbolList[scopeLevel]->prev = symbol;
 		}
-		
+
 		inContext->curFuncState->symbolList[scopeLevel] = symbol;
-	}	
-	
+	}
+
 	return symbol;
 }
 
@@ -166,7 +166,7 @@ SLiSymbol_Delete(
 	SLtContext*	inContext,
 	SLtSymbol*	inSymbol)
 {
-	
+
 	if(inSymbol->prev == NULL)
 	{
 		if(inContext == NULL)
@@ -182,12 +182,12 @@ SLiSymbol_Delete(
 	{
 		inSymbol->prev->next = inSymbol->next;
 	}
-	
+
 	if(inSymbol->next != NULL)
 	{
 		inSymbol->next->prev = inSymbol->prev;
 	}
-	
+
 	UUrMemory_Heap_Block_Delete(SLgDatabaseHeap, inSymbol);
 }
 
@@ -196,7 +196,7 @@ SLrScript_Database_Internal_Reset(
 	void)
 {
 	UUrMemory_Heap_Reset(SLgDatabaseHeap);
-	
+
 	SLgGlobalSymbolList = NULL;
 }
 
@@ -211,28 +211,28 @@ SLrScript_Database_FunctionScript_Add(
 	SLtToken*				inStartToken)
 {
 	SLtSymbol*					newSymbol;
-	SLtToken*					newTokens;	
+	SLtToken*					newTokens;
 
 	if(inNumParams > SLcScript_MaxNumParams)
 	{
 		SLrScript_Error_Semantic(inErrorContext, "Too many parameters, talk to brent");
 		return UUcError_Generic;
 	}
-	
+
 	newSymbol = SLiSymbol_New_AddToScope(NULL, inName, inErrorContext, SLcSymbolKind_Func_Script);
 	if(newSymbol == NULL) return UUcError_Generic;	// don't let semantic errors cause asserts
-	
+
 	newTokens = UUrMemory_Heap_Block_New(SLgDatabaseHeap, sizeof(SLtToken) * inNumTokens);
 	UUmError_ReturnOnNull(newTokens);
-	
+
 	UUrMemory_MoveFast(inStartToken, newTokens, sizeof(SLtToken) * inNumTokens);
-	
+
 	UUrMemory_MoveFast(inParamList, newSymbol->u.funcScript.paramList, sizeof(*inParamList) * inNumParams);
 
 	newSymbol->u.funcScript.returnType = inReturnType;
 	newSymbol->u.funcScript.startToken = newTokens;
 	newSymbol->u.funcScript.numParams = inNumParams;
-	
+
 	return UUcError_None;
 }
 
@@ -241,14 +241,14 @@ typedef enum SLtParamElemType
 {
 	SLcParamElemType_Formal,
 	SLcParamElemType_Group
-	
+
 } SLtParamElemType;
 
 typedef enum SLtGroupType
 {
 	SLcGroupType_And,
 	SLcGroupType_Or
-	
+
 } SLtGroupType;
 
 typedef struct SLtParamElem SLtParamElem;
@@ -256,16 +256,16 @@ typedef struct SLtParamElem SLtParamElem;
 typedef struct SLtParam_Group
 {
 	SLtGroupType	type;
-	
+
 	SLtParamElem*	a;
 	SLtParamElem*	b;
-	
+
 } SLtParam_Group;
 
 struct SLtParamElem
 {
 	SLtParamElemType	type;
-	
+
 	union
 	{
 		SLtParameterOption	paramOpt;
@@ -282,15 +282,15 @@ SLiParamGroup_New(
 	void)
 {
 	SLtParamElem*	newParamGroup;
-	
+
 	if(SLgDatabase_NumParamElems > SLcDatabase_MaxParamElems) return NULL;
-	
+
 	newParamGroup = SLgDatabase_TempParamElems + SLgDatabase_NumParamElems++;
-	
+
 	UUrMemory_Clear(newParamGroup, sizeof(*newParamGroup));
-	
+
 	newParamGroup->type = SLcParamElemType_Group;
-	
+
 	return newParamGroup;
 }
 
@@ -299,15 +299,15 @@ SLiParamFormal_New(
 	void)
 {
 	SLtParamElem*	newParamGroup;
-	
+
 	if(SLgDatabase_NumParamElems > SLcDatabase_MaxParamElems) return NULL;
-	
+
 	newParamGroup = SLgDatabase_TempParamElems + SLgDatabase_NumParamElems++;
-	
+
 	UUrMemory_Clear(newParamGroup, sizeof(*newParamGroup));
-	
+
 	newParamGroup->type = SLcParamElemType_Formal;
-	
+
 	return newParamGroup;
 }
 
@@ -323,47 +323,47 @@ SLiParameterSpec_BuildFormal(
 
 	newFormal = SLiParamFormal_New();
 	UUmError_ReturnOnNull(newFormal);
-	
+
 	*outFormal = newFormal;
-	
+
 	newFormal->u.paramOpt.formalParam.name = curToken->lexem;
-	
+
 	curToken++;
-	
+
 	if(curToken->token != SLcToken_Colon)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Ilegal param spec, colon expected");
 	}
 	curToken++;
-	
+
 	error = SLrParse_TokenToType((SLtToken_Code)curToken->token, &newFormal->u.paramOpt.formalParam.type);
 	UUmError_ReturnOnErrorMsg(error, "Illegal type spec");
-	
+
 	curToken++;
-	
+
 	if(curToken->token == SLcToken_LeftCurley)
 	{
 		// parse legal value
 		curToken++;
-		
+
 		while(1)
 		{
 			// parse value
-			error = 
+			error =
 				SLrParse_ConstTokenToTypeAndVal(
 					curToken,
 					&type,
 					&newFormal->u.paramOpt.legalValue[newFormal->u.paramOpt.numLegalValues]);
 			UUmError_ReturnOnErrorMsg(error, "Illegal type");
 			newFormal->u.paramOpt.numLegalValues++;
-			
+
 			if(type != newFormal->u.paramOpt.formalParam.type)
 			{
 				UUmError_ReturnOnErrorMsg(UUcError_Generic, "Illegal type");
 			}
-			
+
 			curToken++;
-			
+
 			if (curToken->token == SLcToken_RightCurley)
 				break;
 
@@ -391,9 +391,9 @@ SLiParameterSpec_BuildFormal(
 	{
 		newFormal->u.paramOpt.repeats = UUcFalse;
 	}
-	
+
 	*ioCurToken = curToken;
-		
+
 	return UUcError_None;
 }
 
@@ -406,7 +406,7 @@ SLiParameterSpec_BuildGroup_Recursive(
 	SLtToken*			curToken = *ioCurToken;
 	SLtParamElem*		newGroup;
 	SLtParamElem*		leftElem;
-	
+
 	if(curToken->token == SLcToken_RightBracket)
 	{
 		*outGroup = NULL;
@@ -419,7 +419,7 @@ SLiParameterSpec_BuildGroup_Recursive(
 		curToken++;
 		error = SLiParameterSpec_BuildGroup_Recursive(&curToken, &leftElem);
 		UUmError_ReturnOnError(error);
-		
+
 		if(curToken->token != SLcToken_RightBracket)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "expecting a ]");
@@ -431,18 +431,18 @@ SLiParameterSpec_BuildGroup_Recursive(
 		error = SLiParameterSpec_BuildFormal(&curToken, &leftElem);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	if(curToken->token == SLcToken_EOF || curToken->token == SLcToken_RightBracket)
 	{
 		*outGroup = leftElem;
 		goto done;
 	}
-	
+
 	newGroup = SLiParamGroup_New();
 	UUmError_ReturnOnNull(newGroup);
-	
+
 	*outGroup = newGroup;
-	
+
 	if(curToken->token == SLcToken_Bar)
 	{
 		curToken++;
@@ -452,9 +452,9 @@ SLiParameterSpec_BuildGroup_Recursive(
 	{
 		newGroup->u.group.type = SLcGroupType_And;
 	}
-	
+
 	newGroup->u.group.a = leftElem;
-	
+
 	#if 0
 	if(curToken->token == SLcToken_EOF || curToken->token == SLcToken_RightBracket)
 	{
@@ -462,14 +462,14 @@ SLiParameterSpec_BuildGroup_Recursive(
 		goto done;
 	}
 	#endif
-	
+
 	error = SLiParameterSpec_BuildGroup_Recursive(&curToken, &newGroup->u.group.b);
 	UUmError_ReturnOnError(error);
-	
+
 done:
 
 	*ioCurToken = curToken;
-		
+
 	return UUcError_None;
 }
 
@@ -492,16 +492,16 @@ SLiParameterSpec_Options_Build(
 	UUtUns16			itrLeft;
 	UUtUns16			itrRight;
 	UUtUns16			curListIndex;
-	
+
 	//UUrMemory_Clear(leftLists, SLcScript_MaxNumParamLists * sizeof(*leftLists));
 	//UUrMemory_Clear(rightLists, SLcScript_MaxNumParamLists * sizeof(*rightLists));
-	
+
 	if(inParamElem == NULL)
 	{
 		*outNumParamLists = 0;
 		return UUcError_None;
 	}
-	
+
 	if(inParamElem->type == SLcParamElemType_Formal)
 	{
 		*outNumParamLists = 1;
@@ -518,7 +518,7 @@ SLiParameterSpec_Options_Build(
 				&numLeftLists,
 				leftLists);
 		UUmError_ReturnOnError(error);
-		
+
 		// build right list
 		error =
 			SLiParameterSpec_Options_Build(
@@ -526,7 +526,7 @@ SLiParameterSpec_Options_Build(
 				&numRightLists,
 				rightLists);
 		UUmError_ReturnOnError(error);
-		
+
 		if(inParamElem->u.group.type == SLcGroupType_Or)
 		{
 			// concate the left and right sides
@@ -553,21 +553,21 @@ SLiParameterSpec_Options_Build(
 		else if(inParamElem->u.group.type == SLcGroupType_And)
 		{
 			UUmAssert(numLeftLists > 0 && numRightLists > 0);
-			
+
 			// for each left list add all the right lists
 			*outNumParamLists = numLeftLists * numRightLists;
 			if(*outNumParamLists >= SLcScript_MaxNumParamLists)
 			{
 				UUmError_ReturnOnErrorMsg(UUcError_Generic, "too many possible opts");
 			}
-			
+
 			curListIndex = 0;
 			for(itrLeft = 0; itrLeft < numLeftLists; itrLeft++)
 			{
 				for(itrRight = 0; itrRight < numRightLists; itrRight++)
 				{
 					outParamLists[curListIndex].numParams = leftLists[itrLeft].numParams + rightLists[itrRight].numParams;
-					
+
 					if(leftLists[itrLeft].hasRepeating || rightLists[itrRight].hasRepeating)
 					{
 						outParamLists[curListIndex].hasRepeating = UUcTrue;
@@ -576,17 +576,17 @@ SLiParameterSpec_Options_Build(
 					{
 						outParamLists[curListIndex].hasRepeating = UUcFalse;
 					}
-					
+
 					UUrMemory_MoveFast(
 						leftLists[itrLeft].params,
 						outParamLists[curListIndex].params,
 						leftLists[itrLeft].numParams * sizeof(SLtParameterOption));
-					
+
 					UUrMemory_MoveFast(
 						rightLists[itrRight].params,
 						outParamLists[curListIndex].params + leftLists[itrLeft].numParams,
 						rightLists[itrRight].numParams * sizeof(SLtParameterOption));
-					
+
 					curListIndex++;
 				}
 			}
@@ -600,7 +600,7 @@ SLiParameterSpec_Options_Build(
 	{
 		UUmAssert(0);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -614,10 +614,10 @@ SLiParameterSpec_Build(
 	SLtToken*			tokens;
 	UUtUns16			numTokens;
 	SLtParamElem*		paramGroup;
-	
+
 	SLgDatabase_NumParamElems = 0;
 	SLgDatabase_NumListOptions = 0;
-	
+
 	error =
 		SLrScript_TextToToken(
 			SLgPermStringMemory,
@@ -626,18 +626,18 @@ SLiParameterSpec_Build(
 			&numTokens,
 			&tokens);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		SLiParameterSpec_BuildGroup_Recursive(
 			&tokens,
 			&paramGroup);
 	UUmError_ReturnOnError(error);
-	
+
 	SLiParameterSpec_Options_Build(
 		paramGroup,
 		outNumParamListOptions,
 		outParamListOptions);
-	
+
 	return UUcError_None;
 }
 
@@ -652,18 +652,18 @@ SLrScript_Database_FunctionEngine_Add(
 	UUtError		error;
 	SLtSymbol*		newSymbol;
 	SLtErrorContext	errorContext;
-	
+
 	errorContext.funcName = inName;
 	errorContext.fileName = "(engine)";
 	errorContext.line = 0;
-	
+
 	newSymbol = SLiSymbol_New_AddToScope(NULL, inName, &errorContext, SLcSymbolKind_Func_Command);
 	if(newSymbol == NULL) return UUcError_Generic;	// don't let semantic errors cause asserts
 
 	newSymbol->u.funcCommand.command = inCommand;
 	newSymbol->u.funcCommand.desc = inDesc;
 	newSymbol->u.funcCommand.paramSpec = inParameterSpecification;
-	
+
 	if(inParameterSpecification != NULL)
 	{
 		if(inParameterSpecification[0] == 0)
@@ -673,7 +673,7 @@ SLrScript_Database_FunctionEngine_Add(
 		}
 		else
 		{
-			error = 
+			error =
 				SLiParameterSpec_Build(
 					inParameterSpecification,
 					&newSymbol->u.funcCommand.numParamListOptions,
@@ -685,7 +685,7 @@ SLrScript_Database_FunctionEngine_Add(
 	{
 		newSymbol->u.funcCommand.numParamListOptions = 0;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -698,13 +698,13 @@ SLrScript_Database_Var_Add(
 	SLtValue	inValue)
 {
 	SLtSymbol*	newSymbol;
-	
+
 	newSymbol = SLiSymbol_New_AddToScope(inContext, inName, inErrorContext, SLcSymbolKind_Var);
 	if(newSymbol == NULL) return UUcError_None;	// don't let semantic errors cause asserts
-	
+
 	newSymbol->u.var.type = inType;
 	newSymbol->u.var.val = inValue;
-	
+
 	return UUcError_None;
 }
 
@@ -719,15 +719,15 @@ SLrScript_Database_Var_Engine_Add(
 	SLtNotificationProc	inNotificationProc)
 {
 	SLtSymbol*	newSymbol;
-	
+
 	newSymbol = SLiSymbol_New_AddToScope(NULL, inName, inErrorContext, SLcSymbolKind_VarAddr);
 	if(newSymbol == NULL) return UUcError_None;	// don't let semantic errors cause asserts
-	
+
 	newSymbol->u.varAddr.type = inType;
 	newSymbol->u.varAddr.valAddr = inValueAddr;
 	newSymbol->u.varAddr.readWrite = inReadWrite;
 	newSymbol->u.varAddr.noticeProc = inNotificationProc;
-	
+
 	return UUcError_None;
 }
 
@@ -742,23 +742,23 @@ SLrScript_Database_Var_GetValue(
 	UUtError			error;
 	SLtSymbol*			symbol;
 	SLtValue	returnVal;
-	
+
 	returnVal.i = 0;
-	
+
 	error = SLrScript_Database_Symbol_Get(inContext, inName, &symbol);
-	
+
 	if(error != UUcError_None)
 	{
 		SLrScript_Error_Semantic(inErrorContext, "could not find variable name \"%s\"", inName);
 		return error;
 	}
-	
+
 	if(symbol->kind != SLcSymbolKind_Var && symbol->kind != SLcSymbolKind_VarAddr)
 	{
 		SLrScript_Error_Semantic(inErrorContext, "symbol \"%s\" is not a variable (function most likely)", inName);
 		return UUcError_Generic;
 	}
-	
+
 	if(symbol->kind == SLcSymbolKind_Var)
 	{
 		*outType = symbol->u.var.type;
@@ -767,7 +767,7 @@ SLrScript_Database_Var_GetValue(
 	else
 	{
 		*outType = symbol->u.varAddr.type;
-		
+
 		switch(symbol->u.varAddr.type)
 		{
 			case SLcType_Int32:
@@ -786,12 +786,12 @@ SLrScript_Database_Var_GetValue(
 				UUmAssertReadPtr(symbol->u.varAddr.valAddr, sizeof(char));
 				outvalue->str = (char*)symbol->u.varAddr.valAddr;
 				break;
-			
+
 			default:
 				UUmAssert(0);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -804,21 +804,21 @@ SLrScript_Database_Var_SetValue(
 {
 	UUtError			error;
 	SLtSymbol*			symbol;
-	
+
 	error = SLrScript_Database_Symbol_Get(inContext, inName, &symbol);
-	
+
 	if(error != UUcError_None)
 	{
 		SLrScript_Error_Semantic(inErrorContext, "could not find variable name \"%s\"", inName);
 		return error;
 	}
-	
+
 	if(symbol->kind != SLcSymbolKind_Var && symbol->kind != SLcSymbolKind_VarAddr)
 	{
 		SLrScript_Error_Semantic(inErrorContext, "symbol \"%s\" is not a variable", inName);
 		return UUcError_Generic;
 	}
-	
+
 	if(symbol->kind == SLcSymbolKind_Var)
 	{
 		symbol->u.var.val = inValue;
@@ -830,7 +830,7 @@ SLrScript_Database_Var_SetValue(
 			SLrScript_Error_Semantic(inErrorContext, "symbol \"%s\" is read only", inName);
 			return UUcError_Generic;
 		}
-		
+
 		switch(symbol->u.varAddr.type)
 		{
 			case SLcType_Int32:
@@ -848,11 +848,11 @@ SLrScript_Database_Var_SetValue(
 			case SLcType_String:
 				UUrString_Copy(symbol->u.varAddr.valAddr, inValue.str, SLcScript_String_MaxLength);
 				break;
-			
+
 			default:
 				UUmAssert(0);
 		}
-		
+
 		if(symbol->u.varAddr.noticeProc != NULL)
 		{
 			symbol->u.varAddr.noticeProc();
@@ -871,18 +871,18 @@ SLrScript_Database_Iterator_Add(
 {
 	SLtSymbol*	newSymbol;
 	SLtErrorContext	errorContext;
-	
+
 	errorContext.funcName = inIteratorName;
 	errorContext.fileName = "(engine)";
 	errorContext.line = 0;
-	
+
 	newSymbol = SLiSymbol_New_AddToScope(NULL, inIteratorName, &errorContext, SLcSymbolKind_Iterator);
 	if(newSymbol == NULL) return UUcError_None;	// don't let semantic errors cause asserts
-	
+
 	newSymbol->u.iterator.type = inVariableType;
 	newSymbol->u.iterator.getFirst = inGetFirstFunc;
 	newSymbol->u.iterator.getNext = inGetNextFunc;
-	
+
 	return UUcError_None;
 }
 
@@ -899,22 +899,22 @@ SLrScript_Database_Scope_Leave(
 {
 	SLtSymbol*	curSymbol;
 	SLtSymbol*	nextSymbol;
-	
+
 	UUmAssert(inContext->curFuncState->scopeLevel > 0);
-	
+
 	curSymbol = inContext->curFuncState->symbolList[inContext->curFuncState->scopeLevel];
-	
+
 	while(curSymbol)
 	{
 		nextSymbol = curSymbol->next;
 
 		SLiSymbol_Delete(inContext, curSymbol);
-		
+
 		curSymbol = nextSymbol;
-	} 
-	
+	}
+
 	inContext->curFuncState->symbolList[inContext->curFuncState->scopeLevel] = NULL;
-	
+
 	inContext->curFuncState->scopeLevel--;
 }
 
@@ -926,7 +926,7 @@ SLrScript_Database_Symbol_Get(
 {
 	SLtSymbol*	curSymbol;
 	UUtInt16	curLevel;
-	
+
 	*outSymbol = NULL;
 	if (inName == NULL) {
 		return UUcError_Generic;
@@ -946,7 +946,7 @@ SLrScript_Database_Symbol_Get(
 			}
 		}
 	}
-	
+
 	for(curSymbol = SLgGlobalSymbolList; curSymbol; curSymbol = curSymbol->next)
 	{
 		if(!strcmp(curSymbol->name, inName))
@@ -955,7 +955,7 @@ SLrScript_Database_Symbol_Get(
 			return UUcError_None;
 		}
 	}
-	
+
 	for(curSymbol = SLgPermanentSymbolList; curSymbol; curSymbol = curSymbol->next)
 	{
 		if(!strcmp(curSymbol->name, inName))
@@ -964,7 +964,7 @@ SLrScript_Database_Symbol_Get(
 			return UUcError_None;
 		}
 	}
-	
+
 	return UUcError_Generic;
 }
 
@@ -1009,7 +1009,7 @@ SLiParameterCast(
 	if (ioParameter->type == inFormalType) {
 		return SLcParameter_Match;
 	}
-	
+
 	switch(inFormalType) {
 		case SLcType_Int32:
 			if (ioParameter->type == SLcType_Bool) {
@@ -1111,7 +1111,7 @@ SLrScript_ParameterCheckAndPromote(
 			return UUcError_Generic;
 		}
 	}
-	
+
 	// we must have expanded or contracted the parameter list by the right amount by now, set its length
 	*ioGivenParams_Num = inScript->numParams;
 	return UUcError_None;
@@ -1150,7 +1150,7 @@ SLrCommand_ParameterCheckAndPromote(
 		// assess the current candidate parameter list
 		current_fail = UUcFalse;
 		current_discarded = current_added = current_promoted = 0;
-		
+
 		for(itrFormal = 0, curParamOpt = curParamList->params, itrGiven = 0; itrFormal < curParamList->numParams; itrFormal++, curParamOpt++) {
 			matched_parameter = UUcFalse;
 			do {
@@ -1199,7 +1199,7 @@ SLrCommand_ParameterCheckAndPromote(
 				itrGiven++;
 
 			} while (curParamOpt->repeats);
-			
+
 			if (!matched_parameter) {
 				// couldn't find anything to match this parameter, fail the current parameter list
 				current_fail = UUcTrue;
@@ -1248,7 +1248,7 @@ SLrCommand_ParameterCheckAndPromote(
 			UUrMemory_MoveFast(current_parameters, final_parameters, *ioGivenParams_Num * sizeof(SLtParameter_Actual));
 		}
 	}
-	
+
 	if (choiceParamList == NULL) {
 		// the given set of parameters didn't match any of the formal parameter lists
 		SLrScript_Error_Semantic(inErrorContext, "\"%s\": parameter list does not match: %s", inCommandName, inCommand->paramSpec);
@@ -1287,34 +1287,34 @@ SLrScript_Database_ConsoleCompletionList_Get(
 		UUtUns32*				sortedIndexList;
 		AUtSharedString*		list;
 		UUtUns32				itr;
-		
+
 		sortedStringArray = AUrSharedStringArray_New();
-		
+
 		for(curSymbol = SLgPermanentSymbolList; curSymbol; curSymbol = curSymbol->next)
 		{
 			UUmAssert(NULL != curSymbol->name);
 
 			error =
 				AUrSharedStringArray_AddString(
-					sortedStringArray, 
+					sortedStringArray,
 					curSymbol->name,
 					(UUtInt32)curSymbol,
 					NULL);
 			UUmAssert(UUcError_None == error);
 		}
-		
+
 		for(curSymbol = SLgGlobalSymbolList; curSymbol; curSymbol = curSymbol->next)
 		{
 			UUmAssert(NULL != curSymbol->name);
 
 			error = AUrSharedStringArray_AddString(
-					sortedStringArray, 
+					sortedStringArray,
 					curSymbol->name,
 					(UUtInt32)curSymbol,
 					NULL);
 			UUmAssert(UUcError_None == error);
 		}
-		
+
 		numEntries = AUrSharedStringArray_GetNum(sortedStringArray);
 		sortedIndexList = AUrSharedStringArray_GetSortedIndexList(sortedStringArray);
 		list = AUrSharedStringArray_GetList(sortedStringArray);
@@ -1323,9 +1323,9 @@ SLrScript_Database_ConsoleCompletionList_Get(
 			COrConsole_Printf("exceeded scripting command completion limit of %d", SLcCompletionList_MaxLength);
 			numEntries = SLcCompletionList_MaxLength;
 		}
-		
+
 		SLgCompletionList_Length = numEntries;
-		
+
 		for(itr = 0; itr < numEntries; itr++)
 		{
 			const char *completion_list_string = ((SLtSymbol*)list[sortedIndexList[itr]].data)->name;
@@ -1334,15 +1334,15 @@ SLrScript_Database_ConsoleCompletionList_Get(
 
 			SLgCompletionList[itr] = completion_list_string;
 		}
-		
+
 		AUrSharedStringArray_Delete(sortedStringArray);
-		
+
 		SLgPermanentSymbolList_Dirty = UUcFalse;
 	}
-	
+
 	*outNumNames = SLgCompletionList_Length;
 	*outList = (char **)SLgCompletionList;
-	
+
 	return;
 }
 
@@ -1357,9 +1357,9 @@ SLrDatabase_Command_DumpAll(
 {
 	SLtSymbol*	curSymbol;
 	FILE*		file;
-	
+
 	file = fopen("script_commands.txt", "w");
-	
+
 	for(curSymbol = SLgPermanentSymbolList; curSymbol; curSymbol = curSymbol->next)
 	{
 		fprintf(file, "============================================\n");
@@ -1367,27 +1367,27 @@ SLrDatabase_Command_DumpAll(
 		{
 			case SLcSymbolKind_Var:
 				break;
-				
+
 			case SLcSymbolKind_VarAddr:
 				fprintf(file, "var: %s\n", curSymbol->name);
 				break;
-				
+
 			case SLcSymbolKind_Func_Script:
 				break;
-				
+
 			case SLcSymbolKind_Func_Command:
 				fprintf(file, "command: %s\n", curSymbol->name);
 				fprintf(file, "desc: %s\n", curSymbol->u.funcCommand.desc);
 				fprintf(file, "param: %s\n", curSymbol->u.funcCommand.paramSpec);
 				break;
-				
+
 			case SLcSymbolKind_Iterator:
 				break;
 		}
 	}
-	
+
 	fclose(file);
-	
+
 	return UUcError_None;
 }
 
@@ -1397,17 +1397,17 @@ SLrDatabase_IsFunctionCall(
 {
 	UUtError	error;
 	SLtSymbol*	symbol;
-	
-	error = 
+
+	error =
 		SLrScript_Database_Symbol_Get(
 			NULL,
 			inName,
 			&symbol);
 	if(error != UUcError_None) return UUcFalse;
-	
-	if(symbol->kind == SLcSymbolKind_Func_Script || 
+
+	if(symbol->kind == SLcSymbolKind_Func_Script ||
 		symbol->kind == SLcSymbolKind_Func_Command) return UUcTrue;
-	
+
 	return UUcFalse;
 }
 

@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_Effect.h
-	
+
 	AUTHOR:	Brent Pease
-	
+
 	CREATED: Oct 8, 1999
-	
+
 	PURPOSE: effects engine
-	
+
 	Copyright 1999
 
  */
@@ -26,7 +26,7 @@
 		FXcLaserFlag_None					= 0,
 		FXcLaserFlag_StopsAtFirstCollision	= 1,	// otherwise it is fixed length based on geometry
 		FXcLaserFlag_Procedural				= 2
-		
+
 	} FXtLaser_Flags;
 
 	#define FXcTemplate_Laser	UUm4CharToUns32('F', 'X', 'L', 'R')
@@ -34,12 +34,12 @@
 	FXtLaser
 	{
 		FXtLaser_Flags	flags;
-		
+
 		M3tTextureMap*	texture;
 		M3tGeometry*	geometry;
-		
+
 		//AItScript*		script;
-			
+
 	} FXtLaser;
 
 

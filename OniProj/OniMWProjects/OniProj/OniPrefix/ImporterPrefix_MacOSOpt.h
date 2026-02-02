@@ -9,7 +9,7 @@
 	#define DEBUGGING			0
 
 	#define UUmDebugDelete			0
-	
+
 	#define PROFILE	0
 
 	#define UUmDebuggerSymFileName	"MacOSOpt_Imp.xSYM"

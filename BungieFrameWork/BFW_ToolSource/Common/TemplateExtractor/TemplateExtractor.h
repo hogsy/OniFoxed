@@ -1,14 +1,14 @@
 /*
 	FILE:	TemplateExtractor.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 17, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
-		
+
 */
 
 UUtError

@@ -19,7 +19,7 @@ typedef struct SStPlatformSpecific
 	UUtInt32						pan;
 	UUtInt32						volume;
 	UUtInt16						status;
-	
+
 } SStPlatformSpecific;
 
 // ======================================================================

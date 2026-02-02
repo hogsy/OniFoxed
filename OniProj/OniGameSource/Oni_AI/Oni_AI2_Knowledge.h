@@ -4,13 +4,13 @@
 
 /*
 	FILE:	 Oni_AI2_Knowledge.h
-	
+
 	AUTHOR:	 Chris Butcher
-	
+
 	CREATED: April 17, 2000
-	
+
 	PURPOSE: Knowledge base for Oni AI
-		
+
 	Copyright (c) 2000
 
 */

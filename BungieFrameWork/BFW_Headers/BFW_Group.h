@@ -2,13 +2,13 @@
 
 /*
 	FILE:	BFW_Group.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Dec 17, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -29,10 +29,10 @@ typedef enum GRtElementType
 	GRcElementType_String,
 	GRcElementType_Group,
 	GRcElementType_Array
-	
+
 } GRtElementType;
 
-UUtError 
+UUtError
 GRrGroup_Context_New(
 	GRtGroup_Context	**outGroupContext);
 
@@ -52,7 +52,7 @@ GRrGroup_Context_NewFromPartialFile(
 	UUtUns16			inLines,
 	GRtGroup_Context*	*outGroupContext,
 	GRtGroup*			*outGroup);
-	
+
 UUtError
 GRrGroup_Context_NewFromString(
 	const char*			inString,
@@ -60,7 +60,7 @@ GRrGroup_Context_NewFromString(
 	GRtGroup_Context	*inContext,
 	GRtGroup_Context*	*outGroupContext,
 	GRtGroup*			*outGroup);
-	
+
 void
 GRrGroup_Context_Delete(
 	GRtGroup_Context*	inGroupContext);
@@ -76,7 +76,7 @@ GRrGroup_GetElement(
 	const char*		inVarName,
 	GRtElementType	*outElementType,
 	void*			*outDataPtr);		// Either a GRtGroup, GRtElementArray, or char*
-	 
+
 UUtError
 GRrGroup_GetString(
 	GRtGroup*		inGroup,

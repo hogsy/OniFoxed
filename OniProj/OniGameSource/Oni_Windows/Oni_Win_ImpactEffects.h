@@ -29,7 +29,7 @@ enum
 	OWcIE_Btn_Edit					= 107,
 	OWcIE_Btn_New					= 108,
 	OWcIE_Txt_Lookup				= 109,
-	OWcIE_PM_Modifier				= 111	
+	OWcIE_PM_Modifier				= 111
 };
 
 // ------------------------------

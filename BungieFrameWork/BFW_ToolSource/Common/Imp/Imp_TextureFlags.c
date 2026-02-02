@@ -24,13 +24,13 @@ typedef struct tFlagTable
 {
 	char					*flagName;
 	UUtUns32				flagValue;
-	
+
 } tFlagTable;
 
 // ======================================================================
 // globals
 // ======================================================================
-tFlagTable gFlagTable[] =	
+tFlagTable gFlagTable[] =
 {
 	{ "mipmap", M3cTextureFlags_HasMipMap },
 	{ "trilinear", M3cTextureFlags_Trilinear },
@@ -46,7 +46,7 @@ tFlagTable gFlagTable[] =
 	{ NULL, 0}
 };
 
-tFlagTable gPixelTypeTable[] = 
+tFlagTable gPixelTypeTable[] =
 {
 	{ "argb4444",	IMcPixelType_ARGB4444 },
 	{ "rgb555",		IMcPixelType_RGB555 },
@@ -60,7 +60,7 @@ tFlagTable gPixelTypeTable[] =
 	{ NULL,			0 },
 };
 
-AUtFlagElement	IMPgAnimTextureFlags[] = 
+AUtFlagElement	IMPgAnimTextureFlags[] =
 {
 	{
 		"pingpong",
@@ -113,12 +113,12 @@ Imp_ProcessTextureFlags_FromFileRef(
 
 	BFtFileRef			*flagFileRef;
 	char				flagFileLeafName[BFcMaxFileNameLength * 2];
-	
+
 	GRtGroup_Context	*context;
 	GRtGroup			*group;
-	
+
 	leafName = BFrFileRef_GetLeafName(inFileRef);
-	
+
 	UUrString_Copy(flagFileLeafName, leafName, BFcMaxFileNameLength * 2);
 	flagFileLeafName[strlen(leafName) - 4] = '\0';
 	UUrString_Cat(flagFileLeafName, "_ins.txt", BFcMaxFileNameLength * 2);
@@ -131,7 +131,7 @@ Imp_ProcessTextureFlags_FromFileRef(
 			flagFileRef = NULL;
 		}
 	}
-	else 
+	else
 	{
 		flagFileRef = NULL;
 	}
@@ -170,20 +170,20 @@ Imp_ProcessTextureFlags(
 	char*				elem;
 	UUtUns32			effectFlags;
 	M3tColorRGB			reflectivity_color;
-	
+
 	UUmAssert(inGroup);
 	UUmAssert(outTextureFlags);
-	
+
 	outTextureFlags->timePerFrame = 1;
 	outTextureFlags->numFrames = 1;
 	outTextureFlags->reflectivity_specified = UUcFalse;
 	outTextureFlags->reflectivity_color.r = IMPcTexture_DefaultReflectivity_value;
 	outTextureFlags->reflectivity_color.g = IMPcTexture_DefaultReflectivity_value;
 	outTextureFlags->reflectivity_color.b = IMPcTexture_DefaultReflectivity_value;
-	
+
 	outTextureFlags->envMapPlaceHolder = NULL;
-	
-	error = 
+
+	error =
 		M3rGroup_GetColor(
 			inGroup,
 			"reflectivity",
@@ -193,8 +193,8 @@ Imp_ProcessTextureFlags(
 		outTextureFlags->reflectivity_specified = UUcTrue;
 		outTextureFlags->reflectivity_color = reflectivity_color;
 	}
-	
-	error = 
+
+	error =
 		GRrGroup_GetElement(
 			inGroup,
 			"anim",
@@ -205,7 +205,7 @@ Imp_ProcessTextureFlags(
 		if(elemType == GRcElementType_Group)
 		{
 			outTextureFlags->timePerFrame = 1;
-			error = 
+			error =
 				GRrGroup_GetElement(
 					animGroup,
 					"tpf",
@@ -221,7 +221,7 @@ Imp_ProcessTextureFlags(
 				sscanf(elem, "%d", &tempu32);
 				outTextureFlags->timePerFrame = (UUtUns16)tempu32;
 			}
-			error = 
+			error =
 				GRrGroup_GetElement(
 					animGroup,
 					"numFrames",
@@ -237,8 +237,8 @@ Imp_ProcessTextureFlags(
 				sscanf(elem, "%d", &tempu32);
 				outTextureFlags->numFrames = (UUtUns16)tempu32;
 			}
-			
-			error = 
+
+			error =
 				GRrGroup_GetElement(
 					animGroup,
 					"effect",
@@ -246,7 +246,7 @@ Imp_ProcessTextureFlags(
 					&elem);
 			if(error == UUcError_None)
 			{
-				error = 
+				error =
 					AUrFlags_ParseFromGroupArray(
 						IMPgAnimTextureFlags,
 						elemType,
@@ -266,18 +266,18 @@ Imp_ProcessTextureFlags(
 			AUrMessageBox(AUcMBType_OK, "illegal anim group");
 		}
 	}
-	
+
 	// process all of the possible flags
 	for (curFlag = gFlagTable;
 		 curFlag->flagName != NULL;
 		 curFlag++)
 	{
 		switch (curFlag->flagValue)
-		{	
+		{
 			case M3cTextureFlags_PixelType:
 			{
 				UUtUns16	value;
-				
+
 				error = GRrGroup_GetString(inGroup, curFlag->flagName, &string);
 				if (error == UUcError_None)
 				{
@@ -298,10 +298,10 @@ Imp_ProcessTextureFlags(
 			default:
 			{
 				UUtBool		bool_val;
-				
+
 				error = GRrGroup_GetBool(inGroup, curFlag->flagName, &bool_val);
 				if (error == UUcError_None)
-				{	
+				{
 					// if the flag exists, then override the existing value
 					if (bool_val)
 						outTextureFlags->flags |= curFlag->flagValue;
@@ -324,11 +324,11 @@ Imp_ProcessTextureFlags(
 		else
 		{
 			char	mungedTextureName[BFcMaxFileNameLength];
-			
+
 			UUrString_Copy(mungedTextureName, string, BFcMaxFileNameLength);
 			UUrString_StripExtension(mungedTextureName);
-			
-			error = 
+
+			error =
 				TMrConstruction_Instance_GetPlaceHolder(
 					M3cTemplate_TextureMap,
 					mungedTextureName,
@@ -339,7 +339,7 @@ Imp_ProcessTextureFlags(
 			}
 		}
 	}
-}	
+}
 
 void Imp_ClearTextureFlags(tTextureFlags *outFlags)
 {

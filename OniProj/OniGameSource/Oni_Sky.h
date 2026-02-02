@@ -1,11 +1,11 @@
 /*	FILE:	Oni_Sky.h
-	
+
 	AUTHOR:	Quinn Dunki
-	
+
 	CREATED: April 2, 1999
-	
+
 	PURPOSE: control of sky in ONI
-	
+
 	Copyright 1998
 
 */
@@ -57,7 +57,7 @@ typedef struct ONtSkyFlare
 typedef struct ONtSky
 {
 	ONtSkyClass			*sky_class;
-	
+
 	M3tPoint3D			planet_position[ONcSky_MaxPlanets];
 
 	M3tSpriteArray		*star_sprite_array;

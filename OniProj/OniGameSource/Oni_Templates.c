@@ -1,15 +1,15 @@
 
 /*
 	FILE:	Oni_Templates.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Jan, 1998
-	
+
 	PURPOSE:
 
 	This contains code to register all the Oni templates.
-	
+
 	Copyright 1998
 
 */
@@ -34,7 +34,7 @@ ONrRegisterTemplates(void)
 
 	error = TMrTemplate_Register(ONcTemplate_Film, sizeof(ONtFilm), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	error = TMrTemplate_Register(ONcTemplate_FlagArray, sizeof(ONtFlagArray), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 
@@ -43,13 +43,13 @@ ONrRegisterTemplates(void)
 
 	error = TMrTemplate_Register(TMcTemplate_StringArray, sizeof(TMtStringArray), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	error = TMrTemplate_Register(ONcTemplate_Level, sizeof(ONtLevel), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	error = TMrTemplate_Register(ONcTemplate_Level_Descriptor, sizeof(ONtLevel_Descriptor), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	error = TMrTemplate_Register(ONcTemplate_MarkerArray, sizeof(ONtMarkerArray), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 
@@ -58,7 +58,7 @@ ONrRegisterTemplates(void)
 
 	error = TMrTemplate_Register(ONcTemplate_CharacterVariant, sizeof(ONtCharacterVariant), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	error = TMrTemplate_Register(ONcTemplate_BodyPartMaterials, sizeof(ONtBodyPartMaterials), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 
@@ -73,7 +73,7 @@ ONrRegisterTemplates(void)
 
 	error = TMrTemplate_Register(ONcTemplate_CharacterParticleArray, sizeof(ONtCharacterParticleArray), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	error = TMrTemplate_Register(ONcTemplate_SpawnArray, sizeof(ONtSpawnArray), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 
@@ -103,7 +103,7 @@ ONrRegisterTemplates(void)
 
 	error = AIrRegisterTemplates();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrRegisterTemplates();
 	UUmError_ReturnOnError(error);
 

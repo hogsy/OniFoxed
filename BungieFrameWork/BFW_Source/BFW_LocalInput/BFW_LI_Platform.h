@@ -23,7 +23,7 @@ void
 LIrPlatform_InputEvent_GetMouse(
 	LItMode				inMode,
 	LItInputEvent		*outInputEvent);
-	
+
 // ----------------------------------------------------------------------
 void
 LIrPlatform_Mode_Set(
@@ -38,7 +38,7 @@ LIrPlatform_Initialize(
 void
 LIrPlatform_PollInputForAction(
 	LItAction			*outAction);
-	
+
 void
 LIrPlatform_Terminate(
 	void);

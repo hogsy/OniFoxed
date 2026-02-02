@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_FF_DDS.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Jan 12, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -49,40 +49,40 @@ FFrType_IsDDS(
 {
 	UUtBool		isDDS = UUcFalse;
 	UUtError	error;
-	
+
 	const char*		suffix;
 	UUtUns32	type;
 	BFtFile*	file;
-	
+
 	suffix = BFrFileRef_GetSuffixName(inFileRef);
-	
-	if(suffix == NULL) 
+
+	if(suffix == NULL)
 	{
 		goto exit;
 	}
-	
-	if(UUrString_Compare_NoCase(suffix, "dds"))	
+
+	if(UUrString_Compare_NoCase(suffix, "dds"))
 	{
 		goto exit;
 	}
-	
+
 	error = BFrFile_Open(inFileRef, "r", &file);
-	if(error != UUcError_None) 
+	if(error != UUcError_None)
 	{
 		goto exit;
 	}
-	
+
 	error = BFrFile_Read(file, 4, &type);
-	if(error != UUcError_None) 
+	if(error != UUcError_None)
 	{
 		goto exit;
 	}
-	
+
 	UUmSwapBig_4Byte(&type);
-	
+
 	BFrFile_Close(file);
-	
-	if(type != FFcDDS_FileSignature) 
+
+	if(type != FFcDDS_FileSignature)
 	{
 		goto exit;
 	}
@@ -90,10 +90,10 @@ FFrType_IsDDS(
 	// passed all the tests
 	isDDS = UUcTrue;
 
-exit:	
+exit:
 	return isDDS;
 }
-	
+
 UUtError
 FFrRead_DDS(
 	BFtFileRef*		inFileRef,
@@ -115,18 +115,18 @@ FFrRead_DDS(
 	// read the file data into memory
 	error = BFrFile_Open(inFileRef, "r", &file);
 	UUmError_ReturnOnError(error);
-	
+
 	error = BFrFile_GetLength(file, &fileLength);
 	UUmError_ReturnOnError(error);
-	
+
 	if (fileLength < sizeof(fileHeader))
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Can not process this DDS file");
 	}
-	
+
 	error = BFrFile_Read(file, sizeof(fileHeader), &fileHeader);
 	UUmError_ReturnOnError(error);
-	
+
 	FFiSwapDDSHeader(&fileHeader);
 
 	// compute the image properties
@@ -167,10 +167,10 @@ FFrRead_DDS(
 		char *dst_dxt1;
 
 		// find the last valid mipmap
-		while((src_width > 1) && (src_height > 1)) { 
+		while((src_width > 1) && (src_height > 1)) {
 			src_dxt1 += IMrImage_ComputeSize(IMcPixelType_DXT1, IMcNoMipMap, src_width, src_height);
-			
-			src_width /= 2; 
+
+			src_width /= 2;
 			src_height /= 2;
 		}
 
@@ -239,7 +239,7 @@ FFrPeek_DDS(
 	BFtFile*		file;
 	UUtUns32		fileLength;
 	FFtDDS_FileHeader_Raw		fileHeader;
-	
+
 retry:
 	//UUmAssert(sizeof(fileHeader) == 0x70);
 	UUmAssertWritePtr(inFileRef, 1);
@@ -248,18 +248,18 @@ retry:
 	// read the file data into memory
 	error = BFrFile_Open(inFileRef, "r", &file);
 	UUmError_ReturnOnError(error);
-	
+
 	error = BFrFile_GetLength(file, &fileLength);
 	UUmError_ReturnOnError(error);
-	
+
 	if (fileLength < sizeof(fileHeader))
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Can not process this DDS file");
 	}
-	
+
 	error = BFrFile_Read(file, sizeof(fileHeader), &fileHeader);
 	UUmError_ReturnOnError(error);
-	
+
 	FFiSwapDDSHeader(&fileHeader);
 
 	BFrFile_Close(file);
@@ -267,7 +267,7 @@ retry:
 	// verify various bits and pieces
 	if (fileHeader.signature != FFcDDS_FileSignature)
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "DDS file signature is invalid");
-	
+
 	switch(fileHeader.format)
 	{
 		case FFcDDS_FormatSignature_DXT1:
@@ -275,7 +275,7 @@ retry:
 
 		default:
 			{
-				AUtMB_ButtonChoice choice = AUrMessageBox(AUcMBType_RetryCancel, "DDS file format is %c%c%c%c expected %c%c%c%c", 
+				AUtMB_ButtonChoice choice = AUrMessageBox(AUcMBType_RetryCancel, "DDS file format is %c%c%c%c expected %c%c%c%c",
 					(fileHeader.format >> 24) & 0xFF,
 					(fileHeader.format >> 16) & 0xFF,
 					(fileHeader.format >> 8) & 0xFF,
@@ -293,13 +293,13 @@ retry:
 				}
 			}
 	}
-		
+
 	// setup the return
 	outFileInfo->format = FFcFormat_2D_DDS;
 	outFileInfo->width = fileHeader.width;
 	outFileInfo->height = fileHeader.height;
 	outFileInfo->mipMap = (fileHeader.mipMapLevels > 1) ? IMcHasMipMap : IMcNoMipMap;
 	outFileInfo->pixelType = IMcPixelType_DXT1;
-	
+
 	return UUcError_None;
 }

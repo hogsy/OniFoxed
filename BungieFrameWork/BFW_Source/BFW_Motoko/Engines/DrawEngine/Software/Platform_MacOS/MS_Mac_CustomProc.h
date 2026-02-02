@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_Mac_CustomProc.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 19, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */

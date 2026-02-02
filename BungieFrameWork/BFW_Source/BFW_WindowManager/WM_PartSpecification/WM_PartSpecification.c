@@ -35,30 +35,30 @@ PSiPartSpec_CalcUV(
 	float					ru;
 	float					tv;
 	float					bv;
-	
+
 	texture = (M3tTextureMap*)inPartSpec->texture;
-	
+
 	invTextureWidth = 1.0f / (float)texture->width;
 	invTextureHeight = 1.0f / (float)texture->height;
-	
+
 	lu = (float)inPartSpec->part_matrix_tl[inColumn][inRow].x * invTextureWidth;
 	tv = (float)inPartSpec->part_matrix_tl[inColumn][inRow].y * invTextureHeight;
-	
+
 	bv = (float)inPartSpec->part_matrix_br[inColumn][inRow].y * invTextureHeight;
 	ru = (float)inPartSpec->part_matrix_br[inColumn][inRow].x * invTextureWidth;
-	
+
 	// tl
 	ioUVs[0].u = lu;
 	ioUVs[0].v = tv;
-	
+
 	// tr
 	ioUVs[1].u = ru;
 	ioUVs[1].v = tv;
-	
+
 	// bl
 	ioUVs[2].u = lu;
 	ioUVs[2].v = bv;
-	
+
 	// br
 	ioUVs[3].u = ru;
 	ioUVs[3].v = bv;
@@ -73,16 +73,16 @@ PSiPartSpec_ProcHandler(
 {
 	PStPartSpec				*part_spec;
 	PStPartSpec_PrivateData	*private_data;
-	
+
 	UUmAssert(inInstancePtr);
-	
+
 	// get a pointer to the part spec
 	part_spec = (PStPartSpec*)inInstancePtr;
 
 	// get a pointer to the view's private data
 	private_data = (PStPartSpec_PrivateData*)inPrivateData;
 	UUmAssert(private_data);
-	
+
 	switch(inMessage)
 	{
 		case TMcTemplateProcMessage_NewPostProcess:
@@ -99,40 +99,40 @@ PSiPartSpec_ProcHandler(
 			PSiPartSpec_CalcUV(part_spec, private_data->rt, 2, 0);
 			PSiPartSpec_CalcUV(part_spec, private_data->rm, 2, 1);
 			PSiPartSpec_CalcUV(part_spec, private_data->rb, 2, 2);
-			
+
 			private_data->l_width =
 				UUmABS(
 					(UUtInt16)(part_spec->part_matrix_br[0][0].x -
 					part_spec->part_matrix_tl[0][0].x));
-					
+
 			private_data->r_width =
 				UUmABS(
 					(UUtInt16)(part_spec->part_matrix_br[2][0].x -
 					part_spec->part_matrix_tl[2][0].x));
-					
+
 			private_data->t_height =
 				UUmABS(
 					(UUtInt16)(part_spec->part_matrix_br[0][0].y -
 					part_spec->part_matrix_tl[0][0].y));
-					
+
 			private_data->b_height =
 				UUmABS(
 					(UUtInt16)(part_spec->part_matrix_br[0][2].y -
 					part_spec->part_matrix_tl[0][2].y));
 
 		break;
-		
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 		break;
-		
+
 		case TMcTemplateProcMessage_Update:
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -155,25 +155,25 @@ PSrPartSpec_Draw(
 	M3tTextureMap			*texture;
 	PStPartSpec_PrivateData	*private_data;
 	M3tPointScreen			dest;
-	
+
 	UUtInt16				l_width;
 	UUtInt16				m_width;
 	UUtInt16				r_width;
-	
+
 	UUtInt16				t_height;
 	UUtInt16				m_height;
 	UUtInt16				b_height;
-	
-	
+
+
 	// get the private data
 	private_data = (PStPartSpec_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(PSgTemplate_PartSpec_PrivateData, inPartSpec);
 	UUmAssert(private_data);
-	
+
 	texture = (M3tTextureMap*)inPartSpec->texture;
-	
+
 	// set the shade and alpha
 	shade = IMcShade_White;
-	
+
 	// calculate the heights and widths
 	if ((private_data->t_height + private_data->b_height) > inHeight)
 	{
@@ -186,7 +186,7 @@ PSrPartSpec_Draw(
 		b_height = private_data->b_height;
 	}
 	m_height = (UUtUns16)UUmMax(0, inHeight - (t_height + b_height));
-	
+
 	if ((private_data->l_width + private_data->r_width) > inWidth)
 	{
 		l_width = private_data->l_width * private_data->l_width / inWidth;
@@ -198,13 +198,13 @@ PSrPartSpec_Draw(
 		r_width = private_data->r_width;
 	}
 	m_width = (UUtUns16)UUmMax(0, inWidth - (l_width + r_width));
-	
+
 	if (inFlags == PScPart_MiddleMiddle)
 	{
 		m_height = inHeight;
 		m_width = inWidth;
 	}
-	
+
 	// draw the left column
 	dest = *inLocation;
 
@@ -245,7 +245,7 @@ PSrPartSpec_Draw(
 			shade,
 			inAlpha);
 	}
-	
+
 	// draw the middle column
 	dest = *inLocation;
 	if (inFlags & PScPart_LeftColumn)
@@ -290,14 +290,14 @@ PSrPartSpec_Draw(
 			shade,
 			inAlpha);
 	}
-	
+
 	// draw the right column
 	dest = *inLocation;
 	if (inFlags & PScPart_MiddleColumn)
 	{
 		dest.x += private_data->l_width + m_width;
 	}
-	
+
 	if (inFlags & PScPart_RightTop)
 	{
 		M3rDraw_BitmapUV(
@@ -348,44 +348,44 @@ PSrPartSpec_GetSize(
 	PStPartSpec_PrivateData	*private_data;
 	UUtInt16				width;
 	UUtInt16				height;
-	
+
 	UUmAssert(inPartSpec);
-	
+
 	// get the private data
 	private_data = (PStPartSpec_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(PSgTemplate_PartSpec_PrivateData, inPartSpec);
 	UUmAssert(private_data);
-	
+
 	width = 0;
 	height = 0;
-	
+
 	switch (inPart)
 	{
 		case PScPart_LeftTop:
 			width = private_data->l_width;
 			height = private_data->t_height;
 		break;
-		
+
 		case PScPart_LeftBottom:
 			width = private_data->l_width;
 			height = private_data->b_height;
 		break;
-		
+
 		case PScPart_RightTop:
 			width = private_data->r_width;
 			height = private_data->t_height;
 		break;
-		
+
 		case PScPart_RightBottom:
 			width = private_data->r_width;
 			height = private_data->b_height;
 		break;
 	}
-	
+
 	if (outWidth)
 	{
 		*outWidth = width;
 	}
-	
+
 	if (outHeight)
 	{
 		*outHeight = height;
@@ -400,9 +400,9 @@ PSrPartSpec_LoadByType(
 	UUtError				error;
 	PStPartSpecList			*partspec_list;
 	UUtUns32				i;
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	// get the partspec list
 	error =
 		TMrInstance_GetDataPtr(
@@ -413,9 +413,9 @@ PSrPartSpec_LoadByType(
 	{
 		return NULL;
 	}
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	// find the desired partspec in the partspec list
 	for (i = 0; i < partspec_list->num_partspec_descs; i++)
 	{
@@ -424,7 +424,7 @@ PSrPartSpec_LoadByType(
 			return partspec_list->partspec_descs[i].partspec;
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -472,20 +472,20 @@ PSrInitialize(
 	void)
 {
 	UUtError				error;
-	
+
 	PSgPartSpecUI_Active = NULL;
-	
+
 	error = PSrRegisterTemplates();
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		TMrTemplate_PrivateData_New(
 			PScTemplate_PartSpecification,
 			sizeof(PStPartSpec_PrivateData),
 			PSiPartSpec_ProcHandler,
 			&PSgTemplate_PartSpec_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
-	
+
 	return UUcError_None;
 }
 
@@ -495,7 +495,7 @@ PSrRegisterTemplates(
 	void)
 {
 	UUtError				error;
-	
+
 	error =
 		TMrTemplate_Register(
 			PScTemplate_PartSpecification,

@@ -55,14 +55,14 @@ static float				OBJgPatrolPath_WidthRatio;
 UUtError
 OBJrPatrolPath_DrawInitialize(
 	void)
-{	
+{
 	if (!OBJgPatrolPath_DrawInitialized) {
 		UUtError				error;
 		TStFontFamily			*font_family;
 		IMtPixelType			textureFormat;
 
 		M3rDrawEngine_FindGrayscalePixelType(&textureFormat);
-		
+
 		OBJgPatrolPath_WhiteColor = IMrPixel_FromShade(textureFormat, IMcShade_White);
 
 		error = TSrFontFamily_Get(TScFontFamily_Default, &font_family);
@@ -70,20 +70,20 @@ OBJrPatrolPath_DrawInitialize(
 		{
 			goto cleanup;
 		}
-		
+
 		error = TSrContext_New(font_family, TScFontSize_Default, TScStyle_Bold, TSc_SingleLine, UUcFalse, &OBJgPatrolPath_TextContext);
 		if (error != UUcError_None)
 		{
 			goto cleanup;
 		}
-		
+
 		OBJgPatrolPath_Dest.x = 2;
 		OBJgPatrolPath_Dest.y =
 			TSrFont_GetLeadingHeight(TSrContext_GetFont(OBJgPatrolPath_TextContext, TScStyle_InUse)) +
 			TSrFont_GetAscendingHeight(TSrContext_GetFont(OBJgPatrolPath_TextContext, TScStyle_InUse));
-		
+
 		TSrContext_GetStringRect(OBJgPatrolPath_TextContext, "maximum_length_of_patrol_pt_name", &OBJgPatrolPath_TextureBounds);
-		
+
 		error =
 			M3rTextureMap_New(
 				OBJgPatrolPath_TextureBounds.right,
@@ -103,15 +103,15 @@ OBJrPatrolPath_DrawInitialize(
 			(void *) OBJgPatrolPath_Texture,
 			(UUtUns16 *)&OBJgPatrolPath_TextureBounds.right,
 			(UUtUns16 *)&OBJgPatrolPath_TextureBounds.bottom);
-		
+
 		OBJgPatrolPath_TextureWidth = OBJgPatrolPath_TextureBounds.right;
 		OBJgPatrolPath_TextureHeight = OBJgPatrolPath_TextureBounds.bottom;
-		
+
 		OBJgPatrolPath_WidthRatio = (float)OBJgPatrolPath_TextureWidth / (float)OBJgPatrolPath_TextureHeight;
-	
+
 		OBJgPatrolPath_DrawInitialized = UUcTrue;
 	}
-	
+
 	return UUcError_None;
 
 cleanup:
@@ -139,14 +139,14 @@ OBJiPatrolPath_DrawName(
 		UUtUns16				string_width;
 		IMtPoint2D				text_dest;
 		float					sprite_size;
-		
+
 		// erase the texture and set the text contexts shade
 		M3rTextureMap_Fill(OBJgPatrolPath_Texture, OBJgPatrolPath_WhiteColor, NULL);
 		TSrContext_SetShade(OBJgPatrolPath_TextContext, IMcShade_Black);
-		
+
 		// get the patrol path's name
 		OBJrObject_GetName(inObject, name, OBJcMaxNameLength);
-		
+
 		// work out how big the string is going to be
 		TSrContext_GetStringRect(OBJgPatrolPath_TextContext, name, &string_bounds);
 		string_width = string_bounds.right - string_bounds.left;
@@ -163,7 +163,7 @@ OBJiPatrolPath_DrawName(
 			name,
 			&OBJgPatrolPath_TextureBounds,
 			&text_dest);
-		
+
 		// draw the sprite
 		M3rGeom_State_Set(M3cGeomStateIntType_SpriteMode, M3cGeomState_SpriteMode_Normal);
 		M3rGeom_State_Commit();
@@ -181,7 +181,7 @@ OBJiPatrolPath_DrawName(
 			0,
 			1.0f - sprite_size, 0);
 	}
-	
+
 	return;
 }
 
@@ -233,7 +233,7 @@ OBJiPatrolPath_Draw(
 	M3tPoint3D				camera_location;
 
 	// KNA: replaced size with OBJcPatrolPath_DrawSize so that CodeWarrior would compile
-	M3tPoint3D points[6] = 
+	M3tPoint3D points[6] =
 	{
 		{-OBJcPatrolPath_DrawSize, 0, 0},
 		{+OBJcPatrolPath_DrawSize, 0, 0},
@@ -242,17 +242,17 @@ OBJiPatrolPath_Draw(
 		{0, 0, -OBJcPatrolPath_DrawSize},
 		{0, 0, +OBJcPatrolPath_DrawSize}
 	};
-	
+
 	if (OBJgPatrolPath_DrawPositions == UUcFalse) { return; }
-	
+
 	// get a pointer to the object osd
 	pp_osd = (OBJtOSD_PatrolPath *)inObject->object_data;
-	
+
 	// set up the matrix stack
 	M3rMatrixStack_Push();
 	M3rMatrixStack_ApplyTranslate(inObject->position);
 	M3rGeom_State_Commit();
-	
+
 	// draw the inside star if this patrol path is selected
 	if (inDrawFlags & OBJcDrawFlag_Selected) {
 		M3rGeom_Line_Light(points + 0, points + 1, IMcShade_White);
@@ -273,14 +273,14 @@ OBJiPatrolPath_Draw(
 	M3rGeom_Line_Light(points + 2, points + 5, OBJcPatrolPath_DrawShade);
 	M3rGeom_Line_Light(points + 3, points + 4, OBJcPatrolPath_DrawShade);
 	M3rGeom_Line_Light(points + 3, points + 5, OBJcPatrolPath_DrawShade);
-	
+
 	// draw the name
 	camera_location = CArGetLocation();
 	if (MUrPoint_Distance(&inObject->position, &camera_location) < OBJgPatrolPath_DrawNameDistance)
 	{
 		OBJiPatrolPath_DrawName(inObject, points + 3);
 	}
-	
+
 	M3rMatrixStack_Pop();
 #endif
 
@@ -295,10 +295,10 @@ OBJiPatrolPath_Enumerate(
 	UUtUns32						inUserData)
 {
 	char							name[OBJcMaxNameLength + 1];
-	
+
 	OBJrObject_GetName(inObject, name, OBJcMaxNameLength);
 	inEnumCallback(name, inUserData);
-	
+
 	return UUcError_None;
 }
 
@@ -322,7 +322,7 @@ OBJiPatrolPath_OSDGetName(
 	UUtUns32				inNameLength)
 {
 	const OBJtOSD_PatrolPath *pp_osd = &inOSD->osd.patrolpath_osd;
-	
+
 	UUrString_Copy(outName, pp_osd->name, inNameLength);
 
 	return;
@@ -335,7 +335,7 @@ OBJiPatrolPath_OSDSetName(
 	const char					*inName)
 {
 	OBJtOSD_PatrolPath *pp_osd = &inOSD->osd.patrolpath_osd;
-	
+
 	UUrString_Copy(pp_osd->name, inName, sizeof(pp_osd->name));
 
 	return;
@@ -351,7 +351,7 @@ OBJiPatrolPath_GetOSD(
 
 	// get a pointer to the object osd
 	pp_osd = (OBJtOSD_PatrolPath *)inObject->object_data;
-	
+
 	outOSD->osd.patrolpath_osd = *pp_osd;
 }
 
@@ -362,10 +362,10 @@ OBJiPatrolPath_GetOSDWriteSize(
 {
 	UUtUns32				size, itr;
 	OBJtOSD_PatrolPath		*pp_osd;
-	
+
 	// get a pointer to the object osd
 	pp_osd = (OBJtOSD_PatrolPath *)inObject->object_data;
-	
+
 	size = SLcScript_MaxNameLength + sizeof(UUtUns32) + sizeof(UUtUns16) + sizeof(UUtUns16); // name, num_waypoints, id_number, flags
 	for (itr = 0; itr < pp_osd->num_waypoints; itr++) {
 		// waypoint type
@@ -548,7 +548,7 @@ OBJiPatrolPath_GetUniqueOSD(
 
 		prev_object = OBJrObjectType_Search(OBJcType_PatrolPath, OBJcSearch_PatrolPathID, inOSD);
 		if (prev_object != NULL) { continue; }
-			
+
 
 		break;
 	}
@@ -569,14 +569,14 @@ OBJiPatrolPath_IntersectsLine(
 	M3tBoundingSphere		sphere;
 
 	UUrMemory_Clear(&sphere, sizeof(M3tBoundingSphere));
-	
+
 	// get the bounding sphere
 	OBJrObject_GetBoundingSphere(inObject, &sphere);
-	
+
 	sphere.center.x += inObject->position.x;
 	sphere.center.y += inObject->position.y;
 	sphere.center.z += inObject->position.z;
-	
+
 	return CLrSphere_Line(inStartPoint, inEndPoint, &sphere);
 }
 
@@ -600,7 +600,7 @@ OBJiPatrolPath_New(
 {
 	OBJtOSD_All				osd_all;
 	UUtError				error;
-	
+
 	if (inOSD == NULL)
 	{
 		error = OBJiPatrolPath_SetDefaults(&osd_all);
@@ -610,11 +610,11 @@ OBJiPatrolPath_New(
 	{
 		OBJiPatrolPath_DuplicateOSD(inOSD, &osd_all);
 	}
-	
+
 	// set the object specific data and position
 	error = OBJrObject_SetObjectSpecificData(inObject, &osd_all);
 	UUmError_ReturnOnError(error);
-	
+
 	OBJrObject_UpdatePosition(inObject);
 
 	UUrMemory_Block_VerifyList();
@@ -634,7 +634,7 @@ OBJiPatrolPath_Read(
 	AI2tWaypoint			*waypoint;
 	UUtUns32				itr;
 	UUtUns32				bytes_read = 0;
-	
+
 	bytes_read += OBJmGetStringFromBuffer(inBuffer, pp_osd->name,			SLcScript_MaxNameLength,	inSwapIt);
 	bytes_read += OBJmGet4BytesFromBuffer(inBuffer, pp_osd->num_waypoints,	UUtUns32,					inSwapIt);
 
@@ -656,7 +656,7 @@ OBJiPatrolPath_Read(
 		// waypoint type
 		bytes_read += OBJmGet4BytesFromBuffer(inBuffer, waypoint->type,	AI2tWaypointType,	inSwapIt);
 
-		switch(waypoint->type) 
+		switch(waypoint->type)
 		{
 			case AI2cWaypointType_MoveToFlag:
 				bytes_read += OBJmGet2BytesFromBuffer(inBuffer, waypoint->data.moveToFlag.flag,	UUtInt16,	inSwapIt);
@@ -778,7 +778,7 @@ OBJiPatrolPath_Read(
 
 	// bring the object up to date
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return bytes_read;
 }
 
@@ -790,12 +790,12 @@ OBJiPatrolPath_SetOSD(
 {
 	OBJtOSD_PatrolPath		*pp_osd;
 	UUtUns32				itr;
-	
+
 	UUmAssert(inOSD);
-	
+
 	// get a pointer to the object osd
 	pp_osd = (OBJtOSD_PatrolPath *)inObject->object_data;
-	
+
 	// copy the data from inOSD to char_osd
 	UUrString_Copy(pp_osd->name, inOSD->osd.patrolpath_osd.name, SLcScript_MaxNameLength);
 
@@ -806,9 +806,9 @@ OBJiPatrolPath_SetOSD(
 	for (itr = 0; itr < pp_osd->num_waypoints; itr++) {
 		pp_osd->waypoints[itr] = inOSD->osd.patrolpath_osd.waypoints[itr];
 	}
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	return UUcError_None;
 }
 
@@ -830,7 +830,7 @@ OBJiPatrolPath_Write(
 	OBJtOSD_PatrolPath		*pp_osd;
 	AI2tWaypoint			*waypoint;
 	UUtUns32				itr, bytes_available;
-	
+
 	pp_osd = (OBJtOSD_PatrolPath *) inObject->object_data;
 	bytes_available = *ioBufferSize;
 
@@ -959,7 +959,7 @@ OBJiPatrolPath_Write(
 
 	// set ioBufferSize to the number of bytes written to the buffer
 	*ioBufferSize = *ioBufferSize - bytes_available;
-	
+
 	return UUcError_None;
 }
 
@@ -993,10 +993,10 @@ OBJiPatrolPath_Search(
 {
 	OBJtOSD_PatrolPath		*pp_osd;
 	UUtBool					found;
-	
+
 	// get a pointer to the object osd
 	pp_osd = (OBJtOSD_PatrolPath *)inObject->object_data;
-	
+
 	// perform the check
 	switch (inSearchType)
 	{
@@ -1012,7 +1012,7 @@ OBJiPatrolPath_Search(
 			found = UUcFalse;
 		break;
 	}
-	
+
 	return found;
 }
 
@@ -1028,10 +1028,10 @@ OBJrPatrolPath_Initialize(
 {
 	UUtError				error;
 	OBJtMethods				methods;
-	
+
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew				= OBJiPatrolPath_New;
 	methods.rSetDefaults		= OBJiPatrolPath_SetDefaults;
@@ -1052,7 +1052,7 @@ OBJrPatrolPath_Initialize(
 	methods.rSearch				= OBJiPatrolPath_Search;
 	methods.rSetClassVisible	= OBJiPatrolPath_SetVisible;
 	methods.rGetUniqueOSD		= OBJiPatrolPath_GetUniqueOSD;
-	
+
 	// register the furniture methods
 	error =
 		OBJrObjectGroup_Register(
@@ -1063,7 +1063,7 @@ OBJrPatrolPath_Initialize(
 			&methods,
 			OBJcObjectGroupFlag_CanSetName | OBJcObjectGroupFlag_HasUniqueName);
 	UUmError_ReturnOnError(error);
-	
+
 #if CONSOLE_DEBUGGING_COMMANDS
 	error =
 		SLrGlobalVariable_Register_Bool(
@@ -1071,7 +1071,7 @@ OBJrPatrolPath_Initialize(
 			"Enables the display of AI patrol path objects",
 			&OBJgPatrolPath_DrawPositions);
 	UUmError_ReturnOnError(error);
-	
+
 	error =
 		SLrGlobalVariable_Register_Float(
 			"patrolpath_name_distance",
@@ -1079,10 +1079,10 @@ OBJrPatrolPath_Initialize(
 			&OBJgPatrolPath_DrawNameDistance);
 	UUmError_ReturnOnError(error);
 #endif
-	
+
 	// intialize the globals
 	OBJgPatrolPath_DrawNameDistance = OBJcPatrolPath_DefaultDrawNameDistance;
-	
+
 	return UUcError_None;
 }
 

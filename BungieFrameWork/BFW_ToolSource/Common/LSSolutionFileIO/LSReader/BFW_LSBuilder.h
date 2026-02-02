@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_LSBuilder.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Jan 1, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -24,7 +24,7 @@ class BFW_LSBuilder;
 
 
 //-----------------------------------------------------------------------
-//				
+//
 //					Factory Classes
 //
 
@@ -32,7 +32,7 @@ class BFW_LSBuilder;
 //-----------------------------------------------------------------------
 //Class BFW_LSBuilderFactory
 //
-//Main factory class for all BFW_LS*Builder classes. 
+//Main factory class for all BFW_LS*Builder classes.
 //
 class BFW_LSBuilderFactory : public LtTBuilderFactory
 {
@@ -41,7 +41,7 @@ public:
     virtual LtTBool Finish();
 	BFW_LSBuilderFactory(LStData* lsData, UUtBool build);
 
-protected:    
+protected:
     virtual LtTParameterBuilderApi *OnGetParameterBuilder();
 	virtual LtTInfoBuilderApi *OnGetInfoBuilder();
     virtual LtTViewBuilderApi *OnGetViewBuilder();
@@ -61,7 +61,7 @@ private:
 
 
 //-----------------------------------------------------------------------
-//				
+//
 //					Builder Classes
 //
 
@@ -75,7 +75,7 @@ class BFW_LSInfoBuilder : public LtTBaseInfoBuilder
 
 protected:
     BFW_LSInfoBuilder( LtTBuilderFactory *f, LStData* lsData, UUtBool inBuild);
-	LtTBool Finish(); 
+	LtTBool Finish();
 
 private:
 	LStData* m_lsData;
@@ -92,7 +92,7 @@ class BFW_LSParameterBuilder : public LtTBaseParameterBuilder
 
 protected:
     BFW_LSParameterBuilder( LtTBuilderFactory *f, LStData* lsData, UUtBool inBuild);
-	LtTBool Finish(); 
+	LtTBool Finish();
 
 private:
 	LStData* m_lsData;
@@ -109,7 +109,7 @@ class BFW_LSViewBuilder : public LtTBaseViewBuilder
 
 protected:
     BFW_LSViewBuilder( LtTBuilderFactory *f, LStData* lsData, UUtBool inBuild);
-	LtTBool Finish(); 
+	LtTBool Finish();
 
 private:
 	LStData* m_lsData;
@@ -126,7 +126,7 @@ class BFW_LSLayerBuilder : public LtTBaseLayerBuilder
 
 protected:
     BFW_LSLayerBuilder( LtTBuilderFactory *f, LStData* lsData, UUtBool inBuild);
-	LtTBool Finish(); 
+	LtTBool Finish();
 
 private:
 	LStData* m_lsData;
@@ -143,7 +143,7 @@ class BFW_LSMaterialBuilder : public LtTBaseMaterialBuilder
 
 protected:
     BFW_LSMaterialBuilder( LtTBuilderFactory *f, LStData* lsData, UUtBool inBuild);
-	LtTBool Finish(); 
+	LtTBool Finish();
 
 private:
 	LStData* m_lsData;
@@ -161,7 +161,7 @@ class BFW_LSLampBuilder : public LtTBaseLampBuilder
 
 protected:
     BFW_LSLampBuilder( LtTBuilderFactory *f, LStData* lsData, UUtBool inBuild);
-	LtTBool Finish(); 
+	LtTBool Finish();
 
 private:
 	LStData* m_lsData;
@@ -178,7 +178,7 @@ class BFW_LSTextureBuilder : public LtTBaseTextureBuilder
 
 protected:
     BFW_LSTextureBuilder( LtTBuilderFactory *f, LStData* lsData, UUtBool inBuild);
-	LtTBool Finish(); 
+	LtTBool Finish();
 
 private:
 	LStData* m_lsData;
@@ -191,11 +191,11 @@ private:
 //
 //The most complicated class.  Notice that for each face, the vertices,
 //irradiances, uvws, norms and faces are found by the appropriate Get*()
-//member function.  
+//member function.
 //
-//The face information is stored in a LtTFace object, described in 
+//The face information is stored in a LtTFace object, described in
 //LtTTypes.h. It is important that you understand the order of the faces
-//that are present in the list of faces for the mesh.  In particular, 
+//that are present in the list of faces for the mesh.  In particular,
 //any face that is not a leaf face is followed immediately by its
 //descendants.
 //
@@ -208,12 +208,12 @@ class BFW_LSMeshBuilder : public LtTBaseMeshBuilder
 protected:
     BFW_LSMeshBuilder( LtTBuilderFactory *f, LStData* lsData, UUtBool inBuild);
 	~BFW_LSMeshBuilder();
-	LtTBool Finish(); 
+	LtTBool Finish();
 
 private:
 	LStData* m_lsData;
 	UUtBool	m_build;
-	
+
 	RadianceMap	rmap;
 };
 

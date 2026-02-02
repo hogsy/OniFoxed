@@ -17,16 +17,16 @@
 typedef tm_template('V', 'M', '_', 'P', "VM View Picture")
 VMtView_Picture
 {
-	
+
 	VMtTextureList			*b_textures;	// background textures
 	VMtPartSpec				*partspec;
-	
+
 } VMtView_Picture;
 
 typedef struct VMtView_Picture_PrivateData
 {
 	UUtUns16				unused;
-	
+
 } VMtView_Picture_PrivateData;
 
 // ======================================================================

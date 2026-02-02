@@ -4,13 +4,13 @@
 
 /*
 	FILE:	 Oni_AI2_Alert.h
-	
+
 	AUTHOR:	 Chris Butcher
-	
+
 	CREATED: April 19, 2000
-	
+
 	PURPOSE: Alert Status for Oni's AI
-	
+
 	Copyright (c) 2000
 
 */

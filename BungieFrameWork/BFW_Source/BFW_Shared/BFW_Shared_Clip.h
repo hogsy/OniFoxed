@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Shared_Clip.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 23, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -18,19 +18,19 @@ typedef enum MStClipStatus
 	MScClipStatus_TrivialAccept,
 	MScClipStatus_TrivialReject,
 	MScClipStatus_NeedsClipping
-	
+
 } MStClipStatus;
 
 enum
 {
 	MScClipCode_None = 0,
-	
+
 	MScClipCode_PosX = 0x01,
 	MScClipCode_NegX = 0x02,
-	
+
 	MScClipCode_PosY = 0x04,
 	MScClipCode_NegY = 0x08,
-	
+
 	MScClipCode_PosZ = 0x10,
 	MScClipCode_NegZ = 0x20
 };
@@ -63,13 +63,13 @@ enum
 		UUtUns32	inClipCode);
 
 #else
-	
+
 	#define	MSiVerifyPoint4D(x)
 	#define MSiVerifyPointScreen(x)
-	
+
 	#define MSrClipCode_ValidateScreen(a, b, c, d)
 	#define MSrClipCode_ValidateFrustum(a, b)
-	
+
 #endif
 
 #endif /* BFW_SHARED_CLIP_H */

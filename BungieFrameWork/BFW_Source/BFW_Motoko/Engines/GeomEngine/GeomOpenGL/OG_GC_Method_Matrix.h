@@ -1,12 +1,12 @@
 /*
 	FILE:	OG_GC_Method_Matrix.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -61,30 +61,30 @@ OGrGeomContext_Method_MatrixStack_Multiply(
 
 void
 OGrGeomContext_Method_MatrixToQuat(
-	const M3tMatrix4x3 *inMatrix, 
+	const M3tMatrix4x3 *inMatrix,
 	M3tQuaternion *outQuat);
 
 void
 OGrGeomContext_Method_QuatToMatrix(
-	const M3tQuaternion *inQuat, 
+	const M3tQuaternion *inQuat,
 	M3tMatrix4x3 *outMatrix);
 
-void 
+void
 OGrGeomContext_Method_Matrix_GetTranslation(
-	const M3tMatrix4x3 *inMatrix, 
+	const M3tMatrix4x3 *inMatrix,
 	M3tPoint3D *outTranslation);
 
 void
 OGrGeomContext_Method_Matrix_Multiply (
-	const M3tMatrix4x3	*inMatrixA, 
-	const M3tMatrix4x3	*inMatrixB, 
+	const M3tMatrix4x3	*inMatrixA,
+	const M3tMatrix4x3	*inMatrixB,
 	M3tMatrix4x3			*outResult);
 
 void
 OGrGeomContext_Method_Matrix_MultiplyPoints (
-	const M3tMatrix4x3	 *inMatrix, 
+	const M3tMatrix4x3	 *inMatrix,
 	const UUtUns16		  inNumPoints,
-	const M3tPoint3D	 *inPoint, 
+	const M3tPoint3D	 *inPoint,
 	M3tPoint3D			 *outPoint);
 
 void

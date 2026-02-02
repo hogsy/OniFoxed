@@ -2,13 +2,13 @@
 
 /*
 	FILE:	Oni_Performance.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: April 2, 1997
-	
+
 	PURPOSE: main .c file for Oni
-	
+
 	Copyright 1997
 
 */

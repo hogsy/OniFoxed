@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_Motoko.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 28, 1998
-	
+
 	PURPOSE: Motoko stuff for Oni
-	
+
 	Copyright 1998
 
 */
@@ -55,19 +55,19 @@ ONiMotoko_DrawEngine_List(
 	UUtUns16			numEngines;
 	UUtUns16			itr;
 	M3tDrawEngineCaps*	curCaps;
-	
+
 	numEngines = M3rDrawEngine_GetNumber();
-	
+
 	for(itr = 0; itr < numEngines; itr++)
 	{
 		curCaps = M3rDrawEngine_GetCaps(itr);
-		
+
 		COrConsole_Printf("%s%d: name: %s", ONgMotoko_ActiveDrawEngineIndex == itr ? "*" : "" ,itr, curCaps->engineName);
 		COrConsole_Printf("%s%d: driver: %s", ONgMotoko_ActiveDrawEngineIndex == itr ? "*" : "", itr, curCaps->engineDriver);
 		COrConsole_Printf("%s%d: version: %d", ONgMotoko_ActiveDrawEngineIndex == itr ? "*" : "", itr, curCaps->engineVersion);
 		COrConsole_Printf("%s%d: numDevices: %d", ONgMotoko_ActiveDrawEngineIndex == itr ? "*" : "", itr, curCaps->numDisplayDevices);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -83,13 +83,13 @@ ONiMotoko_Engine_Set(
 	UUtUns16			newGeomEngineIndex;
 	UUtUns16			newDrawEngineIndex;
 	M3tGeomEngineCaps*	curCaps;
-	
+
 	newGeomEngineIndex = (UUtUns16)inParameterList[0].val.i;
 	newDrawEngineIndex = (UUtUns16)inParameterList[1].val.i;
-	
+
 	if(newGeomEngineIndex < M3rGeomEngine_GetNumber() && newDrawEngineIndex < M3rDrawEngine_GetNumber())
 	{
-	
+
 		// make sure that the draw and geom engine are compatable
 			curCaps = M3rGeomEngine_GetCaps(newGeomEngineIndex);
 			if(((1 << newDrawEngineIndex) & curCaps->compatibleDrawEngineBV) == 0)
@@ -97,12 +97,12 @@ ONiMotoko_Engine_Set(
 				COrConsole_Printf("draw engine and geom engine are not compatable");
 				return UUcError_None;
 			}
-		
+
 		ONgMotoko_ActiveGeomEngineIndex = newGeomEngineIndex;
 		ONgMotoko_ActiveDrawEngineIndex = newDrawEngineIndex;
-		
+
 		UUrMemory_Leak_ForceGlobal_Begin();
-		
+
 		M3rGeomContext_SetEnvironment(
 			NULL);
 		ONrMotoko_TearDownDrawing();
@@ -128,13 +128,13 @@ ONiMotoko_GeomEngine_List(
 	UUtUns16			numEngines;
 	UUtUns16			itr;
 	M3tGeomEngineCaps*	curCaps;
-	
+
 	numEngines = M3rGeomEngine_GetNumber();
-	
+
 	for(itr = 0; itr < numEngines; itr++)
 	{
 		curCaps = M3rGeomEngine_GetCaps(itr);
-		
+
 		COrConsole_Printf("%s%d: name: %s", ONgMotoko_ActiveGeomEngineIndex == itr ? "*" : "" ,itr, curCaps->engineName);
 		COrConsole_Printf("%s%d: driver: %s", ONgMotoko_ActiveGeomEngineIndex == itr ? "*" : "", itr, curCaps->engineDriver);
 		COrConsole_Printf("%s%d: version: %d", ONgMotoko_ActiveGeomEngineIndex == itr ? "*" : "", itr, curCaps->engineVersion);
@@ -162,7 +162,7 @@ ONiMotoko_Display_List(
 	for(itrDevice = 0; itrDevice < curCaps->numDisplayDevices; itrDevice++)
 	{
 		COrConsole_Printf("Device %d: numModes = %d", itrDevice, curCaps->displayDevices[itrDevice].numDisplayModes);
-		
+
 		for(itrMode = 0; itrMode < curCaps->displayDevices[itrDevice].numDisplayModes; itrMode++)
 		{
 			COrConsole_Printf(
@@ -190,10 +190,10 @@ ONiMotoko_Display_Set(
 	UUtUns16	newDeviceIndex;
 	UUtUns16	newModeIndex;
 	M3tDrawEngineCaps*	curCaps;
-	
+
 	newDeviceIndex = (UUtUns16)inParameterList[0].val.i;
 	newModeIndex = (UUtUns16)inParameterList[1].val.i;
-	
+
 	curCaps = M3rDrawEngine_GetCaps(ONgMotoko_ActiveDrawEngineIndex);
 
 	if(newDeviceIndex < curCaps->numDisplayDevices &&
@@ -223,7 +223,7 @@ ONiMotoko_Quality_Set(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	typedef struct {
@@ -266,20 +266,20 @@ static UUtBool ONrMotoko_SetResolution_Internal(M3tDisplayMode *inResolution)
 	M3tDisplayMode*		curDisplayMode;
 	UUtUns16			itrDrawEngine;
 	UUtBool				resolution_set = UUcFalse;
-	
+
 	geomEngineCaps = M3rGeomEngine_GetCaps(ONgMotoko_ActiveGeomEngineIndex);
-	
+
 	for(itrDrawEngine = 0; itrDrawEngine < M3cMaxNumEngines; itrDrawEngine++)
 	{
 		if((1 << itrDrawEngine) & geomEngineCaps->compatibleDrawEngineBV) break;
 	}
-	
+
 	UUmAssert(itrDrawEngine < M3cMaxNumEngines);
-	
+
 	ONgMotoko_ActiveDrawEngineIndex = itrDrawEngine;
-	
+
 	drawEngineCaps = M3rDrawEngine_GetCaps(ONgMotoko_ActiveDrawEngineIndex);
-	
+
 	for(modeItr = 0; modeItr < drawEngineCaps->displayDevices[0].numDisplayModes; modeItr++)
 	{
 		curDisplayMode = &drawEngineCaps->displayDevices[0].displayModes[modeItr];
@@ -289,14 +289,14 @@ static UUtBool ONrMotoko_SetResolution_Internal(M3tDisplayMode *inResolution)
 			break;
 		}
 	}
-	
+
 	if (modeItr < drawEngineCaps->displayDevices[0].numDisplayModes)
 	{
 		ONgMotoko_ActiveModeIndex = modeItr;
 	}
 
 	M3rDrawEngine_MakeActive(ONgMotoko_ActiveDrawEngineIndex, ONgMotoko_ActiveDeviceIndex, UUcFalse, ONgMotoko_ActiveModeIndex);
-	
+
 	return resolution_set;
 }
 
@@ -330,7 +330,7 @@ ONrMotoko_Initialize(
 	error =	SLrGlobalVariable_Register_Bool("m3_double_buffer", "Toggles double buffer mode", &ONgMotoko_DoubleBuffer);
 	error =	SLrGlobalVariable_Register_Bool("m3_buffer_clear", "Toggles buffer clear", &ONgMotoko_BufferClear);
 
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"m3_draw_engine_list",
 			"lists all the engines",
@@ -338,7 +338,7 @@ ONrMotoko_Initialize(
 			ONiMotoko_DrawEngine_List);
 	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"m3_geom_engine_list",
 			"lists all the engines",
@@ -346,31 +346,31 @@ ONrMotoko_Initialize(
 			ONiMotoko_GeomEngine_List);
 	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"m3_engine_set",
 			"sets the active engine",
 			"geom_engine:int draw_engine:int",
 			ONiMotoko_Engine_Set);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		SLrScript_Command_Register_Void(
 			"m3_display_list",
 			"lists all the display modes",
 			"",
 			ONiMotoko_Display_List);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		SLrScript_Command_Register_Void(
 			"m3_display_set",
 			"sets the active display mode",
 			"device_index:int mode_index:int",
 			ONiMotoko_Display_Set);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		SLrScript_Command_Register_Void(
 			"m3_quality_set",
 			"sets the current graphics quality",
@@ -390,12 +390,12 @@ ONrMotoko_Initialize(
 			resolution.bitDepth = 16;
 			resolution.width = 640;
 			resolution.height = 480;
-                            
+
 
 			ONrMotoko_SetResolution_Internal(&resolution);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -417,26 +417,26 @@ ONrMotoko_SetupDrawing(
 	UUtUns16					targetHeight;
 	UUtUns16					targetWidth;
 	M3tDisplayMode*				targetDisplayMode;
-	
+
 	UUrStartupMessage("setting up 3d engine...");
-	
+
 	drawEngineCaps = M3rDrawEngine_GetCaps(ONgMotoko_ActiveDrawEngineIndex);
 	targetDisplayMode = &drawEngineCaps->displayDevices[ONgMotoko_ActiveDeviceIndex].displayModes[ONgMotoko_ActiveModeIndex];
 	targetWidth = targetDisplayMode->width;
 	targetHeight = targetDisplayMode->height;
-	
+
 	M3rDrawEngine_MakeActive(ONgMotoko_ActiveDrawEngineIndex, ONgMotoko_ActiveDeviceIndex, UUcFalse, ONgMotoko_ActiveModeIndex);
 	M3rGeomEngine_MakeActive(ONgMotoko_ActiveGeomEngineIndex);
-	
+
 	contextDescriptor.type = M3cDrawContextType_OnScreen;
-	
+
 	contextDescriptor.drawContext.onScreen.appInstance = inPlatformData->appInstance;
 	contextDescriptor.drawContext.onScreen.window = inPlatformData->gameWindow;
 	contextDescriptor.drawContext.onScreen.rect.top = 20;
 	contextDescriptor.drawContext.onScreen.rect.left = 0;
 	contextDescriptor.drawContext.onScreen.rect.bottom = 20 + targetHeight;
 	contextDescriptor.drawContext.onScreen.rect.right = targetWidth;
-	
+
 	error = M3rGeomContext_New(&contextDescriptor);
 	UUmError_ReturnOnError(error);
 
@@ -458,9 +458,9 @@ ONrMotoko_SetupDrawing(
 	M3rDraw_State_Commit();
 
 	ONrGameState_PrepareGeometryEngine();
-	
+
 	COrConfigure();
-	
+
 	return UUcError_None;
 }
 
@@ -476,13 +476,13 @@ UUtInt32 ONrMotoko_GraphicsQuality_CharacterPolygonCount(void)
 {
 	ONtGraphicsQuality quality = ONrPersist_GetGraphicsQuality();
 	UUtInt32 polygon_count;
-	UUtInt32 polygon_count_table[5] = 
+	UUtInt32 polygon_count_table[5] =
 	{
 		1500,
 		2200,
 		3000,
 		3400,
-		4000		
+		4000
 	};
 
 	quality = UUmPin(quality, 0, 4);
@@ -496,13 +496,13 @@ UUtInt32 ONrMotoko_GraphicsQuality_RayCastCount(void)
 {
 	ONtGraphicsQuality quality = ONrPersist_GetGraphicsQuality();
 	UUtInt32 raycast_count;
-	UUtInt32 raycast_count_table[5] = 
+	UUtInt32 raycast_count_table[5] =
 	{
 		1,
 		1,
 		1,
 		1,
-		2		
+		2
 	};
 
 	quality = UUmPin(quality, 0, 4);
@@ -516,13 +516,13 @@ UUtInt32 ONrMotoko_GraphicsQuality_NumDirectionalLights(void)
 {
 	ONtGraphicsQuality quality = ONrPersist_GetGraphicsQuality();
 	UUtInt32 directional_light_count;
-	UUtInt32 directional_light_count_table[5] = 
+	UUtInt32 directional_light_count_table[5] =
 	{
 		1,
 		1,
 		2,
 		2,
-		2		
+		2
 	};
 
 	quality = UUmPin(quality, 0, 4);
@@ -537,13 +537,13 @@ UUtInt32 ONrMotoko_GraphicsQuality_RayCount(void)
 {
 	ONtGraphicsQuality quality = ONrPersist_GetGraphicsQuality();
 	UUtInt32 ray_count;
-	UUtInt32 ray_count_table[5] = 
+	UUtInt32 ray_count_table[5] =
 	{
 		16,
 		18,
 		20,
 		20,
-		20		
+		20
 	};
 
 	quality = UUmPin(quality, 0, 4);

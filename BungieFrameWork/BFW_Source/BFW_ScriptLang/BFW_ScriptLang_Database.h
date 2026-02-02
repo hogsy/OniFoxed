@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_ScriptLang_Database.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */

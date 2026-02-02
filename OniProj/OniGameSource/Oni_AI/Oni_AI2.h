@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: November 15, 1999
-	
+
 	PURPOSE: AI for characters in Oni
-	
+
 	Copyright (c) 1999
 
 */
@@ -76,7 +76,7 @@ enum {
 	AI2cFlag_InUse				= (1 << 0),
 	AI2cFlag_Passive			= (1 << 1),
 	AI2cFlag_NonCombatant		= (1 << 2),
-	AI2cFlag_RunCombatScript	= (1 << 3),		// these scripts are called in main AI update so that unexpected state 
+	AI2cFlag_RunCombatScript	= (1 << 3),		// these scripts are called in main AI update so that unexpected state
 	AI2cFlag_RunAlarmScript		= (1 << 4),		// changes don't happen in the knowledge code
 	AI2cFlag_RunNeutralScript	= (1 << 5),		// similar rationale to combat and alarm scripts
 	AI2cFlag_RunOutOfAmmoScript	= (1 << 6),	// ditto
@@ -142,7 +142,7 @@ typedef struct AI2tState
 {
 	// global settings
 	UUtUns32			flags;
-	
+
 	// goal and job control
 	AI2tGoal			jobGoal;
 	AI2tGoal			currentGoal;

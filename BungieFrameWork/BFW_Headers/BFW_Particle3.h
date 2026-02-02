@@ -5,13 +5,13 @@
 
 /*
 	FILE:	BFW_Particle3.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: Feb 02, 2000
-	
+
 	PURPOSE: definitions for new particle system (iteration 3)
-	
+
 	Copyright 2000
 
  */
@@ -51,7 +51,7 @@ typedef enum P3tDataType
 	P3cDataType_Enum			= (256 << 4),
 	P3cDataType_Sound_Ambient	= (1 << 13),
 	P3cDataType_Sound_Impulse	= (1 << 14)
-	
+
 } P3tDataType;
 
 // P3tEnumType is used in combination with P3cDataType_Enum to store
@@ -862,7 +862,7 @@ enum P3tParticleClassFlags {
 	P3cParticleClassFlag_Appearance_ParallelDirRightVector	= (7 << P3cParticleClassFlags_SpriteTypeShift),	// bits 5-7
 
 	P3cParticleClassFlag_Appearance_Geometry				= (1 << 8),
-	
+
 	P3cParticleClassFlag_Physics_CollideEnv					= (1 << 9),
 	P3cParticleClassFlag_Physics_CollideChar				= (1 << 10),
 
@@ -1056,7 +1056,7 @@ extern P3tAttractorSelectorSpec P3gAttractorSelectorTable[P3cAttractorSelector_M
 // num_variables	P3tVariableInfo
 // num_actions		P3tActionInstance
 // num_emitters		P3tEmitter
-// 
+//
 // a P3tParticleDefinition defines the characteristics and behaviour of a
 // single class of particles. at load time, a P3tParticleClass is created
 // that stores this definition and all of the runtime structures as required.
@@ -2348,7 +2348,7 @@ typedef struct P3tEffectData {
 // decals...
 // =============================================
 
-typedef enum P3tDecalFlags 
+typedef enum P3tDecalFlags
 {
 	P3cDecalFlag_Static			= 0x0001,
 	P3cDecalFlag_Manual			= 0x0002,
@@ -2357,7 +2357,7 @@ typedef enum P3tDecalFlags
 	P3cDecalFlag_FullBright		= 0x0010
 } P3tDecalFlags;
 
-typedef struct P3tDecalData 
+typedef struct P3tDecalData
 {
 	M3tDecalHeader				*decal_header;
 	P3tParticleReference		particle;
@@ -2677,13 +2677,13 @@ static UUcInline float P3rRandom(void)
 
 #define P3mSignedRandom() \
 	(UUrLocalRandom() * (2.0f / (float)UUcMaxUns16) - 1.0f)
-	
+
 #else
 
 static UUcInline float P3mSignedRandom(void)
 {
 	static const float multiplier = (2.0f / (float)UUcMaxUns16);
-	return (((float)UUrLocalRandom() * multiplier) - 1.0f);	
+	return (((float)UUrLocalRandom() * multiplier) - 1.0f);
 }
 
 #endif
@@ -2762,7 +2762,7 @@ void P3rNotifySkyVisible(UUtBool inVisible);
 /*
  * particle interaction with environment
  */
-							  
+
 // damage a quad in the environment
 UUtBool P3iDamageQuad(AKtEnvironment *inEnvironment, UUtUns32 inGQIndex, float inDamage,
 					  M3tPoint3D *inBlastCenter, M3tVector3D *inBlastDir, float inBlastRadius,

@@ -18,7 +18,7 @@ enum
 {
 	LRAR_CACHE_SIGNATURE= 'lrar',
 	LRAR_CACHE_BLOCK_SIGNATURE= 'Rblk',
-	
+
 	MAXIMUM_LRAR_CACHE_NAME_LENGTH= 31
 };
 
@@ -89,7 +89,7 @@ static void lrar_default_purge_block_proc(void *user_data);
 
 	assert(minimum_address<maximum_address);
 
-	// align minimum address	
+	// align minimum address
 	if (minimum_address&((1<<alignment_bit)-1))
 	{
 		minimum_address= (minimum_address|((1<<alignment_bit)-1))+1;
@@ -139,11 +139,11 @@ static void lrar_default_purge_block_proc(void *user_data);
 		else
 		{
 			free(cache);
-			
+
 			cache= ( lrar_cache *) NULL;
 		}
 	}
-	
+
 	return cache;
 }
 
@@ -151,10 +151,10 @@ void lrar_dispose(
 	 lrar_cache *cache)
 {
 	verify_lrar_cache(cache);
-	
+
 	free(cache->blocks);
 	free(cache);
-	
+
 	return;
 }
 
@@ -172,14 +172,14 @@ static void lrar_internal_purge_oldest_block(
 	UUrMemory_Clear(oldest_block, sizeof( lrar_cache_block));
 
 	cache->cur_block_count -= 1;
-	
+
 	if (0 == cache->cur_block_count)
 	{
 		// no more blocks
 		cache->last_allocated_block_index = NONE;
 		cache->oldest_block_index = NONE;
 	}
-	else 
+	else
 	{
 		// bump oldest_block_index mod cache->max_block_count
 		cache->oldest_block_index += 1;
@@ -226,12 +226,12 @@ short lrar_allocate(
 	short new_block_index= NONE;
 
 	UUmAssert(size > 0);
-	
+
 	verify_lrar_cache(cache);
 
 	// add the size of a block header and 4-byte align it
 	if (size&((1<<cache->alignment_bit)-1)) size= (size|((1<<cache->alignment_bit)-1))+1;
-	
+
 	if (size>=0 && size<=cache->size)
 	{
 		UUtBool wrapped = UUcFalse;
@@ -252,12 +252,12 @@ short lrar_allocate(
 			new_block_index = cache->last_allocated_block_index + 1;
 			if (new_block_index>=cache->max_block_count) new_block_index= 0;
 		}
-		
+
 		while (!done)
 		{
 			unsigned long new_block_address;
 
-			// compute the base address of the new block			
+			// compute the base address of the new block
 			if (cache->last_allocated_block_index==NONE)
 			{
 				new_block_address= cache->minimum_address;
@@ -297,13 +297,13 @@ short lrar_allocate(
 					new_block_address = cache->minimum_address;
 				}
 			}
-			else 
+			else
 			{
 				new_block_address = cache->minimum_address;
 			}
 
 			// if there are any blocks to purge we may need to purge
-			if (cache->oldest_block_index != NONE) 
+			if (cache->oldest_block_index != NONE)
 			{
 				lrar_cache_block *oldest_block = get_lrar_cache_block(cache, cache->oldest_block_index);
 
@@ -366,7 +366,7 @@ unsigned long lrar_block_address(
 	short block_index)
 {
 	verify_lrar_cache(cache);
-	
+
 	return get_lrar_cache_block(cache, block_index)->address;
 }
 
@@ -377,7 +377,7 @@ static void lrar_default_new_block_proc(
 	short block_index)
 {
 	*(short *)user_data= block_index;
-	
+
 	return;
 }
 
@@ -387,7 +387,7 @@ static void lrar_default_purge_block_proc(
 	if (NULL != user_data) {
 		*(short *)user_data= NONE;
 	}
-	
+
 	return;
 }
 
@@ -404,7 +404,7 @@ static  lrar_cache_block *get_lrar_cache_block(
 
 	block= cache->blocks + block_index;
 	verify_lrar_cache_block(cache, block);
-	
+
 	return block;
 }
 
@@ -422,10 +422,10 @@ static void verify_lrar_cache_block(
 			valid= UUcTrue;
 		}
 	}
-	
+
 	vassert(valid, csprintf(temporary, "lrar cache %s @%p block @%p appears to be corrupt",
 		cache->name, cache, block));
-	
+
 	return;
 }
 
@@ -435,7 +435,7 @@ void verify_lrar_cache(
 	short new_block_index= NONE;
 	short itr;
 	UUtBool valid= UUcFalse;
-	
+
 	if (cache->signature==LRAR_CACHE_SIGNATURE &&
 		cache->minimum_address<cache->maximum_address &&
 		cache->size>0 &&
@@ -455,7 +455,7 @@ void verify_lrar_cache(
 		// CB: only check user data if we know what it's being used for
 		if (block->user_data && (cache->new_block == lrar_default_new_block_proc))
 		{
-			short user_data;	
+			short user_data;
 
 			user_data = *((short *) (block->user_data));
 			UUmAssert(block_index == user_data);
@@ -464,7 +464,7 @@ void verify_lrar_cache(
 
 	vassert(valid, csprintf(temporary, "lrar cache %s @%p appears to be corrupt",
 		cache->name, cache));
-	
+
 	return;
 }
 #endif

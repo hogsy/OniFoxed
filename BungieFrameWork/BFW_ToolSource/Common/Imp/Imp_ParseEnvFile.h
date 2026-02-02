@@ -1,12 +1,12 @@
 /*
 	FILE:	Imp_ParseEnvFile.h
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: Nov 17, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */

@@ -10,6 +10,6 @@
 UUtUns32
 LIrPlatform_Win32_TranslateVirtualKey(
 	UUtUns32				inVirtualKey);
-	
+
 // ======================================================================
 #endif /* BFW_LI_PLATFORM_WIN32 */

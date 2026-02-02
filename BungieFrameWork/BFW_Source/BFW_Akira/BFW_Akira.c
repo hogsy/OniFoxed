@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Akira.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: October 22, 1997
 
 	PURPOSE: environment engine
-	
+
 	Copyright 1997
 
 */
@@ -135,12 +135,12 @@ static UUtError
 AKrEnvironment_TemplateHandler(
 	TMtTemplateProc_Message	inMessage,
 	void*					inDataPtr,
-	void*					inPrivateData) 
+	void*					inPrivateData)
 {
 	AKtEnvironment_Private*	environmentPrivate = (AKtEnvironment_Private*)inPrivateData;
 	AKtEnvironment*			environment = (AKtEnvironment*)inDataPtr;
 	UUtUns32				itr;
-	
+
 	UUmAssert(environmentPrivate != NULL);
 
 	// debugging code to verify
@@ -153,7 +153,7 @@ AKrEnvironment_TemplateHandler(
 		UUmAssert(node->leaf == 0 || node->gqStartIndirectIndex <= environment->octTreeGQIndices->numIndices);
 	}
 	#endif
-	
+
 	switch(inMessage)
 	{
 		case TMcTemplateProcMessage_NewPostProcess:
@@ -163,7 +163,7 @@ AKrEnvironment_TemplateHandler(
 			environmentPrivate->ot2LeafNodeVisibility = NULL;
 			environmentPrivate->sky_visibility = 0;
 			break;
-			
+
 		case TMcTemplateProcMessage_Update:
 			if(environmentPrivate->gqComputedBackFaceBV != NULL) {
 				UUrBitVector_Dispose(environmentPrivate->gqComputedBackFaceBV);
@@ -182,19 +182,19 @@ AKrEnvironment_TemplateHandler(
 			}
 
 			UUmAssert(!"WHAT!");
-			
+
 			/* no break */
-			
+
 		case TMcTemplateProcMessage_LoadPostProcess:
-			
+
 			environmentPrivate->gqComputedBackFaceBV =
 				UUrBitVector_New(environment->gqGeneralArray->numGQs);
 			environmentPrivate->gqBackFaceBV =
 				UUrBitVector_New(environment->gqGeneralArray->numGQs);
-				
-			environmentPrivate->gq2VisibilityVector = UUr2BitVector_Allocate(environment->gqGeneralArray->numGQs);		
+
+			environmentPrivate->gq2VisibilityVector = UUr2BitVector_Allocate(environment->gqGeneralArray->numGQs);
 			environmentPrivate->ot2LeafNodeVisibility = UUr2BitVector_Allocate(environment->octTree->leafNodeArray->numNodes);
-			
+
 			environmentPrivate->visGQ_List = UUrMemory_Block_NewClear(sizeof(UUtUns32) * AKcMaxVisibleGQs);
 
 			if(environmentPrivate->gqComputedBackFaceBV == NULL ||
@@ -208,7 +208,7 @@ AKrEnvironment_TemplateHandler(
 
 			UUr2BitVector_Clear(environmentPrivate->gq2VisibilityVector, environment->gqGeneralArray->numGQs);
 			UUr2BitVector_Clear(environmentPrivate->ot2LeafNodeVisibility, environment->octTree->leafNodeArray->numNodes);
-			
+
 			// clear sky persist-frames timer
 			environmentPrivate->sky_visibility = 0;
 
@@ -228,7 +228,7 @@ AKrEnvironment_TemplateHandler(
 				}
 			}
 
-			if (environment->gqDebugArray != NULL) 
+			if (environment->gqDebugArray != NULL)
 			{
 				AKtGQ_Debug *gqDebug;
 				UUtUns32 offset = (UUtUns32) TMrInstance_GetRawOffset(environment);
@@ -245,13 +245,13 @@ AKrEnvironment_TemplateHandler(
 			}
 
 			AKiPrepareGrids(environment);
-			
+
 			break;
-			
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 
 			AKiEnvironment_DebugMaps_Dispose((AKtEnvironment *)inDataPtr);
-			
+
 			if(environmentPrivate->gqComputedBackFaceBV != NULL) {
 				UUrBitVector_Dispose(environmentPrivate->gqComputedBackFaceBV);
 			}
@@ -272,7 +272,7 @@ AKrEnvironment_TemplateHandler(
 				UUrMemory_Block_Delete(environmentPrivate->visGQ_List);
 			}
 			break;
-			
+
 		default:
 			UUmAssert(!"Illegal message");
 	}
@@ -293,19 +293,19 @@ AKiNodeProcHandler(
 	{
 		case TMcTemplateProcMessage_NewPostProcess:
 			break;
-			
+
 		case TMcTemplateProcMessage_LoadPostProcess:
 			break;
-			
+
 		case TMcTemplateProcMessage_DisposePreProcess:
-			
+
 		case TMcTemplateProcMessage_Update:
 			break;
-			
+
 		default:
 			UUmAssert(!"Illegal message");
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -320,16 +320,16 @@ AKiEnvShow(
 	UUtUns32	newState = AKgEnvShowState;
 	UUtBool		add;
 	char*		p;
-	
+
 	if(inArgC < 2)
 	{
 		goto printDesc;
 	}
-	
+
 	for(i = 1; i < inArgC; i++)
 	{
 		p = inArgV[i];
-		
+
 		if(*p == '+')
 		{
 			add = UUcTrue;
@@ -342,9 +342,9 @@ AKiEnvShow(
 		{
 			goto printDesc;
 		}
-		
+
 		p++;
-		
+
 		if(strcmp(p, "all") == 0)
 		{
 			if(add)
@@ -378,16 +378,16 @@ AKiEnvShow(
 				newState &=~ AKcEnvShow_GQ;
 			}
 		}
-		else 
+		else
 		{
 			goto printDesc;
 		}
 	}
-	
+
 	AKgEnvShowState = newState;
-	
+
 	return;
-	
+
 printDesc:
 	COrConsole_Printf("%s [ + | - ] [bnv | prt | psg | all]", inArgV[0]);
 
@@ -404,7 +404,7 @@ AKiEnvShow_Generic_ParseExpr(
 	UUtUns32	start, end;
 	char		c;
 	char*		bp;
-	
+
 	while(1)
 	{
 		bp = buffer;
@@ -415,9 +415,9 @@ AKiEnvShow_Generic_ParseExpr(
 			c = *p++;
 		}
 		*bp = 0;
-		
+
 		sscanf(buffer, "%d", &start);
-		
+
 		if(c == '.')
 		{
 			c = *p++;
@@ -432,16 +432,16 @@ AKiEnvShow_Generic_ParseExpr(
 				c = *p++;
 			}
 			*bp = 0;
-			
+
 			sscanf(buffer, "%d", &end);
 		}
 		else
 		{
 			end = start;
 		}
-		
+
 		inFunc(inBitVector, start, end);
-		
+
 		if(c != ',')
 		{
 			break;
@@ -461,20 +461,20 @@ AKiEnvShow_Generic(
 	char*		p;
 	char		c;
 	UUtUns16	i;
-	
+
 	UUtBitVector_BitRangeFunc	func;
-	
+
 	if(inArgC <= 1)
 	{
 		goto printDesc;
 	}
-	
+
 	for(i = 1; i < inArgC; i++)
 	{
 		p = inArgV[i];
-		
+
 		c = *p;
-	
+
 		if(c == '+')
 		{
 			func = UUrBitVector_SetBitRange;
@@ -491,9 +491,9 @@ AKiEnvShow_Generic(
 		{
 			goto printDesc;
 		}
-		
+
 		p++;
-		
+
 		if(p[0] == 'a' && p[1] == 'l' && p[2] == 'l')
 		{
 			func(inBitVector, 0, inMaxBits);
@@ -503,14 +503,14 @@ AKiEnvShow_Generic(
 			AKiEnvShow_Generic_ParseExpr(inBitVector, inMaxBits, func, p);
 		}
 	}
-	
+
 	return;
-	
+
 printDesc:
 	COrConsole_Printf("%s [ + | - ] [all | expr; expr -> num | num..num | expr,expr", inArgV[0]);
-	
+
 }
-	
+
 static void
 AKiEnvShow_BNV(
 	UUtUns32			inArgC,
@@ -550,9 +550,9 @@ AKiEnvShowFileNames(
 	UUtInt32		i;
 	AKtBNV_Debug*	curBNVDebug;
 	//AKtGQ_Debug*	curGQDebug;
-	
+
 	showState = 0;
-	
+
 	for(i = 1; i < (UUtInt32)inArgC; i++)
 	{
 		if(strcmp(inArgV[i], "all") == 0)
@@ -572,10 +572,10 @@ AKiEnvShowFileNames(
 			goto printDesc;
 		}
 	}
-	
+
 	// Only print out stuff for the displayed objects
 	showState &= AKgEnvShowState;
-	
+
 	if(showState & AKcEnvShow_BNV)
 	{
 		UUmBitVector_ForEachBitSetDo(i, AKgBNVBitVector, (UUtInt32)AKgEnvDebug->bnvNodeArray->numBNVs - 1)
@@ -584,7 +584,7 @@ AKiEnvShowFileNames(
 			COrConsole_Printf("BNV[%d]: %s", i, curBNVDebug->fileName);
 		}
 	}
-	
+
 	#if 0
 	if(showState & AKcEnvShow_GQT)
 	{
@@ -595,12 +595,12 @@ AKiEnvShowFileNames(
 		}
 	}
 	#endif
-	
+
 	return;
 
 printDesc:
 	COrConsole_Printf("%s [bnv | prt | psg | all]", inArgV[0]);
-	
+
 }
 #endif
 
@@ -664,13 +664,13 @@ AKrInitialize(
 
 	error = AKrRegisterTemplates();
 	UUmError_ReturnOnError(error);
-			
+
 	/*
 	 * Register my template handlers with the TemplateManager
 	 */
 
 	error = TMrTemplate_PrivateData_New(AKcTemplate_Environment, sizeof(AKtEnvironment_Private), AKrEnvironment_TemplateHandler, &AKgTemplate_PrivateData);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
 
 #if 1
@@ -718,11 +718,11 @@ AKrInitialize(
 void
 AKrTerminate(
 	void)
-{		
+{
 	if(AKgDebugLeafNodes != NULL) {
 		AUrDict_Dispose(AKgDebugLeafNodes);
 	}
-	
+
 	AKrEnvironment_PrintStats();
 	AKrEnvironment_Collision_PrintStats();
 }
@@ -736,18 +736,18 @@ ARiPointInBSP(
 	M3tPlaneEquation*		outRejectingPlane,
 	float*					outRejectionValue)
 {
-	const AKtBNV_BSPNode *curNode;		
+	const AKtBNV_BSPNode *curNode;
 	float				a, b, c, d, plane_val;
 	UUtUns32			curNodeIndex;
-	
+
 	curNodeIndex = inRootNode;
-	
+
 	while(1)
-	{		
+	{
 		curNode = inBSPNodeArray + curNodeIndex;
-		
+
 		AKmPlaneEqu_GetComponents(curNode->planeEquIndex, inPlaneEquArray, a, b, c, d);
-		
+
 		plane_val = inPoint->x * a + inPoint->y * b + inPoint->z * c + d;
 		if(UUmFloat_CompareLE(plane_val, 0.0f)) {
 			if(0xFFFFFFFF == curNode->posNodeIndex) {
@@ -785,7 +785,7 @@ AKrPointInNode(
 {
 	AKtBNVNode*	node;
 	node = &inEnvironment->bnvNodeArray->nodes[inNodeIndex];
-	
+
 	return ARiPointInBSP(
 			inEnvironment->planeArray->planes,
 			inEnvironment->bspNodeArray->nodes,
@@ -793,7 +793,7 @@ AKrPointInNode(
 			inViewpoint,
 			outRejectingPlane,
 			outRejectionValue);
-	
+
 }
 
 UUtBool
@@ -804,7 +804,7 @@ AKrPointInNodeVertically(
 {
 	// Returns TRUE if the point is in the vertical space of the node
 	const PHtRoomData *room = &inNode->roomData;
-	
+
 	return (inPoint->y >= room->origin.y && inPoint->y <= room->antiOrigin.y);
 }
 
@@ -821,7 +821,7 @@ AKrEnvironment_SetContextDimensions(
 	UUtUns16		inWidth,
 	UUtUns16		inHeight)
 {
-			
+
 	return UUcError_None;
 }
 
@@ -850,10 +850,10 @@ AKrNodeFromPoint(
 
 	UUmAssertReadPtr(inPoint, sizeof(*inPoint));
 	UUmAssertReadPtr(AKgEnvironment, sizeof(*AKgEnvironment));
-	UUmAssert(UUcError_None == M3rVerify_Point3D(inPoint));	
-	
+	UUmAssert(UUcError_None == M3rVerify_Point3D(inPoint));
+
 	octTreeBNVIndices = AKgEnvironment->octTree->bnvIndices->indices;
-	
+
 	curLeafNodeIndex =
 		AKrFindOctTreeNodeIndex(
 			AKgEnvironment->octTree->interiorNodeArray->nodes,
@@ -861,12 +861,12 @@ AKrNodeFromPoint(
 			inPoint->y,
 			inPoint->z,
 			NULL);
-	
+
 	curLeafNode = AKgEnvironment->octTree->leafNodeArray->nodes + AKmOctTree_GetLeafIndex(curLeafNodeIndex);
-	
+
 	bnvIndexStart = (UUtUns16)(curLeafNode->bnvIndirectIndex_Encode >> 8);
 	bnvIndexLength = (UUtUns16)(curLeafNode->bnvIndirectIndex_Encode & 0xFF);
-	
+
 	for(curBNVIndIndex = bnvIndexStart;
 		curBNVIndIndex < bnvIndexStart + bnvIndexLength;
 		curBNVIndIndex++)
@@ -874,7 +874,7 @@ AKrNodeFromPoint(
 		UUmAssert(curBNVIndIndex < AKgEnvironment->octTree->bnvIndices->numIndices);
 
 		curBNVIndex = octTreeBNVIndices[curBNVIndIndex];
-	
+
 		pointIsInNode = AKrPointInNode(inPoint, AKgEnvironment, curBNVIndex,
 										&reject_plane, &d);
 
@@ -898,18 +898,18 @@ AKrNodeFromPoint(
 		}
 
 		d += (float)fabs(dy);
-		
+
 		isStairNode = ((bnv->flags & AKcBNV_Flag_Stairs_Standard) != 0);
 
 		if (isStairNode) {
 			// reject stair nodes if we're outside their vertical extent
-			stair_rel_y = inPoint->x * bnv->stairPlane.a + inPoint->y * bnv->stairPlane.b + 
+			stair_rel_y = inPoint->x * bnv->stairPlane.a + inPoint->y * bnv->stairPlane.b +
 						inPoint->z * bnv->stairPlane.c + bnv->stairPlane.d;
 			if (UUmFloat_CompareLT(stair_rel_y, 0.0f) || UUmFloat_CompareGT(stair_rel_y, bnv->stairHeight)) {
 				continue;
 			}
 		}
-		
+
 		if (pointIsInNode) {
 			if (closestIsOutside) {
 				// inside nodes override outside ones
@@ -952,7 +952,7 @@ AKrNodeFromPoint(
 			v2 =(float)(fabs(bnv->roomData.origin.x - bnv->roomData.antiOrigin.x) *
 				fabs(bnv->roomData.origin.y - bnv->roomData.antiOrigin.y) *
 				fabs(bnv->roomData.origin.z - bnv->roomData.antiOrigin.z));
-				
+
 			if (v2<v1) closestNode = bnv;
 
 		} else if (d < distance) {
@@ -961,7 +961,7 @@ AKrNodeFromPoint(
 			closestNode = bnv;
 		}
 	}
-	
+
 	return closestNode;
 }
 
@@ -971,7 +971,7 @@ AKrGQToIndex(
 	AKtGQ_General*		inGQ)
 {
 	// Returns the absolute index corrosponding to a GQ
-	
+
 	return inGQ - inEnvironment->gqGeneralArray->gqGeneral;
 }
 
@@ -990,7 +990,7 @@ static void AKrEnvironment_NodeList_Get_Recursive(
 	M3tBoundingBox_MinMax	newBox;
 	float					curDim;
 	UUtUns32				itr;
-	
+
 	if (g_nlgr_bounding_box->maxPoint.x < inCurBox->minPoint.x ||
 		g_nlgr_bounding_box->maxPoint.y < inCurBox->minPoint.y ||
 		g_nlgr_bounding_box->maxPoint.z < inCurBox->minPoint.z ||
@@ -1000,7 +1000,7 @@ static void AKrEnvironment_NodeList_Get_Recursive(
 	{
 		goto exit;
 	}
-	
+
 	if (AKmOctTree_IsLeafNode(inCurNodeIndex))
 	{
 		if (g_nlgr_count < g_nlgr_max_count) {
@@ -1011,9 +1011,9 @@ static void AKrEnvironment_NodeList_Get_Recursive(
 
 		goto exit;
 	}
-	
+
 	curDim = (inCurBox->maxPoint.x - inCurBox->minPoint.x) * 0.5f;
-	
+
 	for(itr = 0; itr < 8; itr++)
 	{
 		if(itr & 0x1) {
@@ -1107,7 +1107,7 @@ UUtBool AKrEnvironment_NodeList_Visible(
 	{
 		UUtUns32 itr;
 		UUtUns32 count = inList[0];
-		
+
 		for(itr = 0; itr < count; itr++)
 		{
 			UUtUns32 node_index = inList[itr + 1];
@@ -1144,7 +1144,7 @@ AKrEnvironment_IsBoundingBoxMinMaxVisible_Recursive(
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Enter(AKg_IsBoundingBoxMinMaxVisible_Recursive_Timer);
 #endif
-	
+
 	//if(!CLrBox_MinMaxBox(inBoundingBox, inCurBox))
 	// S.S. inlined because this is the only spot it is used and is getting called thousands of times per frame
 	if (inBoundingBox->maxPoint.x < inCurBox->minPoint.x ||
@@ -1171,7 +1171,7 @@ AKrEnvironment_IsBoundingBoxMinMaxVisible_Recursive(
 		int itr;
 
 		visible= UUcFalse;
-		
+
 		for (itr= 0; itr<8; itr++)
 		{
 			if(itr & 0x1)
@@ -1206,7 +1206,7 @@ AKrEnvironment_IsBoundingBoxMinMaxVisible_Recursive(
 				newBox.minPoint.z= inCurBox->minPoint.z;
 				newBox.maxPoint.z= inCurBox->maxPoint.z - cur_dim;
 			}
-			
+
 			if (AKrEnvironment_IsBoundingBoxMinMaxVisible_Recursive(
 				inInteriorNodeArray,
 				inLeafVisible2BV,
@@ -1227,7 +1227,7 @@ AKrEnvironment_IsBoundingBoxMinMaxVisible_Recursive(
 
 	return visible;
 }
-	
+
 UUtBool AKrEnvironment_IsBoundingBoxMinMaxVisible(
 	M3tBoundingBox_MinMax *bounding_box)
 {
@@ -1241,14 +1241,14 @@ UUtBool AKrEnvironment_IsBoundingBoxMinMaxVisible(
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Enter(AKg_BBox_Visible_Timer);
 #endif
-		
+
 	box.minPoint.x= -AKcMaxHalfOTDim;
 	box.minPoint.y= -AKcMaxHalfOTDim;
 	box.minPoint.z= -AKcMaxHalfOTDim;
 	box.maxPoint.x= AKcMaxHalfOTDim;
 	box.maxPoint.y= AKcMaxHalfOTDim;
 	box.maxPoint.z= AKcMaxHalfOTDim;
-	
+
 	visible= AKrEnvironment_IsBoundingBoxMinMaxVisible_Recursive(
 			AKgEnvironment->octTree->interiorNodeArray->nodes,
 			environment_private->ot2LeafNodeVisibility,
@@ -1275,14 +1275,14 @@ UUtBool AKrEnvironment_IsBoundingBoxMinMaxVisible_WithNodeIndex(
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Enter(AKg_BBox_Visible_Timer);
 #endif
-		
+
 	box.minPoint.x= -AKcMaxHalfOTDim;
 	box.minPoint.y= -AKcMaxHalfOTDim;
 	box.minPoint.z= -AKcMaxHalfOTDim;
 	box.maxPoint.x= AKcMaxHalfOTDim;
 	box.maxPoint.y= AKcMaxHalfOTDim;
 	box.maxPoint.z= AKcMaxHalfOTDim;
-	
+
 	visible= AKrEnvironment_IsBoundingBoxMinMaxVisible_Recursive(
 			AKgEnvironment->octTree->interiorNodeArray->nodes,
 			environment_private->ot2LeafNodeVisibility,
@@ -1303,7 +1303,7 @@ AKrEnvironment_PointIsVisible(
 	UUtUns32 *leaf_visible_bv = environmentPrivate->ot2LeafNodeVisibility;
 	UUtUns32 node_index;
 	UUtBool is_visible;
-	
+
 	node_index = AKrFindOctTreeNodeIndex(AKgEnvironment->octTree->interiorNodeArray->nodes, inPoint->x, inPoint->y, inPoint->z, NULL);
 
 	is_visible = UUr2BitVector_Test(leaf_visible_bv, AKmOctTree_GetLeafIndex(node_index)) > 0;
@@ -1318,7 +1318,7 @@ AKrEnvironment_IsGeometryVisible(
 {
 	M3tBoundingBox_MinMax bbox;
 	UUtBool is_visible;
-	
+
 	M3rGeometry_GetBBox(inGeometry, inMatrix, &bbox);
 
 	is_visible = AKrEnvironment_IsBoundingBoxMinMaxVisible(&bbox);
@@ -1349,7 +1349,7 @@ AKrEnvironment_DrawIfVisible(
 {
 	M3tBoundingBox_MinMax bbox;
 	UUtBool is_visible;
-	
+
 	M3rGeometry_GetBBox(inGeometry, inMatrix, &bbox);
 
 	is_visible = AKrEnvironment_IsBoundingBoxMinMaxVisible(&bbox);

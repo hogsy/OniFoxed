@@ -39,11 +39,11 @@ enum
 	cItemY,
 	cItemWidth,
 	cItemHeight,
-	
+
 	cNumItems,
-	
+
 	cItemFormat = cNumItems,
-	
+
 	cMaxNumItems
 };
 
@@ -71,23 +71,23 @@ static AUtFlagElement	IMPgWindowStyles[] =
 	{ "has_close",					WMcWindowStyle_HasClose },
 	{ "has_zoom",					WMcWindowStyle_HasZoom },
 	{ "has_flatten",				WMcWindowStyle_HasFlatten },
-	
+
 	// window styles
 	{ "window_basic",				WMcWindowStyle_Basic },
 	{ "window_standard",			WMcWindowStyle_Standard },
-	
+
 	// dialog styles
 	{ "dialog_centered",			WMcDialogStyle_Centered },
 	{ "dialog_modal",				WMcDialogStyle_Modal },
 	{ "dialog_standard",			WMcDialogStyle_Standard },
-	
+
 	// box styles
 	{ "box_has_outline",			WMcBoxStyle_HasOutline },
 	{ "box_has_background",			WMcBoxStyle_HasBackground },
 	{ "box_has_title",				WMcBoxStyle_HasTitle },
 	{ "box_plain",					WMcBoxStyle_PlainBox },
 	{ "box_group",					WMcBoxStyle_GroupBox },
-	
+
 	// button styles
 	{ "btn_has_background",			WMcButtonStyle_HasBackground },
 	{ "btn_has_title",				WMcButtonStyle_HasTitle },
@@ -99,16 +99,16 @@ static AUtFlagElement	IMPgWindowStyles[] =
 	{ "btn_icon_button",			WMcButtonStyle_IconButton },
 	{ "btn_toggle_button",			WMcButtonStyle_ToggleButton },
 	{ "btn_toggle_icon_button",		WMcButtonStyle_ToggleIconButton	},
-	
+
 	// checkbox styles
 	{ "cb_has_title",				WMcCheckBoxStyle_HasTitle },
 	{ "cb_has_icon",				WMcCheckBoxStyle_HasIcon },
 	{ "cb_text_checkbox",			WMcCheckBoxStyle_TextCheckBox },
 	{ "cb_icon_checkbox",			WMcCheckBoxStyle_IconCheckBox },
-	
+
 	// editfield styles
 	{ "ef_number_only",				WMcEditFieldStyle_NumbersOnly },
-	
+
 	// listbox styles
 	{ "lb_has_scrollbar",			WMcListBoxStyle_HasScrollbar },
 	{ "lb_sort",					WMcListBoxStyle_Sort },
@@ -118,29 +118,29 @@ static AUtFlagElement	IMPgWindowStyles[] =
 	{ "lb_directory",				WMcListBoxStyle_Directory },
 	{ "lb_simple_listbox",			WMcListBoxStyle_SimpleListBox },
 	{ "lb_sorted_listbox",			WMcListBoxStyle_SortedListBox },
-	
+
 	// menu styles
 	// menubar styles
-	
+
 	// picture
 	{ "pt_scale",					WMcPictureStyle_Scale },
 	{ "pt_set_at_runtime",			WMcPictureStyle_SetAtRuntime },
-	
+
 	// popup menu
 	{ "pm_no_resize",		 		WMcPopupMenuStyle_NoResize },
 	{ "pm_build_at_runtime", 		WMcPopupMenuStyle_BuildAtRuntime },
-	
+
 	// progressbar styles
-	
+
 	// radiobutton styles
 	{ "rb_has_title",				WMcRadioButtonStyle_HasTitle },
 	{ "rb_has_icon",				WMcRadioButtonStyle_HasIcon },
 	{ "rb_text_radiobutton",		WMcRadioButtonStyle_TextRadioButton },
 	{ "rb_icon_radiobutton",		WMcRadioButtonStyle_IconRadioButton },
-	
+
 	// scrollbar styles
 	// slider styles
-	
+
 	// text styles
 	{ "text_hleft", 				WMcTextStyle_HLeft },
 	{ "text_hcenter", 				WMcTextStyle_HCenter },
@@ -152,7 +152,7 @@ static AUtFlagElement	IMPgWindowStyles[] =
 	{ "text_owner_draw",			WMcTextStyle_OwnerDraw },
 	{ "text_basic",					WMcTextStyle_Basic },
 	{ "text_standard",				WMcTextStyle_Standard },
-	
+
 	{ NULL,							0 }
 };
 
@@ -220,7 +220,7 @@ IMPrProcess_FontInfo(
 {
 	UUtError				error;
 	GRtElementType			element_type;
-	
+
 	char					*font_name;
 	TMtPlaceHolder			font_family;
 	void					*font_size_data;
@@ -229,7 +229,7 @@ IMPrProcess_FontInfo(
 	UUtUns32				font_style;
 	void					*font_shade_data;
 	UUtUns32				font_shade;
-	
+
 	if (inData == NULL)
 	{
 		font_name = TScFontFamily_Default;
@@ -241,13 +241,13 @@ IMPrProcess_FontInfo(
 	{
 		error = GRrGroup_GetString(inData, "font", &font_name);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get font name");
-		
+
 		error = GRrGroup_GetUns32(inData, "font_size", &font_size);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get font size");
 
 		error = GRrGroup_GetElement(inData, "font_style", &element_type, &font_style_data);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get font style data");
-		
+
 		error =
 			AUrFlags_ParseFromGroupArray(
 				IMPgFontStyleTypes,
@@ -255,10 +255,10 @@ IMPrProcess_FontInfo(
 				font_style_data,
 				&font_style);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to process font style data");
-		
+
 		error = GRrGroup_GetElement(inData, "font_shade", &element_type, &font_shade_data);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get font shade");
-		
+
 		error =
 			AUrFlags_ParseFromGroupArray(
 				IMPgFontShadeTypes,
@@ -276,15 +276,15 @@ IMPrProcess_FontInfo(
 	{
 		error = GRrGroup_Array_GetElement(inData, cInfoFont, &element_type, &font_name);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get font name");
-		
+
 		error = GRrGroup_Array_GetElement(inData, cInfoSize, &element_type, &font_size_data);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get font size");
-		
+
 		sscanf((char*)font_size_data, "%d", &font_size);
-		
+
 		error = GRrGroup_Array_GetElement(inData, cInfoStyle, &element_type, &font_style_data);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get font size");
-		
+
 		error =
 			AUrFlags_ParseFromGroupArray(
 				IMPgFontStyleTypes,
@@ -292,10 +292,10 @@ IMPrProcess_FontInfo(
 				font_style_data,
 				&font_style);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to process font style data");
-		
+
 		error = GRrGroup_Array_GetElement(inData, cInfoShade, &element_type, &font_shade_data);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get font shade");
-		
+
 		error =
 			AUrFlags_ParseFromGroupArray(
 				IMPgFontShadeTypes,
@@ -316,21 +316,21 @@ IMPrProcess_FontInfo(
 	{
 		IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to process formatting data");
 	}
-	
+
 	// get a placeholder for the font
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			TScTemplate_FontFamily,
 			font_name,
 			&font_family);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get partspec placeholder");
-	
-	// save the font info	
+
+	// save the font info
 	outFontInfo->font_family = (TStFontFamily*)font_family;
 	outFontInfo->font_size = (UUtUns16)font_size;
 	outFontInfo->font_style = (TStFontStyle)font_style;
 	outFontInfo->font_shade = font_shade;
-	
+
 	return UUcError_None;
 }
 
@@ -356,24 +356,24 @@ IMPiProcess_Group(
 	GRtElementType			element_type;
 	void					*format_data;
 	TStFontInfo				font_info;
-	
+
 	// get the elements from the item group
-	
+
 	// get the item type
 	error = GRrGroup_GetElement(inItemGroup, "type", &element_type, &type_name);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get type name");
-	
+
 	error = AUrFlags_ParseFromGroupArray(IMPgWindowTypes, element_type, type_name, &type);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to process item type");
-	
+
 	// get the item name
 	error = GRrGroup_GetString(inItemGroup, "name", &name);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog name");
-	
+
 	// get the item id
 	error = GRrGroup_GetUns16(inItemGroup, "id", &id);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog id");
-	
+
 	// get the item flags
 	error =
 		GRrGroup_GetElement(
@@ -385,7 +385,7 @@ IMPiProcess_Group(
 	{
 		IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to get dialog item flags");
 	}
-	
+
 	error =
 		AUrFlags_ParseFromGroupArray(
 			IMPgWindowFlags,
@@ -393,7 +393,7 @@ IMPiProcess_Group(
 			flags_array,
 			&flags);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to process flags");
-	
+
 	// get the item styles
 	error =
 		GRrGroup_GetElement(
@@ -405,7 +405,7 @@ IMPiProcess_Group(
 	{
 		IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to get dialog item styles");
 	}
-	
+
 	error =
 		AUrFlags_ParseFromGroupArray(
 			IMPgWindowStyles,
@@ -413,23 +413,23 @@ IMPiProcess_Group(
 			styles_array,
 			&style);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to process styles");
-	
+
 	// get the item X
 	error = GRrGroup_GetInt16(inItemGroup, "x", &x);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog x coordinate");
-	
+
 	// get the item Y
 	error = GRrGroup_GetInt16(inItemGroup, "y", &y);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog y coordinate");
-	
+
 	// get the item Width
 	error = GRrGroup_GetInt16(inItemGroup, "width", &width);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog width");
-	
+
 	// get the item Height
 	error = GRrGroup_GetInt16(inItemGroup, "height", &height);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog height");
-	
+
 	// get the optional formatting info
 	error = GRrGroup_GetElement(inItemGroup, "formatting", &element_type, &format_data);
 	if (error == GRcError_ElementNotFound)
@@ -446,7 +446,7 @@ IMPiProcess_Group(
 		error = IMPrProcess_FontInfo(format_data, element_type, &font_info);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to process the formatting");
 	}
-	
+
 	// initialize the item
 	UUrString_Copy(ioItemData->title, name, WMcMaxTitleLength);
 	ioItemData->windowtype		= (UUtUns16)type;
@@ -458,7 +458,7 @@ IMPiProcess_Group(
 	ioItemData->width			= width;
 	ioItemData->height			= height;
 	ioItemData->font_info		= font_info;
-	
+
 	return UUcError_None;
 }
 
@@ -484,75 +484,75 @@ IMPiProcess_Array(
 	UUtUns32				width;
 	UUtUns32				height;
 	TStFontInfo				font_info;
-	
+
 	// get the number of items in the array
 	if ((GRrGroup_Array_GetLength(inItemArray) != cNumItems) &&
 		(GRrGroup_Array_GetLength(inItemArray) != cMaxNumItems))
 	{
 		IMPmError_ReturnOnErrorMsg(UUcError_Generic, "The items doesn't have the proper number of fields");
 	}
-	
+
 	// get the item type
 	error =	GRrGroup_Array_GetElement(inItemArray, cItemType, &element_type, &type_name);
 	IMPmError_ReturnOnError(error);
-		
+
 	error = AUrFlags_ParseFromGroupArray(IMPgWindowTypes, element_type, type_name, &type);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to process item type");
-			
+
 	// get the item name
 	error =	GRrGroup_Array_GetElement(inItemArray, cItemName, &element_type, &name);
 	IMPmError_ReturnOnError(error);
-		
+
 	// get the item id
 	error =	GRrGroup_Array_GetElement(inItemArray, cItemID, &element_type, &item_data);
 	IMPmError_ReturnOnError(error);
-	
+
 	sscanf((char*)item_data, "%d", &id);
-	
+
 	// get the item flags
 	error =	GRrGroup_Array_GetElement(inItemArray, cItemFlags, &element_type, &flags_array);
 	IMPmError_ReturnOnError(error);
-	
+
 	error = AUrFlags_ParseFromGroupArray(IMPgWindowFlags, element_type, flags_array, &flags);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog item flags");
-	
+
 	// get the item styles
 	error =	GRrGroup_Array_GetElement(inItemArray, cItemStyles, &element_type, &styles_array);
 	IMPmError_ReturnOnError(error);
-	
+
 	error = AUrFlags_ParseFromGroupArray(IMPgWindowStyles, element_type, styles_array, &style);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog item styles");
-	
+
 	// get the item X
 	error =	GRrGroup_Array_GetElement(inItemArray, cItemX, &element_type, &item_data);
 	IMPmError_ReturnOnError(error);
-	
+
 	sscanf((char*)item_data, "%d", &x);
-	
+
 	// get the item Y
 	error =	GRrGroup_Array_GetElement(inItemArray, cItemY, &element_type, &item_data);
 	IMPmError_ReturnOnError(error);
-	
+
 	sscanf((char*)item_data, "%d", &y);
-	
+
 	// get the item Y
 	error =	GRrGroup_Array_GetElement(inItemArray, cItemY, &element_type, &item_data);
 	IMPmError_ReturnOnError(error);
-	
+
 	sscanf((char*)item_data, "%d", &y);
-	
+
 	// get the item width
 	error =	GRrGroup_Array_GetElement(inItemArray, cItemWidth, &element_type, &item_data);
 	IMPmError_ReturnOnError(error);
-	
+
 	sscanf((char*)item_data, "%d", &width);
-	
+
 	// get the item height
 	error =	GRrGroup_Array_GetElement(inItemArray, cItemHeight, &element_type, &item_data);
 	IMPmError_ReturnOnError(error);
-	
+
 	sscanf((char*)item_data, "%d", &height);
-	
+
 	// get the optional formatting info
 	if (GRrGroup_Array_GetLength(inItemArray) == cMaxNumItems)
 	{
@@ -567,7 +567,7 @@ IMPiProcess_Array(
 		error = IMPrProcess_FontInfo(NULL, element_type, &font_info);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to process the formatting");
 	}
-	
+
 	// initialize the item
 	UUrString_Copy(ioItemData->title, name, WMcMaxTitleLength);
 	ioItemData->windowtype		= (UUtUns16)type;
@@ -579,7 +579,7 @@ IMPiProcess_Array(
 	ioItemData->width			= (UUtInt16)width;
 	ioItemData->height			= (UUtInt16)height;
 	ioItemData->font_info		= font_info;
-	
+
 	return UUcError_None;
 }
 
@@ -594,14 +594,14 @@ Imp_AddDialogData(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance =
 		!TMrConstruction_Instance_CheckExists(
 			WMcTemplate_DialogData,
 			inInstanceName);
-	
+
 	if (build_instance)
 	{
 		char					*name;
@@ -619,14 +619,14 @@ Imp_AddDialogData(
 		UUtUns32				num_items;
 		WMtDialogData			*dialog_data;
 		UUtUns32				i;
-		
+
 		// get all the elements that will make up a dialog data instance
 		error = GRrGroup_GetString(inGroup, "name", &name);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog name");
-		
+
 		error = GRrGroup_GetUns16(inGroup, "id", &id);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog id");
-		
+
 		error =
 			GRrGroup_GetElement(
 				inGroup,
@@ -634,7 +634,7 @@ Imp_AddDialogData(
 				&element_type,
 				&flags_array);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog data flags");
-		
+
 		error =
 			AUrFlags_ParseFromGroupArray(
 				IMPgWindowFlags,
@@ -642,7 +642,7 @@ Imp_AddDialogData(
 				flags_array,
 				&flags);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to process button flags");
-		
+
 		error =
 			GRrGroup_GetElement(
 				inGroup,
@@ -650,7 +650,7 @@ Imp_AddDialogData(
 				&element_type,
 				&styles_array);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog data flags");
-		
+
 		error =
 			AUrFlags_ParseFromGroupArray(
 				IMPgWindowStyles,
@@ -658,19 +658,19 @@ Imp_AddDialogData(
 				styles_array,
 				&style);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to process dialog styles");
-		
+
 		error = GRrGroup_GetInt16(inGroup, "x", &x);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog x coordinate");
 
 		error = GRrGroup_GetInt16(inGroup, "y", &y);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog y coordinate");
-		
+
 		error = GRrGroup_GetInt16(inGroup, "width", &width);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog width");
 
 		error = GRrGroup_GetInt16(inGroup, "height", &height);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog height");
-		
+
 		error =
 			GRrGroup_GetElement(
 				inGroup,
@@ -681,13 +681,13 @@ Imp_AddDialogData(
 		{
 			IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to get dialog items array");
 		}
-		
+
 		num_items = GRrGroup_Array_GetLength(items_array);
 		if (num_items == 0)
 		{
 			IMPmError_ReturnOnErrorMsg(UUcError_Generic, "The dialog items array is empty");
 		}
-		
+
 		// create the dialog data instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -696,7 +696,7 @@ Imp_AddDialogData(
 				num_items,
 				&dialog_data);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create dialog data instance");
-		
+
 		// initialize the dialog_data
 		UUrString_Copy(dialog_data->title, name, WMcMaxTitleLength);
 		dialog_data->id		= id;
@@ -707,12 +707,12 @@ Imp_AddDialogData(
 		dialog_data->y		= y;
 		dialog_data->width	= width;
 		dialog_data->height	= height;
-		
+
 		// process the items
 		for (i = 0; i < num_items; i++)
 		{
 			void				*item_stuff;
-			
+
 			// get the ith item from the items_array
 			error =
 				GRrGroup_Array_GetElement(
@@ -721,7 +721,7 @@ Imp_AddDialogData(
 					&element_type,
 					&item_stuff);
 			IMPmError_ReturnOnErrorMsg(error, "unable to get item stuff");
-			
+
 			if (element_type == GRcElementType_Group)
 			{
 				error = IMPiProcess_Group(item_stuff, &dialog_data->items[i]);
@@ -738,6 +738,6 @@ Imp_AddDialogData(
 			}
 		}
 	}
-	
+
 	return UUcError_None;
 }

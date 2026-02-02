@@ -1,8 +1,8 @@
 /*
 	Oni_Path.c
-	
+
 	This file contains all enemy pathfinding related code
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -75,7 +75,7 @@ UUtError PHrBuildGraph(PHtGraph *ioGraph, AKtEnvironment *inEnv)
 	/****************
 	* Initializes the new graph 'ioGraph' based on 'inEnv'
 	*/
-	
+
 	UUtError error;
 	UUtBool totally_blocked;
 	UUtUns16 block_start, block_end;
@@ -84,12 +84,12 @@ UUtError PHrBuildGraph(PHtGraph *ioGraph, AKtEnvironment *inEnv)
 	PHtConnection *conn, *conn2;
 	AKtBNVNode_Side *side;
 	float weight, blockages[PHcMaxBlockages * 2];
-	
+
 	if (!inEnv) return UUcError_Generic;
 	//printf("Building pathfinding graph...");
-	
+
 	ioGraph->env = inEnv;
-	
+
 	// Allocate memory for the graph
 	nodeCount = 0;
 	for (c=0; c<inEnv->bnvNodeArray->numNodes; c++)
@@ -106,7 +106,7 @@ UUtError PHrBuildGraph(PHtGraph *ioGraph, AKtEnvironment *inEnv)
 	} else {
 		ioGraph->nodes = NULL;
 	}
-	
+
 	// initialize the lrar cache which is used to allocate the pathfinding grids
 	ioGraph->grid_cache = lrar_new("pathfinding grid cache", 0, PHcGridCacheSize, (UUtUns16) nodeCount,
 									2, NONE, PHiLRAR_NewProc, PHiLRAR_PurgeProc);
@@ -124,18 +124,18 @@ UUtError PHrBuildGraph(PHtGraph *ioGraph, AKtEnvironment *inEnv)
 			nodeCount++;
 		}
 	}
-	
+
 	// Create all the connections between nodes
 	connCount = 0;
 	for (c=0; c<ioGraph->numNodes; c++)
 	{
 		node = &ioGraph->nodes[c];
-		
+
 		// For each room, check all the sides
 		for (s=node->location->sideStartIndex; s<node->location->sideEndIndex; s++)
 		{
 			side = &inEnv->bnvSideArray->sides[s];
-			
+
 			for (a=side->adjacencyStartIndex; a<side->adjacencyEndIndex; a++)
 			{
 				if (PHrBuildConnection(ioGraph, inEnv, node->location, node, s, a)) {
@@ -181,7 +181,7 @@ UUtError PHrBuildGraph(PHtGraph *ioGraph, AKtEnvironment *inEnv)
 						UUmAssert(conn->to == node);
 						UUmAssert(conn2->from == node);
 						UUrDebuggerMessage("PHrBuildGraph: detected superposed connections between BNVs %d -> %d and %d -> %d, removing; details follow:\n",
-											conn->from->location->index, conn->to->location->index, 
+											conn->from->location->index, conn->to->location->index,
 											conn2->from->location->index, conn2->to->location->index);
 
 						UUrDebuggerMessage("  FromBNV (%d): [%f,%f,%f]-[%f,%f,%f]\n", conn->from->location->index,
@@ -280,7 +280,7 @@ UUtError PHrBuildGraph(PHtGraph *ioGraph, AKtEnvironment *inEnv)
 	ioGraph->open = ioGraph->closed = NULL;
 	//printf("done. %d nodes and %d connections."UUmNL,ioGraph->numNodes,connCount);
 	//PHrDisplayGraph(ioGraph); getchar();
-	
+
 	return UUcError_None;
 }
 
@@ -324,11 +324,11 @@ void PHrDisposeGraph(PHtGraph *ioGraph)
 	/******************
 	* Releases all the memory used by 'ioGraph'
 	*/
-	
+
 	UUtUns16 c;
 	PHtConnection *conn, *next;
 	PHtNode *node;
-	
+
 	for (c = 0, node = ioGraph->nodes; c < ioGraph->numNodes; c++, node++)
 	{
 		// remove all outgoing connections
@@ -338,7 +338,7 @@ void PHrDisposeGraph(PHtGraph *ioGraph)
 			PHrRemoveConnection(conn, UUcFalse);
 			UUrMemory_Block_Delete(conn);
 		}
-		
+
 		// remove all incoming connections
 		for (conn = node->connections_in; conn != NULL; conn = next) {
 			next = conn->next_in;
@@ -357,7 +357,7 @@ void PHrDisposeGraph(PHtGraph *ioGraph)
 		UUrMemory_Block_Delete(ioGraph->nodes);
 		ioGraph->nodes = NULL;
 	}
-	
+
 	if (ioGraph->weight_storage != NULL) {
 		UUrMemory_Block_Delete(ioGraph->weight_storage);
 		ioGraph->weight_storage = NULL;
@@ -384,7 +384,7 @@ void PHrResetNode(PHtNode *ioNode)
 	/*****************
 	* Resets 'ioNode' to a default state
 	*/
-	
+
 	ioNode->g = ioNode->h = ioNode->f = 0.0f;
 	ioNode->weight_multiplier = 1.0f;
 	ioNode->next = NULL;
@@ -412,7 +412,7 @@ UUtBool PHrGeneratePath(
 	float *ioDistance,				// NULL for no distance calc, otherwise read = max distance, write = actual distance
 	PHtConnection **outConnections,	// either NULL or a pointer to an array of pointers PHcMaxPathLength-1 long
 	UUtUns32 *outNumNodes)
-{	
+{
 	UUtUns16 index_in, index_out;
 	UUtUns32 reset_itr, itr, weight_index;
 	UUtInt32 delta_path;
@@ -461,7 +461,7 @@ UUtBool PHrGeneratePath(
 				PHtNode *node;
 
 				UUmAssert(numNodes < PHcMaxPathLength);
-				
+
 				for (itr = numNodes - 1, node = cheap; itr > 0; itr--, node = node->predecessor) {
 					UUmAssert(node != NULL);
 					UUmAssert(node->predecessor_conn != NULL);
@@ -489,7 +489,7 @@ UUtBool PHrGeneratePath(
 
 			return UUcTrue;
 		}
-		
+
 		for (itr = 0, con = cheap->connections_out; con != NULL; con = con->next_out, itr++) {
 			if (con->to == cheap->predecessor) {
 				// don't check the node we came in from
@@ -582,7 +582,7 @@ UUtBool PHrGeneratePath(
 			new_g = cheap->g + weight * cheap->weight_multiplier;
 			new_h = cheap->weight_multiplier * PHrEstimateDistance(check, &con->connection_midpoint, inEndNode, inEndPoint);
 			new_f = new_g + new_h;
-			
+
 			// we must have an admissible heuristic in order to be A*, where h >= sum(g) to goal, and
 			// so f must never decrease by traversing a connection
 /*			if (new_f < cheap->f - 0.01f) {
@@ -652,8 +652,8 @@ UUtBool PHrGeneratePath(
 		PHrAppendToList(cheap,&ioGraph->closed);
 		cheap->pathStatus = PHcPath_Closed;
 	}
-	
-	return UUcFalse;		
+
+	return UUcFalse;
 }
 
 static void PHiPropagateShorterPath(PHtNode *inNode, float inDeltaWeight, UUtInt32 inDeltaPath)
@@ -705,13 +705,13 @@ PHtNode *PHrPopCheapest(PHtNode **inHead)
 	* Finds the node in the list with the lowest Dijkstra F value,
 	* removes it from the list, and returns it to the caller
 	*/
-	
+
 	PHtNode *head = *inHead;
 	PHtNode *lowN;
 	float low = UUcFloat_Max;
-	
+
 	if (!head) return NULL;
-	
+
 	// Find cheapest
 	do
 	{
@@ -722,9 +722,9 @@ PHtNode *PHrPopCheapest(PHtNode **inHead)
 
 		head = head->next;
 	} while(head != NULL);
-	
+
 	PHrRemoveFromList(lowN,inHead);
-	
+
 	return lowN;
 }
 
@@ -733,14 +733,14 @@ static PHtConnection *PHiClosestConnection(PHtConnection **inConnectionList, UUt
 	/************
 	* Returns the closest connection from a list to a given point
 	*/
-	
+
 	PHtConnection *closest_connection=NULL;
 	PHtConnection *connection;
 	float shortest_distance_squared = UUcFloat_Max;
 	M3tPoint3D *p0, *p1;
 	UUtUns32 i;
 	AKtEnvironment *environment = ONrGameState_GetEnvironment();
-	
+
 	for (i=0; i < inConnectionCount; i++)
 	{
 		float distance_squared;
@@ -749,7 +749,7 @@ static PHtConnection *PHiClosestConnection(PHtConnection **inConnectionList, UUt
 
 		p0 = PHmConnection_Point0(environment, connection);
 		p1 = PHmConnection_Point1(environment, connection);
-	
+
 		// find the distance to closest point to this connection
 		// this is actually kinda wrong since you might be near the middle
 		distance_squared = UUmMin(MUrPoint_Distance_Squared(inPoint, p0), MUrPoint_Distance_Squared(inPoint, p1));
@@ -759,7 +759,7 @@ static PHtConnection *PHiClosestConnection(PHtConnection **inConnectionList, UUt
 			closest_connection = connection;
 		}
 	}
-	
+
 	UUmAssert(closest_connection != NULL);
 
 	return closest_connection;
@@ -772,11 +772,11 @@ PHtConnection *PHrFindConnection(PHtNode *inA, PHtNode *inB, M3tPoint3D *inPoint
 	* Returns the first available edge connection between A and B,
 	* assuming we wish to get to pointB in B.
 	*/
-	
+
 	#define PHcMaxConnections 32
 	PHtConnection *conlist[PHcMaxConnections],*con = inA->connections_out;
 	UUtUns16 concount = 0;
-	
+
 	while (con)
 	{
 		UUmAssert(con->from == inA);
@@ -788,13 +788,13 @@ PHtConnection *PHrFindConnection(PHtNode *inA, PHtNode *inB, M3tPoint3D *inPoint
 		}
 		con = con->next_out;
 	}
-	
+
 	if (concount)
 	{
 		// Found a list of connections from A to B. Return best choice
 		return PHiClosestConnection(conlist,concount,inPointB);
 	}
-	
+
 	return NULL;
 }
 
@@ -812,10 +812,10 @@ PHtRoomData *PHrRoomFromPoint(AKtEnvironment *inEnv, M3tPoint3D *inPoint)
 	* return what you expect. It returns the first room it finds containing your
 	* point, which is not necessarily the only room that contains it.
 	*/
-	
+
 	AKtBNVNode *node;
 	PHtRoomData *room;
-	
+
 	node = AKrNodeFromPoint(inPoint);
 
 	if (NULL == node) {
@@ -836,7 +836,7 @@ UUtBool PHrPointInRoom(AKtEnvironment *inEnv, PHtRoomData *inRoom, M3tPoint3D *i
 	 * created by the volume node and the 3D extrusion of the room
 	 * pathfinding grid.
 	 */
-	
+
 	UUtInt16 gridX,gridY;
 	M3tPoint3D checkPoint;
 	AKtBNVNode *parent = PHrFindRoomParent(inRoom,inEnv);
@@ -844,15 +844,15 @@ UUtBool PHrPointInRoom(AKtEnvironment *inEnv, PHtRoomData *inRoom, M3tPoint3D *i
 
 	// CB: this assertion is a hindrance because I want to call it from the importer
 	// before compressed_grid has actually been calculated
-	
+
 	PHrWorldToGridSpaceDangerous(&gridX,&gridY,inPoint,inRoom);
-	
+
 	if ((gridX >= 0) && ((UUtUns32) gridX < inRoom->gridX) &&
 		(gridY >= 0) && ((UUtUns32) gridY < inRoom->gridY))
 	{
 		// For stairs, that's close enough
 		if (parent->flags & AKcBNV_Flag_Stairs) return UUcTrue;
-		
+
 		// CB: this function is used only for debugging purposes, and in the
 		// importer for determining which quads need to be rasterized into the
 		// pathfinding grid. it's now pretty well obsolete so the use of
@@ -874,7 +874,7 @@ void PHrAddCharacterToGrid(UUtUns32 inIndex, ONtCharacter *inCharacter, PHtDynam
 	* described by the inGrid parms. 'inGrid' is assumed
 	* to be in the same coordinate space as 'inRoom'
 	*/
-	
+
 	UUtUns8 obstruction;
 	UUtInt16 gx,gy;
 	UUtUns16 width = inGridX,height = inGridY;
@@ -909,27 +909,27 @@ void PHrAddCharacterToGrid(UUtUns32 inIndex, ONtCharacter *inCharacter, PHtDynam
 	PHrPutObstruction(grid,height,width,gx-1,gy-1,obstruction);	// E
 	PHrPutObstruction(grid,height,width,gx,gy-1,obstruction);
 	PHrPutObstruction(grid,height,width,gx+1,gy-1,obstruction);
-	
+
 	PHrPutObstruction(grid,height,width,gx-1,gy,obstruction);	// F
 	PHrPutObstruction(grid,height,width,gx,gy,obstruction);
 	PHrPutObstruction(grid,height,width,gx+1,gy,obstruction);
-	
+
 	PHrPutObstruction(grid,height,width,gx-1,gy+1,obstruction);	// F
 	PHrPutObstruction(grid,height,width,gx,gy+1,obstruction);
 	PHrPutObstruction(grid,height,width,gx+1,gy+1,obstruction);
-	
+
 	PHrPutObstruction(grid,height,width,gx-1,gy-2,obstruction);	// a
 	PHrPutObstruction(grid,height,width,gx,gy-2,obstruction);
 	PHrPutObstruction(grid,height,width,gx+1,gy-2,obstruction);
-	
+
 	PHrPutObstruction(grid,height,width,gx-2,gy-1,obstruction);	// b
 	PHrPutObstruction(grid,height,width,gx-2,gy,obstruction);
 	PHrPutObstruction(grid,height,width,gx-2,gy+1,obstruction);
-	
+
 	PHrPutObstruction(grid,height,width,gx+2,gy-1,obstruction);	// c
 	PHrPutObstruction(grid,height,width,gx+2,gy,obstruction);
 	PHrPutObstruction(grid,height,width,gx+2,gy+1,obstruction);
-	
+
 	PHrPutObstruction(grid,height,width,gx-1,gy+2,obstruction);	// d
 	PHrPutObstruction(grid,height,width,gx,gy+2,obstruction);
 	PHrPutObstruction(grid,height,width,gx+1,gy+2,obstruction);
@@ -1036,7 +1036,7 @@ void PHrAddDoorToGrid(UUtUns32 inIndex, M3tPoint3D *inPoint0, M3tPoint3D *inPoin
 			((p0y >= height) && (p1y >= height))) {
 			continue;
 		}
-	
+
 		// get an obstruction index for this object
 		if (obstruction == UUcMaxUns8) {
 			// make an entry for this door in the obstruction table of the room
@@ -1058,17 +1058,17 @@ void PHrAddDoorToGrid(UUtUns32 inIndex, M3tPoint3D *inPoint0, M3tPoint3D *inPoin
 	return;
 }
 
-	
+
 UUtUns32 PHrAkiraNodeToIndex(AKtBNVNode *inNode, AKtEnvironment *inEnv)
 {
 	/***************************
 	* Returns the absolute Akira index corrosponding to the
 	* Akira node 'inNode'
 	*/
-	
+
 	UUtUns32 node_index =  inNode->index;
 
-	
+
 	return node_index;
 }
 
@@ -1077,9 +1077,9 @@ void PHrAppendToList(PHtNode *inElem, PHtNode **inHead)
 	/*******************
 	* Appends 'inElem' to 'inHead'
 	*/
-	
+
 	PHtNode *head = *inHead;
-	
+
 	if (!head)
 	{
 		*inHead = inElem;
@@ -1088,7 +1088,7 @@ void PHrAppendToList(PHtNode *inElem, PHtNode **inHead)
 	{
 		while (head->next) head = head->next;
 		head->next = inElem;
-	}	
+	}
 	inElem->next = NULL;
 }
 
@@ -1097,9 +1097,9 @@ void PHrRemoveFromList(PHtNode *inVictim, PHtNode **inHead)
 	/********************
 	* Removes 'inVictim' from 'inHead'
 	*/
-	
+
 	PHtNode *head;
-	
+
 	head = *inHead;
 	if (head == inVictim) *inHead = head->next;
 	else do
@@ -1110,7 +1110,7 @@ void PHrRemoveFromList(PHtNode *inVictim, PHtNode **inHead)
 		}
 		else head = head->next;
 	} while (head);
-	
+
 	inVictim->pathStatus = PHcPath_Undef;
 }
 
@@ -1128,8 +1128,8 @@ void PHrAddNode(PHtGraph *ioGraph, AKtBNVNode *inRoom, UUtUns32 inSlot)
 	/*************************
 	* Creates a new node for 'inRoom' in 'ioGraph' at 'inSlot'.
 	*/
-	
-	PHtNode *node = &ioGraph->nodes[inSlot];	
+
+	PHtNode *node = &ioGraph->nodes[inSlot];
 	inRoom->pathnodeIndex = inSlot;
 
 	node->num_connections_in = 0;
@@ -1196,7 +1196,7 @@ static UUtBool PHrBuildConnection(PHtGraph *ioGraph, AKtEnvironment *inEnvironme
 			p1_index = itr;
 		}
 	}
-	
+
 	UUmAssert((p0_index >= 0) && (p0_index < 4));
 	UUmAssert((p1_index >= 0) && (p1_index < 4));
 
@@ -1248,7 +1248,7 @@ static UUtBool PHrBuildConnection(PHtGraph *ioGraph, AKtEnvironment *inEnvironme
 	if (conn == NULL) {
 		return UUcFalse;
 	}
-	
+
 	conn->flags = 0;
 	if ((inNodeSrc->location->flags & AKcBNV_Flag_Stairs_Standard) ||
 		(dest_node->location->flags & AKcBNV_Flag_Stairs_Standard)) {
@@ -1377,10 +1377,10 @@ void PHrDisplayGraph(PHtGraph *inGraph)
 	/***********
 	* Outputs an ASCII version of the pathfinding graph
 	*/
-	
+
 	UUtUns32 i;
 	PHtConnection *conn;
-	
+
 	for (i=0; i < inGraph->numNodes; i++)
 	{
 		fprintf(stderr,"BNV %d:\tfrom: ",i);
@@ -1417,7 +1417,7 @@ void PHrRenderGrid(PHtNode *inNode, PHtRoomData *inRoom, IMtPoint2D *inErrStart,
 	PHtSquare chk;
 	float h, line_y;
 	PHtSquare *grid;
-	
+
 	if (inRoom->debug_render_time == current_time) {
 		// don't draw the same grid twice
 		return;
@@ -1436,13 +1436,13 @@ void PHrRenderGrid(PHtNode *inNode, PHtRoomData *inRoom, IMtPoint2D *inErrStart,
 	if (NULL == grid) {
 		return;
 	}
-	
+
 	h = inRoom->squareSize / 2.0f;
 	width = (short) inRoom->gridX;
 	line_y = inRoom->origin.y + 1.0f;
 
 	PHrGrid_Decompress(inRoom->compressed_grid, inRoom->compressed_grid_size, grid);
-	
+
 	for (p=0; p < inRoom->gridX; p++)					//	|  |  |  |  |
 	{
 		PHrGridToWorldSpace(p,0,NULL,&c,inRoom);
@@ -1475,7 +1475,7 @@ void PHrRenderGrid(PHtNode *inNode, PHtRoomData *inRoom, IMtPoint2D *inErrStart,
 	line_points[2].x = c.x+h;	line_points[2].y = line_y;	line_points[2].z = c.z-h;
 	M3rGeom_Line_Light(line_points,line_points+1,IMcShade_Gray50);
 	M3rGeom_Line_Light(line_points+1,line_points+2,IMcShade_Gray50);
-	
+
 	for (p=0; p<inRoom->gridY; p++)
 	{
 		for (r=0; r<inRoom->gridX; r++)
@@ -1493,7 +1493,7 @@ void PHrRenderGrid(PHtNode *inNode, PHtRoomData *inRoom, IMtPoint2D *inErrStart,
 				M3rGeom_Line_Light(line_points,line_points+1,IMcShade_Pink);
 				line_points[0].x = c.x+h;	line_points[0].z = c.z-h;	line_points[0].y = line_y + 2.0f;
 				line_points[1].x = c.x-h;	line_points[1].z = c.z+h;	line_points[1].y = line_y + 2.0f;
-				M3rGeom_Line_Light(line_points,line_points+1,IMcShade_Pink);				
+				M3rGeom_Line_Light(line_points,line_points+1,IMcShade_Pink);
 			}
 
 			if ((r == PHgDebugSquareX) && (p == PHgDebugSquareY)) {
@@ -1541,7 +1541,7 @@ void PHrRenderGrid(PHtNode *inNode, PHtRoomData *inRoom, IMtPoint2D *inErrStart,
 				shade = PHgPathfindingWeightColor[chk.weight];
 			}
 
-			// Scale size of X 
+			// Scale size of X
 			h = inRoom->squareSize/2.0f;
 			h = UUmPin(h,0.0f,inRoom->squareSize/2.0f);
 
@@ -1578,7 +1578,7 @@ void PHrDebugGraph_TraverseConnections(PHtGraph *ioGraph, PHtNode *inStartNode, 
 	env = ONrGameState_GetEnvironment();
 
 	// none of the nodes are currently in the accessible set
-	for (reset_itr = 0; reset_itr < ioGraph->numNodes; reset_itr++) 
+	for (reset_itr = 0; reset_itr < ioGraph->numNodes; reset_itr++)
 	{
 		ioGraph->nodes[reset_itr].traverse_dist = (UUtUns32) -1;
 		ioGraph->nodes[reset_itr].pathStatus = PHcPath_Undef;
@@ -1587,7 +1587,7 @@ void PHrDebugGraph_TraverseConnections(PHtGraph *ioGraph, PHtNode *inStartNode, 
 	inStartNode->traverse_dist = 0;
 	PHrAppendToList(inStartNode, &ioGraph->open);
 	inStartNode->pathStatus = PHcPath_Open;
-	
+
 	while ((node = ioGraph->open) || (inOtherNode != NULL))
 	{
 		if (node == NULL) {
@@ -1633,7 +1633,7 @@ void PHrDebugGraph_TraverseConnections(PHtGraph *ioGraph, PHtNode *inStartNode, 
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -1766,7 +1766,7 @@ void PHrPrepareRoomForPath(PHtNode *inNode, const PHtRoomData *inRoom)
 	UUmAssertReadPtr(inRoom, sizeof(PHtRoomData));
 	UUmAssert((inRoom->gridX > UUcMinUns16) && (inRoom->gridX < UUcMaxUns16));	// casting later
 	UUmAssert((inRoom->gridY > UUcMinUns16) && (inRoom->gridY < UUcMaxUns16));	// casting later
-	
+
 	current_time = ONrGameState_GetGameTime();
 
 	if (!inNode->grids_allocated) {
@@ -1813,7 +1813,7 @@ void PHrPrepareRoomForPath(PHtNode *inNode, const PHtRoomData *inRoom)
 		UUtUns32 active_character_itr;
 		UUtUns32 object_index;
 		static UUtUns32 unique_gridpreparation_index = 0;
-	
+
 		UUmAssertWritePtr(inNode->dynamic_grid, inNode->array_size);
 		UUrMemory_Clear(inNode->dynamic_grid, inNode->array_size);
 
@@ -1835,7 +1835,7 @@ void PHrPrepareRoomForPath(PHtNode *inNode, const PHtRoomData *inRoom)
 
 			PHrAddCharacterToGrid(index, current_character, inNode->dynamic_grid, (UUtUns16) inNode->gridX, (UUtUns16) inNode->gridY, inNode, inRoom);
 		}
-		
+
 		// Add the objects to the grid
 		numObjects = ONgGameState->objects->numObjects;
 		for (object_index = 0; object_index < numObjects; object_index++)
@@ -1843,7 +1843,7 @@ void PHrPrepareRoomForPath(PHtNode *inNode, const PHtRoomData *inRoom)
 			object = ONgGameState->objects->object_list + object_index;
 
 			if (!(object->flags & OBcFlags_InUse)) continue;
-			
+
 			// Include animated objects, but not small projectiles
 			if (object->physics->flags & PHcFlags_Physics_Projectile) continue;
 
@@ -1916,7 +1916,7 @@ UUtBool PHrObstructionIsCharacter(UUtUns16 inObstruction, ONtCharacter **outChar
 
 	if ((inObstruction & PHcObstructionTypeMask) != PHcObstructionType_Character)
 		return UUcFalse;
-	
+
 	character_index = inObstruction & PHcObstructionIndexMask;
 	UUmAssert((character_index  >= 0) && (character_index  < ONcMaxCharacters));
 	character = &ONgGameState->characters[character_index ];
@@ -1956,15 +1956,15 @@ UUtBool PHrIgnoreObstruction(ONtCharacter *inCharacter, PHtPathMode inPathMode, 
 		case PHcObstructionType_Character:
 		{
 			ONtCharacter *character;
-			
+
 			inObstruction &= PHcObstructionIndexMask;
 			UUmAssert((inObstruction >= 0) && (inObstruction < ONcMaxCharacters));
 			character = &ONgGameState->characters[inObstruction];
-			
+
 			// this obstruction is a character - we may ignore it in some cases
 			if (character == inCharacter) {
 				ignore = UUcTrue;
-				
+
 			} else if (inPathMode == PHcPathMode_CheckClearSpace) {
 				ignore = UUcFalse;
 
@@ -1977,16 +1977,16 @@ UUtBool PHrIgnoreObstruction(ONtCharacter *inCharacter, PHtPathMode inPathMode, 
 		case PHcObstructionType_Object:
 		{
 			OBtObject *object;
-			
+
 			inObstruction &= PHcObstructionIndexMask;
 			UUmAssert((inObstruction >= 0) && (inObstruction < ONgGameState->objects->numObjects));
 			object = ONgGameState->objects->object_list + inObstruction;
-			
+
 			/*
 			// this is an object - all objects are marked as impassable
 			// EXCEPT at present all doors. [this may change in future when AIs
 			// can only open some doors]
-		
+
 			if (object->flags & OBcFlags_InUse) {
 				if (object->flags & OBcFlags_IsDoor) {
 					UUmAssertReadPtr(object->owner, sizeof(OBJtObject));
@@ -2058,7 +2058,7 @@ UUtBool PHrSquareIsPassable(ONtCharacter *inCharacter, PHtPathMode inPathMode,
 
 	// calculate the grid index
 	index = inX + (inY * inRoom->gridX);
-	
+
 	if (inNode->no_static_grid) {
 		weight = PHcClear;
 	} else {
@@ -2072,7 +2072,7 @@ UUtBool PHrSquareIsPassable(ONtCharacter *inCharacter, PHtPathMode inPathMode,
 			return UUcFalse;
 		}
 	}
-	
+
 	UUmAssertReadPtr(inNode->dynamic_grid, inNode->array_size);
 	obstruction = inNode->dynamic_grid[index].obstruction;
 	if (obstruction) {
@@ -2097,7 +2097,7 @@ UUtBool PHrSquareIsPassable(ONtCharacter *inCharacter, PHtPathMode inPathMode,
 
 			// perform the test - can we safely ignore this obstruction?
 			ignore = PHrIgnoreObstruction(inCharacter, inPathMode, inNode->obstruction[obstruction]);
-			
+
 			// flag that we have tested this obstruction already
 			UUrBitVector_SetBit(inObstructionBV, 2*obstruction);
 
@@ -2161,7 +2161,7 @@ UUtBool PHrLocalPathWeight(
 	dy = y2-y1;
 	ax = UUmABS(x2-x1);
 	ay = UUmABS(y2-y1);
-	
+
 	if (dx < 0) {
 		xdir = -1;
 	}
@@ -2181,10 +2181,10 @@ UUtBool PHrLocalPathWeight(
 	else {
 		ydir = 1;
 	}
-	
+
 	x = x1;
 	y = y1;
-	
+
 	*escape_path = UUcFalse;
 	prev_obstruction = UUcFalse;
 	*last_x = x;
@@ -2225,7 +2225,7 @@ UUtBool PHrLocalPathWeight(
 					*lowest_weight = lowest;
 					return UUcFalse;
 				}
-				
+
 				if (first_square) {
 					// we are actually standing on an 'impassable' square. this is an escape path.
 					*escape_path = UUcTrue;
@@ -2243,7 +2243,7 @@ UUtBool PHrLocalPathWeight(
 					return UUcTrue;
 				}
 			}
-			
+
 			if (e>=0)
 			{
 				y+=ydir;
@@ -2292,7 +2292,7 @@ UUtBool PHrLocalPathWeight(
 					*lowest_weight = lowest;
 					return UUcFalse;
 				}
-				
+
 				if (first_square) {
 					// we are actually standing on an 'impassable' square. this is an escape path.
 					*escape_path = UUcTrue;
@@ -2460,7 +2460,7 @@ static void PHiCheckForBlockages(PHtNode *inNode, M3tPoint3D *inPoint0, M3tPoint
 	ax = UUmABS(dx);
 	ay = UUmABS(dy);
 	MUmVector_Subtract(edge_vector, *inPoint1, *inPoint0);
-	
+
 	// offset the start point away from the end point by a max of 2 squares
 	MUmVector_Copy(start_pt, *inPoint0);
 	if (ax != 0) {
@@ -2583,7 +2583,7 @@ static void PHiCheckForBlockages(PHtNode *inNode, M3tPoint3D *inPoint0, M3tPoint
 	dy = end_y - start_y;
 	ax = UUmABS(dx);
 	ay = UUmABS(dy);
-	
+
 	if (dx < 0) {
 		xdir = -1;
 	} else if (dx == 0) {
@@ -2599,11 +2599,11 @@ static void PHiCheckForBlockages(PHtNode *inNode, M3tPoint3D *inPoint0, M3tPoint
 	} else {
 		ydir = 1;
 	}
-	
+
 	x = start_x;
 	y = start_y;
 	cur_t = start_t;
-	
+
 	if (ax > ay) {
 		e = (ay - ax) / 2;
 		while (1) {
@@ -2616,7 +2616,7 @@ static void PHiCheckForBlockages(PHtNode *inNode, M3tPoint3D *inPoint0, M3tPoint
 			if ((x == end_x) && (y == end_y)) {
 				goto exit;
 			}
-			
+
 			if (e>=0) {
 				y += ydir;
 				e -= ax;
@@ -2639,7 +2639,7 @@ static void PHiCheckForBlockages(PHtNode *inNode, M3tPoint3D *inPoint0, M3tPoint
 			if ((x == end_x) && (y == end_y)) {
 				goto exit;
 			}
-			
+
 			if (e >= 0) {
 				x += xdir;
 				e -= ay;
@@ -2656,7 +2656,7 @@ exit:
 	UUrMemory_Block_Delete(grid);
 }
 
-static UUtUns32 PHrFindBlockages(AKtEnvironment *inEnvironment, PHtConnection *inConnection, 
+static UUtUns32 PHrFindBlockages(AKtEnvironment *inEnvironment, PHtConnection *inConnection,
 								 UUtUns32 inMaxBlockages, float *inBlockageArray, UUtBool *outTotallyBlocked)
 {
 	UUtUns32 num_blockages;
@@ -2821,10 +2821,10 @@ UUtError PHrPathDistance(ONtCharacter *inCharacter, UUtUns32 inSoundType,
 	PHtGraph				*graph;
 	AKtBNVNode				*bnv_node;
 	UUtBool					gotpath;
-	
+
 	env = ONrGameState_GetEnvironment();
 	graph = ONrGameState_GetGraph();
-	
+
 	// set up the starting point
 	if (inFromNode == NULL) {
 		bnv_node = AKrNodeFromPoint(inFrom);

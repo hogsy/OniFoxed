@@ -27,17 +27,17 @@ enum
 typedef tm_template('V', 'M', 'C', 'B', "VM View CheckBox")
 VMtView_CheckBox
 {
-	
+
 	UUtUns16			flags;
 	UUtUns16			reserved;
 	IMtPoint2D			title_location_offset;
-	
+
 	VMtPartSpec			*outline;
 	VMtPartSpec			*off;
 	VMtPartSpec			*on;
-	
+
 	char				title[32];
-	
+
 } VMtView_CheckBox;
 
 typedef struct VMtView_CheckBox_PrivateData
@@ -46,13 +46,13 @@ typedef struct VMtView_CheckBox_PrivateData
 	IMtPoint2D			checkbox_location;
 	UUtUns16			checkbox_width;
 	UUtUns16			checkbox_height;
-	
+
 	// vars for title text
 	tm_templateref		title_texture_ref;
 	IMtPoint2D			title_location;
 	UUtInt16			title_texture_width;
 	UUtInt16			title_texture_height;
-	
+
 } VMtView_CheckBox_PrivateData;
 
 extern TMtPrivateData*	DMgTemplate_CheckBox_PrivateData;

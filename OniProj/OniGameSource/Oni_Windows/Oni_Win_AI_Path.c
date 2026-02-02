@@ -1,13 +1,13 @@
 #if TOOL_VERSION
 /*
 	FILE:	Oni_Win_AI_Path.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: April 24, 2000
-	
+
 	PURPOSE: AI Pathing Windows
-	
+
 	Copyright (c) Bungie Software 2000
 
 */
@@ -89,7 +89,7 @@ static char *cMovementModes[AI2cMovementMode_Max] =
 	"Run"
 };
 
-static char *cMovementDirections[AI2cMovementDirection_Max] = 
+static char *cMovementDirections[AI2cMovementDirection_Max] =
 {
 	"Forward",
 	"Backpedal",
@@ -119,7 +119,7 @@ static UUtInt16 AIrWaypoint_GetFlag(AI2tWaypoint *inWaypoint)
 		case AI2cWaypointType_MoveThroughFlag:
 			flag = inWaypoint->data.moveThroughFlag.flag;
 		break;
-	
+
 		case AI2cWaypointType_GlanceAtFlag:
 			flag = inWaypoint->data.glanceAtFlag.glanceFlag;
 		break;
@@ -163,7 +163,7 @@ static void AIrWaypoint_SetFlag(AI2tWaypoint *inWaypoint, UUtInt16 inFlag)
 		case AI2cWaypointType_MoveThroughFlag:
 			inWaypoint->data.moveThroughFlag.flag = inFlag;
 		break;
-	
+
 		case AI2cWaypointType_GlanceAtFlag:
 			inWaypoint->data.glanceAtFlag.glanceFlag = inFlag;
 		break;
@@ -201,7 +201,7 @@ static UUtBool AIrWaypoint_HasFlag(AI2tWaypoint *inWaypoint)
 		case AI2cWaypointType_ShootAtFlag:
 			has_flag = UUcTrue;
 		break;
-	
+
 		default:
 			has_flag = UUcFalse;
 		break;
@@ -604,7 +604,7 @@ OWiPathPoint_Edit_Callback(
 				flag_id = OWgWaypointDefaultFlagID;
 			}
 		break;
-		
+
 		case WMcMessage_Destroy:
 		break;
 
@@ -678,7 +678,7 @@ OWiPathPoint_Edit_Callback(
 				break;
 			}
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -693,7 +693,7 @@ OWiPathPoint_Edit_Callback(
 
 				case cPathPointEdit_Flag_Button:
 					flag_id = OWrChooseFlag(flag_id);
-				
+
 					set_flag_id = UUcTrue;
 				break;
 
@@ -722,7 +722,7 @@ OWiPathPoint_Edit_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
@@ -767,7 +767,7 @@ OWiPathPoint_Edit_Callback(
 		}
 
 		if (AI2cWaypointType_LookInDirection == waypoint->type) {
-			WMrPopupMenu_SetSelection(direction_popup, (UUtUns16) waypoint->data.lookInDirection.facing);	
+			WMrPopupMenu_SetSelection(direction_popup, (UUtUns16) waypoint->data.lookInDirection.facing);
 		}
 
 		if (AIrWaypoint_HasIntParam(waypoint)) {
@@ -784,7 +784,7 @@ OWiPathPoint_Edit_Callback(
 			WMrEditField_SetInt32(flag_edittext, AIrWaypoint_GetFlag(waypoint));
 		}
 	}
-	
+
 	return handled;
 }
 
@@ -955,7 +955,7 @@ OWrPath_Edit_Callback(
 	WMtEditField	*id_edit = WMrDialog_GetItemByID(inDialog, cPathEdit_ID_Edit);
 	WMtEditField	*name_edit = WMrDialog_GetItemByID(inDialog, cPathEdit_Name_Edit);
 	WMtCheckBox		*cb_nearest = WMrDialog_GetItemByID(inDialog, cPathEdit_CB_ReturnToNearest);
-	
+
 	if (listbox != NULL) {
 		selected_index = WMrMessage_Send(listbox, LBcMessage_GetSelection, 0, 0);
 	}
@@ -963,7 +963,7 @@ OWrPath_Edit_Callback(
 	OBJrObject_GetObjectSpecificData(object, &object_specific_data);
 	path = &object_specific_data.osd.patrolpath_osd;
 	waypoints = path->waypoints;
-	
+
 	if (LBcError != selected_index) {
 		selected_waypoint = waypoints + selected_index;
 	}
@@ -975,15 +975,15 @@ OWrPath_Edit_Callback(
 				WMrEditField_SetInt32(id_edit, object_specific_data.osd.patrolpath_osd.id_number);
 				WMrEditField_SetText(name_edit, object_specific_data.osd.patrolpath_osd.name);
 				WMrCheckBox_SetCheck(cb_nearest, ((object_specific_data.osd.patrolpath_osd.flags & AI2cPatrolPathFlag_ReturnToNearest) > 0));
-				
+
 				dirty = UUcTrue;
 				object_name_changed = UUcTrue;
 			}
 		break;
-		
+
 		case WMcMessage_Destroy:
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -1000,8 +1000,8 @@ OWrPath_Edit_Callback(
 					else {
 						if (selected_index != LBcError) {
 							UUrMemory_MoveOverlap(
-								waypoints + selected_index + 0, 
-								waypoints + selected_index + 1, 
+								waypoints + selected_index + 0,
+								waypoints + selected_index + 1,
 								sizeof(AI2tWaypoint) * (path->num_waypoints - selected_index));
 						}
 						else {
@@ -1024,8 +1024,8 @@ OWrPath_Edit_Callback(
 					else {
 						if (selected_index != LBcError) {
 							UUrMemory_MoveOverlap(
-								waypoints + selected_index + 1, 
-								waypoints + selected_index + 2, 
+								waypoints + selected_index + 1,
+								waypoints + selected_index + 2,
 								sizeof(AI2tWaypoint) * (path->num_waypoints - selected_index - 1));
 
 							selected_index += 1;
@@ -1046,8 +1046,8 @@ OWrPath_Edit_Callback(
 				case cPathEdit_Delete:
 					if (selected_index != LBcError) {
 						UUrMemory_MoveOverlap(
-							waypoints + selected_index + 1, 
-							waypoints + selected_index, 
+							waypoints + selected_index + 1,
+							waypoints + selected_index,
 							sizeof(AI2tWaypoint) * (path->num_waypoints - selected_index - 1));
 
 						path->num_waypoints -= 1;
@@ -1055,7 +1055,7 @@ OWrPath_Edit_Callback(
 						dirty = UUcTrue;
 					}
 				break;
-				
+
 				case cPathEdit_Edit:
 					edit_selected_waypoint = UUcTrue;
 				break;
@@ -1072,7 +1072,7 @@ OWrPath_Edit_Callback(
 				case cPathEdit_Up:
 					if ((path->num_waypoints > 1) && (selected_index != LBcError) && (selected_index > 0)) {
 						AI2tWaypoint swap_up;
-					
+
 						swap_up = waypoints[selected_index - 1];
 						waypoints[selected_index - 1] = waypoints[selected_index];
 						waypoints[selected_index] = swap_up;
@@ -1081,11 +1081,11 @@ OWrPath_Edit_Callback(
 						dirty = UUcTrue;
 					}
 				break;
-				
+
 				case cPathEdit_Down:
 					if ((path->num_waypoints > 1) && (selected_index != LBcError) && ((selected_index + 1) < path->num_waypoints)) {
 						AI2tWaypoint swap_down;
-					
+
 						swap_down = waypoints[selected_index + 1];
 						waypoints[selected_index + 1] = waypoints[selected_index];
 						waypoints[selected_index] = swap_down;
@@ -1116,7 +1116,7 @@ OWrPath_Edit_Callback(
 
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
@@ -1162,7 +1162,7 @@ OWrPath_Edit_Callback(
 
 		WMrDialog_ModalEnd(inDialog, UUcTrue);
 	}
-	
+
 	return handled;
 }
 
@@ -1223,7 +1223,7 @@ OWrAI_DropAndAddFlag(
 		} else {
 			OBJrObject_Delete(object);
 		}
-	}	
+	}
 
 	if (!dialog_msg) {
 		// user cancelled out of dialog

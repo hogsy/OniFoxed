@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	Oni_Win_Neutral.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 13, 2000
-	
+
 	PURPOSE: AI Neutral Windows
-	
+
 	Copyright (c) Bungie Software 2000
 
 */

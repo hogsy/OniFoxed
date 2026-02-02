@@ -2,19 +2,19 @@
 
 /*
 	FILE:	BFW_Image.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Nov 27, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
-	
+
 	GENERAL IMAGE RULES:
 		1) the base address for any image starts at the top-left of the image
 		2) tbd
-		
+
 */
 #ifndef BFW_IMAGE_H
 #define BFW_IMAGE_H
@@ -30,7 +30,7 @@
  		padded(if needed) to be a multiple of 2bytes.
  	5) IMcPixelType_I1 must be 2byte aligned and each row must be padded(if needed)
  		to be a multiple of 2bytes
- 	
+
  */
 
 	#define IMcShade_None				(0x00000000)
@@ -81,35 +81,35 @@
 		IMcPixelType_RGBA_Bytes,	// byte packed rgba (gl)
 		IMcPixelType_RGBA5551,		// (gl)
 		IMcPixelType_RGBA4444,		// (gl)
-		IMcPixelType_RGB565,		// 
+		IMcPixelType_RGB565,		//
 
 		IMcPixelType_ABGR1555,		// 1555
 
 		IMcNumPixelTypes
-		
+
 	} IMtPixelType;
-	
+
 	typedef enum IMtDitherMode
 	{
 		IMcDitherMode_Off,
 		IMcDitherMode_On
-		
+
 	} IMtDitherMode;
-	
+
 	typedef enum IMtScaleMode
 	{
 		IMcScaleMode_None				= 0,
 		IMcScaleMode_Box				= 0,
 		IMcScaleMode_High				= (1 << 0),
 		IMcScaleMode_IndependantAlpha	= (1 << 1)
-		
+
 	} IMtScaleMode;
-	
+
 
 /*
  *  rect and point types for images
  */
-	
+
 	// This is a struct so that pixel color parameters don't get misused
 	typedef struct IMtPixel
 	{
@@ -120,7 +120,7 @@
 	{
 		UUtInt16		x;
 		UUtInt16		y;
-		
+
 	} IMtPoint2D;
 
 	typedef enum
@@ -130,7 +130,7 @@
 	} IMtMipMap;
 
 /*
- * 
+ *
  */
 	UUtError
 	IMrInitialize(
@@ -143,7 +143,7 @@
 	const char *IMrPixelTypeToString(IMtPixelType inPixelType);
 
 /*
- * 
+ *
  */
 	void
 	IMrImage_Draw_Line(
@@ -154,7 +154,7 @@
 		IMtPixel			inDrawColor,
 		IMtPoint2D			*inPoint1,
 		IMtPoint2D			*inPoint2);
-		
+
 	void
 	IMrImage_Draw_Rect(
 		UUtUns16			inImageWidth,
@@ -165,7 +165,7 @@
 		UUtRect				*inDrawRect);
 
 /*
- * 
+ *
  */
 	UUtError
 	IMrImage_Scale(
@@ -177,7 +177,7 @@
 		UUtUns16		inDstWidth,
 		UUtUns16		inDstHeight,
 		void*			outDstData); // caller is responsible for allocating this memory
-	
+
 	UUtError
 	IMrImage_ConvertPixelType(
 		IMtDitherMode	inDitherMode,
@@ -188,7 +188,7 @@
 		void*			inSrcData,
 		IMtPixelType	inDstPixelType,
 		void*			outDstData);	 // caller is responsible for allocating this memory
-	
+
 	void
 	IMrImage_Copy(
 		UUtUns16		inCopyWidth,
@@ -218,7 +218,7 @@
 		UUtRect*		inDstRect,
 		IMtPixelType	inDstPixelType,
 		void*			outDstData);	 // caller is responsible for allocating this memory
-	
+
 	void
 	IMrImage_GetPixel(
 		UUtUns16		inSrcWidth,
@@ -238,7 +238,7 @@
 		UUtUns16		inDstHeight,
 		const UUtRect*	inDstRect,
 		void*			outDstData);
-		
+
 	UUtUns16
 	IMrImage_ComputeRowBytes(
 		IMtPixelType	inPixelType,
@@ -270,9 +270,9 @@
 		UUtUns16		inWidth,
 		UUtUns16		inHeight,
 		UUtUns16		inBlockPowerOf2);
-	
+
 /*
- * 
+ *
  */
 
 	IMtPixel
@@ -287,7 +287,7 @@
 	IMtPixel
 	IMrPixel_FromARGB(
 		IMtPixelType	inPixelType,
-		float			inA,									 
+		float			inA,
 		float			inR,
 		float			inG,
 		float			inB);
@@ -314,7 +314,7 @@
 		IMtShade		inShade2);
 
 /*
- * 
+ *
  */
 	void
 	IMrPixel_Convert(
@@ -322,14 +322,14 @@
 		IMtPixel		inSrcPixel,
 		IMtPixelType	inDstPixelType,
 		IMtPixel		*outDstPixel);
-		
+
 	UUtUns8
 	IMrPixel_GetSize(
 		IMtPixelType	inPixelType);
 
 	void
 	IMrPixel_Decompose(
-		IMtPixel		inPixel, 
+		IMtPixel		inPixel,
 		IMtPixelType	inPixelType,
 		float			*outA,
 		float			*outR,
@@ -339,12 +339,12 @@
 	UUtBool
 	IMrPixelType_HasAlpha(
 		IMtPixelType	inPixelType);
-	
+
 	UUtUns16
 	IMrPixel_BlendARGB4444(
 		UUtUns16		inSrcPixel,
 		UUtUns16		inDstPixel);
-	
+
 /*
  *
  */
@@ -353,7 +353,7 @@
 		const UUtRect*	inRect1,
 		const UUtRect*	inRect2,
 		UUtRect			*outRect);
-	
+
 	void
 	IMrRect_Inset(
 		UUtRect			*ioRect,
@@ -370,7 +370,7 @@
 	IMrRect_PointIn(
 		const UUtRect*		inRect,
 		const IMtPoint2D*	inPoint);
-		
+
 	void
 	IMrRect_ComputeClipInfo(
 		const UUtRect*	inRect1,
@@ -394,5 +394,5 @@
 		const IMtPoint2D	*inPoint1,
 		const IMtPoint2D	*inPoint2);
 
-		
+
 #endif /* BFW_IMAGE_H */

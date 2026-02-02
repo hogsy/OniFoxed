@@ -1,12 +1,12 @@
 /*
 	FILE:	EM_GC_Method_Geometry.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -25,7 +25,7 @@ EGrGeomContext_Method_Geometry_BoundingBox_Draw(
 	UUtUns16			inRGB555,
 	M3tGeometry*		inGeometryObject)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -33,10 +33,10 @@ UUtError
 EGrGeomContext_Method_Geometry_Draw(
 	M3tGeometry*		inGeometryObject)
 {
-	
+
 	return UUcError_None;
 }
-			
+
 UUtError
 EGrGeomContext_Method_Geometry_PolyDraw(
 	UUtUns16			inNumPoints,
@@ -46,7 +46,7 @@ EGrGeomContext_Method_Geometry_PolyDraw(
 
 	return UUcError_None;
 }
-			
+
 UUtError
 EGrGeomContext_Method_Geometry_LineDraw(
 	UUtUns16			inNumPoints,
@@ -73,7 +73,7 @@ EGrGeomContext_Method_Geometry_PointDraw(
 	M3tPoint3D*			inPoints,
 	UUtUns16			inShade)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -88,6 +88,6 @@ EGrGeomContext_Method_Sprite_Draw(
 	M3tVector3D*		inDirection,
 	M3tMatrix3x3*		inOrientation)
 {
-	
+
 	return UUcError_None;
 }

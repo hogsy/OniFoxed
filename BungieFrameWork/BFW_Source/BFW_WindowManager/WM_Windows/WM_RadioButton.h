@@ -20,10 +20,10 @@ enum
 	WMcRadioButtonStyle_None		= (0x0000 << 16),
 	WMcRadioButtonStyle_HasTitle	= (0x0001 << 16),
 	WMcRadioButtonStyle_HasIcon		= (0x0002 << 16),	/* not supported yet */
-	
+
 	WMcRadioButtonStyle_TextRadioButton		= (WMcRadioButtonStyle_HasTitle),
 	WMcRadioButtonStyle_IconRadioButton		= (WMcRadioButtonStyle_HasIcon)
-	
+
 };
 
 enum

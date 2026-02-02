@@ -1,19 +1,19 @@
 /*
 	FILE:	MD_DC_Method_Quad.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 18, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
 #ifndef MD_DC_METHOD_QUAD_H
 #define MD_DC_METHOD_QUAD_H
 
-void 
+void
 MDrDrawContext_Method_QuadGouraudInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -21,7 +21,7 @@ MDrDrawContext_Method_QuadGouraudInterpolate(
 	UUtUns16		inVIndex2,
 	UUtUns16		inVIndex3);
 
-void 
+void
 MDrDrawContext_Method_QuadGouraudFlat(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -30,7 +30,7 @@ MDrDrawContext_Method_QuadGouraudFlat(
 	UUtUns16		inVIndex3,
 	UUtUns16		inFaceShade);
 
-void 
+void
 MDrDrawContext_Method_QuadTextureInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,

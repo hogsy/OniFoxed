@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Guard.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: June 22, 2000
-	
+
 	PURPOSE: Guard AI for Oni
-	
+
 	Copyright (c) 2000
 
 */

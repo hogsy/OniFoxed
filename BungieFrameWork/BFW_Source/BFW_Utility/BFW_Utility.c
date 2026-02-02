@@ -1,12 +1,12 @@
  /*
 	FILE:	BFW_Utility.c
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: May 18, 1997
-	
+
 	PURPOSE: General utility files
-	
+
 	Copyright 1997, 1998
 
 */
@@ -43,20 +43,20 @@ UUtError UUrInitialize(
 	UUtBool	initializeBasePlatform)
 {
 	UUtError	error;
-	
+
 	error = UUrPlatform_Initialize(initializeBasePlatform);
 	UUmError_ReturnOnErrorMsg(error, "Could not initialize platform");
 
 	error= (bfw_math_initialize() ? UUcError_None : UUcError_Generic);
 	UUmError_ReturnOnErrorMsg(error, "Could not intialize math library");
-		
+
 	DSrInitialize();
-	
+
 	MUrInitialize();
 
 	error = UUrMemory_Initialize();
 	UUmError_ReturnOnErrorMsg(error, "Could not initialize memory");
-	
+
 	error = UUrError_Initialize();
 	UUmError_ReturnOnErrorMsg(error, "Could not initialize error handler");
 
@@ -65,15 +65,15 @@ UUtError UUrInitialize(
 
 	// cache the machine time frequency
 	UUgMachineTime_High_Frequency = UUrMachineTime_High_Frequency();
-	
+
 	if(UUrPlatform_SIMD_IsPresent())
 	{
 		UUrPlatform_SIMD_Initialize();
 	}
-	
+
 	return UUcError_None;
 }
-	
+
 void UUrTerminate(
 	void)
 {
@@ -88,7 +88,7 @@ void UUrTerminate(
 // We're using m= 2^32.  If we multiply 2 32-bit numbers together, the result is the low 32
 // bits of the 64-bit product.  Thus, we get the "mod m" for free.  Our choices for A and C,
 // which are EXTREMELY important, come from Knuth.
-// 
+//
 // For more info, check out Numerical Recipes in C, pg. 284.
 
 #define RANDOM_A (1664525L)
@@ -111,7 +111,7 @@ UUtUns32 UUrRandom_GetSeed(void)
 {
 	return random_seed;
 }
-	
+
 UUtUns16 UUrRandom(void)
 {
 #ifdef DEBUG_RANDOM_SEED
@@ -125,7 +125,7 @@ UUtUns16 UUrRandom(void)
 UUtUns16 UUrLocalRandom(void)
 {
 	UUgLocalRandomSeed= RANDOM_A*UUgLocalRandomSeed + RANDOM_C;
-	
+
 	return (UUtUns16) (UUgLocalRandomSeed>>16);
 }
 
@@ -171,13 +171,13 @@ UUrCallStack_Exit(
 	void)
 {
 	char *d;
-	
+
 	d = UUgFunctionHistory + gNextIndex;
-	
+
 	while(*d != '*') d--;
-	
+
 	*d = 0;
-	
+
 	gNextIndex = d - UUgFunctionHistory;
 }
 
@@ -188,21 +188,21 @@ UUrCallStack_Enter(
 	char*	orig;
 	char*	d;
 	char*	s;
-	
+
 	if(gNextIndex + 64 > UUcMaxFunctionHistoryLength)
 	{
 		return;
 	}
-	
+
 	orig = d = UUgFunctionHistory + gNextIndex;
 	s = inFunctionName;
-	
+
 	*d++ = '*';
-	
+
 	while(*s != 0) *d++ = *s++;
-	
+
 	*d = 0;
-	
+
 	gNextIndex += (d - orig);
 }
 
@@ -233,12 +233,12 @@ UUrConvertStrToSecsSince1900(
 		"Nov",
 		"Dec"
 	};
-	
+
 	UUtUns16	month;
 	struct tm			time;
-	
+
 	UUmAssert(strlen(inStr) == 20);
-	
+
 	for(month = 0; month < 12; month++)
 	{
 		if(!strncmp(inStr, month_name[month], 3))
@@ -246,32 +246,32 @@ UUrConvertStrToSecsSince1900(
 			break;
 		}
 	}
-	
+
 	if(month == 12) return -1;
-	
+
 	time.tm_mon = month;
-	
+
 	sscanf(inStr + 4, "%d", &time.tm_mday);
 	sscanf(inStr + 7, "%d", &time.tm_year);
 	sscanf(inStr + 12, "%d", &time.tm_hour);
 	sscanf(inStr + 15, "%d", &time.tm_min);
 	sscanf(inStr + 18, "%d", &time.tm_sec);
-	
+
 	time.tm_year -= 1900;
 	time.tm_isdst = -1;
-	
+
 	return (UUtUns32)mktime(&time);
 }
 
 void
 UUrConvertSecsSince1900ToStr(
 	UUtUns32	inSecs,
-	char*		inBuffer)		
-	
+	char*		inBuffer)
+
 	// MMM DD YYYY HH:MM:SS <- under the mac
 	// DOW MMM DD HH:MM:SS YYYY <- under windows
 	// 0123456789012345678901234
-{	
+{
 	// NOTE: not internationalized, string length here is a magic, not reliable number
 	// from ctime implementation to ctime implementation
 	time_t time = inSecs;
@@ -284,8 +284,8 @@ typedef struct UUtQueue
 {
 	UUtUns16 head;		// points to the front item of the queue
 	UUtUns16 tail;		// points to the last item in the queue (if head == tail we are empty)
-	UUtUns16 elemSize;		
-	UUtUns16 queueSize;		
+	UUtUns16 elemSize;
+	UUtUns16 queueSize;
 	UUtUns16 count;
 } ONtCommandQueue;
 
@@ -397,13 +397,13 @@ UUrTag2Str(
 	UUtUns32	inTag)
 {
 	static char	buffer[5];
-	
+
 	buffer[0] = (char)((inTag >> 24) & 0xFF);
 	buffer[1] = (char)((inTag >> 16) & 0xFF);
 	buffer[2] = (char)((inTag >> 8) & 0xFF);
 	buffer[3] = (char)(inTag & 0xFF);
 	buffer[4] = 0;
-	
+
 	return buffer;
 }
 
@@ -425,7 +425,7 @@ UUrOneWayFunction_Uns32(
 {
 	inUns32 *= ~inUns32;
 	inUns32 ^= (inUns32 << 1);
-	
+
 	return (((~inUns32 & 0x3FFFF) << 14) | ((inUns32 & 0xFFFC0000) >> 18)) * 0xDEAD;
 }
 
@@ -435,7 +435,7 @@ UUrOneWayFunction_Uns16(
 {
 	inUns16 *= ~inUns16;
 	inUns16 ^= (inUns16 >> 1);
-	
+
 	return (((~inUns16 & 0x7F) << 9) | ((inUns16 & 0xFF80) >> 7)) * 0xFEFE;
 }
 
@@ -445,7 +445,7 @@ UUrOneWayFunction_Uns8(
 {
 	inUns8 *= ~inUns8;
 	inUns8 ^= (inUns8 << 1);
-	
+
 	return (((~inUns8 & 0x1F) << 3) | ((inUns8 & 0xE0) >> 5)) * 0xEF;
 }
 
@@ -460,21 +460,21 @@ UUrOneWayFunction_ConvertString(
 		inLength -=4;
 		ioString += 4;
 	}
-	
+
 	if(inLength >= 2)
 	{
 		*(UUtUns16*)ioString = UUrOneWayFunction_Uns16(*(UUtUns16*)ioString);
 		inLength -= 2;
 		ioString += 2;
 	}
-	
+
 	if(inLength >= 1)
 	{
 		*(UUtUns8*)ioString = UUrOneWayFunction_Uns8(*(UUtUns8*)ioString);
 		inLength -= 1;
 		ioString += 1;
 	}
-	
+
 	UUmAssert(inLength == 0);
 }
 
@@ -485,7 +485,7 @@ UUrOneWayFunction_CompareString(
 	UUtUns16	inLength)
 {
 	if(inLength == 0) return UUcFalse;
-	
+
 	while(inLength >= 4)
 	{
 		if(*(UUtUns32*)inMungedString !=
@@ -497,7 +497,7 @@ UUrOneWayFunction_CompareString(
 		inNormalString += 4;
 		inMungedString += 4;
 	}
-	
+
 	if(inLength >= 2)
 	{
 		if(*(UUtUns16*)inMungedString !=
@@ -509,7 +509,7 @@ UUrOneWayFunction_CompareString(
 		inNormalString += 2;
 		inMungedString += 2;
 	}
-	
+
 	if(inLength >= 1)
 	{
 		if(*(UUtUns8*)inMungedString !=
@@ -521,9 +521,9 @@ UUrOneWayFunction_CompareString(
 		inNormalString += 1;
 		inMungedString += 1;
 	}
-	
+
 	UUmAssert(inLength == 0);
-	
+
 	return UUcTrue;
 }
 

@@ -66,14 +66,14 @@ OBJiSound_CalcBoundingVolume(
 	M3tPoint3D				*points;
 	M3tBoundingBox			bbox;
 	UUtInt32				itr;
-	
+
 	volume = &inSoundOSD->u.bvolume.bvolume;
 	points = volume->worldPoints;
-	
+
 	// calculate the offset matrix
 	MUrMatrix_Identity(&matrix);
 	MUrMatrixStack_Translate(&matrix, &inObject->position);
-	
+
 	// expand into bounding box, then copy
 	M3rMinMaxBBox_To_BBox(&inSoundOSD->u.bvolume.bbox, &bbox);
 	UUrMemory_MoveFast(&bbox, points, sizeof(M3tPoint3D) * M3cNumBoundingPoints);
@@ -82,7 +82,7 @@ OBJiSound_CalcBoundingVolume(
 	// compute faces
 	UUrMemory_MoveFast(M3gBBox_QuadList, volume->faces, sizeof(M3tQuad) * M3cNumBoundingFaces);
 
-	// compute normals	
+	// compute normals
 	for (itr = 0; itr < M3cNumBoundingFaces; itr++)
 	{
 		MUrVector_NormalFromPoints(
@@ -100,7 +100,7 @@ OBJiSound_CalcBoundingVolume(
 		M3tPoint3D *point;
 
 		normal = volume->normals[itr];
-	
+
 		point = volume->worldPoints + volume->faces[itr].indices[0];
 		plane = volume->curPlanes + itr;
 
@@ -109,7 +109,7 @@ OBJiSound_CalcBoundingVolume(
 		plane->c = normal.z;
 		plane->d = -(normal.x*point->x + normal.y*point->y + normal.z*point->z);
 
-		volume->curProjections[itr] = (UUtUns16) 
+		volume->curProjections[itr] = (UUtUns16)
 			CLrQuad_FindProjection(volume->worldPoints,	volume->faces + itr);
 
 		// degenerate quads should be culled at import time
@@ -137,21 +137,21 @@ OBJiSound_DrawSphere(
 	M3tPoint3D				*ring_XY = UUrAlignMemory(block_XY);
 	M3tPoint3D				*ring_YZ = UUrAlignMemory(block_YZ);
 	UUtUns32				itr;
-	
+
 	for(itr = 0; itr < OBJcNumPointsInRing; itr++)
 	{
 		float		theta;
 		float		cos_theta_radius;
 		float		sin_theta_radius;
-		
+
 		theta = M3c2Pi * (((float) itr) / OBJcNumPointsInRing);
 		cos_theta_radius = MUrCos(theta) * inRadius;
 		sin_theta_radius = MUrSin(theta) * inRadius;
-		
+
 		ring_XZ[itr].x = cos_theta_radius + inDest->x;
 		ring_XZ[itr].y = inDest->y;
 		ring_XZ[itr].z = sin_theta_radius + inDest->z;
-		
+
 		ring_XY[itr].x = cos_theta_radius + inDest->x;
 		ring_XY[itr].y = sin_theta_radius + inDest->y;
 		ring_XY[itr].z = inDest->z;
@@ -165,7 +165,7 @@ OBJiSound_DrawSphere(
 	ring_XZ[OBJcNumPointsInRing] = ring_XZ[0];
 	ring_XY[OBJcNumPointsInRing] = ring_XY[0];
 	ring_YZ[OBJcNumPointsInRing] = ring_YZ[0];
-	
+
 	// draw the rings
 	M3rGeometry_LineDraw((OBJcNumPointsInRing + 1), ring_XZ, inShade);
 	M3rGeometry_LineDraw((OBJcNumPointsInRing + 1), ring_XY, inShade);
@@ -180,11 +180,11 @@ OBJrSound_DrawInitialize(
 {
 	if (!OBJgSound_DrawInitialized) {
 		IMtPixelType			textureFormat;
-		
+
 		// create the diamond
 		OBJgSound_Diamond = (M3tPoint3D*)UUrMemory_Block_New(sizeof(M3tPoint3D) * 13);
 		UUmError_ReturnOnNull(OBJgSound_Diamond);
-		
+
 		MUmVector_Set(OBJgSound_Diamond[0], 0.0f, 1.0f, 0.0f);
 		MUmVector_Set(OBJgSound_Diamond[1], -1.0f, 0.0f, 1.0f);
 		MUmVector_Set(OBJgSound_Diamond[2], 1.0f, 0.0f, 1.0f);
@@ -198,26 +198,26 @@ OBJrSound_DrawInitialize(
 		MUmVector_Set(OBJgSound_Diamond[10], 1.0f, 0.0f, -1.0f);
 		MUmVector_Set(OBJgSound_Diamond[11], 1.0f, 0.0f, 1.0f);
 		MUmVector_Set(OBJgSound_Diamond[12], 0.0f, 1.0f, 0.0f);
-			
+
 		// create the name texture
 		M3rDrawEngine_FindGrayscalePixelType(&textureFormat);
 		OBJgSound_WhiteColor = IMrPixel_FromShade(textureFormat, IMcShade_White);
-		
+
 		TSrFontFamily_Get(TScFontFamily_Default, &OBJgSound_FontFamily);
 		DCrText_SetFontFamily(OBJgSound_FontFamily);
 		DCrText_SetSize(TScFontSize_Default);
 		DCrText_SetStyle(TScFontStyle_Default);
-		
+
 		OBJgSound_Dest.x = 2;
 		OBJgSound_Dest.y = DCrText_GetLeadingHeight() + DCrText_GetAscendingHeight();
-		
+
 		DCrText_GetStringRect("01234567890123456789012345 p0.00 v0.00", &OBJgSound_TextureBounds);
-		
+
 		OBJgSound_TextureWidth = OBJgSound_TextureBounds.right;
 		OBJgSound_TextureHeight = OBJgSound_TextureBounds.bottom;
 		OBJgSound_WidthRatio = (float)OBJgSound_TextureWidth / (float)OBJgSound_TextureHeight;
 		OBJgSound_HeightRatio = (float)OBJgSound_TextureHeight / (float)OBJgSound_TextureWidth;
-		
+
 		M3rTextureMap_New(
 			OBJgSound_TextureWidth,
 			OBJgSound_TextureHeight,
@@ -229,7 +229,7 @@ OBJrSound_DrawInitialize(
 
 		OBJgSound_DrawInitialized = UUcTrue;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -241,25 +241,25 @@ OBJiSound_DrawName(
 	M3tPoint3D				*inLocation)
 {
 	char					name[128];
-	
+
 	if (OBJgSound_Texture == NULL) { return; }
-	
+
 	// erase the texture and set the text contexts shade
 	M3rTextureMap_Fill(OBJgSound_Texture, OBJgSound_WhiteColor, NULL);
-	
+
 	// draw the string to the texture
 	DCrText_SetFontFamily(OBJgSound_FontFamily);
 	DCrText_SetSize(TScFontSize_Default);
 	DCrText_SetStyle(TScFontStyle_Default);
 	DCrText_SetShade(IMcShade_Black);
 	DCrText_SetFormat(TSc_HCenter | TSc_VCenter);
-	
+
 	sprintf(name, "%s p%1.2f v%1.2f", inSoundOSD->ambient_name, inSoundOSD->pitch, inSoundOSD->volume);
 	DCrText_DrawString(OBJgSound_Texture, name, &OBJgSound_TextureBounds, &OBJgSound_Dest);
-	
+
 	M3rGeom_State_Set(M3cGeomStateIntType_SpriteMode, M3cGeomState_SpriteMode_Normal);
 	M3rGeom_State_Commit();
-	
+
 	// draw the sprite
 	M3rSimpleSprite_Draw(
 		OBJgSound_Texture,
@@ -313,18 +313,18 @@ OBJiSound_Draw(
 		OBJtOSD_Sound			*sound_osd;
 		M3tPoint3D				dest;
 		M3tPoint3D				camera_location;
-			
+
 		// get a pointer to the object osd
 		sound_osd = (OBJtOSD_Sound*)inObject->object_data;
-		
+
 		// setup the matrix stack
 		M3rMatrixStack_Push();
 		M3rMatrixStack_ApplyTranslate(inObject->position);
 		M3rGeom_State_Commit();
-		
+
 		// draw the diamond
 		M3rGeometry_LineDraw(13, OBJgSound_Diamond, IMcShade_Yellow);
-		
+
 		MUmVector_Set(dest, 0.0f, 0.0f, 0.0f);
 
 		// draw the appropriate type
@@ -341,7 +341,7 @@ OBJiSound_Draw(
 						sound_osd->u.spheres.max_volume_distance * UUmFeet(1),
 						&dest,
 						IMcShade_Red);
-					
+
 					// draw the Min Volume Sphere
 					MUmVector_Set(dest, 0.0f, 0.0f, 0.0f);
 					OBJiSound_DrawSphere(
@@ -350,7 +350,7 @@ OBJiSound_Draw(
 						IMcShade_Green);
 				}
 			break;
-			
+
 			case OBJcSoundType_BVolume:
 				if ((OBJgSound_AlwaysDraw == UUcTrue) ||
 					(OBJgSound_AlwaysDrawVolumes == UUcTrue) ||
@@ -358,13 +358,13 @@ OBJiSound_Draw(
 				{
 					M3tBoundingBox			bBox;
 					IMtShade				shade;
-					
+
 					shade = ((inDrawFlags & OBJcDrawFlag_Selected) != 0) ? IMcShade_Green : IMcShade_Red;
-					
+
 					// draw the bounding box if this is the selected object
 					M3rMinMaxBBox_To_BBox(&sound_osd->u.bvolume.bbox, &bBox);
 					M3rBBox_Draw_Line(&bBox, shade);
-					
+
 					M3rGeom_Line_Light(&bBox.localPoints[0], &bBox.localPoints[7], shade);
 					M3rGeom_Line_Light(&bBox.localPoints[1], &bBox.localPoints[6], shade);
 					M3rGeom_Line_Light(&bBox.localPoints[2], &bBox.localPoints[5], shade);
@@ -372,7 +372,7 @@ OBJiSound_Draw(
 				}
 			break;
 		}
-		
+
 		// draw the name
 		camera_location = CArGetLocation();
 		if (MUrPoint_Distance(&inObject->position, &camera_location) < 150.0f)
@@ -380,16 +380,16 @@ OBJiSound_Draw(
 			dest.y += 1.0f;
 			OBJiSound_DrawName(inObject, sound_osd, &dest);
 		}
-		
+
 		// draw the rotation rings if this is the selected object
 		if (inDrawFlags & OBJcDrawFlag_Selected)
 		{
 			M3tBoundingSphere		bounding_sphere;
-			
+
 			OBJrObject_GetBoundingSphere(inObject, &bounding_sphere);
 			OBJrObjectUtil_DrawRotationRings(inObject, &bounding_sphere, inDrawFlags);
 		}
-		
+
 		M3rMatrixStack_Pop();
 	}
 #endif
@@ -441,9 +441,9 @@ OBJiSound_GetOSD(
 	OBJtOSD_All				*outOSD)
 {
 	OBJtOSD_All				*sound_osd;
-	
+
 	sound_osd = (OBJtOSD_All*)inObject->object_data;
-	
+
 	outOSD->osd.sound_osd = sound_osd->osd.sound_osd;
 
 	return;
@@ -455,7 +455,7 @@ OBJiSound_GetOSDWriteSize(
 	const OBJtObject		*inObject)
 {
 	UUtUns32				result;
-	
+
 	result =
 		BFcMaxFileNameLength +					/* ambient name */
 		sizeof(OBJtSoundType) +					/* sound type */
@@ -464,7 +464,7 @@ OBJiSound_GetOSDWriteSize(
 			sizeof(M3tBoundingBox_MinMax)) +
 		sizeof(float) +							/* pitch */
 		sizeof(float);							/* volume */
-		
+
 	return result;
 }
 
@@ -478,14 +478,14 @@ OBJiSound_IntersectsLine(
 	M3tBoundingSphere		sphere;
 
 	UUrMemory_Clear(&sphere, sizeof(M3tBoundingSphere));
-	
+
 	// get the bounding sphere
 	OBJrObject_GetBoundingSphere(inObject, &sphere);
-	
+
 	sphere.center.x += inObject->position.x;
 	sphere.center.y += inObject->position.y;
 	sphere.center.z += inObject->position.z;
-	
+
 	return CLrSphere_Line(inStartPoint, inEndPoint, &sphere);
 }
 
@@ -501,7 +501,7 @@ OBJiSound_SetDefaults(
 	outOSD->osd.sound_osd.volume = 1.0f;
 	outOSD->osd.sound_osd.u.spheres.max_volume_distance = 5.0f;
 	outOSD->osd.sound_osd.u.spheres.min_volume_distance = 10.0f;
-			
+
 	return UUcError_None;
 }
 
@@ -513,20 +513,20 @@ OBJiSound_New(
 {
 	OBJtOSD_All				osd_all;
 	UUtError				error;
-	
+
 	if (inOSD == NULL)
 	{
 		error = OBJiSound_SetDefaults(&osd_all);
 		UUmError_ReturnOnError(error);
-		
+
 		// send osd_all to OBJmObject_SetOSD()
 		inOSD = &osd_all;
 	}
-	
+
 	// set the object specific data and position
 	OBJiSound_SetOSD(inObject, inOSD);
 	OBJiSound_UpdatePosition(inObject);
-	
+
 	return UUcError_None;
 }
 
@@ -540,23 +540,23 @@ OBJiSound_Read(
 {
 	OBJtOSD_Sound			*sound_osd;
 	UUtUns32				bytes_read;
-	
+
 	// get a pointer to the object osd
 	sound_osd = (OBJtOSD_Sound*)inObject->object_data;
 	UUrMemory_Clear(sound_osd, sizeof(OBJtOSD_Sound));
-	
+
 	// read the sound data
 	OBDmGetStringFromBuffer(inBuffer, sound_osd->ambient_name, BFcMaxFileNameLength, inSwapIt);
-	
+
 	if (inVersion < OBJcVersion_30)
 	{
 		sound_osd->type = OBJcSoundType_Spheres;
 		OBDmGet4BytesFromBuffer(inBuffer, sound_osd->u.spheres.max_volume_distance, float, inSwapIt);
 		OBDmGet4BytesFromBuffer(inBuffer, sound_osd->u.spheres.min_volume_distance, float, inSwapIt);
-		
+
 		sound_osd->pitch = 1.0f;
 		sound_osd->volume = 1.0f;
-		
+
 		// set the number of bytes read
 		bytes_read =
 			BFcMaxFileNameLength +		// name
@@ -566,30 +566,30 @@ OBJiSound_Read(
 	else
 	{
 		OBDmGet4BytesFromBuffer(inBuffer, sound_osd->type, OBJtSoundType, inSwapIt);
-		
+
 		switch (sound_osd->type)
 		{
 			case OBJcSoundType_Spheres:
 				OBDmGet4BytesFromBuffer(inBuffer, sound_osd->u.spheres.max_volume_distance, float, inSwapIt);
 				OBDmGet4BytesFromBuffer(inBuffer, sound_osd->u.spheres.min_volume_distance, float, inSwapIt);
 			break;
-			
+
 			case OBJcSoundType_BVolume:
 				OBDmGet4BytesFromBuffer(inBuffer, sound_osd->u.bvolume.bbox.minPoint.x, float, inSwapIt);
 				OBDmGet4BytesFromBuffer(inBuffer, sound_osd->u.bvolume.bbox.minPoint.y, float, inSwapIt);
 				OBDmGet4BytesFromBuffer(inBuffer, sound_osd->u.bvolume.bbox.minPoint.z, float, inSwapIt);
-				
+
 				OBDmGet4BytesFromBuffer(inBuffer, sound_osd->u.bvolume.bbox.maxPoint.x, float, inSwapIt);
 				OBDmGet4BytesFromBuffer(inBuffer, sound_osd->u.bvolume.bbox.maxPoint.y, float, inSwapIt);
 				OBDmGet4BytesFromBuffer(inBuffer, sound_osd->u.bvolume.bbox.maxPoint.z, float, inSwapIt);
 			break;
 		}
-		
+
 		if (inVersion < OBJcVersion_33)
 		{
 			sound_osd->pitch = 1.0f;
 			sound_osd->volume = 1.0f;
-			
+
 			bytes_read =
 				BFcMaxFileNameLength +					/* ambient name */
 				sizeof(OBJtSoundType) +					/* sound type */
@@ -606,11 +606,11 @@ OBJiSound_Read(
 			bytes_read = OBJiSound_GetOSDWriteSize(inObject);
 		}
 	}
-	
+
 	// set the osd and update the position
 	OBJiSound_SetOSD(inObject, (OBJtOSD_All*)inObject->object_data);
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return bytes_read;
 }
 
@@ -621,16 +621,16 @@ OBJiSound_SetOSD(
 	const OBJtOSD_All		*inOSD)
 {
 	OBJtOSD_Sound			*sound_osd;
-	
+
 	// get a pointer to the sound_osd
 	sound_osd = (OBJtOSD_Sound*)inObject->object_data;
-	
+
 	// copy the data from inOSD into sound_osd
 	*sound_osd = inOSD->osd.sound_osd;
-	
+
 	// set the pointer to the ambient sound
 	sound_osd->ambient = OSrAmbient_GetByName(sound_osd->ambient_name);
-		
+
 	if (sound_osd->type == OBJcSoundType_BVolume)
 	{
 		// recalculate the bounding volume
@@ -638,7 +638,7 @@ OBJiSound_SetOSD(
 	}
 
 UUrMemory_Block_VerifyList();
-	
+
 	return UUcError_None;
 }
 
@@ -648,15 +648,15 @@ OBJiSound_UpdatePosition(
 	OBJtObject				*inObject)
 {
 	OBJtOSD_Sound			*sound_osd;
-	
+
 	// no rotation
 	inObject->rotation.x = 0.0f;
 	inObject->rotation.y = 0.0f;
 	inObject->rotation.z = 0.0f;
-	
+
 	// get a pointer to the sound_osd
 	sound_osd = (OBJtOSD_Sound*)inObject->object_data;
-	
+
 	if (sound_osd->type == OBJcSoundType_BVolume)
 	{
 		// recalculate the bounding volume
@@ -673,24 +673,24 @@ OBJiSound_Write(
 {
 	OBJtOSD_Sound			*sound_osd;
 	UUtUns32				bytes_available;
-		
+
 	// get a pointer to the sound_osd
 	sound_osd = (OBJtOSD_Sound*)inObject->object_data;
-	
+
 	// set the number of bytes available
 	bytes_available = *ioBufferSize;
-			
+
 	// read the data from the buffer
 	OBDmWriteStringToBuffer(ioBuffer, sound_osd->ambient_name, BFcMaxFileNameLength, bytes_available, OBJcWrite_Little);
 	OBDmWrite4BytesToBuffer(ioBuffer, sound_osd->type, OBJtSoundType, bytes_available, OBJcWrite_Little);
-	
+
 	switch (sound_osd->type)
 	{
 		case OBJcSoundType_Spheres:
 			OBDmWrite4BytesToBuffer(ioBuffer, sound_osd->u.spheres.max_volume_distance, float, bytes_available, OBJcWrite_Little);
 			OBDmWrite4BytesToBuffer(ioBuffer, sound_osd->u.spheres.min_volume_distance, float, bytes_available, OBJcWrite_Little);
 		break;
-		
+
 		case OBJcSoundType_BVolume:
 			OBDmWrite4BytesToBuffer(ioBuffer, sound_osd->u.bvolume.bbox.minPoint.x, float, bytes_available, OBJcWrite_Little);
 			OBDmWrite4BytesToBuffer(ioBuffer, sound_osd->u.bvolume.bbox.minPoint.y, float, bytes_available, OBJcWrite_Little);
@@ -701,13 +701,13 @@ OBJiSound_Write(
 			OBDmWrite4BytesToBuffer(ioBuffer, sound_osd->u.bvolume.bbox.maxPoint.z, float, bytes_available, OBJcWrite_Little);
 		break;
 	}
-		
+
 	OBDmWrite4BytesToBuffer(ioBuffer, sound_osd->pitch, float, bytes_available, OBJcWrite_Little);
 	OBDmWrite4BytesToBuffer(ioBuffer, sound_osd->volume, float, bytes_available, OBJcWrite_Little);
 
 	// set ioBufferSize to the number of bytes written to the buffer
 	*ioBufferSize = OBJiSound_GetOSDWriteSize(inObject); // *ioBufferSize - bytes_available;
-	
+
 	return UUcError_None;
 }
 
@@ -753,15 +753,15 @@ OBJrSound_GetAmbient(
 	const OBJtObject		*inObject)
 {
 	OBJtOSD_Sound			*sound_osd;
-	
+
 	// get a pointer to the sound osd
 	sound_osd = (OBJtOSD_Sound*)inObject->object_data;
-	
+
 	if (sound_osd->ambient == NULL)
 	{
 		sound_osd->ambient = OSrAmbient_GetByName(sound_osd->ambient_name);
 	}
-	
+
 	return sound_osd->ambient;
 }
 
@@ -773,14 +773,14 @@ OBJrSound_GetMinMaxDistances(
 	float					*outMinVolumeDistance)
 {
 	OBJtOSD_Sound			*sound_osd;
-	
+
 	// get a pointer to the sound osd
 	sound_osd = (OBJtOSD_Sound*)inObject->object_data;
 	if (sound_osd->type != OBJcSoundType_Spheres) { return UUcFalse; }
-	
+
 	*outMaxVolumeDistance = sound_osd->u.spheres.max_volume_distance;
 	*outMinVolumeDistance = sound_osd->u.spheres.min_volume_distance;
-	
+
 	return UUcTrue;
 }
 
@@ -790,7 +790,7 @@ OBJrSound_GetPitch(
 	const OBJtObject		*inObject)
 {
 	OBJtOSD_Sound			*sound_osd;
-	
+
 	// get a pointer to the sound osd
 	sound_osd = (OBJtOSD_Sound*)inObject->object_data;
 	return sound_osd->pitch;
@@ -802,7 +802,7 @@ OBJrSound_GetType(
 	const OBJtObject		*inObject)
 {
 	OBJtOSD_Sound			*sound_osd;
-	
+
 	// get a pointer to the sound osd
 	sound_osd = (OBJtOSD_Sound*)inObject->object_data;
 	return sound_osd->type;
@@ -814,7 +814,7 @@ OBJrSound_GetVolume(
 	const OBJtObject		*inObject)
 {
 	OBJtOSD_Sound			*sound_osd;
-	
+
 	// get a pointer to the sound osd
 	sound_osd = (OBJtOSD_Sound*)inObject->object_data;
 	return sound_osd->volume;
@@ -827,10 +827,10 @@ OBJrSound_Initialize(
 {
 	UUtError				error;
 	OBJtMethods				methods;
-	
+
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew				= OBJiSound_New;
 	methods.rSetDefaults		= OBJiSound_SetDefaults;
@@ -847,12 +847,12 @@ OBJrSound_Initialize(
 	methods.rSetOSD				= OBJiSound_SetOSD;
 	methods.rRead				= OBJiSound_Read;
 	methods.rWrite				= OBJiSound_Write;
-	
+
 	// set up the type methods
 	methods.rGetClassVisible	= OBJiSound_GetVisible;
 	methods.rSearch				= OBJiSound_Search;
 	methods.rSetClassVisible	= OBJiSound_SetVisible;
-	
+
 	// register the furniture methods
 	error =
 		OBJrObjectGroup_Register(
@@ -863,7 +863,7 @@ OBJrSound_Initialize(
 			&methods,
 			OBJcObjectGroupFlag_None);
 	UUmError_ReturnOnError(error);
-	
+
 #if CONSOLE_DEBUGGING_COMMANDS
 	// register the variables
 	error =
@@ -889,7 +889,7 @@ OBJrSound_Initialize(
 #endif
 
 	OBJgSound_DrawSounds = UUcFalse;
-	
+
 	return UUcError_None;
 }
 
@@ -901,28 +901,28 @@ OBJrSound_PointIn(
 {
 	OBJtOSD_Sound			*sound_osd;
 	UUtBool					point_in_object;
-	
+
 	// get a pointer to the sound osd
 	sound_osd = (OBJtOSD_Sound*)inObject->object_data;
-	
+
 	point_in_object = UUcFalse;
 	switch (sound_osd->type)
 	{
 		case OBJcSoundType_Spheres:
 		{
 			float					distance;
-			
+
 			distance = MUrPoint_Distance_Squared(inPoint, &inObject->position) * UUmSQR(SScFootToDist);
 			point_in_object = (distance <= UUmSQR(sound_osd->u.spheres.min_volume_distance));
 		}
 		break;
-		
+
 		case OBJcSoundType_BVolume:
 			point_in_object =
 				PHrCollision_Volume_Point_Inside(&sound_osd->u.bvolume.bvolume, inPoint);
 		break;
 	}
-	
+
 	return point_in_object;
 }
 

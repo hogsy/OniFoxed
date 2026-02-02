@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_Mac_CustomProc.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 19, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */
@@ -27,21 +27,21 @@ UUtError  MSrMacCustomProc_BuildZBufferClear(
 	UUtUns32	*customProcBaseAddr;
 	UUtUns32	*curInstrPtr;
 	UUtUns32	*loopPC;
-	
+
 	UUtUns32	destAddrReg;
 	UUtUns32	clearValueFReg;
 	UUtUns32	tempReg0;
 	MStPlatformSpecific	*platformSpecific;
-	
+
 	platformSpecific = &drawContextPrivate->platformSpecific;
 
 	UUmAssert(platformSpecific->zBufferClearProcMemory == NULL);
-	
+
 	destAddrReg = 4;
 	clearValueFReg = 1;
 	tempReg0 = 6;
-	
-	
+
+
 	/* Do an initial pass to determine the size of the custom proc, generatingCode = 0 */
 	/* Do a second pass to generate the code, generatingCode = 1 */
 	for(generatingCode = 0; generatingCode < 2; generatingCode++)
@@ -50,26 +50,26 @@ UUtError  MSrMacCustomProc_BuildZBufferClear(
 		{
 			/* Allocate memory for the custom proc */
 			customProcMemory = UUrMemory_Block_New(customProcSize + UUcProcessor_CacheLineSize);
-			
+
 			if(customProcMemory == NULL)
 			{
 				UUrError_Report(UUcError_OutOfMemory, "Could not allocate z buffer clear memory");
-				
+
 				return UUcError_OutOfMemory;
 			}
-			
+
 			/* Make sure the function ptr is cache aligned */
 			customProcBaseAddr =
 				(UUtUns32 *)(((UUtUns32)customProcMemory + UUcProcessor_CacheLineSize - 1) &
 					~UUcProcessor_CacheLineSize_Mask);
-			
+
 			curInstrPtr = customProcBaseAddr;
 		}
 		else
 		{
 			customProcSize = 0;
 		}
-		
+
 		/* r5 has a pointer to the zClearValue */
 		MSrPPCAsm_BuildOp_LFD(
 			generatingCode,
@@ -86,7 +86,7 @@ UUtError  MSrMacCustomProc_BuildZBufferClear(
 			&customProcSize,
 			destAddrReg,
 			(UUtUns32)drawContextPrivate->zBufferBaseAddr);
-		
+
 		/*
 		 * Load number of iterations into CTR
 		 */
@@ -101,16 +101,16 @@ UUtError  MSrMacCustomProc_BuildZBufferClear(
 				&curInstrPtr,
 				&customProcSize,
 				tempReg0);
-		
+
 		loopPC = curInstrPtr;
-		
+
 		MSrPPCAsm_BuildOp_DCBZ(
 			generatingCode,
 			&curInstrPtr,
 			&customProcSize,
 			0,
 			destAddrReg);
-		
+
 		#if 1
 		MSrPPCAsm_BuildOp_STFD(
 			generatingCode,
@@ -159,7 +159,7 @@ UUtError  MSrMacCustomProc_BuildZBufferClear(
 			&curInstrPtr,
 			&customProcSize,
 			loopPC);
-		
+
 		/* Return from the subroutine */
 		MSrPPCAsm_BuildOp_BLR(
 			generatingCode,
@@ -168,9 +168,9 @@ UUtError  MSrMacCustomProc_BuildZBufferClear(
 	}
 
 	platformSpecific->zBufferClearProcMemory = customProcMemory;
-	
+
 	platformSpecific->zBufferClearProc = (MStBufferProcPtr)customProcBaseAddr;
-	
+
 	/* Flush the data cache so that we can execute our custom proc */
 	MakeDataExecutable(customProcBaseAddr, customProcSize);
 
@@ -186,23 +186,23 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 	UUtUns32	*customProcBaseAddr;
 	UUtUns32	*curInstrPtr;
 	UUtUns32	*loopPC;
-	
+
 	UUtInt32	destAddrReg;
 	UUtInt32	tempReg0;
 	UUtInt32	clearValueReg;
 	UUtInt32	clearValueFReg;
 	MStPlatformSpecific	*platformSpecific;
-	
+
 	platformSpecific = &drawContextPrivate->platformSpecific;
-	
+
 	UUmAssert(platformSpecific->imageBufferClearProcMemory == NULL);
-	
+
 	destAddrReg = 4;
 	tempReg0 = 6;
 	clearValueReg = 7;
 	clearValueFReg = 5;
-	
-	
+
+
 	/* Do an initial pass to determine the size of the custom proc, generatingCode = 0 */
 	/* Do a second pass to generate the code, generatingCode = 1 */
 	for(generatingCode = 0; generatingCode < 2; generatingCode++)
@@ -211,26 +211,26 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 		{
 			/* Allocate memory for the custom proc */
 			customProcMemory = UUrMemory_Block_New(customProcSize + UUcProcessor_CacheLineSize);
-			
+
 			if(customProcMemory == NULL)
 			{
 				UUrError_Report(UUcError_OutOfMemory, "Could not allocate image buffer clear memory");
-				
+
 				return UUcError_OutOfMemory;
 			}
-			
+
 			/* Make sure the function ptr is cache aligned */
 			customProcBaseAddr =
 				(UUtUns32 *)(((UUtUns32)customProcMemory + UUcProcessor_CacheLineSize - 1) &
 					~UUcProcessor_CacheLineSize_Mask);
-			
+
 			curInstrPtr = customProcBaseAddr;
 		}
 		else
 		{
 			customProcSize = 0;
 		}
-		
+
 		/* Load the base address into destAddrReg */
 		MSrPPCAsm_BuildOp_L32(
 			generatingCode,
@@ -238,7 +238,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 			&customProcSize,
 			destAddrReg,
 			(UUtUns32)drawContextPrivate->imageBufferBaseAddr);
-		
+
 		if(drawContextPrivate->screenFlags & M3cDrawContextScreenFlags_DoubleBuffer)
 		{
 			/*
@@ -255,16 +255,16 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 					&curInstrPtr,
 					&customProcSize,
 					tempReg0);
-			
+
 			loopPC = curInstrPtr;
-			
+
 			MSrPPCAsm_BuildOp_DCBZ(
 				generatingCode,
 				&curInstrPtr,
 				&customProcSize,
 				0,
 				destAddrReg);
-			
+
 			MSrPPCAsm_BuildOp_ADDI(
 				generatingCode,
 				&curInstrPtr,
@@ -283,7 +283,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 			offset = 0;
 			imageRowBytes = drawContextPrivate->width * M3cDrawRGBBytesPerPixel;
 			//imageRowBytes = platformSpecific->imageBufferBaseAddr;
-			
+
 			/* r5 has a pointer to the clearValue */
 			MSrPPCAsm_BuildOp_LFD(
 				generatingCode,
@@ -292,7 +292,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 				clearValueFReg,
 				5,
 				0);
-			
+
 			MSrPPCAsm_BuildOp_LI(
 				generatingCode,
 				&curInstrPtr,
@@ -314,14 +314,14 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 					&curInstrPtr,
 					&customProcSize,
 					tempReg0);
-			
+
 			loopPC = curInstrPtr;
-			
+
 			if(addrAlignment & 0x01)
 			{
 				UUmAssert("Illegal condition");
 			}
-			
+
 			if(addrAlignment & 0x02)
 			{
 				MSrPPCAsm_BuildOp_STH(
@@ -334,7 +334,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 				offset += 2;
 				addrAlignment += 2;
 			}
-			
+
 			if(addrAlignment & 0x04)
 			{
 				MSrPPCAsm_BuildOp_STW(
@@ -347,7 +347,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 				offset += 4;
 				addrAlignment += 4;
 			}
-			
+
 			if(addrAlignment & 0x8)
 			{
 				MSrPPCAsm_BuildOp_STFD(
@@ -360,7 +360,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 				offset += 8;
 				addrAlignment += 8;
 			}
-			
+
 			if(addrAlignment & 0x10)
 			{
 				MSrPPCAsm_BuildOp_STFD(
@@ -380,7 +380,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 				offset += 16;
 				addrAlignment += 16;
 			}
-			
+
 			while((imageRowBytes - offset) >= UUcProcessor_CacheLineSize)
 			{
 				MSrPPCAsm_BuildOp_STFD(
@@ -411,11 +411,11 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 					clearValueFReg,
 					destAddrReg,
 					offset+24);
-				
+
 				offset += 32;
 				addrAlignment += 32;
 			}
-			
+
 			if((imageRowBytes - offset) >= 16)
 			{
 				MSrPPCAsm_BuildOp_STFD(
@@ -435,7 +435,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 				offset += 16;
 				addrAlignment += 16;
 			}
-			
+
 			if((imageRowBytes - offset) >= 8)
 			{
 				MSrPPCAsm_BuildOp_STFD(
@@ -448,7 +448,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 				offset += 8;
 				addrAlignment += 8;
 			}
-			
+
 			if((imageRowBytes - offset) >= 4)
 			{
 				MSrPPCAsm_BuildOp_STW(
@@ -473,7 +473,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 				offset += 2;
 				addrAlignment += 2;
 			}
-			
+
 			MSrPPCAsm_BuildOp_ADDI(
 				generatingCode,
 				&curInstrPtr,
@@ -481,16 +481,16 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 				destAddrReg,
 				destAddrReg,
 				drawContextPrivate->imageBufferRowBytes);
-			
+
 		}
-		
+
 		/* BDNZ back to top */
 		MSrPPCAsm_BuildOp_BDNZ(
 			generatingCode,
 			&curInstrPtr,
 			&customProcSize,
 			loopPC);
-		
+
 		/* Return from the subroutine */
 		MSrPPCAsm_BuildOp_BLR(
 			generatingCode,
@@ -499,9 +499,9 @@ UUtError  MSrMacCustomProc_BuildImageBufferClear(
 	}
 
 	platformSpecific->imageBufferClearProcMemory = customProcMemory;
-	
+
 	platformSpecific->imageBufferClearProc = (MStBufferProcPtr)customProcBaseAddr;
-	
+
 	/* Flush the data cache so that we can execute our custom proc */
 	MakeDataExecutable(customProcBaseAddr, customProcSize);
 
@@ -517,7 +517,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 	UUtUns32	*customProcBaseAddr;
 	UUtUns32	*curInstrPtr;
 	UUtUns32	*loopPC;
-	
+
 	UUtInt32	destAddrReg;
 	UUtInt32	srcAddrReg;
 	UUtInt32	tempReg0;
@@ -529,21 +529,21 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 	UUtInt32	offset;
 	UUtInt32	imageRowBytes;
 	MStPlatformSpecific	*platformSpecific;
-	
+
 	platformSpecific = &drawContextPrivate->platformSpecific;
-	
+
 	UUmAssert(platformSpecific->imageBufferCopyProcMemory == NULL);
-	
+
 	destAddrReg = 4;
 	srcAddrReg = 5;
 	tempReg0 = 6;
-	
+
 	tempFReg0 = 1;
 	tempFReg1 = 2;
 	tempFReg2 = 3;
 	tempFReg3 = 4;
-	
-	
+
+
 	/* Do an initial pass to determine the size of the custom proc, generatingCode = 0 */
 	/* Do a second pass to generate the code, generatingCode = 1 */
 	for(generatingCode = 0; generatingCode < 2; generatingCode++)
@@ -552,26 +552,26 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 		{
 			/* Allocate memory for the custom proc */
 			customProcMemory = UUrMemory_Block_New(customProcSize + UUcProcessor_CacheLineSize);
-			
+
 			if(customProcMemory == NULL)
 			{
 				UUrError_Report(UUcError_OutOfMemory, "Could not allocate image buffer copy memory");
-				
+
 				return UUcError_OutOfMemory;
 			}
-			
+
 			/* Make sure the function ptr is cache aligned */
 			customProcBaseAddr =
 				(UUtUns32 *)(((UUtUns32)customProcMemory + UUcProcessor_CacheLineSize - 1) &
 					~UUcProcessor_CacheLineSize_Mask);
-			
+
 			curInstrPtr = customProcBaseAddr;
 		}
 		else
 		{
 			customProcSize = 0;
 		}
-		
+
 		/* Load the dest base address into destAddrReg */
 		MSrPPCAsm_BuildOp_L32(
 			generatingCode,
@@ -579,7 +579,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 			&customProcSize,
 			destAddrReg,
 			(UUtUns32)platformSpecific->frontImageBaseAddr);
-		
+
 		/* Load the src base address into srcAddrReg */
 		MSrPPCAsm_BuildOp_L32(
 			generatingCode,
@@ -587,11 +587,11 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 			&customProcSize,
 			srcAddrReg,
 			(UUtUns32)drawContextPrivate->imageBufferBaseAddr);
-		
+
 		addrAlignment = (UUtUns32)platformSpecific->frontImageBaseAddr;
 		offset = 0;
 		imageRowBytes = drawContextPrivate->width * M3cDrawRGBBytesPerPixel;
-		
+
 		/*
 		 * Load number of iterations into CTR
 		 */
@@ -606,9 +606,9 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 				&curInstrPtr,
 				&customProcSize,
 				tempReg0);
-		
+
 		loopPC = curInstrPtr;
-		
+
 		/*
 		 * Build scanline copy
 		 */
@@ -616,7 +616,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 			{
 				UUmAssert("Illegal condition");
 			}
-			
+
 			if(addrAlignment & 0x02)
 			{
 				MSrPPCAsm_BuildOp_LHZ(
@@ -636,7 +636,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 				offset += 2;
 				addrAlignment += 2;
 			}
-			
+
 			if(addrAlignment & 0x04)
 			{
 				MSrPPCAsm_BuildOp_LWZ(
@@ -656,7 +656,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 				offset += 4;
 				addrAlignment += 4;
 			}
-			
+
 			if(addrAlignment & 0x8)
 			{
 				MSrPPCAsm_BuildOp_LFD(
@@ -676,7 +676,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 				offset += 8;
 				addrAlignment += 8;
 			}
-			
+
 			if(addrAlignment & 0x10)
 			{
 				MSrPPCAsm_BuildOp_LFD(
@@ -710,7 +710,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 				offset += 16;
 				addrAlignment += 16;
 			}
-			
+
 			while((imageRowBytes - offset) >= UUcProcessor_CacheLineSize)
 			{
 				MSrPPCAsm_BuildOp_LFD(
@@ -772,7 +772,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 				offset += 32;
 				addrAlignment += 32;
 			}
-			
+
 			if((imageRowBytes - offset) >= 16)
 			{
 				MSrPPCAsm_BuildOp_LFD(
@@ -806,7 +806,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 				offset += 16;
 				addrAlignment += 16;
 			}
-			
+
 			if((imageRowBytes - offset) >= 8)
 			{
 				MSrPPCAsm_BuildOp_LFD(
@@ -826,7 +826,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 				offset += 8;
 				addrAlignment += 8;
 			}
-			
+
 			if((imageRowBytes - offset) >= 4)
 			{
 				MSrPPCAsm_BuildOp_LWZ(
@@ -865,9 +865,9 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 				offset += 2;
 				addrAlignment += 2;
 			}
-		
-		
-		
+
+
+
 		MSrPPCAsm_BuildOp_ADDI(
 			generatingCode,
 			&curInstrPtr,
@@ -890,7 +890,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 			&curInstrPtr,
 			&customProcSize,
 			loopPC);
-		
+
 		/* Return from the subroutine */
 		MSrPPCAsm_BuildOp_BLR(
 			generatingCode,
@@ -899,9 +899,9 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopy(
 	}
 
 	platformSpecific->imageBufferCopyProcMemory = customProcMemory;
-	
+
 	platformSpecific->imageBufferCopyProc = (MStBufferProcPtr)customProcBaseAddr;
-	
+
 	/* Flush the data cache so that we can execute our custom proc */
 	MakeDataExecutable(customProcBaseAddr, customProcSize);
 
@@ -917,7 +917,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 	UUtUns32	*customProcBaseAddr;
 	UUtUns32	*curInstrPtr;
 	UUtUns32	*loopPC;
-	
+
 	UUtInt32	destAddrReg;
 	UUtInt32	srcAddrReg;
 	UUtInt32	clearValueReg;
@@ -931,22 +931,22 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 	UUtInt32	offset;
 	UUtInt32	imageRowBytes;
 	MStPlatformSpecific	*platformSpecific;
-	
+
 	platformSpecific = &drawContextPrivate->platformSpecific;
-	
+
 	UUmAssert(platformSpecific->imageBufferCopyAndClearProcMemory == NULL);
-	
+
 	destAddrReg = 4;
 	srcAddrReg = 5;
 	tempReg0 = 6;
 	clearValueReg = 7;
-	
+
 	tempFReg0 = 1;
 	tempFReg1 = 2;
 	tempFReg2 = 3;
 	tempFReg3 = 4;
 	clearValueFReg = 5;
-	
+
 	/* Do an initial pass to determine the size of the custom proc, generatingCode = 0 */
 	/* Do a second pass to generate the code, generatingCode = 1 */
 	for(generatingCode = 0; generatingCode < 2; generatingCode++)
@@ -955,26 +955,26 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 		{
 			/* Allocate memory for the custom proc */
 			customProcMemory = UUrMemory_Block_New(customProcSize + UUcProcessor_CacheLineSize);
-			
+
 			if(customProcMemory == NULL)
 			{
 				UUrError_Report(UUcError_OutOfMemory, "Could not allocate image buffer copy and clear memory");
-				
+
 				return UUcError_OutOfMemory;
 			}
-			
+
 			/* Make sure the function ptr is cache aligned */
 			customProcBaseAddr =
 				(UUtUns32 *)(((UUtUns32)customProcMemory + UUcProcessor_CacheLineSize - 1) &
 					~UUcProcessor_CacheLineSize_Mask);
-			
+
 			curInstrPtr = customProcBaseAddr;
 		}
 		else
 		{
 			customProcSize = 0;
 		}
-		
+
 		/* r5 has a pointer to the clearValue */
 		MSrPPCAsm_BuildOp_LFD(
 			generatingCode,
@@ -983,14 +983,14 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 			clearValueFReg,
 			5,
 			0);
-		
+
 		MSrPPCAsm_BuildOp_LI(
 			generatingCode,
 			&curInstrPtr,
 			&customProcSize,
 			clearValueReg,
 			0);
-					
+
 		/* Load the dest base address into destAddrReg */
 		MSrPPCAsm_BuildOp_L32(
 			generatingCode,
@@ -998,7 +998,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 			&customProcSize,
 			destAddrReg,
 			(UUtUns32)platformSpecific->frontImageBaseAddr);
-		
+
 		/* Load the src base address into srcAddrReg */
 		MSrPPCAsm_BuildOp_L32(
 			generatingCode,
@@ -1006,11 +1006,11 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 			&customProcSize,
 			srcAddrReg,
 			(UUtUns32)drawContextPrivate->imageBufferBaseAddr);
-		
+
 		addrAlignment = (UUtUns32)platformSpecific->frontImageBaseAddr;
 		offset = 0;
 		imageRowBytes = drawContextPrivate->width * M3cDrawRGBBytesPerPixel;
-		
+
 		/*
 		 * Load number of iterations into CTR
 		 */
@@ -1025,9 +1025,9 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 				&curInstrPtr,
 				&customProcSize,
 				tempReg0);
-		
+
 		loopPC = curInstrPtr;
-		
+
 		/*
 		 * Build scanline copy
 		 */
@@ -1035,10 +1035,10 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 			{
 				UUmAssert("Illegal condition");
 			}
-			
+
 			if(addrAlignment & 0x02)
 			{
-				
+
 				MSrPPCAsm_BuildOp_LHZ(
 					generatingCode,
 					&curInstrPtr,
@@ -1063,7 +1063,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 				offset += 2;
 				addrAlignment += 2;
 			}
-			
+
 			if(addrAlignment & 0x04)
 			{
 				MSrPPCAsm_BuildOp_LWZ(
@@ -1090,7 +1090,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 				offset += 4;
 				addrAlignment += 4;
 			}
-			
+
 			if(addrAlignment & 0x8)
 			{
 				MSrPPCAsm_BuildOp_LFD(
@@ -1117,7 +1117,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 				offset += 8;
 				addrAlignment += 8;
 			}
-			
+
 			if(addrAlignment & 0x10)
 			{
 				MSrPPCAsm_BuildOp_LFD(
@@ -1165,7 +1165,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 				offset += 16;
 				addrAlignment += 16;
 			}
-			
+
 			while((imageRowBytes - offset) >= UUcProcessor_CacheLineSize)
 			{
 				MSrPPCAsm_BuildOp_LFD(
@@ -1253,11 +1253,11 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 					clearValueFReg,
 					srcAddrReg,
 					offset+24);
-				
+
 				offset += 32;
 				addrAlignment += 32;
 			}
-			
+
 			if((imageRowBytes - offset) >= 16)
 			{
 				MSrPPCAsm_BuildOp_LFD(
@@ -1305,7 +1305,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 				offset += 16;
 				addrAlignment += 16;
 			}
-			
+
 			if((imageRowBytes - offset) >= 8)
 			{
 				MSrPPCAsm_BuildOp_LFD(
@@ -1332,7 +1332,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 				offset += 8;
 				addrAlignment += 8;
 			}
-			
+
 			if((imageRowBytes - offset) >= 4)
 			{
 				MSrPPCAsm_BuildOp_LWZ(
@@ -1385,7 +1385,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 				offset += 2;
 				addrAlignment += 2;
 			}
-				
+
 		MSrPPCAsm_BuildOp_ADDI(
 			generatingCode,
 			&curInstrPtr,
@@ -1393,7 +1393,7 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 			destAddrReg,
 			destAddrReg,
 			platformSpecific->frontImageRowBytes);
-		
+
 		MSrPPCAsm_BuildOp_ADDI(
 			generatingCode,
 			&curInstrPtr,
@@ -1401,14 +1401,14 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 			srcAddrReg,
 			srcAddrReg,
 			drawContextPrivate->imageBufferRowBytes);
-		
+
 		/* BDNZ back to top */
 		MSrPPCAsm_BuildOp_BDNZ(
 			generatingCode,
 			&curInstrPtr,
 			&customProcSize,
 			loopPC);
-		
+
 		/* Return from the subroutine */
 		MSrPPCAsm_BuildOp_BLR(
 			generatingCode,
@@ -1417,9 +1417,9 @@ UUtError  MSrMacCustomProc_BuildImageBufferCopyAndClear(
 	}
 
 	platformSpecific->imageBufferCopyAndClearProcMemory = customProcMemory;
-	
+
 	platformSpecific->imageBufferCopyAndClearProc = (MStBufferProcPtr)customProcBaseAddr;
-	
+
 	/* Flush the data cache so that we can execute our custom proc */
 	MakeDataExecutable(customProcBaseAddr, customProcSize);
 

@@ -25,7 +25,7 @@ ONtMoveLookup ONgComboTable[] = {
 
 		// 1 down mask w/ 1 moves combo getup moves
 		{ LIc_BitMask_Kick,		LIc_BitMask_Backward,	ONcAnimType_None,	ONcAnimType_Getup_Kick_Back, UUcTrue },
-		
+
 		// 1 down mask w/ 1 moves combo
 		{ LIc_BitMask_Punch,	LIc_BitMask_Forward,	ONcAnimType_None,	ONcAnimType_Punch_Forward, UUcTrue },
 		{ LIc_BitMask_Punch,	LIc_BitMask_StepLeft,	ONcAnimType_None,	ONcAnimType_Punch_Left, UUcTrue },

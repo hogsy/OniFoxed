@@ -20,7 +20,7 @@ VMiView_TabGroup_Create(
 {
 	VMtView_TabGroup_PrivateData	*private_data;
 	UUtUns16						i;
-	
+
 	if (inView->view_data == NULL)
 	{
 		// allocate memory for the private data
@@ -28,11 +28,11 @@ VMiView_TabGroup_Create(
 			(VMtView_TabGroup_PrivateData*)UUrMemory_Block_New(
 				sizeof(VMtView_TabGroup_PrivateData));
 		UUmError_ReturnOnNull(private_data);
-		
+
 		// store the private data
 		inView->view_data = private_data;
 	}
-		
+
 	// hide all of the tabs except the first one
 	for (i = 0; i < inView->num_child_views; i++)
 	{
@@ -48,7 +48,7 @@ VMiView_TabGroup_Create(
 			VMrView_SetVisible(view, UUcFalse);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -90,15 +90,15 @@ VMrView_TabGroup_ActivateTab(
 {
 	UUtUns16			i;
 	VMtView_TabGroup_PrivateData	*private_data;
-	
+
 	private_data = (VMtView_TabGroup_PrivateData*)inTabGroup->view_data;
 	UUmAssert(private_data);
-	
+
 	// find the tab with inTabID
 	for (i = 0; i < inTabGroup->num_child_views; i++)
 	{
 		VMtView			*child = (VMtView*)inTabGroup->child_views[i].view_ref;
-		
+
 		if (child->id == inTabID)
 		{
 			// turn off the current tab
@@ -110,37 +110,37 @@ VMrView_TabGroup_ActivateTab(
 				// hide the current tab
 				VMrView_SetVisible(private_data->current_tab, UUcFalse);
 			}
-			
+
 			// don't reshow the tab that was just turned off (this is how the tabs toggle)
 			if (child != private_data->current_tab)
 			{
 				// show the desired tab
 				VMrView_SetVisible(child, UUcTrue);
-				
+
 				// turn on its focus (focus must be done when the tab is visible)
 				VMrView_SetFocus(child, UUcTrue);
-				
+
 				// the child is now the current tab
 				private_data->current_tab = child;
 			}
 			else
 			{
 				// revert to the first tab
-				private_data->current_tab = 
+				private_data->current_tab =
 					(VMtView*)inTabGroup->child_views[0].view_ref;
-				
+
 				// show the desired tab
 				VMrView_SetVisible(private_data->current_tab, UUcTrue);
-					
+
 				// turn on its focus (focus must be done when the tab is visible)
 				VMrView_SetFocus(private_data->current_tab, UUcTrue);
 			}
-			
+
 			break;
 		}
 	}
 }
-	
+
 // ----------------------------------------------------------------------
 UUtUns32
 VMrView_TabGroup_Callback(
@@ -150,31 +150,31 @@ VMrView_TabGroup_Callback(
 	UUtUns32			inParam2)
 {
 	VMtView_TabGroup_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (VMtView_TabGroup_PrivateData*)inView->view_data;
 	if (inMessage != VMcMessage_Create)
 	{
 		UUmAssert(private_data);
 	}
-	
+
 	switch (inMessage)
 	{
 		case VMcMessage_Create:
 			VMiView_TabGroup_Create(inView);
 		return 0;
-		
+
 		case VMcMessage_Destroy:
 			VMiView_TabGroup_Destroy(inView, private_data);
 		return 0;
-		
+
 		case VMcMessage_Command:
 		{
 			VMtView_PrivateData		*view_private_data;
-			
+
 			view_private_data =
 				(VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
-			
+
 			VMrView_SendMessage(
 				view_private_data->parent,
 				inMessage,
@@ -182,7 +182,7 @@ VMrView_TabGroup_Callback(
 				inParam2);
 		}
 		return 0;
-		
+
 		case VMcMessage_KeyDown:
 			if (private_data->current_tab)
 			{
@@ -200,12 +200,12 @@ VMrView_TabGroup_Callback(
 				VMrView_SetFocus(private_data->current_tab, (UUtBool)inParam1);
 			}
 		return 0;
-		
+
 		case VMcMessage_Paint:
 			// only draw the currently active tab
 			VMiView_TabGroup_Paint(inView, private_data, inParam1, inParam2);
 		return 0;	// tabgroups decide which tab to draw and draw it
 	}
-	
+
 	return VMrView_DefaultCallback(inView, inMessage, inParam1, inParam2);
 }

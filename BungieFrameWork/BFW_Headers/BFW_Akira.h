@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_Akira.h
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: July 15, 1998
-	
+
 	PURPOSE: environment engine
-	
+
 	Copyright 1997-2000
 
 */
@@ -31,7 +31,7 @@
 //#define AKcMaxAdjacency 32			/* Maximum number of nodes that can share a partition */
 #define AKcSphereCollisionPasses 3		/* Maximum number of supported multiple collisions */
 #define AKcSphereCollisionFudge 0.001f	// How much extra we push out to avoid repeat collision
-#define AKcPointCollisionFudge 0.01f	
+#define AKcPointCollisionFudge 0.01f
 
 #define AKcBNV_OutsideAcceptDistance 5.0f	/* so that we never reject a BNV that we are just a fraction outside of */
 
@@ -81,7 +81,7 @@
 			planeC = p->c;							\
 			planeD = p->d;							\
 		} while(0);
-		
+
 // Given that x, y, and z are 0 or 1 compute the index into the node child array
 //#define AKmOctTreeChildIndex(x, y, z) ((x << 2) | (y << 1) | z)
 #define AKmOctTree_IsLeafNode(x)	((x) & 0x80000000)
@@ -164,7 +164,7 @@ typedef tm_struct AKtAlphaBSPTree_Node
 	UUtUns32	planeEquIndex;
 	UUtUns32	posNodeIndex;
 	UUtUns32	negNodeIndex;
-	
+
 } AKtAlphaBSPTree_Node;
 
 #define AKcTemplate_AlphaBSPTree_NodeArray	UUm4CharToUns32('A', 'B', 'N', 'A')
@@ -172,16 +172,16 @@ typedef tm_template('A', 'B', 'N', 'A', "bsp tree node Array")
 AKtAlphaBSPTree_NodeArray
 {
 	tm_pad								pad0[20];
-	
+
 	tm_varindex	UUtUns32				numNodes;
 	tm_vararray	AKtAlphaBSPTree_Node	nodes[1];
-	
+
 } AKtAlphaBSPTree_NodeArray;
 
 typedef tm_struct AKtQuadTree_Node
 {
 	UUtUns32 children[4];
-	
+
 } AKtQuadTree_Node;
 
 #define AKcOctTree_Shift_Dim	27
@@ -205,7 +205,7 @@ typedef tm_struct AKtOctTree_LeafNode
 										// 9 bits - max y position
 										// 9 bits - max z position
 	UUtUns32	bnvIndirectIndex_Encode;		// high order 24 bits is the base - low order 8 is the length
-	
+
 } AKtOctTree_LeafNode;
 
 typedef tm_struct AKtOctTree_InteriorNode
@@ -219,10 +219,10 @@ typedef tm_template('Q', 'T', 'N', 'A', "Quad tree node Array")
 AKtQuadTree_NodeArray
 {
 	tm_pad								pad0[20];
-	
+
 	tm_varindex	UUtUns32				numNodes;
 	tm_vararray	AKtQuadTree_Node		nodes[1];
-	
+
 } AKtQuadTree_NodeArray;
 
 #define AKcTemplate_OctTree_LeafNodeArray	UUm4CharToUns32('O', 'T', 'L', 'F')
@@ -230,10 +230,10 @@ typedef tm_template('O', 'T', 'L', 'F', "Oct tree leaf node Array")
 AKtOctTree_LeafNodeArray
 {
 	tm_pad								pad0[20];
-	
+
 	tm_varindex	UUtUns32				numNodes;
 	tm_vararray	AKtOctTree_LeafNode		nodes[1];
-	
+
 } AKtOctTree_LeafNodeArray;
 
 #define AKcTemplate_OctTree_InteriorNodeArray	UUm4CharToUns32('O', 'T', 'I', 'T')
@@ -241,10 +241,10 @@ typedef tm_template('O', 'T', 'I', 'T', "Oct tree interior node Array")
 AKtOctTree_InteriorNodeArray
 {
 	tm_pad								pad0[20];
-	
+
 	tm_varindex	UUtUns32				numNodes;
 	tm_vararray	AKtOctTree_InteriorNode	nodes[1];
-	
+
 } AKtOctTree_InteriorNodeArray;
 
 #define AKcTemplate_OctTree	UUm4CharToUns32('A', 'K', 'O', 'T')
@@ -256,7 +256,7 @@ AKtOctTree
 	AKtQuadTree_NodeArray*			qtNodeArray;
 	TMtIndexArray*					gqIndices;
 	TMtIndexArray*					bnvIndices;
-	
+
 } AKtOctTree;
 
 /*
@@ -274,10 +274,10 @@ typedef tm_template('A', 'K', 'B', 'P', "BSP node Array")
 AKtBSPNodeArray
 {
 	tm_pad						pad0[22];
-	
+
 	tm_varindex	UUtUns16		numNodes;
 	tm_vararray	AKtBNV_BSPNode	nodes[1];
-	
+
 } AKtBSPNodeArray;
 
 /*
@@ -292,7 +292,7 @@ AKtBSPNodeArray
 		AKcGQ_Flag_SAT_Down					= (1 << 3),
 		AKcGQ_Flag_Stairs					= (1 << 4),
 		AKcGQ_Flag_Jello					= (1 << 5),
-		AKcGQ_Flag_Triangle					= (1 << 6),	
+		AKcGQ_Flag_Triangle					= (1 << 6),
 		AKcGQ_Flag_Transparent				= (1 << 7),
 		AKcGQ_Flag_Draw_Flash				= (1 << 8),
 		AKcGQ_Flag_DrawBothSides			= (1 << 9),
@@ -331,7 +331,7 @@ AKtBSPNodeArray
 	#define AKcGQ_Flag_SoundOcclude_Skip (AKcGQ_Flag_No_Collision | AKcGQ_Flag_No_Object_Collision | AKcGQ_Flag_BrokenGlass | AKcGQ_Flag_SoundTransparent)
 
 	#define AKcGQ_Flag_2Sided	(AKcGQ_Flag_Transparent | AKcGQ_Flag_DrawBothSides | AKcGQ_Flag_Jello)
-	
+
 	#define AKcGQ_Flag_SAT_Mask (	\
 			AKcGQ_Flag_SAT_Up |			\
 			AKcGQ_Flag_SAT_Down)
@@ -340,16 +340,16 @@ AKtBSPNodeArray
 			AKcGQ_Flag_Ghost |			\
 			AKcGQ_Flag_SAT_Mask |		\
 			AKcGQ_Flag_Door)
-			
+
 	#define AKcGQ_Flag_NoTextureMask (	\
 			AKcGQ_Flag_PathfindingMask)
-	
+
 	#define AKcGQ_Flag_DontLight	(AKcGQ_Flag_Invisible | AKcGQ_Flag_NoTextureMask | AKcGQ_Flag_2Sided)
 
 	#define AKmGetQuadProjection(flags) ((flags & AKcGQ_Flag_Projection_Mask) >> AKcGQ_Flag_Projection_Shift)
 
 	typedef UUtUns32 AKtGQ_Flags;
-	
+
 	#define AKcTemplate_GQ_Material UUm4CharToUns32('A', 'G', 'Q', 'M')
 	typedef tm_template('A', 'G', 'Q', 'M', "Gunk Quad Material")
 	AKtGQMaterial
@@ -367,23 +367,23 @@ AKtBSPNodeArray
 		UUtUns32			flags;		// These are the flags
 		UUtUns32			object_tag;	// -1 if not an object (furniture, console, turret, door, etc)
 	};
-	
+
 	tm_struct AKtGQ_Render
 	{
 		UUtUns16	textureMapIndex;
 		UUtUns16	alpha;
-		
+
 		// CB: these are no longer used anywhere (they were never reliable anyway) so I'm nuking them
 		//UUtUns32	adjGQIndices[4];
 	};
-	
+
 
 	typedef tm_struct AKtGQ_Debug
 	{
 		tm_raw(char *)	object_name;
 		tm_raw(char *)	file_name;
 	} AKtGQ_Debug;
-	
+
 	typedef tm_struct AKtGQ_Collision
 	{
 		// CB: projection only had two significant bits! they are now stored in gqGeneral->flags.
@@ -391,7 +391,7 @@ AKtBSPNodeArray
 		UUtUns32			planeEquIndex;		// This is the index into the plane equation array
 
 		// These are used to quickly compute the bbox for this quad
-		M3tBoundingBox_MinMax	bBox;	
+		M3tBoundingBox_MinMax	bBox;
 	} AKtGQ_Collision;
 
 	#define AKcTemplate_GQ_General	UUm4CharToUns32('A', 'G', 'Q', 'G')
@@ -399,10 +399,10 @@ AKtBSPNodeArray
 	AKtGQGeneralArray
 	{
 		tm_pad						pad0[20];
-		
+
 		tm_varindex	UUtUns32		numGQs;
 		tm_vararray	AKtGQ_General	gqGeneral[1];
-		
+
 	} AKtGQGeneralArray;
 
 	#define AKcTemplate_GQ_Render	UUm4CharToUns32('A', 'G', 'Q', 'R')
@@ -410,10 +410,10 @@ AKtBSPNodeArray
 	AKtGQRenderArray
 	{
 		tm_pad						pad0[20];
-		
+
 		tm_varindex	UUtUns32		numGQs;
 		tm_vararray	AKtGQ_Render	gqRender[1];
-		
+
 	} AKtGQRenderArray;
 
 	#define AKcTemplate_GQ_Collision	UUm4CharToUns32('A', 'G', 'Q', 'C')
@@ -421,10 +421,10 @@ AKtBSPNodeArray
 	AKtGQCollisionArray
 	{
 		tm_pad						pad0[20];
-		
+
 		tm_varindex	UUtUns32		numGQs;
 		tm_vararray	AKtGQ_Collision	gqCollision[1];
-		
+
 	} AKtGQCollisionArray;
 
 	#define AKcTemplate_GQ_Debug	UUm4CharToUns32('A', 'G', 'D', 'B')
@@ -432,10 +432,10 @@ AKtBSPNodeArray
 	AKtGQDebugArray
 	{
 		tm_pad						pad0[20];
-		
+
 		tm_varindex	UUtUns32		numGQs;
 		tm_vararray	AKtGQ_Debug		gqDebug[1];
-		
+
 	} AKtGQDebugArray;
 
 /*
@@ -451,7 +451,7 @@ AKtBSPNodeArray
 		AKcBNV_Flag_SimplePathfinding	= (1 << 4)	// gridless pathfinding in this room
 	};
 	#define AKcBNV_Flag_Stairs (AKcBNV_Flag_Stairs_Standard | AKcBNV_Flag_Stairs_Spiral)
-	
+
 /*
  *
  */
@@ -459,79 +459,79 @@ AKtBSPNodeArray
 	{
 		UUtUns32	adjacentBNVIndex;	// Node connection data
 		UUtUns32	adjacentGQIndex;	// Absolute gunk quad indices of shared ???s
-		UUtUns32	adjacencyFlags;		
+		UUtUns32	adjacencyFlags;
 	} AKtAdjacency;
-	
+
 	#define AKcTemplate_AdjacencyArray	UUm4CharToUns32('A', 'K', 'A', 'A')
 	typedef tm_template('A', 'K', 'A', 'A', "Adjacency Array")
 	AKtAdjacencyArray
 	{
 		tm_pad						pad0[20];
-		
+
 		tm_varindex	UUtUns32		numAdjacenies;
 		tm_vararray	AKtAdjacency	adjacencies[1];
-		
+
 	} AKtAdjacencyArray;
 
 	typedef tm_struct AKtBNVNode_Side
 	{
 		UUtUns32	planeEquIndex;
-		
+
 		UUtUns32	adjacencyStartIndex;
 		UUtUns32	adjacencyEndIndex;
-		
+
 		UUtUns32	ghostGQStartIndIndex;
 		UUtUns32	ghostGQEndIndIndex;
-		
+
 		UUtUns32	bnvQuadStartIndIndex;
 		UUtUns32	bnvQuadEndIndIndex;
 	} AKtBNVNode_Side;
-	
+
 	#define AKcTemplate_BNVNodeSideArray	UUm4CharToUns32('A', 'K', 'B', 'A')
 	typedef tm_template('A', 'K', 'B', 'A', "Side Array")
 	AKtBNVNodeSideArray
 	{
 		tm_pad						pad0[20];
-		
+
 		tm_varindex	UUtUns32		numSides;
 		tm_vararray	AKtBNVNode_Side	sides[1];
-		
+
 	} AKtBNVNodeSideArray;
 
 /*
- * 
+ *
  */
 	typedef tm_struct AKtBNVNode
-	{	
+	{
 		UUtUns32			bspRootNode;
 		UUtUns32			index;				// Our index in the environment
-		
+
 		UUtUns32			sideStartIndex;		// Index into the volume side array
 		UUtUns32			sideEndIndex;		//
-		
+
 		UUtUns32			childIndex;
 		UUtUns32			nextIndex;
-		
+
 		UUtUns32			pathnodeIndex;		// set at runtime
 		PHtRoomData			roomData;			// Pathfinding data
 		UUtUns32			flags;
 		M3tPlaneEquation	stairPlane;
 		float				stairHeight;
-				
+
 	} AKtBNVNode;
 
 /*
- * 
+ *
  */
 	#define AKcTemplate_BNVNodeArray	UUm4CharToUns32('A', 'K', 'V', 'A')
 	typedef tm_template('A', 'K', 'V', 'A', "BNV Node Array")
 	AKtBNVNodeArray
 	{
 		tm_pad					pad0[20];
-		
+
 		tm_varindex	UUtUns32	numNodes;
 		tm_vararray	AKtBNVNode	nodes[1];
-		
+
 	} AKtBNVNodeArray;
 
 /*
@@ -552,20 +552,20 @@ AKtBSPNodeArray
 	AKtDoorFrameArray
 	{
 		tm_pad						pad0[20];
-		
+
 		tm_varindex	UUtUns32		door_count;
 		tm_vararray	AKtDoorFrame	door_frames[1];
-		
+
 	} AKtDoorFrameArray;
 
 /*
- * 
+ *
  */
 	#define AKcTemplate_Environment	UUm4CharToUns32('A', 'K', 'E', 'V')
 
 	tm_template('A', 'K', 'E', 'V', "Akira Environment")
 	AKtEnvironment
-	{	
+	{
 		M3tPoint3DArray*			pointArray;				// List of points used by the nodes of this object
 		M3tPlaneEquationArray*		planeArray;				// List of planes used by the nodes of this object
 		M3tTextureCoordArray*		textureCoordArray;		// List of texture coordinates for base and light coords
@@ -574,9 +574,9 @@ AKtBSPNodeArray
 		AKtGQRenderArray*			gqRenderArray;
 		AKtGQCollisionArray*		gqCollisionArray;
 		AKtGQDebugArray*			gqDebugArray;			// CB: this may be NULL if shipping version
-	
+
 		M3tTextureMapArray*			textureMapArray;		// Arrays of texture map
-		
+
 		AKtBNVNodeArray*			bnvNodeArray;			// Array of volume nodes
 		AKtBNVNodeSideArray*		bnvSideArray;			// List of volume node sides
 
@@ -584,13 +584,13 @@ AKtBSPNodeArray
 		TMtIndexArray*				envQuadRemaps;			// Script remap IDs of those quads
 
 		AKtBSPNodeArray*			bspNodeArray;			// List of BSP Nodes
-		
+
 		AKtAlphaBSPTree_NodeArray*	alphaBSPNodeArray;		// list of BSP nodes for alpha quads
-		
+
 		AKtOctTree*					octTree;
-		
+
 		AKtAdjacencyArray* 			adjacencyArray;
-		
+
 		AKtDoorFrameArray*			door_frames;			// Array of doors frames
 
 		M3tBoundingBox_MinMax		bbox;					// bounding box for the environment
@@ -604,28 +604,28 @@ AKtBSPNodeArray
  * Collision stuff
  */
 	#define AKcMaxNumCollisions	255	// reducing less then 100 is known to break character collision
-	
+
 	typedef struct AKtCollision
 	{
 		UUtUns32			compare_distance;
 		CLtCollisionType	collisionType;
 		UUtUns16			contactType;
-		
+
 		M3tPlaneEquation	plane;
 		M3tPoint3D			collisionPoint;
-		
+
 		UUtUns32			gqIndex;		// For face collisions
 		M3tPoint3D			bEdgeL,bEdgeR;	// For bbox collisions (which edge (Collision) or vertex (Contact) of bbox collided)
-		
+
 		float				float_distance;
-		
+
 	} AKtCollision;
-	
+
 	extern AKtCollision	AKgCollisionList[AKcMaxNumCollisions];
 	extern UUtUns16		AKgNumCollisions;
 
 	extern AKtEnvironment*	AKgEnvironment;
-	
+
 /*
  * Spatial locality
  */
@@ -645,7 +645,7 @@ AKrLevel_Begin(
 void
 AKrLevel_End(
 	void);
-	
+
 UUtError
 AKrInitialize(
 	void);
@@ -666,7 +666,7 @@ AKrEnvironment_SetContextDimensions(
 
 void AKrEnvironment_FastMode(UUtBool inFast);
 void AKrEnvironment_GunkChanged(void);
-	
+
 UUtError
 AKrEnvironment_StartFrame(
 	AKtEnvironment*	inEnvironment,
@@ -712,7 +712,7 @@ void
 AKrEnvironment_DrawIfVisible_Point(
 		M3tGeometry *inGeometry,
 		const M3tMatrix4x3 *inMatrix);
-								
+
 AKtBNVNode*
 AKrNodeFromPoint(
 	const M3tPoint3D*		inPoint);
@@ -747,7 +747,7 @@ UUtBool
 AKrLineOfSight(
 	M3tPoint3D *inPointA,
 	M3tPoint3D *inPointB);
-		
+
 UUtUns32
 AKrGQToIndex(
 	AKtEnvironment*		inEnvironment,
@@ -760,7 +760,7 @@ AKrPointInNode(
 	UUtUns32				inNodeIndex,
 	M3tPlaneEquation*		outRejectingPlane,
 	float*					outRejectionValue);
-	
+
 UUtBool
 AKrPointInNodeVertically(
 	const M3tPoint3D*			inPoint,

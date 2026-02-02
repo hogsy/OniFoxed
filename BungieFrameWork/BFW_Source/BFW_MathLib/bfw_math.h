@@ -71,7 +71,7 @@ extern "C" {
 
 enum {
 	_processor_unknown, // PS2
-	
+
 	_processor_x86, // generic x86
 	_processor_x86_mmx, // Pentium w/ MMX extensions
 	_processor_x86_sse, // Pentium III w/ SSE

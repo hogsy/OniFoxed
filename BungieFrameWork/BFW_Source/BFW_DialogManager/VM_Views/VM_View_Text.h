@@ -22,16 +22,16 @@
 typedef tm_template('V', 'M', 'T', 'X', "VM View Text")
 VMtView_Text
 {
-	
+
 	UUtUns16			flags;
 	UUtUns16			reserved;
-	
+
 	IMtPoint2D			text_location_offset;
-	
+
 	VMtPartSpec			*outline;
-	
+
 	char				string[128];
-		
+
 } VMtView_Text;
 
 typedef struct VMtView_Text_PrivateData
@@ -40,7 +40,7 @@ typedef struct VMtView_Text_PrivateData
 	TStTextContext		*text_context;
 	UUtUns16			font_line_height;
 	UUtUns16			font_descending_height;
-	
+
 } VMtView_Text_PrivateData;
 
 extern TMtPrivateData*	DMgTemplate_Text_PrivateData;

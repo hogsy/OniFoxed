@@ -2,13 +2,13 @@
 
 /*
 	FILE:	BFW_Motoko.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: April 2, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */
@@ -18,25 +18,25 @@
 	for a 3D engine. The real implementation is contained within a shared
 	library. When Motoko is initialized at start-up time all shared libraries
 	that implement the Motoko API are loaded and available for use.
-	
+
 	Coordinate Systems:
-	
+
 	  Frustum/View Space Coordinate System: Right Handed
 	  	x increases to the right
 	  	y increases upwards
 	  	z increases out of the screen
-	  
+
 	  Screen Coordinate System: Right Handed
 	    x increases to the right
 	    y increases downwards
 	    z increases into the screen
-	  
-	  
-	
-	
+
+
+
+
 	SCREEN
 	======
-	
+
            x ->
 	*-------------------------------->
 	|
@@ -87,29 +87,29 @@ extern "C" {
 	#define M3cQuarterPi				0.78539816339744830961566084581988f // S.S. ((float) (0.25f * M3cPi))
 	#define M3cEpsilon					UUcEpsilon
 	#define M3cModelMatrix_MaxDepth		32
-	#define M3cMaxObjVertices			2048 // S.S. (2 * 1024)	
-	#define M3cMaxObjTris				4096 // S.S. (4 * 1024)	
-	#define M3cMaxObjQuads				4096 // S.S. (4 * 1024)	
+	#define M3cMaxObjVertices			2048 // S.S. (2 * 1024)
+	#define M3cMaxObjTris				4096 // S.S. (4 * 1024)
+	#define M3cMaxObjQuads				4096 // S.S. (4 * 1024)
 	#define M3cDegToRad					0.017453292519943295769236907684886f // S.S. (M3c2Pi / 360.f)
 	#define M3cRadToDeg					57.295779513082320876798154814105f // S.S. (360.f / M3c2Pi)
 
-	
+
 	#define M3cExtraCoords				(60)
-	
+
 	#define M3cMaxDisplayModes			(16)
 	#define M3cMaxDisplayDevices		(8)
 	#define M3cMaxNumEngines			(2)
 	#define M3cMaxNameLen				(64)
-	
+
 	#define M3cMaxAlpha					((UUtUns32)255)
-	
+
 	#define M3cBBoxSideBV_PosX			1 // S.S. (1 << 0)
 	#define M3cBBoxSideBV_NegX			2 // S.S. (1 << 1)
 	#define M3cBBoxSideBV_PosY			4 // S.S. (1 << 2)
 	#define M3cBBoxSideBV_NegY			8 // S.S. (1 << 3)
 	#define M3cBBoxSideBV_PosZ			16 // S.S. (1 << 4)
 	#define M3cBBoxSideBV_NegZ			32 // S.S. (1 << 5)
-	
+
 /*
  * Motoko is a 16bit RGB(1555 or 565) and 16bit zbuffer engine
  */
@@ -134,43 +134,43 @@ extern "C" {
 /*
  * Predefine a few opaque data structures
  */
- 
+
 	typedef struct M3tDrawContext			M3tDrawContext;
 	typedef struct M3tDrawContextPrivate	M3tDrawContextPrivate;
 
 	typedef struct M3tGeomContext			M3tGeomContext;
 	typedef struct M3tGeomContextPrivate	M3tGeomContextPrivate;
-	
+
 	typedef struct M3tGeomCamera			M3tGeomCamera;
-	
+
 	#if UUmPlatform == UUmPlatform_Mac
-	
+
 		typedef GDHandle					M3tPlatformDevice;
-		
+
 	#elif UUmPlatform == UUmPlatform_Win32
-		
+
 		typedef LPVOID						M3tPlatformDevice;
-		
+
 	#elif UUmPlatform == UUmPlatform_Linux
-		
+
 		// software renderer not yet available on Linux
 		typedef struct {} M3tPlatformDevice;
-		
+
 	#else
-	
+
 		#error implement me
-		
+
 	#endif
 
 /*
  * A 3d point
  */
-	typedef tm_struct M3tPoint3D	
+	typedef tm_struct M3tPoint3D
 	{
-		float	x; 
-		float	y;  
-		float	z; 
-		
+		float	x;
+		float	y;
+		float	z;
+
 	} M3tPoint3D;
 
 #if 0 /*
@@ -181,8 +181,8 @@ extern "C" {
 		float	x;
 		float	y;
 		float	z;
-		
-	} M3tVector3D;				
+
+	} M3tVector3D;
 #endif
 
 	typedef M3tPoint3D M3tVector3D;
@@ -191,21 +191,21 @@ extern "C" {
 	{
 		float	x;
 		float	z;
-		
+
 	} M3tPoint2D;
 
 /*
- * 
+ *
  */
-	typedef tm_struct M3tTextureCoord	
+	typedef tm_struct M3tTextureCoord
 	{
 		float	u;
 		float	v;
-		
+
 	} M3tTextureCoord;
 
 /*
- * 
+ *
  */
 	typedef tm_struct M3tPoint4D
 	{
@@ -213,7 +213,7 @@ extern "C" {
 		float	y;
 		float	z;
 		float	w;
-	
+
 	} M3tPoint4D;
 
 /*
@@ -240,21 +240,21 @@ extern "C" {
 	} M3tRotation;
 
 /*
- * 
+ *
  */
 	typedef tm_struct M3tTri
 	{
-		UUtUns32	indices[3];		
+		UUtUns32	indices[3];
 	} M3tTri;
-		
+
 	typedef tm_struct M3tQuad
 	{
-		UUtUns32	indices[4];		
+		UUtUns32	indices[4];
 	} M3tQuad;
-		
+
 	typedef tm_struct M3tPent
 	{
-		UUtUns32	indices[5];		
+		UUtUns32	indices[5];
 	} M3tPent;
 
 /*
@@ -266,11 +266,11 @@ extern "C" {
 		float	b;
 		float	c;
 		float	d;
-		
+
 	} M3tPlaneEquation;
-	
+
 /*
- * 
+ *
  */
 	typedef tm_struct M3tPointScreen
 	{
@@ -278,30 +278,30 @@ extern "C" {
 		float	y;
 		float	z;
 		float	invW;
-		
+
 	} M3tPointScreen;
 
 
 /*
     Conceptually a M3tMatrix4x3 is viewed as the following:
-    
+
 	--         --
 	|  a b c d  |
 	|  e f g h  |
 	|  i j k l  |
 	--         --
-	
+
 	use the following example to access the elements of the matrix
-	
+
 	M3tMatrix4x3*	matrix;
-	
+
 	matrix->m[0][0] is a;
 	matrix->m[1][0] is b;
 	matrix->m[2][0] is c;
 	matrix->m[3][0] is d;
-	
+
 	...
-	
+
 	matrix->m[0][2] is i;
 	matrix->m[1][2] is j;
 	matrix->m[2][2] is k;
@@ -341,100 +341,100 @@ extern "C" {
 		M3cBBoxSide_NegZ,
 		M3cBBoxSide_None
 	} M3tBBoxSide;
-	
+
 	// cylinder
-	// Etymology: Middle French or Latin; Middle French cylindre, from Latin cylindrus, 
-	// from Greek kylindros, from kylindein to roll; perhaps akin to Greek kyklos wheel 
-	
+	// Etymology: Middle French or Latin; Middle French cylindre, from Latin cylindrus,
+	// from Greek kylindros, from kylindein to roll; perhaps akin to Greek kyklos wheel
+
 	typedef tm_struct M3tBoundingCircle
 	{
 		M3tPoint2D	center;
 		float		radius;
 	} M3tBoundingCircle;
-	
+
 	typedef tm_struct M3tBoundingCylinder
 	{
 		M3tBoundingCircle	circle;
 		float		top;
 		float		bottom;
 	} M3tBoundingCylinder;
-	
+
 	typedef tm_struct M3tBoundingBox_MinMax
 	{
 		M3tPoint3D	minPoint;
 		M3tPoint3D	maxPoint;
-		
+
 	} M3tBoundingBox_MinMax;
-	
+
 	#define M3cBoundingBox_Edge_Count 12
 	typedef tm_struct M3tBoundingBox_Edge
 	{
 		M3tEdge edges[12];
 	} M3tBoundingBox_Edge;
-	
+
 	typedef tm_struct M3tBoundingBox
 	{
 		M3tPoint3D	localPoints[8];
-		
+
 	} M3tBoundingBox;
-	
-	
+
+
 	#define M3cNumBoundingPoints 8		// Do not change without changing references below
 	#define M3cNumBoundingFaces 6		// Do not change without changing references below
-	typedef tm_struct M3tBoundingVolume	
+	typedef tm_struct M3tBoundingVolume
 	{
 		M3tPoint3D			worldPoints[8];	// Must match M3cNumBoundingPoints above
 		M3tQuad				faces[6];		// Must match M3cNumBoundingFaces above
 		M3tVector3D			normals[6];		// Must match M3cNumBoundingFaces above		- starting normals
-		
+
 		M3tPlaneEquation	curPlanes[6];	// Must match M3cNumBoundingFaces above	- current plane equs
 		UUtUns16			curProjections[6]; // Must match M3cNumBoundingFaces above
-	
+
 	} M3tBoundingVolume;
-	
-	
-	
+
+
+
 	typedef tm_struct M3tBoundingSphere
 	{
 		M3tPoint3D	center;
 		float		radius;
 	} M3tBoundingSphere;
-	
-	
+
+
 	// hotdog (path carved by moving sphere)
-	// Etymology: American, from Latin sweatus caninus, 
-	// from Greek baseballos snackos, from kholesterol to grow wide; perhaps akin to Greek rapidos foodos. 
+	// Etymology: American, from Latin sweatus caninus,
+	// from Greek baseballos snackos, from kholesterol to grow wide; perhaps akin to Greek rapidos foodos.
 	typedef tm_struct M3tBoundingHotdog
 	{
 		M3tPoint3D	start;
 		M3tPoint3D	end;
 		float		radius;
-		
+
 	} M3tBoundingHotdog;
 
 
 /*
- * 
+ *
  */
 	typedef tm_struct M3tColorRGB
 	{
 		float	r;
 		float	g;
 		float	b;
-		
+
 	} M3tColorRGB;
 
 	typedef struct M3tLight_Ambient
 	{
 		M3tColorRGB	color;
-		
+
 	} M3tLight_Ambient;
 
 	typedef struct M3tLight_Directional
 	{
 		M3tVector3D	direction;
 		M3tColorRGB	color;
-		
+
 	} M3tLight_Directional;
 
 	typedef struct M3tLight_Point
@@ -442,7 +442,7 @@ extern "C" {
 		M3tPoint3D	location;
 		float		a, b, c;	// attenuation = a/(d*d) + b/d + c
 		M3tColorRGB	color;
-		
+
 	} M3tLight_Point;
 
 	typedef struct M3tLight_Cone
@@ -453,7 +453,7 @@ extern "C" {
 		float		falloffAngle; 	// no intensity outside this angle
 		float		a, b, c;		// attenuation = a/(d*d) + b/d + c
 		M3tColorRGB	color;
-		
+
 	} M3tLight_Cone;
 
 /*
@@ -465,11 +465,11 @@ extern "C" {
 		UUtUns16	indices[2];
 		UUtUns16	triA;
 		UUtUns16	triB;
-		
+
 	} M3tEdgeIndex;
-	
+
 /*
- * 
+ *
  */
 	typedef enum M3tGeomStateIntType
 	{
@@ -479,61 +479,61 @@ extern "C" {
 		M3cGeomStateIntType_Hint,
 		M3cGeomStateIntType_SubmitMode,
 		M3cGeomStateIntType_Alpha,			// range is 0 - 255
-		M3cGeomStateIntType_SpriteMode,		
+		M3cGeomStateIntType_SpriteMode,
 		M3cGeomStateIntType_DebugMode,
 		M3cGeomStateIntType_FastMode,
 		M3cGeomStateIntType_NumTypes
 	} M3tGeomStateIntType;
-	
+
 /*
- * 
+ *
  */
 	typedef enum M3tGeomState_Fill
 	{
 		M3cGeomState_Fill_Point,
 		M3cGeomState_Fill_Line,
 		M3cGeomState_Fill_Solid
-		
+
 	} M3tGeomState_Fill;
 
 /*
- * 
+ *
  */
 	typedef enum M3tGeomState_Shade
 	{
 		M3cGeomState_Shade_Vertex,
 		M3cGeomState_Shade_Face
-		
+
 	} M3tGeomState_Shade;
 
 /*
- * 
+ *
  */
 	typedef enum M3tGeomState_Appearance
 	{
 		M3cGeomState_Appearance_Gouraud,
 		M3cGeomState_Appearance_Texture
-		
+
 	} M3tGeomState_Appearance;
 
 /*
- * 
+ *
  */
 	typedef enum M3tGeomState_Hint
 	{
 		M3cGeomState_Hint_None,
 		M3cGeomState_Hint_NoClip
-		
+
 	} M3tGeomState_Hint;
 
 /*
- * 
+ *
  */
 	typedef enum M3tGeomState_SubmitMode
 	{
 		M3cGeomState_SubmitMode_Normal,
 		M3cGeomState_SubmitMode_SortAlphaTris
-		
+
 	} M3tGeomState_SubmitMode;
 
 /*
@@ -563,18 +563,18 @@ extern "C" {
 	} M3tContrailData;
 
 /*
- * 
+ *
  */
 	typedef enum M3tGeomState_DebugMode
 	{
 		M3cGeomState_DebugMode_None				= 0,
 		M3cGeomState_DebugMode_UseEnvDbgTexture	= (1 << 0),
 		M3cGeomState_DebugMode_DrawGhostGQs		= (1 << 1)
-		
+
 	} M3tGeomState_DebugMode;
-	
+
 /*
- * 
+ *
  */
 	typedef enum M3tDrawStatePtrType
 	{
@@ -586,15 +586,15 @@ extern "C" {
 		M3cDrawStatePtrType_BaseTextureMap,
 		M3cDrawStatePtrType_LightTextureMap,
 		M3cDrawStatePtrType_EnvTextureMap,
-		
+
 		M3cDrawStatePtrType_VertexBitVector,		// This list indicates which vertices will actually be used
-		
+
 		M3cDrawStatePtrType_NumTypes
-		
+
 	} M3tDrawStatePtrType;
 
 /*
- * 
+ *
  */
 	typedef enum M3tDrawStateIntType
 	{
@@ -606,27 +606,27 @@ extern "C" {
 		M3cDrawStateIntType_ZBias,
 		M3cDrawStateIntType_NumRealVertices,		// This is the number of vertices not including extra for clipping
 		M3cDrawStateIntType_ConstantColor,
-		
+
 		M3cDrawStateIntType_SubmitMode,
 		M3cDrawStateIntType_Alpha,					// range is 0 to 255
 		M3cDrawStateIntType_Time,					// time in 60ths, used for animated textures
 		M3cDrawStateIntType_TextureInstance,		// used to identify a particular instance of a texture (random start)
 		M3cDrawStateIntType_BufferClear,			// 1 = buffer clear, 0 = dont buffer clear
-		M3cDrawStateIntType_DoubleBuffer,			// 1 = double buffer, 0 = single buffer	
+		M3cDrawStateIntType_DoubleBuffer,			// 1 = double buffer, 0 = single buffer
 		M3cDrawStateIntType_Clipping,				// 1 = clipping on, 0 = no clipping
 
 		M3cDrawStateIntType_Fog, // S.S. 1 = enable fog, 0 = disable fog; initial state is on
 		M3cDrawStateIntType_FrameBufferBlendWithConstantAlpha, // S.S. the name says it all; boolean value
-		
+
 		M3cDrawStateIntType_VertexFormat,
 		M3cDrawStateIntType_ClearColor,
-				
+
 		M3cDrawStateIntType_NumTypes
-		
+
 	} M3tDrawStateIntType;
 
 /*
- * 
+ *
  */
 typedef struct M3tDrawContext_Counters
 {
@@ -639,11 +639,11 @@ typedef struct M3tDrawContext_Counters
 	UUtUns32	numPentSplits;
 	UUtUns32	numSprites;
 	UUtUns32	numAlphaSortedObjs;
-	
+
 } M3tDrawContext_Counters;
 
 /*
- * 
+ *
  */
 	typedef enum M3tDrawStateAppearence
 	{
@@ -653,97 +653,97 @@ typedef struct M3tDrawContext_Counters
 		M3cDrawState_Appearence_Texture_Unlit,
 
 		M3cDrawState_Appearence_Num
-		
+
 	} M3tDrawStateAppearence;
-	
+
 /*
- * 
+ *
  */
 	typedef enum M3tDrawState_Fill
 	{
 		M3cDrawState_Fill_Point,
 		M3cDrawState_Fill_Line,
 		M3cDrawState_Fill_Solid,
-		
+
 		M3cDrawState_Fill_Num
-		
+
 	} M3tDrawState_Fill;
 /*
- * 
+ *
  */
 	typedef enum M3tDrawStateInterpolation
 	{
 		M3cDrawState_Interpolation_None,
 		M3cDrawState_Interpolation_Vertex,
-		
+
 		M3cDrawState_Interpolation_Num
-		
+
 	} M3tDrawStateInterpolation;
-	
+
 /*
- * 
+ *
  */
 	typedef enum M3tDrawStateZWrite
 	{
 		M3cDrawState_ZWrite_Off,
 		M3cDrawState_ZWrite_On
-		
+
 	} M3tDrawStateZWrite;
 
 /*
- * 
+ *
  */
 	typedef enum M3tDrawStateZCompare
 	{
 		M3cDrawState_ZCompare_Off,
 		M3cDrawState_ZCompare_On
-		
+
 	} M3tDrawStateZCompare;
 
 /*
- * 
+ *
  */
 	typedef enum M3tDrawStateBufferClear
 	{
 		M3cDrawState_BufferClear_Off,
 		M3cDrawState_BufferClear_On
-		
+
 	} M3tDrawStateBufferClear;
-	
+
 /*
- * 
+ *
  */
 	typedef enum M3tDrawStateDoubleBuffer
 	{
 		M3cDrawState_DoubleBuffer_Off,
 		M3cDrawState_DoubleBuffer_On
-		
+
 	} M3tDrawStateDoubleBuffer;
 
 /*
- * 
+ *
  */
 	typedef enum M3tDrawStateSubmitMode
 	{
 		M3cDrawState_SubmitMode_Normal,
 		M3cDrawState_SubmitMode_SortAlphaTris
-		
+
 	} M3tDrawStateSubmitMode;
-	
+
 /*
- * 
+ *
  */
 	typedef enum M3tDrawStateVertexFormat
 	{
 		M3cDrawStateVertex_Unified,			// a single index specifies both xyz, rgb, and uv
 		M3cDrawStateVertex_Split,
-		
+
 		M3cDrawStateVertex_Num
-		
+
 	} M3tDrawStateVertexFormat;
 
 /*
- * 
+ *
  */
 
 	typedef enum M3tDrawStateFogDisable // S.S.
@@ -754,23 +754,23 @@ typedef struct M3tDrawContext_Counters
 		M3cDrawStateFog_Num
 
 	} M3tDrawStateFogDisable;
-	
+
 /*
- * 
+ *
  */
 	#define M3cTemplate_PlaneEquationArray	UUm4CharToUns32('P', 'L', 'E', 'A')
 	typedef tm_template('P', 'L', 'E', 'A', "Plane Equation Array")
 	M3tPlaneEquationArray
 	{
 		tm_pad							pad0[20];
-		
+
 		tm_varindex	UUtUns32			numPlanes;
 		tm_vararray M3tPlaneEquation	planes[1];
-		
+
 	} M3tPlaneEquationArray;
 
 /*
- * 
+ *
  */
 	#define M3cTextureMap_MaxWidth		256
 	#define M3cTextureMap_MaxHeight		256
@@ -804,18 +804,18 @@ typedef struct M3tDrawContext_Counters
 	M3tTextureMap
 	{
 		// implied 8 bytes here
-		
+
 		//char					pad[28];
-		
+
 		char					debugName[128];
-		
+
 		UUtUns32				flags;
 		UUtUns16				width;
 		UUtUns16				height;
 		IMtPixelType			texelType;
 		tm_templateref			animation;
 		M3tTextureMap*			envMap;			// The environment map that is tied to this texture map
-		
+
 		tm_raw(void *)			pixels;			// CB: if this is non-NULL then it is either 1) a special texture that is saved as raw data and
 												// not separate data during the importer (there are none of these textures at present)
 												// or 2) a texture that was created at runtime.
@@ -828,7 +828,7 @@ typedef struct M3tDrawContext_Counters
 		UUtUns32				opengl_texture_name;
 		UUtBool					opengl_dirty;
 		tm_pad					pad1[3]; // S.S. I am using these pad bytes internally so don't mess with them without making sure they aren't used
-		
+
 	};
 
 	#define M3cTemplate_TextureMapAnimation	UUm4CharToUns32('T', 'X', 'A', 'N')
@@ -838,10 +838,10 @@ typedef struct M3tDrawContext_Counters
 		tm_pad						pad0[12];
 
 		UUtUns16					timePerFrame;	// in 60th sec
-		
+
 		UUtUns16					randTPF_low;
 		UUtUns16					randTPF_range;
-		
+
 		tm_pad						pad1[2];
 
 		tm_varindex	UUtUns32		numFrames;
@@ -858,38 +858,38 @@ typedef struct M3tDrawContext_Counters
 	M3tTextureMap_Big
 	{
 		tm_pad						pad0[8];
-		
+
 		UUtUns16					width;
 		UUtUns16					height;
 		IMtPixelType				texelType;
-		
+
 		UUtUns16					num_x;
 		UUtUns16					num_y;
 
 		tm_varindex UUtUns32		num_textures;
 		tm_vararray M3tTextureMap	*textures[1];
-		
+
 	} M3tTextureMap_Big;
-	
+
 	#define M3cTemplate_TextureMap_Proc	UUm4CharToUns32('T', 'X', 'P', 'C')
 	typedef tm_template('T','X','P','C', "Texture Procedure Data")
 	M3tTextureMap_Proc
 	{
 		tm_pad					pad0[8];
-		
+
 		UUtUns32				nextFrameTime;
 		UUtUns32				speed;
 		UUtUns32				curTexture;
-		
+
 		tm_varindex UUtUns32	numTextures;
 		tm_vararray UUtUns32	textureIndices[1];
 	} M3tTextureMap_Proc;
-	
+
 /*
- * 
+ *
  */
 	#define M3cTemplate_Point3DArray	UUm4CharToUns32('P', 'N', 'T', 'A')
-	
+
 	typedef tm_template('P', 'N', 'T', 'A', "3D Point Array")
 	M3tPoint3DArray
 	{
@@ -897,74 +897,74 @@ typedef struct M3tDrawContext_Counters
 
 		M3tBoundingBox_MinMax	minmax_boundingBox;
 		M3tBoundingSphere		boundingSphere;
-		
+
 		tm_varindex	UUtUns32	numPoints;
 		tm_vararray M3tPoint3D	points[1];
-		
+
 	} M3tPoint3DArray;
-	
+
 /*
- * 
+ *
  */
 	#define M3cTemplate_Vector3DArray	UUm4CharToUns32('V', 'C', 'R', 'A')
-	
+
 	typedef tm_template('V', 'C', 'R', 'A', "3D Vector Array")
 	M3tVector3DArray
 	{
 		tm_pad					pad0[20];
-		
+
 		tm_varindex	UUtUns32	numVectors;
 		tm_vararray M3tVector3D	vectors[1];
-		
+
 	} M3tVector3DArray;
-	
+
 /*
- * 
+ *
  */
 	#define M3cTemplate_ColorRGBArray	UUm4CharToUns32('3', 'C', 'L', 'A')
-	
+
 	typedef tm_template('3', 'C', 'L', 'A', "RGB Color Array")
 	M3tColorRGBArray
 	{
 		tm_pad					pad0[20];
-		
+
 		tm_varindex	UUtUns32	numColors;
 		tm_vararray	M3tColorRGB	colors[1];
-		
+
 	} M3tColorRGBArray;
 
 /*
- * 
+ *
  */
 	#define M3cTemplate_EdgeIndexArray	UUm4CharToUns32('E', 'D', 'I', 'A')
-	
+
 	typedef tm_template('E', 'D', 'I', 'A', "Edge Index Array")
 	M3tEdgeIndexArray
 	{
 		tm_pad						pad0[20];
-		
+
 		tm_varindex	UUtUns32		numEdges;
 		tm_vararray	M3tEdgeIndex	edgeIndices[1];
-		
+
 	} M3tEdgeIndexArray;
 
 /*
- * 
+ *
  */
 	#define M3cTemplate_TextureCoordArray	UUm4CharToUns32('T', 'X', 'C', 'A')
-	
+
 	typedef tm_template('T', 'X', 'C', 'A', "Texture Coordinate Array")
 	M3tTextureCoordArray
 	{
 		tm_pad						pad0[20];
-		
+
 		tm_varindex	UUtUns32		numTextureCoords;
 		tm_vararray	M3tTextureCoord	textureCoords[1];	// This list must have an extra MScExtraTextureCoords coords for clipping
-		
+
 	} M3tTextureCoordArray;
 
 /*
- * 
+ *
  */
 	typedef tm_enum M3tGeometryFlags
 	{
@@ -973,76 +973,76 @@ typedef struct M3tDrawContext_Counters
 		M3cGeometryFlag_ComputeSpecular	= 0x02,	// Compute specular highlights
 		M3cGeometryFlag_ComputeDiffuse	= 0x04,	// Compute diffuse component
 		M3cGeometryFlag_HasAmbient		= 0x08,	// Object has an ambient color
-		M3cGeometryFlag_SelfIlluminent	= 0x10,	// Object is self-illuminent (do not shade) 
+		M3cGeometryFlag_SelfIlluminent	= 0x10,	// Object is self-illuminent (do not shade)
 		M3cGeometryFlag_NoQuads			= 0x20	// Object has no quads defined (only points)
 	} M3tGeometryFlags;
-		
+
 /*
- * 
+ *
  */
 	#define M3cTemplate_TriArray	UUm4CharToUns32('M', '3', 'T', 'A')
-	
+
 	typedef tm_template('M', '3', 'T', 'A', "Triangle array")
 	M3tTriArray
 	{
 		tm_pad					pad0[20];
-		
+
 		tm_varindex	UUtUns32	numTris;
 		tm_vararray	M3tTri		tris[1];
-		
+
 	} M3tTriArray;
 
 /*
- * 
+ *
  */
 	#define M3cTemplate_QuadArray	UUm4CharToUns32('Q', 'U', 'D', 'A')
-	
+
 	typedef tm_template('Q', 'U', 'D', 'A', "Quad array")
 	M3tQuadArray
 	{
 		tm_pad					pad0[20];
-		
+
 		tm_varindex	UUtUns32	numQuads;
 		tm_vararray	M3tQuad		quads[1];
-		
+
 	} M3tQuadArray;
 
 /*
- * 
+ *
  */
 	#define M3cTemplate_TextureMapArray	UUm4CharToUns32('T', 'X', 'M', 'A')
-	
+
 	typedef tm_template('T', 'X', 'M', 'A', "Texture map array")
 	M3tTextureMapArray
 	{
 		tm_pad							pad0[20];
 
 		tm_varindex	UUtUns32			numMaps;
-		tm_vararray	M3tTextureMap*		maps[1];	
+		tm_vararray	M3tTextureMap*		maps[1];
 	} M3tTextureMapArray;
-	
+
 /*
  *
  */
 	#define M3cTemplate_Geometry	UUm4CharToUns32('M', '3', 'G', 'M')
-	
+
 	typedef tm_template('M', '3', 'G', 'M', "Geometry")
 	M3tGeometry
 	{
 		M3tGeometryFlags		geometryFlags;
-		
-		M3tPoint3DArray*		pointArray;			
-		M3tVector3DArray*		vertexNormalArray;	
+
+		M3tPoint3DArray*		pointArray;
+		M3tVector3DArray*		vertexNormalArray;
 		M3tVector3DArray*		triNormalArray;
 		M3tTextureCoordArray*	texCoordArray;		// This list must have an extra MScExtraTextureCoords coords for clipping
-													
+
 		TMtIndexArray*			triStripArray;
 		TMtIndexArray*			triNormalIndexArray;	// This also indicates the number of tris in the object
-		
+
 		M3tTextureMap*			baseMap;			// This is also the source of the environment map
-		
+
 		tm_templateref			animation;
-		
+
 	} M3tGeometry;
 
 	#define M3cTemplate_GeometryAnimation	UUm4CharToUns32('G', 'M', 'A', 'N')
@@ -1055,10 +1055,10 @@ typedef struct M3tDrawContext_Counters
 		UUtUns16					randTPF_low;
 		UUtUns16					randTPF_range;
 		tm_pad						pad1[2];
-		
+
 		tm_varindex	UUtUns32		numFrames;
 		tm_vararray M3tGeometry*	frames[1];
-		
+
 	} M3tGeometryAnimation;
 
 	#define M3cTemplate_GeometryArray	UUm4CharToUns32('M', '3', 'G', 'A')
@@ -1087,14 +1087,14 @@ typedef struct M3tDrawContext_Counters
 	} M3tSpriteArray;
 
 /*
- * 
+ *
  */
 	typedef struct M3tDiffuseRGB
 	{
 		UUtUns32		diffuseRGB;
 
 	} M3tDiffuseRGB;
- 
+
 /*
  * Draw Engine Names
  */
@@ -1103,12 +1103,12 @@ typedef struct M3tDrawContext_Counters
 	#define M3cDrawEngine_D3D			"Direct3D"
 	#define M3cDrawEngine_RAVE			"RAVE"
 	#define M3cDrawEngine_OpenGL		"OpenGL"
-	
+
 /*
  * Geom Engine IDs
  */
 	#define M3cGeomEngine_Software		"Oni Software"
-	
+
 /*
  * Draw Engine cap list structure
  */
@@ -1119,9 +1119,9 @@ typedef struct M3tDrawContext_Counters
 		M3cDrawEngineFlag_CanHandleOffScreen	= (1 << 0),
 		M3cDrawEngineFlag_3DOnly				= (1 << 1),
 		M3cDrawEngineFlag_CanSort				= (1 << 2)
-		
+
 	} M3tDrawEngineFlags;
-	
+
 	typedef struct M3tDisplayMode
 	{
 		UUtUns16	width;
@@ -1129,53 +1129,53 @@ typedef struct M3tDrawContext_Counters
 		UUtUns16	bitDepth;
 		UUtUns16	platformData;
 	} M3tDisplayMode;
-	
+
 	typedef struct M3tDisplayDevice
 	{
 		M3tPlatformDevice	platformDevice;
-		
+
 		UUtUns16			numDisplayModes;
 		M3tDisplayMode		displayModes[M3cMaxDisplayModes];
-		
+
 	} M3tDisplayDevice;
-	
+
 	typedef struct M3tDrawEngineCaps
 	{
 		M3tDrawEngineFlags	engineFlags;
-		
+
 		char				engineName[M3cMaxNameLen];
 		char				engineDriver[M3cMaxNameLen];
-		
+
 		UUtUns32			engineVersion;
-		
+
 		UUtUns32			numDisplayDevices;
 		M3tDisplayDevice	displayDevices[M3cMaxDisplayDevices];
-		
+
 		void*				enginePrivate;
-		
+
 	} M3tDrawEngineCaps;
-	
+
 /*
  * Geom engine cap list structure
  */
 	typedef enum M3tGeomEngineFlags
 	{
 		M3tGeomEngineFlag_None	= 0
-		
+
 	} M3tGeomEngineFlags;
-	
+
 	typedef struct M3tGeomEngineCaps
 	{
 		M3tGeomEngineFlags	engineFlags;
-		
+
 		char				engineName[M3cMaxNameLen];
 		char				engineDriver[M3cMaxNameLen];
-		
+
 		UUtUns32			engineVersion;
 		UUtUns32			compatibleDrawEngineBV;
-		
+
 	} M3tGeomEngineCaps;
-	
+
 /*
  * Data structures for creating contexts
  */
@@ -1183,39 +1183,39 @@ typedef struct M3tDrawContext_Counters
 	{
 		M3cDrawContextType_OffScreen,
 		M3cDrawContextType_OnScreen
-		
+
 	} M3tDrawContextType;
-	
-	
+
+
 	typedef struct M3tDrawContextDescriptorOffScreen
 	{
 		UUtUns16	inWidth;
 		UUtUns16	inHeight;
-		
+
 		void*		outBaseAddr;		/* This is returned by the engine */
 		UUtUns32	outRowBytes;		/* This is returned by the engine */
-		
+
 	} M3tDrawContextDescriptorOffScreen;
-	
+
 	typedef struct M3tDrawContextDescriptorOnScreen
 	{
 		UUtAppInstance				appInstance;
 		UUtWindow					window;	// Must live on the active device
 		UUtRect						rect;	// Must live on the active device
-		
+
 	} M3tDrawContextDescriptorOnScreen;
-	
+
 	typedef struct M3tDrawContextDescriptor
 	{
 		M3tDrawContextType	type;
-		
+
 		union
 		{
 			M3tDrawContextDescriptorOffScreen	offScreen;
 			M3tDrawContextDescriptorOnScreen	onScreen;
-			
+
 		} drawContext;
-		
+
 	} M3tDrawContextDescriptor;
 
 /*
@@ -1225,51 +1225,51 @@ typedef struct M3tDrawContext_Counters
 	{
 		M3tTri				vertexIndices;
 		M3tTri				baseUVIndices;
-		UUtUns32			shades[3];	
+		UUtUns32			shades[3];
 	} M3tTriSplit;
-	
+
 	typedef tm_struct M3tQuadSplit
 	{
 		M3tQuad				vertexIndices;
 		M3tQuad				baseUVIndices;
-		UUtUns32			shades[4];		
+		UUtUns32			shades[4];
 	} M3tQuadSplit;
-	
+
 	typedef struct M3tPentSplit
 	{
 		M3tPent				vertexIndices;
 		M3tPent				baseUVIndices;
-		UUtUns32			shades[5];				
+		UUtUns32			shades[5];
 	} M3tPentSplit;
-	
-	
+
+
 /*
  * Real function prototypes for the draw engine interface
  */
-	
+
 	/*
 	 * Engine caps and display mode stuff
 	 */
 
 		UUtError M3rDrawEngine_FindGrayscalePixelType(
 			IMtPixelType		*outTextureFormat);
-		
+
 		UUtUns16
 		M3rDrawEngine_GetNumber(
 			void);
-		
+
 		M3tDrawEngineCaps*
 		M3rDrawEngine_GetCaps(
 			UUtUns16	inDrawEngineIndex);
-	
+
 		UUtUns16
 		M3rGeomEngine_GetNumber(
 			void);
-		
+
 		M3tGeomEngineCaps*
 		M3rGeomEngine_GetCaps(
 			UUtUns16	inGeomEngineIndex);
-	
+
 	/*
 	 * Specify the active engine, display device, and mode
 	 */
@@ -1279,41 +1279,41 @@ typedef struct M3tDrawContext_Counters
 		UUtUns16				inDisplayDeviceIndex,	// The display to use
 		UUtBool					inFullScreen,
 		UUtUns16				inDisplayModeIndex);	// Only relevent for full screen mode
-	
+
 	UUtError
 	M3rDrawEngine_GetActiveDeviceRect(
 		UUtRect		*outDeviceRect);
-		
+
 	/*
 	 * Draw Context functions, use these ONLY if you are using the rasterizer directly
 	 */
-	
-		UUtError 
+
+		UUtError
 		M3rDrawContext_New(
 			M3tDrawContextDescriptor*	inDrawContextDescriptor);
-		
+
 		void
 		M3rDrawContext_Delete(
 			void);
-	
+
 	/*
 	 * Draw Context texture stuff
 	 */
 		void
 		M3rDrawContext_ResetTextures(
 			void);
-	
+
 /*
  * Real function prototypes for the geom engine interface
  */
-	
+
 	/*
 	 * Service query functions
 	 */
 		UUtUns16
 		M3rGeomEngine_GetNumber(
 			void);
-		
+
 		M3tGeomEngineCaps*
 		M3rGeomEngine_GetCaps(
 			UUtUns16	inGeomEngineIndex);
@@ -1321,20 +1321,20 @@ typedef struct M3tDrawContext_Counters
 		UUtError
 		M3rGeomEngine_MakeActive(
 			UUtUns16	inGeomEngineIndex);
-		
+
 	/*
 	 * Geom Context functions
 	 */
-	
-	UUtError 
+
+	UUtError
 	M3rGeomContext_New(
 		M3tDrawContextDescriptor*	inDrawContextDescriptor);
-	
+
         struct AKtEnvironment;
 	UUtError
 	M3rGeomContext_SetEnvironment(
 		struct AKtEnvironment*		inEnvironment);
-		
+
 	void
 	M3rGeomContext_Delete(
 		void);
@@ -1358,19 +1358,19 @@ typedef struct M3tDrawContext_Counters
 /*
  * typedefs for draw engine functions
  */
-	
+
 	/*
 	 * Frame functions
-	 */	
-		UUtError 
+	 */
+		UUtError
 		M3rDraw_Frame_Start(
 			UUtUns32			inGameTime);
-			
-		UUtError 
+
+		UUtError
 		M3rDraw_Frame_End(
 			void);
 
-		UUtError 
+		UUtError
 		M3rDraw_Frame_Sync(
 			void);
 
@@ -1382,17 +1382,17 @@ typedef struct M3tDrawContext_Counters
 		void M3rDraw_Texture_EnsureLoaded(M3tTextureMap *texture_map);  // GME
 		UUtBool M3rDraw_Texture_Load(M3tTextureMap *texture_map); // S.S.
 		UUtBool M3rDraw_Texture_Unload(M3tTextureMap *texture_map); // S.S.
-	
+
 	/*
 	 * Bitmap drawing
 	 */
-		extern M3tTextureCoord sprite_uv[4];			
+		extern M3tTextureCoord sprite_uv[4];
 
 		void
 		M3rDraw_TriSprite(
 			const M3tPointScreen	*inPoints,			// points[3]
 			const M3tTextureCoord	*inTextureCoords);	// UVs[3]
-	
+
 		void
 		M3rDraw_Sprite(
 			const M3tPointScreen	*inPoints,			// topleft, botright
@@ -1414,13 +1414,13 @@ typedef struct M3tDrawContext_Counters
 			UUtInt32					inWidth,
 			UUtInt32					inHeight);
 
-		UUtError 
+		UUtError
 		M3rDraw_ScreenCapture(
-			const UUtRect*	inRect, 
+			const UUtRect*	inRect,
 			void*			outBuffer);
-	
 
-		UUtBool 
+
+		UUtBool
 		M3rDraw_PointVisible(
 			const M3tPointScreen	*inPoint,
 			float					inTolerance);
@@ -1431,7 +1431,7 @@ typedef struct M3tDrawContext_Counters
 			M3tPoint2D				*inTestOffsets,
 			UUtUns32				inTestOffsetCount );
 
-		UUtBool 
+		UUtBool
 		M3rDraw_SupportPointVisible(
 			void);
 
@@ -1446,52 +1446,52 @@ typedef struct M3tDrawContext_Counters
 	/*
 	 * Resolution functions
 	 */
-			
+
 		UUtError
 		M3rDraw_SetResolution(M3tDisplayMode mode);
-		
+
 	/*
 	 * Draw engine state
 	 */
-			
+
 		UUtUns16
 		M3rDraw_GetWidth(
 			void);
-			
+
 		UUtUns16
 		M3rDraw_GetHeight(
 			void);
-		
+
 		void
 		M3rDraw_State_SetInt(
 			M3tDrawStateIntType	inDrawStateType,
 			UUtInt32			inDrawState);
-		
+
 		UUtInt32
 		M3rDraw_State_GetInt(
 			M3tDrawStateIntType	inDrawStateType);
-			
+
 		void
 		M3rDraw_State_SetPtr(
 			M3tDrawStatePtrType	inDrawStateType,
 			void*				inDrawState);
-		
+
 		void*
 		M3rDraw_State_GetPtr(
 			M3tDrawStatePtrType	inDrawStateType);
-			
+
 		UUtError
 		M3rDraw_State_Push(
 			void);
-			
+
 		UUtError
 		M3rDraw_State_Pop(
 			void);
-			
+
 		UUtError
 		M3rDraw_State_Commit(
 			void);
-			
+
 		const M3tDrawContext_Counters*
 		M3rDraw_Counters_Get(
 			void);
@@ -1499,30 +1499,30 @@ typedef struct M3tDrawContext_Counters
 /*
  * typedefs for geom engine functions
  */
-	
+
 	/*
 	 * Frame functions
-	 */	
-		typedef UUtError 
+	 */
+		typedef UUtError
 		(*M3tGeomContextMethod_Frame_Start)(
 			UUtUns32			inGameTicksElapsed);
-			
-		typedef UUtError 
+
+		typedef UUtError
 		(*M3tGeomContextMethod_Frame_End)(
 			void);
-			
-		UUtError 
+
+		UUtError
 		M3rGeom_Frame_Start(
 			UUtUns32			inGameTicksElapsed);
-			
+
 		UUtError
 		M3rGeom_Draw_Environment_Alpha(
 			void);
 
-		UUtError 
+		UUtError
 		M3rGeom_Frame_End(
 			void);
-			
+
 		void
 		M3rGeom_Clear_Jello(
 			void);
@@ -1536,7 +1536,7 @@ typedef struct M3tDrawContext_Counters
 			UUtUns16			inScreenX,
 			UUtUns16			inScreenY,
 			M3tPoint3D			*outWorldZNearPoint);
-				
+
 	/*
 	 * Light functions
 	 */
@@ -1589,7 +1589,7 @@ typedef struct M3tDrawContext_Counters
 			M3tMatrix3x3*		inOrientation,
 			float				inXOffset,
 			float				inXShorten,
-			float				inXChop);	
+			float				inXChop);
 
 		UUtError
 		M3rSprite_Draw(
@@ -1604,7 +1604,7 @@ typedef struct M3tDrawContext_Counters
 			M3tMatrix3x3*		inOrientation,
 			float				inXOffset,
 			float				inXShorten,
-			float				inXChop);	
+			float				inXChop);
 
 		UUtError
 		M3rSimpleSprite_Draw(
@@ -1613,7 +1613,7 @@ typedef struct M3tDrawContext_Counters
 			float				horizSize,
 			float				vertSize,
 			UUtUns32			inShade,
-			UUtUns16			inAlpha);	
+			UUtUns16			inAlpha);
 
 		typedef UUtError
 		(*M3tGeomContextMethod_SpriteArray_Draw)(
@@ -1635,7 +1635,7 @@ typedef struct M3tDrawContext_Counters
 			float				inV0,
 			float				inV1,
 			M3tContrailData*	inPoint0,
-			M3tContrailData*	inPoint1);	
+			M3tContrailData*	inPoint1);
 
 		UUtError
 		M3rContrail_Draw(
@@ -1643,7 +1643,7 @@ typedef struct M3tDrawContext_Counters
 			float				inV0,
 			float				inV1,
 			M3tContrailData*	inPoint0,
-			M3tContrailData*	inPoint1);	
+			M3tContrailData*	inPoint1);
 
 
 	/*
@@ -1656,36 +1656,36 @@ typedef struct M3tDrawContext_Counters
 
 		typedef UUtError
 		(*M3tGeomContextMethod_Geometry_Draw)(
-			M3tGeometry*		inGeometryObject);	
-	
+			M3tGeometry*		inGeometryObject);
+
 		UUtError
 		M3rGeometry_Draw(
-			M3tGeometry*		inGeometryObject);	
+			M3tGeometry*		inGeometryObject);
 
-		void 
+		void
 		M3rGeometry_MultiplyAndDraw(
 			M3tGeometry *inGeometryObject,
 			const M3tMatrix4x3 *inMatrix);
 
-	
+
 	/*
 	 * Environment rendering
 	 */
 		typedef UUtError
 		(*M3tGeomContextMethod_Env_SetCamera)(
 			M3tGeomCamera*			inCamera);		// If null use active camera in geom context
-			
+
 		typedef UUtError
 		(*M3tGeomContextMethod_Env_DrawGQList)(
 			UUtUns32	inNumGQs,
 			UUtUns32*	inGQIndices,
 			UUtBool		inTransparentList);
-	
+
 		UUtError
 		M3rEnv_DrawGQList(
 			UUtUns32	inNumGQs,
 			UUtUns32*	inGQIndices);
-	
+
 
 	/*
 	 * polys, points and lines
@@ -1695,13 +1695,13 @@ typedef struct M3tDrawContext_Counters
 			UUtUns32			inNumPoints,
 			M3tPoint3D*			inPoints,
 			UUtUns32			inShade);
-		
+
 		typedef UUtError
 		(*M3tGeomContextMethod_Geometry_LineDraw)(
 			UUtUns32			inNumPoints,
 			M3tPoint3D*			inPoints,
 			UUtUns32			inShade);
-		
+
 		typedef UUtError
 		(*M3tGeomContextMethod_Geometry_PointDraw)(
 			UUtUns32			inNumPoints,
@@ -1712,7 +1712,7 @@ typedef struct M3tDrawContext_Counters
 		(*M3tGeomContextMethod_PointVisible)(
 			M3tPoint3D*			inPoint,
 			float				inTolerance);
-	
+
 		void
 		M3rGeom_Draw_DebugSphere(
 			M3tPoint3D *			inPoint,
@@ -1729,7 +1729,7 @@ typedef struct M3tDrawContext_Counters
 			M3tPoint3D*			inPoint,
 			M3tPoint2D*			inTestOffsets,
 			UUtUns32			inTestOffsetCount );
-	
+
 		float
 		M3rPointVisibleScale(
 			M3tPoint3D*			inPoint,
@@ -1757,7 +1757,7 @@ typedef struct M3tDrawContext_Counters
 			UUtUns16			inAlpha);
 
 	UUtError
-	M3rDecal_Draw( 
+	M3rDecal_Draw(
 			M3tDecalHeader*		inDecal,
 			UUtUns16			inAlpha);
 
@@ -1767,58 +1767,58 @@ typedef struct M3tDrawContext_Counters
 	UUtError
 	M3rCamera_New(
 			M3tGeomCamera*		*outNewCamera);
-			
+
 	void
 	M3rCamera_Delete(
 			M3tGeomCamera*		inCamera);
-			
+
 	void
 	M3rCamera_SetActive(
 			M3tGeomCamera*		inCamera);
-			
+
 	UUtError
 	M3rCamera_GetActive(
 			M3tGeomCamera*		*outCamera);
-			
-	void 
+
+	void
 	M3rCamera_SetStaticData(
 			M3tGeomCamera*		inCamera,
 			float				inFOVy,
 			float				inAspect,
 			float				inZNear,
 			float				inZFar);
-		
-	void 
+
+	void
 	M3rCamera_SetViewData(
 			M3tGeomCamera*		inCamera,
 			M3tPoint3D*			inCameraLocation,
 			M3tVector3D*		inViewDirection,
 			M3tVector3D*		inUpDirection);
 
-	void 
+	void
 	M3rCamera_GetStaticData(
 			M3tGeomCamera*		inCamera,
 			float				*outFOVy,
 			float				*outAspect,
 			float				*outZNear,
 			float				*outZFar);
-		
-	void 
+
+	void
 	M3rCamera_GetViewData(
 			M3tGeomCamera*		inCamera,
 			M3tPoint3D			*outCameraLocation,
 			M3tVector3D			*outViewDirection,
 			M3tVector3D			*outUpDirection);
-	
+
 	void
 	M3rCamera_GetViewData_VxU(
 			M3tGeomCamera*		inCamera,
 			M3tVector3D			*outViewXUp);
-		
+
 	/*
-	 
+
 	 outPointList mapping
-	 
+
 		 index	x		y		z
 		 0		left	up		near
 		 1		right	up		near
@@ -1828,9 +1828,9 @@ typedef struct M3tDrawContext_Counters
 		 5		right	up		far
 		 6		left	down	far
 		 7		right	down	far
-		 
+
 	 outPlaneEquList mapping
-	 
+
 	 	index	facing
 	 	0		perp to zNear plane(toward camera)
 	 	1		right side
@@ -1838,15 +1838,15 @@ typedef struct M3tDrawContext_Counters
 	 	3		bottom side
 	 	4		top side
 	 	5		perp to zFar plane(away from camera)
-	 	
+
 	 */
-	void 
+	void
 	M3rCamera_GetWorldFrustum(
 			M3tGeomCamera*		inCamera,
 			M3tPoint3D			*outPointList,
 			M3tPlaneEquation	*outPlaneEquList);
 
-	void 
+	void
 	M3rCamera_DrawWorldFrustum(
 			M3tGeomCamera*		inCamera);
 
@@ -1871,8 +1871,8 @@ typedef struct M3tDrawContext_Counters
 			M3tTextureCoord			texture_coords[M3cMaxSkyboxVerts];
 		} M3tSkyboxData;
 
-		UUtError 
-		M3rDraw_Skybox( 
+		UUtError
+		M3rDraw_Skybox(
 			M3tSkyboxData		*inSkybox );
 
 		UUtError
@@ -1884,7 +1884,7 @@ typedef struct M3tDrawContext_Counters
 		M3rDraw_DestroySkybox(
 			M3tSkyboxData		*inSkybox );
 
-		typedef UUtError 
+		typedef UUtError
 		(*M3tGeomContextMethod_Skybox_Draw)(
 			M3tSkyboxData		*inSkybox );
 
@@ -1908,31 +1908,31 @@ typedef struct M3tDrawContext_Counters
 	UUtError
 	M3rMatrixStack_Get(
 		M3tMatrix4x3*		*outMatrix);
-	
+
 	UUtError
 	M3rMatrixStack_Pop(
 		void);
-			
+
 	void
 	M3rMatrixStack_Identity(
 		void);
-	
-	void 
+
+	void
 	M3rMatrixStack_Clear(
 		void);
 
-	void 
+	void
 	M3rMatrixStack_Rotate(
 		float				inRadians,
 		float				inX,
 		float				inY,
 		float				inZ);
-			
+
 	void
 	M3rMatrixStack_UniformScale(
 		float				inScale);
-			
-	void 
+
+	void
 	M3rMatrixStack_Translate(
 		float				inX,
 		float				inY,
@@ -1941,7 +1941,7 @@ typedef struct M3tDrawContext_Counters
 	void
 	M3rMatrixStack_Quaternion(
 		const M3tQuaternion*	inQuaternion);
-	
+
 	void
 	M3rMatrixStack_Multiply(
 		const M3tMatrix4x3*		inMatrix);
@@ -1949,7 +1949,7 @@ typedef struct M3tDrawContext_Counters
 /*
  * macros for accessing the function pointers
  */
-	
+
 	/* macros for geom engines */
 	#define M3rMatrixStack_RotateXAxis(radians) \
 		M3rMatrixStack_Rotate(radians, 1.0f, 0.0f, 0.0f)
@@ -1977,22 +1977,22 @@ typedef struct M3tDrawContext_Counters
 
 	#define M3rLightList_Point(numLights, inLightList) \
 		(M3gGeomContext)->lightListPoint(numLights, inLightList)
-		
+
 	#define M3rLightList_Cone(numLights, inLightList) \
 		(M3gGeomContext)->lightListCone(numLights, inLightList)
-		
+
 	#define M3rGeometry_Draw_BoundingBox(rgb55, geometryObject) \
 		(M3gGeomContext)->geometryBoundingBoxDraw(rgb55, geometryObject)
-		
+
 	#define M3rEnv_SetCamera(inCamera) \
 		(M3gGeomContext)->envSetCamera(inCamera)
-		
+
 	#define M3rGeometry_PolyDraw(inNumPoints, inPoints, inShade) \
 		(M3gGeomContext)->geometryPolyDraw(inNumPoints, inPoints, inShade)
-		
+
 	#define M3rGeometry_LineDraw(inNumPoints, inPoints, inShade) \
 		(M3gGeomContext)->geometryLineDraw(inNumPoints, inPoints, inShade)
-		
+
 	#define M3rGeometry_PointDraw(inNumPoints, inPoints, inShade) \
 		(M3gGeomContext)->geometryPointDraw(inNumPoints, inPoints, inShade)
 
@@ -2004,22 +2004,22 @@ typedef struct M3tDrawContext_Counters
 	{
 		M3tGeomContextMethod_Frame_Start					frameStart;
 		M3tGeomContextMethod_Frame_End						frameEnd;
-		
+
 		M3tGeomContextMethod_Pick_ScreenToWorld				pickScreenToWorld;
 
 		M3tGeomContextMethod_LightList_Ambient				lightListAmbient;
 		M3tGeomContextMethod_LightList_Directional			lightListDirectional;
-		M3tGeomContextMethod_LightList_Point				lightListPoint;		
+		M3tGeomContextMethod_LightList_Point				lightListPoint;
 		M3tGeomContextMethod_LightList_Cone					lightListCone;
-		
+
 		M3tGeomContextMethod_Geometry_BoundingBox_Draw		geometryBoundingBoxDraw;
 		M3tGeomContextMethod_Geometry_PolyDraw				geometryPolyDraw;
 		M3tGeomContextMethod_Geometry_LineDraw				geometryLineDraw;
 		M3tGeomContextMethod_Geometry_PointDraw				geometryPointDraw;
-		
+
 		M3tGeomContextMethod_Env_SetCamera					envSetCamera;
 		M3tGeomContextMethod_Env_DrawGQList					envDrawGQList;
-	
+
 		M3tGeomContextMethod_Sprite_Draw					spriteDraw;
 		M3tGeomContextMethod_Contrail_Draw					contrailDraw;
 		M3tGeomContextMethod_Geometry_Draw					geometryDraw;
@@ -2033,7 +2033,7 @@ typedef struct M3tDrawContext_Counters
 
 		M3tGeomContextMethod_PointVisible					pointVisible;
 		M3tGeomContextMethod_PointVisibleScale				pointVisibleScale;
-		
+
 
 	} M3tGeomContextMethods;
 
@@ -2113,8 +2113,8 @@ M3rTerminate(
  */
 
 void M3rGeom_Line_Light(
-		const M3tPoint3D *point1, 
-		const M3tPoint3D *point2, 
+		const M3tPoint3D *point1,
+		const M3tPoint3D *point2,
 		UUtUns32 shade);
 
 void M3rGeom_FaceNormal(
@@ -2123,9 +2123,9 @@ void M3rGeom_FaceNormal(
 		const M3tVector3D *inFaceNormals,
 		UUtUns32 inShade);
 
-/* 
+/*
  * BBox routines
- */ 
+ */
 
 void M3rGeometry_GetBBox(
 		const M3tGeometry *inGeometry,
@@ -2136,7 +2136,7 @@ const M3tQuad *M3rBBox_GetSide(
 		M3tBBoxSide inSide);
 
 void M3rMinMaxBBox_To_BBox(
-		const M3tBoundingBox_MinMax *inBoundingBox, 
+		const M3tBoundingBox_MinMax *inBoundingBox,
 		M3tBoundingBox *outBoundingBox);
 
 void M3rMinMaxBBox_Draw_Line(
@@ -2150,7 +2150,7 @@ void M3rBVolume_Draw_Line(
 void M3rBBox_Draw_Line(
 	M3tBoundingBox *inBBox,
 	UUtUns32 inShade);
-	
+
 void M3rBBox_To_EdgeBBox(
 		M3tBoundingBox *inBoundingBox,
 		M3tBoundingBox_Edge *outBoundingBox);
@@ -2190,13 +2190,13 @@ void M3rDisplay_Circle(M3tPoint3D *inCenter, float inRadius, UUtUns32 inShade);
 void M3rBuildCircle(
 	UUtUns32 inNumPoints,
 	float inHeight,
-	const M3tBoundingCircle *circle, 
+	const M3tBoundingCircle *circle,
 	M3tPoint3D *outPoints);
-	
+
 void M3rBoundingCylinder_Draw_Line(
 	const M3tBoundingCylinder *inBoundingCylinder,
 	UUtUns32 inShade);
-			
+
 void
 M3rDraw_Bitmap(
 	M3tTextureMap			*inBitmap,
@@ -2204,9 +2204,9 @@ M3rDraw_Bitmap(
 	UUtUns16				inWidth,
 	UUtUns16				inHeight,
 	UUtUns32				inShade,
-	UUtUns16				inAlpha);			
+	UUtUns16				inAlpha);
 
-void 
+void
 M3rDraw_BitmapUV(
 	M3tTextureMap			*inBitmap,
 	const M3tTextureCoord	*inUV,
@@ -2216,14 +2216,14 @@ M3rDraw_BitmapUV(
 	UUtUns32				inShade,
 	UUtUns16				inAlpha);
 
-void 
+void
 M3rDraw_BigBitmap(
 	M3tTextureMap_Big		*inBigBitmap,
 	const M3tPointScreen	*inDestPoint,
 	UUtUns16				inWidth,
 	UUtUns16				inHeight,
 	UUtUns32				inShade,
-	UUtUns16				inAlpha);			
+	UUtUns16				inAlpha);
 
 void M3rDraw_Commit_Alpha(
 	void);
@@ -2236,7 +2236,7 @@ typedef enum
 {
 	M3cTexture_AllocMemory		= (1 << 0),
 	M3cTexture_UseTempMem		= (1 << 1)
-	
+
 } M3tTextureAllocMemory;
 
 UUtError
@@ -2307,7 +2307,7 @@ M3rTextureMap_Big_New(
 void M3rTextureMap_Big_Unload(M3tTextureMap_Big *inTextureMap);  // GME
 
 #define M3cFillEntireMap (NULL)
-	
+
 UUtError
 M3rTextureMap_BuildMipMap(
 	IMtScaleMode	inScaleMode,
@@ -2351,7 +2351,7 @@ M3rTextureMap_Big_Fill(
 MAtMaterialType
 M3rTextureMap_GetMaterialType(
 	const M3tTextureMap	*inTextureMap);
-	
+
 void
 M3rTextureMap_SetMaterialType(
 	M3tTextureMap		*ioTextureMap,
@@ -2364,7 +2364,7 @@ M3rTextureRef_GetSize(
 	UUtUns16			*outHeight);
 
 /*
- * 
+ *
  */
 	void
 	M3rTextureCoord_FindMinMax(
@@ -2374,7 +2374,7 @@ M3rTextureRef_GetSize(
 		float				*outMinV,
 		float				*outMaxU,
 		float				*outMaxV);
-			
+
 UUtError
 M3rGroup_GetColor(
 	GRtGroup*		inGroup,
@@ -2394,9 +2394,9 @@ void MSrStackVerify_Debug(void);
 #define MSmMatrix3x3Verify(m) MSrMatrix3x3Verify(m);
 #define	MSmStackVerify()	MSrStackVerify_Debug()
 #else
-#define MSmMatrixVerify(m) UUmBlankFunction 
+#define MSmMatrixVerify(m) UUmBlankFunction
 #define MSmMatrix3x3Verify(m) UUmBlankFunction
-#define	MSmStackVerify() UUmBlankFunction 
+#define	MSmStackVerify() UUmBlankFunction
 #endif
 
 

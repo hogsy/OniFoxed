@@ -24,6 +24,6 @@ SSrMSADPCM_CompressSoundData(
 UUtUns32
 SSrMSADPCM_CalculateNumSamples(
 	SStSoundData				*inSoundData);
-	
+
 // ======================================================================
 #endif /* BFW_SS2_MSADPCM_H */

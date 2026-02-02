@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_Platform_Win32.c
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans, Kevin Armstrong
-	
+
 	CREATED: May 26, 1997
-	
+
 	PURPOSE: Win32 specific code
-	
+
 	Copyright 1997, 2000
 
 */
@@ -75,7 +75,7 @@ ONiHandleMouseEvent(
 {
 	LItInputEventType		event_type;
 	IMtPoint2D				mouse_pos;
-	
+
 	switch (iMsg)
 	{
 		case WM_MOUSEMOVE:		event_type = LIcInputEvent_MouseMove;		break;
@@ -89,11 +89,11 @@ ONiHandleMouseEvent(
 		case WM_MBUTTONDBLCLK:	event_type = LIcInputEvent_MMouseDown;		break;
 		case WM_MBUTTONUP:		event_type = LIcInputEvent_MMouseUp;		break;
 	}
-	
+
 	mouse_pos.x = LOWORD(lParam);
 	mouse_pos.y = HIWORD(lParam);
 	LIrInputEvent_Add(event_type, &mouse_pos, 0, wParam);
-}	
+}
 
 // ----------------------------------------------------------------------
 static LRESULT CALLBACK ONiPlatform_WindowProc(
@@ -106,7 +106,7 @@ static LRESULT CALLBACK ONiPlatform_WindowProc(
 	static UUtUns32		modifiers = 0;
 	static UUtUns32		previous_key = 0;
 	static UUtBool		add_char;
-	
+
 	switch(iMsg)
 	{
 		case WM_CHAR:
@@ -122,20 +122,20 @@ static LRESULT CALLBACK ONiPlatform_WindowProc(
 				}
 			}
 		break;
-		
+
 		case WM_KEYDOWN:
 			add_char = UUcFalse;
-			
+
 			switch(wParam)
 			{
 				case VK_SHIFT:
 					modifiers |= MK_SHIFT;
 				break;
-				
+
 				case VK_CONTROL:
 					modifiers |= MK_CONTROL;
 				break;
-				
+
 				case VK_TAB:
 				case VK_UP:
 				case VK_DOWN:
@@ -165,27 +165,27 @@ static LRESULT CALLBACK ONiPlatform_WindowProc(
 						LIrPlatform_Win32_TranslateVirtualKey(wParam),
 						modifiers);
 				break;
-				
+
 				default:
 					add_char = UUcTrue;
 					previous_key = LIrPlatform_Win32_TranslateVirtualKey(wParam);
 				break;
 			}
 		break;
-		
+
 		case WM_KEYUP:
 			switch(wParam)
 			{
 				case VK_SHIFT:
 					modifiers &= ~MK_SHIFT;
 				break;
-				
+
 				case VK_CONTROL:
 					modifiers &= ~MK_CONTROL;
 				break;
 			}
 		break;
-		
+
 		case WM_MOUSEMOVE:
 		case WM_LBUTTONDOWN:
 		case WM_LBUTTONDBLCLK:
@@ -198,11 +198,11 @@ static LRESULT CALLBACK ONiPlatform_WindowProc(
 		case WM_MBUTTONUP:
 			ONiHandleMouseEvent(iMsg, wParam, lParam);
 		return 0;
-				
+
 		case WM_ACTIVATE:
 		{
 			if (LOWORD(wParam) == WA_INACTIVE)
-			{		
+			{
 				// set the current mode to normal input
 				LIrGameIsActive(UUcFalse);
 			}
@@ -214,12 +214,12 @@ static LRESULT CALLBACK ONiPlatform_WindowProc(
 			}
 		}
 		return 0;
-		
+
 		case WM_PAINT:
 		{
 			PAINTSTRUCT			ps;
 			HDC					hdc;
-			
+
 			hdc = BeginPaint(hWind, &ps);
 			PatBlt(hdc, 0, 0, 4096, 4096, BLACKNESS);
 			EndPaint(hWind, &ps);
@@ -241,8 +241,8 @@ static UUtBool fullscreenCandidate(HWND hwnd) {
     // Quake II sets   (WS_POPUP | WS_VISIBLE | WS_CLIPSIBLINGS)
     // Heretic II sets (WS_POPUP | WS_VISIBLE | WS_CLIPSIBLINGS | WS_SYSMENU)
     // TrueSpace4 sets (WS_POPUP | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_BORDER | WS_SYSMENU | WS_THICKFRAME)
-    // This function needs to 
-    // return 0 for TrueSpace4, which wants a window and 
+    // This function needs to
+    // return 0 for TrueSpace4, which wants a window and
     // return 1 for Quake II and Heretic II, which want fullscreen
 
     if ( (style & WS_POPUP) && !(style & (WS_BORDER | WS_THICKFRAME)))
@@ -273,7 +273,7 @@ ONiPlatform_CreateWindow(
 		AUrMessageBox(AUcMBType_OK, "There is already an instance of the game running.");
 		exit(0);
 	}
-	
+
 	windClass.cbSize = sizeof(windClass);
 	windClass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 	windClass.lpfnWndProc = ONiPlatform_WindowProc;
@@ -316,7 +316,7 @@ ONiPlatform_CreateWindow(
 		UUmAssert(fullscreenCandidate(ioPlatformData->gameWindow));
 
 		//	UpdateWindow(ioPlatformData->gameWindow);
-		
+
 		#if 0 //defined(DEBUG_AKIRA) && DEBUG_AKIRA
 
 			ioPlatformData->akiraWindow =
@@ -333,9 +333,9 @@ ONiPlatform_CreateWindow(
 					NULL,
 					ioPlatformData->appInstance,
 					NULL);
-		
+
 			ShowWindow(ioPlatformData->akiraWindow, 1);
-		
+
 		#endif
 
 	}
@@ -351,13 +351,13 @@ UUtError ONrPlatform_Initialize(
 	ONtPlatformData			*outPlatformData)
 {
 	HRESULT			ddReturn = DD_OK;
-	
+
 	outPlatformData->appInstance = ONgAppHInstance;
-	
+
 	ONiPlatform_CreateWindow(outPlatformData);
 
 	ShowCursor(FALSE);	// FALSE = hide the cursor
-	
+
 	return UUcError_None;
 }
 
@@ -402,7 +402,7 @@ void ONrPlatform_ErrorHandler(
 			/* XXX - Someday bitch really loudly */
 		}
 	}
-	
+
 	fprintf(ONgErrorFile, "InternalError: %s, %s\n\r", debugDescription, message);
 }
 
@@ -412,7 +412,7 @@ ONrPlatform_CopyAkiraToScreen(
 	UUtUns16	inBufferHeight,
 	UUtUns16	inRowBytes,
 	UUtUns16*	inBaseAdddr);
-	
+
 void
 ONrPlatform_CopyAkiraToScreen(
 	UUtUns16	inBufferWidth,

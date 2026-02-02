@@ -23,12 +23,12 @@
 typedef tm_template('V', 'M', 'L', 'B', "VM View ListBox")
 VMtView_ListBox
 {
-	
+
 	VMtPartSpec			*backborder;
-	
+
 	UUtUns16			flags;
 	UUtUns16			reserved;
-	
+
 } VMtView_ListBox;
 
 typedef struct VMtView_ListBox_PrivateData
@@ -39,7 +39,7 @@ typedef struct VMtView_ListBox_PrivateData
 	UUtUns16			text_texture_height;
 	IMtPixel			text_background_color;
 	UUtBool				text_texture_dirty;
-	
+
 	// text data
 	TStTextContext		*text_context;
 	UUtMemory_Array		*text_array;
@@ -50,12 +50,12 @@ typedef struct VMtView_ListBox_PrivateData
 	UUtInt16			num_entries;
 	UUtUns16			num_visible_entries;
 	UUtInt32			current_selection;
-	
+
 	// scrollbar
 	VMtView				*scrollbar;
 	UUtInt32			scroll_max;
 	UUtInt32			scroll_pos;
-	
+
 } VMtView_ListBox_PrivateData;
 
 extern TMtPrivateData*	DMgTemplate_ListBox_PrivateData;

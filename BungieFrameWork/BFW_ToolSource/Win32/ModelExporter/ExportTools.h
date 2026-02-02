@@ -76,14 +76,14 @@ typedef struct {
 	INode *node;				// node this edge came from
 
 	unsigned long	v1, v2;		// v1 to v2 edge
-	bool		visable;		// is it supposed to be 
+	bool		visable;		// is it supposed to be
 
 	unsigned long	f1, f2;		// used internally (faces this edge is from)
 } ExportEdge;
 
 typedef struct {
 	bool		valid;		// internal, true if any points in it, false otherwise
-	
+
 	float		xmin, xmax;
 	float		ymin, ymax;
 	float		zmin, zmax;
@@ -104,7 +104,7 @@ typedef enum
 {
 	kCountAllNodes,
 	kCountNormalNodes,
-	kCountDualTextureNormalNodes,		
+	kCountDualTextureNormalNodes,
 	kCountNormalPlusBiped,
 	kCountCoreBiped,
 	kCountMarkerNodes
@@ -116,7 +116,7 @@ void GetTextureName(INode *node, char *buf);
 char *GetMaxTextureName(INode *node);
 unsigned long FindChild(INode *node, INode **list, unsigned long count);
 unsigned long FindSibling(unsigned long index, INode **list, unsigned long count);
-			   
+
 class NodeCounter : public ITreeEnumProc
 {
 	public:
@@ -124,7 +124,7 @@ class NodeCounter : public ITreeEnumProc
 		static int CountNormalNodes(IScene *scene);
 
 	private:
-		int	callback(INode *node);	
+		int	callback(INode *node);
 
 		CountType fCountType;
 		TimeValue fTime;
@@ -160,7 +160,7 @@ bool INodeHasTexture2(INode *node, TimeValue time);
  *
  */
 
-class Scene 
+class Scene
 {
 	public:
 		Scene(IScene *scene, TimeValue t, Interface *i);
@@ -244,7 +244,7 @@ class Scene
 
 		ExportPoint *fPoints;
 		unsigned long	fNumPoints;
-		 
+
 		ExportFace *fFaces;
 		unsigned long	fNumFaces;
 
@@ -253,7 +253,7 @@ class Scene
 		unsigned long	fAllocatedEdges;
 
 		bool		fWarnNonUnitNormals;
-		bool		fWarnIdenticalUV;			
+		bool		fWarnIdenticalUV;
 		bool		fQuads;
 		bool		fWarnMapping;
 
@@ -262,7 +262,7 @@ class Scene
 		char		*fMaxNormalDistanceName;
 
 	public:
-		// given a face and an offset to our internal representation of 
+		// given a face and an offset to our internal representation of
 		// verts it will add this edge to our edge list
 		void		AddEdges(INode *node, Face *inFace, unsigned long faceIndex, const unsigned long vertOffset);
 		void		AddEdgeIfUnique(ExportEdge &edge, unsigned long faceIndex);
@@ -286,7 +286,7 @@ class Scene
 		void VerifyEdge(ExportEdge *edge);
 		bool FaceHasVertex(ExportFace *face, unsigned long vertex);
 
-		enum 
+		enum
 		{
 			QuadOptions_Exact			= 0x00000001
 		};
@@ -295,7 +295,7 @@ class Scene
 		void RoundPoints(void);			// rounds all the points to their nearest integer
 		void ClearUV(void);				// clears all the texture coordinates
 		void CompressPoints(void);		// finds duplicate points and removes them
-	
+
 	private:
 		void DoExportPoint(Mesh *mesh, Matrix3 &tm, int i, ExportPoint *outPoint);
 
@@ -303,12 +303,12 @@ class Scene
 
 static	Matrix3 CoordinateFix(void);
 static	Point3	TranslateNormal(Point3 normal, Matrix3 tm);
-static	Point3	TranslatePoint(Point3 point, Matrix3 tm);			
+static	Point3	TranslatePoint(Point3 point, Matrix3 tm);
 
 	// changes coordinate system from max to oni
-		void CoordinateSystemMaxToOni(void);	
+		void CoordinateSystemMaxToOni(void);
 
-// static	Point3	&FixCoordinates(Point3 inPoint);	
+// static	Point3	&FixCoordinates(Point3 inPoint);
 // static  Matrix3 &FixMatrix(Matrix3 inMatrix);
 
 		// functions related to point compression

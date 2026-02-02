@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Preferences.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: 8/18, 1997
-	
+
 	PURPOSE: Interface to the windows style preference files
-	
+
 	Copyright 1997
 
 */
@@ -21,7 +21,7 @@
 #define MAX_PREFERENCE			1024
 #define MAX_VALUE				1024
 
-typedef struct PrefEntry { 
+typedef struct PrefEntry {
 	char *preference;
 	char *value;
 } PrefEntry;
@@ -72,7 +72,7 @@ static UUtBool isEOL(char c)
 
 /*
  *
- * scan the preference part out and return inString bumped past the preference part 
+ * scan the preference part out and return inString bumped past the preference part
  *
  */
 
@@ -86,7 +86,7 @@ static const char *ReadPreference(const char *inString, char *outPreference)
 	while(1) {
 		if (isWhiteSpace(*inString)) { break; }
 		if (isEOL(*inString)) { break ; }
-		
+
 		outPreference[count] = *inString;
 
 		count++;
@@ -164,7 +164,7 @@ UUtError UUrPreferences_Initialize(void)
 
 		curStr = ReadPreference(curStr, preference);
 		curStr = SkipWhiteSpace(curStr);
-		ReadValue(curStr, value);			
+		ReadValue(curStr, value);
 
 		// step 4 grow the list
 		gPreferences = UUrMemory_Block_Realloc(gPreferences, sizeof(PrefEntry) * (gPreferencesCount + 1));
@@ -232,11 +232,11 @@ UUtUns32 UUrPreferences_GetNumber(const char *inWhichPreference)
 
 	return 0xdeadbeef;
 }
-	
+
 void UUrPreferences_Terminate(void)
 {
 	UUtUns32 i;
-	
+
 	if (gPreferences != NULL) {
 		for(i = 0; i < gPreferencesCount; i++) {
 			UUrMemory_Block_Delete(gPreferences[i].preference);

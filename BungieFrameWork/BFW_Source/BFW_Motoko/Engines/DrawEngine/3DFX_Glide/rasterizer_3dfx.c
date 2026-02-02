@@ -3,7 +3,7 @@
  * RASTERIZER_3DFX.C
  *
  */
- 
+
 #include "bfw_cseries.h"
 
 #include "lrar_cache.h"
@@ -97,14 +97,14 @@ void initialize_3dfx(
 	UUrStartupMessage("initializing 3dfx...");
 
 	UUmAssert(gGlideAvailable);
-	
+
 	success = grSstQueryHardware(&hwconfig);
 	UUmAssert(success);
 	UUrStartupMessage("3dfx hardware query gave us %d...", success);
 
 	UUrStartupMessage("selecting 3dfx display device...");
 	grSstSelect(0);
-	
+
 	globals_3dfx.numTMU = hwconfig.SSTs[0].sstBoard.VoodooConfig.nTexelfx;
 	globals_3dfx.numTMU = UUmMin(globals_3dfx.numTMU, 2);	// only handle 2 tmus
 
@@ -118,12 +118,12 @@ void initialize_3dfx(
 
 	minimum_address = grTexMinAddress(GR_TMU0);
 	maximum_address = grTexMaxAddress(GR_TMU0);
-	globals_3dfx.texture_memory_cache_tmu0= 
-		lrar_new(	"3dfx texture memory cache 0", 
+	globals_3dfx.texture_memory_cache_tmu0=
+		lrar_new(	"3dfx texture memory cache 0",
 					minimum_address,
-					maximum_address, 
-					MAXIMUM_CACHED_TEXTURES_PER_TMU, 
-					4, 
+					maximum_address,
+					MAXIMUM_CACHED_TEXTURES_PER_TMU,
+					4,
 					21,
 					(lrar_new_block_proc) NULL, (lrar_purge_block_proc) NULL);
 	UUmAssert(globals_3dfx.texture_memory_cache_tmu0);
@@ -131,12 +131,12 @@ void initialize_3dfx(
 	if (globals_3dfx.numTMU >= 2) {
 		minimum_address = grTexMinAddress(GR_TMU1);
 		maximum_address = grTexMaxAddress(GR_TMU1);
-		globals_3dfx.texture_memory_cache_tmu1 = 
-			lrar_new(	"3dfx texture memory cache 1", 
+		globals_3dfx.texture_memory_cache_tmu1 =
+			lrar_new(	"3dfx texture memory cache 1",
 						minimum_address,
-						maximum_address, 
-						MAXIMUM_CACHED_TEXTURES_PER_TMU, 
-						4, 
+						maximum_address,
+						MAXIMUM_CACHED_TEXTURES_PER_TMU,
+						4,
 						21,
 						(lrar_new_block_proc) NULL, (lrar_purge_block_proc) NULL);
 		UUmAssert(globals_3dfx.texture_memory_cache_tmu1);
@@ -154,7 +154,7 @@ void initialize_3dfx(
 	globals_3dfx.clampT_tmu0 = GR_TEXTURECLAMP_WRAP;
 	globals_3dfx.clampS_tmu1 = GR_TEXTURECLAMP_WRAP;
 	globals_3dfx.clampT_tmu1 = GR_TEXTURECLAMP_WRAP;
-	
+
 	grTexClampMode(GR_TMU0, GR_TEXTURECLAMP_WRAP, GR_TEXTURECLAMP_WRAP);
 	grTexMipMapMode(GR_TMU0, GR_MIPMAP_DISABLE, FXFALSE);
 	grTexLodBiasValue(GR_TMU0, 0.5f);		// per texture would be ideal (.5 if only 1 texture)
@@ -171,7 +171,7 @@ void initialize_3dfx(
 	}
 
 	grHints( GR_HINT_ALLOW_MIPMAP_DITHER, 1);
-	
+
 	// clear the backbuffer to green, swap it to front
 	#if MGcUseZBuffer
 		grBufferClear(0x007F007F, 0, GR_ZDEPTHVALUE_FARTHEST);
@@ -208,12 +208,12 @@ void initialize_3dfx(
 	grRenderBuffer(GR_BUFFER_BACKBUFFER);
 
 	while (grBufferNumPending()>0) ;
-	
+
 	if(MGgDecompressBuffer != NULL)
 	{
 		UUrMemory_Block_Delete(MGgDecompressBuffer);
 	}
-	
+
 	MGgDecompressBuffer = UUrMemory_Block_New((256 * 256 * 2 * 3) / 2);
 	UUmAssert(NULL != MGgDecompressBuffer);
 
@@ -243,7 +243,7 @@ void dispose_3dfx(
 	{
 		lrar_dispose(globals_3dfx.texture_memory_cache_tmu0);
 	}
-	
+
 	if (globals_3dfx.texture_memory_cache_tmu1 != NULL)
 	{
 		lrar_dispose(globals_3dfx.texture_memory_cache_tmu1);
@@ -295,7 +295,7 @@ UUtBool available_3dfx(
 
 				has_3dfx= UUcTrue;
 			}
-			else 
+			else
 			{
 				UUrStartupMessage("did not detect 3dfx hardware");
 			}
@@ -321,7 +321,7 @@ UUtBool available_3dfx(
 	}
 
 	gGlideAvailable = has_3dfx;
-	
+
 	return has_3dfx;
 }
 
@@ -352,7 +352,7 @@ void erase_backbuffer_3dfx(
 #endif
 
 	MGrSet_ZWrite(oldMode);
-	
+
 	return;
 }
 
@@ -375,14 +375,14 @@ void lock_backbuffer_3dfx(
 	}
 #endif
 
-	return;	
+	return;
 }
 
 void unlock_backbuffer_3dfx(
 	void)
 {
 	grLfbUnlock(GR_LFB_WRITE_ONLY, GR_BUFFER_BACKBUFFER);
-		
+
 	return;
 }
 
@@ -394,7 +394,7 @@ void display_backbuffer_3dfx(
 	if (MGgGamma != MGgOldGamma) {
 		grGammaCorrectionValue(MGgGamma);
 	}
-	
+
 	if (MGgDoubleBuffer) {
 		grBufferSwap(1);
 		grRenderBuffer(GR_BUFFER_BACKBUFFER);
@@ -402,7 +402,7 @@ void display_backbuffer_3dfx(
 	else {
 		grRenderBuffer(GR_BUFFER_FRONTBUFFER);
 	}
-	
+
 	if (MGgBilinear) {
 		grTexFilterMode(GR_TMU0, GR_TEXTUREFILTER_BILINEAR, GR_TEXTUREFILTER_BILINEAR);
 		if (globals_3dfx.numTMU >= 2) {
@@ -428,7 +428,7 @@ static void UUcExternal_Call dispose_glide_atexit(
 	void)
 {
 	grGlideShutdown();
-	
+
 	return;
 }
 
@@ -438,7 +438,7 @@ myGRTexDownloadMipMap(	GrChipID_t tmu,
 						FxU32      evenOdd,
 						GrTexInfo  *info,
 						long		size)
-{	
+{
 	MGgTextureBytesDownloaded += size;
 
 	grTexDownloadMipMap(tmu, startAddress, evenOdd, info);
@@ -482,9 +482,9 @@ set_current_glide_texture(
 	GrChipID_t				inTMU,
 	MGtTextureMapPrivate*	inTexture,
 	MGtTextureUploadMode	mode)
-{	
-	GrTexInfo**			current_texture_ptr; 
-	GrTexInfo*			hardware_format; 
+{
+	GrTexInfo**			current_texture_ptr;
+	GrTexInfo*			hardware_format;
 	short*				hardware_block_index;
 	lrar_cache*	lrar_cache;
 	short*				current_block_index;
@@ -582,7 +582,7 @@ set_current_glide_texture(
 			lrar_cache = globals_3dfx.texture_memory_cache_tmu0;
 			current_texture_ptr = &(globals_3dfx.current_texture_tmu0);
 			break;
-		
+
 		case GR_TMU1:
 			if (MGcTextureUploadMode_Trilinear == mode) {
 				hardware_block_index = &(inTexture->hardware_block_index_tmu1_odd);
@@ -664,12 +664,12 @@ set_current_glide_texture(
 			if (GR_TMU0 == inTMU) {
 				globals_3dfx.hardware_address_tmu0 = hardware_address;
 				globals_3dfx.hardware_format_tmu0 = *hardware_format;
-				globals_3dfx.evenOdd_tmu0 = evenOdd; 
+				globals_3dfx.evenOdd_tmu0 = evenOdd;
 			}
 			else {
 				globals_3dfx.hardware_address_tmu1 = hardware_address;
 				globals_3dfx.hardware_format_tmu1 = *hardware_format;
-				globals_3dfx.evenOdd_tmu1 = evenOdd; 
+				globals_3dfx.evenOdd_tmu1 = evenOdd;
 			}
 
 			if (texture_changed) {
@@ -693,7 +693,7 @@ set_current_glide_texture(
 
 
 					IMrImage_ConvertPixelType(
-						IMcDitherMode_Off, 
+						IMcDitherMode_Off,
 						inTexture->width,
 						inTexture->height,
 						mipMap,
@@ -704,14 +704,14 @@ set_current_glide_texture(
 				}
 
 				myGRTexDownloadMipMap(inTMU, hardware_address, evenOdd, hardware_format, size);
-				
+
 				thisMap = hardware_format->data;
 				thisMapSize = inTexture->width * inTexture->height * 2;
 
 				*hardware_block_dirty = UUcFalse;
 			}
 
-			if (MGgMipMapping) 
+			if (MGgMipMapping)
 			{
 				grTexSource(inTMU, hardware_address, evenOdd, hardware_format);
 			}
@@ -757,7 +757,7 @@ void MGrSet_MipMapMode(GrChipID_t inTMU, MGtMipMapMode inMode)
 		break;
 
 		case MGcMipMapMode_NoMipmapping:
-			grTexMipMapMode(inTMU, GR_MIPMAP_DISABLE, FXFALSE);		
+			grTexMipMapMode(inTMU, GR_MIPMAP_DISABLE, FXFALSE);
 		break;
 
 		case MGcMipMapMode_MipMapping:
@@ -781,7 +781,7 @@ void MGrSet_MipMapMode(GrChipID_t inTMU, MGtMipMapMode inMode)
 }
 
 
-void MGrSet_AlphaCombine(MGtAlphaCombine inMode) 
+void MGrSet_AlphaCombine(MGtAlphaCombine inMode)
 {
 	if (inMode == globals_3dfx.currentAlphaCombine) {
 		return;
@@ -889,7 +889,7 @@ void MGrSet_TextureCombine(MGtTextureCombine inMode)
 	if (inMode == globals_3dfx.currentTextureCombine) {
 		return;
 	}
-	
+
 	if (1 == globals_3dfx.numTMU) {
 		return;
 	}
@@ -913,7 +913,7 @@ void MGrSet_TextureCombine(MGtTextureCombine inMode)
 
 		case MGcTextureCombine_Multiply:
 			grHints( GR_HINT_STWHINT, GR_STWHINT_ST_DIFF_TMU1);
-			grTexCombine(GR_TMU0, GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL, 
+			grTexCombine(GR_TMU0, GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL,
 					GR_COMBINE_FUNCTION_SCALE_OTHER, GR_COMBINE_FACTOR_LOCAL, FXFALSE, FXFALSE);
 
 			grTexCombine( GR_TMU1, GR_COMBINE_FUNCTION_LOCAL, GR_COMBINE_FACTOR_NONE,
@@ -938,17 +938,17 @@ void MGrSet_TextureCombine(MGtTextureCombine inMode)
 			grTexCombine( GR_TMU1, GR_COMBINE_FUNCTION_LOCAL, GR_COMBINE_FACTOR_NONE,
 				GR_COMBINE_FUNCTION_LOCAL, GR_COMBINE_FACTOR_NONE, FXFALSE, FXFALSE );
 		break;
-		
+
 		case MGcTextureCombine_EnvMap:
 			grHints( GR_HINT_STWHINT, GR_STWHINT_ST_DIFF_TMU1);
-			
+
 			grTexCombine( GR_TMU0, GR_COMBINE_FUNCTION_SCALE_OTHER_ADD_LOCAL, GR_COMBINE_FACTOR_LOCAL_ALPHA,
 				GR_COMBINE_FUNCTION_LOCAL, GR_COMBINE_FACTOR_NONE, FXFALSE, FXFALSE );
 
 			grTexCombine( GR_TMU1, GR_COMBINE_FUNCTION_LOCAL, GR_COMBINE_FACTOR_NONE,
 				GR_COMBINE_FUNCTION_LOCAL, GR_COMBINE_FACTOR_NONE, FXFALSE, FXFALSE );
 			break;
-			
+
 		default:
 			UUmAssert(0);
 		break;
@@ -965,11 +965,11 @@ void MGrSet_TextureMode(
 	UUtBool			trilinear;
 	UUtBool			envmapping;
 	UUtBool			blend_additive;
-	
+
 	UUmAssertReadPtr(texturePrivate, sizeof(MGtTextureMapPrivate));
 
 	MGgDrawContextPrivate->curBaseTexture = texturePrivate;
-	
+
 	textureAlpha =
 				(texturePrivate->flags & MGcTextureFlag_HasAlpha) ?
 					MGcAlphaCombine_TextureTimesConstantAlpha :
@@ -979,14 +979,14 @@ void MGrSet_TextureMode(
 				(2 == globals_3dfx.numTMU) &&
 				(texturePrivate->flags & MGcTextureFlag_HasMipMap) &&
 				((MGgFilteringOverrideMode == MGcFilteringOverride_Dont) ||
-					(MGgFilteringOverrideMode == MGcFilteringOverride_Trilinear));					
+					(MGgFilteringOverrideMode == MGcFilteringOverride_Trilinear));
 	#endif
-	
+
 	trilinear = 0;
-	
+
 	envmapping = (inTexture->flags & M3cTextureFlags_ReceivesEnvMap) != 0;
 	blend_additive = (inTexture->flags & M3cTextureFlags_Blend_Additive) != 0;
-	
+
 	if(blend_additive)
 	{
 		textureAlpha = MGcAlphaCombine_Additive;
@@ -995,9 +995,9 @@ void MGrSet_TextureMode(
 	{
 		textureAlpha = MGcAlphaCombine_ConstantAlpha;
 	}
-	
+
 	MGrSet_AlphaCombine(textureAlpha);
-	
+
 	if (trilinear)
 	{
 		MGrSet_TextureCombine(MGcTextureCombine_Trilinear);
@@ -1007,7 +1007,7 @@ void MGrSet_TextureMode(
 	else if(envmapping)
 	{
 		MGtTextureMapPrivate*	envMapPrivate = MGmGetEnvMapPrivate(MGgDrawContextPrivate);
-		
+
 //		UUmAssertReadPtr(envMapPrivate, sizeof(*envMapPrivate));
 		if (envMapPrivate)
 		{
@@ -1026,7 +1026,7 @@ void MGrSet_TextureMode(
 		MGrSet_TextureCombine(MGcTextureCombine_None);
 		set_current_glide_texture(GR_TMU0, texturePrivate, MGcTextureUploadMode_Normal);
 	}
-	
+
 }
 
 void
@@ -1038,14 +1038,14 @@ MGrDrawPolygon(
 	#if 0//defined(DEBUGGING) && DEBUGGING
 	{
 		int	i;
-		
+
 		for(i = 0; i < nverts; i++)
 		{
 			MGmAssertVertexXY(vlist + ilist[i]);
 		}
 	}
 	#endif
-	
+
 	grDrawPolygon(nverts, ilist, vlist);
 }
 

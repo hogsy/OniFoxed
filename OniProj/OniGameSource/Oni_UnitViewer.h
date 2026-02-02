@@ -33,7 +33,7 @@ enum
 	UVcDataType_Character,
 	UVcDataType_Weapon,
 	UVcDataType_URL
-	
+
 };
 
 // ======================================================================
@@ -43,7 +43,7 @@ typedef tm_struct UVtData
 {
 	char					instance_name[32];	/* UVcMaxInstNameLength */
 	char					name[32];			/* UVcMaxDataNameLength */
-	
+
 } UVtData;
 
 #define UVcTemplate_DataList			UUm4CharToUns32('U', 'V', 'D', 'L')
@@ -51,12 +51,12 @@ typedef tm_template('U', 'V', 'D', 'L', "UV Data List")
 UVtDataList
 {
 	tm_pad					pad[16];
-	
+
 	UUtUns32				data_type;
-	
+
 	tm_varindex UUtUns32	num_data_entries;
 	tm_vararray UVtData		data[1];
-	
+
 } UVtDataList;
 
 

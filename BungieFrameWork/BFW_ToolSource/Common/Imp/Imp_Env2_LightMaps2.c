@@ -5,8 +5,8 @@
 
 	CREATED: Sept 3, 1997
 
-	PURPOSE: 
-	
+	PURPOSE:
+
 	Copyright 1997, 2000
 
 */
@@ -36,7 +36,7 @@
 
 /*
 	texture page memory layout
-	
+
 	base addr
 	v
 	v 0      1
@@ -64,20 +64,20 @@
 typedef struct IMPtLM_FillPixel
 {
 	UUtUns16	x, y;
-	
+
 } IMPtLM_FillPixel;
 
 typedef struct IMPtLM_SortedUVEntry
 {
 	UUtUns8	u;
 	UUtUns8	v;
-	
+
 } IMPtLM_SortedUVEntry;
 
 typedef struct IMPtLM_TexturePage_Entry
 {
 	UUtUns32	gqIndex;
-	
+
 } IMPtLM_TexturePage_Entry;
 
 UUtUns32					gLMFillPixel_Num[2];
@@ -116,20 +116,20 @@ IMPiLM_Process_LSData_Read(
 	UUtUns16				numLSDataFiles = 0;
 	IMPtEnv_LSData			lsDataFiles[IMPcEnv_MaxFilesInDir];
 
-	
+
 	UUtUns16				itr;
 
 	#if ((UUmPlatform == UUmPlatform_Win32) || (UUmPlatform == UUmPlatform_Linux)) && (UUmCompiler != UUmCompiler_MWerks)
-	
+
 		error =
 			BFrFileRef_DuplicateAndReplaceName(
 				inSourceFileRef,
 				"Conversion_Files\\LS",
 				&lsDirectory);
-	
+
 		if(error == UUcError_None && BFrFileRef_FileExists(lsDirectory))
 		{
-			error = 
+			error =
 				BFrDirectory_GetFileList(
 					lsDirectory,
 					NULL,
@@ -138,30 +138,30 @@ IMPiLM_Process_LSData_Read(
 					&numLSDataFiles,
 					lsDataFileRefs);
 			UUmError_ReturnOnErrorMsg(error, "Could not get LS Files");
-			
+
 			Imp_PrintMessage(IMPcMsg_Important, "Preprocessing LS Data files from LS directory (%d files)..."UUmNL, numLSDataFiles);
 			for(itr = 0; itr < numLSDataFiles; itr++)
 			{
-				error = 	
+				error =
 					LSrData_CreateFromLSFile(
 						BFrFileRef_GetFullPath(lsDataFileRefs[itr]),
 						&lsDataFiles[itr].lsData);
 				UUmError_ReturnOnError(error);
-				
+
 				if(strcmp(lsDataFiles[itr].lsData->prepVersion, LScPrepVersion))
 				{
 					UUmError_ReturnOnErrorMsg(UUcError_Generic, "LS preperation version is wrong");
 				}
-				
+
 				UUrString_Copy(lsDataFiles[itr].fileName, BFrFileRef_GetLeafName(lsDataFileRefs[itr]), BFcMaxFileNameLength);
-				
+
 				BFrFileRef_Dispose(lsDataFileRefs[itr]);
 			}
-			
+
 			BFrFileRef_Dispose(lsDirectory);
 		}
 		else
-		
+
 	#endif
 
 	// ok, turn our lighting files into a list of lighting points
@@ -182,7 +182,7 @@ IMPiLM_Process_LSData_Read(
 
 			IMPgLightingBBox.maxPoint.x = UUmMax(IMPgLightingBBox.maxPoint.x, lsData->bbox.maxPoint.x);
 			IMPgLightingBBox.maxPoint.y = UUmMax(IMPgLightingBBox.maxPoint.y, lsData->bbox.maxPoint.y);
-			IMPgLightingBBox.maxPoint.z = UUmMax(IMPgLightingBBox.maxPoint.z, lsData->bbox.maxPoint.z);	
+			IMPgLightingBBox.maxPoint.z = UUmMax(IMPgLightingBBox.maxPoint.z, lsData->bbox.maxPoint.z);
 		}
 	}
 
@@ -240,7 +240,7 @@ IMPiLM_Process_LS_Cache_Data_Read(
 		M3tBoundingBox_MinMax bbox;
 		UUtUns32 point_size;
 		BFtFile *lighting_file;
-		
+
 		error = BFrFile_Open(&lighting_file_ref, "r", &lighting_file);
 		UUmError_ReturnOnErrorMsg(error, "failed to open ls cache file");
 
@@ -250,7 +250,7 @@ IMPiLM_Process_LS_Cache_Data_Read(
 
 		if (LIGHTING_CACHE_VERSION != version) {
 			Imp_PrintWarning("failed to read lighting.dat");
-			
+
 			error = UUcError_Generic;
 			goto exit;
 		}
@@ -305,9 +305,9 @@ IMPiLM_Process_LS_Cache_Data_Read(
 
 		IMPgLightingBBox.maxPoint.x = UUmMax(IMPgLightingBBox.maxPoint.x, bbox.maxPoint.x);
 		IMPgLightingBBox.maxPoint.y = UUmMax(IMPgLightingBBox.maxPoint.y, bbox.maxPoint.y);
-		IMPgLightingBBox.maxPoint.z = UUmMax(IMPgLightingBBox.maxPoint.z, bbox.maxPoint.z);	
+		IMPgLightingBBox.maxPoint.z = UUmMax(IMPgLightingBBox.maxPoint.z, bbox.maxPoint.z);
 	}
-		
+
 
 exit:
 	return error;
@@ -333,7 +333,7 @@ IMPiLM_Process_LS_Cache_Data_Write(
 
 		{
 			UUtUns32 version = LIGHTING_CACHE_VERSION;
-	
+
 			error = BFrFile_Write(lighting_file, sizeof(UUtUns32), &version);
 			UUmError_ReturnOnError(error);
 		}
@@ -372,7 +372,7 @@ IMPiLM_Process_LS_Cache_Data_Write(
 
 		BFrFile_Close(lighting_file);
 	}
-		
+
 	return error;
 }
 
@@ -519,14 +519,14 @@ static UUtUns32 LightingOctTree_GetCount(const M3tPoint3D *inPoint)
 	if (inPoint->y > lighting_bbox.maxPoint.y) {
 		goto exit;
 	}
-	
+
 	if (inPoint->z > lighting_bbox.maxPoint.z) {
 		goto exit;
 	}
 
 	x = UUmPin(x, 0, (LIGHTING_OCT_TREE_SIZE - 1));
 	y = UUmPin(y, 0, (LIGHTING_OCT_TREE_SIZE - 1));
-	z = UUmPin(z, 0, (LIGHTING_OCT_TREE_SIZE - 1)); 
+	z = UUmPin(z, 0, (LIGHTING_OCT_TREE_SIZE - 1));
 
 	count = lighting_oct_tree_size[x][y][z];
 
@@ -563,14 +563,14 @@ static LStPoint **LightingOctTree_GetList(const M3tPoint3D *inPoint)
 	if (inPoint->y > lighting_bbox.maxPoint.y) {
 		goto exit;
 	}
-	
+
 	if (inPoint->z > lighting_bbox.maxPoint.z) {
 		goto exit;
 	}
 
 	x = UUmPin(x, 0, (LIGHTING_OCT_TREE_SIZE - 1));
 	y = UUmPin(y, 0, (LIGHTING_OCT_TREE_SIZE - 1));
-	z = UUmPin(z, 0, (LIGHTING_OCT_TREE_SIZE - 1)); 
+	z = UUmPin(z, 0, (LIGHTING_OCT_TREE_SIZE - 1));
 
 	list = lighting_oct_tree[x][y][z];
 
@@ -604,7 +604,7 @@ IMPiLightEnvironmentVertex(
 
 	max_point = point_list + point_count;
 
-	for(current_point_in_list = point_list; current_point_in_list < max_point; current_point_in_list++) 
+	for(current_point_in_list = point_list; current_point_in_list < max_point; current_point_in_list++)
 	{
 		LStPoint *current_point = *current_point_in_list;
 		UUtInt32 dot_product_approximation = 0;
@@ -661,7 +661,7 @@ IMPiLightEnvironmentVertex(
 			}
 		}
 
-		if (approximation == approximation_to_beat) {		
+		if (approximation == approximation_to_beat) {
 			shade = current_point->shade;
 
 			shade = (shade & 0xFFFFFF00) | UUmMax((shade & 0x0000FF), (current_point->shade & 0x0000FF));
@@ -696,7 +696,7 @@ IMPiLightEnvironmentVertex(
 			shade = IMPiLightEnvironmentVertex(inBuildData, inLocation, inNormal, UUcTrue);
 		}
 	}
-		
+
 	return shade;
 }
 
@@ -732,29 +732,29 @@ IMPiLM_Process(
 	}
 
 	Imp_PrintMessage(IMPcMsg_Important, "\tread %d lighting points"UUmNL, IMPgLightingPointCount);
-	
+
 
 	Imp_PrintMessage(IMPcMsg_Important, "\tbuilding lighting oct tree"UUmNL);
 	BuildLightingOctTree(inBuildData);
-	
+
 	Imp_PrintMessage(IMPcMsg_Important, "\tprocessing vertex lighting");
 
 	AKgLightingFailure = 0;
 
 	Imp_PrintMessage(IMPcMsg_Important, "%d gqs:", inBuildData->numGQs);
 
-		
+
 	// Loop over each gq
 	for(itr = 0; itr < inBuildData->numGQs; itr++)
 	{
 		IMPtEnv_GQ *current_gq = inBuildData->gqList + itr;
 
 		if ((itr % 100) == 0) {
-			Imp_PrintMessage(IMPcMsg_Important, ".");	
+			Imp_PrintMessage(IMPcMsg_Important, ".");
 		}
 
 		if ((itr % 1000) == 0) {
-			Imp_PrintMessage(IMPcMsg_Important, " %d%% [%d fail %d 2nd pass]", (100 * itr) / inBuildData->numGQs, AKgLightingFailure, AKgLightingSecondPass);	
+			Imp_PrintMessage(IMPcMsg_Important, " %d%% [%d fail %d 2nd pass]", (100 * itr) / inBuildData->numGQs, AKgLightingFailure, AKgLightingSecondPass);
 		}
 
 		{
@@ -790,7 +790,7 @@ IMPiLM_Process(
 
 	IMPgLightingPoints = UUrMemory_Block_Realloc(IMPgLightingPoints, 0);
 	IMPgLightingPointCount = 0;
-	
+
 	return UUcError_None;
 }
 
@@ -802,7 +802,7 @@ IMPrLM_DontProcessGQ(
 	if(inGQ->lmFlags & IMPcGQ_LM_ForceOff) return UUcTrue;
 	if(inGQ->isLuminaire) return UUcTrue;
 	if(inGQ->flags & AKcGQ_Flag_DontLight) return UUcTrue;
-	
+
 	return UUcFalse;
 }
 
@@ -817,16 +817,16 @@ IMPrEnv_Process_LightMap(
 	time = UUrMachineTime_High();
 
 	Imp_PrintMessage(IMPcMsg_Important, "preparing to compute lightmaps");
-	
+
 	IMPgLM_LastFlushedTextureMapIndex = 0;
 	IMPgLM_TableArea = 0;
-		
+
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
-	
+
 	Imp_PrintMessage(IMPcMsg_Important, "lightmaps");
-	time = UUrMachineTime_High();	
-	
+	time = UUrMachineTime_High();
+
 	if(IMPgLightmaps)
 	{
 		if(IMPgLightmap_OutputPrepFile)
@@ -838,14 +838,14 @@ IMPrEnv_Process_LightMap(
 				BFtFileRef*		lpOutputDir;
 				BFtFileRef*		curLPFileRef;
 				UUtUns16		curFileIndex;
-				
+
 				error =
 					BFrFileRef_DuplicateAndReplaceName(
 						inSourceFileRef,
 						"Conversion_Files\\LP",
 						&lpOutputDir);
 				UUmError_ReturnOnErrorMsg(error, "Could not locate LP directory");
-				
+
 				if(!BFrFileRef_FileExists(lpOutputDir))
 				{
 					error = BFrDirectory_Create(lpOutputDir, NULL);
@@ -855,7 +855,7 @@ IMPrEnv_Process_LightMap(
 				{
 					BFrDirectory_DeleteContentsOnly(lpOutputDir);
 				}
-				
+
 				if(IMPgLightmap_OutputPrepFileOne)
 				{
 					char			tempName[BFcMaxFileNameLength];
@@ -863,10 +863,10 @@ IMPrEnv_Process_LightMap(
 					char*			cp;
 
 					sprintf(tempName, "%s", BFrFileRef_GetLeafName(inSourceFileRef));
-					
+
 					cp = strchr(tempName, '.');
 					if(cp != NULL) *cp = 0;
-					
+
 					sprintf(allOneFileName, "%s_lp1.lp", tempName);
 
 					error =
@@ -875,15 +875,15 @@ IMPrEnv_Process_LightMap(
 							allOneFileName,
 							&curLPFileRef);
 					UUmError_ReturnOnErrorMsg(error, "Could not locate LP directory");
-					
+
 					// create the LP file
-					error = 
+					error =
 						LSrPreperationFile_Create(
 							inBuildData,
 							NULL,
 							BFrFileRef_GetFullPath(curLPFileRef));
 					UUmError_ReturnOnError(error);
-					
+
 					BFrFileRef_Dispose(curLPFileRef);
 				}
 				else
@@ -896,21 +896,21 @@ IMPrEnv_Process_LightMap(
 								inBuildData->gqFileNames[curFileIndex],
 								&curLPFileRef);
 						UUmError_ReturnOnErrorMsg(error, "Could not locate LP directory");
-						
+
 						BFrFileRef_SetLeafNameSuffex(curLPFileRef, "lp");
-						
+
 						// create the LP file
-						error = 
+						error =
 							LSrPreperationFile_Create(
 								inBuildData,
 								inBuildData->gqFileNames[curFileIndex],
 								BFrFileRef_GetFullPath(curLPFileRef));
 						UUmError_ReturnOnError(error);
-						
+
 						BFrFileRef_Dispose(curLPFileRef);
 					}
 				}
-				
+
 				BFrFileRef_Dispose(lpOutputDir);
 			}
 			#endif
@@ -919,7 +919,7 @@ IMPrEnv_Process_LightMap(
 			IMPiLM_Process(inBuildData, inSourceFileRef);
 		}
 	}
-			
+
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
 

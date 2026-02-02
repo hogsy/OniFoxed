@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW.h
-	
+
 	AUTHOR:	Michael Evans, Quinn Dunki
-	
+
 	CREATED: May 17, 1997
-	
+
 	PURPOSE: camera code
-	
+
 	Copyright 1997 - 1999
 
 */
@@ -77,7 +77,7 @@ CAiJello(
 float M3rPlaneEquation_Evaluate(M3tPlaneEquation *inPlaneEquation, M3tPoint3D *inPoint)
 {
 	float result;
-	
+
 	result =inPlaneEquation->a * inPoint->x + inPlaneEquation->b * inPoint->y + inPlaneEquation->c * inPoint->z + inPlaneEquation->d;
 
 	return result;
@@ -100,7 +100,7 @@ static void CAiTrackJello(CAtCamera *inCamera)
 	AKtGQ_Collision *gq_collision_array = env->gqCollisionArray->gqCollision;
 	M3tPlaneEquation *plane_array = env->planeArray->planes;
 
-	typedef struct JelloRayOffset 
+	typedef struct JelloRayOffset
 	{
 		float x;
 		float y;
@@ -109,7 +109,7 @@ static void CAiTrackJello(CAtCamera *inCamera)
 	if (!CAgJello) {
 		return;
 	}
-	
+
 	MUrVector_CrossProduct(&inCamera->viewData.upVector,&inCamera->viewData.viewVector,&sideVector);
 	sideVector.y+=2.0f;
 	MUmVector_Scale(sideVector,3.0f);
@@ -122,7 +122,7 @@ static void CAiTrackJello(CAtCamera *inCamera)
 	CAgNumJelloRays = UUmPin(CAgNumJelloRays, 0, CAcMaxJelloRays);
 
 	for (rayIndex=0; rayIndex < CAgNumJelloRays; rayIndex++)
-	{	
+	{
 		if (rayIndex == 1 || rayIndex == 3) {
 			sideVector.y = -sideVector.y;
 		}
@@ -144,7 +144,7 @@ static void CAiTrackJello(CAtCamera *inCamera)
 			float length_to_focus = MUmVector_GetLength(toFocus);
 			M3tVector3D jello_vector = toFocus;
 
-			MUrVector_SetLength(&jello_vector, UUmMax(length_to_focus - CAgJello_Radius, 1.f));	
+			MUrVector_SetLength(&jello_vector, UUmMax(length_to_focus - CAgJello_Radius, 1.f));
 
 			sphere.center = inCamera->viewData.location;
 			sphere.radius = CAgJello_Radius;
@@ -234,7 +234,7 @@ static void CAiTrackJello(CAtCamera *inCamera)
 			char_side_1_positive = M3rPlaneEquation_Evaluate(plane_equation, &character_location_1) > 0;
 			char_side_2_positive = M3rPlaneEquation_Evaluate(plane_equation, &character_location_2) > 0;
 
-			if ((camera_side_positive & char_side_1_positive & char_side_1_positive) == (camera_side_positive | char_side_1_positive | char_side_2_positive)) 
+			if ((camera_side_positive & char_side_1_positive & char_side_1_positive) == (camera_side_positive | char_side_1_positive | char_side_2_positive))
 			{
 				continue;
 			}
@@ -249,7 +249,7 @@ static void CAiTrackJello(CAtCamera *inCamera)
 
 // given a view vector, builds a trivial up vector
 M3tVector3D CArBuildUpVector(const M3tVector3D *inViewVector)
-{	
+{
 	M3tVector3D upVector;
 	M3tVector3D sideVector;
 
@@ -258,7 +258,7 @@ M3tVector3D CArBuildUpVector(const M3tVector3D *inViewVector)
 	sideVector.y = 0;
 	sideVector.z = -inViewVector->x;
 	MUrVector_CrossProduct(inViewVector,&sideVector,&upVector);
-	
+
 	// Keep things on the level
 	MUrNormalize(&upVector);
 
@@ -276,7 +276,7 @@ UUtError CArLevelBegin(void)
 void CArLevelEnd(
 	void)
 {
-	
+
 }
 
 
@@ -408,7 +408,7 @@ static UUtBool CArOrbit_Update(UUtUns32 ticks, UUtUns32 inNumActions, const LItA
 	UUtBool activate = UUcFalse;
 	ONtActiveCharacter *active_character;
 
-	if (ticks > 0) 
+	if (ticks > 0)
 	{
 		CAtCamera *camera = ONgGameState->local.camera;
 		CAtOrbitData *orbitData = &camera->modeData.orbit;
@@ -421,7 +421,7 @@ static UUtBool CArOrbit_Update(UUtUns32 ticks, UUtUns32 inNumActions, const LItA
 		if (orbitData->stop_angle >= 0) {
 			UUtBool stop = UUcFalse;
 			float new_angle = orbitData->current_angle;
-			
+
 			stop |= (old_angle <= stop_angle) & (new_angle >= stop_angle);
 			stop |= (old_angle >= stop_angle) & (new_angle <= stop_angle);
 			stop |= (old_angle <= (stop_angle + M3c2Pi)) & (new_angle >= (stop_angle + M3c2Pi));
@@ -474,7 +474,7 @@ static UUtBool CArAnimate_Update(UUtUns32 ticks, UUtUns32 inNumActions, const LI
 {
 	UUtBool activate = UUcFalse;
 
-	if (ticks > 0) 
+	if (ticks > 0)
 	{
 		CAtCamera *camera = ONgGameState->local.camera;
 		CAtAnimateData *modeData = &camera->modeData.animate;
@@ -513,7 +513,7 @@ static void CArUpdate_Internal(UUtUns32 ticks, UUtUns32 numActions, const LItAct
 	/**********
 	* Performs camera maintenance for a frame
 	*/
-	
+
 	CAtCamera *camera = ONgGameState->local.camera;
 	UUtBool activate = UUcFalse;
 
@@ -544,12 +544,12 @@ static void CArUpdate_Internal(UUtUns32 ticks, UUtUns32 numActions, const LItAct
 		default:
 			UUmAssert(!"blam");
 	}
-	
+
 	// 11) notify the geometry context
 	if (activate) {
 		CAiActivateCamera(camera);
 	}
-	
+
 	return;
 }
 
@@ -584,7 +584,7 @@ void CArOrbit_Enter(float inSpeed, float inStopAngle)
 
 	camera->mode = CAcMode_Orbit;
 	camera->is_busy = UUcFalse;
-	
+
 	return;
 }
 
@@ -605,7 +605,7 @@ static M3tPoint3D CArFollow_Get_GoalPosition(CAtCamera *inCamera)
 
 	if (active_character == NULL) {
 		MUmVector_Set(goal_position, 0, 0, 0);
-	} 
+	}
 	else {
 		M3tVector3D camera_vector = active_character->cameraVector;
 
@@ -737,7 +737,7 @@ static UUtBool CArFollow_Update(UUtUns32 ticks, UUtUns32 inNumActions, const LIt
 						desired_canter *= 1.f + percent_to_double_canter;
 					}
 				}
-				
+
 				if (canter < desired_canter) {
 					canter = UUmMin(desired_canter, canter + canter_delta * ticks);
 				}
@@ -809,9 +809,9 @@ void CArFollow_Enter(void)
 		CArFollow_Set(&goal_position, &goal_focus);
 	}
 
-	
+
 	camera->is_busy = UUcFalse;
-	
+
 
 	return;
 }
@@ -848,7 +848,7 @@ void CArManual_Enter(void)
 
 	camera->mode = CAcMode_Manual;
 	camera->is_busy = UUcFalse;
-	
+
 	return;
 }
 
@@ -856,14 +856,14 @@ void CArManual_LookAt(M3tPoint3D *inLocation, float	inDistance)
 {
 	CAtCamera			*camera = ONgGameState->local.camera;
 	M3tVector3D			vector;
-	
+
 	if (camera->mode != CAcMode_Manual) { return; }
-	
+
 	vector = camera->viewData.viewVector;
 	MUmVector_Negate(vector);
 	MUmVector_Scale(vector, inDistance);
 	MUmVector_Increment(vector, *inLocation);
-	
+
 	camera->viewData.location = vector;
 	camera->viewData.upVector = CArBuildUpVector(&camera->viewData.viewVector);
 
@@ -874,7 +874,7 @@ static UUtBool CArManual_Update(UUtUns32 inTicks, UUtUns32 inNumActions, const L
 {
 	UUtBool activate = UUcFalse;
 
-	if (inNumActions > 0) 
+	if (inNumActions > 0)
 	{
 		CAtCamera *camera = ONgGameState->local.camera;
 		CAtManualData *manualData = &camera->modeData.manual;
@@ -914,26 +914,26 @@ static UUtBool CArManual_Update(UUtUns32 inTicks, UUtUns32 inNumActions, const L
 
 			camera->viewData.location.x += sideVector.x * stepLR;
 			camera->viewData.location.x += camera->viewData.viewVector.x * moveFB;
-				
+
 			camera->viewData.location.y += action->analogValues[LIc_ManCam_Move_UD];
 
 			if (manualData->useMouseLook)
 			{
 				camera->viewData.location.y += camera->viewData.viewVector.y * moveFB;
 			}
-				
-			camera->viewData.location.z += sideVector.z * (stepLR);		
+
+			camera->viewData.location.z += sideVector.z * (stepLR);
 			camera->viewData.location.z += camera->viewData.viewVector.z * (moveFB);
-			
+
 			UUmTrig_ClipLow(panUD);
 			UUmTrig_ClipLow(panLR);
-			
+
 			MUrPoint_RotateAboutAxis(
 				&camera->viewData.viewVector,
 				&camera->viewData.upVector,
 				panLR,
 				&camera->viewData.viewVector);
-				
+
 			MUrPoint_RotateAboutAxis(
 				&camera->viewData.viewVector,
 				&sideVector,
@@ -941,7 +941,7 @@ static UUtBool CArManual_Update(UUtUns32 inTicks, UUtUns32 inNumActions, const L
 				&camera->viewData.viewVector);
 
 			MUmVector_Normalize(camera->viewData.viewVector);
-			
+
 			camera->viewData.upVector = CArBuildUpVector(&camera->viewData.viewVector);
 		}
 
@@ -971,7 +971,7 @@ void CArInterpolate_Enter_Matrix(const M3tMatrix4x3 *inMatrix, UUtUns32 inNumFra
 	interpolateData->endFrame = inNumFrames;
 
 	camera->is_busy = UUcTrue;
-	
+
 	return;
 }
 
@@ -990,7 +990,7 @@ void CArInterpolate_Enter_ViewData(CAtViewData *inViewData, UUtUns32 inNumFrames
 	interpolateData->endFrame = inNumFrames;
 
 	camera->is_busy = UUcTrue;
-	
+
 	return;
 }
 
@@ -1065,6 +1065,6 @@ static void CArMatrix_To_ViewData(const M3tMatrix4x3 *inMatrix, CAtViewData *out
 UUtBool CArIsBusy(void)
 {
 	CAtCamera *camera = ONgGameState->local.camera;
-	
+
 	return camera->is_busy;
 }

@@ -19,7 +19,7 @@ typedef struct OBJtPowerUpTypeNames
 	WPtPowerupType			type;
 	UUtUns32				type_chars;
 	char					*type_name;
-	
+
 } OBJtPowerUpTypeNames;
 
 // ======================================================================
@@ -46,7 +46,7 @@ static UUtError
 OBJiPowerUp_SetOSD(
 	OBJtObject				*inObject,
 	const OBJtOSD_All		*inOSD);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
@@ -56,7 +56,7 @@ OBJiPowerUp_Delete(
 	OBJtObject				*inObject)
 {
 	OBJtOSD_PowerUp			*powerup_osd;
-	
+
 	// get a pointer to the object osd
 	powerup_osd = (OBJtOSD_PowerUp*)inObject->object_data;
 }
@@ -77,7 +77,7 @@ OBJiPowerUp_Draw(
 	M3rMatrixStack_ApplyTranslate(inObject->position);
 	M3rMatrixStack_RotateZAxis(M3cHalfPi);
 	M3rGeom_State_Commit();
-	
+
 	if ((powerup_osd->powerup) && (powerup_osd->powerup->geometry))
 	{
 		M3rMinMaxBBox_To_BBox(&powerup_osd->powerup->geometry->pointArray->minmax_boundingBox, &bBox);
@@ -89,7 +89,7 @@ OBJiPowerUp_Draw(
 		M3rMinMaxBBox_To_BBox(&min_max, &bBox);
 		M3rBBox_Draw_Line(&bBox, IMcShade_White);
 	}
-	
+
 #if TOOL_VERSION
 	// draw the bounding box if this is the selected object
 	if ((inDrawFlags & OBJcDrawFlag_Selected) != 0)
@@ -100,7 +100,7 @@ OBJiPowerUp_Draw(
 		OBJrObjectUtil_DrawRotationRings(inObject, &sphere, inDrawFlags);
 	}
 #endif
-	
+
 	M3rMatrixStack_Pop();
 }
 
@@ -112,12 +112,12 @@ OBJiPowerUp_Enumerate(
 	UUtUns32						inUserData)
 {
 	OBJtPowerUpTypeNames			*type_name;
-	
+
 	for (type_name = OBJgPowerUpTypeNames; type_name->type_name != NULL; type_name++)
 	{
 		inEnumCallback(type_name->type_name, inUserData);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -128,7 +128,7 @@ OBJiPowerUp_GetBoundingSphere(
 	M3tBoundingSphere		*outBoundingSphere)
 {
 	OBJtOSD_PowerUp			*powerup_osd;
-	
+
 	powerup_osd = (OBJtOSD_PowerUp*)inObject->object_data;
 	if ((powerup_osd->powerup != NULL) && (powerup_osd->powerup->geometry != NULL))
 	{
@@ -150,13 +150,13 @@ OBJiPowerUp_OSDGetName(
 {
 	// return the name of the powerup type
 	OBJtPowerUpTypeNames	*type_name;
-	
+
 	outName[0] = '\0';
-	
+
 	for (type_name = OBJgPowerUpTypeNames; type_name->type_name != NULL; type_name++)
 	{
 		if (type_name->type != inOSD->osd.powerup_osd.powerup_type) { continue; }
-		
+
 		UUrString_Copy(outName, type_name->type_name, inNameLength);
 		break;
 	}
@@ -179,7 +179,7 @@ OBJiPowerUp_GetOSD(
 	OBJtOSD_PowerUp			*powerup_osd;
 
 	powerup_osd = (OBJtOSD_PowerUp*)inObject->object_data;
-	
+
 	outOSD->osd.powerup_osd = *powerup_osd;
 }
 
@@ -190,13 +190,13 @@ OBJiPowerUp_GetOSDWriteSize(
 {
 	UUtUns32				size;
 	OBJtOSD_PowerUp			*powerup_osd;
-	
+
 	powerup_osd = (OBJtOSD_PowerUp*)inObject->object_data;
 
 	// save the powerup type
 	size =
 		(sizeof(UUtUns8) * 4);				/* powerup type */
-	
+
 	return size;
 }
 
@@ -208,16 +208,16 @@ OBJiPowerUp_IntersectsLine(
 	const M3tPoint3D		*inEndPoint)
 {
 	M3tBoundingSphere		sphere;
-	
+
 	UUrMemory_Clear(&sphere, sizeof(M3tBoundingSphere));
-	
+
 	// get the bounding sphere
 	OBJrObject_GetBoundingSphere(inObject, &sphere);
-	
+
 	sphere.center.x += inObject->position.x;
 	sphere.center.y += inObject->position.y;
 	sphere.center.z += inObject->position.z;
-	
+
 	// do the fast test to see if the line is colliding with the bounding sphere
 	return CLrSphere_Line(inStartPoint, inEndPoint, &sphere);
 }
@@ -229,10 +229,10 @@ OBJiPowerUp_SetDefaults(
 {
 	// clear the osd
 	UUrMemory_Clear(&outOSD->osd.powerup_osd, sizeof(OBJtOSD_PowerUp));
-	
+
 	outOSD->osd.powerup_osd.powerup_type = WPcPowerup_AmmoBallistic;
 	outOSD->osd.powerup_osd.powerup = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -249,15 +249,15 @@ OBJiPowerUp_New(
 	{
 		error = OBJiPowerUp_SetDefaults(&osd_all);
 		UUmError_ReturnOnError(error);
-				
+
 		// send osd_all to OBJiPowerUp_SetOSD()
 		inOSD = &osd_all;
 	}
-	
+
 	// set the object specific data and position
 	OBJiPowerUp_SetOSD(inObject, inOSD);
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return UUcError_None;
 }
 
@@ -274,26 +274,26 @@ OBJiPowerUp_Read(
 	UUtUns8					chars[4];
 	UUtUns32				i;
 	UUtUns32				type;
-	
+
 	powerup_osd = (OBJtOSD_PowerUp*)inObject->object_data;
-	
+
 	read_bytes = 0;
-	
+
 	// read the powerup type
 	read_bytes += BDmGet4CharsFromBuffer(inBuffer, chars[0], chars[1], chars[2], chars[3]);
 	type = UUm4CharToUns32(chars[0], chars[1], chars[2], chars[3]);
-		
+
 	for (i = 0; i < WPcPowerup_NumTypes; i++)
 	{
 		if (type != OBJgPowerUpTypeNames[i].type_chars) { continue; }
-		
+
 		powerup_osd->powerup_type = OBJgPowerUpTypeNames[i].type;
 	}
-		
+
 	// set the osd and update the position
 	OBJiPowerUp_SetOSD(inObject, (OBJtOSD_All*)inObject->object_data);
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return read_bytes;
 }
 
@@ -304,12 +304,12 @@ OBJiPowerUp_SetOSD(
 	const OBJtOSD_All		*inOSD)
 {
 	OBJtOSD_PowerUp			*powerup_osd;
-	
+
 	powerup_osd = (OBJtOSD_PowerUp*)inObject->object_data;
-	
+
 	powerup_osd->powerup_type = inOSD->osd.powerup_osd.powerup_type;
 	powerup_osd->powerup = inOSD->osd.powerup_osd.powerup;
-	
+
 	return UUcError_None;
 }
 
@@ -346,27 +346,27 @@ OBJiPowerUp_Write(
 	OBJtOSD_PowerUp			*powerup_osd;
 	UUtUns32				bytes_available;
 	OBJtPowerUpTypeNames	*type_name;
-	
+
 	powerup_osd = (OBJtOSD_PowerUp*)inObject->object_data;
-	
+
 	// set the number of bytes available
 	bytes_available = *ioBufferSize;
-	
+
 	for (type_name = OBJgPowerUpTypeNames; type_name->type_name != NULL; type_name++)
 	{
 		char					chars[4];
-		
+
 		if (type_name->type != powerup_osd->powerup_type) { continue; }
-		
+
 		chars[0] = (UUtUns8)(type_name->type_chars >> 24);
 		chars[1] = (UUtUns8)(type_name->type_chars >> 16);
 		chars[2] = (UUtUns8)(type_name->type_chars >> 8);
 		chars[3] = (UUtUns8)(type_name->type_chars);
-		
+
 		BDmWrite4CharsToBuffer(ioBuffer, chars[0], chars[1], chars[2], chars[3], bytes_available);
 		break;
 	}
-	
+
 	// set ioBufferSize to the number of bytes written to the buffer
 	*ioBufferSize = *ioBufferSize - bytes_available;
 
@@ -416,10 +416,10 @@ OBJrPowerUp_Initialize(
 {
 	UUtError				error;
 	OBJtMethods				methods;
-	
+
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew				= OBJiPowerUp_New;
 	methods.rSetDefaults		= OBJiPowerUp_SetDefaults;
@@ -439,7 +439,7 @@ OBJrPowerUp_Initialize(
 	methods.rGetClassVisible	= OBJiPowerUp_GetVisible;
 	methods.rSearch				= OBJiPowerUp_Search;
 	methods.rSetClassVisible	= OBJiPowerUp_SetVisible;
-	
+
 	// register the furniture methods
 	error =
 		OBJrObjectGroup_Register(
@@ -450,7 +450,7 @@ OBJrPowerUp_Initialize(
 			&methods,
 			OBJcObjectGroupFlag_None);
 	UUmError_ReturnOnError(error);
-		
+
 	return UUcError_None;
 }
 
@@ -461,12 +461,12 @@ OBJrPowerUp_NameToType(
 {
 	OBJtPowerUpTypeNames	*type_name;
 	WPtPowerupType			type;
-	
-	type = WPcPowerup_None;	
+
+	type = WPcPowerup_None;
 	for (type_name = OBJgPowerUpTypeNames; type_name->type_name != NULL; type_name++)
 	{
 		UUtInt32			result;
-		
+
 		result = UUrString_Compare_NoCase(inPowerUpName, type_name->type_name);
 		if (result == 0)
 		{
@@ -474,7 +474,7 @@ OBJrPowerUp_NameToType(
 			break;
 		}
 	}
-	
+
 	return type;
 }
 

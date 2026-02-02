@@ -1,12 +1,12 @@
 /*
 	FILE:	RV_DC_Method_SmallQuad.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 18, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -23,7 +23,7 @@
 
 // eventually fill these in
 
-void 
+void
 RVrDrawContext_Method_SmallQuadGouraudInterpolate(
 	UUtUns32		inIndices)
 {
@@ -34,7 +34,7 @@ RVrDrawContext_Method_SmallQuadGouraudInterpolate(
 		(UUtUns16) (inIndices >>  0) & 0xff);
 }
 
-void 
+void
 RVrDrawContext_Method_SmallQuadGouraudFlat(
 	UUtUns32		inIndices)
 {
@@ -45,7 +45,7 @@ RVrDrawContext_Method_SmallQuadGouraudFlat(
 		(UUtUns16) (inIndices >>  0) & 0xff);
 }
 
-void 
+void
 RVrDrawContext_Method_SmallQuadTextureInterpolate(
 	UUtUns32		inIndices)
 {
@@ -67,7 +67,7 @@ RVrDrawContext_Method_SmallQuadTextureFlat(
 		(UUtUns16) (inIndices >>  0) & 0xff);
 }
 
-void 
+void
 RVrDrawContext_Method_SmallQuadLineFlat(
 	UUtUns32		inIndices)
 {

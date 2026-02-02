@@ -1,12 +1,12 @@
 /*
 	FILE:	GL_DrawEngine_Method.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: August 10, 1999
-	
+
 	PURPOSE: OpenGL Draw Engine
-	
+
 	Copyright 1999
 
 */

@@ -275,7 +275,7 @@ static unsigned int get_feature_flags(
 
          xor     eax, eax                      ; CPUID function #0
          cpuid                                 ; largest std func/vendor string
-         mov     dword ptr [vendor], ebx       ; save 
+         mov     dword ptr [vendor], ebx       ; save
          mov     dword ptr [vendor+4], edx     ;  vendor
          mov     dword ptr [vendor+8], ecx     ;   string
          test    eax, eax                      ; largest standard function==0?
@@ -286,7 +286,7 @@ static unsigned int get_feature_flags(
          ;; Step 3: Get standard feature flags and signature
          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-         mov     eax, 1                        ; CPUID function #1 
+         mov     eax, 1                        ; CPUID function #1
          cpuid                                 ; get signature/std feature flgs
          mov     [signature], eax              ; save processor signature
 
@@ -308,7 +308,7 @@ static unsigned int get_feature_flags(
          mov     ecx, CPUID_STD_MMX            ; bit 23 indicates MMX support
          and     ecx, edx                      ; supports MMX ? CPUID_STD_MMX:0
          neg     ecx                           ; supports MMX ? CY : NC
-         sbb     ecx, ecx                      ; supports MMX ? 0xffffffff:0  
+         sbb     ecx, ecx                      ; supports MMX ? 0xffffffff:0
          and     ecx, FEATURE_MMX              ; supports MMX ? FEATURE_MMX:0
          or      [result], ecx                 ; merge into feature flags
 
@@ -320,7 +320,7 @@ static unsigned int get_feature_flags(
          sbb     ecx, ecx                      ; supports CMOV ? 0xffffffff:0
          and     ecx, FEATURE_CMOV             ; supports CMOV ? FEATURE_CMOV:0
          or      [result], ecx                 ; merge into feature flags
-         
+
          ;; Check support for P6-style MTRRs
 
          mov     ecx, CPUID_STD_MTRR           ; bit 12 indicates MTRR support
@@ -337,7 +337,7 @@ static unsigned int get_feature_flags(
          and     ecx, edx                      ; supports SSE ? CPUID_STD_SSE:0
          neg     ecx                           ; supports SSE ? CY : NC
          sbb     ecx, ecx                      ; supports SSE ? 0xffffffff:0
-         and     ecx, (FEATURE_MMXEXT+FEATURE_SSEFP) ; supports SSE ? 
+         and     ecx, (FEATURE_MMXEXT+FEATURE_SSEFP) ; supports SSE ?
                                                ; FEATURE_MMXEXT+FEATURE_SSEFP:0
          or      [result], ecx                 ; merge into feature flags
 
@@ -352,14 +352,14 @@ static unsigned int get_feature_flags(
          or      [result], FEATURE_EXT_FEATURES; does have ext. feature flags
 
          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-         ;; Step 6: Get extended feature flags 
+         ;; Step 6: Get extended feature flags
          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
          mov     eax, 0x80000001               ; CPUID ext. function 0x80000001
          cpuid                                 ; EDX = extended feature flags
-         
+
          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-         ;; Step 7: Extract vendor independent features from extended flags 
+         ;; Step 7: Extract vendor independent features from extended flags
          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
          ;; Check for 3DNow! support (vendor independent)
@@ -387,7 +387,7 @@ static unsigned int get_feature_flags(
          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
          mov     ecx, CPUID_EXT_AMD_3DNOWEXT   ; bit 30 indicates 3DNow! ext.
-         and     ecx, edx                      ; 3DNow! ext? 
+         and     ecx, edx                      ; 3DNow! ext?
          neg     ecx                           ; 3DNow! ext ? CY : NC
          sbb     ecx, ecx                      ; 3DNow! ext ? 0xffffffff : 0
          and     ecx, FEATURE_3DNOWEXT         ; 3DNow! ext?FEATURE_3DNOWEXT:0
@@ -396,7 +396,7 @@ static unsigned int get_feature_flags(
          test    [result], FEATURE_MMXEXT      ; determined SSE MMX support?
          jnz     $has_mmxext                   ; yes, do not need to check again
 
-         ;; Check support for AMDs multimedia instruction set additions 
+         ;; Check support for AMDs multimedia instruction set additions
 
          mov     ecx, CPUID_EXT_AMD_MMXEXT     ; bit 22 indicates MMX extension
          and     ecx, edx                      ; MMX ext?CPUID_EXT_AMD_MMXEXT:0
@@ -404,15 +404,15 @@ static unsigned int get_feature_flags(
          sbb     ecx, ecx                      ; MMX ext? 0xffffffff : 0
          and     ecx, FEATURE_MMXEXT           ; MMX ext ? FEATURE_MMXEXT:0
          or      [result], ecx                 ; merge into feature flags
-        
+
       $has_mmxext:
 
          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
          ;; Step 10: Check AMD-specific features not reported by CPUID
          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-         ;; Check support for AMD-K6 processor-style MTRRs          
-       
+         ;; Check support for AMD-K6 processor-style MTRRs
+
          mov     eax, [signature] 	; get processor signature
          and     eax, 0xFFF 		; extract family/model/stepping
          cmp     eax, 0x588 		; CPU < AMD-K6-2/CXT ? CY : NC
@@ -420,9 +420,9 @@ static unsigned int get_feature_flags(
          not     edx 			; CPU < AMD-K6-2/CXT ? 0:0xffffffff
          cmp     eax, 0x600 		; CPU < AMD Athlon ? CY : NC
          sbb     ecx, ecx 		; CPU < AMD-K6 ? 0xffffffff:0
-         and     ecx, edx 		; (CPU>=AMD-K6-2/CXT)&& 
+         and     ecx, edx 		; (CPU>=AMD-K6-2/CXT)&&
 					; (CPU<AMD Athlon) ? 0xffffffff:0
-         and     ecx, FEATURE_K6_MTRR 	; (CPU>=AMD-K6-2/CXT)&& 
+         and     ecx, FEATURE_K6_MTRR 	; (CPU>=AMD-K6-2/CXT)&&
 					; (CPU<AMD Athlon) ? FEATURE_K6_MTRR:0
          or      [result], ecx 		; merge into feature flags
 
@@ -441,22 +441,22 @@ static unsigned int get_feature_flags(
       requires support from the operating system. So even if CPUID indicates
       support for SSE FP, the application might not be able to use it. If
       CPUID indicates support for SSE FP, check here whether it is also
-      supported by the OS, and turn off the SSE FP feature bit if there 
+      supported by the OS, and turn off the SSE FP feature bit if there
       is no OS support for SSE FP.
-  
+
       Operating systems that do not support SSE FP return an illegal
-      instruction exception if execution of an SSE FP instruction is performed. 
-      Here, a sample SSE FP instruction is executed, and is checked for an 
-      exception using the (non-standard) __try/__except mechanism 
-      of Microsoft Visual C. 
+      instruction exception if execution of an SSE FP instruction is performed.
+      Here, a sample SSE FP instruction is executed, and is checked for an
+      exception using the (non-standard) __try/__except mechanism
+      of Microsoft Visual C.
    */
 
    if (result & FEATURE_SSEFP) {
        __try {
-          __asm _emit 0x0f 
-          __asm _emit 0x56 
+          __asm _emit 0x0f
+          __asm _emit 0x56
           __asm _emit 0xC0    ;; orps xmm0, xmm0
-          return (result);         
+          return (result);
        }
        __except (EXCEPTION_EXECUTE_HANDLER) {
           return (result & (~FEATURE_SSEFP));
@@ -471,7 +471,7 @@ static int supports_mmx(
 	void)
 {
 	unsigned long features= get_feature_flags();
-	
+
 	return (features & FEATURE_MMX);
 }
 
@@ -479,7 +479,7 @@ static int supports_sse(
 	void)
 {
 	unsigned long features= get_feature_flags();
-	
+
 	return (features & FEATURE_SSEFP);
 }
 
@@ -487,7 +487,7 @@ static int supports_3dnow(
 	void)
 {
 	unsigned long features= get_feature_flags();
-	
+
 	return (features & FEATURE_3DNOW);
 }
 

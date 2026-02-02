@@ -753,7 +753,7 @@ static void stdc_quat2D3DMat(
 
     // calculate coefficients
     x2= quat->v.x + quat->v.x;
-    y2= quat->v.y + quat->v.y; 
+    y2= quat->v.y + quat->v.y;
     z2= quat->v.z + quat->v.z;
 
     xx= quat->v.x * x2;   xy = quat->v.x * y2;   xz = quat->v.x * z2;
@@ -789,7 +789,7 @@ static void stdc_quat2glMat(
 
     // calculate coefficients
     x2= quat->v.x + quat->v.x;
-    y2= quat->v.y + quat->v.y; 
+    y2= quat->v.y + quat->v.y;
     z2= quat->v.z + quat->v.z;
 
     xx= quat->v.x * x2;   xy = quat->v.x * y2;   xz = quat->v.x * z2;
@@ -899,13 +899,13 @@ static void stdc_euler2quat2(
     deg= rot[0] * 0.5f * DEG2RAD;
     stdc_sincos(deg, cs);
 	qx.v.x= cs[1]; //(float)sin (deg);
-    qx.v.y= 0.0f; 
-    qx.v.z= 0.0f; 
+    qx.v.y= 0.0f;
+    qx.v.z= 0.0f;
     qx.s= cs[0]; //(float)cos (deg);
 
     deg= rot[1] * 0.5f * DEG2RAD;
     stdc_sincos(deg, cs);
-	qy.v.x= 0.0f; 
+	qy.v.x= 0.0f;
     qy.v.y= cs[1]; //(float)sin (deg);
     qy.v.z= 0.0f;
     qy.s= cs[0]; //(float)cos (deg);
@@ -1181,11 +1181,11 @@ static void stdc_inverse_3x3(
     res[0] =   a[4]*a[8] - a[5]*a[7]  * det;
     res[1] = -(a[1]*a[8] - a[7]*a[2]) * det;
     res[2] =   a[1]*a[5] - a[4]*a[2]  * det;
-      
+
     res[3] = -(a[3]*a[8] - a[5]*a[6]) * det;
     res[4] =   a[0]*a[8] - a[6]*a[2]  * det;
     res[5] = -(a[0]*a[5] - a[3]*a[2]) * det;
-      
+
     res[6] =   a[3]*a[7] - a[6]*a[4]  * det;
     res[7] = -(a[0]*a[7] - a[6]*a[1]) * det;
     res[8] =   a[0]*a[4] - a[1]*a[3]  * det;
@@ -1401,7 +1401,7 @@ static void stdc_glMul_3x3(
 	const float *b)
 {
 	int i, j;
- 
+
     for (i = 0; i < 3; i++)
     {
         const int   idx = i * 3;
@@ -1452,17 +1452,17 @@ static void stdc_D3DMul_4x4(
     r->_12 = a->_11 * b->_12 + a->_12 * b->_22 + a->_13 * b->_32 + a->_14 * b->_42;
     r->_13 = a->_11 * b->_13 + a->_12 * b->_23 + a->_13 * b->_33 + a->_14 * b->_43;
     r->_14 = a->_11 * b->_14 + a->_12 * b->_24 + a->_13 * b->_34 + a->_14 * b->_44;
-                                                                          
+
     r->_21 = a->_21 * b->_11 + a->_22 * b->_21 + a->_23 * b->_31 + a->_24 * b->_41;
     r->_22 = a->_21 * b->_12 + a->_22 * b->_22 + a->_23 * b->_32 + a->_24 * b->_42;
     r->_23 = a->_21 * b->_13 + a->_22 * b->_23 + a->_23 * b->_33 + a->_24 * b->_43;
     r->_24 = a->_21 * b->_14 + a->_22 * b->_24 + a->_23 * b->_34 + a->_24 * b->_44;
-                                                         
+
     r->_31 = a->_31 * b->_11 + a->_32 * b->_21 + a->_33 * b->_31 + a->_34 * b->_41;
     r->_32 = a->_31 * b->_12 + a->_32 * b->_22 + a->_33 * b->_32 + a->_34 * b->_42;
     r->_33 = a->_31 * b->_13 + a->_32 * b->_23 + a->_33 * b->_33 + a->_34 * b->_43;
     r->_34 = a->_31 * b->_14 + a->_32 * b->_24 + a->_33 * b->_34 + a->_34 * b->_44;
-                                                         
+
     r->_41 = a->_41 * b->_11 + a->_42 * b->_21 + a->_43 * b->_31 + a->_44 * b->_41;
     r->_42 = a->_41 * b->_12 + a->_42 * b->_22 + a->_43 * b->_32 + a->_44 * b->_42;
     r->_43 = a->_41 * b->_13 + a->_42 * b->_23 + a->_43 * b->_33 + a->_44 * b->_43;

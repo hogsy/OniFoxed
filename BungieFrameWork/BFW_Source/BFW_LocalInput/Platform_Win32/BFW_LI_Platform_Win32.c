@@ -537,7 +537,7 @@ static UUtUns8 global_keys[256]= {0};
 static char*
 LIiGetDIErrorMsg(
 	HRESULT					inError);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
@@ -547,7 +547,7 @@ LIiPlatform_Acquire(
 	void)
 {
 	HRESULT					result;
-	
+
 	// acquire the mouse
 	if (LIgMouse)
 	{
@@ -557,7 +557,7 @@ LIiPlatform_Acquire(
 			UUrError_Report(UUcError_Generic, LIiGetDIErrorMsg(result));
 		}
 	}
-	
+
 	// acquire the keyboard
 	if (LIgKeyboard)
 	{
@@ -575,7 +575,7 @@ LIiPlatform_Unacquire(
 	void)
 {
 	HRESULT					result;
-	
+
 	// unacquire the mouse
 	if (LIgMouse)
 	{
@@ -610,7 +610,7 @@ LIiPlatform_Mouse_Callback(
 {
 	HRESULT					result;
 	LPDIRECTINPUTDEVICE		temp_device;
-	
+
 	// create the device
 	result =
 		IDirectInput_CreateDevice(
@@ -623,7 +623,7 @@ LIiPlatform_Mouse_Callback(
 		UUrError_Report(UUcError_Generic, LIiGetDIErrorMsg(result));
 		return DIENUM_STOP;
 	}
-	
+
 	// set the data format
 	result = IDirectInputDevice_SetDataFormat(temp_device, &c_dfDIMouse);
 	if (result != DI_OK)
@@ -631,7 +631,7 @@ LIiPlatform_Mouse_Callback(
 		UUrError_Report(UUcError_Generic, LIiGetDIErrorMsg(result));
 		return DIENUM_STOP;
 	}
-	
+
 	// set the cooperative level
 	result =
 		IDirectInputDevice_SetCooperativeLevel(
@@ -644,10 +644,10 @@ LIiPlatform_Mouse_Callback(
 		UUrError_Report(UUcError_Generic, LIiGetDIErrorMsg(result));
 		return DIENUM_STOP;
 	}
-	
+
 	// set the device global
 	LIgMouse = temp_device;
-	
+
 	// no more
 	return DIENUM_STOP;
 }
@@ -673,20 +673,20 @@ LIiPlatform_Mouse_GetData_DirectInput(
 	DIMOUSESTATE			*outMouseData)
 {
 	HRESULT					result;
-	
+
 	// get the device state
 	result= IDirectInputDevice_GetDeviceState(LIgMouse, sizeof(DIMOUSESTATE), outMouseData);
 	if (result != DI_OK)
 	{
 		if (result == DIERR_INPUTLOST)
-		{	
+		{
 			LIiPlatform_Acquire();
 			result= IDirectInputDevice_GetDeviceState(LIgMouse, sizeof(DIMOUSESTATE), outMouseData);
 		}
 	}
 
 	CenterCursor();
-	
+
 	return (result == DI_OK);
 }
 
@@ -704,15 +704,15 @@ LIiPlatform_Mouse_GetData_Win32(
 		outMouseData->lX = cursor_pos.x - LIgCenter.x;
 		outMouseData->lY = cursor_pos.y - LIgCenter.y;
 		outMouseData->lZ = 0;
-		
+
 		// get the button data
 		outMouseData->rgbButtons[0] = GetAsyncKeyState(MK_LBUTTON) >> 8;
 		outMouseData->rgbButtons[1] = GetAsyncKeyState(MK_RBUTTON) >> 8;
 		outMouseData->rgbButtons[2] = GetAsyncKeyState(MK_MBUTTON) >> 8;
 		outMouseData->rgbButtons[3] = UUcFalse;
-		
+
 		CenterCursor();
-		
+
 		success = UUcTrue;
 	}
 	else
@@ -731,7 +731,7 @@ LIiPlatform_Mouse_GetData(
 	UUtBool					got_data;
 	DIMOUSESTATE			mouse_data;
 	LItDeviceInput			deviceInput;
-	
+
 	// get the mouse data
 	if (LIgUseDirectInput)
 	{
@@ -742,7 +742,7 @@ LIiPlatform_Mouse_GetData(
 		got_data = LIiPlatform_Mouse_GetData_Win32(&mouse_data);
 	}
 	if (got_data == UUcFalse) return;
-	
+
 	// interpret the data
 	if (mouse_data.rgbButtons[0] == 0x80)
 	{
@@ -750,28 +750,28 @@ LIiPlatform_Mouse_GetData(
 		deviceInput.analogValue = 1.0f;
 		LIrActionBuffer_Add(outAction, &deviceInput);
 	}
-	
+
 	if (mouse_data.rgbButtons[1] == 0x80)
 	{
 		deviceInput.input = LIcMouseCode_Button2;
 		deviceInput.analogValue = 1.0f;
 		LIrActionBuffer_Add(outAction, &deviceInput);
 	}
-	
+
 	if (mouse_data.rgbButtons[2] == 0x80)
 	{
 		deviceInput.input = LIcMouseCode_Button3;
 		deviceInput.analogValue = 1.0f;
 		LIrActionBuffer_Add(outAction, &deviceInput);
 	}
-	
+
 	if (mouse_data.rgbButtons[3] == 0x80)
 	{
 		deviceInput.input = LIcMouseCode_Button4;
 		deviceInput.analogValue = 1.0f;
 		LIrActionBuffer_Add(outAction, &deviceInput);
 	}
-	
+
 	deviceInput.input = LIcMouseCode_XAxis;
 	deviceInput.analogValue =
 		(float)UUmPin((mouse_data.lX << 1), UUcMinInt32, UUcMaxInt32) / 8.0f;
@@ -813,7 +813,7 @@ LIiPlatform_Keyboard_Callback(
 {
 	HRESULT					result;
 	LPDIRECTINPUTDEVICE		temp_device;
-	
+
 	// create the device
 	result =
 		IDirectInput_CreateDevice(
@@ -826,7 +826,7 @@ LIiPlatform_Keyboard_Callback(
 		UUrError_Report(UUcError_Generic, LIiGetDIErrorMsg(result));
 		return DIENUM_STOP;
 	}
-	
+
 	// set the data format
 	result = IDirectInputDevice_SetDataFormat(temp_device, &c_dfDIKeyboard);
 	if (result != DI_OK)
@@ -834,7 +834,7 @@ LIiPlatform_Keyboard_Callback(
 		UUrError_Report(UUcError_Generic, LIiGetDIErrorMsg(result));
 		return DIENUM_STOP;
 	}
-	
+
 	// set the cooperative level
 	result =
 		IDirectInputDevice_SetCooperativeLevel(
@@ -847,10 +847,10 @@ LIiPlatform_Keyboard_Callback(
 		UUrError_Report(UUcError_Generic, LIiGetDIErrorMsg(result));
 		return DIENUM_STOP;
 	}
-	
+
 	// set the device global
 	LIgKeyboard = temp_device;
-	
+
 	// no more
 	return DIENUM_STOP;
 }
@@ -865,13 +865,13 @@ LIiPlatform_Keyboard_GetData_DirectInput(
 	char					*keys)
 {
 	HRESULT					result;
-	
+
 	// set the device state
 	result= IDirectInputDevice_GetDeviceState(LIgKeyboard, 256, keys);
 	if (result != DI_OK)
 	{
 		if (result == DIERR_INPUTLOST)
-		{	
+		{
 			LIiPlatform_Acquire();
 			result= IDirectInputDevice_GetDeviceState(LIgKeyboard, 256, keys);
 		}
@@ -880,7 +880,7 @@ LIiPlatform_Keyboard_GetData_DirectInput(
 			LIiGetDIErrorMsg(result);
 		}
 	}
-	
+
 	return (result == DI_OK);
 }
 
@@ -890,14 +890,14 @@ LIiPlatform_Keyboard_GetData_Win32(
 	char					*keys)
 {
 	UUtUns16				i;
-	
+
 	for (i = 0; i < 256; i++)
 	{
-		if (LIgVKKeyboardTranslation[i] != LIcKeyCode_None) 
+		if (LIgVKKeyboardTranslation[i] != LIcKeyCode_None)
 		{
 			keys[i] = GetAsyncKeyState(i) >> 8;
 		}
-		else 
+		else
 		{
 			keys[i] = 0;
 		}
@@ -915,7 +915,7 @@ LIiPlatform_Keyboard_GetData(
 	char					keys[256];
 	UUtUns16				i;
 	const UUtUns8					*translation;
-	
+
 	// get the data
 	if (LIgUseDirectInput)
 	{
@@ -928,18 +928,18 @@ LIiPlatform_Keyboard_GetData(
 		translation = LIgVKKeyboardTranslation;
 	}
 	if (got_data == UUcFalse) return;
-	
+
 	// interpret the data
 	for (i = 0; i < 256; i++)
 	{
 		if (keys[i] & 0x80)
 		{
 			LItDeviceInput			deviceInput;
-			
+
 			deviceInput.input = translation[i];
 			deviceInput.analogValue = 1.0f;
-			
-			if (deviceInput.input != LIcKeyCode_None) 
+
+			if (deviceInput.input != LIcKeyCode_None)
 			{
 				LIrActionBuffer_Add(outAction, &deviceInput);
 			}
@@ -962,7 +962,7 @@ LIiPlatform_Devices_Initialize(
 	void)
 {
 	HRESULT					result;
-	
+
 	// enumerate the mouse
 	result =
 		IDirectInput_EnumDevices(
@@ -975,7 +975,7 @@ LIiPlatform_Devices_Initialize(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic,	LIiGetDIErrorMsg(result));
 	}
-	
+
 	// enumerate the keyboard
 	result =
 		IDirectInput_EnumDevices(
@@ -988,7 +988,7 @@ LIiPlatform_Devices_Initialize(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic,	LIiGetDIErrorMsg(result));
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1006,7 +1006,7 @@ LIiPlatform_Devices_GetData(
 	{
 		LIiPlatform_Mouse_GetData(outAction);
 	}
-	
+
 	// get the keyboard data
 	LIiPlatform_Keyboard_GetData(outAction);
 }
@@ -1025,7 +1025,7 @@ LIiPlatform_Devices_Terminate(
 	{
 		IDirectInputDevice_Release(LIgMouse);
 	}
-	
+
 	// release the keyboard
 	if (LIgKeyboard)
 	{
@@ -1045,9 +1045,9 @@ LIrPlatform_InputEvent_InterpretModifiers(
 	UUtUns32			inModifiers)
 {
 	UUtUns32			outModifiers;
-	
+
 	outModifiers = 0;
-	
+
 	switch (inEventType)
 	{
 		case LIcInputEvent_MouseMove:
@@ -1066,7 +1066,7 @@ LIrPlatform_InputEvent_InterpretModifiers(
 			if (inModifiers & MK_LBUTTON)
 				outModifiers |= LIcMouseState_LButtonDown;
 		break;
-		
+
 		case LIcInputEvent_KeyUp:
 		case LIcInputEvent_KeyDown:
 		case LIcInputEvent_KeyRepeat:
@@ -1078,8 +1078,8 @@ LIrPlatform_InputEvent_InterpretModifiers(
 				outModifiers |= LIcKeyState_AltDown;
 		break;
 	}
-	
-	
+
+
 	return outModifiers;
 }
 
@@ -1100,7 +1100,7 @@ LIrPlatform_InputEvent_GetMouse(
 	{
 		BOOL				status;
 		POINT				mouse_position;
-		
+
 		// get the current position of the cursor
 		status = GetCursorPos(&mouse_position);
 		if (status)
@@ -1136,7 +1136,7 @@ LIrPlatform_Mode_Set(
 
 		{
 			RECT				window_rect;
-		
+
 			// set the cursor center position based on the rect of the window being used
 			if (GetWindowRect(LIgWindow, &window_rect))
 			{
@@ -1166,10 +1166,10 @@ LIrPlatform_Initialize(
 	UUtError			error;
 	HRESULT				result;
 	OSVERSIONINFO		info;
-	
+
 	UUmAssert(inInstance);
 	UUmAssert(inWindow);
-	
+
 	// ------------------------------
 	// initialize the globals
 	// ------------------------------
@@ -1179,7 +1179,7 @@ LIrPlatform_Initialize(
 	LIgCenter.y					= 0;
 	LIgWindow					= inWindow;
 	LIgSetCursorPosThisFrame	= UUcFalse;
-	
+
 	// find out which OS the game is running under
 	info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 	if (GetVersionEx(&info))
@@ -1209,7 +1209,7 @@ LIrPlatform_Initialize(
 				UUcError_Generic,
 				"DirectInputCreate failed.");
 		}
-		
+
 		// initialize the devices
 		error = LIiPlatform_Devices_Initialize();
 		UUmError_ReturnOnError(error);
@@ -1221,7 +1221,7 @@ LIrPlatform_Initialize(
 
 #if THE_DAY_IS_MINE
 	error =	SLrGlobalVariable_Register_Bool("li_center_cursor", "Should we center the cursor", &LIgSetCursorPosEver);
-	UUmError_ReturnOnErrorMsg(error, "Unable to create a new console variable.");	
+	UUmError_ReturnOnErrorMsg(error, "Unable to create a new console variable.");
 #endif
 
 	//
@@ -1239,7 +1239,7 @@ LIrPlatform_Initialize(
 			LIgDIKeyboardTranslation_Reverse[LIgDIKeyboardTranslation[i]]= (UUtUns8)i;
 		}
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -1253,12 +1253,12 @@ LIrPlatform_PollInputForAction(
 	LItAction				*outAction)
 {
 	UUtUns16				i;
-	
+
 	// clear the action
 	outAction->buttonBits = 0;
 	for (i = 0; i < LIcNumAnalogValues; i++)
 		outAction->analogValues[i] = 0.0f;
-	
+
 	// get the action data
 	LIiPlatform_Devices_GetData(outAction);
 }
@@ -1274,10 +1274,10 @@ LIrPlatform_Terminate(
 {
 	// unacquire the devices
 	LIiPlatform_Unacquire();
-	
+
 	// terminate the devices
 	LIiPlatform_Devices_Terminate();
-	
+
 	// stop Direct Input
 	if (LIgDirectInput)
 	{
@@ -1293,7 +1293,7 @@ LIrPlatform_Update(
 {
 	BOOL					was_event;
 	UUtUns16				itr = LIcPlatform_MaxRetries;
-	
+
 	// check the windows message queue LIcPlatform_MaxRetries times
 	do
 	{
@@ -1315,7 +1315,7 @@ LIrPlatform_Update(
 		}
 	}
 	while (--itr);
-	
+
 	return was_event;
 }
 

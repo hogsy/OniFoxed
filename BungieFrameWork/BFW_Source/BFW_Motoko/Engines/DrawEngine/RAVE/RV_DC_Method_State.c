@@ -1,12 +1,12 @@
 /*
 	FILE:	RV_DC_Method_State.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -38,7 +38,7 @@ UUtInt32
 RVrDrawContext_Method_State_GetInt(
 	M3tDrawStateIntType		inDrawStateType)
 {
-	
+
 	return 0;
 }
 
@@ -54,7 +54,7 @@ void*
 RVrDrawContext_Method_State_GetPtr(
 	M3tDrawStatePtrType		inDrawStateType)
 {
-	
+
 	return NULL;
 }
 
@@ -62,7 +62,7 @@ UUtError
 RVrDrawContext_Method_State_Push(
 	void)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -78,7 +78,7 @@ UUtError
 RVrDrawContext_Method_State_Commit(
 	void)
 {
-	
+
 	return UUcError_None;
 }
 

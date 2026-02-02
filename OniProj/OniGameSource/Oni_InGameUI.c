@@ -20,7 +20,7 @@
 #include "Oni_InGameUI.h"
 #include "Oni_Sound2.h"
 #include "Oni_Persistance.h"
- 
+
 
 // ======================================================================
 // defines
@@ -229,7 +229,7 @@ typedef struct ONtInGameUI_Arc
 	M3tTextureCoord				*outer_UVs;
 	M3tTextureCoord				*inner_UVs;
 	M3tTextureMap				*texture;
-	
+
 } ONtInGameUI_Arc;
 
 typedef struct tStartEnd
@@ -244,27 +244,27 @@ typedef struct ONtPauseScreenData
 	UUtUns32					highlighted_sections;
 	UUtUns32					start_time;
 	UUtInt16					current_level;
-	
+
 	ONtObjectivePage			*objective;
 	UUtInt16					objective_number;
 	UUtInt16					objective_page_num;
-	
+
 	ONtDiaryPage				*diary[ONcIGU_MaxDiaryPages];
 	UUtInt16					num_diary_pages;
 	UUtInt16					diary_page_num;
-	
+
 	ONtItemPage					*items[ONcIGU_MaxItems];
 	UUtInt16					num_items;
 	UUtInt16					item_page_num;
-	
+
 	ONtWeaponPage				*weapons[ONcIGU_MaxWeapons];
 	UUtInt16					num_weapon_pages;
 	UUtInt16					weapon_page_num;
-	
+
 	ONtHelpPage					*help[ONcIGU_MaxHelpPages];
 	UUtInt16					num_help_pages;
 	UUtInt16					help_page_num;
-	
+
 } ONtPauseScreenData;
 
 typedef struct ONtInGameUI_Meter
@@ -277,14 +277,14 @@ typedef struct ONtInGameUI_Meter
 	M3tPointScreen				*draw_secondary_points;
 	M3tTextureCoord				*draw_primary_UVs;
 	M3tTextureCoord				*draw_secondary_UVs;
-	
+
 } ONtInGameUI_Meter;
 
 typedef struct ONtTextConsoleData
 {
 	ONtTextConsole				*text_console;
 	UUtInt32					page;
-	
+
 } ONtTextConsoleData;
 
 typedef struct ONtIGUIElementDescriptionEntry
@@ -544,8 +544,8 @@ ONiInGameUI_FlashElement(
 	SLtParameter_Actual		*ioReturnValue);
 
 
-// void 
-static UUtBool ONrGameState_EventSound_InCutscene(void) 
+// void
+static UUtBool ONrGameState_EventSound_InCutscene(void)
 {
 	UUtBool result = ONgGameState->local.in_cutscene;
 
@@ -568,7 +568,7 @@ ONiInGameUI_DrawArc(
 	M3tPointScreen				dest[3];
 	M3tTextureCoord				uv[3];
 	UUtUns32					i;
-	
+
 	// set the shade, alpha and texture
 	M3rDraw_State_Push();
 	M3rDraw_State_SetInt(M3cDrawStateIntType_Alpha, inAlpha);
@@ -578,7 +578,7 @@ ONiInGameUI_DrawArc(
 	}
 	M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, ioArc->texture);
 	M3rDraw_State_Commit();
-	
+
 	// draw the arc
 	for (i = 0; i < inNumSegmentsToDraw; i++)
 	{
@@ -613,36 +613,36 @@ ONiInGameUI_CalcArc(
 	float						uv_inner_radius;
 
 	radians_per_segment = (inEnd - inStart) / ioArc->num_segments;
-	
+
 	uv_outer_radius = ioArc->outer_radius / (float)(ioArc->texture->width >> 1);
 	uv_inner_radius = ioArc->inner_radius / (float)(ioArc->texture->width >> 1);
-	
+
 	// calculate the arc points
 	for (i = 0; i < ioArc->num_points; i++)
 	{
 		float		theta;
 		float		cos_theta;
 		float		sin_theta;
-		
+
 		theta = (inStart + (i * radians_per_segment));
 		while (theta < 0.0f) { theta += M3c2Pi; }
 		while (theta > M3c2Pi) { theta -= M3c2Pi; }
 		cos_theta = MUrCos(theta);
 		sin_theta = MUrSin(theta);
-		
+
 		ioArc->outer_points[i].x = (cos_theta * ioArc->outer_radius) + ioArc->center.x;
 		ioArc->outer_points[i].y = (sin_theta * ioArc->outer_radius) + ioArc->center.y;
 		ioArc->outer_points[i].z = 0.5f;
 		ioArc->outer_points[i].invW = 2.0f;
-		
+
 		ioArc->inner_points[i].x = (cos_theta * ioArc->inner_radius) + ioArc->center.x;
 		ioArc->inner_points[i].y = (sin_theta * ioArc->inner_radius) + ioArc->center.y;
 		ioArc->inner_points[i].z = 0.5f;
 		ioArc->inner_points[i].invW = 2.0f;
-		
+
 		ioArc->outer_UVs[i].u = (cos_theta * 0.5f) * uv_outer_radius + 0.5f;
 		ioArc->outer_UVs[i].v = (sin_theta * 0.5f) * uv_outer_radius + 0.5f;
-		
+
 		ioArc->inner_UVs[i].u = (cos_theta * 0.5f) * uv_inner_radius + 0.5f;
 		ioArc->inner_UVs[i].v = (sin_theta * 0.5f) * uv_inner_radius + 0.5f;
 	}
@@ -662,13 +662,13 @@ ONiInGameUI_MakeArc(
 {
 	UUtUns32					num_points;
 	ONtInGameUI_Arc				*arc;
-	
+
 	UUmAssert(inCenter);
 	UUmAssert(inTextureMap);
 	UUmAssert(outArc);
-	
+
 	num_points = inNumSegments + 1;
-	
+
 	// allocate memory for the arc
 	arc =
 		UUrMemory_Block_NewClear(
@@ -676,7 +676,7 @@ ONiInGameUI_MakeArc(
 			((sizeof(M3tPointScreen) * num_points) * 2) +
 			((sizeof(M3tTextureCoord) * num_points) * 2));
 	UUmError_ReturnOnNull(arc);
-	
+
 	// set up the vars
 	arc->outer_radius = inOuterRadius;
 	arc->inner_radius = inInnerRadius;
@@ -688,9 +688,9 @@ ONiInGameUI_MakeArc(
 	arc->inner_points = (arc->outer_points + num_points);
 	arc->outer_UVs = (M3tTextureCoord*)(arc->inner_points + num_points);
 	arc->inner_UVs = (arc->outer_UVs + num_points);
-	
+
 	ONiInGameUI_CalcArc(inStart, inEnd, arc);
-	
+
 	*outArc = arc;
 	return UUcError_None;
 }
@@ -703,14 +703,14 @@ ONiInGameUI_SetArcTexture(
 {
 	UUmAssert(inArc);
 	UUmAssert(inTextureMap);
-	
+
 	// the texture must be the same size as the previous texture
 	UUmAssert((inTextureMap->width == inArc->texture->width) &&
 				(inTextureMap->width == inArc->texture->width));
-	
+
 	inArc->texture = inTextureMap;
 }
-	
+
 // ----------------------------------------------------------------------
 static void
 ONiInGameUI_DrawMeter(
@@ -719,12 +719,12 @@ ONiInGameUI_DrawMeter(
 {
 	M3tPointScreen				dest[3];
 	M3tTextureCoord				uv[3];
-	
+
 	// set the shade and texture
 	M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor, inShade);
 	M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, inMeter->texture);
 	M3rDraw_State_Commit();
-	
+
 	dest[0] = inMeter->draw_primary_points[3];
 	dest[1] = inMeter->draw_primary_points[0];
 	dest[2] = inMeter->draw_primary_points[1];
@@ -763,27 +763,27 @@ ONiInGameUI_CalcMeter(
 	UUtBool						is_vertical;
 	float						h_diff;
 	float						v_diff;
-	
+
 	h_diff = inMeter->original_primary_points[1].x - inMeter->original_primary_points[0].x;
 	v_diff = inMeter->original_primary_points[3].y - inMeter->original_primary_points[0].y;
-	
+
 	is_vertical = (fabs(v_diff) > fabs(h_diff)) ? UUcTrue : UUcFalse;
-	
+
 	if (is_vertical)
 	{
 		float					sec_v_diff;
-		
+
 		// copy [0], and [1]
 		inMeter->draw_primary_points[0] = inMeter->original_primary_points[0];
 		inMeter->draw_primary_points[1] = inMeter->original_primary_points[1];
-		
+
 		// calc [3], and [2]
 		inMeter->draw_primary_points[3].x = inMeter->draw_primary_points[0].x;
 		inMeter->draw_primary_points[3].y = inMeter->draw_primary_points[0].y + (v_diff * inPercentage);
 
 		inMeter->draw_primary_points[2].x = inMeter->draw_primary_points[1].x;
 		inMeter->draw_primary_points[2].y = inMeter->draw_primary_points[1].y + (v_diff * inPercentage);
-		
+
 		// calculate the secondary points
 		sec_v_diff = inMeter->original_secondary_points[0].y - inMeter->draw_primary_points[2].y;
 		if (((sec_v_diff < 0) && (v_diff > 0)) || ((sec_v_diff > 0) && (v_diff < 0)))
@@ -795,11 +795,11 @@ ONiInGameUI_CalcMeter(
 			// calc [2]
 			inMeter->draw_secondary_points[2].x = inMeter->original_secondary_points[2].x;
 			inMeter->draw_secondary_points[2].y = inMeter->draw_primary_points[2].y;
-			
+
 			// calc [3]
 			inMeter->draw_secondary_points[3].x = inMeter->original_secondary_points[3].x;
 			inMeter->draw_secondary_points[3].y = inMeter->draw_primary_points[2].y;
-			
+
 			// clip
 			sec_v_diff = inMeter->draw_secondary_points[2].y - inMeter->original_secondary_points[1].y;
 			if (((sec_v_diff < 0) && (v_diff > 0)) || ((sec_v_diff > 0) && (v_diff < 0)))
@@ -814,11 +814,11 @@ ONiInGameUI_CalcMeter(
 	else
 	{
 		float					sec_h_diff;
-		
+
 		// copy [0], and [3]
 		inMeter->draw_primary_points[0] = inMeter->original_primary_points[0];
 		inMeter->draw_primary_points[3] = inMeter->original_primary_points[3];
-		
+
 		// calc [1], and [2]
 		inMeter->draw_primary_points[1].x = inMeter->draw_primary_points[0].x + (h_diff * inPercentage);
 		inMeter->draw_primary_points[1].y = inMeter->draw_primary_points[0].y;
@@ -833,15 +833,15 @@ ONiInGameUI_CalcMeter(
 			// copy [0], and [3]
 			inMeter->draw_secondary_points[0] = inMeter->original_secondary_points[0];
 			inMeter->draw_secondary_points[3] = inMeter->original_secondary_points[3];
-			
+
 			// calc [2]
 			inMeter->draw_secondary_points[2].x = inMeter->draw_primary_points[1].x;
 			inMeter->draw_secondary_points[2].y = inMeter->original_secondary_points[2].y;
-			
+
 			// calc[1]
 			inMeter->draw_secondary_points[1].x = inMeter->draw_secondary_points[2].x;
 			inMeter->draw_secondary_points[1].y = inMeter->original_secondary_points[1].y;
-			
+
 			// clip
 			sec_h_diff = inMeter->draw_secondary_points[1].x - inMeter->draw_secondary_points[0].x;
 			if (((sec_h_diff < 0) && (h_diff > 0)) || ((sec_h_diff > 0) && (h_diff < 0)))
@@ -866,12 +866,12 @@ ONiInGameUI_MakeMeter(
 {
 	ONtInGameUI_Meter			*meter;
 	UUtUns32					i;
-	
+
 	UUmAssert(inPrimaryPoints);
 	UUmAssert(inSecondaryPoints);
 	UUmAssert(inTextureMap);
 	UUmAssert(outMeter);
-	
+
 	// allocate memory for the meter
 	meter =
 		UUrMemory_Block_NewClear(
@@ -883,7 +883,7 @@ ONiInGameUI_MakeMeter(
 			(sizeof(M3tTextureCoord) * 4) +						// draw	primary UVs
 			(sizeof(M3tTextureCoord) * 4));						// draw	secondary UVs
 	UUmError_ReturnOnNull(meter);
-	
+
 	// set up the vars
 	meter->texture = inTextureMap;
 	meter->original_primary_points = (M3tPointScreen*)(((UUtUns8*)meter) + sizeof(ONtInGameUI_Meter));
@@ -892,7 +892,7 @@ ONiInGameUI_MakeMeter(
 	meter->draw_secondary_points = (meter->draw_primary_points + 4);
 	meter->draw_primary_UVs = (M3tTextureCoord*)(meter->draw_secondary_points + 4);
 	meter->draw_secondary_UVs = (meter->draw_primary_UVs + 4);
-	
+
 	// save the points
 	for (i = 0; i < 4; i++)
 	{
@@ -901,7 +901,7 @@ ONiInGameUI_MakeMeter(
 	}
 
 	ONiInGameUI_CalcMeter(inPercentage, meter);
-	
+
 	*outMeter = meter;
 	return UUcError_None;
 }
@@ -927,9 +927,9 @@ ONiInGameUI_DisplayAmmoClips(
 	} else {
 		draw_clips = UUmMin(cMaxNumAmmo, inPlayer->inventory.ammo);
 	}
-	
+
 	if (draw_clips == 0) { return; }
-	
+
 	// draw the arc
 	ONiInGameUI_DrawArc(gAmmoArc, draw_clips, cAmmoColor, (UUtUns8) alpha);
 }
@@ -941,7 +941,7 @@ ONiInGameUI_DisplayCellClips(
 {
 	UUtUns16					draw_clips;
 	UUtUns32					alpha;
-	
+
 	alpha = (ONmIGUIElement_Flashing(ONcIGUIElement_EnergyCells) ? gFlashAlpha : M3cMaxAlpha);
 
 	// set the number of segments to draw
@@ -952,7 +952,7 @@ ONiInGameUI_DisplayCellClips(
 	}
 
 	if (draw_clips == 0) { return; }
-	
+
 	// draw the arc
 	ONiInGameUI_DrawArc(gCellArc, draw_clips, cCellColor, (UUtUns8) alpha);
 }
@@ -967,7 +967,7 @@ ONiInGameUI_DisplayHealth(
 	IMtShade					health_shade;
 	UUtUns32					itr, health_colorval;
 	UUtUns16					main_alpha, shadow_alpha;
-	
+
 	if (ONmIGUIElement_Filled(ONcIGUIElement_Health)) {
 		// draw a full health bar
 		gHealth.draw_arc[0] = UUcTrue;
@@ -994,7 +994,7 @@ ONiInGameUI_DisplayHealth(
 			// work out primary arc
 			start = cHealthStart;
 			end = start + ((cHealthEnd - start) * UUmMin(1.0f, health_percentage));
-		
+
 			gHealth.draw_arc[0] = UUcTrue;
 			ONiInGameUI_CalcArc(start, end, gHealthArc[0]);
 
@@ -1002,10 +1002,10 @@ ONiInGameUI_DisplayHealth(
 			{
 				// work out secondary arc
 				super_health_percentage = (UUmMin(health_percentage, ONgGameSettings->boosted_health) - 1.0f);
-				
+
 				start = cSuperHealthStart;
 				end = start + ((cSuperHealthEnd - start) * super_health_percentage);
-				
+
 				gHealth.draw_arc[1] = UUcTrue;
 				ONiInGameUI_CalcArc(start, end, gHealthArc[1]);
 			}
@@ -1027,7 +1027,7 @@ ONiInGameUI_DisplayHealth(
 				// work out primary shadow arc
 				start = cHealthStart + health_percentage * (cHealthEnd - cHealthStart);
 				end = cHealthStart + UUmMin(shadow_percentage, 1.0f) * (cHealthEnd - cHealthStart);
-			
+
 				gHealth.draw_arc[2] = UUcTrue;
 				ONiInGameUI_CalcArc(start, end, gHealthArc[2]);
 			}
@@ -1036,14 +1036,14 @@ ONiInGameUI_DisplayHealth(
 			{
 				// work out secondary shadow arc
 				super_shadow_percentage = (UUmMin(shadow_percentage, ONgGameSettings->boosted_health) - 1.0f);
-				
+
 				if (super_health_percentage > 0.0f) {
 					start = cSuperHealthStart + super_health_percentage * (cSuperHealthEnd - cSuperHealthStart);
 				} else {
 					start = cSuperHealthStart;
 				}
 				end = cSuperHealthStart + ((cSuperHealthEnd - cSuperHealthStart) * super_shadow_percentage);
-				
+
 				gHealth.draw_arc[3] = UUcTrue;
 				ONiInGameUI_CalcArc(start, end, gHealthArc[3]);
 			}
@@ -1058,7 +1058,7 @@ ONiInGameUI_DisplayHealth(
 
 		gHealth.needs_update = UUcFalse;
 	}
-	
+
 	if (gHealth.has_aftershadow) {
 		// health color is based on the current value of our shadow
 		health_colorval = MUrUnsignedSmallFloat_To_Uns_Round(gHealth.shadow_val);
@@ -1078,7 +1078,7 @@ ONiInGameUI_DisplayHealth(
 		main_alpha = (UUtUns16) ((gFlashAlpha * main_alpha) / M3cMaxAlpha);
 		shadow_alpha = (UUtUns16) ((gFlashAlpha * shadow_alpha) / M3cMaxAlpha);
 	}
-	
+
 	if (!gHealth.has_foreshadow) {
 		low_health_amount = (((float) inPlayer->hitPoints) / inPlayer->maxHitPoints) / (ONcIGUI_HealthWarnLevel / 100.0f);
 		if (low_health_amount < 1.0f) {
@@ -1138,7 +1138,7 @@ ONiInGameUI_DisplayHypos(
 	UUtUns16					i;
 	UUtUns16					draw_hypos;
 	UUtUns32					alpha;
-	
+
 	alpha = (ONmIGUIElement_Flashing(ONcIGUIElement_Hypos) ? gFlashAlpha : M3cMaxAlpha);
 
 	// set the number of segments to draw
@@ -1169,7 +1169,7 @@ ONiInGameUI_DisplayInGun(
 	M3tPointScreen				dest[3];
 	UUtUns16					outslot;
 	UUtUns32					alpha;
-	
+
 	weapon = inPlayer->inventory.weapons[0];
 	if (weapon == NULL)
 	{
@@ -1178,7 +1178,7 @@ ONiInGameUI_DisplayInGun(
 	}
 	weapon_class = WPrGetClass(weapon);
 	if (weapon_class->hud_empty == NULL) { return; }
-	
+
 	alpha = (ONmIGUIElement_Flashing(ONcIGUIElement_CurrentAmmo) ? gFlashAlpha : M3cMaxAlpha);
 
 	// set the number of segments to draw
@@ -1193,13 +1193,13 @@ ONiInGameUI_DisplayInGun(
 	dest[0].invW = 2.0f;
 	dest[1].z = 0.5f;
 	dest[1].invW = 2.0f;
-	
+
 	// draw the empty ammo slots
 	dest[0].x = gLeftCenter.x - (gLeft->width >> 1);
 	dest[0].y = gLeftCenter.y - (gLeft->height >> 1);
 	dest[1].x = dest[0].x + gLeft->width;
 	dest[1].y = dest[0].y + gLeft->height;
-	
+
 	M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor, IMcShade_White);
 	M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, weapon_class->hud_empty);
 	M3rDraw_State_Commit();
@@ -1222,10 +1222,10 @@ ONiInGameUI_DisplayInGun(
 
 			start = cInGunStart;
 			end = start + ((cInGunEnd - start) * rounds_percentage);
-			
+
 			ONiInGameUI_CalcArc(start, end, gInGunArc);
 		}
-		
+
 		// draw the arc
 		if (weapon_class->hud_fill != NULL)
 		{
@@ -1248,24 +1248,24 @@ ONiInGameUI_DisplayInvisibility(
 
 	} else {
 		if (inPlayer->inventory.invisibilityRemaining == 0) { return; }
-		
+
 		if (gPrevInvisibilityRemaining != inPlayer->inventory.invisibilityRemaining)
 		{
 			float						invis_percentage;
 			float						start;
 			float						end;
-			
+
 			invis_percentage = (float)inPlayer->inventory.invisibilityRemaining / (float)WPcMaxInvisibility;
-			
+
 			start = cInvisStart;
 			end = start + ((cInvisEnd - start) * invis_percentage);
-			
+
 			ONiInGameUI_CalcArc(start, end, gInvisArc);
-			
+
 			gPrevInvisibilityRemaining = inPlayer->inventory.invisibilityRemaining;
 		}
 	}
-	
+
 	// draw the arc
 	alpha = (ONmIGUIElement_Flashing(ONcIGUIElement_Invisibility) ? gFlashAlpha : M3cMaxAlpha);
 	ONiInGameUI_DrawArc(gInvisArc, gInvisArc->num_segments, cInvisColor, (UUtUns8) alpha);
@@ -1311,7 +1311,7 @@ ONiInGameUI_DisplayRadar(
 	} else if (gHasLSITarget) {
 		// calculate what the angle is to our target
 		MUmVector_Subtract(player_to_target, gLSITarget, inPlayer->location);
-		
+
 		distance = MUmVector_GetLengthSquared(player_to_target);
 		if (distance < gMinDistanceSquared)
 		{
@@ -1326,11 +1326,11 @@ ONiInGameUI_DisplayRadar(
 			arc_length = M3cHalfPi - (M3cHalfPi * (distance / gMaxDistanceSquared));
 		}
 		arc_length = UUmPin(arc_length, cMinArcLength, cMaxArcLength);
-		
+
 		delta_x = gLSITarget.x - inPlayer->location.x;
 		delta_z = gLSITarget.z - inPlayer->location.z;
 		target_angle = MUrATan2(delta_x, delta_z);
-		
+
 		angle = ONrCharacter_GetCosmeticFacing(inPlayer) - target_angle;
 		UUmTrig_ClipAbsPi(angle);
 
@@ -1344,12 +1344,12 @@ ONiInGameUI_DisplayRadar(
 		end = M3c2Pi;
 		draw_ring = UUcTrue;
 	}
-	
+
 	if (draw_ring) {
 		ONiInGameUI_CalcArc(start, end, gRadarArc);
 		ONiInGameUI_DrawArc(gRadarArc, gRadarArc->num_segments, cRadarColor, alpha);
 	}
-	
+
 	/*
 	 * draw the height arrow
 	 */
@@ -1359,7 +1359,7 @@ ONiInGameUI_DisplayRadar(
 	} else {
 		alpha = M3cMaxAlpha;
 	}
-	
+
 	draw_uparrow = UUcFalse;
 	draw_downarrow = UUcFalse;
 	if (gHasLSITarget) {
@@ -1382,17 +1382,17 @@ ONiInGameUI_DisplayRadar(
 		dest[0].y = gLeftCenter.y - (cUpDnArrowDiameter * 0.5f);
 		dest[0].z = 0.5f;
 		dest[0].invW = 2.0f;
-		
+
 		dest[1].x = dest[0].x + cUpDnArrowDiameter;
 		dest[1].y = dest[0].y + cUpDnArrowDiameter;
 		dest[1].z = 0.5f;
 		dest[1].invW = 2.0f;
-		
+
 		M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor, IMcShade_White);
 		M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, gUpDnArrow);
 		M3rDraw_State_SetInt(M3cDrawStateIntType_Alpha, alpha);
 		M3rDraw_State_Commit();
-	
+
 		if (draw_uparrow)
 		{
 			M3rDraw_Sprite(dest, gFullTextureUVs);
@@ -1405,7 +1405,7 @@ ONiInGameUI_DisplayRadar(
 		if (alpha < M3cMaxAlpha) {
 			// restore alpha to full
 			M3rDraw_State_SetInt(M3cDrawStateIntType_Alpha, M3cMaxAlpha);
-		}		
+		}
 	}
 }
 
@@ -1437,7 +1437,7 @@ ONiInGameUI_DisplayShield(
 			// work out primary arc
 			start = cShieldStart;
 			end = start + ((cShieldEnd - start) * UUmMin(1.0f, shield_percentage));
-		
+
 			gShield.draw_arc[0] = UUcTrue;
 			ONiInGameUI_CalcArc(start, end, gShieldArc[0]);
 		}
@@ -1449,7 +1449,7 @@ ONiInGameUI_DisplayShield(
 			// work out shadow arc
 			start = cShieldStart + shield_percentage * (cShieldEnd - cShieldStart);
 			end = cShieldStart + UUmMin(1.0f, shadow_percentage) * (cShieldEnd - cShieldStart);
-		
+
 			gShield.draw_arc[1] = UUcTrue;
 			ONiInGameUI_CalcArc(start, end, gShieldArc[1]);
 		} else {
@@ -1458,7 +1458,7 @@ ONiInGameUI_DisplayShield(
 
 		gShield.needs_update = UUcFalse;
 	}
-	
+
 	main_alpha = M3cMaxAlpha;
 	shadow_alpha = cShieldShadowAlpha;
 
@@ -1487,7 +1487,7 @@ ONiInGameUI_DisplayWeaponIcon(
 	UUtUns32					alpha;
 //	WPtWeapon					*stored_weapon;
 //	UUtUns16					outslot;
-	
+
 	weapon = inPlayer->inventory.weapons[0];
 	if (weapon != NULL)
 	{
@@ -1496,7 +1496,7 @@ ONiInGameUI_DisplayWeaponIcon(
 		{
 			UUmAssert(weapon_class->icon->width == 64);
 			UUmAssert(weapon_class->icon->height == 64);
-			
+
 			if (ONmIGUIElement_Flashing(ONcIGUIElement_Weapon)) {
 				alpha = gFlashAlpha;
 			} else {
@@ -1507,17 +1507,17 @@ ONiInGameUI_DisplayWeaponIcon(
 			dest[0].y = gLeftCenter.y - (cIconDrawnDiameter * 0.5f);
 			dest[0].z = 0.5f;
 			dest[0].invW = 2.0f;
-			
+
 			dest[1].x = dest[0].x + cIconDrawnDiameter;
 			dest[1].y = dest[0].y + cIconDrawnDiameter;
 			dest[1].z = 0.5f;
 			dest[1].invW = 2.0f;
-			
+
 			M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor, IMcShade_White);
 			M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, weapon_class->icon);
 			M3rDraw_State_SetInt(M3cDrawStateIntType_Alpha, alpha);
 			M3rDraw_State_Commit();
-			
+
 			M3rDraw_Sprite(dest, gFullTextureUVs);
 
 			if (alpha < M3cMaxAlpha) {
@@ -1525,7 +1525,7 @@ ONiInGameUI_DisplayWeaponIcon(
 			}
 		}
 	}
-	
+
 /*	// draw the one in the holster
 	stored_weapon = WPrSlot_FindLastStowed(inPlayer->inventory.weapons, WPcPrimarySlot, &outslot);
 	if (stored_weapon != NULL)
@@ -1535,21 +1535,21 @@ ONiInGameUI_DisplayWeaponIcon(
 		{
 			UUmAssert(weapon_class->icon->width == 64);
 			UUmAssert(weapon_class->icon->height == 64);
-			
+
 			dest[0].x = gLeftCenter.x - (cIconStoredDiameter * 0.5f) + cIconStoredOffsetX;
 			dest[0].y = gLeftCenter.y - (cIconStoredDiameter * 0.5f);
 			dest[0].z = 0.5f;
 			dest[0].invW = 2.0f;
-			
+
 			dest[1].x = dest[0].x + cIconStoredDiameter;
 			dest[1].y = dest[0].y + cIconStoredDiameter;
 			dest[1].z = 0.5f;
 			dest[1].invW = 2.0f;
-			
+
 			M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor, IMcShade_White);
 			M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, weapon_class->icon);
 			M3rDraw_State_Commit();
-			
+
 			M3rDraw_Sprite(dest, gFullTextureUVs);
 		}
 	}*/
@@ -1562,12 +1562,12 @@ ONiInGameUI_DisplayLSIIcon(
 	UUtUns16					inAlpha)
 {
 	M3tPointScreen				dest[2];
-	
+
 	if (inPlayer->inventory.has_lsi && (gLSIIcon != NULL))
 	{
 		UUmAssert(gLSIIcon->width == 64);
 		UUmAssert(gLSIIcon->height == 64);
-		
+
 		if (ONmIGUIElement_Flashing(ONcIGUIElement_ItemDisplay)) {
 			inAlpha = (UUtUns16) ((inAlpha * gFlashAlpha) / M3cMaxAlpha);
 		}
@@ -1576,7 +1576,7 @@ ONiInGameUI_DisplayLSIIcon(
 		dest[0].y = gRightCenter.y - (cLSIIconDiameter * 0.5f);
 		dest[0].z = 0.5f;
 		dest[0].invW = 2.0f;
-		
+
 		dest[1].x = dest[0].x + cLSIIconDiameter;
 		dest[1].y = dest[0].y + cLSIIconDiameter;
 		dest[1].z = 0.5f;
@@ -1589,7 +1589,7 @@ ONiInGameUI_DisplayLSIIcon(
 		M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor, IMcShade_White);
 		M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, gLSIIcon);
 		M3rGeom_State_Commit();
-		
+
 		M3rDraw_Sprite(dest, gFullTextureUVs);
 
 		if (inAlpha < M3cMaxAlpha) {
@@ -1657,7 +1657,7 @@ ONiInGameUI_DisplayHelp(
 		dest[0].y = left_position.y;
 		dest[0].z = 0.5f;
 		dest[0].invW = 2.0f;
-		
+
 		dest[1].x = dest[0].x + gHUDHelp->left_texture->width;
 		dest[1].y = dest[0].y + gHUDHelp->left_texture->height;
 		dest[1].z = 0.5f;
@@ -1666,7 +1666,7 @@ ONiInGameUI_DisplayHelp(
 		M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor, IMcShade_White);
 		M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, gHUDHelp->left_texture);
 		M3rDraw_State_Commit();
-		
+
 		M3rDraw_Sprite(dest, gFullTextureUVs);
 	}
 
@@ -1676,7 +1676,7 @@ ONiInGameUI_DisplayHelp(
 		dest[0].y = right_position.y;
 		dest[0].z = 0.5f;
 		dest[0].invW = 2.0f;
-		
+
 		dest[1].x = dest[0].x + gHUDHelp->right_texture->width;
 		dest[1].y = dest[0].y + gHUDHelp->right_texture->height;
 		dest[1].z = 0.5f;
@@ -1685,7 +1685,7 @@ ONiInGameUI_DisplayHelp(
 		M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor, IMcShade_White);
 		M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, gHUDHelp->right_texture);
 		M3rDraw_State_Commit();
-		
+
 		M3rDraw_Sprite(dest, gFullTextureUVs);
 	}
 
@@ -1776,7 +1776,7 @@ ONrInGameUI_Display(
 	M3tPointScreen				dest[3];
 	UUtUns16					alpha;
 	UUtUns32 cur_time;
-	
+
 	// get a pointer to the player's character
 	player = ONrGameState_GetPlayerCharacter();
 	if (player == NULL) { return; }
@@ -1811,28 +1811,28 @@ ONrInGameUI_Display(
 		dest[0].y = gLeftCenter.y - (gLeft->height >> 1);
 		dest[1].x = dest[0].x + gLeft->width;
 		dest[1].y = dest[0].y + gLeft->height;
-		
+
 		M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor, IMcShade_White);
 		M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, gLeft);
 		M3rDraw_State_Commit();
 		M3rDraw_Sprite(dest, gFullTextureUVs);
-		
+
 		// draw the ballistic clips arc
 		ONiInGameUI_DisplayAmmoClips(player);
-		
-		// draw the energy clips arc	
+
+		// draw the energy clips arc
 		ONiInGameUI_DisplayCellClips(player);
 
 		// draw the radar arc
 		ONiInGameUI_DisplayRadar(player);
-		
+
 		// draw the ammo arc
 		ONiInGameUI_DisplayInGun(player);
-		
+
 		// draw the weapon icon
 		ONiInGameUI_DisplayWeaponIcon(player);
 	}
-	
+
 	if (gRightEnable) {
 		// ----------------------------------------
 		// draw the right grid
@@ -1840,7 +1840,7 @@ ONrInGameUI_Display(
 		dest[0].y = gRightCenter.y - (gRight->height >> 1);;
 		dest[1].x = dest[0].x + gRight->width;
 		dest[1].y = dest[0].y + gRight->height;
-		
+
 		M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor, IMcShade_White);
 		M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, gRight);
 		M3rDraw_State_Commit();
@@ -1848,10 +1848,10 @@ ONrInGameUI_Display(
 
 		// draw the health arc
 		ONiInGameUI_DisplayHealth(player);
-		
+
 		// draw the invisibility arc
 		ONiInGameUI_DisplayInvisibility(player);
-		
+
 		// draw the shield arc
 		ONiInGameUI_DisplayShield(player);
 
@@ -1874,7 +1874,7 @@ ONrInGameUI_Display(
 
 	// draw the help overlays
 	ONiInGameUI_DisplayHelp();
-	
+
 	M3rDraw_State_Pop();
 }
 
@@ -1884,7 +1884,7 @@ ONrInGameUI_SetArcPoints(
 	void)
 {
 	UUtUns32 					i;
-	
+
 	// calculate the left and right centers
 	gLeftCenter.x = 10.0f + (gLeft->width >> 1);
 	gLeftCenter.y = (float)M3rDraw_GetHeight() - (gLeft->height >> 1);
@@ -1895,7 +1895,7 @@ ONrInGameUI_SetArcPoints(
 	gRightCenter.y = (float)M3rDraw_GetHeight() - (gRight->height >> 1);
 	gRightCenter.z = 0.5f;
 	gRightCenter.invW = 2.0f;
-	
+
 	// make the arcs
 	for (i = 0; i < 2; i++) {
 		ONiInGameUI_MakeArc(
@@ -1918,7 +1918,7 @@ ONrInGameUI_SetArcPoints(
 			gRightRing,
 			&gHealthArc[2*i + 1]);
 	}
-		
+
 	ONiInGameUI_MakeArc(
 		cInvisStart,
 		cInvisEnd,
@@ -1928,7 +1928,7 @@ ONrInGameUI_SetArcPoints(
 		8,
 		gRightRing,
 		&gInvisArc);
-		
+
 	ONiInGameUI_MakeArc(
 		cShieldStart,
 		cShieldEnd,
@@ -1938,7 +1938,7 @@ ONrInGameUI_SetArcPoints(
 		8,
 		gRightRing,
 		&gShieldArc[0]);
-		
+
 	ONiInGameUI_MakeArc(
 		cShieldStart,
 		cShieldEnd,
@@ -1948,7 +1948,7 @@ ONrInGameUI_SetArcPoints(
 		8,
 		gRightRing,
 		&gShieldArc[1]);
-		
+
 	ONiInGameUI_MakeArc(
 		cAmmoStart,
 		cAmmoEnd,
@@ -1958,7 +1958,7 @@ ONrInGameUI_SetArcPoints(
 		cMaxNumAmmo,
 		gLeftRing,
 		&gAmmoArc);
-	
+
 	ONiInGameUI_MakeArc(
 		cCellStart,
 		cCellEnd,
@@ -1988,7 +1988,7 @@ ONrInGameUI_SetArcPoints(
 		32,
 		gLeftRing,
 		&gRadarArc);
-	
+
 	for (i = 0; i < cMaxNumHypos; i++)
 	{
 		ONiInGameUI_MakeArc(
@@ -2001,7 +2001,7 @@ ONrInGameUI_SetArcPoints(
 			gRightRing,
 			&gHyposArcs[i]);
 	}
-	
+
 	for (i = 0; i < cMaxNumHits; i++)
 	{
 		ONiInGameUI_MakeArc(
@@ -2022,7 +2022,7 @@ ONiInGameUI_LevelLoad(
 	void)
 {
 	UUtError					error;
-	
+
 	// load the textures
 	error = TMrInstance_GetDataPtr(M3cTemplate_TextureMap, "left", &gLeft);
 	error = TMrInstance_GetDataPtr(M3cTemplate_TextureMap, "right", &gRight);
@@ -2041,7 +2041,7 @@ ONiInGameUI_LevelLoad(
 	error = TMrInstance_GetDataPtr(M3cTemplate_TextureMap, "updn_arrow", &gUpDnArrow);
 
 	ONrInGameUI_SetArcPoints();
-	
+
 	// set initial HUD state
 	ONgObjectiveNumber = 0;
 	ONgDiaryPageUnlocked = 0;		// no diary pages have been read yet
@@ -2076,14 +2076,14 @@ ONiInGameUI_LevelUnload(
 	void)
 {
 	UUtUns32					i;
-	
+
 	gLeft = NULL;
 	gRight = NULL;
 	gLeftRing = NULL;
 	gRightRing = NULL;
 	gWhite = NULL;
 	gUpDnArrow = NULL;
-	
+
 	for (i = 0; i < 4; i++) {
 		UUrMemory_Block_Delete(gHealthArc[i]); gHealthArc[i] = NULL;
 	}
@@ -2102,7 +2102,7 @@ ONiInGameUI_LevelUnload(
 	{
 		UUrMemory_Block_Delete(gHyposArcs[i]); gHyposArcs[i] = NULL;
 	}
-	
+
 	for (i = 0; i < cMaxNumHits; i++)
 	{
 		UUrMemory_Block_Delete(gHitArcs[i]); gHitArcs[i] = NULL;
@@ -2128,12 +2128,12 @@ ONiFIStack_Init(
 	IMtShade					inFontShade)
 {
 	UUmAssert(inFontFamily);
-	
+
 	ONgFIStack[0].font_family = inFontFamily;
 	ONgFIStack[0].font_size = inFontSize;
 	ONgFIStack[0].font_style = inFontStyle;
 	ONgFIStack[0].font_shade = inFontShade;
-	
+
 	ONgFIStackIndex = 0;
 }
 
@@ -2143,9 +2143,9 @@ ONiFIStack_Push(
 	ONtIGUI_FontInfo			*inFontInfo)
 {
 	if ((ONgFIStackIndex + 1) == ONcMaxFIStackItems) { return; }
-	
+
 	ONgFIStackIndex++;
-	
+
 	// copy all of the entries
 	ONgFIStack[ONgFIStackIndex] = ONgFIStack[ONgFIStackIndex - 1];
 
@@ -2156,23 +2156,23 @@ ONiFIStack_Push(
 		{
 			ONgFIStack[ONgFIStackIndex].font_family = inFontInfo->font_family;
 		}
-		
+
 		if ((inFontInfo->flags & IGUIcFontInfoFlag_FontSize) != 0)
 		{
 			ONgFIStack[ONgFIStackIndex].font_size = inFontInfo->font_size;
 		}
-		
+
 		if ((inFontInfo->flags & IGUIcFontInfoFlag_FontStyle) != 0)
 		{
 			ONgFIStack[ONgFIStackIndex].font_style = inFontInfo->font_style;
 		}
-		
+
 		if ((inFontInfo->flags & IGUIcFontInfoFlag_FontShade) != 0)
 		{
 			ONgFIStack[ONgFIStackIndex].font_shade = inFontInfo->font_shade;
 		}
 	}
-	
+
 	// set the new font info
 	DCrText_SetFontInfo(&ONgFIStack[ONgFIStackIndex]);
 }
@@ -2186,7 +2186,7 @@ ONiFIStack_Pop(
 	{
 		ONgFIStackIndex--;
 	}
-	
+
 	// set the font info
 	DCrText_SetFontInfo(&ONgFIStack[ONgFIStackIndex]);
 }
@@ -2205,36 +2205,36 @@ ONiIGUI_Page_Paint(
 	IMtPoint2D					dest;
 	UUtUns32					itr;
 	UUtRect						rect;
-		
+
 	if (inPage == NULL) { return; }
-	
+
 	// push the font info
 	ONiFIStack_Push(&inPage->font_info);
-	
+
 	// set the initial dest
 	dest.x = 0;
 	dest.y = 0;
-		
+
 	if (inDrawItem->window_id == ONcPS_Txt_MainArea)
 	{
 		if (inPage->pict)
 		{
 			UUtInt16				win_width;
-			
+
 			WMrWindow_GetSize(inDrawItem->window, &win_width, NULL);
-			
+
 			switch (TMrInstance_GetTemplateTag(inPage->pict))
 			{
 				case M3cTemplate_TextureMap:
 				{
 					UUtUns16				pict_width;
 					UUtUns16				pict_height;
-					
+
 					M3rTextureRef_GetSize(inPage->pict, &pict_width, &pict_height);
-				
+
 					dest.x = (win_width - (UUtInt16)pict_width) >> 1;
-				
-					// draw the picture		
+
+					// draw the picture
 					DCrDraw_TextureRef(
 						inDrawItem->draw_context,
 						inPage->pict,
@@ -2243,19 +2243,19 @@ ONiIGUI_Page_Paint(
 						-1,
 						UUcFalse,
 						M3cMaxAlpha);
-					
+
 					dest.y += pict_height;
 				}
 				break;
-				
+
 				case PScTemplate_PartSpecification:
 				{
 					UUtInt16				part_height;
-					
+
 					PSrPartSpec_GetSize(inPage->pict, PScPart_LeftTop, NULL, &part_height);
-					
+
 					dest.x = 0;
-					
+
 					// draw the partspec
 					DCrDraw_PartSpec(
 						inDrawItem->draw_context,
@@ -2265,16 +2265,16 @@ ONiIGUI_Page_Paint(
 						win_width,
 						part_height,
 						M3cMaxAlpha);
-					
+
 					dest.y += part_height;
 				}
 				break;
 			}
-			
+
 			// leave some space between the picture and the text
 			dest.y += 10;
 		}
-		
+
 		if (inPage->text)
 		{
 			// draw the item text
@@ -2283,19 +2283,19 @@ ONiIGUI_Page_Paint(
 			for (itr = 0; itr < inPage->text->numStrings; itr++)
 			{
 				if (inPage->text->string[itr] == NULL) { continue; }
-				
+
 				// set the font info
 				ONiFIStack_Push(&inPage->text->string[itr]->font_info);
-				
+
 				DCrDraw_String2(
 					inDrawItem->draw_context,
 					inPage->text->string[itr]->string,
 					NULL,
 					&dest,
 					&rect);
-				
+
 				dest.y += (rect.bottom - rect.top);
-				
+
 				// restore the font info
 				ONiFIStack_Pop();
 			}
@@ -2310,17 +2310,17 @@ ONiIGUI_Page_Paint(
 			for (itr = 0; itr < inPage->hint->numStrings; itr++)
 			{
 				if (inPage->hint->string[itr] == NULL) { continue; }
-				
+
 				// set the font info
 				ONiFIStack_Push(&inPage->hint->string[itr]->font_info);
-				
+
 				DCrDraw_String2(
 					inDrawItem->draw_context,
 					inPage->hint->string[itr]->string,
 					NULL,
 					&dest,
 					&rect);
-				
+
 				dest.y += (rect.bottom - rect.top);
 
 				// restore the font info
@@ -2328,7 +2328,7 @@ ONiIGUI_Page_Paint(
 			}
 		}
 	}
-	
+
 	// pop the font info
 	ONiFIStack_Pop();
 }
@@ -2342,23 +2342,23 @@ ONiIGUI_Page_PaintOverlay(
 	IMtPoint2D					dest;
 	UUtUns32					itr;
 	UUtRect						rect;
-	
+
 	if (inPage == NULL) { return; }
-	
+
 	// push the font info
 	ONiFIStack_Push(&inPage->font_info);
-	
+
 	// set the initial dest
 	dest.x = 0;
 	dest.y = 0;
-	
+
 	if (inDrawItem->window_id == ONcPS_Txt_MainArea)
 	{
 		UUtUns16				pict_width;
 		UUtUns16				pict_height;
 		UUtInt16				win_width;
 		UUtInt16				win_height;
-		
+
 		if (inPage->text)
 		{
 			// draw the item text
@@ -2367,34 +2367,34 @@ ONiIGUI_Page_PaintOverlay(
 			for (itr = 0; itr < inPage->text->numStrings; itr++)
 			{
 				if (inPage->text->string[itr] == NULL) { continue; }
-				
+
 				// set the font info
 				ONiFIStack_Push(&inPage->text->string[itr]->font_info);
-				
+
 				DCrDraw_String2(
 					inDrawItem->draw_context,
 					inPage->text->string[itr]->string,
 					NULL,
 					&dest,
 					&rect);
-				
+
 				dest.y += (rect.bottom - rect.top);
-				
+
 				// restore the font info
 				ONiFIStack_Pop();
 			}
 		}
-		
+
 		if ((inPage->pict) &&
 			(TMrInstance_GetTemplateTag(inPage->pict) == M3cTemplate_TextureMap))
 		{
 			WMrWindow_GetSize(inDrawItem->window, &win_width, &win_height);
 			M3rTextureRef_GetSize(inPage->pict, &pict_width, &pict_height);
-		
+
 			dest.x = (win_width - (UUtInt16)pict_width) >> 1;
 			dest.y = (win_height - (UUtInt16)pict_height) >> 1;
-		
-			// draw the picture		
+
+			// draw the picture
 			DCrDraw_TextureRef(
 				inDrawItem->draw_context,
 				inPage->pict,
@@ -2414,17 +2414,17 @@ ONiIGUI_Page_PaintOverlay(
 			for (itr = 0; itr < inPage->hint->numStrings; itr++)
 			{
 				if (inPage->hint->string[itr] == NULL) { continue; }
-				
+
 				// set the font info
 				ONiFIStack_Push(&inPage->hint->string[itr]->font_info);
-				
+
 				DCrDraw_String2(
 					inDrawItem->draw_context,
 					inPage->hint->string[itr]->string,
 					NULL,
 					&dest,
 					&rect);
-				
+
 				dest.y += (rect.bottom - rect.top);
 
 				// restore the font info
@@ -2432,7 +2432,7 @@ ONiIGUI_Page_PaintOverlay(
 			}
 		}
 	}
-	
+
 	// pop the font info
 	ONiFIStack_Pop();
 }
@@ -2453,20 +2453,20 @@ ONiPS_ShowHintArea(
 	WMtWindow					*next;
 	WMtWindow					*hint_text;
 	WMtWindow					*hint_box;
-		
+
 	prev = WMrDialog_GetItemByID(inDialog, ONcPS_Btn_Previous);
 	next = WMrDialog_GetItemByID(inDialog, ONcPS_Btn_Next);
 	hint_text = WMrDialog_GetItemByID(inDialog, ONcPS_Txt_SubArea);
 	hint_box = WMrDialog_GetItemByID(inDialog, ONcPS_Box_SubArea);
-	
+
 	WMrWindow_SetVisible(prev, inShow);
 	WMrWindow_SetVisible(next, inShow);
 	WMrWindow_SetVisible(hint_text, inShow);
 	WMrWindow_SetVisible(hint_box, inShow);
-	
+
 	prev = WMrDialog_GetItemByID(inDialog, ONcPS_Btn_HelpPrevious);
 	next = WMrDialog_GetItemByID(inDialog, ONcPS_Btn_HelpNext);
-	
+
 // remove the UUcFalse if you want to have multiple pages for help
 	WMrWindow_SetVisible(prev, UUcFalse/*!inShow*/);
 	WMrWindow_SetVisible(next, UUcFalse/*!inShow*/);
@@ -2480,22 +2480,22 @@ ONiPS_EnableButtons(
 {
 	UUtBool						prev_on;
 	UUtBool						next_on;
-	
+
 	WMtWindow					*prev;
 	WMtWindow					*next;
-	
+
 	prev_on = UUcTrue;
 	next_on = UUcTrue;
-	
+
 	prev = WMrDialog_GetItemByID(inDialog, ONcPS_Btn_Previous);
 	next = WMrDialog_GetItemByID(inDialog, ONcPS_Btn_Next);
-	
+
 	switch (inData->state)
 	{
 		case ONcPSState_Objective:
 		{
 			UUtInt16			max_objective;
-			
+
 			if (inData->objective == NULL) {
 				// CB: no objectives, so no buttons
 				prev_on = next_on = UUcFalse;
@@ -2505,7 +2505,7 @@ ONiPS_EnableButtons(
 						(UUtInt16)inData->objective->objectives->num_pages,
 						ONgObjectiveNumber);
 				max_objective = UUmPin(max_objective, 0, (UUtInt16)inData->objective->objectives->num_pages);
-						
+
 				if (inData->objective_page_num == 0) { next_on = UUcFalse; }
 				if ((inData->objective_page_num + 1 >= max_objective) || (ONgObjectiveNumber == 0))
 				{
@@ -2514,7 +2514,7 @@ ONiPS_EnableButtons(
 			}
 		}
 		break;
-		
+
 		case ONcPSState_Items:
 			if (inData->num_items == 0)
 			{
@@ -2525,7 +2525,7 @@ ONiPS_EnableButtons(
 			if (inData->item_page_num == 0) { prev_on = UUcFalse; }
 			if (inData->item_page_num + 1 >= inData->num_items) { next_on = UUcFalse; }
 		break;
-		
+
 		case ONcPSState_Weapons:
 			if (inData->num_weapon_pages == 0)
 			{
@@ -2536,7 +2536,7 @@ ONiPS_EnableButtons(
 			if (inData->weapon_page_num == 0) { prev_on = UUcFalse; }
 			if (inData->weapon_page_num + 1 >= inData->num_weapon_pages) { next_on = UUcFalse; }
 		break;
-		
+
 		case ONcPSState_Diary:
 			if (inData->num_diary_pages == 0)
 			{
@@ -2562,7 +2562,7 @@ ONiPS_EnableButtons(
 			if (inData->help_page_num + 1 >= inData->num_help_pages) { next_on = UUcFalse; }*/
 		break;
 	}
-	
+
 	WMrWindow_SetEnabled(prev, prev_on);
 	WMrWindow_SetEnabled(next, next_on);
 }
@@ -2576,10 +2576,10 @@ ONiDP_SortByLevel(
 	const ONtDiaryPage			*page1;
 	const ONtDiaryPage			*page2;
 	int							result;
-	
+
 	page1 = *((ONtDiaryPage**)inItem1);
 	page2 = *((ONtDiaryPage**)inItem2);
-	
+
 	result = (page1->level_number - page2->level_number);
 
 	return result;
@@ -2593,12 +2593,12 @@ ONiDP_SortByPage(
 	const ONtDiaryPage			*page1;
 	const ONtDiaryPage			*page2;
 	int							result;
-	
+
 	page1 = *((ONtDiaryPage**)inItem1);
 	page2 = *((ONtDiaryPage**)inItem2);
-	
+
 	result = (page1->page_number - page2->page_number);
-	
+
 	return result;
 }
 
@@ -2614,14 +2614,14 @@ ONiPS_DiaryPage_Init(
 	UUtInt16					index;
 	UUtInt16					first_page_index, target_page_index;
 	UUtInt16					target_page, prev_unlocked_page;
-	
+
 	prev_unlocked_page = ONgDiaryPageUnlocked;
 	ONgDiaryPageUnlocked = inUnlockedPage;
 
 	// default initializations
 	inData->num_diary_pages = 0;
 	inData->diary_page_num = 0;
-	
+
 	// get a list of pointers
 	error =
 		TMrInstance_GetDataPtr_List(
@@ -2630,7 +2630,7 @@ ONiPS_DiaryPage_Init(
 			&num_pages,
 			pages);
 	UUmError_ReturnOnError(error);
-	
+
 	// add all of the valid diary pages to the list
 	for (itr = 0; itr < (UUtInt16)num_pages; itr++)
 	{
@@ -2642,12 +2642,12 @@ ONiPS_DiaryPage_Init(
 		if ((pages[itr]->level_number == inData->current_level) &&
 			(inUnlockedPage != -1) &&
 			(pages[itr]->page_number > inUnlockedPage)) { continue; }
-		
+
 		// add the page to the data
 		inData->diary[inData->num_diary_pages] = pages[itr];
 		inData->num_diary_pages++;
 	}
-	
+
 	// sort by level number and page number
 	qsort(
 		inData->diary,
@@ -2660,9 +2660,9 @@ ONiPS_DiaryPage_Init(
 	{
 		UUtInt16					num_level_pages;
 		UUtInt16					sort_level;
-		
+
 		if (index == inData->num_diary_pages) { break; }
-		
+
 		sort_level = inData->diary[index]->level_number;
 		num_level_pages = 0;
 		for (itr = index; itr < inData->num_diary_pages ; itr++)
@@ -2670,7 +2670,7 @@ ONiPS_DiaryPage_Init(
 			if (inData->diary[itr]->level_number != sort_level) { break; }
 			num_level_pages++;
 		}
-		
+
 		// sort the level pages
 		if (num_level_pages > 1)
 		{
@@ -2680,12 +2680,12 @@ ONiPS_DiaryPage_Init(
 				sizeof(ONtDiaryPage*),
 				ONiDP_SortByPage);
 		}
-		
+
 		// start at the next set of level pages
 		index += num_level_pages;
 	}
 	while (1);
-	
+
 	// find the target page of the current level
 	target_page = (inUnlockedPage == -1) ? 1 : inUnlockedPage;
 	first_page_index = -1;
@@ -2714,7 +2714,7 @@ ONiPS_DiaryPage_Init(
 			target_page_index = itr;
 		}
 	}
-			
+
 	if (target_page_index != -1) {
 		inData->diary_page_num = target_page_index;
 
@@ -2741,7 +2741,7 @@ ONiPS_ItemPage_Init(
 	UUtUns32					i;
 	UUtUns32					pages_added;
 	UUtBool						page_enabled;
-	
+
 	inData->num_items = 0;
 
 	// get a list of pointers
@@ -2752,11 +2752,11 @@ ONiPS_ItemPage_Init(
 			&num_pages,
 			pages);
 	UUmError_ReturnOnError(error);
-	
+
 	// count the items
 	player = ONrGameState_GetPlayerCharacter();
 	pages_added = 0;
-	
+
 	// by default, show the first page
 	inData->item_page_num = 0;
 
@@ -2792,7 +2792,7 @@ ONiPS_ItemPage_Init(
 			break;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2805,11 +2805,11 @@ ONiPS_ObjectivePage_Init(
 	ONtObjectivePage			*pages[1024];
 	UUtUns32					num_pages;
 	UUtUns32					i;
-	
+
 	// clear the vars
 	inData->objective_number = 0;
 	inData->objective_page_num = 0;
-	
+
 	// get a list of pointers
 	error =
 		TMrInstance_GetDataPtr_List(
@@ -2818,7 +2818,7 @@ ONiPS_ObjectivePage_Init(
 			&num_pages,
 			pages);
 	UUmError_ReturnOnError(error);
-	
+
 	// get the objective pages for this level
 	for (i = 0; i < num_pages; i++)
 	{
@@ -2827,7 +2827,7 @@ ONiPS_ObjectivePage_Init(
 		inData->objective = pages[i];
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2848,7 +2848,7 @@ ONiPS_WeaponPage_Init(
 	// initialize the vars
 	inData->num_weapon_pages = 0;
 	inData->weapon_page_num = 0;
-	
+
 	// get a list of pointers
 	error =
 		TMrInstance_GetDataPtr_List(
@@ -2857,7 +2857,7 @@ ONiPS_WeaponPage_Init(
 			&num_pages,
 			pages);
 	UUmError_ReturnOnError(error);
-	
+
 #if 1
 	// CB: this displays weapon pages for all weapons that we have unlocked
 	for (i = 0; i < num_pages; i++) {
@@ -2908,10 +2908,10 @@ ONiPS_WeaponPage_Init(
 		{
 			WPtWeapon					*weapon;
 			UUtBool						found;
-			
+
 			weapon = player->inventory.weapons[i];
 			if (weapon == NULL) { continue; }
-			
+
 			// see if this weapon already has a page
 			found = UUcFalse;
 			for (j = 0; j < inData->num_weapon_pages; j++)
@@ -2923,25 +2923,25 @@ ONiPS_WeaponPage_Init(
 				}
 			}
 			if (found == UUcTrue) { continue; }
-			
+
 			// find an open page for the weapon
 			for (j = 0; j < ONcIGU_MaxWeapons; j++)
 			{
 				if (inData->weapons[j] != NULL) { continue; }
 				break;
 			}
-			
+
 			// break if there are no more available pages
 			if (j == ONcIGU_MaxWeapons) { break; }
 
 			// find the page to store
 			for (j = 0;	j < (UUtInt16)num_pages; j++)
-			{			
+			{
 				if (pages[j]->weaponClass != WPrGetClass(weapon))
 				{
 					continue;
 				}
-				
+
 				inData->weapons[inData->num_weapon_pages] = pages[j];
 				inData->num_weapon_pages++;
 				break;
@@ -2949,7 +2949,7 @@ ONiPS_WeaponPage_Init(
 		}
 	}
 #endif
-	
+
 	return UUcError_None;
 }
 
@@ -2962,12 +2962,12 @@ ONiHP_SortByPage(
 	const ONtHelpPage			*page1;
 	const ONtHelpPage			*page2;
 	int							result;
-	
+
 	page1 = *((ONtHelpPage**)inItem1);
 	page2 = *((ONtHelpPage**)inItem2);
-	
+
 	result = (page1->page_number - page2->page_number);
-	
+
 	return result;
 }
 
@@ -2980,11 +2980,11 @@ ONiPS_HelpPage_Init(
 	ONtHelpPage					*pages[1024];
 	UUtUns32					num_pages;
 	UUtUns32					itr;
-	
+
 	// initialize the vars
 	inData->num_help_pages = 0;
 	inData->help_page_num = 0;
-	
+
 	// get a list of pointers
 	error =
 		TMrInstance_GetDataPtr_List(
@@ -2993,21 +2993,21 @@ ONiPS_HelpPage_Init(
 			&num_pages,
 			pages);
 	UUmError_ReturnOnError(error);
-	
+
 	// put pointers to all of the help pages into the list
 	for (itr = 0; itr < num_pages; itr++)
 	{
 		inData->help[inData->num_help_pages] = pages[itr];
 		inData->num_help_pages++;
 	}
-	
+
 	// sort the help pages by page number
 	qsort(
 		inData->help,
 		inData->num_help_pages,
 		sizeof(ONtHelpPage*),
 		ONiHP_SortByPage);
-	
+
 	return UUcError_None;
 }
 
@@ -3019,14 +3019,14 @@ ONiPS_Paint_Diary(
 	WMtDrawItem					*inDrawItem)
 {
 	ONtDiaryPage				*page;
-	
+
 	page = inData->diary[inData->diary_page_num];
 
 	// mark that we have now read this page
 	inData->highlighted_sections &= ~(1 << ONcPSState_Diary);
 	ONgInGameUI_NewMove = UUcFalse;
 	ONrPersist_MarkDiaryPageRead(page->level_number, page->page_number);
-	
+
 	// draw the diary page
 //	if (inDrawItem->window_id == ONcPS_Txt_MainArea)
 	{
@@ -3041,9 +3041,9 @@ ONiPS_Paint_Diary(
 		UUtInt16					num_keys;
 		UUtInt16					keys_width;
 		UUtInt16					window_width;
-		
+
 		WMrWindow_GetSize(inDrawItem->window, &window_width, NULL);
-		
+
 		// count the keys
 		num_keys = 0;
 		for (i = 0; i < ONcMaxNumKeys; i++)
@@ -3051,23 +3051,23 @@ ONiPS_Paint_Diary(
 			if (page->keys[i] == 0) { break; }
 			num_keys++;
 		}
-		
+
 		// calculate the starting points for the keys
 		keys_width = (ONcKeyWidth + ONcKeySpace) * num_keys;
-		
+
 		// draw the keys
 		dest.x = (window_width - keys_width) >> 1;
 		dest.y = 5;
-		
+
 		// draw the move icons
 		for (i = 0; i < ONcMaxNumKeys; i++)
 		{
 			M3tTextureMap				*icon;
-			
+
 			if (page->keys[i] == 0) { break; }
-			
+
 			icon = NULL;
-			
+
 			switch (page->keys[i] & ONcKey_Action)
 			{
 				case ONcKey_Punch:		icon = ONgKeyIcons->punch; 		break;
@@ -3079,22 +3079,22 @@ ONiPS_Paint_Diary(
 				case ONcKey_Crouch:		icon = ONgKeyIcons->crouch; 	break;
 				case ONcKey_Jump:		icon = ONgKeyIcons->jump; 		break;
 			}
-			
+
 			switch (page->keys[i])
 			{
 				case ONcKey_Plus:		icon = ONgKeyIcons->plus; 		break;
 				case ONcKey_Wait:		/* no icon on purpose */		break;
 			}
-			
+
 			if (icon != NULL)
 			{
 				if (page->keys[i] & ONcKey_Quick)
 				{
 					IMtPoint2D			quick_dest;
-					
+
 					quick_dest = dest;
 					quick_dest.y += (icon->height >> 1);
-					
+
 					DCrDraw_TextureRef(
 						inDrawItem->draw_context,
 						icon,
@@ -3116,7 +3116,7 @@ ONiPS_Paint_Diary(
 						M3cMaxAlpha);
 				}
 			}
-			
+
 			// draw a ring around the icon if it is a hold
 			if (page->keys[i] & ONcKey_Hold)
 			{
@@ -3129,7 +3129,7 @@ ONiPS_Paint_Diary(
 					UUcFalse,
 					M3cMaxAlpha);
 			}
-			
+
 			// move to the next position
 			dest.x += 34;
 		}
@@ -3160,7 +3160,7 @@ ONiPS_Paint_Objective(
 {
 	ONtIGUI_FontInfo			font_info;
 	UUtInt16					page_num;
-	
+
 	// we are looking at the objectives page, stop highlighting it
 	inData->highlighted_sections &= ~(1 << ONcPSState_Objective);
 	ONgInGameUI_NewObjective = UUcFalse;
@@ -3172,7 +3172,7 @@ ONiPS_Paint_Objective(
 	{
 		return;
 	}
-	
+
 	// set the font color
 	if (inData->objective_page_num == inData->objective_number)
 	{
@@ -3184,14 +3184,14 @@ ONiPS_Paint_Objective(
 		font_info.flags = IGUIcFontInfoFlag_FontShade;
 		font_info.font_shade = IMcShade_Red;
 	}
-	
+
 	ONiFIStack_Push(&font_info);
-	
+
 	page_num = UUmMax((ONgObjectiveNumber - inData->objective_page_num) - 1, 0);
 	ONiIGUI_Page_Paint(
 		inData->objective->objectives->pages[page_num],
 		inDrawItem);
-	
+
 	ONiFIStack_Pop();
 }
 
@@ -3232,7 +3232,7 @@ ONiPS_Previous(
 		case ONcPSState_Objective:
 		{
 			UUtInt16					max_objective;
-			
+
 			inData->objective_page_num++;
 			max_objective =
 				UUmMin(
@@ -3245,17 +3245,17 @@ ONiPS_Previous(
 			}
 		}
 		break;
-		
+
 		case ONcPSState_Items:
 			inData->item_page_num--;
 			if (inData->item_page_num < 0) { inData->item_page_num = 0; }
 		break;
-		
+
 		case ONcPSState_Weapons:
 			inData->weapon_page_num--;
 			if (inData->weapon_page_num < 0) { inData->weapon_page_num = 0; }
 		break;
-		
+
 		case ONcPSState_Diary:
 			inData->diary_page_num--;
 			if (inData->diary_page_num < 0) { inData->diary_page_num = 0; }
@@ -3266,7 +3266,7 @@ ONiPS_Previous(
 			if (inData->help_page_num < 0) { inData->help_page_num = 0; }
 		break;
 	}
-	
+
 	ONiPS_EnableButtons(inDialog, inData);
 }
 
@@ -3282,7 +3282,7 @@ ONiPS_Next(
 			inData->objective_page_num--;
 			if (inData->objective_page_num < 0) { inData->objective_page_num = 0; }
 		break;
-		
+
 		case ONcPSState_Items:
 			inData->item_page_num++;
 			if (inData->item_page_num >= inData->num_items)
@@ -3290,7 +3290,7 @@ ONiPS_Next(
 				inData->item_page_num = (inData->num_items - 1);
 			}
 		break;
-		
+
 		case ONcPSState_Weapons:
 			inData->weapon_page_num++;
 			if (inData->weapon_page_num >= inData->num_weapon_pages)
@@ -3298,7 +3298,7 @@ ONiPS_Next(
 				inData->weapon_page_num = (inData->num_weapon_pages - 1);
 			}
 		break;
-		
+
 		case ONcPSState_Diary:
 			inData->diary_page_num++;
 			if (inData->diary_page_num >= inData->num_diary_pages)
@@ -3324,11 +3324,11 @@ ONiPauseScreen_InitDialog(
 {
 	UUtError					error;
 	ONtPauseScreenData			*data;
-	
+
 	// create the data
 	data = &ONgPauseScreenData;
 	WMrDialog_SetUserData(inDialog, (UUtUns32)data);
-	
+
 	// initialize
 	error = ONiPS_ItemPage_Init(inDialog, data);
 	if (error != UUcError_None) { WMrDialog_ModalEnd(inDialog, 0); return; }
@@ -3337,7 +3337,7 @@ ONiPauseScreen_InitDialog(
 
 	error = ONiPS_WeaponPage_Init(inDialog, data);
 	if (error != UUcError_None) { WMrDialog_ModalEnd(inDialog, 0); return; }
-	
+
 	error = ONiPS_HelpPage_Init(inDialog, data);
 	if (error != UUcError_None) { WMrDialog_ModalEnd(inDialog, 0); return; }
 
@@ -3359,10 +3359,10 @@ ONiPauseScreen_InitDialog(
 	// select the objective screen
 	WMrDialog_ToggleButtonCheck(inDialog, ONcPS_Btn_Objective, ONcPS_Btn_Help, ONcPS_Btn_Objective);
 	data->state = ONcPSState_Objective;
-	
+
 	// set the start time
 	data->start_time = UUrMachineTime_Sixtieths() + (ONcPauseScreen_KeyAcceptDelay * 60);
-	
+
 	// hide the hint area
 	ONiPS_ShowHintArea(inDialog, data, UUcTrue);
 
@@ -3392,9 +3392,9 @@ ONiPauseScreen_DrawItem(
 {
 	ONtPauseScreenData			*data;
 	TStFontInfo					font_info;
-	
+
 	WMrWindow_GetFontInfo(inDrawItem->window, &font_info);
-	
+
 	ONiFIStack_Init(
 		font_info.font_family,
 		font_info.font_size,
@@ -3409,32 +3409,32 @@ ONiPauseScreen_DrawItem(
 		// draw the override text instead of the normal hint text
 		dest.x = 0;
 		dest.y = DCrText_GetAscendingHeight();
-		
+
 		DCrDraw_String2(
 			inDrawItem->draw_context,
 			ONgPauseScreenOverrideMessage,
 			NULL,
 			&dest,
-			&rect);				
+			&rect);
 
 		return;
 	}
-	
+
 	data = (ONtPauseScreenData*)WMrDialog_GetUserData(inDialog);
 	switch (data->state)
 	{
 		case ONcPSState_Objective:
 			ONiPS_Paint_Objective(inDialog, data, inDrawItem);
 		break;
-		
+
 		case ONcPSState_Items:
 			ONiPS_Paint_Items(inDialog, data, inDrawItem);
 		break;
-		
+
 		case ONcPSState_Weapons:
 			ONiPS_Paint_Weapons(inDialog, data, inDrawItem);
 		break;
-		
+
 		case ONcPSState_Diary:
 			ONiPS_Paint_Diary(inDialog, data, inDrawItem);
 		break;
@@ -3455,29 +3455,29 @@ ONiPauseScreen_HandleCommand(
 	UUtUns16					control_id;
 	ONtPauseScreenData			*data;
 	UUtBool						show_help;
-	
+
 	data = (ONtPauseScreenData*)WMrDialog_GetUserData(inDialog);
-	
+
 	control_id = UUmLowWord(inParam1);
-	
+
 	switch (control_id)
 	{
 		case ONcPS_Btn_Objective:
 			data->state = ONcPSState_Objective;
 		break;
-		
+
 		case ONcPS_Btn_Items:
 			data->state = ONcPSState_Items;
 		break;
-		
+
 		case ONcPS_Btn_Weapons:
 			data->state = ONcPSState_Weapons;
 		break;
-		
+
 		case ONcPS_Btn_Diary:
 			data->state = ONcPSState_Diary;
 		break;
-		
+
 		case ONcPS_Btn_Help:
 			data->state = ONcPSState_Help;
 		break;
@@ -3486,17 +3486,17 @@ ONiPauseScreen_HandleCommand(
 		case ONcPS_Btn_HelpPrevious:
 			ONiPS_Previous(inDialog, data);
 		break;
-		
+
 		case ONcPS_Btn_Next:
 		case ONcPS_Btn_HelpNext:
 			ONiPS_Next(inDialog, data);
 		break;
-		
+
 		case WMcDialogItem_Cancel:
 			WMrDialog_ModalEnd(inDialog, 0);
 		break;
 	}
-	
+
 	switch (control_id)
 	{
 		case ONcPS_Btn_Objective:
@@ -3512,7 +3512,7 @@ ONiPauseScreen_HandleCommand(
 			ONrInGameUI_EnableHelpDisplay(show_help);
 		break;
 	}
-	
+
 	// enable the buttons
 	ONiPS_EnableButtons(inDialog, data);
 }
@@ -3533,7 +3533,7 @@ ONiPauseScreen_Paint(
 	IMtShade					selected_shade, highlighted_shade, unselected_shade;
 
 	data = (ONtPauseScreenData*)WMrDialog_GetUserData(inDialog);
-	
+
 	if (data->start_time < UUrMachineTime_Sixtieths())
 	{
 		if (LIrTestKey(LIcKeyCode_F1) == UUcTrue)
@@ -3591,36 +3591,36 @@ ONiPauseScreen_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			ONiPauseScreen_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			ONiPauseScreen_Destroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			ONiPauseScreen_HandleCommand(inDialog, inParam1, (WMtWindow*)inParam2);
 		break;
-		
+
 		case WMcMessage_DrawItem:
 			ONiPauseScreen_DrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		case WMcMessage_Paint:
 			ONiPauseScreen_Paint(inDialog);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -3634,46 +3634,46 @@ ONrPauseScreen_Display(
 	LItMode					mode;
 	float					orig_volume;
 	SStImpulse				*impulse;
-	
+
 	// save the current ui
 	partspec_ui = PSrPartSpecUI_GetActive();
-	
+
 	// set the ui to the out of game ui
 	temp_ui = PSrPartSpecUI_GetByName(ONcInGameUIName);
 	if (temp_ui != NULL) { PSrPartSpecUI_SetActive(temp_ui); }
-	
+
 	mode = LIrMode_Get();
 	LIrMode_Set(LIcMode_Normal);
 	WMrActivate();
-	
+
 	// play the open pause screen sound
 	impulse = OSrImpulse_GetByName(ONcPauseScreen_OpenSound);
 	if (impulse != NULL) { OSrImpulse_Play(impulse, NULL, NULL, NULL, NULL); }
-	
+
 	// lower the volume
 	orig_volume = SS2rVolume_Get();
 	SS2rVolume_Set(orig_volume * ONcPauseScreen_VolumeCut);
-	
+
 	WMrDialog_ModalBegin(
 		ONcPauseScreenID,
 		NULL,
 		ONiPauseScreen_Callback,
 		0,
 		NULL);
-	
+
 	// restore the volume
 	SS2rVolume_Set(orig_volume);
-	
+
 	// play the close pause screen sound
 	impulse = OSrImpulse_GetByName(ONcPauseScreen_CloseSound);
 	if (impulse != NULL) { OSrImpulse_Play(impulse, NULL, NULL, NULL, NULL); }
-	
+
 	WMrDeactivate();
 	LIrMode_Set(mode);
-	
+
 	// reset the active ui
 	PSrPartSpecUI_SetActive(partspec_ui);
-	
+
 	// clear any override messages
 	ONrPauseScreen_OverrideMessage(NULL);
 }
@@ -3697,7 +3697,7 @@ ONiPauseScreen_RegisterTemplates(
 	void)
 {
 	UUtError					error;
-	
+
 	error =
 		TMrTemplate_Register(
 			ONcTemplate_IGUI_String,
@@ -3725,7 +3725,7 @@ ONiPauseScreen_RegisterTemplates(
 			sizeof(ONtIGUI_PageArray),
 			TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	error =
 		TMrTemplate_Register(
 			ONcTemplate_DiaryPage,
@@ -3777,11 +3777,11 @@ ONiPauseScreen_Initialize(
 	void)
 {
 	UUtError					error;
-	
+
 	// register the templates
 	error = ONiPauseScreen_RegisterTemplates();
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -3791,19 +3791,19 @@ ONiPauseScreen_LevelLoad(
 	UUtUns32					inLevelNum)
 {
 	UUtError					error;
-	
+
 	// intialize the pause screen data
 	UUrMemory_Clear(&ONgPauseScreenData, sizeof(ONtPauseScreenData));
 	ONgPauseScreenData.current_level = (UUtInt16)inLevelNum;
-	
+
 	// initialize the objective page
 	error = ONiPS_ObjectivePage_Init(&ONgPauseScreenData);
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the diary page
 	error = ONiPS_DiaryPage_Init(&ONgPauseScreenData, -1);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -3872,14 +3872,14 @@ ONiInGameUI_ObjectiveSet(
 		return UUcError_None;
 	}
 	ONgObjectiveNumber = new_objective;
-	
+
 	if ((inParameterListLength >= 2) && (inParameterList[1].type == SLcType_String) &&
 		(UUrString_Compare_NoCase(inParameterList[1].val.str, "silent") == 0)) {
 		// this objective is set silently - no prompting
 		silent = UUcTrue;
 	}
 
-	if ((ONgInGameUI_LastRestoreGame != (UUtUns32) -1) && 
+	if ((ONgInGameUI_LastRestoreGame != (UUtUns32) -1) &&
 		(ONrGameState_GetGameTime() < ONgInGameUI_LastRestoreGame + ONcObjective_IgnoreAfterRestoreGame)) {
 		// we restored our game recently, this objective should be silent
 		silent = UUcTrue;
@@ -3924,7 +3924,7 @@ ONiInGameUI_TargetSet(
 	UUtInt16				flag_number;
 	UUtBool					result;
 	M3tPoint3D				location;
-	
+
 	// if the distance value is 0.0f, then turn off the radar
 	if (inParameterList[1].val.f == 0.0f)
 	{
@@ -3934,13 +3934,13 @@ ONiInGameUI_TargetSet(
 
 	// get the number of the flag to make the target
 	flag_number = (UUtInt16)inParameterList[0].val.i;
-	
+
 	result = ONrLevel_Flag_ID_To_Location(flag_number, &location);
 	if (result == UUcTrue)
 	{
 		ONtCharacter				*player;
 		M3tVector3D					player_to_target;
-		
+
 		if (gHasLSITarget && (MUrPoint_Distance_Squared(&location, &gLSITarget) < UUmSQR(ONcObjective_SuperimposedObjective))) {
 			// we already have this target set, ignore the subsequent event
 			return UUcError_None;
@@ -3952,10 +3952,10 @@ ONiInGameUI_TargetSet(
 		player = ONrGameState_GetPlayerCharacter();
 		MUmVector_Subtract(player_to_target, gLSITarget, player->location);
 		gMaxDistanceSquared = MUmVector_GetLengthSquared(player_to_target);
-		
+
 		// set the minimum distance squared
 		gMinDistanceSquared = inParameterList[1].val.f * inParameterList[1].val.f;
-		
+
 		gHasLSITarget = UUcTrue;
 	}
 	else
@@ -3963,7 +3963,7 @@ ONiInGameUI_TargetSet(
 		COrConsole_Printf("No Flag %d exists.", flag_number);
 		gHasLSITarget = UUcFalse;
 	}
-	
+
 	if (!ONrGameState_EventSound_InCutscene()) {
 		ONrGameState_EventSound_Play(ONcEventSound_CompassNew, NULL);
 	}
@@ -3982,11 +3982,11 @@ ONrInGameUI_Initialize(
 	void)
 {
 	UUtError					error;
-	
+
 	// initialize
 	error = ONiPauseScreen_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// preset the UVs
 	gFullTextureUVs[0].u = 0.0f;
 	gFullTextureUVs[0].v = 0.0f;
@@ -3996,7 +3996,7 @@ ONrInGameUI_Initialize(
 	gFullTextureUVs[2].v = 1.0f;
 	gFullTextureUVs[3].u = 1.0f;
 	gFullTextureUVs[3].v = 1.0f;
-	
+
 	gFullTextureUVsInvert[0].u = 0.0f;
 	gFullTextureUVsInvert[0].v = 1.0f;
 	gFullTextureUVsInvert[1].u = 1.0f;
@@ -4008,7 +4008,7 @@ ONrInGameUI_Initialize(
 
 	// create the script command
 #if CONSOLE_DEBUGGING_COMMANDS
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"diary_page_unlock",
 			"Unlocks a specific diary page on the current level.",
@@ -4016,7 +4016,7 @@ ONrInGameUI_Initialize(
 			ONiInGameUI_DiaryPageUnlock);
 	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"objective_complete",
 			"Plays the objective-complete sound.",
@@ -4024,7 +4024,7 @@ ONrInGameUI_Initialize(
 			ONiInGameUI_ObjectiveComplete);
 	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 		SLrGlobalVariable_Register_Float(
 			"target_max_distance",
 			"Sets the distance at which the radar will start to change from its minimum.",
@@ -4048,7 +4048,7 @@ ONrInGameUI_Initialize(
 	UUmError_ReturnOnError(error);
 #endif
 
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"objective_set",
 			"Sets the current objective page.",
@@ -4056,16 +4056,16 @@ ONrInGameUI_Initialize(
 			ONiInGameUI_ObjectiveSet);
 	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"target_set",
 			"Sets the target to the specified flag",
 			"flag_id:int min_distance:float",
 			ONiInGameUI_TargetSet);
 	UUmError_ReturnOnError(error);
-	
+
 	gMaxDistanceSquared = 75000.0f;
-	
+
 	error =
 		SLrScript_Command_Register_Void(
 			"text_console",
@@ -4091,7 +4091,7 @@ ONrInGameUI_Initialize(
 			ONiInGameUI_FlashElement);
 	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 		SLrGlobalVariable_Register_Bool(
 			"ui_suppress_prompt",
 			"Suppresses UI prompting about new objectives or moves.",
@@ -4107,10 +4107,10 @@ ONrInGameUI_LevelLoad(
 	UUtUns32					inLevelNum)
 {
 	UUtError					error;
-	
+
 	error = ONiInGameUI_LevelLoad();
 	UUmError_ReturnOnError(error);
-	
+
 	error = ONiPauseScreen_LevelLoad(inLevelNum);
 	UUmError_ReturnOnError(error);
 
@@ -4152,10 +4152,10 @@ ONrInGameUI_RegisterTemplates(
 	void)
 {
 	UUtError					error;
-	
+
 	error = ONiPauseScreen_RegisterTemplates();
 	UUmError_ReturnOnError(error);
-	
+
 	error =
 		TMrTemplate_Register(
 			ONcTemplate_KeyIcons,
@@ -4249,7 +4249,7 @@ ONrInGameUI_Update(
 	const char					*message_name, *message;
 	UUtUns32					i, current_time;
 	UUtInt16					hits;
-	
+
 	// get a pointer to the player's character
 	player = ONrGameState_GetPlayerCharacter();
 	if (player == NULL) { return; }
@@ -4323,16 +4323,16 @@ ONiTC_SetPicture(
 {
 	WMtWindow					*picture;
 	UUtInt32					i;
-	
+
 	// get a pointer to the picture control
 	picture = WMrDialog_GetItemByID(inDialog, ONcTC_Pt_Picture);
 	if (picture == NULL) { return; }
-	
+
 	// set the console_data picture
 	for (i = inTCD->page; i >= 0; i--)
 	{
 		if (inTCD->text_console->console_data->pages[i]->pict == NULL) { continue; }
-		
+
 		WMrPicture_SetPicture(
 			picture,
 			inTCD->text_console->console_data->pages[i]->pict);
@@ -4348,10 +4348,10 @@ ONiTC_SetButtons(
 {
 	WMtWindow					*next;
 	WMtWindow					*close;
-	
+
 	next = WMrDialog_GetItemByID(inDialog, ONcTC_Btn_Next);
 	close = WMrDialog_GetItemByID(inDialog, ONcTC_Btn_Close);
-	
+
 	if (inTCD->page >= ((UUtInt32)inTCD->text_console->console_data->num_pages) - 1)
 	{
 		WMrWindow_SetVisible(next, UUcFalse);
@@ -4370,17 +4370,17 @@ ONiTC_InitDialog(
 	WMtDialog					*inDialog)
 {
 	ONtTextConsoleData			*tcd;
-	
+
 	// get a pointer to the text console data
 	tcd = (ONtTextConsoleData*)WMrDialog_GetUserData(inDialog);
 	if (tcd == NULL) { goto end; }
-	
+
 	tcd->page = 0;
-	
+
 	ONiTC_SetButtons(inDialog, tcd);
-	
+
 	return;
-	
+
 end:
 	WMrDialog_ModalEnd(inDialog, 0);
 }
@@ -4393,10 +4393,10 @@ ONiTC_HandleDrawItem(
 {
 	ONtTextConsoleData			*tcd;
 	TStFontInfo					font_info;
-	
+
 	// get a pointer to the text console data
 	tcd = (ONtTextConsoleData*)WMrDialog_GetUserData(inDialog);
-	
+
 	WMrWindow_GetFontInfo(inDrawItem->window , &font_info);
 	ONiFIStack_Init(
 		font_info.font_family,
@@ -4418,13 +4418,13 @@ ONiTC_HandleCommand(
 	ONtTextConsoleData			*tcd;
 	UUtUns16					command_type;
 	UUtUns16					control_id;
-	
+
 	// get a pointer to the text console data
 	tcd = (ONtTextConsoleData*)WMrDialog_GetUserData(inDialog);
 
 	command_type = UUmHighWord(inParam1);
 	control_id = UUmLowWord(inParam1);
-	
+
 	switch (control_id)
 	{
 		case ONcTC_Btn_Next:
@@ -4435,12 +4435,12 @@ ONiTC_HandleCommand(
 				WMrDialog_ModalEnd(inDialog, 0);
 			}
 		break;
-		
+
 		case ONcTC_Btn_Close:
 			WMrDialog_ModalEnd(inDialog, 0);
 		break;
 	}
-	
+
 	ONiTC_SetButtons(inDialog, tcd);
 }
 
@@ -4451,18 +4451,18 @@ ONiTC_HandleKeyDown(
 	UUtUns32					inKey)
 {
 	WMtWindow					*control;
-	
+
 	switch (inKey)
 	{
 		case LIcKeyCode_Escape:
 			control = WMrDialog_GetItemByID(inDialog, ONcTC_Btn_Close);
 		break;
-		
+
 		case LIcKeyCode_Space:
 			control = WMrDialog_GetItemByID(inDialog, ONcTC_Btn_Next);
 		break;
 	}
-	
+
 	// simulate a button click
 	WMrMessage_Send(
 		inDialog,
@@ -4480,15 +4480,15 @@ ONiTextConsole_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			ONiTC_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			ONiTC_HandleCommand(inDialog, inParam1, (WMtWindow*)inParam2);
 			if (UUmLowWord(inParam1) == ONcTC_Btn_Close)
@@ -4496,11 +4496,11 @@ ONiTextConsole_Callback(
 				WMrDialog_ModalEnd(inDialog, 0);
 			}
 		break;
-		
+
 		case WMcMessage_KeyDown:
 			ONiTC_HandleKeyDown(inDialog, inParam1);
 		break;
-		
+
 		case WMcMessage_DrawItem:
 			if (inParam1 != ONcTC_Txt_Text) { break; }
 			ONiTC_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
@@ -4510,7 +4510,7 @@ ONiTextConsole_Callback(
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -4523,12 +4523,12 @@ ONrInGameUI_TextConsole_Display(
 	PStPartSpecUI				*partspec_ui;
 	PStPartSpecUI				*temp_ui;
 	LItMode						mode;
-	
+
 	if (inTextConsole == NULL) { return; }
-	
+
 	// save the current ui
 	partspec_ui = PSrPartSpecUI_GetActive();
-	
+
 	// set the ui to the out of game ui
 	temp_ui = PSrPartSpecUI_GetByName(ONcInGameUIName);
 	if (temp_ui != NULL) { PSrPartSpecUI_SetActive(temp_ui); }
@@ -4536,17 +4536,17 @@ ONrInGameUI_TextConsole_Display(
 	mode = LIrMode_Get();
 	LIrMode_Set(LIcMode_Normal);
 	WMrActivate();
-	
+
 	tcd.text_console = inTextConsole;
 	tcd.page = 0;
-	
+
 	WMrDialog_ModalBegin(
 		ONcTextConsoleID,
 		NULL,
 		ONiTextConsole_Callback,
 		(UUtUns32)&tcd,
 		NULL);
-	
+
 	WMrDeactivate();
 	LIrMode_Set(mode);
 
@@ -4565,18 +4565,18 @@ ONiTextConsole_Display(
 	SLtParameter_Actual		*ioReturnValue)
 {
 	ONtTextConsole			*text_console;
-	
+
 	if (inParameterListLength != 1) { return UUcError_Generic; }
 	if (inParameterList == NULL) { return UUcError_Generic; }
-	
+
 	text_console =
 		(ONtTextConsole*)TMrInstance_GetFromName(
 			ONcTemplate_TextConsole,
 			inParameterList[0].val.str);
 	if (text_console == NULL) { return UUcError_Generic; }
-	
+
 	ONrInGameUI_TextConsole_Display(text_console);
-	
+
 	return UUcError_None;
 }
 

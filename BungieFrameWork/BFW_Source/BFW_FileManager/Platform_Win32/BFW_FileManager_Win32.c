@@ -1,13 +1,13 @@
 
 /*
 	FILE:	BFW_FileManager_Win32.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 28, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -18,7 +18,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <direct.h> 
+#include <direct.h>
 #include <io.h>
 
 //#include <iostream.h>
@@ -89,7 +89,7 @@ static const char *WindowsErrorToString(DWORD error)
 		case ERROR_GEN_FAILURE: error_msg = "a deviced attached to the system is not functioning"; break;
 		case ERROR_SHARING_VIOLATION: error_msg = "cannot access the file, in use by anther process"; break;
 		case ERROR_LOCK_VIOLATION: error_msg = "another process has locked a portion of the file"; break;
-		case ERROR_WRONG_DISK: error_msg = "the wrong diskette is in the drive"; break; 
+		case ERROR_WRONG_DISK: error_msg = "the wrong diskette is in the drive"; break;
 		case ERROR_SHARING_BUFFER_EXCEEDED: error_msg = "too many file opened for sharing"; break;
 		case ERROR_HANDLE_EOF: 	error_msg = "reached the end of file"; break;
 		case ERROR_HANDLE_DISK_FULL: error_msg = "the disk is full"; break;
@@ -107,23 +107,23 @@ BFiFileRef_PathNameExists(
 	char		buffer[BFcMaxPathLength];
 	char*		bufferLeafName;
 	DWORD		attributes;
-	
+
 	UUrString_Copy(buffer, inPath, BFcMaxPathLength);
-	
+
 	bufferLeafName = BFrPath_To_Name(buffer);
-	
+
 	if(bufferLeafName > buffer)
 	{
 		*bufferLeafName = 0;
-		
+
 		attributes = GetFileAttributes(buffer);
-		
+
 		if(attributes == 0xFFFFFFFF)
 		{
 			return UUcFalse;
 		}
 	}
-	
+
 	return UUcTrue;
 
 }
@@ -133,18 +133,18 @@ BFiCheckFileName(
 	const char		*inFileName)
 {
 	const char		*name;
-	
+
 	name = inFileName;
-	
+
 	while (*name)
 	{
 		if (name[0] == '/')
 		{
 			char	illegal_char[2];
-			
+
 			illegal_char[0] = name[0];
 			illegal_char[1] = '\0';
-			
+
 			UUmError_ReturnOnErrorMsgP(
 				UUcError_Generic,
 				"Illegal character %s in file name.",
@@ -152,10 +152,10 @@ BFiCheckFileName(
 				0,
 				0);
 		}
-		
+
 		name++;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -165,10 +165,10 @@ BFrFileRef_Set(
 	const char*		inFileName)			// like make from name but does not create
 {
 	UUtError	error;
-	
+
 	UUmAssert(NULL != inFileRef);
 	UUmAssert(NULL != inFileName);
-		
+
 	if(strlen(inFileName) >= BFcMaxPathLength)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Path name too long");
@@ -177,17 +177,17 @@ BFrFileRef_Set(
 	/* Make sure the path name is valid */
 	error = BFiCheckFileName(inFileName);
 	UUmError_ReturnOnError(error);
-	
+
 	if(BFiFileRef_PathNameExists(inFileName) == UUcFalse)
 	{
 		return BFcError_FileNotFound;
 	}
-			
+
 	UUrString_Copy(inFileRef->name, inFileName, BFcMaxPathLength);
-	
+
 	{
 		char *leaf_name = BFrPath_To_Name(inFileRef->name);
-	
+
 		if(strlen(leaf_name) >= BFcMaxFileNameLength)
 		{
 			UUmError_ReturnOnErrorMsgP(
@@ -196,7 +196,7 @@ BFrFileRef_Set(
 				(UUtUns32)leaf_name, BFcMaxFileNameLength-1, 0);
 		}
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -204,11 +204,11 @@ void
 BFrFileRef_Dispose(
 	BFtFileRef	*inFileRef)
 {
-	
+
 	UUmAssert(inFileRef != NULL);
-	
+
 	UUrMemory_Block_Delete(inFileRef);
-	
+
 }
 
 UUtError
@@ -217,17 +217,17 @@ BFrFileRef_Duplicate(
 	BFtFileRef	**outNewFileRef)
 {
 	UUtError error;
-	
+
 	UUmAssert(inOrigFileRef != NULL);
 	UUmAssert(outNewFileRef != NULL);
-	
+
 	error =
 		BFrFileRef_MakeFromName(
 			inOrigFileRef->name,
 			outNewFileRef);
 
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -246,7 +246,7 @@ BFrFileRef_GetLeafName(
 const char *
 BFrFileRef_GetFullPath(
 	const BFtFileRef*		inFileRef)
-{	
+{
 	return inFileRef->name;
 }
 
@@ -262,10 +262,10 @@ BFrFileRef_SetName(
 
 	UUmAssert(inFileRef != NULL);
 	UUmAssert(inName != NULL);
-	
+
 	error = BFiCheckFileName(inName);
 	UUmError_ReturnOnError(error);
-	
+
 	if (BFrPath_IsAbsolute(inName))
 	{
 		if(strlen(inName) >= BFcMaxPathLength)
@@ -285,7 +285,7 @@ BFrFileRef_SetName(
 
 		UUrString_Copy(leaf_name, inName, BFcMaxPathLength);
 	}
-	
+
 	{
 		char *leaf_name = BFrPath_To_Name(inFileRef->name);
 
@@ -297,12 +297,12 @@ BFrFileRef_SetName(
 				(UUtUns32)leaf_name, BFcMaxFileNameLength-1, 0);
 		}
 	}
-	
+
 	if(BFiFileRef_PathNameExists(inFileRef->name) == UUcFalse)
 	{
 		return BFcError_FileNotFound;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -311,14 +311,14 @@ BFrFileRef_FileExists(
 	BFtFileRef	*inFileRef)
 {
 	DWORD attributes;
-	
+
 	attributes = GetFileAttributes(inFileRef->name);
-	
+
 	if(attributes == 0xFFFFFFFF)
 	{
 		return UUcFalse;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -327,21 +327,21 @@ BFrFile_Create(
 	BFtFileRef	*inFileRef)
 {
 	FILE	*file;
-	
+
 	UUmAssert(inFileRef != NULL);
 	UUmAssert(inFileRef->name[0] != '\0');
 
 	remove(inFileRef->name);
-	
+
 	file = fopen(inFileRef->name, "wb");
-	
+
 	if(file == NULL)
 	{
 		return UUcError_Generic; //XXX
 	}
-	
+
 	fclose(file);
-	
+
 	return UUcError_None;
 }
 
@@ -364,12 +364,12 @@ BFrFile_Open(
 {
 	char	*mungedMode;
 	DWORD	dwDesiredAccess;
-	
+
 	UUmAssert(inFileRef != NULL);
 	UUmAssert(inFileRef->name[0] != '\0');
 	UUmAssert(inMode != NULL);
 	UUmAssert(outFile != NULL);
-	
+
 	if(!strcmp("r", inMode))
 	{
 		mungedMode = "rb";
@@ -389,7 +389,7 @@ BFrFile_Open(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Illegal file mode");
 	}
-	
+
 	*outFile = (BFtFile *) fopen(inFileRef->name, mungedMode);
 
 	if(*outFile == NULL)
@@ -410,7 +410,7 @@ BFrFile_Open(
 		fileHandle = CreateFile(
 			inFileRef->name,
 			dwDesiredAccess,
-			FILE_SHARE_READ,	
+			FILE_SHARE_READ,
 			0,
 			OPEN_EXISTING,
 			FILE_ATTRIBUTE_NORMAL,
@@ -425,10 +425,10 @@ BFrFile_Open(
 			CloseHandle(fileHandle);
 		}
 #endif
-		
+
 		return BFcError_FileNotFound;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -448,8 +448,8 @@ BFrFile_Map(
 	BFtFileMapping *mapping;
 
 	mapping = UUrMemory_Block_New(sizeof(BFtFileMapping));
-	if (NULL == mapping) { 
-		error = UUcError_OutOfMemory; 
+	if (NULL == mapping) {
+		error = UUcError_OutOfMemory;
 		goto fail;
 	}
 
@@ -504,8 +504,8 @@ BFrFile_Map_Default(
 	BFtFileMapping *mappingRef;
 
 	mappingRef = UUrMemory_Block_New(sizeof(BFtFileMapping));
-	if (NULL == mappingRef) { 
-		error = UUcError_OutOfMemory; 
+	if (NULL == mappingRef) {
+		error = UUcError_OutOfMemory;
 		goto fail;
 	}
 
@@ -554,8 +554,8 @@ BFrFile_Map(
 	UUmAssertWritePtr(outPtr, sizeof(*outPtr));
 
 	mappingRef = UUrMemory_Block_New(sizeof(BFtFileMapping));
-	if (NULL == mappingRef) { 
-		error = UUcError_OutOfMemory; 
+	if (NULL == mappingRef) {
+		error = UUcError_OutOfMemory;
 		goto fail;
 	}
 
@@ -563,7 +563,7 @@ BFrFile_Map(
 	fileHandle = CreateFile(
 		inFileRef->name,
 		GENERIC_READ | GENERIC_WRITE,
-		FILE_SHARE_READ,	
+		FILE_SHARE_READ,
 		0,
 		OPEN_EXISTING,
 		FILE_ATTRIBUTE_NORMAL,
@@ -574,7 +574,7 @@ BFrFile_Map(
 		fileHandle = CreateFile(
 			inFileRef->name,
 			GENERIC_READ,
-			FILE_SHARE_READ,	
+			FILE_SHARE_READ,
 			0,
 			OPEN_EXISTING,
 			FILE_ATTRIBUTE_NORMAL,
@@ -594,7 +594,7 @@ BFrFile_Map(
 		error = UUcError_Generic;
 		goto fail;
 	}
-	
+
 	fileMappingHandle = CreateFileMapping(
 		fileHandle,
 		NULL,
@@ -603,12 +603,12 @@ BFrFile_Map(
 		0,
 		NULL);
 
-	if ((fileMappingHandle != NULL) && (GetLastError() == ERROR_ALREADY_EXISTS)) 
-	{ 
+	if ((fileMappingHandle != NULL) && (GetLastError() == ERROR_ALREADY_EXISTS))
+	{
 		error = UUcError_Generic;
 		goto fail;
-	} 
- 
+	}
+
 	if (NULL == fileMappingHandle) {
 		win32Error = GetLastError();
 		error_msg = WindowsErrorToString(win32Error);
@@ -661,16 +661,16 @@ BFrFile_UnMap(
 	BOOL unmapResult;
 	UUmAssertReadPtr(inMapping, sizeof(*inMapping));
 
-	if (NULL != inMapping->fileMappingHandle) 
+	if (NULL != inMapping->fileMappingHandle)
 	{
 		UUmAssert(NULL == inMapping->classicFile);
 
 		unmapResult = UnmapViewOfFile(inMapping->ptr);
 		UUmAssert(unmapResult);
-		
+
 		CloseHandle(inMapping->fileMappingHandle);
-		CloseHandle(inMapping->fileHandle); 
-		
+		CloseHandle(inMapping->fileHandle);
+
 		UUrMemory_Block_Delete(inMapping);
 	}
 	else
@@ -696,7 +696,7 @@ BFrFile_Flush(
 	UUmAssert(NULL != inFile);
 
 	fflush((FILE *)inFile);
-	
+
 	return UUcError_None;
 }
 
@@ -707,7 +707,7 @@ BFrFile_Close(
 	UUmAssert(NULL != inFile);
 
 	fclose((FILE *)inFile);
-	
+
 }
 
 UUtBool
@@ -715,7 +715,7 @@ BFrFileRef_IsDirectory(
 	BFtFileRef*		inFileRef)
 {
 	DWORD		attributes;
-	
+
 	// is this a file reference to a directory
 	// routine returns UUcTrue if file ref is a directory
 	attributes = GetFileAttributes(inFileRef->name);
@@ -729,10 +729,10 @@ BFrFileRef_IsEqual(
 {
 	UUtInt32			result;
 	UUtBool				equal;
-	
+
 	result = UUrString_Compare_NoCase(inFileRef1->name, inFileRef2->name);
 	equal = (result == 0);
-	
+
 	return equal;
 }
 
@@ -741,20 +741,20 @@ BFrFileRef_IsLocked(
 	BFtFileRef*		inFileRef)
 {
 	DWORD		attributes;
-	
+
 	// do we have write access to the file?
 	// routine returns UUcTrue if file is locked
 	attributes = GetFileAttributes(inFileRef->name);
 	return ((attributes & FILE_ATTRIBUTE_READONLY) != 0);
 }
-	
+
 UUtError
 BFrFile_GetLength(
 	BFtFile		*inFile,
 	UUtUns32	*outLength)
 {
 	fpos_t	currentPos;
-		
+
 	UUmAssert(NULL != inFile);
 	UUmAssert(NULL != outLength);
 
@@ -762,19 +762,19 @@ BFrFile_GetLength(
 	{
 		UUmError_ReturnOnError(UUcError_Generic);
 	}
-	
+
 	if(fseek((FILE *)inFile, 0, SEEK_END) != 0)
 	{
 		UUmError_ReturnOnError(UUcError_Generic);
 	}
-	
+
 	*outLength = ftell((FILE *)inFile);
-	
+
 	if(fsetpos((FILE *)inFile, &currentPos) != 0)
 	{
 		UUmError_ReturnOnError(UUcError_Generic);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -787,7 +787,7 @@ BFrFile_GetPos(
 	UUmAssertWritePtr(outPos, sizeof(UUtUns32));
 
 	*outPos = ftell((FILE *) inFile);
-	
+
 	return UUcError_None;
 }
 
@@ -812,7 +812,7 @@ BFrFile_SetPos(
 
 	return error;
 }
-	
+
 UUtError
 BFrFile_Read(
 	BFtFile		*inFile,
@@ -848,11 +848,11 @@ BFrFile_Write(
 
 	UUmAssert(NULL != inFile);
 	UUmAssert((NULL != inData) || (0 == inLength));
-	
+
 	count = fwrite(inData, 1, inLength, (FILE *)inFile);
 
 	error = (count == inLength) ? UUcError_None : UUcError_Generic;
-	
+
 	return UUcError_None;
 }
 
@@ -876,7 +876,7 @@ BFrFileRef_GetModTime(
 
 	fileHandle = CreateFile(inFileRef->name, 0, FILE_SHARE_READ, 0, OPEN_EXISTING, 0 ,0);
 
-	if (INVALID_HANDLE_VALUE == fileHandle) 
+	if (INVALID_HANDLE_VALUE == fileHandle)
 	{
 		DWORD windowsErrorCode = GetLastError();
 		error_msg = WindowsErrorToString(windowsErrorCode);
@@ -887,7 +887,7 @@ BFrFileRef_GetModTime(
 
 	CloseHandle(fileHandle);
 
-	if (!success) 
+	if (!success)
 	{
 		UUmError_ReturnOnError(UUcError_Generic);
 	}
@@ -896,7 +896,7 @@ BFrFileRef_GetModTime(
 	FileTimeToSystemTime(&lastWriteTimeLocal, &systemTime);
 
 	*outSecsSince1900 = UUrSystemToSecsSince1900(systemTime);
-	
+
 	return UUcError_None;
 }
 
@@ -916,9 +916,9 @@ iCheckFileNameValid(
 		{
 			return UUcFalse;
 		}
-		
+
 	}
-	
+
 	if(inSuffix != NULL)
 	{
 		// Check for suffix match
@@ -927,7 +927,7 @@ iCheckFileNameValid(
 			return UUcFalse;
 		}
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -944,11 +944,11 @@ BFrDirectory_GetFileList(
 	HANDLE				fileHandle;
 	WIN32_FIND_DATA		curFindData;
 	char*				fileName;
-	
+
 	UUtUns32			curFileIndex;
 
 	char				fullFilePath[1024];
-	
+
 	AUtSharedStringArray*	stringArray;
 	UUtUns32				num;
 	UUtUns32*				sortedIndexList;
@@ -956,46 +956,46 @@ BFrDirectory_GetFileList(
 	UUtUns32				itr;
 	BFtFileRef*				newFileRef;
 	UUtUns32				newIndex;
-	
+
 	sprintf(fullFilePath, "%s\\*.*", inDirectoryRef->name);
 
 	fileHandle = FindFirstFile(fullFilePath, &curFindData);
-	
+
 	*outNumFiles = 0;
-	
+
 	curFileIndex = 0;
-	
+
 	stringArray = AUrSharedStringArray_New();
 
 	if(fileHandle == INVALID_HANDLE_VALUE)
 	{
 		return UUcError_None;
 	}
-	
+
 	do
 	{
 		fileName = curFindData.cFileName;
-		
+
 		if(iCheckFileNameValid(fileName, inPrefix, inSuffix) == UUcFalse)
 		{
 			continue;
 		}
-		
+
 		if(curFileIndex >= inMaxFiles)
 		{
 			break;
 		}
-		
+
 		// make a new file ref
 		sprintf(fullFilePath, "%s\\%s", inDirectoryRef->name, fileName);
 
-		error = 
+		error =
 			BFrFileRef_MakeFromName(
 				fullFilePath,
 				&newFileRef);
 		UUmError_ReturnOnErrorMsg(error, "Could not create file ref");
-		
-		error = 
+
+		error =
 			AUrSharedStringArray_AddString(
 				stringArray,
 				fileName,
@@ -1004,24 +1004,24 @@ BFrDirectory_GetFileList(
 		UUmError_ReturnOnErrorMsg(error, "Could not add file ref");
 
 		curFileIndex++;
-		
+
 	} while((FindNextFile(fileHandle, &curFindData) == TRUE));
-	
+
 	FindClose(fileHandle);
-	
+
 	*outNumFiles = (UUtUns16)curFileIndex;
-	
+
 	num = AUrSharedStringArray_GetNum(stringArray);
 	UUmAssert(curFileIndex == num);
-	
+
 	strings = AUrSharedStringArray_GetList(stringArray);
 	sortedIndexList = AUrSharedStringArray_GetSortedIndexList(stringArray);
-	
+
 	for(itr = 0; itr < num; itr++)
 	{
 		outFileRefArray[itr] = (BFtFileRef*)strings[sortedIndexList[itr]].data;
 	}
-	
+
 	AUrSharedStringArray_Delete(stringArray);
 
 	return UUcError_None;
@@ -1033,7 +1033,7 @@ struct BFtFileIterator
 
 	HANDLE				fileHandle;
 	WIN32_FIND_DATA		curFindData;
-	
+
 	char*				prefix;
 	char*				suffix;
 
@@ -1058,7 +1058,7 @@ BFrDirectory_FileIterator_New(
 	{
 		return UUcError_OutOfMemory;
 	}
-	
+
 	newFileIterator->fileRef = *inDirectoryRef;
 	newFileIterator->fileHandle = NULL;
 	newFileIterator->prefix = inPrefix;
@@ -1067,9 +1067,9 @@ BFrDirectory_FileIterator_New(
 	if( inDirectoryRef->name[strlen(inDirectoryRef->name) - 1] != '\\' ) {
 		sprintf(newFileIterator->fileRef.name, "%s\\", inDirectoryRef->name);
 	}
-	
+
 	*outFileIterator = newFileIterator;
-	
+
 	return UUcError_None;
 }
 
@@ -1080,9 +1080,9 @@ BFrDirectory_FileIterator_Next(
 {
 	WIN32_FIND_DATA		curFindData;
 	UUtBool				stop;
-	
+
 	UUmAssert(inFileIterator->fileRef.name[ strlen( inFileIterator->fileRef.name)-1 ] == '\\');
-	
+
 	if(inFileIterator->fileHandle == NULL)
 	{
 		char fullFilePath[1024];
@@ -1090,31 +1090,31 @@ BFrDirectory_FileIterator_Next(
 		sprintf(fullFilePath, "%s*.*", inFileIterator->fileRef.name);
 
 		inFileIterator->fileHandle = FindFirstFile(fullFilePath, &curFindData);
-		
+
 		if(inFileIterator->fileHandle == INVALID_HANDLE_VALUE)
 		{
 			return UUcError_Generic;
 		}
-		
+
 		stop = UUcFalse;
 	}
 	else
 	{
 		stop = FindNextFile(inFileIterator->fileHandle, &curFindData) == FALSE;
 	}
-	
+
 	while(!stop)
 	{
 		if(iCheckFileNameValid(curFindData.cFileName, inFileIterator->prefix, inFileIterator->suffix))
-		{			
+		{
 			sprintf(outFileRef->name, "%s%s", inFileIterator->fileRef.name, curFindData.cFileName);
-			
+
 			return UUcError_None;
 		}
 
 		stop = FindNextFile(inFileIterator->fileHandle, &curFindData) == FALSE;
 	}
-	
+
 	return UUcError_Generic;
 }
 
@@ -1143,17 +1143,17 @@ BFrDirectory_DeleteContentsOnly(
 			NULL,
 			&fileIterator);
 	UUmError_ReturnOnError(error);
-	
+
 	while(1)
 	{
 		error =	BFrDirectory_FileIterator_Next(fileIterator, &curFileRefToDelete);
 		if(error != UUcError_None) break;
-		
-	
+
+
 		attributes = GetFileAttributes(curFileRefToDelete.name);
-		
+
 		UUmAssert(attributes != 0xFFFFFFFF);
-		
+
 		if(attributes & FILE_ATTRIBUTE_DIRECTORY)
 		{
 			BFrDirectory_DeleteDirectoryAndContents(&curFileRefToDelete);
@@ -1163,7 +1163,7 @@ BFrDirectory_DeleteContentsOnly(
 			BFrFile_Delete(&curFileRefToDelete);
 		}
 	}
-	
+
 	BFrDirectory_FileIterator_Delete(fileIterator);
 
 	return UUcError_None;
@@ -1206,7 +1206,7 @@ BFrDirectory_Create(
 		sprintf(buffer, "%s\\%s", inDirRef->name, inDirName);
 		success = CreateDirectory(buffer, NULL);
 	}
-	
+
 	if(success == UUcFalse) return UUcError_Generic;
 
 	return UUcError_None;
@@ -1220,26 +1220,26 @@ BFrFileRef_GetParentDirectory(
 	UUtError		error;
 	char			path[BFcMaxPathLength];
 	char			*last_dir;
-	
+
 	UUmAssert(inFileRef);
 	UUmAssert(outParentDirectory);
-	
+
 	// initialize
 	*outParentDirectory = NULL;
-	
+
 	UUrString_Copy(path, inFileRef->name, BFcMaxPathLength);
-	
+
 	last_dir = strrchr(path, '\\');
 	if (last_dir == NULL) {
 		return UUcError_Generic;
 	}
 
 	last_dir[0] = '\0';
-	
+
 	// create the texture directory file ref
 	error = BFrFileRef_MakeFromName(path, outParentDirectory);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 

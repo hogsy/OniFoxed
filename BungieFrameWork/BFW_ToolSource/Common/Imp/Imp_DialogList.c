@@ -34,10 +34,10 @@ Imp_AddDialogList(
 
 	UUtBool				bool_result;
 	UUtBool				build_instance;
-	
+
 	UUtUns32			create_date;
 	UUtUns32			compile_date;
-	
+
 	// check to see if the dialogs need to be built
 	bool_result =
 		TMrConstruction_Instance_CheckExists(
@@ -47,7 +47,7 @@ Imp_AddDialogList(
 	if (bool_result)
 	{
 		compile_date = UUrConvertStrToSecsSince1900(gDialogListCompileTime);
-		
+
 		build_instance = (UUtBool)(create_date < inSourceFileModDate ||
 									create_date < compile_date);
 	}
@@ -55,7 +55,7 @@ Imp_AddDialogList(
 	{
 		build_instance = UUcTrue;
 	}
-	
+
 	if (build_instance)
 	{
 		GRtElementType		element_type;
@@ -63,7 +63,7 @@ Imp_AddDialogList(
 		DMtDialogList		*dialog_list;
 		UUtUns16			num_dialogs;
 		UUtUns16			i;
-		
+
 		// get the dialog list array
 		error =
 			GRrGroup_GetElement(
@@ -75,10 +75,10 @@ Imp_AddDialogList(
 		{
 			IMPmError_ReturnOnErrorMsg(error, "Unable to get element array");
 		}
-		
+
 		// get the number of elements in the dialog list
 		num_dialogs = (UUtUns16)GRrGroup_Array_GetLength(dialog_list_array);
-		
+
 		// create an dialog list template instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -87,13 +87,13 @@ Imp_AddDialogList(
 				num_dialogs,
 				&dialog_list);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create a dialog list template");
-		
+
 		// fill in the dialog list
 		for (i = 0; i < num_dialogs; i++)
 		{
 			char 			*dialog_name;
 			TMtPlaceHolder	dialog_ref;
-			
+
 			// get the name of the dialog instance
 			error =
 				GRrGroup_Array_GetElement(
@@ -105,19 +105,19 @@ Imp_AddDialogList(
 			{
 				IMPmError_ReturnOnErrorMsg(error, "Unable to get dialog instance name");
 			}
-			
+
 			// get a place holder for the dialog
-			error = 
+			error =
 				TMrConstruction_Instance_GetPlaceHolder(
 					VMcTemplate_View,
 					dialog_name,
 					&dialog_ref);
 			IMPmError_ReturnOnErrorMsg(error, "Could not get dialog placeholder");
-			
+
 			// save the dialog ref
 			dialog_list->dialogs[i].dialog_ref = (void*)dialog_ref;
 		}
 	}
-	
+
 	return UUcError_None;
 }

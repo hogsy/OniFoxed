@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Error.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 18, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */
@@ -15,7 +15,7 @@
 
 UUtError UUrError_Initialize(
 	void);
-	
+
 void UUrError_Terminate(
 	void);
 

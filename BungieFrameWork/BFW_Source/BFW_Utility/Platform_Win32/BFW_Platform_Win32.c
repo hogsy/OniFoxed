@@ -1,12 +1,12 @@
 /*
 	FILE:	UU_Platform_Win32.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 6, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -26,11 +26,11 @@
 #if 1
 // this is setting the priority of this thread higher the the priority
 // of the system reading input
-#define cThreadPriority			THREAD_PRIORITY_TIME_CRITICAL 
+#define cThreadPriority			THREAD_PRIORITY_TIME_CRITICAL
 #define cThreadPriorityClass	REALTIME_PRIORITY_CLASS
 #else
-#define cThreadPriority			THREAD_PRIORITY_ABOVE_NORMAL 
-#define cThreadPriorityClass	HIGH_PRIORITY_CLASS 
+#define cThreadPriority			THREAD_PRIORITY_ABOVE_NORMAL
+#define cThreadPriorityClass	HIGH_PRIORITY_CLASS
 #endif
 
 #define UUcInterrupt_ThreadTimeout (3*1000)
@@ -60,21 +60,21 @@ static DWORD WINAPI UUiInterruptProc_Thread(
 	SetThreadPriority(GetCurrentThread(), cThreadPriority);
 
 	interruptProcRef->active = UUcTrue;
-	
+
 	while(continue_iterating)
 	{
 		if(!interruptProcRef->quit)
 		{
-			
+
 			continue_iterating = interruptProcRef->interruptProc(interruptProcRef->refCon);
-			
+
 			/* Now sleep... */
 			initial_ticks = GetTickCount();
 			SleepEx(sleep_time, FALSE);
 
 			/* Modify the sleep time based on how responsive we are.. */
 			time_slept = GetTickCount() - initial_ticks;
-			
+
 			if(time_slept < interruptProcRef->period)
 			{
 				sleep_time++;
@@ -82,7 +82,7 @@ static DWORD WINAPI UUiInterruptProc_Thread(
 			else if(time_slept > interruptProcRef->period)
 			{
 				sleep_time--;
-				
+
 				if(sleep_time < 0)
 				{
 					sleep_time = 0; // don't ever suspend indefinately.
@@ -94,12 +94,12 @@ static DWORD WINAPI UUiInterruptProc_Thread(
 			continue_iterating = UUcFalse;
 		}
 	}
-	
+
 	interruptProcRef->active = UUcFalse;
-	
+
 	/* Note that if this ends prematurely, the memory is lost. (unless kill_thread is */
 	/*  called anyway) */
-	return 0l;	
+	return 0l;
 }
 
 UUtError UUrInterruptProc_Install(
@@ -110,16 +110,16 @@ UUtError UUrInterruptProc_Install(
 {
 	UUtInterruptProcRef *interruptProcRef;
 	HANDLE 				thread;
-	
+
 	*outInterruptProcRef = NULL;
-	
+
 	interruptProcRef = UUrMemory_Block_New(sizeof(UUtInterruptProcRef));
-	
+
 	if(interruptProcRef == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "UUrInterruptProc_Install(): Could not allocate memory for proc ref");
 	}
-	
+
 	interruptProcRef->interruptProc = interruptProc;
 	interruptProcRef->refCon = refCon;
 	interruptProcRef->period = 1000 / tiggersPerSec;
@@ -142,9 +142,9 @@ UUtError UUrInterruptProc_Install(
 
 	SetThreadPriority(thread, cThreadPriority);
 	interruptProcRef->thread= thread;
-	
+
 	*outInterruptProcRef = interruptProcRef;
-	
+
 	return UUcError_None;
 }
 
@@ -154,7 +154,7 @@ void UUrInterruptProc_Deinstall(
 	DWORD initial_tick_count = GetTickCount();
 
 	interruptProcRef->quit = UUcTrue;
-	
+
 	while(interruptProcRef->active &&
 		(GetTickCount() - initial_tick_count) < UUcInterrupt_ThreadTimeout) {};
 
@@ -166,7 +166,7 @@ FILE *UUrFOpen(
 	char	*name,
 	char	*mode)
 {
-	
+
 	return fopen(name, mode);
 }
 
@@ -176,7 +176,7 @@ static HHOOK alt_tab_interceptor= NULL;
 static BOOL running_nt= FALSE;
 
 static LRESULT CALLBACK low_level_keyboard_proc(
-	int code, 
+	int code,
 	WPARAM wparam,
 	LPARAM lparam)
 {
@@ -193,9 +193,9 @@ static LRESULT CALLBACK low_level_keyboard_proc(
 				case WM_KEYDOWN:
 				case WM_SYSKEYDOWN:
 				case WM_KEYUP:
-				case WM_SYSKEYUP: 
+				case WM_SYSKEYUP:
 					p= (PKBDLLHOOKSTRUCT)lparam;
-					eat_keystroke= 
+					eat_keystroke=
 						// Windows key, Apps key trapped
 						((p->vkCode == VK_LWIN) || (p->vkCode == VK_RWIN) || (p->vkCode == VK_APPS)) ||
 						// alt+tab trapped
@@ -261,11 +261,11 @@ UUtError UUrPlatform_Initialize(
 {
 	BOOL screen_saver_active= FALSE;
 	STICKYKEYS lil_sticky_turds= {0};
-	
+
 	if (initializeBasePlatform)
 	{
 	}
-	
+
 	// to disable alt-tab we have to pretend we are a screensaver
 	SystemParametersInfo(SPI_SETSCREENSAVEACTIVE, TRUE, &screen_saver_active, 0);
 	// disable stickey keys
@@ -350,7 +350,7 @@ void UUrPlatform_Terminate(
 
 	SetLastError(NO_ERROR);
 	SystemParametersInfo(SPI_SETSCREENSAVEACTIVE, FALSE, &screen_saver_active, 0);
-	
+
 	return;
 }
 
@@ -371,7 +371,7 @@ UUrProfile_Initialize(
 {
     vtuneDLLInst = LoadLibrary("vtuneapi.dll");
 
-    if(vtuneDLLInst) 
+    if(vtuneDLLInst)
 	{
 		UUgVtPauseSampling = (vtune_fpt) GetProcAddress(vtuneDLLInst, "VtPauseSampling");
 		UUgVtResumeSampling = (vtune_fpt) GetProcAddress(vtuneDLLInst, "VtResumeSampling");
@@ -408,14 +408,14 @@ UUrProfile_State_Set(
 
 	return;
 }
-				
+
 UUtProfileState
 UUrProfile_State_Get(
 	void)
 {
 	return UUgProfileState;
 }
-				
+
 void
 UUrProfile_Dump(
 	char*	inFileName)
@@ -446,7 +446,7 @@ static LONGLONG iGetTickCountLONGLONG(void)
 }
 
 
-// NOTE: this function bails after: 
+// NOTE: this function bails after:
 // warps after ~2.26 years (32-bit 60th of a second timer wraps)
 // must be called once atleast about once every 10 days to notice the wrap
 // of the 1000th of a second timer
@@ -505,10 +505,10 @@ UUtUns32 UUrSystemToSecsSince1900(SYSTEMTIME time)
 		    days += MonthDays[i-1];
 		}
 		days += time.wDay - 1;
-	
+
 	// and calculate the seconds
 		secs =  (((((days * 24) + time.wHour) * 60) + time.wMinute) * 60) + time.wSecond;
-	
+
 	return secs;
 }
 
@@ -581,18 +581,18 @@ static void OurWalkStack(void)
     stackFrame.AddrStack.Mode      = AddrModeFlat;
     stackFrame.AddrFrame.Offset    = context.Ebp;
     stackFrame.AddrFrame.Mode      = AddrModeFlat;
-	
+
 	do {
-		DWORD displacement = 0; 
-		CHAR symbol_buf[sizeof(IMAGEHLP_SYMBOL)+512]; 
+		DWORD displacement = 0;
+		CHAR symbol_buf[sizeof(IMAGEHLP_SYMBOL)+512];
 		PIMAGEHLP_SYMBOL pSymbol = (PIMAGEHLP_SYMBOL) symbol_buf;
 		char *name;
 
 		success = StackWalk(
-			IMAGE_FILE_MACHINE_I386, 
-			process, 
-			thread, 
-			&stackFrame, 
+			IMAGE_FILE_MACHINE_I386,
+			process,
+			thread,
+			&stackFrame,
 			NULL,		// context record
 			NULL,		// read memory routine
 			SymFunctionTableAccess,		// function table access routine
@@ -604,14 +604,14 @@ static void OurWalkStack(void)
 			pSymbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL);
 			pSymbol->MaxNameLength = 512;
 
-			if (SymGetSymFromAddr( process, stackFrame.AddrPC.Offset, &displacement, pSymbol )) { 
-				name = pSymbol->Name; 
-			} 
-			else { 
+			if (SymGetSymFromAddr( process, stackFrame.AddrPC.Offset, &displacement, pSymbol )) {
+				name = pSymbol->Name;
+			}
+			else {
 				error = GetLastError();
 
-				name = "<nosymbols>"; 
-			} 
+				name = "<nosymbols>";
+			}
 		}
 	} while(success);
 
@@ -646,7 +646,7 @@ void UUrPlatform_Idle(UUtWindow mainWindow, UUtUns32 inIdleTime)
 	while (was_event);
 #endif
 
-	if (inIdleTime > 0) { 
+	if (inIdleTime > 0) {
 		SleepEx(4, FALSE);
 	}
 
@@ -661,12 +661,12 @@ UUtInt64 UUrMachineTime_High(void)
 	UUtInt64 result;
 
 	success = QueryPerformanceCounter(&time);
-	
+
 	if (success)
 	{
 		result = time.QuadPart;
 	}
-	else 
+	else
 	{
 		result = GetTickCount();
 	}
@@ -734,7 +734,7 @@ UUrPlatform_MameAndDestroy(
 #if UUmCompiler	== UUmCompiler_VisC
 long __cdecl _ftol(float number)
 {
-	__asm 
+	__asm
 	{
 //		push        ebp
 //		mov         ebp,esp
@@ -792,13 +792,13 @@ UUrWindow_GetSize(
 	UUtUns16			*outHeight)
 {
 	RECT				rect;
-	
+
 	UUmAssert(inWindow);
 	UUmAssert(outWidth);
 	UUmAssert(outHeight);
-	
+
 	GetWindowRect(inWindow, &rect);
-	
+
 	*outWidth = (UUtUns16)(rect.right - rect.left);
 	*outHeight = (UUtUns16)(rect.bottom - rect.top);
 }

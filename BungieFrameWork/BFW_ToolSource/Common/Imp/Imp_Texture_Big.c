@@ -36,7 +36,7 @@ static UUtError
 BTiIsValidTextureMapSize(
 	UUtUns32			inWidth,
 	UUtUns32			inHeight);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
@@ -57,18 +57,18 @@ BTiTextureMap_New(
 	UUtError			error;
 	UUtUns8				size_of_texel;
 	UUtUns32			total_map_bytes;
-	
+
 	// make sure that the parameters are good
 	UUmAssert(inWidth > 0);
 	UUmAssert(inHeight > 0);
 	UUmAssertReadPtr(outTextureMap, sizeof(*outTextureMap));
-	
+
 	// calculate the width, height, and rowbytes of the texture
 	M3rTextureMap_GetTextureSize(inWidth, inHeight, &width, &height);
 
 	size_of_texel = IMrPixel_GetSize(inTexelType);
 	total_map_bytes = width * height * size_of_texel;
-	
+
 	// create a new instance of the texture
 	error =
 		TMrConstruction_Instance_Renew(
@@ -77,7 +77,7 @@ BTiTextureMap_New(
 			0,
 			&new_texture_map);
 	UUmError_ReturnOnErrorMsg(error, "Unable to create a new texture.");
-	
+
 	// set up the texture map
 	if (NULL != inInstanceName) { strncpy(new_texture_map->debugName, inInstanceName, 128); }
 	else { strncpy(new_texture_map->debugName, "imported unique big texture", 128); }
@@ -99,11 +99,11 @@ BTiTextureMap_New(
 #else
 	separateData = TMrConstruction_Separate_New(total_map_bytes, M3cTemplate_TextureMap);
 #endif
-	
+
 	// save the outgoing variables
 	*outTextureMap = new_texture_map;
 	*outSeparateData = separateData;
-	
+
 	return UUcError_None;
 }
 
@@ -117,7 +117,7 @@ BTiIsValidTextureMapSize(
 
 	// set results initial value
 	result = UUcError_None;
-	
+
 	// check width and height
 	switch(inWidth)
 	{
@@ -197,48 +197,48 @@ Imp_ProcessTexture_Big(
 	void				*separate_data;
 	const char			*leaf_name;
 	M3tTextureMap_Big	*big_texture;
-	
+
 	UUtUns16			num_x;
 	UUtUns16			num_y;
-	
+
 	UUtUns16			x;
 	UUtUns16			y;
-	
+
 	char				texture_group_name[BFcMaxFileNameLength * 2];
-	
+
 	BFtFileRef			*flagFileRef;
 	char				flagFileLeafName[BFcMaxFileNameLength * 2];
-	
+
 	tTextureFlags		local_flags;
 	IMtPixelType		pixel_type;
-	
+
 	GRtGroup_Context	*context;
 	GRtGroup			*group;
-	
+
 	FFtFileInfo			file_info;
-	
+
 	// copy the default flags
 	local_flags = *inDefaultTextureFlags;
-	
+
 	// find out if the file exists
-	do 
+	do
 	{
 		// get the name of the file without the path
 		leaf_name = BFrFileRef_GetLeafName(inFileRef);
-		
+
 		// see if the file exists
 		file_exists = BFrFileRef_FileExists(inFileRef);
-		
+
 		if (file_exists == UUcFalse)
 		{
 			AUtMB_ButtonChoice choice;
-			
-			choice = 
+
+			choice =
 				AUrMessageBox(
 					AUcMBType_AbortRetryIgnore,
 					"Could not find file %s."UUmNL,
 					leaf_name);
-			
+
 			if (choice == AUcMBChoice_Abort)
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Could not find texture file");
@@ -250,7 +250,7 @@ Imp_ProcessTexture_Big(
 		}
 	}
 	while (!file_exists);
-	
+
 	// find out if the instance exists
 	build_instance =
 		!TMrConstruction_Instance_CheckExists(
@@ -261,11 +261,11 @@ Imp_ProcessTexture_Big(
 	{
 		return UUcError_None;
 	}
-	
+
 	// get the file info
 	error = FFrPeek_2D(inFileRef, &file_info);
 	UUmError_ReturnOnErrorMsg(error, "Could not get file info.");
-	
+
 	// set the default pixel format
 	if (file_info.format == FFcFormat_2D_PSD)
 	{
@@ -275,7 +275,7 @@ Imp_ProcessTexture_Big(
 	{
 		pixel_type = IMcPixelType_RGB555;
 	}
-	
+
 	// process the flags file
 	UUrString_Copy(flagFileLeafName, leaf_name, BFcMaxFileNameLength * 2);
 	flagFileLeafName[strlen(leaf_name) - 4] = '\0';
@@ -289,7 +289,7 @@ Imp_ProcessTexture_Big(
 			flagFileRef = NULL;
 		}
 	}
-	else 
+	else
 	{
 		flagFileRef = NULL;
 	}
@@ -314,9 +314,9 @@ Imp_ProcessTexture_Big(
 	{
 		pixel_type = local_flags.pixelType;
 	}
-	
+
 	// read the data from the file
-	error = 
+	error =
 		FFrRead_2D(
 			inFileRef,
 			pixel_type,
@@ -325,28 +325,28 @@ Imp_ProcessTexture_Big(
 			&mipMap,
 			&image_data);
 	UUmError_ReturnOnError(error);
-	
+
 	row_bytes = IMrImage_ComputeRowBytes(pixel_type, width);
 
 /*	error = BTiIsValidTextureMapSize(width, height);
 	if(error != UUcError_None)
 	{
 		Imp_PrintWarning(
-			"File %s had an invalid texture map size (%d, %d)"UUmNL"(1 to 256 and 8x1 ratio only)", 
+			"File %s had an invalid texture map size (%d, %d)"UUmNL"(1 to 256 and 8x1 ratio only)",
 			BFrFileRef_GetLeafName(inFileRef),
 			width,
 			height);
-		
+
 		return error;
 	}*/
-	
+
 	// calculate the number of M3tTextureMaps it will take to hold the texture
 	num_x = width / M3cTextureMap_MaxWidth;
 	num_y = height / M3cTextureMap_MaxHeight;
-	
+
 	if ((width & (M3cTextureMap_MaxWidth - 1)) > 0) num_x++;
 	if ((height & (M3cTextureMap_MaxHeight - 1)) > 0) num_y++;
-	
+
 	// Create the texture map instance
 	error =
 		TMrConstruction_Instance_Renew(
@@ -355,17 +355,17 @@ Imp_ProcessTexture_Big(
 			num_x * num_y,
 			(void **)&big_texture);
 	IMPmError_ReturnOnError(error);
-	
+
 	big_texture->texelType	= pixel_type;
 	big_texture->width		= width;
 	big_texture->height		= height;
 	big_texture->num_x		= num_x;
 	big_texture->num_y		= num_y;
-	
+
 	// set the texture_group_name
 	UUrString_Copy(texture_group_name, leaf_name, BFcMaxFileNameLength * 2);
 	texture_group_name[strlen(leaf_name) - 4] = '\0';
-	
+
 	// Copy the image into the texture maps
 	for (y = 0; y < num_y; y++)
 	{
@@ -375,24 +375,24 @@ Imp_ProcessTexture_Big(
 			UUtUns16			top;
 			UUtUns16			texture_width;
 			UUtUns16			texture_height;
-			
+
 			UUtUns16			index;
-			
+
 			M3tTextureMap		*texture;
 			char				texture_name[BFcMaxFileNameLength * 2];
-			
+
 			// calculate the index number of the texture
 			index = x + (y * num_x);
-						
+
 			// calculate the texture width and height
 			left			= (x * M3cTextureMap_MaxWidth);
 			top				= (y * M3cTextureMap_MaxHeight);
 			texture_width	= UUmMin(M3cTextureMap_MaxWidth, width - left);
 			texture_height	= UUmMin(M3cTextureMap_MaxHeight, height - top);
-			
+
 			// set the texture_name
 			sprintf(texture_name, "%s_%d", texture_group_name, index);
-			
+
 			// create a new texture
 			error =
 				BTiTextureMap_New(
@@ -403,41 +403,41 @@ Imp_ProcessTexture_Big(
 					&texture,
 					&separate_data);
 			IMPmError_ReturnOnErrorMsg(error, "Unable to create texture map");
-			
+
 			// save the texture pointer
 			big_texture->textures[index] = texture;
-						
+
 			// copy the data from the image_data to the texture
 			{
 				UUtUns16			w;
 				UUtUns16			h;
-				
+
 				UUtUns16			texel_size;
-			
+
 				UUtUns8				*src;
 				UUtUns32			src_row_bytes;
-				
+
 				UUtUns8				*dst1, *dst2;
 				UUtUns32			dst_row_bytes;
-					
+
 				// get the texel size
 				texel_size = (UUtUns16)IMrPixel_GetSize(big_texture->texelType);
-				
+
 				// set the src
 				src_row_bytes = row_bytes;
-				src = 
+				src =
 					(UUtUns8*)image_data +
 					(top * src_row_bytes) +
 					(left * texel_size);
-				
+
 				// set the dst
 				dst_row_bytes = texture->width * texel_size;
 				dst1 = (UUtUns8*)texture->pixels;
 				dst2 = (UUtUns8*)separate_data;
-				
+
 				w = texture_width * texel_size;
 				h = texture_height;
-				
+
 				while (h--)
 				{
 					if (dst1 != NULL) {
@@ -449,7 +449,7 @@ Imp_ProcessTexture_Big(
 						UUrMemory_MoveFast(src, dst2, w);
 						dst2 += dst_row_bytes;
 					}
-					
+
 					// advance to next line
 					src += src_row_bytes;
 				}
@@ -467,10 +467,10 @@ Imp_ProcessTexture_Big(
 			#endif
 		}
 	}
-	
+
 	// dispose of the image_data
 	UUrMemory_Block_Delete(image_data);
-	
+
 	return UUcError_None;
 }
 
@@ -490,7 +490,7 @@ Imp_AddTexture_Big(
 	UUtError			error;
 	BFtFileRef*			file;
 	tTextureFlags		flags;
-	
+
 	// get a reference to the file
 	error =
 		Imp_Common_GetFileRefAndModDate(
@@ -499,19 +499,19 @@ Imp_AddTexture_Big(
 			"file",
 			&file);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get file name");
-	
+
 	// set the flags
 	Imp_ClearTextureFlags(&flags);
 	flags.hasFlagFile = cTextureFlagFile_No;
 	flags.flags = M3cTextureFlags_None;
-	
+
 	// process the texture
 	error =
 		Imp_ProcessTexture_Big(
 			file,
 			&flags,
 			inInstanceName);
-	
+
 	// dispose of the file reference
 	BFrFileRef_Dispose(file);
 
@@ -528,20 +528,20 @@ Imp_ProcessTexture_Big_File(
 	UUtError			error;
 	UUtUns32			file_mod_date;
 	tTextureFlags		flags;
-	
+
 	UUmAssert(inFileRef);
 	UUmAssert(outTextureRef);
 	UUmAssert(inInstanceName);
-	
+
 	// get the modification time of the file
 	error = BFrFileRef_GetModTime(inFileRef, &file_mod_date);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get file ref mod date");
-		
+
 	// set the texture flags
 	Imp_ClearTextureFlags(&flags);
 	flags.hasFlagFile = cTextureFlagFile_Yes;
 	flags.flags = M3cTextureFlags_None;
-	
+
 	// process M3cTextureMap_Big
 	error =
 		Imp_ProcessTexture_Big(
@@ -549,7 +549,7 @@ Imp_ProcessTexture_Big_File(
 			&flags,
 			inInstanceName);
 	IMPmError_ReturnOnError(error);
-	
+
 	// get a placeholder for the M3tTextureMap_Big instance of texture_name
 	error =
 		TMrConstruction_Instance_GetPlaceHolder(
@@ -557,6 +557,6 @@ Imp_ProcessTexture_Big_File(
 			inInstanceName,
 			outTextureRef);
 	IMPmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }

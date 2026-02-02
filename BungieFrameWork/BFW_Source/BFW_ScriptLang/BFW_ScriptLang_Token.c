@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_ScriptLang_Token.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -48,7 +48,7 @@ SLiLexem_AddChar(
 	char	inC)
 {
 	UUmAssertReadPtr(SLgLexem_CurPtr, sizeof(char));
-	
+
 	if(SLgLexemBuffer_Len < SLcLexem_Buffer_MaxSize)
 	{
 		*SLgLexem_CurPtr++ = inC;
@@ -69,7 +69,7 @@ SLiLexem_IsReservedWord(
 	SLtToken_Code	*outReservedWord)
 {
 	if(SLgLexemBuffer_Len > 8 || SLgLexemBuffer_Len < 2) return UUcFalse;
-	
+
 	switch(SLgLexemBuffer_Len)
 	{
 		case 2:
@@ -112,7 +112,7 @@ SLiLexem_IsReservedWord(
 					break;
 			}
 			break;
-			
+
 		case 3:
 			switch(SLgLexemBuffer[0])
 			{
@@ -146,7 +146,7 @@ SLiLexem_IsReservedWord(
 					break;
 			}
 			break;
-			
+
 		case 4:
 			switch(SLgLexemBuffer[0])
 			{
@@ -199,7 +199,7 @@ SLiLexem_IsReservedWord(
 					break;
 			}
 			break;
-			
+
 		case 5:
 			switch(SLgLexemBuffer[0])
 			{
@@ -238,7 +238,7 @@ SLiLexem_IsReservedWord(
 					break;
 			}
 			break;
-			
+
 		case 6:
 			switch(SLgLexemBuffer[0])
 			{
@@ -263,7 +263,7 @@ SLiLexem_IsReservedWord(
 					break;
 			}
 			break;
-			
+
 		case 7:
 			if(!strncmp(SLgLexemBuffer, "iterate", 7))
 			{
@@ -271,7 +271,7 @@ SLiLexem_IsReservedWord(
 				return UUcTrue;
 			}
 			break;
-			
+
 		case 8:
 			if(!strncmp(SLgLexemBuffer, "schedule", 8))
 			{
@@ -280,7 +280,7 @@ SLiLexem_IsReservedWord(
 			}
 			break;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -295,42 +295,42 @@ SLiToken_Make(
 	char	c;
 	SLtToken_Code	reservedWord;
 	SLtToken_Code	constantType;
-	
+
 	*outAllocationFailed = UUcFalse;
 	outCurToken->lexem = NULL;
 	outCurToken->line = SLgLineNum;
 	outCurToken->flags = SLcTokenFlag_None;
-	
+
 startOver:
 	SLiLexem_Start();
-	
+
 	c = *cp++;
-	
+
 	if(c == 0)
 	{
 		outCurToken->token = SLcToken_EOF;
 		if(SLgLastToken != NULL) SLgLastToken->flags |= SLcTokenFlag_PrecedesNewline;
 	}
-	
+
 	else if(c == '\n')
 	{
 		if(*cp == '\r') cp++;
 		SLgLineNum++;
-		
+
 		if(SLgLastToken != NULL) SLgLastToken->flags |= SLcTokenFlag_PrecedesNewline;
-		
+
 		goto startOver;
 	}
 	else if(c == '\r')
 	{
 		if(*cp == '\n') cp++;
 		SLgLineNum++;
-		
+
 		if(SLgLastToken != NULL) SLgLastToken->flags |= SLcTokenFlag_PrecedesNewline;
-		
+
 		goto startOver;
 	}
-	
+
 	else if(isspace(c))
 	{
 		while(isspace(c) && c != '\n' && c != '\r' && c != 0)
@@ -338,15 +338,15 @@ startOver:
 			c = *cp++;
 		}
 		cp--;
-		
+
 		goto startOver;
 	}
 	else if(c == 'f' && isdigit(cp[0]))
 	{
 		c = *cp++;
-		
+
 		constantType = SLcToken_Constant_Int;
-		
+
 		while((isdigit(c) || (c == '.')) && c != 0)
 		{
 			if(c == '.') constantType = SLcToken_Constant_Float;
@@ -354,7 +354,7 @@ startOver:
 			c = *cp++;
 		}
 		cp--;
-		
+
 		outCurToken->token = constantType;
 	}
 	else if(isalpha(c) || c == '_')
@@ -365,9 +365,9 @@ startOver:
 			c = *cp++;
 		}
 		cp--;
-		
+
 		SLiLexem_End();
-		
+
 		if(SLiLexem_IsReservedWord(&reservedWord))
 		{
 			if(reservedWord == SLcToken_True)
@@ -392,11 +392,11 @@ startOver:
 			outCurToken->token = SLcToken_Identifier;
 		}
 	}
-	
+
 	else if(isdigit(c) || (c == '.') || ((c == '-') && isdigit(cp[0])))
 	{
 		constantType = SLcToken_Constant_Int;
-		
+
 		while((isdigit(c) || (c == '.') || (c == '-')) && c != 0)
 		{
 			if(c == '.') constantType = SLcToken_Constant_Float;
@@ -404,10 +404,10 @@ startOver:
 			c = *cp++;
 		}
 		cp--;
-		
+
 		outCurToken->token = constantType;
 	}
-	
+
 	else
 	{
 		switch(c)
@@ -416,7 +416,7 @@ startOver:
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_LogicalNot;
 				break;
-			
+
 			case '\"':
 				c = *cp++;
 				while(c != '\"' && c != 0 && c != '\n' && c != '\r')
@@ -434,75 +434,75 @@ startOver:
 				}
 				outCurToken->token = SLcToken_Constant_String;
 				break;
-			
+
 			case '(':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_LeftParen;
 				break;
-				
+
 			case ')':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_RightParen;
 				break;
-				
+
 			case '[':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_LeftBracket;
 				break;
-				
+
 			case ']':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_RightBracket;
 				break;
-				
+
 			case '+':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_Plus;
 				break;
-				
+
 			case ',':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_Comma;
 				break;
-				
+
 			case '-':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_Minus;
 				break;
-				
+
 			case ';':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_SemiColon;
 				break;
-				
+
 			case ':':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_Colon;
 				break;
-				
+
 			case '=':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_Assign;
 				break;
-				
+
 			case '{':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_LeftCurley;
 				break;
-				
+
 			case '}':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_RightCurley;
 				break;
-			
+
 			case '|':
 				SLiLexem_AddChar(c);
 				outCurToken->token = SLcToken_Bar;
 				break;
-			
+
 			case '<':
 				SLiLexem_AddChar(c);
-				
+
 				if(cp[0] == '=')
 				{
 					SLiLexem_AddChar(c);
@@ -514,10 +514,10 @@ startOver:
 					outCurToken->token = SLcToken_Cmp_LT;
 				}
 				break;
-			
+
 			case '>':
 				SLiLexem_AddChar(c);
-				
+
 				if(cp[0] == '=')
 				{
 					SLiLexem_AddChar(c);
@@ -529,16 +529,16 @@ startOver:
 					outCurToken->token = SLcToken_Cmp_GT;
 				}
 				break;
-			
-			
+
+
 			case '#':
-				
+
 				while(1)
 				{
 					c = *cp++;
-					
+
 					if(c == 0) break;
-					
+
 					if(c == '\n')
 					{
 						if(*cp == '\r') cp++;
@@ -549,34 +549,34 @@ startOver:
 						if(*cp == '\n') cp++;
 						break;
 					}
-					
+
 				}
 				if(c == 0) cp--;
 				SLgLineNum++;
 				goto startOver;
-				
+
 			default:
 				SLgToken_ErrorContext.line = SLgLineNum;
 				SLrScript_Error_Lexical(
 					&SLgToken_ErrorContext,
 					c,
 					"Illegal character");
-				
+
 				return UUcError_Generic;
 		}
 	}
-	
+
 	SLiLexem_End();
 
 	if(*SLgLexemBuffer != 0)
 	{
 		outCurToken->lexem = UUrMemory_String_GetStr(inMemoryString, SLgLexemBuffer);
 	}
-	
+
 	*ioCP = cp;
-	
+
 	SLgLastToken = outCurToken;
-	
+
 	return UUcError_None;
 }
 
@@ -594,14 +594,14 @@ SLrScript_TextToToken(
 	UUtUns32 string_size;
 
 	UUtUns16	numTokens = 0;
-	
+
 	SLgLineNum = 1;
-	
+
 	SLgToken_ErrorContext.funcName = "(none)";
 	SLgToken_ErrorContext.fileName = inFileName;
-	
+
 	SLgLastToken = NULL;
-	
+
 	while(1)
 	{
 		UUmAssert(numTokens < SLcMaxTokens);
@@ -609,7 +609,7 @@ SLrScript_TextToToken(
 		if (numTokens >= SLcMaxTokens) {
 			UUmError_ReturnOnErrorMsgP(UUcError_Generic, "script file %s had more then %d tokens", (UUtUns32) inFileName, SLcMaxTokens, 0);
 		}
-		
+
 		SLiToken_Make(inMemoryString, &cp, &allocation_failed, ct);
 
 		if (allocation_failed) {
@@ -619,14 +619,14 @@ SLrScript_TextToToken(
 		}
 
 		if(ct->token == SLcToken_EOF) break;
-		
+
 		numTokens++;
 		ct++;
 	}
-	
+
 	*outNumTokens = numTokens;
 	*outTokens = SLgTokenArray;
-	
+
 	return UUcError_None;
 }
 
@@ -646,127 +646,127 @@ SLrTokenCode_ConvertToString(
 	{
 		case SLcToken_LeftParen:
 			return "(";
-				
+
 		case SLcToken_RightParen:
 			return ")";
-				
+
 		case SLcToken_LeftCurley:
 			return "{";
-				
+
 		case SLcToken_RightCurley:
 			return "}";
-				
+
 		case SLcToken_SemiColon:
 			return ";";
-				
+
 		case SLcToken_Comma:
 			return ",";
-				
+
 		case SLcToken_Assign:
 			return "=";
-				
+
 		case SLcToken_Plus:
 			return "+";
-				
+
 		case SLcToken_Minus:
 			return "-";
-				
+
 		case SLcToken_LogicalAnd:
 			return "and";
-				
+
 		case SLcToken_LogicalOr:
 			return "or";
-				
+
 		case SLcToken_LogicalNot:
 			return "!";
-				
+
 		case SLcToken_Cmp_EQ:
 			return "eq";
-				
+
 		case SLcToken_Cmp_NE:
 			return "ne";
-				
+
 		case SLcToken_Cmp_LT:
 			return "<";
-				
+
 		case SLcToken_Cmp_GT:
 			return ">";
-				
+
 		case SLcToken_Cmp_LE:
 			return "<=";
-		
+
 		case SLcToken_Cmp_GE:
 			return ">=";
-				
+
 		case SLcToken_Identifier:
 			return "identifier";
-				
+
 		case SLcToken_Constant_Int:
 			return "int";
-				
+
 		case SLcToken_Constant_Float:
 			return "float";
-				
+
 		case SLcToken_Constant_String:
 			return "string";
-				
+
 		case SLcToken_Schedule:
 			return "schedule";
-				
+
 		case SLcToken_Iterate:
 			return "iterate";
-				
+
 		case SLcToken_Repeat:
 			return "repeat";
-				
+
 		case SLcToken_Return:
 			return "return";
-				
+
 		case SLcToken_String:
 			return "string";
-				
+
 		case SLcToken_Every:
 			return "every";
-				
+
 		case SLcToken_Float:
 			return "float";
-			
+
 		case SLcToken_Using:
 			return "using";
-				
+
 		case SLcToken_Sleep:
 			return "sleep";
-				
+
 		case SLcToken_Else:
 			return "else";
-				
+
 		case SLcToken_Func:
 			return "func";
-				
+
 		case SLcToken_Over:
 			return "over";
-				
+
 		case SLcToken_Void:
 			return "void";
-				
+
 		case SLcToken_For:
 			return "for";
-				
+
 		case SLcToken_Int:
 			return "int";
-				
+
 		case SLcToken_Var:
 			return "var";
-				
+
 		case SLcToken_At:
 			return "at";
-				
+
 		case SLcToken_If:
 			return "if";
-				
+
 		case SLcToken_EOF:
 			return "EOF";
-		
+
 		default:
 			UUmAssert(0);
 			return "Unknown";

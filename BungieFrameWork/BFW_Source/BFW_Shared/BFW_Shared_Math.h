@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Shared_Math.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 23, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 	--                 --    --                 --    --                 --
@@ -15,43 +15,43 @@
 	|  A02 A12 A22 A32  | /\ |  B02 B12 B22 B32  | == |  C02 C12 C22 C32  |
 	|  A03 A13 A23 A33  |    |  B03 B13 B23 B33  |    |  C03 C13 C23 C33  |
 	--                 --    --                 --    --                 --
-		
+
 		C00 = A00 * B00 + A10 * B01 + A20 * B02 + A30 * B03
-		
+
 		...
-		
+
 		C33 = A02 * B30 + A13 * B31 + A23 * B32 + A33 * B33
-	
+
 		NOTE: If the product of AB is applied to a vertex as in ABv
 				the transformation defined in B affects vertex v before
 				the transformation defined in A, ie OpenGL.
-		
+
 	--                 --    --   --    --    --
 	|  A00 A10 A20 A30  |    |  X  |    |  X'  |
 	|  A01 A11 A21 A31  | \/ |  Y  | == |  Y'  |
 	|  A02 A12 A22 A32  | /\ |  Z  | == |  Z'  |
 	|  A03 A13 A23 A33  |    |  W  |    |  W'  |
 	--                 --	 --   --    --    --
-	
+
 		X' = A00 * X + A10 * Y + A20 * Z + A30 * W
-		
+
 		...
-		
+
 		W' = A03 * X + A13 * Y + A23 * Z + A33 * W
-	
+
 	In the camera and viewing code a 4x4 matrix is interpreted as follows
-	
+
 	--                 --    --   --    --    --
 	|  A00 A10 A20 T30  |    |  X  |    |  X'  |
 	|  A01 A11 A21 T31  | \/ |  Y  | == |  Y'  |
 	|  A02 A12 A22 T32  | /\ |  Z  | == |  Z'  |
 	|  P03 P13 P23 0.0  |    |  W  |    |  W'  |
 	--                 --	 --   --    --    --
-	
+
 	T30, T31, T32 is used for translation
-	
+
 	P03, P13, P23 is used for perspective correction
-	
+
 	Aij is used for scale and rotation. Note that nonuniform scales are *not* allowed since
 	this would require an inverstion for computing normals.
 */
@@ -172,7 +172,7 @@
 		negW = -hW;									\
 		hY = m01 * lX + m11 * lY + m21 * lZ + m31;	\
 		hZ = m02 * lX + m12 * lY + m22 * lZ + m32;
-		
+
 #define MSmTransform_Local2FrustumInvW(		\
 				lX, lY, lZ,					\
 				hX, hY, hZ, hW, invW,		\
@@ -186,7 +186,7 @@
 		invW = 1.0f / hW;							\
 		hY = m01 * lX + m11 * lY + m21 * lZ + m31;	\
 		hZ = m02 * lX + m12 * lY + m22 * lZ + m32;
-		
+
 #define MSmTransform_Local2FrustumNegW(		\
 				lX, lY, lZ,					\
 				hX, hY, hZ, hW, negW,		\
@@ -200,7 +200,7 @@
 		negW = -hW;									\
 		hY = m01 * lX + m11 * lY + m21 * lZ + m31;	\
 		hZ = m02 * lX + m12 * lY + m22 * lZ + m32;
-		
+
 #define MSmTransform_Matrix4x4ToRegisters(	\
 				matrix,							\
 				m00, m10, m20, m30,			\

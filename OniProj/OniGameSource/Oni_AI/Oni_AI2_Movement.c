@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Movement.c
-	
+
 	AUTHOR:	Michael Evans, Chris Butcher
-	
+
 	CREATED: November 15, 1999
-	
+
 	PURPOSE: Movement AI for Oni
-	
+
 	Copyright (c) Bungie Software, 1999
 
 */
@@ -113,7 +113,7 @@ void AI2rMovement_DontForceAim(ONtCharacter *ioCharacter)
 		UUmAssert(active_character != NULL);
 
 		AI2rMovementState_ResetAimingVarient(ioCharacter, &active_character->movement_state);
-	}	
+	}
 }
 
 void AI2rMovement_Force_AimWithWeapon(ONtCharacter *ioCharacter, UUtBool inAimWithWeapon)
@@ -126,7 +126,7 @@ void AI2rMovement_Force_AimWithWeapon(ONtCharacter *ioCharacter, UUtBool inAimWi
 		UUmAssert(active_character != NULL);
 
 		AI2rMovementState_ResetAimingVarient(ioCharacter, &active_character->movement_state);
-	}	
+	}
 }
 
 /*
@@ -223,7 +223,7 @@ void AI2rMovement_NotifyAlertChange(ONtCharacter *ioCharacter)
 		UUmAssert(active_character != NULL);
 
 		AI2rMovementState_NotifyAlertChange(ioCharacter, &active_character->movement_state);
-	}	
+	}
 }
 
 UUtError AI2rMovement_MovementModifier(ONtCharacter *ioCharacter, float inDirection, float inWeight)
@@ -292,7 +292,7 @@ UUtBool AI2rMovement_IsKeepingMoving(ONtCharacter *ioCharacter)
 		return AI2rMovementState_IsKeepingMoving(ioCharacter, &active_character->movement_state);
 	} else {
 		return UUcFalse;
-	}	
+	}
 }
 
 float AI2rMovement_GetMoveDirection(ONtCharacter *ioCharacter)
@@ -304,7 +304,7 @@ float AI2rMovement_GetMoveDirection(ONtCharacter *ioCharacter)
 		return AI2rMovementState_GetMoveDirection(ioCharacter, &active_character->movement_state);
 	} else {
 		return AI2rMovementStub_GetMoveDirection(ioCharacter);
-	}	
+	}
 }
 
 UUtBool AI2rMovement_SimplePath(ONtCharacter *ioCharacter)
@@ -316,7 +316,7 @@ UUtBool AI2rMovement_SimplePath(ONtCharacter *ioCharacter)
 		return AI2rMovementState_SimplePath(ioCharacter, &active_character->movement_state);
 	} else {
 		return UUcTrue;
-	}	
+	}
 }
 
 // ------------------------------------------------------------------------------------
@@ -359,7 +359,7 @@ void AI2rMovement_NewDestination(ONtCharacter *ioCharacter)
 		AI2rMovementState_NewDestination(ioCharacter, &active_character->movement_state);
 	} else {
 		AI2rMovementStub_NewDestination(ioCharacter);
-	}	
+	}
 }
 
 void AI2rMovement_ClearPath(ONtCharacter *ioCharacter)
@@ -371,7 +371,7 @@ void AI2rMovement_ClearPath(ONtCharacter *ioCharacter)
 		AI2rMovementState_ClearPath(ioCharacter, &active_character->movement_state);
 	} else {
 		AI2rMovementStub_ClearPath(ioCharacter);
-	}	
+	}
 }
 
 UUtBool AI2rMovement_AdvanceThroughGrid(ONtCharacter *ioCharacter)
@@ -383,7 +383,7 @@ UUtBool AI2rMovement_AdvanceThroughGrid(ONtCharacter *ioCharacter)
 		return AI2rMovementState_AdvanceThroughGrid(ioCharacter, &active_character->movement_state);
 	} else {
 		return AI2rMovementStub_AdvanceThroughGrid(ioCharacter);
-	}	
+	}
 }
 
 void AI2rMovement_Update(ONtCharacter *ioCharacter)
@@ -414,7 +414,7 @@ void AI2rMovement_Update(ONtCharacter *ioCharacter)
 			ioCharacter->facing = ioCharacter->movementStub.cur_facing;
 			ONrCharacter_Teleport(ioCharacter, &ioCharacter->movementStub.cur_point, UUcFalse);
 		}
-	}	
+	}
 }
 
 UUtBool AI2rMovement_DestinationFacing(ONtCharacter *ioCharacter)
@@ -426,7 +426,7 @@ UUtBool AI2rMovement_DestinationFacing(ONtCharacter *ioCharacter)
 		return AI2rMovementState_DestinationFacing(ioCharacter, &active_character->movement_state);
 	} else {
 		return AI2rMovementStub_DestinationFacing(ioCharacter);
-	}	
+	}
 }
 
 UUtBool AI2rMovement_CheckFailure(ONtCharacter *ioCharacter)
@@ -438,7 +438,7 @@ UUtBool AI2rMovement_CheckFailure(ONtCharacter *ioCharacter)
 		return AI2rMovementState_CheckFailure(ioCharacter, &active_character->movement_state);
 	} else {
 		return AI2rMovementStub_CheckFailure(ioCharacter);
-	}	
+	}
 }
 
 UUtBool AI2rMovement_MakePath(ONtCharacter *ioCharacter, UUtBool inReusePath)
@@ -450,7 +450,7 @@ UUtBool AI2rMovement_MakePath(ONtCharacter *ioCharacter, UUtBool inReusePath)
 		return AI2rMovementState_MakePath(ioCharacter, &active_character->movement_state, inReusePath);
 	} else {
 		return AI2rMovementStub_MakePath(ioCharacter);
-	}	
+	}
 }
 
 void AI2rMovement_Report(ONtCharacter *ioCharacter, UUtBool inVerbose, AI2tReportFunction inFunction)
@@ -477,7 +477,7 @@ void AI2rMovement_Report(ONtCharacter *ioCharacter, UUtBool inVerbose, AI2tRepor
 		default:
 			sprintf(reportbuf, "  <unknown facing state %d>", ioCharacter->movementOrders.facingMode);
 			break;
-	}	
+	}
 	inFunction(reportbuf);
 
 	switch(ioCharacter->movementOrders.aimingMode) {
@@ -488,14 +488,14 @@ void AI2rMovement_Report(ONtCharacter *ioCharacter, UUtBool inVerbose, AI2tRepor
 		case AI2cAimingMode_LookAtPoint:
 			sprintf(reportbuf, "  aiming at %f, %f, %f",
 					ioCharacter->movementOrders.aimingData.lookAtPoint.point.x,
-					ioCharacter->movementOrders.aimingData.lookAtPoint.point.y, 
+					ioCharacter->movementOrders.aimingData.lookAtPoint.point.y,
 					ioCharacter->movementOrders.aimingData.lookAtPoint.point.z);
 			break;
 
 		case AI2cAimingMode_LookInDirection:
 			sprintf(reportbuf, "  aiming in direction %f, %f, %f",
 					ioCharacter->movementOrders.aimingData.lookInDirection.vector.x,
-					ioCharacter->movementOrders.aimingData.lookInDirection.vector.y, 
+					ioCharacter->movementOrders.aimingData.lookInDirection.vector.y,
 					ioCharacter->movementOrders.aimingData.lookInDirection.vector.z);
 			break;
 
@@ -513,7 +513,7 @@ void AI2rMovement_Report(ONtCharacter *ioCharacter, UUtBool inVerbose, AI2tRepor
 		default:
 			sprintf(reportbuf, "  <unknown aiming state>");
 			break;
-	}	
+	}
 
 	if (ioCharacter->movementOrders.force_aim) {
 		strcat(reportbuf, (ioCharacter->movementOrders.force_withweapon) ? " (forced to aim weapon)" : " (forced not to aim weapon)");
@@ -523,26 +523,26 @@ void AI2rMovement_Report(ONtCharacter *ioCharacter, UUtBool inVerbose, AI2tRepor
 	if (ioCharacter->movementOrders.glance_timer) {
 		switch(ioCharacter->movementOrders.glanceAimingMode) {
 			case AI2cAimingMode_None:
-				sprintf(reportbuf, "  <error: glancing(%d delay %d) but glancing mode is NONE>", 
+				sprintf(reportbuf, "  <error: glancing(%d delay %d) but glancing mode is NONE>",
 						ioCharacter->movementOrders.glance_timer, ioCharacter->movementOrders.glance_delay);
 				break;
-				
+
 			case AI2cAimingMode_LookAtPoint:
 				sprintf(reportbuf, "  glancing(%d delay %d) at %f, %f, %f",
 					ioCharacter->movementOrders.glance_timer, ioCharacter->movementOrders.glance_delay,
 					ioCharacter->movementOrders.glanceAimingData.lookAtPoint.point.x,
-					ioCharacter->movementOrders.glanceAimingData.lookAtPoint.point.y, 
+					ioCharacter->movementOrders.glanceAimingData.lookAtPoint.point.y,
 					ioCharacter->movementOrders.glanceAimingData.lookAtPoint.point.z);
 				break;
-				
+
 			case AI2cAimingMode_LookInDirection:
 				sprintf(reportbuf, "  glancing(%d delay %d) in direction %f, %f, %f",
 					ioCharacter->movementOrders.glance_timer, ioCharacter->movementOrders.glance_delay,
 					ioCharacter->movementOrders.glanceAimingData.lookInDirection.vector.x,
-					ioCharacter->movementOrders.glanceAimingData.lookInDirection.vector.y, 
+					ioCharacter->movementOrders.glanceAimingData.lookInDirection.vector.y,
 					ioCharacter->movementOrders.glanceAimingData.lookInDirection.vector.z);
 				break;
-				
+
 			case AI2cAimingMode_LookAtCharacter:
 				look_character = ioCharacter->movementOrders.glanceAimingData.lookAtCharacter.character;
 				if ((look_character == NULL) || ((look_character->flags & ONcCharacterFlag_InUse) == 0)) {
@@ -550,15 +550,15 @@ void AI2rMovement_Report(ONtCharacter *ioCharacter, UUtBool inVerbose, AI2tRepor
 				} else {
 					strcpy(namebuf, look_character->player_name);
 				}
-				
+
 				sprintf(reportbuf, "  glancing(%d delay %d) at %s",
 						ioCharacter->movementOrders.glance_timer, ioCharacter->movementOrders.glance_delay, namebuf);
 				break;
-				
+
 			default:
 				sprintf(reportbuf, "  <unknown glancing state: %d>", ioCharacter->movementOrders.glanceAimingMode);
 				break;
-		}	
+		}
 		inFunction(reportbuf);
 	}
 
@@ -569,7 +569,7 @@ void AI2rMovement_Report(ONtCharacter *ioCharacter, UUtBool inVerbose, AI2tRepor
 		AI2rMovementState_Report(ioCharacter, &active_character->movement_state, inVerbose, inFunction);
 	} else {
 		AI2rMovementStub_Report(ioCharacter, inVerbose, inFunction);
-	}	
+	}
 }
 
 void AI2rMovement_RenderPath(ONtCharacter *ioCharacter)
@@ -630,7 +630,7 @@ void AI2rMovement_RenderPath(ONtCharacter *ioCharacter)
 		AI2rMovementState_RenderPath(ioCharacter, &active_character->movement_state);
 	} else {
 		AI2rMovementStub_RenderPath(ioCharacter);
-	}	
+	}
 }
 
 // ------------------------------------------------------------------------------------

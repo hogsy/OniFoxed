@@ -23,7 +23,7 @@ VMiView_CheckBox_Create(
 	VMtView_CheckBox_PrivateData	*inPrivateData)
 {
 	UUtError						error;
-	
+
 	// ------------------------------
 	// setup the checkbox
 	// ------------------------------
@@ -40,14 +40,14 @@ VMiView_CheckBox_Create(
 		inPrivateData->checkbox_location.x = 4;
 		inPrivateData->checkbox_location.y = 4;
 	}
-	
+
 	// ------------------------------
 	// create the title_texture_ref
 	// ------------------------------
 	if (inPrivateData->title_texture_ref == NULL)
 	{
 		UUtRect						string_bounds;
-		
+
 		// create the background texture with the outline
 		error =
 			VUrCreate_StringTexture(
@@ -56,7 +56,7 @@ VMiView_CheckBox_Create(
 				&inPrivateData->title_texture_ref,
 				&string_bounds);
 		UUmError_ReturnOnErrorMsg(error, "Unable to create the texture");
-		
+
 		inPrivateData->title_texture_width = string_bounds.right;
 		inPrivateData->title_texture_height = string_bounds.bottom;
 
@@ -118,14 +118,14 @@ VMiView_CheckBox_Paint(
 			inView->height,
 			alpha);
 	}
-	
+
 	// draw the checkbox
 	if (inCheckBox->off && inCheckBox->on)
 	{
 		dest = *inDestination;
 		dest.x += (float)inPrivateData->checkbox_location.x;
 		dest.y += (float)inPrivateData->checkbox_location.y;
-		
+
 		if (inPrivateData->checkbox_state == VMcCheckBox_Off)
 		{
 			VUrDrawPartSpecification(
@@ -147,7 +147,7 @@ VMiView_CheckBox_Paint(
 				alpha);
 		}
 	}
-	
+
 	// draw the title texture
 	if (inPrivateData->title_texture_ref)
 	{
@@ -180,22 +180,22 @@ VMrView_CheckBox_Callback(
 {
 	VMtView_CheckBox				*checkbox;
 	VMtView_CheckBox_PrivateData	*private_data;
-	
+
 	// get pointers to the data
 	checkbox = (VMtView_CheckBox*)inView->view_data;
 	private_data = (VMtView_CheckBox_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_CheckBox_PrivateData, checkbox);
 	UUmAssert(private_data);
-	
+
 	switch (inMessage)
 	{
 		case VMcMessage_Create:
 			VMiView_CheckBox_Create(inView, checkbox, private_data);
 		return 0;
-		
+
 		case VMcMessage_LMouseUp:
 			VMiView_CheckBox_HandleMouseEvent(inView, checkbox, private_data);
 		return 0;
-		
+
 		case VMcMessage_Paint:
 			// draw the button
 			VMiView_CheckBox_Paint(
@@ -204,15 +204,15 @@ VMrView_CheckBox_Callback(
 				private_data,
 				(M3tPointScreen*)inParam2);
 		return 0;
-		
+
 		case VMcMessage_GetValue:
 		return (UUtUns32)private_data->checkbox_state;
-		
+
 		case VMcMessage_SetValue:
 			private_data->checkbox_state = (UUtBool)inParam1;
 		return 0;
 	}
-	
+
 	return VMrView_DefaultCallback(inView, inMessage, inParam1, inParam2);
 }
 
@@ -225,7 +225,7 @@ VMrView_CheckBox_ProcHandler(
 {
 	VMtView_CheckBox				*checkbox;
 	VMtView_CheckBox_PrivateData	*private_data;
-	
+
 	// get pointers to the data
 	checkbox = (VMtView_CheckBox*)inInstancePtr;
 	private_data = (VMtView_CheckBox_PrivateData*)inPrivateData;
@@ -241,17 +241,17 @@ VMrView_CheckBox_ProcHandler(
 			private_data->title_texture_width		= 0;
 			private_data->title_texture_height		= 0;
 		break;
-		
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 		break;
-		
+
 		case TMcTemplateProcMessage_Update:
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
 	}
-	
+
 	return UUcError_None;
 }

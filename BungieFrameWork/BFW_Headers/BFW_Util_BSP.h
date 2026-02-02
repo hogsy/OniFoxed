@@ -5,8 +5,8 @@
 
 	CREATED: April 2, 1998
 
-	PURPOSE: 
-	
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -22,7 +22,7 @@ enum
 {
 	UUcBSP_Negative = 0,
 	UUcBSP_Positive = 1
-	
+
 };
 
 typedef tm_struct UUtBSP_Plane_Node
@@ -30,9 +30,9 @@ typedef tm_struct UUtBSP_Plane_Node
 	UUtUns16	planeEquIndex;
 	UUtUns16	posNodeIndex;
 	UUtUns16	negNodeIndex;
-	
+
 	UUtUns16	pad;
-	
+
 } UUtBSP_Plane_Node;
 
 #define UUcTemplate_BSP_Plane	UUm4CharToUns32('U', 'B', 'P', 'P')
@@ -40,10 +40,10 @@ typedef tm_template('U', 'B', 'P', 'P', "BSP plane node array")
 UUtBSP_Plane_Node_Array
 {
 	tm_pad(2);
-	
+
 	tm_varindex	UUtUns16			numNodes;
 	tm_vararray	UUtBSP_Plane_Node	nodes[1];
-	
+
 } UUtBSP_Plane_NodeArray;
 
 /*
@@ -86,6 +86,6 @@ UUrBSP_Plane_System_MakeTemplate(
 	UUtBSP_Plane_System*		inSystem,
 	char*						inName,
 	UUtBSP_Plane_NodeArray*		*outTemplate);
-	
+
 
 #endif /* BFW_UTIL_BSP_H */

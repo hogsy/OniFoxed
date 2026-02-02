@@ -1,12 +1,12 @@
 /*
 	FILE:	 Oni_AI2_Alert.c
-	
+
 	AUTHOR:	 Chris Butcher
-	
+
 	CREATED: April 19, 2000
-	
+
 	PURPOSE: Alert Status for Oni's AI
-	
+
 	Copyright (c) 2000
 
 */
@@ -298,7 +298,7 @@ static UUtBool AI2iAlert_Startle(ONtCharacter *ioCharacter, AI2tAlertStatus inFr
 	// don't startle if this isn't a high alert that we're going to
 	if (ioCharacter->ai2State.alertStatus < AI2cAlertStatus_High)
 		return UUcFalse;
-	
+
 	// don't startle if this is not a result of a contact, but an alarm
 	if (inContact == NULL)
 		return UUcFalse;

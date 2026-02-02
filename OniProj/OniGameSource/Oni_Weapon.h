@@ -1,12 +1,12 @@
 #pragma once
 /*	FILE:	Oni_Weapon.h
-	
+
 	AUTHOR:	Quinn Dunki
-	
+
 	CREATED: April 2 1999
-	
+
 	PURPOSE: control of weapons in ONI
-	
+
 	Copyright 1998
 
 */
@@ -149,7 +149,7 @@ typedef tm_struct WPtSprite
 	float			scale;
 } WPtSprite;
 
-typedef enum WPtScaleMode 
+typedef enum WPtScaleMode
 {
 	WPcScaleMode_Scale,
 	WPcScaleMode_HalfScale,
@@ -178,7 +178,7 @@ WPtWeaponClass
 	WPtSprite				tunnel;
 	UUtUns32				tunnel_count;
 	float					tunnel_spacing;
-	
+
 	M3tTextureMap			*icon;
 	M3tTextureMap			*hud_empty;
 	M3tTextureMap			*hud_fill;
@@ -196,7 +196,7 @@ WPtWeaponClass
 	UUtUns16				freeTime;
 	UUtUns16				recoilAnimType;
 	UUtUns16				reloadAnimType;
-	UUtUns16				reloadTime;	
+	UUtUns16				reloadTime;
 	UUtUns16				max_ammo;
 	UUtUns16				attachment_count;
 	UUtUns16				shooter_count;
@@ -242,7 +242,7 @@ typedef enum WPtWeaponFlags
 	WPcWeaponFlag_NoWeaponCollision			= 0x2000,
 	WPcWeaponFlag_DeferUpdate_StopFiring	= 0x4000,
 	WPcWeaponFlag_DeferUpdate_GoInactive	= 0x8000
-	
+
 } WPtWeaponFlags;
 
 typedef enum WPtDamageOwnerType
@@ -306,11 +306,11 @@ typedef tm_enum WPtPowerupType
 	WPcPowerup_ShieldBelt,
 	WPcPowerup_Invisibility,
 	WPcPowerup_LSI,
-	
+
 	WPcPowerup_NumTypes,
-	
+
 	WPcPowerup_None					= 0xFFFFFFFF
-	
+
 } WPtPowerupType;
 
 extern const char *WPgPowerupName[];
@@ -477,7 +477,7 @@ UUtUns16 WPrMaxAmmo(
 M3tGeometry*
 WPrGetGeometry(
 	const WPtWeapon		*inWeapon);
-	
+
 WPtWeapon *WPrFind_Weapon_XZ_Squared(
 	const M3tPoint3D *inLocation,
 	float inMinY,
@@ -609,7 +609,7 @@ UUtError
 WPrPowerup_SetType(
 	WPtPowerup			*ioPowerup,
 	WPtPowerupType		inPowerupType);
-	
+
 WPtPowerupType WPrAmmoType(
 	WPtWeapon *inWeapon);
 
@@ -644,7 +644,7 @@ const WPtRecoil *WPrClass_GetRecoilInfo(
 	const WPtWeaponClass *inClass);
 
 void WPrRecoil_UserTo_Internal(
-	const WPtRecoil *inUserRecoil, 
+	const WPtRecoil *inUserRecoil,
 	WPtRecoil *outInternalRecoil);
 
 // send an event to all particles attached to a weapon

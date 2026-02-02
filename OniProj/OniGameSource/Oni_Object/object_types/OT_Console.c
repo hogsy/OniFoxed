@@ -9,7 +9,7 @@
 #include "EulerAngles.h"
 #include "Oni_Object.h"
 #include "Oni_Object_Private.h"
-#include "Oni_BinaryData.h"			
+#include "Oni_BinaryData.h"
 #include "Oni_GameStatePrivate.h"
 #include "Oni_Mechanics.h"
 
@@ -51,7 +51,7 @@ static void _DrawDot(M3tPoint3D *inPoint)
 
 	cam_sphere_dist = MUmVector_GetDistance( cameraLocation, (*inPoint));
 
-	//if (cam_sphere_dist > .001f) 
+	//if (cam_sphere_dist > .001f)
 	//{
 		//scale *= cam_sphere_dist;
 		//M3rSprite_Draw( dotTexture, inPoint, scale, scale,  IMcShade_Red, M3cMaxAlpha, 0, NULL, NULL, 0, 0, 0);
@@ -66,11 +66,11 @@ static void OBJiConsole_CreateBoundingSphere( OBJtObject *inObject, OBJtOSD_Cons
 	M3tBoundingSphere		*sphere;
 	M3tPoint3D				new_center;
 	float					new_radius;
-	
+
 	new_center.x = 0.0f;
 	new_center.y = 0.0f;
 	new_center.z = 0.0f;
-	
+
 	if( !inOSD->console_class )
 		return;
 
@@ -80,22 +80,22 @@ static void OBJiConsole_CreateBoundingSphere( OBJtObject *inObject, OBJtOSD_Cons
 		sphere = &inOSD->console_class->geometry_array->furn_geom[i].geometry->pointArray->boundingSphere;
 		MUmVector_Increment(new_center, sphere->center);
 	}
-	
+
 	new_center.x /= inOSD->console_class->geometry_array->num_furn_geoms;
 	new_center.y /= inOSD->console_class->geometry_array->num_furn_geoms;
 	new_center.z /= inOSD->console_class->geometry_array->num_furn_geoms;
-	
+
 	// caculate the new radius
 	new_radius = 0.0f;
 	for (i = 0; i < inOSD->console_class->geometry_array->num_furn_geoms; i++)
 	{
-		M3tVector3D			vector;			
+		M3tVector3D			vector;
 		float				temp_radius;
-		
+
 		sphere = &inOSD->console_class->geometry_array->furn_geom[i].geometry->pointArray->boundingSphere;
 		MUmVector_Subtract(vector, new_center, sphere->center);
 		temp_radius = MUrVector_Length(&vector) + sphere->radius;
-		
+
 		new_radius = UUmMax(new_radius, temp_radius);
 	}
 	// set the bounding sphere
@@ -115,7 +115,7 @@ static void OBJiConsole_Delete( OBJtObject *inObject)
 
 	// get a pointer to the object osd
 	console_osd = (OBJtOSD_Console*)inObject->object_data;
-	
+
 	// delete the memory allocated for the ls_data_array
 	if (console_osd->ls_data_array)
 	{
@@ -123,9 +123,9 @@ static void OBJiConsole_Delete( OBJtObject *inObject)
 		console_osd->ls_data_array = NULL;
 		console_osd->num_ls_datas = 0;
 	}
-	
+
 	ONrEventList_Destroy(&console_osd->event_list);
-	
+
 	return;
 }
 
@@ -139,7 +139,7 @@ static void OBJiConsole_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 	if (OBJgConsole_DrawConsole == UUcFalse) { return; }
 	// don't draw when the non-occluding geometry is hidden
 	if (AKgDraw_Occl == UUcTrue) { return; }
-	
+
 	console_osd = (OBJtOSD_Console*)inObject->object_data;
 	if (console_osd->console_class == NULL) { return; }
 	if (console_osd->console_class->geometry_array == NULL) { return; }
@@ -147,7 +147,7 @@ static void OBJiConsole_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 	MUrMatrix_BuildTranslate(inObject->position.x, inObject->position.y, inObject->position.z, &console_matrix);
 	MUrMatrixStack_Matrix(&console_matrix, &console_osd->rotation_matrix);
 
-#if TOOL_VERSION	
+#if TOOL_VERSION
 	// dont draw the main geometry if its been gunkified
 	if(!(inObject->flags & OBJcObjectFlag_Gunk))
 	{
@@ -157,11 +157,11 @@ static void OBJiConsole_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 		for (i = 0; i < console_osd->console_class->geometry_array->num_furn_geoms; i++)
 		{
 			UUtUns32			flags;
-			
+
 			// check the visibility flags
 			flags = console_osd->console_class->geometry_array->furn_geom[i].gq_flags;
 			if (((flags & AKcGQ_Flag_Invisible) != 0) && (AKgDraw_Invis == UUcFalse))	continue;
-			
+
 			// draw the bounding box if this is the selected object
 			if (inDrawFlags & OBJcDrawFlag_Selected)
 			{
@@ -170,7 +170,7 @@ static void OBJiConsole_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 
 				M3rBBox_Draw_Line(&bBox, IMcShade_White);
 			}
-			
+
 
 			AKrEnvironment_DrawIfVisible(console_osd->console_class->geometry_array->furn_geom[i].geometry, &console_matrix);
 		}
@@ -187,14 +187,14 @@ static void OBJiConsole_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 		if (console_osd->flags & OBJcConsoleFlag_Active)
 		{
 			if( console_osd->flags & OBJcConsoleFlag_Triggered ) {
-				cur_texture = console_osd->triggered_screen_texture;	
+				cur_texture = console_osd->triggered_screen_texture;
 			}
 			else {
-				cur_texture = console_osd->active_screen_texture;	
+				cur_texture = console_osd->active_screen_texture;
 			}
 		}
 		else {
-			cur_texture = console_osd->inactive_screen_texture;	
+			cur_texture = console_osd->inactive_screen_texture;
 		}
 
 		old_texture = console_osd->console_class->screen_geometry->baseMap;
@@ -202,11 +202,11 @@ static void OBJiConsole_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 		AKrEnvironment_DrawIfVisible(console_osd->console_class->screen_geometry, &console_matrix);
 		console_osd->console_class->screen_geometry->baseMap = old_texture;
 	}
-	
+
 #if TOOL_VERSION
 	// draw the rotation rings if this is the selected object
 	if (inDrawFlags & OBJcDrawFlag_Selected)
-	{		
+	{
 		M3tPoint3D laserFrom;
 		M3tPoint3D laserTo;
 		M3tVector3D laserVector;
@@ -238,7 +238,7 @@ static UUtError OBJiConsole_Enumerate( OBJtObject *inObject, OBJtEnumCallback_Ob
 static void OBJiConsole_GetBoundingSphere( const OBJtObject *inObject, M3tBoundingSphere *outBoundingSphere )
 {
 	OBJtOSD_Console		*console_osd;
-	
+
 	console_osd = (OBJtOSD_Console*)inObject->object_data;
 
 	*outBoundingSphere = console_osd->bounding_sphere;
@@ -248,7 +248,7 @@ static void OBJiConsole_GetBoundingSphere( const OBJtObject *inObject, M3tBoundi
 static void OBJiConsole_OSDGetName( const OBJtOSD_All *inOSD, char *outName, UUtUns32 inNameLength )
 {
 	const OBJtOSD_Console		*console_osd;
-	
+
 	console_osd = &inOSD->osd.console_osd;
 
 	sprintf(outName, "%s_%d", console_osd->console_class_name, console_osd->id);
@@ -264,9 +264,9 @@ static void OBJiConsole_OSDSetName(OBJtOSD_All *inOSD, const char *inName)
 static void OBJiConsole_GetOSD( const OBJtObject *inObject, OBJtOSD_All *outOSD)
 {
 	OBJtOSD_Console		*console_osd;
-	
+
 	console_osd = (OBJtOSD_Console*)inObject->object_data;
-	
+
 	UUrMemory_MoveFast( console_osd, &outOSD->osd.console_osd, sizeof(OBJtOSD_Console) );
 
 	ONrEventList_Copy( &console_osd->event_list, &outOSD->osd.console_osd.event_list );
@@ -280,14 +280,14 @@ static UUtBool OBJiConsole_IntersectsLine( const OBJtObject	*inObject, const M3t
 	UUtBool					result;
 
 	UUrMemory_Clear(&sphere, sizeof(M3tBoundingSphere));
-	
+
 	// get the bounding sphere
 	OBJrObject_GetBoundingSphere(inObject, &sphere);
-	
+
 	sphere.center.x += inObject->position.x;
 	sphere.center.y += inObject->position.y;
 	sphere.center.z += inObject->position.z;
-	
+
 	// do the fast test to see if the line is colliding with the bounding sphere
 	result = CLrSphere_Line(inStartPoint, inEndPoint, &sphere);
 	if (result) {
@@ -297,25 +297,25 @@ static UUtBool OBJiConsole_IntersectsLine( const OBJtObject	*inObject, const M3t
 		M3tPoint3D				end_point;
 		M3tMatrix4x3			inverse_matrix;
 		M3tVector3D				neg_position;
-		
+
 		result = UUcFalse;
-		
+
 		// because the line collided with the bounding sphere, test to see if the line
 		// collides with the bounding box of the geometries
 		console_osd = (OBJtOSD_Console*)inObject->object_data;
 		if (console_osd->console_class == NULL) { return UUcFalse; }
 		if (console_osd->console_class->geometry_array == NULL) { return UUcFalse; }
-		
+
 		// calculate the inverse of the rotation matrix
 		MUrMatrix_Inverse(&console_osd->rotation_matrix, &inverse_matrix);
 		neg_position = inObject->position;
 		MUmVector_Negate(neg_position);
 		MUrMatrix_Translate(&inverse_matrix, &neg_position);
-		
+
 		// calculate a start point and an end poing in object space
 		MUrMatrix_MultiplyPoint(inStartPoint, &inverse_matrix, &start_point);
 		MUrMatrix_MultiplyPoint(inEndPoint, &inverse_matrix, &end_point);
-		
+
 		// check the bounding box of each geometry to see if the line intersects the geometry
 		for (i = 0; i < console_osd->console_class->geometry_array->num_furn_geoms; i++)
 		{
@@ -326,10 +326,10 @@ static UUtBool OBJiConsole_IntersectsLine( const OBJtObject	*inObject, const M3t
 					&end_point);
 			if (result == UUcTrue) { break; }
 		}
-		
+
 		return result;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -340,20 +340,20 @@ static UUtError OBJiConsole_SetDefaults(OBJtOSD_All *outOSD)
 	void					*instances[OBJcMaxInstances];
 	UUtUns32				num_instances;
 	char					*instance_name;
-	
+
 	// clear the osd
 	UUrMemory_Clear(&outOSD->osd.console_osd, sizeof(OBJtOSD_Console));
-	
+
 	// get a list of instances of the class
 	error = TMrInstance_GetDataPtr_List( OBJcTemplate_ConsoleClass, OBJcMaxInstances, &num_instances, instances);
 	UUmError_ReturnOnError(error);
-	
+
 	// error out if we have no console instances
 	if(!num_instances)			return UUcError_Generic;
 
 	// copy the name of the first console template name
-	instance_name = TMrInstance_GetInstanceName(instances[0]);		
-	
+	instance_name = TMrInstance_GetInstanceName(instances[0]);
+
 	UUrString_Copy( outOSD->osd.console_osd.console_class_name, instance_name, OBJcMaxNameLength);
 
 	// default initial data
@@ -362,7 +362,7 @@ static UUtError OBJiConsole_SetDefaults(OBJtOSD_All *outOSD)
 
 	// initialize the event list
 	ONrEventList_Initialize( &outOSD->osd.console_osd.event_list );
-	
+
 	return UUcError_None;
 }
 
@@ -371,7 +371,7 @@ static UUtError OBJiConsole_New(OBJtObject	*inObject, const OBJtOSD_All *inOSD)
 {
 	OBJtOSD_All				osd_all;
 	UUtError				error;
-	
+
 	if (inOSD == NULL)
 	{
 		error = OBJiConsole_SetDefaults(&osd_all);
@@ -379,11 +379,11 @@ static UUtError OBJiConsole_New(OBJtObject	*inObject, const OBJtOSD_All *inOSD)
 
 		inOSD = &osd_all;
 	}
-	
+
 	// set the object specific data and position
 	OBJiConsole_SetOSD(inObject, inOSD);
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return UUcError_None;
 }
 
@@ -426,7 +426,7 @@ static UUtError OBJiConsole_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inO
 
 		UUmError_ReturnOnErrorMsg(error, "failed to find any console class");
 
-		inObject->flags				|= OBJcObjectFlag_Temporary;		
+		inObject->flags				|= OBJcObjectFlag_Temporary;
 		console	= NULL;
 	}
 
@@ -439,7 +439,7 @@ static UUtError OBJiConsole_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inO
 		console_osd->ls_data_array = NULL;
 		console_osd->num_ls_datas = 0;
 	}
-	
+
 	// calculate the size for the ls_data_array and the number of OBJtLSData's in it
 	size = 0;
 	console_osd->num_ls_datas	= 0;
@@ -448,11 +448,11 @@ static UUtError OBJiConsole_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inO
 		for (i = 0; i < console_osd->console_class->geometry_array->num_furn_geoms; i++)
 		{
 			if (console_osd->console_class->geometry_array->furn_geom[i].ls_data == NULL) { continue; }
-			
+
 			size += sizeof(OBJtLSData);
 			console_osd->num_ls_datas++;
 		}
-		
+
 		if (size > 0)
 		{
 			// allocate memory for the ls_data_array
@@ -467,17 +467,17 @@ static UUtError OBJiConsole_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inO
 			}
 			else
 			{
-				UUtUns32		j;			
+				UUtUns32		j;
 				// copy the data from the OBJtLSData template instance in the furn_geom
 				for (i = 0, j = 0; i < console_osd->console_class->geometry_array->num_furn_geoms; i++)
 				{
 					if (console_osd->console_class->geometry_array->furn_geom[i].ls_data == NULL) { continue; }
-					UUrMemory_MoveFast( console_osd->console_class->geometry_array->furn_geom[i].ls_data, (console_osd->ls_data_array + j), sizeof(OBJtLSData));					
+					UUrMemory_MoveFast( console_osd->console_class->geometry_array->furn_geom[i].ls_data, (console_osd->ls_data_array + j), sizeof(OBJtLSData));
 					j++;
 				}
 			}
 		}
-	
+
 		// create action marker
 		if( ONgLevel && !console_osd->action_marker )
 		{
@@ -513,7 +513,7 @@ static UUtError OBJiConsole_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inO
 		else {
 			console_osd->active_screen_texture = M3rTextureMap_GetFromName_UpperCase(console_osd->console_class->screen_active);
 		}
-		
+
 		if (console_osd->screen_triggered[0]) {
 			console_osd->triggered_screen_texture = M3rTextureMap_GetFromName_UpperCase(console_osd->screen_triggered);
 		}
@@ -539,7 +539,7 @@ static UUtError OBJiConsole_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inO
 
 	// create the bounding sphere
 	OBJiConsole_CreateBoundingSphere(inObject, console_osd);
-	
+
 	return UUcError_None;
 }
 
@@ -554,12 +554,12 @@ static void OBJiConsole_UpdatePosition( OBJtObject *inObject)
 
 	// get a pointer to the object osd
 	console_osd = (OBJtOSD_Console*)inObject->object_data;
-	
+
 	// convert the rotation to radians
 	rot_x = inObject->rotation.x * M3cDegToRad;
 	rot_y = inObject->rotation.y * M3cDegToRad;
 	rot_z = inObject->rotation.z * M3cDegToRad;
-	
+
 	// update the rotation matrix
 	euler.order = MUcEulerOrderXYZs;
 	euler.x = rot_x;
@@ -592,12 +592,12 @@ static UUtUns32 OBJiConsole_Read( OBJtObject *inObject, UUtUns16 inVersion, UUtB
 
 	console_osd->flags &= OBJcConsoleFlag_Persist;
 
-	num_bytes = 
-		OBJcMaxNameLength + 
-		sizeof(UUtUns16) + 
+	num_bytes =
+		OBJcMaxNameLength +
 		sizeof(UUtUns16) +
-		OBJcMaxNameLength + 
-		OBJcMaxNameLength + 
+		sizeof(UUtUns16) +
+		OBJcMaxNameLength +
+		OBJcMaxNameLength +
 		OBJcMaxNameLength;
 
 	// initialize and read the event list
@@ -616,10 +616,10 @@ static UUtUns32 OBJiConsole_Read( OBJtObject *inObject, UUtUns16 inVersion, UUtB
 	for (i = 0; i < console_osd->num_ls_datas; i++)
 	{
 		OBJtLSData			*ls_data;
-		
+
 		// get a pointer to the ls_data
 		ls_data = console_osd->ls_data_array + i;
-		
+
 		// read the data from the buffer
 		OBDmGet4BytesFromBuffer(inBuffer, ls_data->index,				UUtUns32, inSwapIt);
 		OBDmGet4BytesFromBuffer(inBuffer, ls_data->light_flags,			UUtUns32, inSwapIt);
@@ -629,13 +629,13 @@ static UUtUns32 OBJiConsole_Read( OBJtObject *inObject, UUtUns16 inVersion, UUtB
 		OBDmGet4BytesFromBuffer(inBuffer, ls_data->light_intensity,		UUtUns32, inSwapIt);
 		OBDmGet4BytesFromBuffer(inBuffer, ls_data->beam_angle,			float, inSwapIt);
 		OBDmGet4BytesFromBuffer(inBuffer, ls_data->field_angle,			float, inSwapIt);
-		
+
 		// set the number of bytes read
 		num_bytes += ((sizeof(UUtUns32) * 3) + (sizeof(float) * 5));
 	}
 
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return num_bytes;
 }
 
@@ -645,12 +645,12 @@ static UUtError OBJiConsole_Write( OBJtObject *inObject, UUtUns8 *ioBuffer, UUtU
 	OBJtOSD_Console			*console_osd;
 	UUtUns32				bytes_available;
 	UUtUns32				i;
-	
+
 	console_osd = (OBJtOSD_Console*)inObject->object_data;
-	
+
 	// set the number of bytes available
 	bytes_available = *ioBufferSize;
-		
+
 	// put the geometry name in the buffer
 	OBJmWriteStringToBuffer(ioBuffer, console_osd->console_class_name,			OBJcMaxNameLength, bytes_available, OBJcWrite_Little);
 	OBJmWrite2BytesToBuffer(ioBuffer, console_osd->id,							UUtInt16, bytes_available, OBJcWrite_Little);
@@ -665,9 +665,9 @@ static UUtError OBJiConsole_Write( OBJtObject *inObject, UUtUns8 *ioBuffer, UUtU
 	for (i = 0; i < console_osd->num_ls_datas; i++)
 	{
 		OBJtLSData			*ls_data;
-		
+
 		ls_data = console_osd->ls_data_array + i;
-		
+
 		OBDmWrite4BytesToBuffer(ioBuffer, ls_data->index, UUtUns32, bytes_available, OBJcWrite_Little);
 		OBDmWrite4BytesToBuffer(ioBuffer, ls_data->light_flags, UUtUns32, bytes_available, OBJcWrite_Little);
 		OBDmWrite4BytesToBuffer(ioBuffer, ls_data->filter_color[0], float, bytes_available, OBJcWrite_Little);
@@ -680,7 +680,7 @@ static UUtError OBJiConsole_Write( OBJtObject *inObject, UUtUns8 *ioBuffer, UUtU
 
 	// set ioBufferSize to the number of bytes written to the buffer
 	*ioBufferSize = *ioBufferSize - bytes_available;
-	
+
 	return UUcError_None;
 }
 // ----------------------------------------------------------------------
@@ -690,17 +690,17 @@ OBJiConsole_GetOSDWriteSize(
 {
 	OBJtOSD_Console		*console_osd;
 	UUtUns32				size;
-	
+
 	// get a pointer to the console_osd
 	console_osd = (OBJtOSD_Console*)inObject->object_data;
-	
+
 	// calculate the number of bytes needed to save the OSD
-	size = 
-		OBJcMaxNameLength + 
-		sizeof(UUtUns16) + 
+	size =
+		OBJcMaxNameLength +
 		sizeof(UUtUns16) +
-		OBJcMaxNameLength + 
-		OBJcMaxNameLength + 
+		sizeof(UUtUns16) +
+		OBJcMaxNameLength +
+		OBJcMaxNameLength +
 		OBJcMaxNameLength +
 		(sizeof(OBJtLSData) * console_osd->num_ls_datas);
 
@@ -808,7 +808,7 @@ UUtError OBJrConsole_OnActivate( OBJtObject *inObject, ONtCharacter* inCharacter
 	UUtBool					console_is_active;
 	UUtBool					console_is_triggered;
 	M3tPoint3D sound_location;
-	
+
 	UUmAssert( inObject->object_type == OBJcType_Console );
 
 	console_osd = (OBJtOSD_Console*) inObject->object_data;
@@ -828,7 +828,7 @@ UUtError OBJrConsole_OnActivate( OBJtObject *inObject, ONtCharacter* inCharacter
 	else {
 		SSrImpulse_Play_Simple("console_activate", &sound_location);
 		console_osd->flags |= OBJcConsoleFlag_Triggered;
-		
+
 		error = ONrEventList_Execute( &console_osd->event_list, inCharacter );
 		UUmAssert( error == UUcError_None );
 	}
@@ -837,13 +837,13 @@ UUtError OBJrConsole_OnActivate( OBJtObject *inObject, ONtCharacter* inCharacter
 }
 
 UUtError OBJrConsole_AddEvent( OBJtOSD_Console *inConsole_osd, ONtEvent *inEvent )
-{	
+{
 	ONrEventList_AddEvent( &inConsole_osd->event_list, inEvent );
 	return UUcError_None;
 }
 
 UUtError OBJrConsole_DeleteEvent( OBJtOSD_Console *inConsole_osd, UUtUns32 inIndex )
-{	
+{
 	ONrEventList_DeleteEvent( &inConsole_osd->event_list, inIndex );
 	return UUcError_None;
 }
@@ -913,7 +913,7 @@ OBJtObject *OBJrConsole_GetByID(UUtUns16 inID)
 
 	find_struct.id = inID;
 	find_struct.object = NULL;
-	OBJrObjectType_EnumerateObjects(OBJcType_Console, OBJrConsole_Find_ID_Enum, (UUtUns32) &find_struct); 
+	OBJrObjectType_EnumerateObjects(OBJcType_Console, OBJrConsole_Find_ID_Enum, (UUtUns32) &find_struct);
 
 	return find_struct.object;
 }
@@ -925,7 +925,7 @@ static UUtBool OBJrConsole_Activate_ID_Enum(OBJtObject *inObject, UUtUns32 inUse
 	UUmAssert( inObject->object_type == OBJcType_Console );
 
 	console_osd = (OBJtOSD_Console*) inObject->object_data;
-	
+
 	if( inUserData == 0xffff || console_osd->id == inUserData )
 	{
 		OBJrConsole_Activate( (OBJtObject*) inObject );
@@ -940,7 +940,7 @@ void OBJrConsole_Activate_ID( UUtUns16 inID )
 		inID = 0xffff;
 	}
 
-	OBJrObjectType_EnumerateObjects( OBJcType_Console, OBJrConsole_Activate_ID_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Console, OBJrConsole_Activate_ID_Enum, (UUtUns32) inID );
 
 	return;
 }
@@ -967,7 +967,7 @@ void OBJrConsole_Deactivate_ID( UUtUns16 inID )
 		inID = 0xffff;
 	}
 
-	OBJrObjectType_EnumerateObjects( OBJcType_Console, OBJrConsole_Deactivate_ID_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Console, OBJrConsole_Deactivate_ID_Enum, (UUtUns32) inID );
 
 	return;
 }
@@ -993,7 +993,7 @@ void OBJrConsole_Reset_ID(UUtUns16 inID)
 		inID = 0xffff;
 	}
 
-	OBJrObjectType_EnumerateObjects( OBJcType_Console, OBJrConsole_Reset_ID_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Console, OBJrConsole_Reset_ID_Enum, (UUtUns32) inID );
 
 	return;
 }
@@ -1006,7 +1006,7 @@ void OBJrConsole_Reset_ID(UUtUns16 inID)
 static UUtError OBJiConsole_Reset( OBJtObject *inObject )
 {
 	OBJtOSD_Console			*console_osd;
-	
+
 	UUmAssert( inObject->object_type == OBJcType_Console );
 
 	console_osd = (OBJtOSD_Console*) inObject->object_data;
@@ -1032,7 +1032,7 @@ static UUtError OBJiConsole_LevelEnd( OBJtObject *inObject )
 static UUtError OBJiConsole_LevelBegin( OBJtObject *inObject )
 {
 	OBJtOSD_Console			*console_osd;
-	
+
 	UUmAssert( inObject->object_type == OBJcType_Console );
 
 	console_osd = (OBJtOSD_Console*) inObject->object_data;
@@ -1067,11 +1067,11 @@ UUtError OBJrConsole_Initialize(void)
 	ONtMechanicsMethods			mechanics_methods;
 
 	// initialize globals
-	OBJgConsole_DrawConsole				= UUcTrue;	
+	OBJgConsole_DrawConsole				= UUcTrue;
 
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew						= OBJiConsole_New;
 	methods.rSetDefaults				= OBJiConsole_SetDefaults;
@@ -1088,12 +1088,12 @@ UUtError OBJrConsole_Initialize(void)
 	methods.rSetOSD						= OBJiConsole_SetOSD;
 	methods.rRead						= OBJiConsole_Read;
 	methods.rWrite						= OBJiConsole_Write;
-	
+
 	// class methods
 	methods.rSearch						= OBJiConsole_Search;
 	methods.rGetClassVisible			= OBJiConsole_GetVisible;
-	methods.rSetClassVisible			= OBJiConsole_SetVisible;	
-	
+	methods.rSetClassVisible			= OBJiConsole_SetVisible;
+
 	// mechanics methods
 	mechanics_methods.rInitialize		= OBJiConsole_LevelBegin;
 	mechanics_methods.rTerminate		= OBJiConsole_LevelEnd;
@@ -1109,9 +1109,9 @@ UUtError OBJrConsole_Initialize(void)
 	// register the console methods
 	error = ONrMechanics_Register( OBJcType_Console, OBJcTypeIndex_Console, "Console", sizeof(OBJtOSD_Console), &methods, OBJcObjectGroupFlag_CanSetName, &mechanics_methods );
 	UUmError_ReturnOnError(error);
-	
+
 	// console is initially visible
 	OBJiConsole_SetVisible(UUcTrue);
-	
+
 	return UUcError_None;
 }

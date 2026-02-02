@@ -278,7 +278,7 @@ static char *key_labels[]= {
 	"numpad 5",
 	"numpad 6",
 	"numpad 7",
-	"numpad 8", 
+	"numpad 8",
 	"numpad 9",
 	"\\",
 	";",
@@ -336,13 +336,13 @@ static void pstrcopy (
 	StringPtr p2)
 {
 	register int len;
-	
+
 	len= *p2++= *p1++;
 	while (--len >= 0)
 	{
 		*p2++= *p1++;
 	}
-	
+
 	return;
 }
 
@@ -350,37 +350,37 @@ static void init_bindings_from_file(
 	char *filename)
 {
 	FILE *key_config_file;
-	
+
 	if ((key_config_file= fopen(filename, "r")) != NULL)
-	{	
+	{
 		for (;;)
 		{
 			char *str, *token, *delimiters= " \t\r\n";
 			char line[128];
-			
+
 			str= fgets(line, 127, key_config_file);
-			
+
 			if (str[0] == '\r')
 			{
 				BlockMove(line+1, line, 127);
 			}
-			
+
 			if ((str[0] == '#') || (str[0] == '\n') || (str[0] == '\r'))
 			{
 				continue;
 			}
-			
+
 			if ((str == NULL) || (str[0] == '\0'))
 			{
 				break; // EOF
 			}
-			
+
 			// search for strings of the form "bind oni_key_name to oni_action_name"
 			token= strtok(line, delimiters);
 			if (token && strcmp(token, "bind") == 0)
 			{
 				int i;
-				
+
 				if ((token= strtok(NULL, delimiters)) != NULL)
 				{
 					for (i= 0; i<num_key_bindings; i++)
@@ -388,7 +388,7 @@ static void init_bindings_from_file(
 						if (strcmp(token, key_bindings[i]) == 0)
 						{
 							int j;
-						
+
 							// what action is this key bound to? is it one we care about?
 							token= strtok(NULL, delimiters);
 							if (token && strcmp(token, "to") == 0)
@@ -403,7 +403,7 @@ static void init_bindings_from_file(
 												action_bindings[j].oni_key_name= key_bindings[i]; \
 												break; \
 											}
-							
+
 										IF_FIND_ACTION_FROM_TOKEN(action_forward) else
 										IF_FIND_ACTION_FROM_TOKEN(action_stepleft) else
 										IF_FIND_ACTION_FROM_TOKEN(action_backward) else
@@ -438,7 +438,7 @@ static void init_bindings_from_file(
 		fprintf(key_config_file, key_config_misc);
 		fclose(key_config_file);
 	}
-	
+
 	return;
 }
 
@@ -446,11 +446,11 @@ static void save_bindings_to_file(
 	char *filename)
 {
 	FILE *key_config_file;
-	
+
 	if ((key_config_file= fopen(filename, "w")) != NULL)
 	{
 		int i;
-		
+
 		fprintf(key_config_file, key_config_preamble);
 		for (i= 0; i<num_action_bindings; i++)
 		{
@@ -460,7 +460,7 @@ static void save_bindings_to_file(
 		fprintf(key_config_file, key_config_misc);
 		fclose(key_config_file);
 	}
-	
+
 	return;
 }
 
@@ -472,14 +472,14 @@ static void set_dialog_item_text(
 	Handle item_handle;
 	Rect item_rect;
 	short item_type;
-	
+
 	UUmAssert(dialog);
 	UUmAssert(text);
-	
+
 	GetDialogItem(dialog, item, &item_type, &item_handle, &item_rect);
 	UUmAssert(item_handle);
 	SetDialogItemText(item_handle, text);
-	
+
 	return;
 }
 
@@ -487,13 +487,13 @@ static void set_dialog_from_action_bindings(
 	DialogPtr dialog)
 {
 	int i, j;
-	
+
 	UUmAssert(dialog);
 	for (i= 0; i<num_action_bindings; i++)
 	{
 		short menu_item_number= i + _forward_menu;
 		short label_item_number= menu_item_number + NUMBER_OF_CUSTOMIZE_KEYS;
-		
+
 		for (j= 0; j<num_key_bindings; j++)
 		{
 			if (strcmp(action_bindings[i].oni_key_name, key_bindings[j]) == 0)
@@ -503,19 +503,19 @@ static void set_dialog_from_action_bindings(
 				short item_type;
 				Handle item_handle;
 				Rect item_rect;
-				
+
 				GetDialogItem(dialog, menu_item_number, &item_type, &item_handle, &item_rect);
 				SetControlValue((ControlHandle)item_handle, menu_selection);
-				
+
 				sprintf(label, "%s : %s", action_labels[i], key_labels[j]);
 				c2pstrcpy(label, label);
 				set_dialog_item_text(dialog, label_item_number, label);
-				
+
 				break;
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -523,7 +523,7 @@ static void set_action_bindings_from_dialog(
 	DialogPtr dialog)
 {
 	int item_number;
-	
+
 	for (item_number= _forward_menu; item_number<=_reload_menu; item_number++)
 	{
 		Handle item_handle;
@@ -532,7 +532,7 @@ static void set_action_bindings_from_dialog(
 		Str15 text= "\p";
 
 		action_index= item_number - _forward_menu;
-	
+
 		GetDialogItem(dialog, item_number, &item_type, &item_handle, &item_rect);
 		menu_selection= GetControlValue((ControlHandle)item_handle);
 		if (menu_selection> 0)
@@ -540,7 +540,7 @@ static void set_action_bindings_from_dialog(
 			action_bindings[action_index].oni_key_name= key_bindings[menu_selection - 1];
 		}
 	}
-	
+
 	return;
 }
 
@@ -554,7 +554,7 @@ static Boolean handle_dialog_event(
 	WindowPtr which_window= NULL;
 	short item_hit= 0, item_type= 0;
 	Handle item_handle= NULL;
-	
+
 	if (DialogSelect(event, &which_dialog, &item_hit ) == false)
 	{
 		// no extra work needed ,  just return
@@ -567,7 +567,7 @@ static Boolean handle_dialog_event(
 			// esc should count as hitting the cancel button
 			unsigned char key_code= (event->message & charCodeMask);
 			Boolean eat_key= false;
-			
+
 			if ((key_code == key_return) || (key_code == key_enter))
 			{
 				item_hit= _save_button;
@@ -578,12 +578,12 @@ static Boolean handle_dialog_event(
 				item_hit= _cancel_button;
 				eat_key= true;
 			}
-			
+
 			if (eat_key)
 			{
 				Str255 edit_text= "\p";
 				Rect item_rect;
-				
+
 				GetDialogItem(dialog, _args_edit_text, &item_type, &item_handle, &item_rect);
 				UUmAssert(item_handle);
 				GetDialogItemText(item_handle, edit_text);
@@ -591,7 +591,7 @@ static Boolean handle_dialog_event(
 				SetDialogItemText(item_handle, edit_text);
 			}
 		}
-		
+
 		if (item_hit > 0)
 		{
 			switch (item_hit)
@@ -617,10 +617,10 @@ static Boolean handle_dialog_event(
 						Handle item_handle;
 						Rect item_rect;
 						int action_index= item_hit - _forward_menu;
-				
+
 						GetDialogItem(dialog, item_hit, &item_type, &item_handle, &item_rect);
 						menu_selection= GetControlValue((ControlHandle)item_handle);
-						
+
 						action_bindings[action_index].oni_key_name= key_bindings[menu_selection - 1];
 						sprintf(label, "%s : %s", action_labels[action_index], key_labels[menu_selection - 1]);
 						c2pstrcpy(label, label);
@@ -651,7 +651,7 @@ static Boolean handle_dialog_event(
 			}
 		}
 	}
-	
+
 	return done;
 }
 
@@ -664,7 +664,7 @@ static Boolean handle_dialog_event_osx(
 	WindowPtr which_window= NULL;
 	short item_hit= 0, item_type= 0;
 	Handle item_handle= NULL;
-	
+
 	if (DialogSelect(event, &which_dialog, &item_hit ) == false)
 	{
 		// no extra work needed ,  just return
@@ -677,14 +677,14 @@ static Boolean handle_dialog_event_osx(
 			// esc should count as hitting the cancel button
 			unsigned char key_code= (event->message & charCodeMask);
 			Boolean eat_key= false;
-			
+
 			if ((key_code == key_return) || (key_code == key_enter))
 			{
 				Str255 edit_text= "\p";
 				Rect item_rect;
-				
+
 				item_hit= _ok_button_osx;
-				
+
 				GetDialogItem(dialog, _args_edit_text_osx, &item_type, &item_handle, &item_rect);
 				UUmAssert(item_handle);
 				GetDialogItemText(item_handle, edit_text);
@@ -696,7 +696,7 @@ static Boolean handle_dialog_event_osx(
 				item_hit= _quit_button_osx;
 			}
 		}
-		
+
 		if (item_hit > 0)
 		{
 			switch (item_hit)
@@ -712,7 +712,7 @@ static Boolean handle_dialog_event_osx(
 			}
 		}
 	}
-	
+
 	return done;
 }
 
@@ -722,32 +722,32 @@ static UUtInt16 CLrPlatform_GetCommandLine_PreOSX(
 	DialogPtr dialog;
 	StringHandle key_config_filename_string= NULL, command_line_string= NULL;
 	UUtInt16 argc= 0;
-	
+
 	command_line_string= GetString(COMMAND_LINE_ARGS_STR_RSRC);
-	
+
 	if ((key_config_filename_string= GetString(KEY_CONFIG_FILENAME_STR_RSRC)) != NULL)
 	{
 		HLock(key_config_filename_string);
 		p2cstrcpy((char *)(*key_config_filename_string), *key_config_filename_string);
 		init_bindings_from_file((char *)(*key_config_filename_string));
 	}
-	
+
 	dialog= GetNewDialog(OPTIONS_DLOG_RSRC, nil, (WindowPtr)(-1L));
-	
+
 	if (dialog && key_config_filename_string)
 	{
 		Boolean done= false, save_prefs= false;
 		GrafPtr save_port;
-		
+
 		GetPort(&save_port);
-		
+
 		SetDialogDefaultItem(dialog, _save_button);
 		SetDialogCancelItem(dialog, _cancel_button);
 		SetDialogTracksCursor(dialog, true);
-		
+
 		SetPort(GetWindowPort(dialog));
 		ShowWindow(GetWindowPort(dialog));
-		
+
 		// setup menus & labels
 		set_dialog_from_action_bindings(dialog);
 		if (command_line_string)
@@ -760,28 +760,28 @@ static UUtInt16 CLrPlatform_GetCommandLine_PreOSX(
 		{
 			set_dialog_item_text(dialog, _args_edit_text, "\p");
 		}
-			
+
 		while (done == false)
 		{
 			EventRecord event;
-			
+
 			if (GetNextEvent( everyEvent, &event))
 			{
 				done= handle_dialog_event(dialog, &event, &save_prefs);
 			}
 		}
-		
+
 		if (save_prefs && key_config_filename_string)
 		{
 			save_bindings_to_file((char *)(*key_config_filename_string));
 		}
-		
+
 		if (key_config_filename_string)
 		{
 			HUnlock(key_config_filename_string);
 			ReleaseResource(key_config_filename_string);
 		}
-		
+
 		// get command line args
 		{
 			Handle item_handle;
@@ -789,7 +789,7 @@ static UUtInt16 CLrPlatform_GetCommandLine_PreOSX(
 			Rect item_rect;
 			static char command_line[256]= "";
 			static char *command_line_args[32]= { "Oni" };
-			
+
 			GetDialogItem(dialog, _args_edit_text, &item_type, &item_handle, &item_rect);
 			UUmAssert(item_handle);
 			GetDialogItemText(item_handle, (StringPtr)command_line);
@@ -807,7 +807,7 @@ static UUtInt16 CLrPlatform_GetCommandLine_PreOSX(
 				ReleaseResource(command_line_string);
 			}
 			p2cstrcpy(command_line, command_line); // an in-place copy
-			
+
 			argc= 1; // "Oni"
 			if (command_line[0] != '\0')
 			{
@@ -815,7 +815,7 @@ static UUtInt16 CLrPlatform_GetCommandLine_PreOSX(
 				while (arg && (arg[0] != '\0') && (argc < 31))
 				{
 					int length= 0;
-					
+
 					while ((arg[length] != '\0') && !isspace(arg[length]) && (length < 63))
 					{
 						++length;
@@ -833,15 +833,15 @@ static UUtInt16 CLrPlatform_GetCommandLine_PreOSX(
 					}
 				}
 			}
-			
+
 			*argv= command_line_args;
 		}
-			
-		
+
+
 		SetPort(save_port);
 		DisposeDialog(dialog);
 	}
-	
+
 		return argc;
 }
 
@@ -851,25 +851,25 @@ static UUtInt16 CLrPlatform_GetCommandLine_OSX(
 	DialogPtr dialog;
 	StringHandle command_line_string= NULL;
 	UUtInt16 argc= 0;
-	
+
 	command_line_string= GetString(COMMAND_LINE_ARGS_STR_RSRC);
-	
+
 	dialog= GetNewDialog(OPTIONS_DLOG_RSRC_OSX, nil, (WindowPtr)(-1L));
-	
+
 	if (dialog)
 	{
 		Boolean done= false;
 		GrafPtr save_port;
-		
+
 		GetPort(&save_port);
-		
+
 		SetDialogDefaultItem(dialog, _ok_button_osx);
 		SetDialogCancelItem(dialog, _quit_button_osx);
 		SetDialogTracksCursor(dialog, true);
-		
+
 		SetPort(GetWindowPort(dialog));
 		ShowWindow(GetWindowPort(dialog));
-		
+
 		// setup menus & labels
 		if (command_line_string)
 		{
@@ -881,17 +881,17 @@ static UUtInt16 CLrPlatform_GetCommandLine_OSX(
 		{
 			set_dialog_item_text(dialog, _args_edit_text_osx, "\p");
 		}
-			
+
 		while (done == false)
 		{
 			EventRecord event;
-			
+
 			if (GetNextEvent( everyEvent, &event))
 			{
 				done= handle_dialog_event_osx(dialog, &event);
 			}
 		}
-		
+
 		// get command line args
 		{
 			Handle item_handle;
@@ -899,7 +899,7 @@ static UUtInt16 CLrPlatform_GetCommandLine_OSX(
 			Rect item_rect;
 			static char command_line[256]= "";
 			static char *command_line_args[32]= { "Oni" };
-			
+
 			GetDialogItem(dialog, _args_edit_text_osx, &item_type, &item_handle, &item_rect);
 			UUmAssert(item_handle);
 			GetDialogItemText(item_handle, (StringPtr)command_line);
@@ -914,18 +914,18 @@ static UUtInt16 CLrPlatform_GetCommandLine_OSX(
 				ReleaseResource(command_line_string);
 			}
 			p2cstrcpy(command_line, command_line); // an in-place copy
-			
+
 			argc= 1; // "Oni"
 			if (command_line[0] != '\0')
 			{
 				char *arg= command_line;
-				
+
 				while (isspace(*arg)) ++arg;
-				
+
 				while (arg && (arg[0] != '\0') && (argc < 31))
 				{
 					int length= 0;
-					
+
 					while ((arg[length] != '\0') && !isspace(arg[length]) && (length < 63))
 					{
 						++length;
@@ -943,15 +943,15 @@ static UUtInt16 CLrPlatform_GetCommandLine_OSX(
 					}
 				}
 			}
-			
+
 			*argv= command_line_args;
 		}
-			
-		
+
+
 		SetPort(save_port);
 		DisposeDialog(dialog);
 	}
-	
+
 	return argc;
 }
 
@@ -961,14 +961,14 @@ UUtInt16 CLrPlatform_GetCommandLine(
 	OSErr err;
 	unsigned long value;
 	UUtInt16 argc= 0;
-	
+
 	// check OS version; the pre-OSX version has key-config items that use special
 	// dialog controls which puke under OSX, hence the 2 versions
 	err= Gestalt(gestaltSystemVersion, &value);
 	if (err == noErr)
 	{
 		unsigned long major_version;
-		
+
 		// value will look like this: 0x00000904 (OS 9.0.4)
 		major_version= (value & 0x0000FF00)>>8;
 		if (major_version >= 10)
@@ -980,7 +980,7 @@ UUtInt16 CLrPlatform_GetCommandLine(
 			argc= CLrPlatform_GetCommandLine_PreOSX(argv);
 		}
 	}
-	
+
 	return argc;
 }
 

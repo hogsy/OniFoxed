@@ -1,8 +1,8 @@
 /*
 	Imp_Path.c
-	
+
 	This file contains all importer pathfinding related code
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -309,7 +309,7 @@ static UUtBool PHiQuadInBNV(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inBNV, 
 	// trivially accept quads which have any points inside the BNV
 	for (i = 0; i < 4; i++) {
 		points[i] = sharedPoints[curGQ->visibleQuad.indices[i]];
-		
+
 		if (IMPiEnv_Process_BSP_PointInBSP(inBuildData, inBNV, &points[i], IMPcQuadInBNVTolerance)) {
 #if DEBUG_GRID
 			if (IMPgTempDebugGrid) {
@@ -374,9 +374,9 @@ static UUtBool PHiQuadInBNV(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inBNV, 
 				MUmVector_ScaleCopy(intersect_point, d1 / (d1 - d0), points[j]);
 				MUmVector_ScaleIncrement(intersect_point, -d0 / (d1 - d0), points[(j + 1) % 4]);
 			}
-			UUmAssert(UUmFloat_LooseCompareZero(intersect_point.x * side_plane.a + intersect_point.y * side_plane.b + 
+			UUmAssert(UUmFloat_LooseCompareZero(intersect_point.x * side_plane.a + intersect_point.y * side_plane.b +
 												intersect_point.z * side_plane.c + side_plane.d));
-			UUmAssert(UUmFloat_LooseCompareZero(intersect_point.x * quad_plane.a + intersect_point.y * quad_plane.b + 
+			UUmAssert(UUmFloat_LooseCompareZero(intersect_point.x * quad_plane.a + intersect_point.y * quad_plane.b +
 												intersect_point.z * quad_plane.c + quad_plane.d));
 
 			for (k = 0; k < side->numBNVQuads; k++) {
@@ -398,10 +398,10 @@ static UUtBool PHiQuadInBNV(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inBNV, 
 				side_quad_points[k] = sharedPoints[side_quad->indices[k]];
 				d[k] = side_quad_points[k].x * quad_plane.a + side_quad_points[k].y * quad_plane.b + side_quad_points[k].z * quad_plane.c + quad_plane.d;
 
-				UUmAssert(UUmFloat_LooseCompareZero(side_quad_points[k].x * side_plane.a + side_quad_points[k].y * side_plane.b + 
+				UUmAssert(UUmFloat_LooseCompareZero(side_quad_points[k].x * side_plane.a + side_quad_points[k].y * side_plane.b +
 													side_quad_points[k].z * side_plane.c + side_plane.d));
 			}
-			
+
 			for (k = 0; k < 4; k++) {
 				// check the points that make up this edge against the side's plane
 				d0 = d[k]; d1 = d[(k + 1) % 4];
@@ -418,9 +418,9 @@ static UUtBool PHiQuadInBNV(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inBNV, 
 					MUmVector_ScaleCopy(intersect_point, d1 / (d1 - d0), side_quad_points[k]);
 					MUmVector_ScaleIncrement(intersect_point, -d0 / (d1 - d0), side_quad_points[(k + 1) % 4]);
 				}
-				UUmAssert(UUmFloat_LooseCompareZero(intersect_point.x * quad_plane.a + intersect_point.y * quad_plane.b + 
+				UUmAssert(UUmFloat_LooseCompareZero(intersect_point.x * quad_plane.a + intersect_point.y * quad_plane.b +
 													intersect_point.z * quad_plane.c + quad_plane.d));
-				UUmAssert(UUmFloat_LooseCompareZero(intersect_point.x * side_plane.a + intersect_point.y * side_plane.b + 
+				UUmAssert(UUmFloat_LooseCompareZero(intersect_point.x * side_plane.a + intersect_point.y * side_plane.b +
 													intersect_point.z * side_plane.c + side_plane.d));
 
 				if (CLrQuad_PointInQuad(CLcProjection_Unknown, sharedPoints, &curGQ->visibleQuad, &intersect_point)) {
@@ -467,7 +467,7 @@ static UUtBool PHiQuadBelowStairs(
 	UUtUns32 i;
 	float d;
 	M3tPoint3D *p;
-	
+
 	for (i=0; i<4; i++)
 	{
 		p = inPoints + inQuad->visibleQuad.indices[i];
@@ -566,7 +566,7 @@ static void PHrRasterizeFloorQuad(IMPtEnv_BuildData *inBuildData, UUtUns32 inGQI
 #if DEBUG_GRID
 	if (IMPgTempDebugGrid) {
 		Imp_PrintMessage(IMPcMsg_Important, "  floor quad %d maps to (%d %d), (%d %d), (%d %d), (%d %d)\n", inGQIndex,
-			grid_points[0].x, grid_points[0].y, grid_points[1].x, grid_points[1].y, 
+			grid_points[0].x, grid_points[0].y, grid_points[1].x, grid_points[1].y,
 			grid_points[2].x, grid_points[2].y, grid_points[3].x, grid_points[3].y);
 	}
 #endif
@@ -597,7 +597,7 @@ exit:
 
 static void PHrCreatePathfindingGrid(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inBNV, AKtBNVNode *node, AKtEnvironment *env)
 {
-	#define PHcMaxRoomSize 250.0f	
+	#define PHcMaxRoomSize 250.0f
 	PHtSquare			*srcptr, *destptr;
 	PHtRoomData			*room = &node->roomData;
 	UUtUns32			size_of_pathfinding_grid;
@@ -650,12 +650,12 @@ static void PHrCreatePathfindingGrid(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV
 
 	// STEP 1: find the gqs that are intersecting with this BNV
 	IMPrFixedOctTree_Test(
-		inBuildData, 
-		inBNV->minX - 2.f, 
-		inBNV->maxX + 2.f, 
-		inBNV->minY - 2.f, 
-		inBNV->maxY + 2.f, 
-		inBNV->minZ - 2.f, 
+		inBuildData,
+		inBNV->minX - 2.f,
+		inBNV->maxX + 2.f,
+		inBNV->minY - 2.f,
+		inBNV->maxY + 2.f,
+		inBNV->minZ - 2.f,
 		inBNV->maxZ + 2.f);
 
 	gq_list_size = inBuildData->fixed_oct_tree_temp_list->numPages;
@@ -709,8 +709,8 @@ static void PHrCreatePathfindingGrid(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV
 
 	// no longer needs to be even because byte alignment is not an issue - we are doing RLE instead
 //	room->gridX += room->gridX % 2;
-//	room->gridY += room->gridY % 2;		
-	
+//	room->gridY += room->gridY % 2;
+
 	PHgTempGridX = room->gridX + 2 * IMPcGridBufferTemp;
 	PHgTempGridY = room->gridY + 2 * IMPcGridBufferTemp;
 
@@ -728,7 +728,7 @@ static void PHrCreatePathfindingGrid(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV
 		isStairs = UUcFalse;
 		stair_plane = NULL;
 	}
-	
+
 	// STEP 3: initialize the temporary grid to PHcDanger - as AIs should never, ever be
 	// walking anywhere that there's no floor
 	UUrMemory_Set8(PHgTempGrid, PHcDanger, size_of_pathfinding_grid * sizeof(PHtSquare));
@@ -806,9 +806,9 @@ static void PHrCreatePathfindingGrid(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV
 				current_quad = gq->visibleQuad;
 
 				Imp_PrintMessage(IMPcMsg_Important, "checking gq #%d as floor, (%f %f %f) (%f %f %f), (%f %f %f), (%f %f %f)\n", gq_index,
-					points[current_quad.indices[0]].x, points[current_quad.indices[0]].y, points[current_quad.indices[0]].z, 
-					points[current_quad.indices[1]].x, points[current_quad.indices[1]].y, points[current_quad.indices[1]].z, 
-					points[current_quad.indices[2]].x, points[current_quad.indices[2]].y, points[current_quad.indices[2]].z, 
+					points[current_quad.indices[0]].x, points[current_quad.indices[0]].y, points[current_quad.indices[0]].z,
+					points[current_quad.indices[1]].x, points[current_quad.indices[1]].y, points[current_quad.indices[1]].z,
+					points[current_quad.indices[2]].x, points[current_quad.indices[2]].y, points[current_quad.indices[2]].z,
 					points[current_quad.indices[3]].x, points[current_quad.indices[3]].y, points[current_quad.indices[3]].z);
 			}
 #endif
@@ -835,9 +835,9 @@ static void PHrCreatePathfindingGrid(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV
 				current_quad = gq->visibleQuad;
 
 				Imp_PrintMessage(IMPcMsg_Important, "gq #%d is danger, (%f %f %f) (%f %f %f), (%f %f %f), (%f %f %f)\n", gq_index,
-					points[current_quad.indices[0]].x, points[current_quad.indices[0]].y, points[current_quad.indices[0]].z, 
-					points[current_quad.indices[1]].x, points[current_quad.indices[1]].y, points[current_quad.indices[1]].z, 
-					points[current_quad.indices[2]].x, points[current_quad.indices[2]].y, points[current_quad.indices[2]].z, 
+					points[current_quad.indices[0]].x, points[current_quad.indices[0]].y, points[current_quad.indices[0]].z,
+					points[current_quad.indices[1]].x, points[current_quad.indices[1]].y, points[current_quad.indices[1]].z,
+					points[current_quad.indices[2]].x, points[current_quad.indices[2]].y, points[current_quad.indices[2]].z,
 					points[current_quad.indices[3]].x, points[current_quad.indices[3]].y, points[current_quad.indices[3]].z);
 			}
 #endif
@@ -863,9 +863,9 @@ static void PHrCreatePathfindingGrid(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV
 				current_quad = gq->visibleQuad;
 
 				Imp_PrintMessage(IMPcMsg_Important, "gq #%d is impassable, (%f %f %f) (%f %f %f), (%f %f %f), (%f %f %f)\n", gq_index,
-					points[current_quad.indices[0]].x, points[current_quad.indices[0]].y, points[current_quad.indices[0]].z, 
-					points[current_quad.indices[1]].x, points[current_quad.indices[1]].y, points[current_quad.indices[1]].z, 
-					points[current_quad.indices[2]].x, points[current_quad.indices[2]].y, points[current_quad.indices[2]].z, 
+					points[current_quad.indices[0]].x, points[current_quad.indices[0]].y, points[current_quad.indices[0]].z,
+					points[current_quad.indices[1]].x, points[current_quad.indices[1]].y, points[current_quad.indices[1]].z,
+					points[current_quad.indices[2]].x, points[current_quad.indices[2]].y, points[current_quad.indices[2]].z,
 					points[current_quad.indices[3]].x, points[current_quad.indices[3]].y, points[current_quad.indices[3]].z);
 			}
 #endif
@@ -897,7 +897,7 @@ static void PHrCreatePathfindingGrid(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV
 			if (UUrBitVector_TestBit(outside_bv, itr))
 				continue;
 
-			if (gq->flags & AKcGQ_Flag_SAT_Mask) {	
+			if (gq->flags & AKcGQ_Flag_SAT_Mask) {
 				PHrChooseAndWeightQuad(inBuildData, gq_index, env, room);
 			}
 		}
@@ -969,7 +969,7 @@ void PHrCreateRoomData(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inBNV, AKtBN
 	}
 
 	UUrMemory_Clear(room, sizeof(*room));
-	
+
 	room->origin = inBNV->origin;
 	room->antiOrigin = inBNV->antiOrigin;
 	room->compressed_grid = NULL;
@@ -981,7 +981,7 @@ void PHrCreateRoomData(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inBNV, AKtBN
 	// gox and goy are offsets that are added to grid-space to get worldspace coordinates relative
 	// to the BNV.
 	room->gox = room->goy = -IMPcGridBuffer;
-	room->gridX = (UUtUns32)((room->antiOrigin.x - room->origin.x) / room->squareSize) - 2*room->gox + 1;	
+	room->gridX = (UUtUns32)((room->antiOrigin.x - room->origin.x) / room->squareSize) - 2*room->gox + 1;
 	room->gridY = (UUtUns32)((room->antiOrigin.z - room->origin.z) / room->squareSize) - 2*room->gox + 1;
 
 	if (node->flags & AKcBNV_Flag_NonAI) {
@@ -993,7 +993,7 @@ void PHrCreateRoomData(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inBNV, AKtBN
 	if (node->flags & AKcBNV_Flag_SimplePathfinding) {
 		goto exit;
 	}
-	
+
 
 	PHrCreatePathfindingGrid(inBuildData, inBNV, node, env);
 
@@ -1031,7 +1031,7 @@ static void PHiFindSATs(AKtEnvironment *inEnvironment, IMPtEnv_BuildData *inBuil
 		// this stops us from mistakenly getting two up SATs or whatever in BNVs that touch
 		// each other
 		AUrQuad_LowestPoints(&gq->visibleQuad, inEnvironment->pointArray->points, &p0, &p1);
-		
+
 		if ((inNode->roomData.origin.x - p0->x		> IMPcSAT_InsideBNVTolerance) ||
 			(p0->x - inNode->roomData.antiOrigin.x	> IMPcSAT_InsideBNVTolerance) ||
 			(inNode->roomData.origin.x - p1->x		> IMPcSAT_InsideBNVTolerance) ||
@@ -1307,9 +1307,9 @@ static UUtBool PHiQuadInRoom(
 	/******************
 	* Returns true if any of the points are in the room (not just the BNV)
 	*/
-	
+
 	UUtUns32 i;
-	
+
 	for (i=0; i<4; i++)
 	{
 		if (PHrPointInRoom(inEnv,inRoom,inPoints + inQuad->visibleQuad.indices[i])) return UUcTrue;
@@ -1319,9 +1319,9 @@ static UUtBool PHiQuadInRoom(
 }
 
 void PHrChooseAndWeightQuad(
-	IMPtEnv_BuildData *inBuildData, 
-	UUtUns32 gqIndex, 
-	AKtEnvironment *env, 
+	IMPtEnv_BuildData *inBuildData,
+	UUtUns32 gqIndex,
+	AKtEnvironment *env,
 	PHtRoomData *room)
 {
 	/***************
@@ -1340,7 +1340,7 @@ void PHrChooseAndWeightQuad(
 	o = &room->origin;
 	points = env->pointArray->points;
 	if (gunk->flags & (AKcGQ_Flag_SAT_Up | AKcGQ_Flag_SAT_Down)) isSAT = UUcTrue;
-	
+
 	/*
 	CB: this is irrelevant now, stair BNVs are not rasterized as normal
 
@@ -1352,8 +1352,8 @@ void PHrChooseAndWeightQuad(
 	AKmPlaneEqu_GetComponents(
 		gunk->planeEquIndex,
 		env->planeArray->planes, planeA, planeB, planeC, planeD);
-	
-	
+
+
 	// Eliminate curbs from collision
 	if (UUmFloat_CompareEqu(planeB,0) &&
 		(float)fabs(gunk->hi1->y - o->y) < 4.0f &&
@@ -1376,7 +1376,7 @@ void PHrChooseAndWeightQuad(
 
 	// If this quad can be walked on and is on the floor, skip it.
 	if ((float)fabs(planeB) > PHcFlatNormal && (float)fabs(gunk->lo1->y - o->y)<4.0 && (float)fabs(gunk->hi1->y - o->y)<4.0) return;
-	
+
 	// If this quad is entirely below the floor, then skip it
 	if (gunk->hi1->y <= o->y && gunk->hi2->y <= o->y) return;
 
@@ -1402,7 +1402,7 @@ void PHrChooseAndWeightQuad(
 		return;
 #endif
 	}
-	
+
 	// If this quad is vertical, short and touching the floor, skip it
 	// (Makes curbs work)
 	if ((float)fabs(gunk->hi1->y - gunk->lo1->y) < 4.0f &&
@@ -1440,8 +1440,8 @@ void PHrChooseAndWeightQuad(
 
 
 void PHrRasterizeSlopedQuad(
-	IMPtEnv_GQ *gunk, 
-	AKtEnvironment *env, 
+	IMPtEnv_GQ *gunk,
+	AKtEnvironment *env,
 	PHtRoomData *room)
 {
 	/***************************
@@ -1477,7 +1477,7 @@ void PHrRasterizeSlopedQuad(
 		t1 = gunk->hi2;
 		t2 = gunk->hi1;
 	}
-	
+
 /*	if (IMPgTempDebugGrid) {
 		Imp_PrintMessage(IMPcMsg_Important, "sloping quad in room origin %f %f %f\n", o->x, o->y, o->z);
 		Imp_PrintMessage(IMPcMsg_Important, "  st: %f %f %f\n", st->x, st->y, st->z);
@@ -1499,7 +1499,7 @@ void PHrRasterizeSlopedQuad(
 	ex1.y = ex2.y = 0.0f;
 	length = MUrPoint_Distance(&ex1,&ex2);
 	step =  PHcSquareSize-1.0f;
-	
+
 	// Step up the quad until the point of no return is found
 	while (step < length)
 	{
@@ -1511,19 +1511,19 @@ void PHrRasterizeSlopedQuad(
 		if (!MUmPoint_Compare(*t2,*ed)) MUrVector_SetLength(&edge2,step);
 		MUmVector_Increment(ex1,edge1);
 		MUmVector_Increment(ex2,edge2);
-		
+
 		if ((float)fabs(ex1.y - o->y) > IMPcWalkUnderHeight ||
 			(float)fabs(ex2.y - o->y) > IMPcWalkUnderHeight) break;
 		step += PHcSquareSize;
 	}
-	
+
 	// Rasterize out to that point
 	IMPmGetGridPoint(p1, ex1, room);
 	IMPmGetGridPoint(p2, *st, room);
 
 	PHrBresenhamAA(p1.x, p1.y, p2.x, p2.y,
 			PHgTempGrid,PHgTempGridX,PHgTempGridY,&fill,&blend,callback);
-	
+
 	IMPmGetGridPoint(p1, ex2, room);
 	IMPmGetGridPoint(p2, *ed, room);
 
@@ -1555,7 +1555,7 @@ void PHrRasterizeSlopedQuad(
 		}
 	}
 #endif*/
-	
+
 		overhang_height = o->y + IMPcWalkUnderHeight;
 
 /*	if (IMPgTempDebugGrid) {
@@ -1869,12 +1869,12 @@ void PHrRasterizeSlopedQuad(
 }
 
 void PHrFatDot(
-	UUtUns16 x, 
-	UUtUns16 y, 
-	PHtSquare *grid, 
-	UUtInt32 inWidth, 
+	UUtUns16 x,
+	UUtUns16 y,
+	PHtSquare *grid,
+	UUtInt32 inWidth,
 	UUtInt32 inHeight,
-	PHtRasterizationCallback callback)	
+	PHtRasterizationCallback callback)
 {
 	/**************
 	* Draws a fat dot in the grid at (x,y), clipping that
@@ -1887,12 +1887,12 @@ void PHrFatDot(
 	PHtSquare tight = { PHcSemiPassable };
 
 	PHmFatDot_PutCell(x,y,&blocked,callback);
-	
+
 	PHmFatDot_PutCell(x-1,y,&tight,callback);
 	PHmFatDot_PutCell(x+1,y,&tight,callback);
 	PHmFatDot_PutCell(x,y-1,&tight,callback);
 	PHmFatDot_PutCell(x,y+1,&tight,callback);
-	
+
 	PHmFatDot_PutCell(x-1,y-1,&tight,callback);
 	PHmFatDot_PutCell(x+1,y-1,&tight,callback);
 	PHmFatDot_PutCell(x+1,y+1,&tight,callback);
@@ -1905,17 +1905,17 @@ void IMPiCalculateNodeOrigins(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inNod
 	/*******************
 	* Calculates the upper left and bottom right corners of the node
 	*/
-	
+
 	float low1,low2,low3,ly;
 	IMPtEnv_BNV_Side*	curSide;
 	M3tQuad *quad;
 	M3tPoint3D *points = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
 	M3tQuad *quads = AUrSharedQuadArray_GetList(inBuildData->sharedBNVQuadArray);
 	UUtUns16 q,c,curSideIndex;
-	
+
 	// Find the origin of the node by looking for the bottom-upper-left corner of the BNV
 	low1 = low2 = low3 = 1e9;
-	
+
 	for(curSideIndex = 0, curSide = inNode->sides;
 		curSideIndex < inNode->numSides;
 		curSideIndex++, curSide++)
@@ -1923,7 +1923,7 @@ void IMPiCalculateNodeOrigins(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inNod
 		for (q = 0; q < curSide->numBNVQuads; q++)
 		{
 			quad = &quads[curSide->bnvQuadList[q]];
-			
+
 			for (c=0; c<4; c++)
 			{
 				ly = points[quad->indices[c]].x;
@@ -1947,10 +1947,10 @@ void IMPiCalculateNodeOrigins(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inNod
 			}
 		}
 	}
-	
+
 	// Find the opposite corner of the node (upper-top-right corner of the BNV)
 	low1 = low2 = low3 = -1e9;
-	
+
 	for(curSideIndex = 0, curSide = inNode->sides;
 		curSideIndex < inNode->numSides;
 		curSideIndex++, curSide++)
@@ -1990,7 +1990,7 @@ static void PHrMarkBorderValues(UUtUns8 inBaseValue, UUtUns8 inSeedValue, UUtUns
 
 	for(y = 0; y < PHgTempGridY; y++)
 	{
-		for(x = 0; x < PHgTempGridX; x++) 
+		for(x = 0; x < PHgTempGridX; x++)
 		{
 			if (scan_line[x].weight == inSeedValue)
 			{

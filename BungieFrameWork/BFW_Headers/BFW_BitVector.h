@@ -141,30 +141,30 @@ UUrBitVector_TestAndSetBit(UUtUns32 *bitVector, UUtUns32 bit)
 	UUtUns32*	elem;
 	UUtUns32	bvBit;
 	UUtBool		result;
-	
+
 	UUmAssert(bitVector);
-	
+
 	elem = bitVector + BV_INDEX(bit);
 	bvBit = BV_BIT(bit);
-	
+
 	result = (*elem & bvBit) != 0;
 	*elem |= bvBit;
 
 	return result;
 }
 
-static UUcInline UUtBool 
+static UUcInline UUtBool
 UUrBitVector_TestAndClearBit(UUtUns32 *bitVector, UUtUns32 bit)
 {
 	UUtUns32*	elem;
 	UUtUns32	bvBit;
 	UUtBool		result;
-	
+
 	UUmAssert(bitVector);
-	
+
 	elem = bitVector + BV_INDEX(bit);
 	bvBit = BV_BIT(bit);
-	
+
 	result = (*elem & bvBit) != 0;
 	*elem &= ~bvBit;
 

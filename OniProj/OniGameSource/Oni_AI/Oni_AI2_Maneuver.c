@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Maneuver.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: April 20, 1999
-	
+
 	PURPOSE: Maneuvering code for Oni AI system
-	
+
 	Copyright (c) 2000
 
 */
@@ -183,7 +183,7 @@ void AI2rManeuver_DecidePrimaryMovement(ONtCharacter *ioCharacter, AI2tCombatSta
 			// we can get stuck in an infinite loop here
 			UUmAssert((ioCombatState->maneuver.primary_movement_weights[best_choice] < second_weight) || (second_weight == 0));
 		}
-	
+
 		// otherwise keep looking
 	} while (1);
 
@@ -244,7 +244,7 @@ static UUtBool AI2iManeuver_CheckAdvance(ONtCharacter *ioCharacter, AI2tCombatSt
 		// we are trying to avoid hazards at the moment, don't advance into them
 		delta_dir = move_direction - ioManeuverState->dodge_avoid_angle;
 		UUmTrig_ClipAbsPi(delta_dir);
-		
+
 		if ((float)fabs(delta_dir) < AI2cManeuver_Advance_AvoidAngle) {
 			// we can't advance, because we're avoiding a hazard nearby
 			ioManeuverState->primary_movement_weights[AI2cPrimaryMovement_Advance] = 0.0f;
@@ -336,7 +336,7 @@ static UUtBool AI2iManeuver_CheckAdvance(ONtCharacter *ioCharacter, AI2tCombatSt
 		AI2rPath_Halt(ioCharacter);
 		ioManeuverState->primary_movement_weights[AI2cPrimaryMovement_Advance] = 0.0f;
 		return UUcFalse;
-	} 
+	}
 
 	// we must always have at least some urgency if we're trying to move
 	ioManeuverState->primary_movement_weights[AI2cPrimaryMovement_Advance] *= UUmMax(urgency, 0.5f);
@@ -602,7 +602,7 @@ static UUtBool AI2iManeuver_CheckGun(ONtCharacter *ioCharacter, AI2tCombatState 
 					AI2rPath_Halt(ioCharacter);
 
 					weapon_class = WPrGetClass(ioManeuverState->gun_target);
-					found_animation = ONrCharacter_DoAnimation(ioCharacter, active_character, ONcAnimPriority_Appropriate, 
+					found_animation = ONrCharacter_DoAnimation(ioCharacter, active_character, ONcAnimPriority_Appropriate,
 						(weapon_class->flags & WPcWeaponClassFlag_TwoHanded)
 						? ONcAnimType_Pickup_Rifle : ONcAnimType_Pickup_Pistol);
 					if (found_animation) {
@@ -615,7 +615,7 @@ static UUtBool AI2iManeuver_CheckGun(ONtCharacter *ioCharacter, AI2tCombatState 
 						}
 					}
 				}
-				
+
 				// continue performing the movement
 				return UUcTrue;
 			} else {
@@ -659,7 +659,7 @@ static UUtBool AI2iManeuver_CheckGun(ONtCharacter *ioCharacter, AI2tCombatState 
 					}
 					thwarted = UUcTrue;
 				}
-					
+
 				// check to see if we should abort our action
 				if (thwarted) {
 					// try to find this gun in our existing thwarted array
@@ -686,7 +686,7 @@ static UUtBool AI2iManeuver_CheckGun(ONtCharacter *ioCharacter, AI2tCombatState 
 					ioManeuverState->gun_target = NULL;
 					return UUcFalse;
 				}
-				
+
 				distance = ioManeuverState->gun_search_maxradius;
 				path_to_gun = AI2iManeuver_TryPathToGun(ioCharacter, ioManeuverState, inWeightToBeat, &destination, &distance);
 				if (path_to_gun) {
@@ -771,7 +771,7 @@ static UUtBool AI2iManeuver_CheckGun(ONtCharacter *ioCharacter, AI2tCombatState 
 			ioManeuverState->gun_target = weapon;
 		}
 	}
-	
+
 	if (ioManeuverState->gun_target == NULL) {
 		// no weapons are available nearby that we can pathfind to. give up.
 		ioManeuverState->primary_movement_weights[AI2cPrimaryMovement_Gun] = 0.0f;
@@ -882,7 +882,7 @@ static UUtBool AI2iManeuver_PathfindAndCheckViability(ONtCharacter *ioCharacter,
 			// so that we will get up rather than lying on the ground aiming!
 			AI2rExecutor_MoveOverride(ioCharacter, LIc_BitMask_Forward);
 			return UUcTrue;
-			
+
 		} else {
 			// we will get up because we are already running some kind of get-up animation.
 			maneuver_state->primary_movement_weights[AI2cPrimaryMovement_GetUp] = 0.0f;
@@ -942,7 +942,7 @@ UUtBool AI2rManeuver_CheckBlockage(ONtCharacter *ioCharacter, M3tPoint3D *inTarg
 	if (AKrCollision_Point(environment, &ray_from, &ray_dir, AKcGQ_Flag_Chr_Col_Skip, 0)) {
 		return UUcTrue;
 	}
-	
+
 	// we must normalize the ray's direction in order to use AMrRayToObject
 	test_dist = MUmVector_GetLength(ray_dir);
 	if (test_dist > 1e-03f) {
@@ -999,7 +999,7 @@ UUtBool AI2rManeuver_CheckInterveningCharacters(ONtCharacter *ioCharacter, M3tPo
 	return UUcFalse;
 }
 
-// try colliding with a spheretree against the environment		
+// try colliding with a spheretree against the environment
 UUtBool AI2rManeuver_TrySphereTreeCollision(PHtSphereTree *inSphereTree, M3tVector3D *inMovementVector)
 {
 	AKtEnvironment *environment = ONrGameState_GetEnvironment();
@@ -1017,7 +1017,7 @@ UUtBool AI2rManeuver_TrySphereTreeCollision(PHtSphereTree *inSphereTree, M3tVect
 		M3tVector3D to_plane_vec, endpoint;
 		M3tPoint3D collision_point;
 		M3tPlaneEquation plane;
-			
+
 		AKmPlaneEqu_GetComponents(
 			gqCollision->planeEquIndex,
 			environment->planeArray->planes,
@@ -1066,7 +1066,7 @@ UUtBool AI2rManeuver_TrySphereTreeCollision(PHtSphereTree *inSphereTree, M3tVect
 		// this is a valid wall collision
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -1248,7 +1248,7 @@ UUtBool AI2rManeuver_TryRunningGunPickup(ONtCharacter *ioCharacter, AI2tCombatSt
 	// check we aren't so close that we would miss the gun if we did an escape move
 	if (gun_dist_sq < UUmSQR(AI2cManeuver_GunMinRunningPickupRange)) {
 #if DEBUG_GUN_PICKUP
-		COrConsole_Printf("%s: guncheck is too close (%f < min %f)", 
+		COrConsole_Printf("%s: guncheck is too close (%f < min %f)",
 							ioCharacter->player_name, MUrSqrt(gun_dist_sq), ONcPickupRadius);
 #endif
 		return UUcFalse;
@@ -1291,7 +1291,7 @@ UUtBool AI2rManeuver_TryRunningGunPickup(ONtCharacter *ioCharacter, AI2tCombatSt
 	}
 
 	// how far away is this endpoint along the gun angle?
-	endpoint_dist = MUrSin(gun_angle) * (endpoint.x - ioCharacter->actual_position.x) + 
+	endpoint_dist = MUrSin(gun_angle) * (endpoint.x - ioCharacter->actual_position.x) +
 					MUrCos(gun_angle) * (endpoint.z - ioCharacter->actual_position.z);
 	if (endpoint_dist < MUrSqrt(gun_dist_sq) + AI2cManeuver_GunRunningPickupOvershootRange) {
 		// this escape move doesn't bring us close enough to the gun, but it will in the future
@@ -1408,7 +1408,7 @@ void AI2rManeuver_ApplyDodge(ONtCharacter *ioCharacter, AI2tCombatState *ioComba
 		return;
 	}
 
-	error = AI2rFindLocalPath(ioCharacter, PHcPathMode_CasualMovement, NULL, NULL, NULL, AI2cDodge_LocalPathDistance, 
+	error = AI2rFindLocalPath(ioCharacter, PHcPathMode_CasualMovement, NULL, NULL, NULL, AI2cDodge_LocalPathDistance,
 								ioCombatState->maneuver.dodge_accum_angle, AI2cDodge_LocalPathAngle / 4, 4,
 								PHcBorder3, 3, &localpath_success, &localpath_point, &localpath_weight, &localpath_escape);
 	if ((error == UUcError_None) && (localpath_success)) {
@@ -1421,7 +1421,7 @@ void AI2rManeuver_ApplyDodge(ONtCharacter *ioCharacter, AI2tCombatState *ioComba
 	}
 
 	// apply our avoid-angle
-	if ((ioCombatState->maneuver.dodge_max_weight > AI2cDodge_MinimumAvoidWeight) && 
+	if ((ioCombatState->maneuver.dodge_max_weight > AI2cDodge_MinimumAvoidWeight) &&
 		(ioCombatState->maneuver.dodge_avoid_angle != AI2cAngle_None)) {
 		AI2rMovement_MovementModifierAvoidAngle(ioCharacter, ioCombatState->maneuver.dodge_avoid_angle);
 	} else {

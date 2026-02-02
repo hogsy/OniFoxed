@@ -49,7 +49,7 @@ typedef enum ONtEventParams_Type
 	ONcEventParams_ID32					= 2,
 	ONcEventParams_Text					= 3
 } ONtEventParams_Type;
- 
+
 typedef struct ONtEventParams_ID16
 {
 		UUtUns16					id;

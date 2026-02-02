@@ -19,7 +19,7 @@ enum
 {
 	WMcEditFieldStyle_None			= (0x0000 << 16),
 	WMcEditFieldStyle_NumbersOnly	= (0x0001 << 16)
-	
+
 };
 
 enum

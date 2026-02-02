@@ -1,12 +1,12 @@
 /*
 	FILE:	Motoko_Verify.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 5, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997-1999
 
 */
@@ -30,8 +30,8 @@ M3rVerify_Geometry(
 	{
 		error = M3rVerify_Point3D(inGeometry->pointArray->points + itr);
 		UUmAssert(UUcError_None == error);
-	}		
-	
+	}
+
 	if (instanceName != NULL)
 	{
 		int set_breakpoint_here_if_you_like = 0;
@@ -45,10 +45,10 @@ M3rVerify_Geometry(
 		}
 
 	// verify the tri normal indices
-		
+
 		for(itr = 0; itr < inGeometry->triNormalIndexArray->numIndices; itr++)
 		{
-			UUmAssert(inGeometry->triNormalIndexArray->indices[itr] < 
+			UUmAssert(inGeometry->triNormalIndexArray->indices[itr] <
 				inGeometry->triNormalArray->numVectors);
 		}
 
@@ -133,7 +133,7 @@ void MSrMatrix3x3Verify(const M3tMatrix3x3 *m)
 void MSrStackVerify_Debug(void)
 {
 	M3tMatrix4x3*	m;
-	
+
 	M3rMatrixStack_Get(&m);
 
 	MSmMatrixVerify(m);

@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Executor.h
-	
+
 	AUTHOR:	Michael Evans, Chris Butcher
-	
+
 	CREATED: November 15, 1999
-	
+
 	PURPOSE: Low Level AI for Oni
-	
+
 	Copyright (c) 1999
 
 */

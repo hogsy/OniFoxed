@@ -51,45 +51,45 @@ Imp_Initialize(
 {
 	UUtError	error;
 
-		
+
 	/*
 	 * Initialize the other managers
 	 */
 		error = TMrRegisterTemplates();
 		UUmError_ReturnOnError(error);
-		
+
 		error = IMPrEnv_Initialize();
 		UUmError_ReturnOnError(error);
-		
+
 		error = IMPrModel_Initialize();
 		UUmError_ReturnOnError(error);
-		
+
 		error = ONrRegisterTemplates();	// register all our oni templates
 
 		error = M3rRegisterTemplates();
 		UUmError_ReturnOnError(error);
-		
+
 		error = LIrRegisterTemplates();
 		UUmError_ReturnOnError(error);
-		
+
 		error = AKrRegisterTemplates();
 		UUmError_ReturnOnError(error);
-		
+
 		error = TRrRegisterTemplates();
 		UUmError_ReturnOnError(error);
-		
+
 		error = TSrRegisterTemplates();
 		UUmError_ReturnOnError(error);
-				
+
 		error = SS2rRegisterTemplates();
 		UUmError_ReturnOnError(error);
-		
+
 		error = BDrRegisterTemplates();
 		UUmError_ReturnOnError(error);
-		
+
 		error = WMrRegisterTemplates();
 		UUmError_ReturnOnError(error);
-				
+
 		error = FXrRegisterTemplates();
 		UUmError_ReturnOnError(error);
 
@@ -98,16 +98,16 @@ Imp_Initialize(
 
 		error = IMrInitialize();
 		UUmError_ReturnOnError(error);
-		
+
 		error = MArMaterials_RegisterTemplates();
 		UUmError_ReturnOnError(error);
-		
+
 		error = ONrInGameUI_RegisterTemplates();
 		UUmError_ReturnOnError(error);
-		
+
 		error = OSrRegisterTemplates();
 		UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -116,8 +116,8 @@ Imp_Terminate(
 	void)
 {
 	// close everything
-	
-	
+
+
 	Imp_Character_Terminate();
 	IMPrEnv_Terminate();
 	IMPrModel_Terminate();
@@ -134,7 +134,7 @@ Imp_Common_GetFileRefAndModDate(
 	UUtError		error;
 	GRtElementType	elementType;
 	char*			fileName;
-	
+
 	error =
 		GRrGroup_GetElement(
 			inGroup,
@@ -145,16 +145,16 @@ Imp_Common_GetFileRefAndModDate(
 	{
 		UUmError_ReturnOnErrorMsgP(UUcError_Generic, "Could not get \"%s\" name string", (UUtUns32)inVariableName, 0, 0);
 	}
-	
+
 	error = BFrFileRef_DuplicateAndReplaceName(inSourceFile, fileName, outFileRef);
 	UUmError_ReturnOnErrorMsgP(error, "Could not find file \"%s\"", (UUtUns32)fileName, 0, 0);
-	
+
 	if(!BFrFileRef_FileExists(*outFileRef))
 	{
 		Imp_PrintWarning("source file %s could not find data file \"%s\"", BFrFileRef_GetLeafName(inSourceFile), fileName);
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not find file");
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -170,17 +170,17 @@ Imp_Common_BuildInstance(
 	UUtBool				*outBuildInstance)
 {
 	UUtError		error;
-	
+
 	UUtBool			buildInstance;
-	
+
 	buildInstance = !TMrConstruction_Instance_CheckExists(inTemplateTag, inInstanceName);
-	
+
 	if (!BFrFileRef_FileExists(inSourceFileRef))
 	{
 		Imp_PrintWarning("inInstanceName %s, Could not find file %s"UUmNL, inInstanceName, BFrFileRef_GetLeafName(inSourceFileRef));
 		return UUcError_Generic;
 	}
-		
+
 	error =
 		Imp_Common_GetFileRefAndModDate(
 			inSourceFileRef,
@@ -188,11 +188,11 @@ Imp_Common_BuildInstance(
 			"file",
 			outFileRef);
 	UUmError_ReturnOnErrorMsg(error, "Could not get file name");
-	
+
 	//fprintf(stderr, "data file mod time: %s", ctime((time_t*)&fileModDate));
-	
+
 	*outBuildInstance = buildInstance;
-	
+
 	return UUcError_None;
 }
 
@@ -287,7 +287,7 @@ Imp_Common_Scan_Group(
 
 UUtError Imp_OpenGroupStack(
 	BFtFileRef	*inSourceFileRef,
-	GRtGroup *ioGroup, 
+	GRtGroup *ioGroup,
 	GRtGroup_Context *inContext,
 	const char *parentVarName)
 {
@@ -295,7 +295,7 @@ UUtError Imp_OpenGroupStack(
 	GRtGroup *curGroup;
 
 	curGroup = ioGroup;
-	
+
 	while(1)
 	{
 		BFtFileRef *fileRef;
@@ -322,9 +322,9 @@ UUtError Imp_OpenGroupStack(
 			NULL,
 			&newGroup);
 		UUmError_ReturnOnError(error);
-		
+
 		BFrFileRef_Dispose(fileRef);
-		
+
 		GRrGroup_SetRecursive(curGroup, newGroup);
 		curGroup = newGroup;
 	}

@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_ScriptLang_Parse.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -20,7 +20,7 @@ typedef enum SLtParse_Mode
 	SLcParseMode_AddToDatabase,
 	SLcParseMode_InitialExecution,
 	SLcParseMode_ContinueExecution
-	
+
 } SLtParse_Mode;
 
 UUtError
@@ -41,7 +41,7 @@ UUtError
 SLrParse_TokenToType(
 	SLtToken_Code	inTokenCode,
 	SLtType	*outVariableType);
-	
+
 UUtError
 SLrParse_ConstTokenToTypeAndVal(
 	SLtToken*			inToken,
@@ -57,7 +57,7 @@ SLrParse_FuncStack_Push_Console(
 UUtBool
 SLrScript_Parse_TokenStarts_Operator_Unary(
 	SLtToken*	inCurToken);
-	
+
 UUtBool
 SLrScript_Parse_TokenStarts_Operator_Binary(
 	SLtToken*	inCurToken);
@@ -65,5 +65,5 @@ SLrScript_Parse_TokenStarts_Operator_Binary(
 UUtBool
 SLrScript_Parse_TokenStarts_Constant(
 	SLtToken*	inCurToken);
-	
+
 #endif

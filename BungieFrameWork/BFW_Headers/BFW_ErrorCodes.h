@@ -2,13 +2,13 @@
 
 /*
 	FILE:	BFW_Error.h
-	
+
 	AUTHOR:	Michael Evans, Brent H. Pease
-	
+
 	CREATED: July 16, 1998
-	
+
 	PURPOSE: Error type and error codes
-	
+
 	Copyright 1998
 
 */
@@ -47,7 +47,7 @@ typedef tm_struct UUtErrorBinding
 {
 	char		errorText[126];
 	UUtUns16	error;
-	
+
 } UUtErrorBinding;
 
 #define TMcTemplate_ErrorBindingArray UUm4CharToUns32('U', 'U', 'E', 'A')
@@ -55,10 +55,10 @@ typedef tm_template('U', 'U', 'E', 'A', "Error Binding Array")
 TMtErrorBindingArray
 {
 	tm_pad						pad0[20];
-	
+
 	tm_varindex	UUtUns32		numErrorBindings;
 	tm_vararray	UUtErrorBinding	errorBindings[1];
-	
+
 } TMtErrorBindingArray;
 
 #endif // BFW_ERRORCODES_H

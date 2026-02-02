@@ -23,7 +23,7 @@
 typedef struct SStIMA_SampleData {
 	UUtUns16					state;
 	UUtUns8						samples[32];
-	
+
 } SStIMA_SampleData;
 
 // ======================================================================
@@ -40,6 +40,6 @@ SSrIMA_DecompressSoundData(
 void
 SSrIMA_CompressSoundData(
 	SStSoundData				*inSoundData);
-	
+
 // ======================================================================
 #endif /* BFW_SS2_IMA_H */

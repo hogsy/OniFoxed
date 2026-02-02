@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_TM3_InGame.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: July 10, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -38,10 +38,10 @@ UUtBool TMgTimeLevelLoad = UUcFalse;
 
 	#define TMcPrivateData_Max						(64)
 	#define TMcCacheData_Max						(16)
-	
+
 
 	#define TMcInstanceFileRefs_Max					(16)
-	
+
 #if TOOL_VERSION
 	#define TMcDynamic_Instance_Perm_Max			(16)
 	#define TMcDynamic_Memory_Perm_Size				(100 * 1024)
@@ -62,10 +62,10 @@ UUtBool TMgTimeLevelLoad = UUcFalse;
 #else
 	#define TMcGame_InstanceFile_Dynamic_Num		(1)
 #endif
-	
+
 	#define	TMcGame_InstancePtrList_Max				(4)
 	#define TMcGame_PrivateInfosPerInstanceFile_Max	(20)
-	
+
 /*
  * =========================================================================
  * T Y P E S
@@ -74,9 +74,9 @@ UUtBool TMgTimeLevelLoad = UUcFalse;
 
 	typedef enum TMtInstanceFile_PrivateInfo_Type
 	{
-		TMcPrivateInfo_PrivateData	
+		TMcPrivateInfo_PrivateData
 	} TMtInstanceFile_PrivateInfo_Type;
-	
+
 /*
  *
  */
@@ -84,44 +84,44 @@ UUtBool TMgTimeLevelLoad = UUcFalse;
 	{
 		UUtUns32				timeStamp;
 		TMtInstancePriorities	priority;
-		
+
 	} TMtInstance_DynamicData;
-	
+
 	struct TMtPrivateData
 	{
 		TMtTemplateTag			templateTag;
 		UUtUns32				dataSize;
 		TMtTemplateProc_Handler	procHandler;
-		
+
 	};
-	
+
 	struct TMtCache_Simple
 	{
 		TMtTemplateTag				templateTag;
-		
+
 		UUtUns32					maxNumEntries;
-		
+
 		TMtCacheProc_Simple_Load	loadProc;
 		TMtCacheProc_Simple_Unload	unloadProc;
-		
+
 		void**						entryList;
 	};
-	
+
 	typedef struct TMtInstanceFile_PrivateInfo
 	{
 		TMtInstanceFile_PrivateInfo_Type	type;
-		
+
 		void*								owner;
 		TMtTemplateTag						templateTag;
 		UUtUns16							instanceListIndex;	// if this is UUcMaxUns16 then there is no instance list
 		void*								memoryPool;
-		
+
 	} TMtInstanceFile_PrivateInfo;
-	
+
 /*
  *
  */
-	
+
 /*
  * This is the instance file
  */
@@ -129,17 +129,17 @@ UUtBool TMgTimeLevelLoad = UUcFalse;
 	{
 		char						fileName[BFcMaxFileNameLength];
 		UUtUns32					fileIndex;
-		
+
 		UUtUns32					maxInstanceDescriptors;
 		UUtUns32					numInstanceDescriptors;
 		TMtInstanceDescriptor*		instanceDescriptors;
-		
+
 		UUtUns32					numNameDescriptors;
 		TMtNameDescriptor*			nameDescriptors;		// Used for binary search
-		
+
 		UUtUns32					numTemplateDescriptors;
 		TMtTemplateDescriptor*		templateDescriptors;
-		
+
 		BFtFileMapping*				mapping;				// if file mapping is used
 		BFtFileMapping*				rawMapping;
 		void*						rawPtr;
@@ -148,48 +148,48 @@ UUtBool TMgTimeLevelLoad = UUcFalse;
 		UUtUns8*					dataBlock;
 
 		char*						nameBlock;
-		
+
 		UUtBool						final;
 		UUtBool						preparedForMemory;
-		
+
 		UUtUns32					dynamicBytesUsed;		// used for dynamic instances
 		UUtMemory_Pool*				dynamicPool;
-		
+
 		UUtUns32					numInstancePtrLists;
 		void**						instancePtrLists[TMcGame_InstancePtrList_Max];
-		
+
 		UUtUns32					numPrivateInfos;
 		TMtInstanceFile_PrivateInfo	privateInfos[TMcGame_PrivateInfosPerInstanceFile_Max];
-		
+
 	};
 
 	typedef struct TMtInstanceFileRef
 	{
 		BFtFileRef	instanceFileRef;
 		UUtUns32	fileIndex;
-		
+
 	} TMtInstanceFileRef;
-	
+
 /*
  * =========================================================================
  * G L O B A L S
  * =========================================================================
  */
 	static UUtBool				TMgGame_ValidLevels[TMcLevels_MaxNum];
-	
+
 	static UUtUns16				TMgGame_InstanceFileRefs_Num = 0;
 	static TMtInstanceFileRef	TMgGame_InstanceFileRefs_List[TMcInstanceFileRefs_Max];
-	
+
 	static UUtUns16				TMgGame_LoadedInstanceFiles_Num = 0;
 	static TMtInstanceFile*		TMgGame_LoadedInstanceFiles_List[TMcInstanceFileRefs_Max];
-	
+
 	static TMtInstanceFile*		TMgGame_DynamicInstanceFile_Temp = NULL;	// CB: this is now deprecated
 	static TMtInstanceFile*		TMgGame_DynamicInstanceFile_Perm = NULL;
-	
+
 	static UUtUns16				TMgGame_PrivateData_Num = 0;
 	static TMtPrivateData		TMgGame_PrivateData_List[TMcPrivateData_Max];
-	
-	
+
+
 /*
  * =========================================================================
  * P R I V A T E   F U N C T I O N S
@@ -226,7 +226,7 @@ TMiGame_InstanceFile_GetInstanceDesc(
 static TMtInstanceFile*
 TMiGame_InstanceFile_GetFromIndex(
 	UUtUns32	inInstanceFileIndex);
-	
+
 static UUtBool
 TMiGame_Level_IsValid(
 	BFtFileRef*	inInstanceFileRef,
@@ -240,9 +240,9 @@ TMiGame_Level_IsValid(
 	UUtUns32				itr;
 	TMtTemplateDefinition*	templatePtr;
 	UUtBool					level_exists = UUcTrue;
-	
+
 	UUmAssertReadPtr(inInstanceFileRef, sizeof(void*));
-	
+
 	error = BFrFile_Open(inInstanceFileRef, "r", &datFile);
 	if (error != UUcError_None)
 	{
@@ -250,7 +250,7 @@ TMiGame_Level_IsValid(
 		level_exists = UUcFalse;
 		goto done;
 	}
-	
+
 	error = TMiGame_InstanceFile_LoadHeader(datFile, &fileHeader, &needsSwapping);
 	if (error != UUcError_None)
 	{
@@ -258,14 +258,14 @@ TMiGame_Level_IsValid(
 		level_exists = UUcFalse;
 		goto done;
 	}
-	
+
 	if(fileHeader.numTemplateDescriptors == 0)
 	{
 		UUrDebuggerMessage("level %d: no templates" UUmNL, inLevelNumber);
 		level_exists = UUcFalse;
 		goto done;
 	}
-	
+
 	templateDescriptors = UUrMemory_Block_New(fileHeader.numTemplateDescriptors * sizeof(TMtTemplateDescriptor));
 	if(templateDescriptors == NULL)
 	{
@@ -273,13 +273,13 @@ TMiGame_Level_IsValid(
 		level_exists = UUcFalse;
 		goto done;
 	}
-	
+
 	// Read in the template descriptors
-		error = 
+		error =
 			BFrFile_ReadPos(
 				datFile,
 				sizeof(TMtInstanceFile_Header) +
-					fileHeader.numInstanceDescriptors * sizeof(TMtInstanceDescriptor) + 
+					fileHeader.numInstanceDescriptors * sizeof(TMtInstanceDescriptor) +
 					fileHeader.numNameDescriptors * sizeof(TMtNameDescriptor),
 				fileHeader.numTemplateDescriptors * sizeof(TMtTemplateDescriptor),
 				templateDescriptors);
@@ -289,7 +289,7 @@ TMiGame_Level_IsValid(
 			level_exists = UUcFalse;
 			goto done;
 		}
-	
+
 	// check to make sure all template checksums match
 		for(itr = 0; itr < fileHeader.numTemplateDescriptors; itr++)
 		{
@@ -297,7 +297,7 @@ TMiGame_Level_IsValid(
 			{
 				UUrSwap_4Byte(&templateDescriptors[itr].tag);
 			}
-			
+
 			templatePtr = TMrUtility_Template_FindDefinition(templateDescriptors[itr].tag);
 			if(templatePtr == NULL)
 			{
@@ -310,7 +310,7 @@ TMiGame_Level_IsValid(
 				level_exists = UUcFalse;
 				goto done;
 			}
-			
+
 			if(needsSwapping)
 			{
 				UUrSwap_8Byte(&templateDescriptors[itr].checksum);
@@ -330,15 +330,15 @@ TMiGame_Level_IsValid(
 #endif
 			}
 		}
-	
+
 done:
 	BFrFile_Close(datFile);
-	
+
 	if(templateDescriptors != NULL)
 	{
 		UUrMemory_Block_Delete(templateDescriptors);
 	}
-	
+
 	return level_exists;
 }
 
@@ -352,14 +352,14 @@ TMiGame_Instance_FileAndIndex_Get(
 	TMtPlaceHolder		placeHolder;
 	UUtUns32			instanceIndex;
 	TMtInstanceFile*	instanceFile;
-	
+
 	UUmAssertReadPtr(inDataPtr, sizeof(void*));
 	UUmAssertReadPtr(outInstanceFile, sizeof(*outInstanceFile));
 	UUmAssertReadPtr(outInstanceIndex, sizeof(*outInstanceIndex));
-	
+
 	placeHolder = ((UUtUns32*)inDataPtr)[-2];
 	instanceFileID = ((UUtUns32*)inDataPtr)[-1];
-	
+
 	if(TMmInstanceFile_ID_IsIndex(instanceFileID))
 	{
 		instanceFile = TMiGame_InstanceFile_GetFromIndex(instanceFileID);
@@ -367,13 +367,13 @@ TMiGame_Instance_FileAndIndex_Get(
 	}
 	else
 	{
-		
+
 		instanceFile = (TMtInstanceFile*)instanceFileID;
-		
+
 		#if defined(DEBUGGING) && DEBUGGING
 		{
 			UUtUns16	itr;
-			
+
 			for(itr = 0; itr < TMgGame_LoadedInstanceFiles_Num; itr++)
 			{
 				if(TMgGame_LoadedInstanceFiles_List[itr] == instanceFile) break;
@@ -383,17 +383,17 @@ TMiGame_Instance_FileAndIndex_Get(
 		#endif
 
 	}
-	
+
 	UUmAssertReadPtr(instanceFile, sizeof(*instanceFile));
 
 	instanceIndex = TMmPlaceHolder_GetIndex(placeHolder);
-	
+
 	UUmAssert(instanceIndex < instanceFile->numInstanceDescriptors);
-	
+
 	*outInstanceFile = instanceFile;
 	*outInstanceIndex = instanceIndex;
-	
-	
+
+
 }
 
 
@@ -406,13 +406,13 @@ TMiGame_Instance_File_Get(
 	UUtUns32			instanceFileID;
 	TMtPlaceHolder		placeHolder;
 	TMtInstanceFile*	instanceFile;
-	
+
 	UUmAssertReadPtr(inDataPtr, sizeof(void*));
 	UUmAssertReadPtr(outInstanceFile, sizeof(*outInstanceFile));
-	
+
 	placeHolder = ((UUtUns32*)inDataPtr)[-2];
 	instanceFileID = ((UUtUns32*)inDataPtr)[-1];
-	
+
 	if(TMmInstanceFile_ID_IsIndex(instanceFileID))
 	{
 		instanceFile = TMiGame_InstanceFile_GetFromIndex(instanceFileID);
@@ -420,13 +420,13 @@ TMiGame_Instance_File_Get(
 	}
 	else
 	{
-		
+
 		instanceFile = (TMtInstanceFile*)instanceFileID;
-		
+
 		#if defined(DEBUGGING) && DEBUGGING
 		{
 			UUtUns16	itr;
-			
+
 			for(itr = 0; itr < TMgGame_LoadedInstanceFiles_Num; itr++)
 			{
 				if(TMgGame_LoadedInstanceFiles_List[itr] == instanceFile) break;
@@ -436,7 +436,7 @@ TMiGame_Instance_File_Get(
 		#endif
 
 	}
-	
+
 	*outInstanceFile = instanceFile;
 }
 
@@ -453,10 +453,10 @@ TMiGame_Instance_ByteSwap_Array(
 	UUtUns8		count;
 	UUtUns8		i;
 	UUtBool		oneElementArray;
-	
+
 	UUmAssertReadPtr(ioSwapCode, sizeof(*ioSwapCode));
 	UUmAssertReadPtr(ioDataPtr, sizeof(*ioDataPtr));
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
 
@@ -464,7 +464,7 @@ TMiGame_Instance_ByteSwap_Array(
 	curSwapCode += 1;
 
 	oneElementArray = (*(curSwapCode + 1) == TMcSwapCode_EndArray);
-	
+
 	if ((*curSwapCode == TMcSwapCode_8Byte) && oneElementArray)
 	{
 		for(i = 0; i < count; i++)
@@ -497,15 +497,15 @@ TMiGame_Instance_ByteSwap_Array(
 		curDataPtr += 1 * count;
 		curSwapCode += 2;
 	}
-	else 
+	else
 	{
 		UUtUns8 *oldSwapCode = curSwapCode;
 
 		for(i = 0; i < count; i++)
 		{
 			curSwapCode = oldSwapCode;
-			
-			error = 
+
+			error =
 				TMiGame_Instance_ByteSwap(
 					&curSwapCode,
 					&curDataPtr,
@@ -515,7 +515,7 @@ TMiGame_Instance_ByteSwap_Array(
 			UUmError_ReturnOnError(error);
 		}
 	}
-		
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
 
@@ -556,17 +556,17 @@ TMiGame_Instance_ByteSwap_VarArray(
 			count = (*(UUtUns32 *)curDataPtr);
 			curDataPtr += 4;
 			break;
-			
+
 		case TMcSwapCode_2Byte:
 			UUrSwap_2Byte(curDataPtr);
 			count = (*(UUtUns16 *)curDataPtr);
 			curDataPtr += 2;
 			break;
-			
+
 		default:
 			UUmDebugStr("swap codes are messed up.");
 	}
-	
+
 	if(inByteSwapProc != NULL)
 	{
 		inByteSwapProc(inData);
@@ -579,7 +579,7 @@ TMiGame_Instance_ByteSwap_VarArray(
 	else
 	{
 		UUtBool oneElementArray = (*(curSwapCode + 1) == TMcSwapCode_EndVarArray);
-		
+
 		if ((*curSwapCode == TMcSwapCode_8Byte) && oneElementArray)
 		{
 			for(i = 0; i < count; i++)
@@ -612,15 +612,15 @@ TMiGame_Instance_ByteSwap_VarArray(
 			curDataPtr += 1 * count;
 			curSwapCode += 2;
 		}
-		else 
+		else
 		{
 			origSwapCode = curSwapCode;
 
 			for(i = 0; i < count; i++)
 			{
 				curSwapCode = origSwapCode;
-				
-				error = 
+
+				error =
 					TMiGame_Instance_ByteSwap(
 						&curSwapCode,
 						&curDataPtr,
@@ -652,40 +652,40 @@ TMiGame_Instance_ByteSwap(
 	UUtUns8*				curDataPtr;
 	char					swapCode;
 	TMtPlaceHolder			targetPlaceHolder;
-	
+
 	UUmAssertReadPtr(ioSwapCode, sizeof(*ioSwapCode));
 	UUmAssertReadPtr(ioDataPtr, sizeof(*ioDataPtr));
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
 				UUrSwap_8Byte(curDataPtr);
 				curDataPtr += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				UUrSwap_4Byte(curDataPtr);
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				UUrSwap_2Byte(curDataPtr);
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				error =
 					TMiGame_Instance_ByteSwap_Array(
@@ -694,11 +694,11 @@ TMiGame_Instance_ByteSwap(
 						inInstanceFile);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				error =
 					TMiGame_Instance_ByteSwap_VarArray(
@@ -709,21 +709,21 @@ TMiGame_Instance_ByteSwap(
 						inOriginalDataPtr);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_RawPtr:
 				UUrSwap_4Byte(curDataPtr);
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_SeparateIndex:
 				UUrSwap_4Byte(curDataPtr);
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 				// I think this crash means engine and data are out of sync - Michael
 				UUmAssertReadPtr(curDataPtr, sizeof(TMtPlaceHolder));
@@ -731,22 +731,22 @@ TMiGame_Instance_ByteSwap(
 				UUrSwap_4Byte(curDataPtr);
 
 				targetPlaceHolder = *(TMtPlaceHolder*)curDataPtr;
-				
+
 				UUmAssert(targetPlaceHolder == 0 || !TMmPlaceHolder_IsPtr(targetPlaceHolder));
 				UUmAssert(targetPlaceHolder == 0 || TMmPlaceHolder_GetIndex(targetPlaceHolder) < inInstanceFile->numInstanceDescriptors);
 
 				curSwapCode += 4;
 				curDataPtr += 4;
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
-	
+
 	return UUcError_None;
 }
 
@@ -774,7 +774,7 @@ TMiGame_Instance_PrepareForMemory_Array(
 	curSwapCode += 1;
 
 	oneTypeArray = (*(curSwapCode + 1) == TMcSwapCode_EndArray);
-	
+
 	if ((*curSwapCode == TMcSwapCode_8Byte) && oneTypeArray)
 	{
 		curDataPtr += 8 * count;
@@ -795,15 +795,15 @@ TMiGame_Instance_PrepareForMemory_Array(
 		curDataPtr += 1 * count;
 		curSwapCode += 2;
 	}
-	else 
+	else
 	{
 		UUtUns8 *oldSwapCode = curSwapCode;
 
 		for(i = 0; i < count; i++)
 		{
 			curSwapCode = oldSwapCode;
-			
-			error = 
+
+			error =
 				TMiGame_Instance_PrepareForMemory(
 					&curSwapCode,
 					&curDataPtr,
@@ -813,7 +813,7 @@ TMiGame_Instance_PrepareForMemory_Array(
 			UUmError_ReturnOnError(error);
 		}
 	}
-		
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
 
@@ -851,18 +851,18 @@ TMiGame_Instance_PrepareForMemory_VarArray(
 			count = (*(UUtUns32 *)curDataPtr);
 			curDataPtr += 4;
 			break;
-			
+
 		case TMcSwapCode_2Byte:
 			count = (*(UUtUns16 *)curDataPtr);
 			curDataPtr += 2;
 			break;
-			
+
 		default:
 			UUmDebugStr("swap codes are messed up.");
 	}
-	
+
 	origSwapCode = curSwapCode;
-	
+
 	if(count == 0)
 	{
 		TMrUtility_SkipVarArray(&curSwapCode);
@@ -870,7 +870,7 @@ TMiGame_Instance_PrepareForMemory_VarArray(
 	else
 	{
 		UUtBool oneElementArray = (*(curSwapCode + 1) == TMcSwapCode_EndVarArray);
-		
+
 		if ((*curSwapCode == TMcSwapCode_8Byte) && oneElementArray)
 		{
 			curDataPtr += 8 * count;
@@ -891,13 +891,13 @@ TMiGame_Instance_PrepareForMemory_VarArray(
 			curDataPtr += 1 * count;
 			curSwapCode += 2;
 		}
-		else 
+		else
 		{
 			for(i = 0; i < count; i++)
 			{
 				curSwapCode = origSwapCode;
-				
-				error = 
+
+				error =
 					TMiGame_Instance_PrepareForMemory(
 						&curSwapCode,
 						&curDataPtr,
@@ -905,7 +905,7 @@ TMiGame_Instance_PrepareForMemory_VarArray(
 						inMsg,
 						UUcFalse);
 				UUmError_ReturnOnError(error);
-				
+
 			}
 		}
 	}
@@ -933,43 +933,43 @@ TMiGame_Instance_PrepareForMemory(
 	UUtUns8*				curSwapCode;
 	UUtUns8*				curDataPtr;
 	char					swapCode;
-	
+
 	TMtPlaceHolder			targetPlaceHolder;
-	
+
 	TMtInstanceDescriptor*	targetDesc;
 
 	static char				msg[2048];
-	
+
 	UUmAssertReadPtr(ioSwapCode, sizeof(*ioSwapCode));
 	UUmAssertReadPtr(ioDataPtr, sizeof(*ioDataPtr));
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
 				curDataPtr += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				error =
 					TMiGame_Instance_PrepareForMemory_Array(
@@ -979,11 +979,11 @@ TMiGame_Instance_PrepareForMemory(
 						inMsg);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				if(inIsVarArrayLeaf) return UUcError_None;
 				error =
@@ -994,24 +994,24 @@ TMiGame_Instance_PrepareForMemory(
 						inMsg);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 				// I think this crash means engine and data are out of sync - Michael
 				UUmAssertReadPtr(curDataPtr, sizeof(TMtPlaceHolder));
 
 				targetPlaceHolder = *(TMtPlaceHolder*)curDataPtr;
-				
+
 				if(targetPlaceHolder != 0)
 				{
 					UUmAssert(!TMmPlaceHolder_IsPtr(targetPlaceHolder));
-					
+
 					targetDesc = TMiGame_InstanceFile_GetInstanceDesc(inInstanceFile, targetPlaceHolder);
 					UUmAssertReadPtr(targetDesc, sizeof(*targetDesc));
-					
+
 					if(targetDesc->namePtr == NULL)
 					{
 						if(targetDesc->dataPtr == NULL)
@@ -1038,7 +1038,7 @@ TMiGame_Instance_PrepareForMemory(
 							}
 
 							if (NULL != placeholder_file) {
-								BFrDebugFile_Printf(placeholder_file, 
+								BFrDebugFile_Printf(placeholder_file,
 									"%s: could not find needed data - template %s[%s], name %s\n",
 									inMsg,
 									targetDesc->templatePtr->name,
@@ -1049,19 +1049,19 @@ TMiGame_Instance_PrepareForMemory(
 #endif
 					}
 				}
-				
+
 				curSwapCode += 4;
 				curDataPtr += 4;
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
-	
+
 	return UUcError_None;
 }
 
@@ -1079,28 +1079,28 @@ TMiGame_Instance_Callback(
 	TMtTemplateTag					targetTemplateTag;
 	TMtPrivateData*					targetPrivateData;
 	void**							targetInstancePtrList;
-	
+
 	UUmAssertReadPtr(inDataPtr, sizeof(void*));
-	
+
 	TMiGame_Instance_FileAndIndex_Get(
 		inDataPtr,
 		&targetInstanceFile,
 		&targetInstanceIndex);
-	
+
 	targetInstanceDesc = targetInstanceFile->instanceDescriptors + targetInstanceIndex;
-	
+
 	targetTemplateTag = targetInstanceDesc->templatePtr->tag;
-	
+
 	for(itrPrivateInfo = 0, curPrivateInfo = targetInstanceFile->privateInfos;
 		itrPrivateInfo < targetInstanceFile->numPrivateInfos;
 		itrPrivateInfo++, curPrivateInfo++)
 	{
 		if(curPrivateInfo->type != TMcPrivateInfo_PrivateData) continue;
 		if(curPrivateInfo->templateTag != targetTemplateTag) continue;
-		
+
 		targetPrivateData = curPrivateInfo->owner;
 		UUmAssertReadPtr(targetPrivateData, sizeof(*targetPrivateData));
-		
+
 		if(curPrivateInfo->instanceListIndex != UUcMaxUns16)
 		{
 			UUmAssert(curPrivateInfo->instanceListIndex < targetInstanceFile->numInstancePtrLists);
@@ -1110,16 +1110,16 @@ TMiGame_Instance_Callback(
 		{
 			targetInstancePtrList = NULL;
 		}
-		
+
 		UUmAssert(targetPrivateData->procHandler != NULL);
-		error = 
+		error =
 			targetPrivateData->procHandler(
 				inMessage,
 				inDataPtr,
 				targetInstancePtrList ? targetInstancePtrList[targetInstanceIndex] : NULL);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1136,17 +1136,17 @@ TMiGame_InstanceFile_Callback(
 	TMtTemplateTag					targetTemplateTag;
 	TMtPrivateData*					targetPrivateData;
 	void**							targetInstancePtrList;
-	
+
 	UUmAssertReadPtr(inInstanceFile, sizeof(*inInstanceFile));
-	
+
 	for(itrPrivateInfo = 0, curPrivateInfo = inInstanceFile->privateInfos;
 		itrPrivateInfo < inInstanceFile->numPrivateInfos;
 		itrPrivateInfo++, curPrivateInfo++)
 	{
 		if(curPrivateInfo->type != TMcPrivateInfo_PrivateData) continue;
-		
+
 		targetTemplateTag = curPrivateInfo->templateTag;
-		
+
 		targetPrivateData = curPrivateInfo->owner;
 		UUmAssertReadPtr(targetPrivateData, sizeof(*targetPrivateData));
 
@@ -1159,7 +1159,7 @@ TMiGame_InstanceFile_Callback(
 		{
 			targetInstancePtrList = NULL;
 		}
-	
+
 		for(curDescIndex = 0, curInstanceDesc = inInstanceFile->instanceDescriptors;
 			curDescIndex < inInstanceFile->numInstanceDescriptors;
 			curDescIndex++, curInstanceDesc++)
@@ -1168,7 +1168,7 @@ TMiGame_InstanceFile_Callback(
 
 			if(curInstanceDesc->dataPtr == NULL) continue;
 			if(targetTemplateTag != template_def->tag) continue;
-			 
+
 			if (TMgTimeLevelLoad) {
 				if (NULL == template_def->timer) {
 					template_def->timer = UUrTimer_Allocate("callback", template_def->name);
@@ -1176,8 +1176,8 @@ TMiGame_InstanceFile_Callback(
 
 				UUrTimer_Begin(template_def->timer);
 			}
-			
-			error = 
+
+			error =
 				targetPrivateData->procHandler(
 					inMessage,
 					curInstanceDesc->dataPtr,
@@ -1189,7 +1189,7 @@ TMiGame_InstanceFile_Callback(
 			}
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1201,56 +1201,56 @@ TMiGame_InstanceFile_LoadHeaderFromMemory(
 	UUtBool needsSwapping;
 
 	needsSwapping = inFileHeader->version != TMcInstanceFile_Version;
-	
+
 	if(needsSwapping)
 	{
 		UUrSwap_4Byte(&inFileHeader->version);
-		
+
 		if(inFileHeader->version != TMcInstanceFile_Version)
 		{
 			return TMcError_DataCorrupt;
 		}
-		
+
 		UUrSwap_2Byte(&inFileHeader->sizeofHeader);
 		UUrSwap_2Byte(&inFileHeader->sizeofInstanceDescriptor);
 		UUrSwap_2Byte(&inFileHeader->sizeofTemplateDescriptor);
 		UUrSwap_2Byte(&inFileHeader->sizeofNameDescriptor);
-		
+
 		UUrSwap_8Byte(&inFileHeader->totalTemplateChecksum);
 
 		UUrSwap_4Byte(&inFileHeader->numInstanceDescriptors);
 		UUrSwap_4Byte(&inFileHeader->numNameDescriptors);
 		UUrSwap_4Byte(&inFileHeader->numTemplateDescriptors);
-		
+
 		UUrSwap_4Byte(&inFileHeader->dataBlockOffset);
 		UUrSwap_4Byte(&inFileHeader->dataBlockLength);
 
 		UUrSwap_4Byte(&inFileHeader->nameBlockOffset);
 		UUrSwap_4Byte(&inFileHeader->nameBlockLength);
 	}
-	
+
 	if(inFileHeader->sizeofHeader != sizeof(TMtInstanceFile_Header)) return TMcError_DataCorrupt;
 	if(inFileHeader->sizeofInstanceDescriptor != sizeof(TMtInstanceDescriptor)) return TMcError_DataCorrupt;
 	if(inFileHeader->sizeofTemplateDescriptor != sizeof(TMtTemplateDescriptor)) return TMcError_DataCorrupt;
 	if(inFileHeader->sizeofNameDescriptor != sizeof(TMtNameDescriptor)) return TMcError_DataCorrupt;
-	
+
 	UUmAssert(inFileHeader->numNameDescriptors <= inFileHeader->numInstanceDescriptors);
-	UUmAssert(inFileHeader->dataBlockOffset >= 
-		sizeof(TMtInstanceFile_Header) + 
-		inFileHeader->numInstanceDescriptors * sizeof(TMtInstanceDescriptor) + 
+	UUmAssert(inFileHeader->dataBlockOffset >=
+		sizeof(TMtInstanceFile_Header) +
+		inFileHeader->numInstanceDescriptors * sizeof(TMtInstanceDescriptor) +
 		inFileHeader->numNameDescriptors * sizeof(TMtNameDescriptor) +
 		inFileHeader->numTemplateDescriptors * sizeof(TMtTemplateDescriptor));
-	UUmAssert(inFileHeader->nameBlockOffset >= 
-		sizeof(TMtInstanceFile_Header) + 
-		inFileHeader->numInstanceDescriptors * sizeof(TMtInstanceDescriptor) + 
-		inFileHeader->numNameDescriptors * sizeof(TMtNameDescriptor) + 
+	UUmAssert(inFileHeader->nameBlockOffset >=
+		sizeof(TMtInstanceFile_Header) +
+		inFileHeader->numInstanceDescriptors * sizeof(TMtInstanceDescriptor) +
+		inFileHeader->numNameDescriptors * sizeof(TMtNameDescriptor) +
 		inFileHeader->numTemplateDescriptors * sizeof(TMtTemplateDescriptor) +
 		inFileHeader->dataBlockLength);
-		
+
 	UUmAssert(inFileHeader->dataBlockOffset + inFileHeader->dataBlockLength <= inFileHeader->nameBlockOffset);
-	
+
 	*outNeedsSwapping = needsSwapping;
-	
+
 	return UUcError_None;
 }
 
@@ -1261,8 +1261,8 @@ TMiGame_InstanceFile_LoadHeader(
 	UUtBool					*outNeedsSwapping)
 {
 	UUtError	error;
-	
-	error = 
+
+	error =
 		BFrFile_ReadPos(
 			inFile,
 			0,
@@ -1288,13 +1288,13 @@ TMiGame_InstanceFile_PrivateInfo_New(
 	UUtUns32						itr;
 	UUtBool							indexUsed[TMcGame_InstancePtrList_Max];
 	UUtUns16						targetInstanceListIndex;
-	
+
 	UUmAssertReadPtr(inInstanceFile, sizeof(*inInstanceFile));
 	UUmAssertReadPtr(inOwner, sizeof(void*));
 	UUmAssertReadPtr(outPrivateInfo, sizeof(*outPrivateInfo));
-	
+
 	*outPrivateInfo = NULL;
-	
+
 	// first check to see if this private info has already has been added
 	for(itr = 0; itr < inInstanceFile->numPrivateInfos; itr++)
 	{
@@ -1303,12 +1303,12 @@ TMiGame_InstanceFile_PrivateInfo_New(
 			return UUcError_None;
 		}
 	}
-	
+
 	if(inInstanceFile->numPrivateInfos >= TMcGame_PrivateInfosPerInstanceFile_Max)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Exceeded max private infos per instance file");
 	}
-	
+
 	// look for a instance ptr list index
 	if(inAllocateList)
 	{
@@ -1325,28 +1325,28 @@ TMiGame_InstanceFile_PrivateInfo_New(
 				}
 			}
 		}
-		
+
 		for(targetInstanceListIndex = 0; targetInstanceListIndex < TMcGame_InstancePtrList_Max; targetInstanceListIndex++)
 		{
 			if(indexUsed[targetInstanceListIndex] == UUcFalse) break;
 		}
-		
+
 		// return an error if no more slots are available
 		if(targetInstanceListIndex == TMcGame_InstancePtrList_Max)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "no ore instance ptr lists");
 		}
-		
+
 		// allocate a new instance ptr list if needed
 		if(targetInstanceListIndex >= inInstanceFile->numInstancePtrLists)
 		{
 			UUmAssert(inInstanceFile->numInstancePtrLists == targetInstanceListIndex);
-			
+
 			inInstanceFile->instancePtrLists[inInstanceFile->numInstancePtrLists] =
 				UUrMemory_Block_NewClear(inInstanceFile->maxInstanceDescriptors * sizeof(void*));
-			
+
 			UUmError_ReturnOnNull(inInstanceFile->instancePtrLists[inInstanceFile->numInstancePtrLists]);
-			
+
 			inInstanceFile->numInstancePtrLists++;
 		}
 	}
@@ -1354,10 +1354,10 @@ TMiGame_InstanceFile_PrivateInfo_New(
 	{
 		targetInstanceListIndex = UUcMaxUns16;
 	}
-	
+
 	// create the new private info
 		newPrivateInfo = inInstanceFile->privateInfos + inInstanceFile->numPrivateInfos++;
-		
+
 		newPrivateInfo->type = inPrivateInfoType;
 		newPrivateInfo->owner = inOwner;
 		newPrivateInfo->templateTag = inTemplateTag;
@@ -1365,7 +1365,7 @@ TMiGame_InstanceFile_PrivateInfo_New(
 		newPrivateInfo->instanceListIndex = targetInstanceListIndex;
 
 	*outPrivateInfo = newPrivateInfo;
-	
+
 	return UUcError_None;
 }
 
@@ -1392,7 +1392,7 @@ TMiGame_InstanceFile_PrivateInfo_Delete(
 {
 	UUtUns16						itrPrivateInfo;
 	TMtInstanceFile_PrivateInfo*	curPrivateInfo;
-	
+
 	UUmAssertReadPtr(inInstanceFile, sizeof(*inInstanceFile));
 	UUmAssertReadPtr(inOwner, sizeof(void*));
 
@@ -1401,17 +1401,17 @@ TMiGame_InstanceFile_PrivateInfo_Delete(
 		itrPrivateInfo++, curPrivateInfo++)
 	{
 		if(curPrivateInfo->owner == inOwner)
-		{			
+		{
 			TMiGame_InstanceFile_PrivateInfo_Delete_ForRealThisTime(inInstanceFile, curPrivateInfo);
-			
+
 			UUrMemory_ArrayElement_Delete(
 				inInstanceFile->privateInfos,
 				itrPrivateInfo,
 				inInstanceFile->numPrivateInfos,
 				sizeof(TMtInstanceFile_PrivateInfo));
-			
+
 			inInstanceFile->numPrivateInfos--;
-			
+
 			return;
 		}
 	}
@@ -1430,11 +1430,11 @@ TMiGame_InstanceFile_PrivateData_New(
 	UUtUns32						numInstances = 0;
 	UUtUns8*						curMemoryPtr;
 	void**							targetInstancePtrList;
-	
+
 	UUmAssertReadPtr(inInstanceFile, sizeof(*inInstanceFile));
 	UUmAssertReadPtr(inPrivateData, sizeof(*inPrivateData));
-	
-	error = 
+
+	error =
 		TMiGame_InstanceFile_PrivateInfo_New(
 			inInstanceFile,
 			TMcPrivateInfo_PrivateData,
@@ -1443,22 +1443,22 @@ TMiGame_InstanceFile_PrivateData_New(
 			inPrivateData->dataSize > 0 ? UUcTrue : UUcFalse,
 			&newPrivateInfo);
 	UUmError_ReturnOnError(error);
-	
+
 	if(inPrivateData->dataSize == 0) return UUcError_None;
 	if(inAllocateDynamicData == UUcFalse) return UUcError_None;
-	
+
 	for(itr = 0, curInstanceDesc = inInstanceFile->instanceDescriptors;
 		itr < inInstanceFile->numInstanceDescriptors;
 		itr++, curInstanceDesc++)
 	{
 		if(curInstanceDesc->dataPtr == NULL) continue;
-		
+
 		if(curInstanceDesc->templatePtr->tag == inPrivateData->templateTag) numInstances++;
 	}
-	
+
 	newPrivateInfo->memoryPool = curMemoryPtr = UUrMemory_Block_New(numInstances * inPrivateData->dataSize);
 	UUmError_ReturnOnNull(newPrivateInfo->memoryPool);
-	
+
 	UUmAssert(newPrivateInfo->instanceListIndex < inInstanceFile->numInstancePtrLists);
 	targetInstancePtrList = inInstanceFile->instancePtrLists[newPrivateInfo->instanceListIndex];
 
@@ -1474,7 +1474,7 @@ TMiGame_InstanceFile_PrivateData_New(
 			curMemoryPtr += inPrivateData->dataSize;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1483,7 +1483,7 @@ TMiGame_InstanceFile_PrivateData_Delete(
 	TMtInstanceFile*	inInstanceFile,
 	TMtPrivateData*		inPrivateData)
 {
-	
+
 	UUmAssertReadPtr(inInstanceFile, sizeof(*inInstanceFile));
 	UUmAssertReadPtr(inPrivateData, sizeof(*inPrivateData));
 
@@ -1501,7 +1501,7 @@ TMiGame_InstanceFile_Dynamic_New(
 
 
 	*outInstanceFile = NULL;
-	
+
 	/*
 	 * Create the instance file structure
 	 */
@@ -1509,13 +1509,13 @@ TMiGame_InstanceFile_Dynamic_New(
 		UUmError_ReturnOnNull(newInstanceFile);
 
 	UUrString_Copy(newInstanceFile->fileName, "dynamic", BFcMaxFileNameLength);
-	
+
 	newInstanceFile->fileIndex = inInstanceFileIndex;
 
 	newInstanceFile->numInstanceDescriptors = 0;
 	newInstanceFile->instanceDescriptors = UUrMemory_Block_NewClear(inInstance_Max * sizeof(TMtInstanceDescriptor));
 	UUmError_ReturnOnNull(newInstanceFile->instanceDescriptors);
-		
+
 	newInstanceFile->maxInstanceDescriptors = inInstance_Max;
 	newInstanceFile->numNameDescriptors = 0;
 	newInstanceFile->nameDescriptors = NULL;
@@ -1533,12 +1533,12 @@ TMiGame_InstanceFile_Dynamic_New(
 	newInstanceFile->dynamicBytesUsed = 0;
 	newInstanceFile->dynamicPool = UUrMemory_Pool_New(inMemoryPool_Size, UUcPool_Fixed);
 	UUmError_ReturnOnNull(newInstanceFile->dynamicPool);
-	
+
 	newInstanceFile->numInstancePtrLists = 0;
 	newInstanceFile->numPrivateInfos = 0;
-	
+
 	*outInstanceFile = newInstanceFile;
-	
+
 	return UUcError_None;
 }
 
@@ -1555,8 +1555,8 @@ TMiGame_InstanceFile_Dynamic_Reset(
 	inInstanceFile->dynamicBytesUsed = 0;
 	UUrMemory_Pool_Reset(inInstanceFile->dynamicPool);
 }
-	
-	
+
+
 static UUtError
 TMiGame_InstanceFile_New_FromFileRef(
 	BFtFileRef*			inInstanceFileRef,
@@ -1576,13 +1576,13 @@ TMiGame_InstanceFile_New_FromFileRef(
 	UUmAssertReadPtr(inInstanceFileRef, sizeof(void*));
 
 	*outInstanceFile = NULL;
-	
+
 	/*
 	 * Create the instance file structure
 	 */
 		newInstanceFile = (TMtInstanceFile *)UUrMemory_Block_New(sizeof(TMtInstanceFile));
 		UUmError_ReturnOnNull(newInstanceFile);
-		
+
 	/*
 	 * map the file
 	 */
@@ -1598,7 +1598,7 @@ TMiGame_InstanceFile_New_FromFileRef(
 			error = error != UUcError_OutOfMemory ? TMcError_DataCorrupt : UUcError_OutOfMemory;
 			UUmError_ReturnOnErrorMsg(error, "Could not open instance file");
 		}
-	
+
 
 		{
 			BFtFileRef *rawFileRef;
@@ -1615,7 +1615,7 @@ TMiGame_InstanceFile_New_FromFileRef(
 
 			BFrFileRef_Dispose(rawFileRef);
 		}
-	
+
 		{
 			BFtFileRef *separateFileRef;
 
@@ -1632,28 +1632,28 @@ TMiGame_InstanceFile_New_FromFileRef(
 
 	fileHeader = (TMtInstanceFile_Header *) mappingPtr;
 	error = TMiGame_InstanceFile_LoadHeaderFromMemory(fileHeader, &needsSwapping);
-	
+
 	UUmAssert(totalFileLength == fileHeader->nameBlockOffset + fileHeader->nameBlockLength);
-	
+
 	UUrString_Copy(newInstanceFile->fileName, BFrFileRef_GetLeafName(inInstanceFileRef), BFcMaxFileNameLength);
-	
+
 	newInstanceFile->preparedForMemory = UUcFalse;
 	newInstanceFile->numInstanceDescriptors = newInstanceFile->maxInstanceDescriptors = fileHeader->numInstanceDescriptors;
 	newInstanceFile->numNameDescriptors = fileHeader->numNameDescriptors;
 
 	newInstanceFile->numTemplateDescriptors = 0;
 	newInstanceFile->templateDescriptors = NULL;
-		
+
 	newInstanceFile->instanceDescriptors = (struct TMtInstanceDescriptor *) (mappingPtr + sizeof(TMtInstanceFile_Header));
 	newInstanceFile->nameDescriptors = (struct TMtNameDescriptor *) (mappingPtr + sizeof(TMtInstanceFile_Header) + newInstanceFile->numInstanceDescriptors * sizeof(TMtInstanceDescriptor));
 	newInstanceFile->dataBlock = (mappingPtr + fileHeader->dataBlockOffset);
 	newInstanceFile->nameBlock = (char*)(mappingPtr + fileHeader->nameBlockOffset);
 	newInstanceFile->dynamicBytesUsed = 0;
 	newInstanceFile->dynamicPool = NULL;
-	
+
 	newInstanceFile->numInstancePtrLists = 0;
 	newInstanceFile->numPrivateInfos = 0;
-	
+
 	// traverse the instance descriptors
 	for(curDescIndex = 0, curDesc = newInstanceFile->instanceDescriptors;
 		curDescIndex < newInstanceFile->numInstanceDescriptors;
@@ -1667,25 +1667,25 @@ TMiGame_InstanceFile_New_FromFileRef(
 			UUrSwap_4Byte(&curDesc->size);
 			UUrSwap_4Byte(&curDesc->flags);
 		}
-		
+
 		curDesc->templatePtr = TMrUtility_Template_FindDefinition((TMtTemplateTag)curDesc->templatePtr);
-		
+
 		UUmAssert(curDesc->templatePtr != NULL);
 
 		curDesc->flags = (TMtDescriptorFlags)(curDesc->flags & TMcDescriptorFlags_PersistentMask);
-		
+
 		if(!(curDesc->flags & TMcDescriptorFlags_PlaceHolder))
 		{
 			curDesc->dataPtr = newInstanceFile->dataBlock + (UUtUns32)curDesc->dataPtr;
-			
+
 			if(needsSwapping && !(curDesc->flags & TMcDescriptorFlags_Duplicate))
 			{
 				UUtUns8*	swapCode;
 				UUtUns8*	dataPtr;
-				
+
 				swapCode = curDesc->templatePtr->swapCodes;
 				dataPtr = curDesc->dataPtr - TMcPreDataSize;
-				
+
 				error = TMiGame_Instance_ByteSwap(&swapCode, &dataPtr, newInstanceFile, curDesc->templatePtr->byteSwapProc, curDesc->dataPtr);
 				UUmError_ReturnOnError(error);
 			}
@@ -1694,7 +1694,7 @@ TMiGame_InstanceFile_New_FromFileRef(
 		{
 			curDesc->dataPtr = NULL;
 		}
-		
+
 		if(!(curDesc->flags & TMcDescriptorFlags_Unique))
 		{
 			curDesc->namePtr = (char*)newInstanceFile->nameBlock + (UUtUns32)curDesc->namePtr;
@@ -1704,7 +1704,7 @@ TMiGame_InstanceFile_New_FromFileRef(
 			curDesc->namePtr = NULL;
 		}
 	}
-	
+
 	// Traverse through the name descs and update pointers
 	for(curDescIndex = 0, curNameDesc = newInstanceFile->nameDescriptors;
 		curDescIndex < newInstanceFile->numNameDescriptors;
@@ -1714,19 +1714,19 @@ TMiGame_InstanceFile_New_FromFileRef(
 		{
 			UUrSwap_4Byte(&curNameDesc->instanceDescIndex);
 		}
-		
+
 		UUmAssert(curNameDesc->instanceDescIndex < newInstanceFile->numInstanceDescriptors);
-		
-		curNameDesc->namePtr = 
+
+		curNameDesc->namePtr =
 			(newInstanceFile->instanceDescriptors + curNameDesc->instanceDescIndex)->namePtr;
-		
+
 		UUmAssert(curNameDesc->namePtr != NULL);
 	}
-	
+
 	// add the private datas to this instance file
-	
+
 	*outInstanceFile = newInstanceFile;
-	
+
 	return UUcError_None;
 }
 
@@ -1736,44 +1736,44 @@ TMiGame_InstanceFile_Delete(
 {
 	UUtUns16						itr;
 	TMtInstanceFile_PrivateInfo*	curPrivateInfo;
-	
+
 	UUmAssertReadPtr(inInstanceFile, sizeof(*inInstanceFile));
-	
+
 	TMiGame_InstanceFile_Callback(inInstanceFile, TMcTemplateProcMessage_DisposePreProcess);
-	
+
 	for(itr = 0, curPrivateInfo = inInstanceFile->privateInfos;
 		itr < inInstanceFile->numPrivateInfos;
 		itr++, curPrivateInfo++)
 	{
 		TMiGame_InstanceFile_PrivateInfo_Delete_ForRealThisTime(inInstanceFile, curPrivateInfo);
 	}
-	
+
 	for(itr = 0; itr < inInstanceFile->numInstancePtrLists; itr++)
 	{
 		UUrMemory_Block_Delete(inInstanceFile->instancePtrLists[itr]);
 	}
-	
+
 	if(inInstanceFile->mapping != NULL)
 	{
 		BFrFile_UnMap(inInstanceFile->mapping);
 	}
-	
+
 	if (inInstanceFile->rawMapping != NULL)
 	{
 		BFrFile_UnMap(inInstanceFile->rawMapping);
 	}
-	
+
 	if (inInstanceFile->separateFile != NULL)
 	{
 		BFrFile_Close(inInstanceFile->separateFile);
 	}
-	
+
 	if(inInstanceFile->dynamicPool != NULL)
 	{
 		UUrMemory_Pool_Delete(inInstanceFile->dynamicPool);
 		UUrMemory_Block_Delete(inInstanceFile->instanceDescriptors);
 	}
-	
+
 	UUrMemory_Block_Delete(inInstanceFile);
 }
 
@@ -1783,7 +1783,7 @@ TMiGame_InstanceFile_GetInstanceDesc(
 	TMtPlaceHolder		inPlaceHolder)
 {
 	UUtUns32	index;
-	
+
 	UUmAssertReadPtr(inInstanceFile, sizeof(*inInstanceFile));
 
 	if(TMmPlaceHolder_IsPtr(inPlaceHolder))
@@ -1793,12 +1793,12 @@ TMiGame_InstanceFile_GetInstanceDesc(
 	else
 	{
 		index = TMmPlaceHolder_GetIndex(inPlaceHolder);
-		
+
 		UUmAssert(index < inInstanceFile->numInstanceDescriptors);
-		
+
 		return inInstanceFile->instanceDescriptors + index;
 	}
-	
+
 	return NULL;
 }
 
@@ -1806,14 +1806,14 @@ static void*
 TMiGame_InstanceFile_GetDataPtr(
 	TMtInstanceFile*	inInstanceFile,
 	TMtTemplateTag		inTemplateTag,
-	const char*			inInstanceName)	
+	const char*			inInstanceName)
 {
 	UUtUns32			midIndex;
 	UUtUns32			lowIndex, highIndex;
 	TMtNameDescriptor*	curNameDesc;
 	char				buffer[BFcMaxFileNameLength * 2];
 	UUtInt16			compareResult;
-	
+
 	UUmAssertReadPtr(inInstanceFile, sizeof(*inInstanceFile));
 	UUmAssertReadPtr(inInstanceName, 1);
 	UUmAssert(strlen(inInstanceName) < TMcInstanceName_MaxLength);
@@ -1822,20 +1822,20 @@ TMiGame_InstanceFile_GetDataPtr(
 	buffer[1] = (char)((inTemplateTag >> 16) & 0xFF);
 	buffer[2] = (char)((inTemplateTag >> 8) & 0xFF);
 	buffer[3] = (char)((inTemplateTag >> 0) & 0xFF);
-	
+
 	UUrString_Copy(buffer + 4, inInstanceName, BFcMaxFileNameLength * 2 - 4);
-	
+
 	lowIndex = 0;
 	highIndex = inInstanceFile->numNameDescriptors;
-	
+
 	while(lowIndex < highIndex)
 	{
 		midIndex = (lowIndex + highIndex) >> 1;
-		
+
 		curNameDesc = inInstanceFile->nameDescriptors + midIndex;
-		
+
 		compareResult = strcmp(buffer, curNameDesc->namePtr);
-		
+
 		if(compareResult == 0)
 		{
 			return (inInstanceFile->instanceDescriptors + curNameDesc->instanceDescIndex)->dataPtr;
@@ -1849,7 +1849,7 @@ TMiGame_InstanceFile_GetDataPtr(
 			highIndex = midIndex;
 		}
 	}
-	
+
 	#if 0
 	for(itrNameDesc = 0, curNameDesc = inInstanceFile->nameDescriptors;
 		itrNameDesc < inInstanceFile->numNameDescriptors;
@@ -1859,14 +1859,14 @@ TMiGame_InstanceFile_GetDataPtr(
 			curNameDesc->namePtr[1] != c1 ||
 			curNameDesc->namePtr[2] != c2 ||
 			curNameDesc->namePtr[3] != c3) continue;
-			
+
 		if(!strcmp(curNameDesc->namePtr + 4, inInstanceName))
 		{
 			return (inInstanceFile->instanceDescriptors + curNameDesc->instanceDescIndex)->dataPtr;
 		}
 	}
 	#endif
-	
+
 	return NULL;
 }
 
@@ -1877,29 +1877,29 @@ TMiGame_InstanceFile_PrepareForMemory(
 	UUtError				error;
 	UUtUns32				curDescIndex;
 	TMtInstanceDescriptor*	curDesc;
-	
+
 	UUtUns8*				swapCode;
 	UUtUns8*				dataPtr;
 	char					msg[2048];
-	
+
 	UUmAssertReadPtr(inInstanceFile, sizeof(*inInstanceFile));
-	
+
 	if(inInstanceFile->preparedForMemory == UUcTrue) return UUcError_None;
 	inInstanceFile->preparedForMemory = UUcTrue;
-	
+
 	for(curDescIndex = 0, curDesc = inInstanceFile->instanceDescriptors;
 		curDescIndex < inInstanceFile->numInstanceDescriptors;
 		curDescIndex++, curDesc++)
 	{
 		if(curDesc->templatePtr->flags & TMcTemplateFlag_Leaf) continue;
-		
+
 		if(curDesc->flags & TMcDescriptorFlags_Duplicate) continue;
-		
+
 		if(curDesc->dataPtr == NULL) continue;
 
 		swapCode = curDesc->templatePtr->swapCodes;
 		dataPtr = curDesc->dataPtr - TMcPreDataSize;
-		
+
 		sprintf(
 			msg,
 			"%s: template %s[%s], name %s",
@@ -1907,8 +1907,8 @@ TMiGame_InstanceFile_PrepareForMemory(
 			curDesc->templatePtr->name,
 			UUrTag2Str(curDesc->templatePtr->tag),
 			(curDesc->namePtr!=NULL) ? curDesc->namePtr + 4 : "NULL");
-		
-		error = 
+
+		error =
 			TMiGame_Instance_PrepareForMemory(
 				&swapCode,
 				&dataPtr,
@@ -1917,10 +1917,10 @@ TMiGame_InstanceFile_PrepareForMemory(
 				(curDesc->templatePtr->flags & TMcTemplateFlag_VarArrayIsLeaf) ? UUcTrue : UUcFalse);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	error = TMiGame_InstanceFile_Callback(inInstanceFile, TMcTemplateProcMessage_LoadPostProcess);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -1929,7 +1929,7 @@ TMiGame_InstanceFile_GetFromIndex(
 	UUtUns32	inInstanceFileIndex)
 {
 	UUtUns16	itr;
-	
+
 	for(itr = 0; itr < TMgGame_LoadedInstanceFiles_Num; itr++)
 	{
 		if(TMgGame_LoadedInstanceFiles_List[itr]->fileIndex == inInstanceFileIndex)
@@ -1937,7 +1937,7 @@ TMiGame_InstanceFile_GetFromIndex(
 			return TMgGame_LoadedInstanceFiles_List[itr];
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -1960,64 +1960,64 @@ TMiGame_InstanceFile_Instance_Dynamic_New(
 	void*							newPrivateData;
 	void**							targetInstancePtrList;
 	TMtPrivateData*					targetPDOwner;
-	
+
 	UUmAssertReadPtr(inInstanceFile, sizeof(*inInstanceFile));
 
 	*outDataPtr = NULL;
-	
+
 	templateDef = TMrUtility_Template_FindDefinition(inTemplateTag);
 	if(templateDef == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not find template definition");
 	}
-	
+
 	if(inInstanceFile->numInstanceDescriptors >= inInstanceFile->maxInstanceDescriptors)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Out of instance descriptors");
 	}
-	
+
 	newInstanceDescIndex = inInstanceFile->numInstanceDescriptors++;
 	newInstanceDesc = inInstanceFile->instanceDescriptors + newInstanceDescIndex;
-	
+
 	newInstanceDesc->templatePtr = templateDef;
 	newInstanceDesc->namePtr = NULL;
-	
+
 	dataSize = templateDef->size + inInitialVarArrayLength * templateDef->varArrayElemSize;
-	
+
 	dataSize = (dataSize + UUcProcessor_CacheLineSize_Mask) & ~UUcProcessor_CacheLineSize_Mask;
 
 	inInstanceFile->dynamicBytesUsed += dataSize;
 	newDataPtr = UUrMemory_Pool_Block_New(inInstanceFile->dynamicPool, dataSize);
 	UUmError_ReturnOnNull(newDataPtr);
-	
+
 	//UUrMemory_Set32(newDataPtr, 0xBADBADBA, dataSize);
-	
+
 	((UUtUns32*)newDataPtr)[0] = TMmPlaceHolder_MakeFromIndex(newInstanceDescIndex);
 	((TMtInstanceFile**)newDataPtr)[1] = inInstanceFile;
-	
+
 	newDataPtr = newDataPtr + TMcPreDataSize;
 
 	newInstanceDesc->size = dataSize;
 	newInstanceDesc->dataPtr = newDataPtr;
-	
+
 	{
 		UUtUns8*	dataPtr	= newDataPtr - TMcPreDataSize;
 		UUtUns8*	swapCodes = templateDef->swapCodes;
-		
+
 		TMrUtility_VarArrayReset_Recursive(
 			&swapCodes,
 			&dataPtr,
 			inInitialVarArrayLength);
 	}
-	
+
 	UUrMemory_Leak_ForceGlobal_Begin();
-	
+
 	// make sure that all private datas of this template type are added to this instance file
 	for(itr = 0; itr < TMgGame_PrivateData_Num; itr++)
 	{
 		if(TMgGame_PrivateData_List[itr].templateTag == inTemplateTag)
 		{
-			error = 
+			error =
 				TMiGame_InstanceFile_PrivateData_New(
 					inInstanceFile,
 					TMgGame_PrivateData_List + itr,
@@ -2025,34 +2025,34 @@ TMiGame_InstanceFile_Instance_Dynamic_New(
 			UUmError_ReturnOnError(error);
 		}
 	}
-	
+
 	// allocate all the private data needed
 	for(itrPrivateInfo = 0, curPrivateInfo = inInstanceFile->privateInfos;
 		itrPrivateInfo < inInstanceFile->numPrivateInfos;
 		itrPrivateInfo++, curPrivateInfo++)
 	{
 		if(curPrivateInfo->type != TMcPrivateInfo_PrivateData) continue;
-		
+
 		targetPDOwner = curPrivateInfo->owner;
 		if(targetPDOwner->dataSize == 0) continue;
-		
+
 		UUmAssert(curPrivateInfo->instanceListIndex < inInstanceFile->numInstancePtrLists);
 		targetInstancePtrList = inInstanceFile->instancePtrLists[curPrivateInfo->instanceListIndex];
-		
+
 		inInstanceFile->dynamicBytesUsed += targetPDOwner->dataSize;
 		newPrivateData =
 			UUrMemory_Pool_Block_New(
 				inInstanceFile->dynamicPool,
 				targetPDOwner->dataSize);
 		UUmError_ReturnOnNull(newPrivateData);
-		
+
 		targetInstancePtrList[newInstanceDescIndex] = newPrivateData;
 	}
-	 	
+
 	UUrMemory_Leak_ForceGlobal_End();
-	
+
 	*outDataPtr = newDataPtr;
-	
+
 	return UUcError_None;
 }
 
@@ -2063,7 +2063,7 @@ TMiGame_InstanceFile_ContainsTemplate(
 {
 	UUtUns32				itr;
 	TMtInstanceDescriptor*	curInstanceDesc;
-	
+
 	UUmAssertReadPtr(inInstanceFile, sizeof(*inInstanceFile));
 
 	for(itr = 0, curInstanceDesc = inInstanceFile->instanceDescriptors;
@@ -2071,10 +2071,10 @@ TMiGame_InstanceFile_ContainsTemplate(
 		itr++, curInstanceDesc++)
 	{
 		if(curInstanceDesc->dataPtr == NULL) continue;
-		
+
 		if(curInstanceDesc->templatePtr->tag == inTemplateTag) return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -2085,15 +2085,15 @@ TMiGame_InstanceFile_PrivateInfo_GetDataPtr(
 	UUtUns32						inInstanceIndex)
 {
 	void**							targetInstancePtrList;
-	
+
 	if(inPrivateInfo->instanceListIndex == UUcMaxUns16) return NULL;
-	
+
 	UUmAssert(inPrivateInfo->instanceListIndex < inInstanceFile->numInstancePtrLists);
-	
+
 	targetInstancePtrList = inInstanceFile->instancePtrLists[inPrivateInfo->instanceListIndex];
-	
+
 	return targetInstancePtrList[inInstanceIndex];
-}	
+}
 
 static UUtError
 TMiGame_LoadedInstanceFiles_Add(
@@ -2103,20 +2103,20 @@ TMiGame_LoadedInstanceFiles_Add(
 	TMtInstanceFileRef*	targetInstanceFileRef;
 	TMtInstanceFile*	newInstanceFile;
 	UUtUns16			itr;
-	
+
 	targetInstanceFileRef = TMgGame_InstanceFileRefs_List + inInstanceFileRefIndex;
-	
+
 	error =
 		TMiGame_InstanceFile_New_FromFileRef(
 			&targetInstanceFileRef->instanceFileRef,
 			&newInstanceFile);
 	UUmError_ReturnOnError(error);
-	
+
 	newInstanceFile->fileIndex = targetInstanceFileRef->fileIndex;
-	
+
 	TMgGame_LoadedInstanceFiles_List[TMgGame_LoadedInstanceFiles_Num] = newInstanceFile;
 	TMgGame_LoadedInstanceFiles_Num++;
-	
+
 	// loop through all the private datas and see if any applied to this instance file
 	for(itr = 0; itr < TMgGame_PrivateData_Num; itr++)
 	{
@@ -2124,7 +2124,7 @@ TMiGame_LoadedInstanceFiles_Add(
 			newInstanceFile,
 			TMgGame_PrivateData_List[itr].templateTag) == UUcTrue)
 		{
-			error = 
+			error =
 				TMiGame_InstanceFile_PrivateData_New(
 					newInstanceFile,
 					TMgGame_PrivateData_List + itr,
@@ -2132,7 +2132,7 @@ TMiGame_LoadedInstanceFiles_Add(
 			UUmError_ReturnOnError(error);
 		}
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -2142,13 +2142,13 @@ TMiGame_LoadedInstanceFiles_Remove(
 {
 	UUtInt16	itr;
 	UUtUns16	numDeleted = 0;
-	
+
 	for(itr = TMgGame_LoadedInstanceFiles_Num; itr-- > 0;)
 	{
 		if(TMmFileIndex_LevelNumber_Get(TMgGame_LoadedInstanceFiles_List[itr]->fileIndex) == inLevelNumber)
 		{
 			TMiGame_InstanceFile_Delete(TMgGame_LoadedInstanceFiles_List[itr]);
-			
+
 			if(TMgGame_LoadedInstanceFiles_Num - itr - 1 > 0)
 			{
 				UUrMemory_ArrayElement_Delete(
@@ -2157,7 +2157,7 @@ TMiGame_LoadedInstanceFiles_Remove(
 					TMgGame_LoadedInstanceFiles_Num,
 					sizeof(TMtInstanceFile*));
 			}
-			
+
 			TMgGame_LoadedInstanceFiles_Num--;
 		}
 	}
@@ -2168,7 +2168,7 @@ TMiGame_LoadedInstanceFiles_PrepareForMemory(
 	void)
 {
 	UUtUns16	itr;
-	
+
 	for(itr = 0; itr < TMgGame_LoadedInstanceFiles_Num; itr++)
 	{
 		TMiGame_InstanceFile_PrepareForMemory(TMgGame_LoadedInstanceFiles_List[itr]);
@@ -2181,9 +2181,9 @@ TMiGame_LoadedInstanceFiles_PrivateData_Add(
 {
 	UUtError	error;
 	UUtUns16	itr;
-	
+
 	UUmAssertReadPtr(inPrivateData, sizeof(*inPrivateData));
-	
+
 	// loop through all the loaded files. If a file has some instances of the same template as inPrivateData
 	// then add a private data instance file entry
 	for(itr = 0; itr < TMgGame_LoadedInstanceFiles_Num; itr++)
@@ -2193,7 +2193,7 @@ TMiGame_LoadedInstanceFiles_PrivateData_Add(
 				inPrivateData->templateTag) == UUcTrue)
 		{
 			// create and add a TMtPrivateData_InstanceFile
-			error = 
+			error =
 				TMiGame_InstanceFile_PrivateData_New(
 					TMgGame_LoadedInstanceFiles_List[itr],
 					inPrivateData,
@@ -2201,7 +2201,7 @@ TMiGame_LoadedInstanceFiles_PrivateData_Add(
 			UUmError_ReturnOnError(error);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2211,16 +2211,16 @@ TMiGame_LoadedInstanceFiles_PrivateData_Remove(
 {
 	UUtUns16			itrInstanceFile;
 	TMtInstanceFile*	curInstanceFile;
-	
+
 	UUmAssertReadPtr(inPrivateData, sizeof(*inPrivateData));
-	
+
 	for(itrInstanceFile = 0; itrInstanceFile < TMgGame_LoadedInstanceFiles_Num; itrInstanceFile++)
 	{
 		curInstanceFile = TMgGame_LoadedInstanceFiles_List[itrInstanceFile];
-		
+
 		TMiGame_InstanceFile_PrivateData_Delete(curInstanceFile, inPrivateData);
 	}
-	
+
 }
 
 static UUtError
@@ -2237,13 +2237,13 @@ TMiGame_LoadedInstanceFiles_PrivateData_Callback(
 	TMtInstanceDescriptor*			curInstanceDesc;
 	TMtTemplateTag					targetTemplateTag;
 	void**							targetInstancePtrList;
-	
+
 	targetTemplateTag = inPrivateData->templateTag;
 
 	for(itrInstanceFile = 0; itrInstanceFile < TMgGame_LoadedInstanceFiles_Num; itrInstanceFile++)
 	{
 		curInstanceFile = TMgGame_LoadedInstanceFiles_List[itrInstanceFile];
-		
+
 		// check to see if this private data is in this instance file
 		for(itrPrivateInfo = 0, curPrivateInfo = curInstanceFile->privateInfos;
 			itrPrivateInfo < curInstanceFile->numPrivateInfos;
@@ -2251,7 +2251,7 @@ TMiGame_LoadedInstanceFiles_PrivateData_Callback(
 		{
 			if(curPrivateInfo->owner == inPrivateData) break;
 		}
-		
+
 		if(itrPrivateInfo < curInstanceFile->numPrivateInfos)
 		{
 			if(curPrivateInfo->instanceListIndex != UUcMaxUns16)
@@ -2263,17 +2263,17 @@ TMiGame_LoadedInstanceFiles_PrivateData_Callback(
 			{
 				targetInstancePtrList = NULL;
 			}
-			
+
 			// do the callback
 			for(curDescIndex = 0, curInstanceDesc = curInstanceFile->instanceDescriptors;
 				curDescIndex < curInstanceFile->numInstanceDescriptors;
 				curDescIndex++, curInstanceDesc++)
 			{
 				if(curInstanceDesc->dataPtr == NULL) continue;
-				
+
 				if(targetTemplateTag == curInstanceDesc->templatePtr->tag)
 				{
-					error = 
+					error =
 						inPrivateData->procHandler(
 							inMessage,
 							curInstanceDesc->dataPtr,
@@ -2283,7 +2283,7 @@ TMiGame_LoadedInstanceFiles_PrivateData_Callback(
 			}
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2293,7 +2293,7 @@ TMiGame_InstanceFileRef_Add(
 	UUtUns32	inInstanceFileIndex)
 {
 	UUtUns16	itr;
-	
+
 	UUmAssertReadPtr(inInstanceFileRef, sizeof(void*));
 
 	for(itr = 0; itr < TMgGame_InstanceFileRefs_Num; itr++)
@@ -2303,11 +2303,11 @@ TMiGame_InstanceFileRef_Add(
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Conflicting file indices");
 		}
 	}
-	
+
 	TMgGame_InstanceFileRefs_List[TMgGame_InstanceFileRefs_Num].instanceFileRef = *inInstanceFileRef;
 	TMgGame_InstanceFileRefs_List[TMgGame_InstanceFileRefs_Num].fileIndex = inInstanceFileIndex;
 	TMgGame_InstanceFileRefs_Num++;
-	
+
 	return UUcError_None;
 }
 
@@ -2318,7 +2318,7 @@ TMiGame_InstanceFileRef_LoadLevel(
 {
 	UUtError	error;
 	UUtUns16	itr;
-	
+
 	for(itr = 0; itr < TMgGame_InstanceFileRefs_Num; itr++)
 	{
 		if(TMmFileIndex_LevelNumber_Get(TMgGame_InstanceFileRefs_List[itr].fileIndex) == inLevelNumber)
@@ -2327,9 +2327,9 @@ TMiGame_InstanceFileRef_LoadLevel(
 			UUmError_ReturnOnError(error);
 		}
 	}
-	
+
 	return UUcError_None;
-}	
+}
 
 
 /*
@@ -2349,11 +2349,11 @@ TMrGame_Initialize(
 	UUtBool				curFileLevelIsFinal;
 	UUtUns32			curFileIndex;
 	char				curFileSuffix[BFcMaxFileNameLength];
-	
+
 	// Initialize the global variables
 		for(itr = 0; itr < TMcLevels_MaxNum; itr++) TMgGame_ValidLevels[itr] = UUcFalse;
-	
-	// Loop through each level and check to see if it is legal	
+
+	// Loop through each level and check to see if it is legal
 		error =
 			BFrDirectory_FileIterator_New(
 				&TMgDataFolderRef,
@@ -2366,7 +2366,7 @@ TMrGame_Initialize(
 			return UUcFalse;
 		}
 		UUrStartupMessage("Created a file iterator for the data folder.");
-		
+
 		while(1)
 		{
 			BFtFileRef curDatFileRef;
@@ -2390,15 +2390,15 @@ TMrGame_Initialize(
 
 					if (is_tool_file) {
 						UUrStartupMessage("skipping tool file %s", file_leaf_name);
-						
+
 						continue;
 					}
 				}
 			}
 #endif
-			
+
 			// Get the file info
-			error = 
+			error =
 				TMrUtility_LevelInfo_Get(
 					&curDatFileRef,
 					&curFileLevelNum,
@@ -2411,19 +2411,19 @@ TMrGame_Initialize(
 				continue;
 			}
 			UUrStartupMessage("Got Level Info for %s.", BFrFileRef_GetLeafName(&curDatFileRef));
-			
+
 			// Check to see if this is really a up to date level
 			if(TMiGame_Level_IsValid(&curDatFileRef, curFileLevelNum))
 			{
 				if(curFileLevelIsFinal)
 				{
 					UUmAssert(TMgGame_ValidLevels[curFileLevelNum] == UUcFalse);
-					
+
 					TMgGame_ValidLevels[curFileLevelNum] = UUcTrue;
 					UUrStartupMessage("Valid Level %s", BFrFileRef_GetLeafName(&curDatFileRef));
 				}
-				
-				error = 
+
+				error =
 					TMiGame_InstanceFileRef_Add(
 						&curDatFileRef,
 						curFileIndex);
@@ -2434,9 +2434,9 @@ TMrGame_Initialize(
 				UUrStartupMessage("Invalid Level %s", BFrFileRef_GetLeafName(&curDatFileRef));
 			}
 		}
-		
+
 		BFrDirectory_FileIterator_Delete(fileIterator);
-	
+
 	// create the dynamic instance files
 
 #if ENABLE_TEMPORARY_INSTANCES
@@ -2460,7 +2460,7 @@ TMrGame_Initialize(
 				TMcDynamic_InstanceFileIndex_Perm,
 				&TMgGame_DynamicInstanceFile_Perm);
 		UUmError_ReturnOnError(error);
-		
+
 #if ENABLE_TEMPORARY_INSTANCES
 	TMgGame_LoadedInstanceFiles_List[0] = TMgGame_DynamicInstanceFile_Temp;
 	TMgGame_LoadedInstanceFiles_List[1] = TMgGame_DynamicInstanceFile_Perm;
@@ -2486,7 +2486,7 @@ TMrGame_Terminate(
 	if (TMgGame_DynamicInstanceFile_Perm != NULL) {
 		TMiGame_InstanceFile_Delete(TMgGame_DynamicInstanceFile_Perm);
 	}
-	
+
 	TMgGame_LoadedInstanceFiles_Num = 0;
 	TMgGame_InstanceFileRefs_Num = 0;
 	TMgGame_PrivateData_Num = 0;
@@ -2506,7 +2506,7 @@ TMrLevel_Exists(
 	UUtUns16			inLevelNumber)
 {
 	if(inLevelNumber >= TMcLevels_MaxNum) return UUcFalse;
-	
+
 	return TMgGame_ValidLevels[inLevelNumber];
 }
 
@@ -2517,7 +2517,7 @@ TMrLevel_Load(
 {
 	UUtError	error;
 	static UUtTimerRef timer = NULL;
-	
+
 	if (TMgTimeLevelLoad) {
 		if (NULL == timer) {
 			timer = UUrTimer_Allocate("level load timer", "");
@@ -2525,29 +2525,29 @@ TMrLevel_Load(
 
 		UUrTimer_Begin(timer);
 	}
-	
+
 	if(TMgGame_ValidLevels[inLevelNumber] == UUcFalse)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "This level is not valid");
 	}
-	
+
 	if (TMgGame_DynamicInstanceFile_Temp != NULL) {
 		// Reset temporary dynamic memory
 		TMiGame_InstanceFile_Dynamic_Reset(TMgGame_DynamicInstanceFile_Temp);	// XXX - Might want to do this at a "real" level load since we support multiple levels loaded simultaneously now
 	}
-	
+
 	error = TMiGame_InstanceFileRef_LoadLevel(inLevelNumber, inAllowPrivateData);
 	UUmError_ReturnOnError(error);
-	
+
 	// prepare for memory
 	TMiGame_LoadedInstanceFiles_PrepareForMemory();
-	
+
 	if (TMgTimeLevelLoad) {
 		UUrTimer_End(timer);
 
 		UUrTimerSystem_WriteToDisk();
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2557,7 +2557,7 @@ TMrLevel_Unload(
 {
 	TMiGame_LoadedInstanceFiles_Remove(inLevelNumber);
 }
-	
+
 UUtError
 TMrInstance_GetDataPtr(
 	TMtTemplateTag		inTemplateTag,
@@ -2565,13 +2565,13 @@ TMrInstance_GetDataPtr(
 	void*				*outDataPtr)
 {
 	UUtError	error;
-	
+
 	UUmAssertReadPtr(outDataPtr, sizeof(void*));
 	UUmAssertReadPtr(inInstanceName, 1);
 	UUmAssert(strlen(inInstanceName) < TMcInstanceName_MaxLength);
-	
+
 	*outDataPtr = TMrInstance_GetFromName(inTemplateTag, inInstanceName);
-	
+
 	error = (*outDataPtr != NULL) ? UUcError_None : UUcError_Generic;
 
 	return error;
@@ -2581,7 +2581,7 @@ void *TMrInstance_GetFromName(TMtTemplateTag inTemplateTag, const char *inInstan
 {
 	UUtUns16	itr;
 	void		*dataPtr = NULL;
-	
+
 	UUmAssertReadPtr(inInstanceName, 1);
 	UUmAssert(strlen(inInstanceName) < TMcInstanceName_MaxLength);
 
@@ -2593,7 +2593,7 @@ void *TMrInstance_GetFromName(TMtTemplateTag inTemplateTag, const char *inInstan
 			break;
 		}
 	}
-	
+
 	return dataPtr;
 }
 
@@ -2609,16 +2609,16 @@ static void TMrInstance_DataPtr_Loop(TMtTemplateTag	inTemplateTag, void *inRefCo
 	void*				dataPtr;
 	UUtUns16			itrInstanceFile;
 	TMtInstanceFile*	curInstanceFile;
-	
+
 	c0 = (char)((inTemplateTag >> 24) & 0xFF);
 	c1 = (char)((inTemplateTag >> 16) & 0xFF);
 	c2 = (char)((inTemplateTag >> 8) & 0xFF);
 	c3 = (char)((inTemplateTag >> 0) & 0xFF);
-	
+
 	for(itrInstanceFile = 0; itrInstanceFile < TMgGame_LoadedInstanceFiles_Num; itrInstanceFile++)
 	{
 		curInstanceFile = TMgGame_LoadedInstanceFiles_List[itrInstanceFile];
-		
+
 		for(itrNameDesc = 0, curNameDesc = curInstanceFile->nameDescriptors;
 			itrNameDesc < curInstanceFile->numNameDescriptors;
 			itrNameDesc++, curNameDesc++)
@@ -2632,7 +2632,7 @@ static void TMrInstance_DataPtr_Loop(TMtTemplateTag	inTemplateTag, void *inRefCo
 
 			dataPtr = (curInstanceFile->instanceDescriptors + curNameDesc->instanceDescIndex)->dataPtr;
 
-			if (NULL == dataPtr) { continue; }	
+			if (NULL == dataPtr) { continue; }
 
 			continue_looping = inCallback(dataPtr, inRefCon);
 
@@ -2771,7 +2771,7 @@ TMrInstance_Dynamic_New(
 {
 	UUtError			error;
 	TMtInstanceFile*	targetInstanceFile = NULL;
-	
+
 
 	if(inDynamicPoolType == TMcDynamicPool_Type_Temporary)
 	{
@@ -2785,28 +2785,28 @@ TMrInstance_Dynamic_New(
 	{
 		UUmAssert(!"Unknown dynamic pool type");
 	}
-	
+
 	if (targetInstanceFile == NULL) {
 		// we cannot allocate an instance from this pool
 		UUmAssert(!"attempted to use deprecated dynamic instance file");
 		return UUcError_Generic;
 	}
 
-	error = 
+	error =
 		TMiGame_InstanceFile_Instance_Dynamic_New(
 			targetInstanceFile,
 			inTemplateTag,
 			inInitialVarArrayLength,
 			outDataPtr);
 	UUmError_ReturnOnError(error);
-	
+
 	// Call the new callback
-	error = 
+	error =
 		TMiGame_Instance_Callback(
 			*outDataPtr,
 			TMcTemplateProcMessage_NewPostProcess);
 	UUmError_ReturnOnError(error);
-		
+
 	return UUcError_None;
 }
 
@@ -2851,10 +2851,10 @@ TMrInstance_Update(
 	void*				inDataPtr)
 {
 	UUtError	error;
-	
+
 	UUmAssertReadPtr(inDataPtr, sizeof(void*));
 
-	error = 
+	error =
 		TMiGame_Instance_Callback(
 			inDataPtr,
 			TMcTemplateProcMessage_Update);
@@ -2869,15 +2869,15 @@ TMrInstance_PrepareForUse(
 {
 	TMtInstanceFile*	targetInstanceFile;
 	UUtUns32			targetInstanceIndex;
-	
+
 	UUmAssertReadPtr(inDataPtr, sizeof(void*));
-		
+
 	// mark date
 	TMiGame_Instance_FileAndIndex_Get(
 		inDataPtr,
 		&targetInstanceFile,
 		&targetInstanceIndex);
-		
+
 	return UUcError_None;
 }
 
@@ -2887,7 +2887,7 @@ TMrInstance_GetTemplateTag(
 {
 	TMtInstanceFile*	targetInstanceFile;
 	UUtUns32			targetInstanceIndex;
-	
+
 	TMiGame_Instance_FileAndIndex_Get(
 		inDataPtr,
 		&targetInstanceFile,
@@ -2908,7 +2908,7 @@ TMrInstance_GetInstanceName(
 	if (NULL  == inDataPtr) {
 		return NULL;
 	}
-	
+
 	TMiGame_Instance_FileAndIndex_Get(
 		inDataPtr,
 		&targetInstanceFile,
@@ -2925,7 +2925,7 @@ TMrInstance_GetRawOffset(
 	const void*	inDataPtr)
 {
 	TMtInstanceFile*	targetInstanceFile;
-	
+
 	TMiGame_Instance_File_Get(
 		inDataPtr,
 		&targetInstanceFile);
@@ -2938,7 +2938,7 @@ TMrInstance_GetSeparateFile(
 	const void*	inDataPtr)
 {
 	TMtInstanceFile*	targetInstanceFile;
-	
+
 	TMiGame_Instance_File_Get(
 		inDataPtr,
 		&targetInstanceFile);
@@ -2964,31 +2964,31 @@ TMrTemplate_PrivateData_New(
 	UUtError		error;
 	UUtUns16		newPrivateDataIndex;
 	TMtPrivateData*	newPrivateData;
-	
+
 	*outPrivateData = NULL;
-	
+
 	UUmAssert(inProcHandler != NULL);
-	
+
 	if(TMgGame_PrivateData_Num >= TMcPrivateData_Max)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Too many private datas");
 	}
-	
+
 	newPrivateDataIndex = TMgGame_PrivateData_Num++;
 	newPrivateData = TMgGame_PrivateData_List + newPrivateDataIndex;
-	
+
 	newPrivateData->templateTag = inTemplateTag;
 	newPrivateData->dataSize = inDataSize;
 	newPrivateData->procHandler = inProcHandler;
-	
+
 	error = TMiGame_LoadedInstanceFiles_PrivateData_Add(newPrivateData);
 	UUmError_ReturnOnError(error);
-	
+
 	error = TMiGame_LoadedInstanceFiles_PrivateData_Callback(newPrivateData, TMcTemplateProcMessage_LoadPostProcess);
 	UUmError_ReturnOnError(error);
-	
+
 	*outPrivateData = newPrivateData;
-	
+
 	return UUcError_None;
 }
 
@@ -2997,24 +2997,24 @@ TMrTemplate_PrivateData_Delete(
 	TMtPrivateData*				inPrivateData)
 {
 	UUtInt16	targetPrivateDataIndex;
-	
+
 	targetPrivateDataIndex = inPrivateData - TMgGame_PrivateData_List;
-	
+
 	UUmAssert(targetPrivateDataIndex >= 0);
 	if(targetPrivateDataIndex >= TMgGame_PrivateData_Num) return;
-	
+
 	TMiGame_LoadedInstanceFiles_PrivateData_Callback(inPrivateData, TMcTemplateProcMessage_DisposePreProcess);
 
 	TMiGame_LoadedInstanceFiles_PrivateData_Remove(inPrivateData);
-	
+
 	UUrMemory_ArrayElement_Delete(
 		TMgGame_PrivateData_List,
 		targetPrivateDataIndex,
 		TMgGame_PrivateData_Num,
 		sizeof(TMtPrivateData));
-	
+
 	TMgGame_PrivateData_Num--;
-	
+
 }
 
 void*
@@ -3027,14 +3027,14 @@ TMrTemplate_PrivateData_GetDataPtr(
 	UUtUns16						itrPrivateInfo;
 	TMtInstanceFile_PrivateInfo*	curPrivateInfo;
 	void**							targetInstancePtrList;
-	
+
 	if(inInstancePtr == NULL) return NULL;
 
 	TMiGame_Instance_FileAndIndex_Get(
 		inInstancePtr,
 		&targetInstanceFile,
 		&targetInstanceIndex);
-	
+
 	for(itrPrivateInfo = 0, curPrivateInfo = targetInstanceFile->privateInfos;
 		itrPrivateInfo < targetInstanceFile->numPrivateInfos;
 		itrPrivateInfo++, curPrivateInfo++)
@@ -3042,15 +3042,15 @@ TMrTemplate_PrivateData_GetDataPtr(
 		if(curPrivateInfo->owner == inPrivateData)
 		{
 			if(inPrivateData->dataSize == 0) return NULL;
-			
+
 			UUmAssert(curPrivateInfo->instanceListIndex < targetInstanceFile->numInstancePtrLists);
 			targetInstancePtrList = targetInstanceFile->instancePtrLists[curPrivateInfo->instanceListIndex];
-			
+
 			return targetInstancePtrList[targetInstanceIndex];
 		}
 	}
-	
+
 	UUmAssert(0);
-	
+
 	return NULL;
 }

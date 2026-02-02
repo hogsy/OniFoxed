@@ -46,7 +46,7 @@ typedef struct tViewProc
 	char					*name;
 	UUtUns16				type;
 	IMPiViewProc			view_proc;
-	
+
 } tViewProc;
 
 typedef struct tParts
@@ -54,7 +54,7 @@ typedef struct tParts
 	char					*name;
 	UUtUns16				row;
 	UUtUns16				column;
-	
+
 } tParts;
 
 // ======================================================================
@@ -70,7 +70,7 @@ static AUtFlagElement	IMPgDialogFlags[] =
 	{ NULL,							0 }
 };
 
-static AUtFlagElement	IMPgViewFlags[] = 
+static AUtFlagElement	IMPgViewFlags[] =
 {
 	{ "none", 						VMcViewFlag_None },
 	{ "view_visible",				VMcViewFlag_Visible },
@@ -130,13 +130,13 @@ IMPiProcessViewFlags(
 	GRtElementType		element_type;
 	GRtElementArray		*flag_array;
 	UUtUns32			flags;
-	
+
 	// init the flags
 	*outFlags = 0;
 	flags = 0;
-	
+
 	// get the flag string
-	error = 
+	error =
 		GRrGroup_GetElement(
 			inGroup,
 			flag_name,
@@ -147,7 +147,7 @@ IMPiProcessViewFlags(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Error getting flags");
 	}
-			
+
 	// process the flags
 	error =
 		AUrFlags_ParseFromGroupArray(
@@ -159,10 +159,10 @@ IMPiProcessViewFlags(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Unable to parse the flags.");
 	}
-	
+
 	// set the outgoing string
 	*outFlags = (UUtUns16)flags;
-	
+
 	return UUcError_None;
 }
 
@@ -176,11 +176,11 @@ IMPiProcessLocation(
 	UUtError			error;
 	GRtElementType		element_type;
 	GRtGroup			*location;
-	
+
 	// initialize outLocation
 	outLocation->x = 0;
 	outLocation->y = 0;
-	
+
 	// get the location group
 	error =
 		GRrGroup_GetElement(
@@ -197,15 +197,15 @@ IMPiProcessLocation(
 		Imp_PrintWarning("Could not get location");
 		return UUcError_Generic;
 	}
-	
+
 	// get the location x
 	error = GRrGroup_GetUns16(location, "x", (UUtUns16*)&outLocation->x);
 	IMPmError_ReturnOnError(error);
-	
+
 	// get the location y
 	error = GRrGroup_GetUns16(location, "y", (UUtUns16*)&outLocation->y);
 	IMPmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -223,9 +223,9 @@ IMPiProcessPartSpecification(
 	char				*instance_name;
 	TMtPlaceHolder		part_spec_ref;
 	UUtUns32			sourceModDate;
-	
+
 	*outPartSpecificationRef = NULL;
-	
+
 	// get the element
 	// it is okay if it doesn't exist
 	error =
@@ -235,7 +235,7 @@ IMPiProcessPartSpecification(
 			&element_type,
 			&part_specification);
 	if (error != UUcError_None) return UUcError_None;
-	
+
 	if (element_type == GRcElementType_String)
 	{
 		instance_name = (char*)part_specification;
@@ -249,7 +249,7 @@ IMPiProcessPartSpecification(
 				"instance",
 				&instance_name);
 		IMPmError_ReturnOnErrorMsg(error, "Could not get instance name");
-		
+
 		// get the mod date of this file
 		error =
 			BFrFileRef_GetModTime(
@@ -266,17 +266,17 @@ IMPiProcessPartSpecification(
 				instance_name);
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-	
-	// get a place holder for the 
-	error = 
+
+	// get a place holder for the
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_PartSpecification,
 			instance_name,
 			&part_spec_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get view placeholder for dialog");
-	
+
 	*outPartSpecificationRef = (void*)part_spec_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -294,7 +294,7 @@ IMPiProcessSingleTexture(
 	BFtFileRef			*texture_file_ref;
 	const char			*texture_name;
 	TMtPlaceHolder		texture_ref;
-	
+
 	error =
 		GRrGroup_GetElement(
 			inGroup,
@@ -307,7 +307,7 @@ IMPiProcessSingleTexture(
 		{
 			Imp_PrintWarning("Unable to process the texture");
 		}
-		
+
 		return error;
 	}
 
@@ -318,10 +318,10 @@ IMPiProcessSingleTexture(
 			texture_file_name,
 			&texture_file_ref);
 	IMPmError_ReturnOnErrorMsg(error, "texture file was not found");
-	
+
 	// set the textures name
 	texture_name = BFrFileRef_GetLeafName(texture_file_ref);
-	
+
 	// process the texture map file
 	error =
 		Imp_ProcessTexture_File(
@@ -329,12 +329,12 @@ IMPiProcessSingleTexture(
 			texture_name,
 			&texture_ref);
 	IMPmError_ReturnOnErrorMsg(error, "unable to process the texture");
-	
+
 	BFrFileRef_Dispose(texture_file_ref);
-	
+
 	// save the texture ref
 	*outTextureRef = texture_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -354,7 +354,7 @@ IMPiProcessTextures(
 
 	// get pointer to texture list
 	// it is okay for the list not to exist
-	error = 
+	error =
 		GRrGroup_GetElement(
 			inGroup,
 			inTextureListName,
@@ -362,16 +362,16 @@ IMPiProcessTextures(
 			&texture_list);
 	if (error != UUcError_None)
 		return UUcError_None;
-		
+
 	if (element_type != GRcElementType_Array)
 	{
 		Imp_PrintWarning("Could not get the texture list");
 		return UUcError_Generic;
 	}
-	
+
 	// get the number of textures in the texture_list
 	num_textures = (UUtUns16)GRrGroup_Array_GetLength(texture_list);
-		
+
 	// create a new texture list template
 	error =
 		TMrConstruction_Instance_NewUnique(
@@ -379,7 +379,7 @@ IMPiProcessTextures(
 			num_textures,
 			inTextureList);
 	IMPmError_ReturnOnError(error);
-	
+
 	// process the textures
 	for (i = 0; i < num_textures; i++)
 	{
@@ -388,9 +388,9 @@ IMPiProcessTextures(
 		const char			*texture_name;
 		TMtPlaceHolder	texture_ref;
 		FFtFileInfo		format;
-		
+
 		// get the name of texture[i]
-		error = 
+		error =
 			GRrGroup_Array_GetElement(
 				texture_list,
 				i,
@@ -401,7 +401,7 @@ IMPiProcessTextures(
 			Imp_PrintWarning("Could not get the texture file name");
 			return UUcError_Generic;
 		}
-		
+
 		// create a new file ref using the texture's file name
 		error =
 			BFrFileRef_DuplicateAndReplaceName(
@@ -409,14 +409,14 @@ IMPiProcessTextures(
 				texture_file,
 				&texture_file_ref);
 		IMPmError_ReturnOnErrorMsg(error, "texture file was not found");
-		
+
 		// set the textures name
-		texture_name = BFrFileRef_GetLeafName(texture_file_ref); 
-		
+		texture_name = BFrFileRef_GetLeafName(texture_file_ref);
+
 		// look into the texture
 		error = FFrPeek_2D(texture_file_ref, &format);
 		IMPmError_ReturnOnErrorMsg(error, "could not get info about the file.");
-		
+
 		if ((format.width > M3cTextureMap_MaxWidth) ||
 			(format.height > M3cTextureMap_MaxHeight))
 		{
@@ -430,14 +430,14 @@ IMPiProcessTextures(
 			error =	Imp_ProcessTexture_File(texture_file_ref, texture_name, &texture_ref);
 			IMPmError_ReturnOnErrorMsg(error, "Could not import the texture file.");
 		}
-		
+
 		// save the texture ref
 		(*inTextureList)->textures[i].texture_ref = (void*)texture_ref;
 
 		// dispose of the file ref
 		BFrFileRef_Dispose(texture_file_ref);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -457,7 +457,7 @@ IMPiView_Process_Box(
 	UUtError				error;
 	VMtView_Box				*box;
 	TMtPlaceHolder			box_ref;
-	
+
 	// create the dialog template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -466,7 +466,7 @@ IMPiView_Process_Box(
 			0,
 			&box);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create a template");
-	
+
 	// initialize the fields
 	box->box								= NULL;
 
@@ -483,15 +483,15 @@ IMPiView_Process_Box(
 	}
 
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_Box,
 			inInstanceName,
 			&box_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = box_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -509,7 +509,7 @@ IMPiView_Process_Button(
 	UUtUns16				common_flags;
 	UUtUns16				animation_flags;
 	char					*button_title;
-	
+
 	// create the template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -518,7 +518,7 @@ IMPiView_Process_Button(
 			0,
 			&button);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create the template");
-	
+
 	// read the title
 	error =
 		GRrGroup_GetString(
@@ -535,12 +535,12 @@ IMPiView_Process_Button(
 	}
 	else
 	{
-		// only if the title exists does the text need to be copied, the 
+		// only if the title exists does the text need to be copied, the
 		// common flags read, and the text offset location processed
-		
+
 		// copy the title text
 		UUrString_Copy(button->title, button_title, VMcMaxTitleLength);
-		
+
 		// read the flags
 		error =
 			IMPiProcessViewFlags(
@@ -558,7 +558,7 @@ IMPiView_Process_Button(
 				&button->text_location_offset);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get the location");
 	}
-	
+
 	// read the animation rate
 	error =
 		GRrGroup_GetUns16(
@@ -567,7 +567,7 @@ IMPiView_Process_Button(
 			&button->animation_rate);
 	if (error != UUcError_None)
 		button->animation_rate = VMcView_Button_DefaultAnimationRate;
-	
+
 	// read the animation flags
 	error =
 		IMPiProcessViewFlags(
@@ -577,9 +577,9 @@ IMPiView_Process_Button(
 			&animation_flags);
 	if ((error != UUcError_None) && (error != GRcError_ElementNotFound))
 		IMPmError_ReturnOnErrorMsg(error, "Unable to process button flags");
-	
+
 	button->flags = common_flags | animation_flags;
-	
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -591,7 +591,7 @@ IMPiView_Process_Button(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-		
+
 	error =
 		IMPiProcessPartSpecification(
 			inSourceFile,
@@ -602,7 +602,7 @@ IMPiView_Process_Button(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-	
+
 	error =
 		IMPiProcessPartSpecification(
 			inSourceFile,
@@ -613,17 +613,17 @@ IMPiView_Process_Button(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-	
+
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_Button,
 			inInstanceName,
 			&button_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = button_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -639,7 +639,7 @@ IMPiView_Process_CheckBox(
 	VMtView_CheckBox		*checkbox;
 	TMtPlaceHolder			checkbox_ref;
 	char					*checkbox_title;
-	
+
 	// create the dialog template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -648,7 +648,7 @@ IMPiView_Process_CheckBox(
 			0,
 			&checkbox);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create a template");
-	
+
 	// initialize the fields
 	checkbox->flags						= VMcCommonFlag_None;
 	checkbox->reserved					= 0;
@@ -664,7 +664,7 @@ IMPiView_Process_CheckBox(
 			"common_flags",
 			&checkbox->flags);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get the flags");
-	
+
 	// get the title location offset
 	error =
 		IMPiProcessLocation(
@@ -672,7 +672,7 @@ IMPiView_Process_CheckBox(
 			"title_location_offset",
 			&checkbox->title_location_offset);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get the location");
-		
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -684,7 +684,7 @@ IMPiView_Process_CheckBox(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-		
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -696,7 +696,7 @@ IMPiView_Process_CheckBox(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-		
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -708,7 +708,7 @@ IMPiView_Process_CheckBox(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-		
+
 	// read the title
 	error =
 		GRrGroup_GetString(
@@ -716,19 +716,19 @@ IMPiView_Process_CheckBox(
 			"title",
 			&checkbox_title);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get string");
-	
+
 	UUrString_Copy(checkbox->title, checkbox_title, VMcMaxTitleLength);
 
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_CheckBox,
 			inInstanceName,
 			&checkbox_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = checkbox_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -743,7 +743,7 @@ IMPiView_Process_Dialog(
 	UUtError				error;
 	DMtDialogData			*dialog;
 	TMtPlaceHolder			dialog_ref;
-	
+
 	// create the dialog template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -752,7 +752,7 @@ IMPiView_Process_Dialog(
 			0,
 			&dialog);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create a dialog template");
-	
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -764,7 +764,7 @@ IMPiView_Process_Dialog(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-		
+
 	// read the background textures
 	error =
 		IMPiProcessTextures(
@@ -773,7 +773,7 @@ IMPiView_Process_Dialog(
 			&dialog->b_textures,
 			"b_list");
 	IMPmError_ReturnOnErrorMsg(error, "Could not get the background textures");
-	
+
 	// read the flags
 	error =
 		IMPiProcessViewFlags(
@@ -782,20 +782,20 @@ IMPiView_Process_Dialog(
 			"dialog_flags",
 			&dialog->flags);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get view flags");
-	
+
 	// initialize the fields
 	dialog->reserved = 0;
-	
+
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			DMcTemplate_DialogData,
 			inInstanceName,
 			&dialog_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the dialog");
-	
+
 	*outViewData = dialog_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -811,7 +811,7 @@ IMPiView_Process_EditField(
 	VMtView_EditField		*editfield;
 	TMtPlaceHolder			editfield_ref;
 	UUtUns16				temp;
-	
+
 	// create the template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -820,13 +820,13 @@ IMPiView_Process_EditField(
 			0,
 			&editfield);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create the template");
-	
+
 	// initialize the text
 	editfield->flags = 0;
 	editfield->max_chars = DMcControl_EditField_MaxChars;
 	editfield->text_location_offset.x = 0;
 	editfield->text_location_offset.y = 0;
-	
+
 	// read the flags
 	error =
 		IMPiProcessViewFlags(
@@ -835,7 +835,7 @@ IMPiView_Process_EditField(
 			"common_flags",
 			&editfield->flags);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get flags");
-	
+
 	// read the max_chars
 	error =
 		GRrGroup_GetUns16(
@@ -850,7 +850,7 @@ IMPiView_Process_EditField(
 	{
 		editfield->max_chars = temp;
 	}
-	
+
 	// get the text location offset
 	error =
 		IMPiProcessLocation(
@@ -858,7 +858,7 @@ IMPiView_Process_EditField(
 			"text_location_offset",
 			&editfield->text_location_offset);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get the location");
-		
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -870,17 +870,17 @@ IMPiView_Process_EditField(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-		
+
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_EditField,
 			inInstanceName,
 			&editfield_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = editfield_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -895,7 +895,7 @@ IMPiView_Process_ListBox(
 	UUtError				error;
 	VMtView_ListBox			*listbox;
 	TMtPlaceHolder			listbox_ref;
-	
+
 	// create the template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -904,7 +904,7 @@ IMPiView_Process_ListBox(
 			0,
 			&listbox);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create the template");
-	
+
 	// initialize the fields
 	listbox->backborder			= NULL;
 	listbox->flags				= VMcCommonFlag_None;
@@ -930,17 +930,17 @@ IMPiView_Process_ListBox(
 			"common_flags",
 			&listbox->flags);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get the flags");
-	
+
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_ListBox,
 			inInstanceName,
 			&listbox_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = listbox_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -955,7 +955,7 @@ IMPiView_Process_Picture(
 	UUtError				error;
 	VMtView_Picture			*picture;
 	TMtPlaceHolder			picture_ref;
-	
+
 	// create the template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -964,7 +964,7 @@ IMPiView_Process_Picture(
 			0,
 			&picture);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create the template");
-	
+
 	// read the background textures
 	error =
 		IMPiProcessTextures(
@@ -976,7 +976,7 @@ IMPiView_Process_Picture(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not get the background textures");
 	}
-	
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -988,23 +988,23 @@ IMPiView_Process_Picture(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-	
+
 	if ((picture->b_textures == NULL) &&
 		(picture->partspec == NULL))
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Picture is not complete");
 	}
-	
+
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_Picture,
 			inInstanceName,
 			&picture_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = picture_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -1020,7 +1020,7 @@ IMPiView_Process_RadioButton(
 	VMtView_RadioButton		*radiobutton;
 	TMtPlaceHolder			radiobutton_ref;
 	char					*radiobutton_title;
-	
+
 	// create the dialog template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -1029,7 +1029,7 @@ IMPiView_Process_RadioButton(
 			0,
 			&radiobutton);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create a template");
-	
+
 	// initialize the fields
 	radiobutton->flags						= VMcCommonFlag_None;
 	radiobutton->reserved					= 0;
@@ -1043,7 +1043,7 @@ IMPiView_Process_RadioButton(
 			"common_flags",
 			&radiobutton->flags);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get the flags");
-	
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -1055,7 +1055,7 @@ IMPiView_Process_RadioButton(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-		
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -1075,19 +1075,19 @@ IMPiView_Process_RadioButton(
 			"title",
 			&radiobutton_title);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get string");
-	
+
 	UUrString_Copy(radiobutton->title, radiobutton_title, VMcMaxTitleLength);
 
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_RadioButton,
 			inInstanceName,
 			&radiobutton_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = radiobutton_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -1102,7 +1102,7 @@ IMPiView_Process_RadioGroup(
 	UUtError				error;
 	VMtView_RadioGroup		*radiogroup;
 	TMtPlaceHolder			radiogroup_ref;
-	
+
 	// create the dialog template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -1111,7 +1111,7 @@ IMPiView_Process_RadioGroup(
 			0,
 			&radiogroup);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create a template");
-	
+
 	// initialize the fields
 	radiogroup->outline						= NULL;
 
@@ -1128,15 +1128,15 @@ IMPiView_Process_RadioGroup(
 	}
 
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_RadioGroup,
 			inInstanceName,
 			&radiogroup_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = radiogroup_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -1151,7 +1151,7 @@ IMPiView_Process_Scrollbar(
 	UUtError				error;
 	VMtView_Scrollbar		*scrollbar;
 	TMtPlaceHolder			scrollbar_ref;
-	
+
 	// create the dialog template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -1160,13 +1160,13 @@ IMPiView_Process_Scrollbar(
 			0,
 			&scrollbar);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create a template");
-	
+
 	// initialize the fields
 	scrollbar->vertical_scrollbar	= NULL;
 	scrollbar->vertical_thumb		= NULL;
 	scrollbar->horizontal_scrollbar	= NULL;
 	scrollbar->horizontal_thumb		= NULL;
-		
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -1190,7 +1190,7 @@ IMPiView_Process_Scrollbar(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-	
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -1214,17 +1214,17 @@ IMPiView_Process_Scrollbar(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-	
+
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_Scrollbar,
 			inInstanceName,
 			&scrollbar_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = scrollbar_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -1240,7 +1240,7 @@ IMPiView_Process_Slider(
 	VMtView_Slider			*slider;
 	TMtPlaceHolder			slider_ref;
 	char					*title;
-	
+
 	// create the dialog template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -1249,13 +1249,13 @@ IMPiView_Process_Slider(
 			0,
 			&slider);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create a template");
-	
+
 	// initialize the fields
 	slider->flags			= 0;
 	slider->reserved		= 0;
 	slider->outline			= NULL;
 	slider->title[0]		= '\0';
-	
+
 	// read the title
 	error =
 		GRrGroup_GetString(
@@ -1263,9 +1263,9 @@ IMPiView_Process_Slider(
 			"title",
 			&title);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get view type");
-	
+
 	UUrString_Copy(slider->title, title, VMcMaxTitleLength);
-	
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -1277,7 +1277,7 @@ IMPiView_Process_Slider(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-	
+
 	// read the flags
 	error =
 		IMPiProcessViewFlags(
@@ -1288,15 +1288,15 @@ IMPiView_Process_Slider(
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get flags");
 
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_Slider,
 			inInstanceName,
 			&slider_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = slider_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -1311,7 +1311,7 @@ IMPiView_Process_Tab(
 	UUtError				error;
 	VMtView_Tab				*tab;
 	TMtPlaceHolder			tab_ref;
-	
+
 	// create the template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -1320,10 +1320,10 @@ IMPiView_Process_Tab(
 			0,
 			&tab);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create the template");
-	
+
 	tab->tab_button = NULL;
 	tab->outline = NULL;
-	
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -1335,7 +1335,7 @@ IMPiView_Process_Tab(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-	
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -1347,17 +1347,17 @@ IMPiView_Process_Tab(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-	
+
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_Tab,
 			inInstanceName,
 			&tab_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = tab_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -1385,7 +1385,7 @@ IMPiView_Process_Text(
 	VMtView_Text			*text;
 	TMtPlaceHolder			text_ref;
 	char					*string;
-	
+
 	// create the template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -1394,14 +1394,14 @@ IMPiView_Process_Text(
 			0,
 			&text);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create the template");
-	
+
 	// initialize the text
 	text->flags = 0;
 	text->text_location_offset.x = 0;
 	text->text_location_offset.y = 0;
 	text->outline = NULL;
 	text->string[0] = '\0';
-	
+
 	// read the flags
 	error =
 		IMPiProcessViewFlags(
@@ -1410,7 +1410,7 @@ IMPiView_Process_Text(
 			"common_flags",
 			&text->flags);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get view flags");
-	
+
 	// get the text location offset
 	error =
 		IMPiProcessLocation(
@@ -1418,7 +1418,7 @@ IMPiView_Process_Text(
 			"text_location_offset",
 			&text->text_location_offset);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get the location");
-	
+
 	// get the string
 	error =
 		GRrGroup_GetString(
@@ -1426,9 +1426,9 @@ IMPiView_Process_Text(
 			"string",
 			&string);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to get the string");
-	
+
 	UUrString_Copy(text->string, string, VMcView_Text_MaxStringLength);
-	
+
 	// process the part specifications
 	error =
 		IMPiProcessPartSpecification(
@@ -1440,17 +1440,17 @@ IMPiView_Process_Text(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Could not process part specification");
 	}
-	
+
 	// get a placeholder
-	error = 
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			VMcTemplate_View_Text,
 			inInstanceName,
 			&text_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get placeholder for the template");
-	
+
 	*outViewData = text_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -1491,10 +1491,10 @@ Imp_AddPartSpecification(
 
 	UUtBool				bool_result;
 	UUtBool				build_instance;
-	
+
 	UUtUns32			create_date;
 	UUtUns32			compile_date;
-	
+
 	// check to see if the dialogs need to be built
 	bool_result =
 		TMrConstruction_Instance_CheckExists(
@@ -1504,7 +1504,7 @@ Imp_AddPartSpecification(
 	if (bool_result)
 	{
 		compile_date = UUrConvertStrToSecsSince1900(gViewCompileTime);
-		
+
 		build_instance = (UUtBool)(create_date < inSourceFileModDate ||
 									create_date < compile_date);
 	}
@@ -1512,7 +1512,7 @@ Imp_AddPartSpecification(
 	{
 		build_instance = UUcTrue;
 	}
-	
+
 	if (build_instance)
 	{
 		GRtElementType			element_type;
@@ -1521,7 +1521,7 @@ Imp_AddPartSpecification(
 		UUtUns16				i;
 		VMtPartSpec				*part_spec;
 		TMtPlaceHolder			texture;
-		
+
 		// get the texture
 		error =
 			IMPiProcessSingleTexture(
@@ -1542,14 +1542,14 @@ Imp_AddPartSpecification(
 				0,
 				&part_spec);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create a part specification template");
-		
+
 		// set the texture
 		part_spec->texture = (void*)texture;
-		
+
 		// clear the part matrices
 		UUrMemory_Clear(part_spec->part_matrix_tl, sizeof(part_spec->part_matrix_tl));
 		UUrMemory_Clear(part_spec->part_matrix_br, sizeof(part_spec->part_matrix_br));
-		
+
 		// get the parts specs
 		error =
 			GRrGroup_GetElement(
@@ -1561,9 +1561,9 @@ Imp_AddPartSpecification(
 		{
 			IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to get part specs array");
 		}
-		
+
 		num_parts = (UUtUns16)GRrGroup_Array_GetLength(part_spec_array);
-		
+
 		// process the part specs
 		for (i = 0; i < num_parts; i++)
 		{
@@ -1575,7 +1575,7 @@ Imp_AddPartSpecification(
 			UUtInt32				right;
 			UUtInt32				bottom;
 			tParts					*parts;
-			
+
 			// get the element i from the part spec array
 			error =
 				GRrGroup_Array_GetElement(
@@ -1584,19 +1584,19 @@ Imp_AddPartSpecification(
 					&element_type,
 					&part_array);
 			if ((error != UUcError_None) || (element_type != GRcElementType_Array))
-			{	
+			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to get part spec from array");
 			}
-			
+
 			if (GRrGroup_Array_GetLength(part_array) != 5)
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// ------------------------------
 			// process the elements of the part
 			// ------------------------------
-			
+
 			// get the part name
 			error =
 				GRrGroup_Array_GetElement(
@@ -1608,7 +1608,7 @@ Imp_AddPartSpecification(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// get the left coordinate of the part
 			left = 0;
 			error =
@@ -1627,7 +1627,7 @@ Imp_AddPartSpecification(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// get the top coordinate of the part
 			top = 0;
 			error =
@@ -1646,7 +1646,7 @@ Imp_AddPartSpecification(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// get the right coordinate of the part
 			right = 0;
 			error =
@@ -1665,7 +1665,7 @@ Imp_AddPartSpecification(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// get the bottom coordinate of the part
 			bottom = 0;
 			error =
@@ -1684,7 +1684,7 @@ Imp_AddPartSpecification(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// stick the elements into the template
 			for (parts = IMPgParts; parts->name != NULL; parts++)
 			{
@@ -1699,7 +1699,7 @@ Imp_AddPartSpecification(
 			}
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1715,10 +1715,10 @@ Imp_AddView(
 
 	UUtBool				bool_result;
 	UUtBool				build_instance;
-	
+
 	UUtUns32			create_date;
 	UUtUns32			compile_date;
-	
+
 	// check to see if the dialogs need to be built
 	bool_result =
 		TMrConstruction_Instance_CheckExists(
@@ -1728,7 +1728,7 @@ Imp_AddView(
 	if (bool_result)
 	{
 		compile_date = UUrConvertStrToSecsSince1900(gViewCompileTime);
-		
+
 		build_instance = (UUtBool)(create_date < inSourceFileModDate ||
 									create_date < compile_date);
 	}
@@ -1736,7 +1736,7 @@ Imp_AddView(
 	{
 		build_instance = UUcTrue;
 	}
-	
+
 	if (build_instance)
 	{
 		UUtUns16					id;
@@ -1753,7 +1753,7 @@ Imp_AddView(
 		TMtPlaceHolder				view_data;
 		UUtUns16					i;
 		tViewProc					*viewproc;
-		
+
 		// get the id
 		error =
 			GRrGroup_GetUns16(
@@ -1761,7 +1761,7 @@ Imp_AddView(
 				"id",
 				&id);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get view id");
-		
+
 		// get the type name
 		error =
 			GRrGroup_GetString(
@@ -1769,7 +1769,7 @@ Imp_AddView(
 				"type",
 				&type_name);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get view type");
-		
+
 		// get the flags
 		error =
 			IMPiProcessViewFlags(
@@ -1778,7 +1778,7 @@ Imp_AddView(
 				"view_flags",
 				&flags);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get view flags");
-		
+
 		// get the location
 		error =
 			IMPiProcessLocation(
@@ -1786,7 +1786,7 @@ Imp_AddView(
 				"location",
 				&location);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get view location");
-		
+
 		// get the width
 		error =
 			GRrGroup_GetInt16(
@@ -1802,7 +1802,7 @@ Imp_AddView(
 				"height",
 				&height);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get view height");
-		
+
 		// get the view data
 		view_data = 0;
 		for (viewproc = IMPgViewProc;
@@ -1816,7 +1816,7 @@ Imp_AddView(
 				break;
 			}
 		}
-				
+
 		// get the views array
 		error =
 			GRrGroup_GetElement(
@@ -1837,13 +1837,13 @@ Imp_AddView(
 				views_array = NULL;
 			}
 		}
-		
+
 		// get the number of elements in the views array
 		if (views_array)
 			num_child_views = (UUtUns16)GRrGroup_Array_GetLength(views_array);
 		else
 			num_child_views = 0;
-			
+
 		// create an view template instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -1852,7 +1852,7 @@ Imp_AddView(
 				num_child_views,
 				&view);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create a view template");
-		
+
 		// set the fields of view
 		view->id			= id;
 		view->type			= type;
@@ -1861,14 +1861,14 @@ Imp_AddView(
 		view->width			= width;
 		view->height		= height;
 		view->view_data		= (TMtPlaceHolder*)view_data;
-		
+
 		// copy the views from the views_array
 		for (i = 0; i < num_child_views; i++)
 		{
 			void			*view_description;
 			TMtPlaceHolder	view_ref;
 			char			*instance_name;
-			
+
 			// get the name of the view
 			error =
 				GRrGroup_Array_GetElement(
@@ -1877,7 +1877,7 @@ Imp_AddView(
 					&element_type,
 					&view_description);
 			IMPmError_ReturnOnErrorMsg(error, "Could not get view ref name");
-			
+
 			if (element_type == GRcElementType_String)
 			{
 				instance_name = view_description;
@@ -1891,7 +1891,7 @@ Imp_AddView(
 						"instance",
 						&instance_name);
 				IMPmError_ReturnOnErrorMsg(error, "Could not get instance name");
-				
+
 				// process the group
 				error =
 					Imp_AddView(
@@ -1903,7 +1903,7 @@ Imp_AddView(
 			}
 
 			// get a place holder for the view
-			error = 
+			error =
 				TMrConstruction_Instance_GetPlaceHolder(
 					VMcTemplate_View,
 					instance_name,
@@ -1913,7 +1913,7 @@ Imp_AddView(
 			view->child_views[i].view_ref = (void*)view_ref;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 

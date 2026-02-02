@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_DrawEngine_Method_Ptrs.h
-	
+
 	AUTHOR:	Brent Pease
-	
+
 	CREATED: July 31, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1999
 
 */

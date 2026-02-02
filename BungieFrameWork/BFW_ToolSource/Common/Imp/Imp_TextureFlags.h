@@ -14,7 +14,7 @@
 // ======================================================================
 // typedefs
 // ======================================================================
-typedef enum 
+typedef enum
 {
 	cTextureFlagFile_No,
 	cTextureFlagFile_Yes
@@ -30,7 +30,7 @@ typedef struct tTextureFlags
 	UUtBool				reflectivity_specified;
 	M3tColorRGB			reflectivity_color;
 	M3tTextureMap*		envMapPlaceHolder;
-	
+
 } tTextureFlags;
 
 // ======================================================================

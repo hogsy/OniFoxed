@@ -1,11 +1,11 @@
 /*	FILE:	Oni_FX.h
-	
+
 	AUTHOR:	Jason Duncan, Michael Evans
-	
+
 	CREATED: April 2, 1999
-	
+
 	PURPOSE: control of FX in ONI
-	
+
 	Copyright (c) 1999, 2000
 
 */

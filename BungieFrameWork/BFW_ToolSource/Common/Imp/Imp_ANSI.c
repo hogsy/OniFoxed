@@ -115,7 +115,7 @@ main(
 	UUtUns32 itr;
 	FILE *stream;
 
-	
+
 
 	for(itr = 1; itr <= 17; itr++)
 	{
@@ -145,47 +145,47 @@ main(
 {
 	UUtError			error;
 	BFtFileRef*			instanceFileRef;
-	
+
 	char				fileName[256];
 	const char*				leafName;
 	char*				temp;
 	char				targetName[256];
-	
+
 	BFtFileRef			prefFileRef;
 	GRtGroup_Context*	prefGroupContext;
 	GRtGroup*			prefGroup;
 
 	char				*dataFileDir;
 	char				batchDirFileName[256];
-	
+
 	BFtFileRef*			batchDirFileRef;
-	
+
 	UUtBool				processFinal = UUcFalse;
 	UUtBool				addDebugFile = UUcFalse;
 	UUtBool				processFinalOnly = UUcFalse;
 	UUtBool				dumpStuff = UUcFalse;
 	UUtBool				stopAfterTE = UUcFalse;
-	
+
 	UUtBool				runTE = UUcFalse;
-	
+
 	UUtBool				convertToNativeEndiean = UUcFalse;
-	
+
 	UUtUns16			i;
 	BFtFileIterator*	fileIterator;
-	
+
 	BFtFileRef			gameDataRef;
-	
+
 	UUtUns32*			targetLevelBV;
 	UUtUns32			itr;
 	UUtBool				gotLevel = UUcFalse;
-	
+
 	#if defined(UUmCompiler) && (UUmCompiler == UUmCompiler_VisC)
 	#if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32) && defined(SHIPPING_VERSION) && (SHIPPING_VERSION != 1)
 	__try {
 	stack_walk_initialize();
 	#endif
 	#endif
-	
+
 	/*
 	 * Initialize the Universal Utilities. This does a base level platform init. So if
 	 * this succedes we can bring up error dialogs
@@ -200,25 +200,25 @@ main(
 		}
 
 	#if UUmPlatform == UUmPlatform_Mac
-	
+
 		runTE = UUcTrue;
-	
+
 		UUgError_HaltOnError = UUcTrue;
-	
+
 	#else
-		
+
 		UUgError_PrintWarning = UUcTrue;
-		
+
 	#endif
-	
+
 	targetLevelBV = UUrBitVector_New(IMPcMaxNumLevels);
 	if(targetLevelBV == NULL) return 1;
-	
+
 	#if defined(PROFILE) && PROFILE
 		UUrProfile_Initialize();
 		UUrProfile_State_Set(UUcProfile_State_Off);
-	#endif		
-	
+	#endif
+
 	argc = CLrGetCommandLine(argc, argv, &argv);
 
 	UUrProfile_State_Set(UUcProfile_State_On);
@@ -232,7 +232,7 @@ main(
 	/*
 	 * Parse the command line
 	 */
-		
+
 		for(i = 1; i < argc; i++)
 		{
 			if(strcmp(argv[i], "-final") == 0)
@@ -242,7 +242,7 @@ main(
 			else if (strcmp(argv[i], "-skipanykey") == 0)
 			{
 				IMPgSkipAnyKey= UUcTrue;
-			}			
+			}
 			else if (strcmp(argv[i], "-green") == 0)
 			{
 				IMPgGreen = UUcTrue;
@@ -304,9 +304,9 @@ main(
 				{
 					goto ohYeaBaby;
 				}
-				
+
 				iParseLevel(argv[i], targetLevelBV);
-				
+
 				gotLevel = UUcTrue;
 			}
 			else if (strcmp(argv[i], "-anim_angle") == 0)
@@ -334,12 +334,12 @@ main(
 			else if (0 == strcmp(argv[i], "-lp1"))
 			{
 				#if UUmPlatform == UUmPlatform_Mac
-				
+
 					Imp_PrintWarning("-lp is only supported on the PC");
 					goto ohYeaBaby;
-				
+
 				#endif
-				
+
 				IMPgLightmap_OutputPrepFile = UUcTrue;
 				IMPgLightmap_OutputPrepFileOne = UUcTrue;
 				IMPgConstructing = UUcFalse;
@@ -351,7 +351,7 @@ main(
 				IMPgLightMap_HighQuality = UUcFalse;
 			}
 			else if (0 == strcmp(argv[i], "-lm"))
-			{					
+			{
 				IMPgLightingFromLSFiles = UUcTrue;
 			}
 			else if (0 == strcmp(argv[i], "-quiet"))
@@ -390,7 +390,7 @@ main(
 					}
 				}
 			}
-			else if (0 == strcmp(argv[i], "-unselect")) 
+			else if (0 == strcmp(argv[i], "-unselect"))
 			{
 				char *internal;
 				char *cur_select;
@@ -463,14 +463,14 @@ main(
 				goto ohYeaBaby;
 			}
 		}
-		
+
 		goto iMissBasic;
 ohYeaBaby:
 			Imp_PrintWarning("%s [-nodialog] [-lightmaps] [-final] [-finalOnly] [-debug] [-grid] [-dumpStuff] [-t] [-tOnly] [-level num]"UUmNL, argv[0]);
 			fprintf(stdout, "done, press any key that is labeled enter");
 			fgetc(stdin);
 			return -1;
-		
+
 iMissBasic:
 
 	/*
@@ -494,18 +494,18 @@ iMissBasic:
 
 		error = TMrInitialize(UUcFalse, &gameDataRef);
 		UUmError_ReturnOnError(error);
-	
+
 	if(convertToNativeEndiean)
 	{
 		TMrConstruction_ConvertToNativeEndian();
 		goto doneConverting;
 	}
-	
+
 	if(gotLevel == UUcFalse)
 	{
 		UUrBitVector_SetBitAll(targetLevelBV, IMPcMaxNumLevels);
 	}
-	
+
 	if(runTE)
 	{
 		Imp_PrintMessage(IMPcMsg_Cosmetic, "Running the template extractor"UUmNL);
@@ -513,14 +513,14 @@ iMissBasic:
 		if (UUcError_None != error) {
 			Imp_PrintWarning("Errors with the template extractor");
 		}
-		
+
 		if (stopAfterTE) exit(0);
 	}
-	
+
 	Imp_PrintMessage(IMPcMsg_Cosmetic, "Imp_Initialize"UUmNL);
 	error = Imp_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	if(0)
 	{
 		UUtRect	rect;
@@ -528,16 +528,16 @@ iMissBasic:
 		rect.left = 20;
 		rect.bottom = rect.top + 1024;
 		rect.right = rect.left + 1024;
-		
+
 		gDebugWindow = AUrWindow_New(&rect);
 	}
-	
+
 	Imp_PrintMessage(IMPcMsg_Cosmetic, "Finding Preferences.txt"UUmNL);
 	error = BFrFileRef_Search("Preferences.txt", &prefFileRef);
 	UUmError_ReturnOnErrorMsg(error, "Could not find preferences file");
-	
+
 	Imp_PrintMessage(IMPcMsg_Cosmetic, "Making the preferences group"UUmNL);
-	error = 
+	error =
 		GRrGroup_Context_NewFromFileRef(
 			&prefFileRef,
 			NULL,
@@ -545,7 +545,7 @@ iMissBasic:
 			&prefGroupContext,
 			&prefGroup);
 	UUmError_ReturnOnErrorMsg(error, "Could not make preferences group");
-	
+
 	gPreferencesGroup = prefGroup;
 
 	Imp_PrintMessage(IMPcMsg_Cosmetic, "Looking up DataFileDir"UUmNL);
@@ -556,14 +556,14 @@ iMissBasic:
 	Imp_PrintMessage(IMPcMsg_Cosmetic, "Finding the batch file directory"UUmNL);
 	error = BFrFileRef_MakeFromName(batchDirFileName, &batchDirFileRef);
 	UUmError_ReturnOnErrorMsg(error, "Could not find OniBatchFiles directory");
-	
+
 	/*
 	 * Initialize importers that need it
 	 */
 		error = Imp_Character_Initialize();
 		UUmError_ReturnOnError(error);
-		
-	
+
+
 	/*
 	 * Loop through all the _bat files
 	 */
@@ -571,7 +571,7 @@ iMissBasic:
 	if (!BFrFileRef_FileExists(batchDirFileRef)) {
 		Imp_PrintWarning("The batch file directory (%s) could not be found", BFrFileRef_GetLeafName(batchDirFileRef));
 	}
-	
+
 	// tell user what levels will be processed
 		Imp_PrintMessage(IMPcMsg_Important, "Building levels: ");
 		for(itr = 0; itr < IMPcMaxNumLevels; itr++)
@@ -582,7 +582,7 @@ iMissBasic:
 			}
 		}
 		Imp_PrintMessage(IMPcMsg_Important, UUmNL);
-	
+
 	error =
 		BFrDirectory_FileIterator_New(
 			batchDirFileRef,
@@ -590,7 +590,7 @@ iMissBasic:
 			"_bat.txt",
 			&fileIterator);
 	UUmError_ReturnOnErrorMsg(error, "Could not create iterator");
-			
+
 	Imp_PrintMessage(IMPcMsg_Cosmetic, "Looping through the batch files"UUmNL);
 	while(1)
 	{
@@ -601,10 +601,10 @@ iMissBasic:
 		{
 			break;
 		}
-		
+
 		leafName = BFrFileRef_GetLeafName(&batchFileRef);
 		Imp_PrintMessage(IMPcMsg_Cosmetic, "batch file %s"UUmNL, leafName);
-		
+
 		temp = strchr(leafName, '_');
 		if(temp == NULL)
 		{
@@ -613,15 +613,15 @@ iMissBasic:
 		}
 
 		sscanf(leafName + 5, "%d", &IMPgCurLevel);
-		
+
 		if(IMPgCurLevel >= TMcMaxLevelNum)
 		{
 			fprintf(stderr, "ERROR: Illegal level number: %s\n", leafName);
 			continue;
 		}
-		
+
 		UUrString_Copy(targetName, temp + 1, 256);
-		
+
 		temp = strrchr(targetName, '_');
 		if(temp == NULL)
 		{
@@ -630,12 +630,12 @@ iMissBasic:
 		}
 
 		*temp = 0;
-		
+
 		if(!UUrBitVector_TestBit(targetLevelBV, IMPgCurLevel))
 		{
 			continue;
 		}
-		
+
 		if(strcmp(targetName, "Final") == 0)
 		{
 			if(processFinal == UUcFalse)
@@ -647,7 +647,7 @@ iMissBasic:
 		{
 			continue;
 		}
-		
+
 		/*
 		 * Load the .dat instance file, create if needed
 		 */
@@ -660,20 +660,20 @@ iMissBasic:
 			}
 
 			Imp_PrintMessage(IMPcMsg_Important, "Starting construction on %s."UUmNL, fileName);
-			
+
 			error =
 				BFrFileRef_DuplicateAndAppendName(
 					&gameDataRef,
 					fileName,
 					&instanceFileRef);
 			UUmError_ReturnOnError(error);
-			
+
 			if(IMPgLightmap_OI)
 			{
 				IMPgLightmap_Output = UUcTrue;
 				IMPgConstructing = UUcFalse;
 			}
-			
+
 goAgain:
 
 			if(IMPgConstructing)
@@ -681,11 +681,11 @@ goAgain:
 				error = TMrConstruction_Start(instanceFileRef);
 				UUmError_ReturnOnError(error);
 			}
-		
+
 		/*
 		 * Process the final instances
 		 */
-			Imp_PrintMessage(IMPcMsg_Important, "processing"UUmNL);	
+			Imp_PrintMessage(IMPcMsg_Important, "processing"UUmNL);
 
 			error = Imp_BatchFile_Process(&batchFileRef);
 			UUmError_ReturnOnError(error);
@@ -693,13 +693,13 @@ goAgain:
 		/*
 		 * Save and dispose
 		 */
-			Imp_PrintMessage(IMPcMsg_Important, "stopping and disposing"UUmNL);	
-			
+			Imp_PrintMessage(IMPcMsg_Important, "stopping and disposing"UUmNL);
+
 			if(IMPgConstructing)
 			{
 				TMrConstruction_Stop(dumpStuff);
 			}
-			
+
 		// go again if we need to for lightmaps
 			if(IMPgLightmap_OI == UUcTrue && IMPgLightmap_Output == UUcTrue)
 			{
@@ -707,18 +707,18 @@ goAgain:
 				IMPgConstructing = UUcTrue;
 				goto goAgain;
 			}
-			
+
 			BFrFileRef_Dispose(instanceFileRef);
 	}
-	
+
 	BFrDirectory_FileIterator_Delete(fileIterator);
 
-	Imp_PrintMessage(IMPcMsg_Important, "done looping "UUmNL, leafName);			
-	
+	Imp_PrintMessage(IMPcMsg_Important, "done looping "UUmNL, leafName);
+
 	Imp_WriteTextureSize();
 
 	GRrGroup_Context_Delete(prefGroupContext);
-	
+
 	BFrFileRef_Dispose(batchDirFileRef);
 
 	if (IMPgSuppressedWarnings || IMPgSuppressedErrors) {
@@ -731,23 +731,23 @@ goAgain:
 doneConverting:
 
 	TMrTerminate();
-	
+
 	if(gDebugWindow != NULL) AUrWindow_Delete(gDebugWindow);
-	
+
 	#if defined(PROFILE) && PROFILE
 		UUrProfile_State_Set(UUcProfile_State_Off);
 		UUrProfile_Dump("ImpProfile");
 		UUrProfile_Terminate();
-	#endif		
-	
+	#endif
+
 	UUrBitVector_Dispose(targetLevelBV);
-	
+
 	IMrTerminate();
-	
+
 	UUrTerminate();
-	
+
 	#if ((UUmPlatform == UUmPlatform_Win32) && (UUmCompiler != UUmCompiler_MWerks))
-	
+
 		fprintf(stdout, "done, press any key that is labeled enter");
 		if (!IMPgSkipAnyKey)  {
 			fgetc(stdin);
@@ -760,7 +760,7 @@ doneConverting:
 	__except (handle_exception(GetExceptionInformation())) {}
 	#endif
 	#endif
-	
+
 	return 0;
 }
 #endif

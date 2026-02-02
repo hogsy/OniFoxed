@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_MovementStub.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 29, 2000
-	
+
 	PURPOSE: Non-incarnated Movement AI for Oni
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */
@@ -35,7 +35,7 @@ void AI2iMovementStub_SetupPath(ONtCharacter *ioCharacter);
 // -- high-level control functions
 
 void AI2rMovementStub_Initialize(ONtCharacter *ioCharacter, AI2tMovementState *inState)
-{	
+{
 	ioCharacter->movementStub.cur_facing = ioCharacter->facing;
 	ioCharacter->movementStub.cur_point = ioCharacter->location;
 
@@ -115,7 +115,7 @@ void AI2rMovementStub_Update(ONtCharacter *ioCharacter)
 	movement_mode = ioCharacter->movementOrders.movementMode;
 	if (movement_mode == AI2cMovementMode_Default)
 		movement_mode = AI2rMovement_Default(ioCharacter);
-		
+
 	ioCharacter->movementStub.cur_distance += ONrCharacterClass_MovementSpeed(ioCharacter->characterClass, AI2cMovementDirection_Forward,
 																				movement_mode, has_weapon, twohanded_weapon);
 	if (ioCharacter->movementStub.cur_distance > ioCharacter->movementStub.path_distance) {
@@ -168,7 +168,7 @@ void AI2rMovementStub_Update(ONtCharacter *ioCharacter)
 					floor_height = UUmMax(floor_height, ioCharacter->currentNode->roomData.origin.y + 2.0f);
 				}
 
-				if ((ioCharacter->movementStub.cur_point.y < floor_height + AI2cMovementStub_StickToFloorHeight) && 
+				if ((ioCharacter->movementStub.cur_point.y < floor_height + AI2cMovementStub_StickToFloorHeight) &&
 					(ioCharacter->movementStub.cur_point.y > floor_height - AI2cMovementStub_StickToFloorHeight)) {
 					ioCharacter->movementStub.cur_point.y = floor_height;
 				}
@@ -177,8 +177,8 @@ void AI2rMovementStub_Update(ONtCharacter *ioCharacter)
 
 /*		COrConsole_Printf("dist %f of %f, position (%f %f %f)... path (%f %f %f) - (%f %f %f)",
 					ioCharacter->movementStub.cur_distance, ioCharacter->movementStub.path_distance,
-					ioCharacter->movementStub.cur_point.x, ioCharacter->movementStub.cur_point.y, ioCharacter->movementStub.cur_point.z, 
-					ioCharacter->movementStub.path_start.x, ioCharacter->movementStub.path_start.y, ioCharacter->movementStub.path_start.z, 
+					ioCharacter->movementStub.cur_point.x, ioCharacter->movementStub.cur_point.y, ioCharacter->movementStub.cur_point.z,
+					ioCharacter->movementStub.path_start.x, ioCharacter->movementStub.path_start.y, ioCharacter->movementStub.path_start.z,
 					ioCharacter->movementStub.path_end.x, ioCharacter->movementStub.path_end.y, ioCharacter->movementStub.path_end.z);*/
 	}
 }

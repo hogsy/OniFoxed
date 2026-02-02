@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_TextSystem.c
-	
+
 	AUTHOR:	Kevin Armstrong
-	
+
 	CREATED: ????
 
 	PURPOSE: text
-	
+
 	Copyright 1997-1998
 
 */
@@ -111,7 +111,7 @@
 // hi level mixers
 #define Mix8888(s,d,i)		(MixAlpha8888(s,d,i) | MixRed8888(s,d,i) | MixGreen8888(s,d,i) | \
 							MixBlue8888(s,d,i))
-							
+
 #define Mix4444(s,d,i)		(MixAlpha4444(s,d,i) | MixRed4444(s,d,i) | MixGreen4444(s,d,i) | \
 							MixBlue4444(s,d,i))
 
@@ -177,7 +177,7 @@ typedef struct TStCell
 	TStGlyph				*glyph;
 	UUtUns32				time;
 	M3tTextureCoord			uv[2];		// (left, top) and (right, bottom)
-	
+
 } TStCell;
 
 typedef struct TStFont_PrivateData
@@ -189,11 +189,11 @@ typedef struct TStFont_PrivateData
 	UUtUns32				num_cells_y;
 	float					u_ratio;
 	float					v_ratio;
-	
+
 	M3tTextureMap			*texture;
 
 	TStCell					*cells;
-	
+
 } TStFont_PrivateData;
 
 #endif	// SINGLE_TEXTURE_CACHE
@@ -223,7 +223,7 @@ static TStGlyph*
 TSiFont_GetGlyph(
 	const TStFont		*inFont,
 	const UUtUns16		inCharacter);
-	
+
 static void
 TSiGlyph_Draw(
 	TStGlyph			*inGlyph,
@@ -243,14 +243,14 @@ TSiFont_GetTexture(
 static void
 TSiTextureCache_RemoveRow(
 	void);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
 
 #if SINGLE_TEXTURE_CACHE
 // ======================================================================
-#if 0 
+#if 0
 #pragma mark -
 #endif
 // ======================================================================
@@ -269,7 +269,7 @@ TSrTextureCache_Initialize(
 								"Font Texture Cache", &TSgTextureCache.texture);
 	UUmError_ReturnOnErrorMsg(error, "Unable to create font texture cache");
 
-	M3rTextureMap_Fill_Shade(TSgTextureCache.texture, IMcShade_None, NULL);	
+	M3rTextureMap_Fill_Shade(TSgTextureCache.texture, IMcShade_None, NULL);
 
 	// set up the texture cache
 	TSgTextureCache.draw_color = IMrPixel_FromShade(TSgTextureCache.texture->texelType, IMcShade_White);
@@ -351,7 +351,7 @@ TSiTextureCache_RemoveRow(
 		}
 	}
 
-//	COrConsole_Printf("  removed %d (%d) -> now free %d (%d)", row->y_start, row->y_height, 
+//	COrConsole_Printf("  removed %d (%d) -> now free %d (%d)", row->y_start, row->y_height,
 //						TSgTextureCache.free_start, TSgTextureCache.free_height);
 
 #if defined(DEBUGGING) && DEBUGGING
@@ -369,7 +369,7 @@ TSiTextureCache_RemoveRow(
 		UUmAssert(bounds.bottom <= TSgTextureCache.texture->height);
 		UUmAssert(bounds.right >= bounds.left);
 		UUmAssert(bounds.bottom >= bounds.top);
-		
+
 		M3rTextureMap_Fill_Shade(TSgTextureCache.texture, IMcShade_None, &bounds);
 	}
 #endif
@@ -400,7 +400,7 @@ TSiTextureCache_GetCell(
 
 	// determine whether we must make a new row for this glyph
 	row = NULL;
-	if (TSgTextureCache.row_count > 0) {		
+	if (TSgTextureCache.row_count > 0) {
 		// find the last row
 		row_index = (TSgTextureCache.row_start + TSgTextureCache.row_count - 1) % TScTextureCache_MaxRows;
 		row = &TSgTextureCache.rows[row_index];
@@ -512,7 +512,7 @@ TSiTextureCache_GetCell(
 			}
 
 			// we must remove the oldest row and keep checking
-//			COrConsole_Printf("removerow: free %d (%d), request row at %d -> %d", 
+//			COrConsole_Printf("removerow: free %d (%d), request row at %d -> %d",
 //							TSgTextureCache.free_start, TSgTextureCache.free_height, row->y_start, inHeight);
 			TSiTextureCache_RemoveRow();
 		}
@@ -628,7 +628,7 @@ TSiTextureCache_RequireGlyph(
 			}
 		}
 #endif
-		
+
 		cell = &TSgTextureCache.cells[cell_index];
 		cell->font = inFont;
 		cell->glyph = ioGlyph;
@@ -670,10 +670,10 @@ TSiTextureCache_RenderGlyph(
 	IMtPoint2D					texture_origin;
 	UUtRect						bounds;
 	IMtPoint2D					dest;
-	
+
 	texture_origin.x = 0;
 	texture_origin.y = 0;
-	
+
 	bounds.left = inCell->position.x;
 	bounds.top = inCell->position.y;
 	bounds.right = bounds.left + (UUtInt16) (inGlyph->width);
@@ -688,9 +688,9 @@ TSiTextureCache_RenderGlyph(
 	UUmAssert(bounds.bottom <= TSgTextureCache.texture->height);
 	UUmAssert(bounds.right >= bounds.left);
 	UUmAssert(bounds.bottom >= bounds.top);
-	
+
 	M3rTextureMap_Fill_Shade(TSgTextureCache.texture, IMcShade_None, &bounds);
-	
+
 	TSiGlyph_Draw(inGlyph, inFont, TSgTextureCache.texture,
 				&texture_origin, &bounds, &dest, TSgTextureCache.draw_color);
 }
@@ -698,7 +698,7 @@ TSiTextureCache_RenderGlyph(
 #endif	// SINGLE_TEXTURE_CACHE
 
 // ======================================================================
-#if 0 
+#if 0
 #pragma mark -
 #endif
 // ======================================================================
@@ -724,11 +724,11 @@ TSiString_GetNextCharacter(
 	const char			*inString)
 {
 	UUtUns16			character;
-	
+
 	character = (UUtUns16)((UUtUns8)inString[0] << 8);
 	if (character == 0)  return character;
 	character |= (UUtUns16)((UUtUns8)inString[1]);
-	
+
 	if (TSiCharacter_IsDoubleByte(character) == UUcFalse)
 	{
 		character >>= 8;
@@ -738,7 +738,7 @@ TSiString_GetNextCharacter(
 }
 
 // ======================================================================
-#if 0 
+#if 0
 #pragma mark -
 #endif
 // ======================================================================
@@ -754,11 +754,11 @@ TSiGlyph_Draw(
 	IMtPixel			inColor)
 {
 	UUtUns16			i, j;
-	
+
 	UUtUns8				*src_texels, *src_texel;
 	UUtUns32			src_rowtexels;
 	UUtInt16			src_x, src_y;
-	
+
 	UUtUns16			*dst_texels_16, *dst_texel_16;
 	UUtUns32			*dst_texels_32, *dst_texel_32;
 	UUtUns8				*dst_texels_8, *dst_texel_8;
@@ -766,12 +766,12 @@ TSiGlyph_Draw(
 	UUtInt16			dst_x, dst_y;
 
 	UUtInt16			draw_width, draw_height;
-		
+
 	UUtUns32			textColorTexelValue;
-	
+
 	UUtRect 			texture_rect;
 	UUtRect 			dest_rect;
-	
+
 	if (inTexture->pixels == NULL) {
 		UUmAssert(!"TSiGlyph_Draw: cannot draw into texture, not loaded");
 		return;
@@ -782,34 +782,34 @@ TSiGlyph_Draw(
 	texture_rect.top	= inTextureOrigin->y;
 	texture_rect.right	= texture_rect.left + inTexture->width;
 	texture_rect.bottom	= texture_rect.top + inTexture->height;
-	
+
 	// intersect the texture_rect with inBounds
 	IMrRect_Intersect(
 		&texture_rect,
 		inBounds,
 		&dest_rect);
-	
+
 	// do the rectangles interect?
 	if ((dest_rect.right == 0) || (dest_rect.bottom == 0)) return;
-	
+
 	// set dst_x and dst_y
 	dst_x = inDestination->x - inGlyph->origin_x;
 	dst_y = inDestination->y - inGlyph->origin_y;
-	
+
 	// set src_x and src_y
 	src_x = 0;
 	src_y = 0;
-	
+
 	// set draw_width and draw_height
 	draw_width = inGlyph->width;
 	draw_height = inGlyph->height;
-	
+
 	// check right edge of visible area
 	if ((dst_x + draw_width) > dest_rect.right)
 	{
 		draw_width = dest_rect.right - dst_x;
 	}
-	
+
 	// check left edge of visible area
 	if (dst_x < dest_rect.left)
 	{
@@ -817,13 +817,13 @@ TSiGlyph_Draw(
 		dst_x = dest_rect.left;
 		draw_width -= src_x;
 	}
-	
+
 	// check bottom edge of visible area
 	if ((dst_y + draw_height) > dest_rect.bottom)
 	{
 		draw_height = dest_rect.bottom - dst_y;
 	}
-	
+
 	// check top edge of visible area
 	if (dst_y < dest_rect.top)
 	{
@@ -831,17 +831,17 @@ TSiGlyph_Draw(
 		dst_y = dest_rect.top;
 		draw_height -= src_y;
 	}
-	
+
 	// don't draw if there is nothing to draw
 	if ((draw_width <= 0) || (draw_height <= 0)) return;
-	
+
 	// offset the dst_x and dst_y by the texture_origin
 	dst_x -= inTextureOrigin->x;
 	dst_y -= inTextureOrigin->y;
-	
+
 	// set the color
 	textColorTexelValue = inColor.value;
-	
+
 	// get a pointer to the source pixels
 	src_rowtexels = inGlyph->width;
 	src_texels =
@@ -861,7 +861,7 @@ TSiGlyph_Draw(
 				((UUtUns8*)inTexture->pixels) +
 				dst_x +
 				(dst_y * dst_rowtexels);
-			
+
 			switch(inTexture->texelType)
 			{
 				case IMcPixelType_A8:
@@ -869,7 +869,7 @@ TSiGlyph_Draw(
 					{
 						dst_texel_8 = dst_texels_8;
 						src_texel = src_texels;
-						
+
 						for (j = 0; j < draw_width; j++)
 						{
 							*dst_texel_8 = 0xFF - *src_texel;
@@ -887,7 +887,7 @@ TSiGlyph_Draw(
 					{
 						dst_texel_8 = dst_texels_8;
 						src_texel = src_texels;
-						
+
 						for (j = 0; j < draw_width; j++)
 						{
 							*dst_texel_8 = Mix8(*dst_texel_8, (UUtUns8) textColorTexelValue, *src_texel);
@@ -905,7 +905,7 @@ TSiGlyph_Draw(
 					{
 						dst_texel_8 = dst_texels_8;
 						src_texel = src_texels;
-						
+
 						for (j = 0; j < draw_width; j++)
 						{
 							*dst_texel_8 = MixA4I4(*dst_texel_8, (UUtUns8) textColorTexelValue, *src_texel);
@@ -934,7 +934,7 @@ TSiGlyph_Draw(
 				((UUtUns16*)inTexture->pixels) +
 				dst_x +
 				(dst_y * dst_rowtexels);
-			
+
 			switch (inTexture->texelType)
 			{
 				case IMcPixelType_ARGB4444:
@@ -942,7 +942,7 @@ TSiGlyph_Draw(
 					{
 						dst_texel_16 = dst_texels_16;
 						src_texel = src_texels;
-						
+
 						for (j = 0; j < draw_width; j++)
 						{
 							*dst_texel_16 = Mix4444(*dst_texel_16, (UUtUns16)textColorTexelValue, *src_texel);
@@ -959,7 +959,7 @@ TSiGlyph_Draw(
 					{
 						dst_texel_16 = dst_texels_16;
 						src_texel = src_texels;
-						
+
 						for (j = 0; j < draw_width; j++)
 						{
 							*dst_texel_16 = Mix555(*dst_texel_16, (UUtUns16)textColorTexelValue, *src_texel);
@@ -970,13 +970,13 @@ TSiGlyph_Draw(
 						src_texels += src_rowtexels;
 					}
 					break;
-		
+
 				case IMcPixelType_ARGB1555:
 					for (i = 0; i < draw_height; i++)
 					{
 						dst_texel_16 = dst_texels_16;
 						src_texel = src_texels;
-						
+
 						for (j = 0; j < draw_width; j++)
 						{
 							*dst_texel_16 = Mix1555(*dst_texel_16, (UUtUns16)textColorTexelValue, *src_texel);
@@ -992,7 +992,7 @@ TSiGlyph_Draw(
 					UUmAssert(0);
 			}
 			break;
-		
+
 		// draw into a 32bit texture
 		case IMcPixelType_ARGB8888:
 			dst_rowtexels = inTexture->width;
@@ -1000,12 +1000,12 @@ TSiGlyph_Draw(
 				((UUtUns32*)inTexture->pixels) +
 				dst_x +
 				(dst_y * dst_rowtexels);
-			
+
 			for (i = 0; i < draw_height; i++)
 			{
 				dst_texel_32 = dst_texels_32;
 				src_texel = src_texels;
-				
+
 				for (j = 0; j < draw_width; j++)
 				{
 					*dst_texel_32 = Mix8888(*dst_texel_32, textColorTexelValue, *src_texel);
@@ -1016,7 +1016,7 @@ TSiGlyph_Draw(
 				src_texels += src_rowtexels;
 			}
 			break;
-			
+
 		default:
 			UUmAssert(0);
 			break;
@@ -1033,11 +1033,11 @@ TSiTextureCache_GetCellUVs(
 	// set lt and rb
 	outUVs[0] = inCell->uv[0];
 	outUVs[3] = inCell->uv[1];
-	
+
 	// set rt
 	outUVs[1].u = outUVs[3].u;
 	outUVs[1].v = outUVs[0].v;
-		
+
 	// set lb
 	outUVs[2].u = outUVs[0].u;
 	outUVs[2].v = outUVs[3].v;
@@ -1058,12 +1058,12 @@ TSiGlyph_DrawToCell(
 	UUtRect						bounds;
 	IMtPoint2D					dest;
 	IMtPixel					color;
-	
+
 	color = IMrPixel_FromShade(inPrivateData->texture->texelType, IMcShade_White);
-	
+
 	texture_origin.x = 0;
 	texture_origin.y = 0;
-	
+
 	bounds.left = inX * (UUtInt16)inPrivateData->cell_width;
 	bounds.top = inY * (UUtInt16)inPrivateData->cell_height;
 	bounds.right = bounds.left + (UUtInt16)inPrivateData->cell_width;
@@ -1075,7 +1075,7 @@ TSiGlyph_DrawToCell(
 	UUmAssert(bounds.bottom <= inPrivateData->texture->height);
 	UUmAssert(bounds.right >= bounds.left);
 	UUmAssert(bounds.bottom >= bounds.top);
-	
+
 	dest.x = bounds.left;
 	dest.y = bounds.top + inFont->ascending_height;
 
@@ -1083,7 +1083,7 @@ TSiGlyph_DrawToCell(
 		inPrivateData->texture,
 		IMcShade_None,
 		&bounds);
-	
+
 	TSiGlyph_Draw(
 		inGlyph,
 		inFont,
@@ -1101,24 +1101,24 @@ TSiGlyph_SetUVsFromCell(
 	M3tTextureCoord			*outUVs)
 {
 	TStCell					*cell;
-	
+
 	UUmAssert(inGlyph);
 	UUmAssertWritePtr(outUVs, sizeof(M3tTextureCoord) * 4);
-	
+
 	cell = (TStCell*)inGlyph->cell;
 	UUmAssert(cell);
-	
+
 	// update it's usage
 	cell->time = UUrMachineTime_Sixtieths();
 
 	// set lt and rb
 	outUVs[0] = cell->uv[0];
 	outUVs[3] = cell->uv[1];
-	
+
 	// set rt
 	outUVs[1].u = outUVs[3].u;
 	outUVs[1].v = outUVs[0].v;
-		
+
 	// set lb
 	outUVs[2].u = outUVs[0].u;
 	outUVs[2].v = outUVs[3].v;
@@ -1126,7 +1126,7 @@ TSiGlyph_SetUVsFromCell(
 #endif	// SINGLE_TEXTURE_CACHE
 
 // ======================================================================
-#if 0 
+#if 0
 #pragma mark -
 #endif
 // ======================================================================
@@ -1153,10 +1153,10 @@ TSrFont_DisplayCacheTexture(
 	M3rDraw_State_SetInt(M3cDrawStateIntType_Fill, M3cDrawState_Fill_Solid);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_ZCompare, M3cDrawState_ZCompare_Off);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_Appearence, M3cDrawState_Appearence_Texture_Unlit);
-	M3rDraw_State_SetInt(M3cDrawStateIntType_Fill, M3cDrawState_Fill_Solid);				
+	M3rDraw_State_SetInt(M3cDrawStateIntType_Fill, M3cDrawState_Fill_Solid);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor,	IMcShade_White);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_Alpha, M3cMaxAlpha);
-	M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, TSgTextureCache.texture);	
+	M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, TSgTextureCache.texture);
 
 	M3rDraw_State_Commit();
 
@@ -1177,7 +1177,7 @@ TSrFont_DisplayCacheTexture(
 	uv[2].v = 1.0f;
 	uv[3].u = 1.0f;
 	uv[3].v = 1.0f;
-	
+
 	M3rDraw_Sprite(points, uv);
 
 	M3rGeom_State_Pop();
@@ -1220,10 +1220,10 @@ TSiFont_DisplayCacheTexture(
 		uv[2].v = 1.0f;
 		uv[3].u = 1.0f;
 		uv[3].v = 1.0f;
-		
+
 		M3rDraw_Sprite(points, uv);
 	}
-	
+
 	if (inCell)
 	{
 		M3tTextureMap			*font_texture = TSiFont_GetTexture(inFont);
@@ -1231,7 +1231,7 @@ TSiFont_DisplayCacheTexture(
 		UUtInt32 start_y = (UUtInt32) (inCell->uv[0].v * font_texture->height);
 		UUtInt32 end_x = (UUtInt32) (inCell->uv[1].u * font_texture->width);
 		UUtInt32 end_y = (UUtInt32) (inCell->uv[1].v * font_texture->height);
-		
+
 		M3rDraw_Sprite_Debug(font_texture, &screen_dest, start_x, start_y, end_x-start_x, end_y-start_y);
 	}
 }
@@ -1250,10 +1250,10 @@ TSiFont_Initialize(
 	UUtUns32					num_glyphs;
 	TStGlyph					*glyph;
 	UUtUns32					needed_cells_y;
-	
+
 	// clear the memory
 	UUrMemory_Clear(inPrivateData, sizeof(TStFont_PrivateData));
-	
+
 	// get the number of glyphs in the font and the width of the widest glyph
 	num_glyphs = 0;
 	max_glyph_width = 0;
@@ -1263,14 +1263,14 @@ TSiFont_Initialize(
 		if (glyph)
 		{
 			num_glyphs++;
-			
+
 			if (glyph->width > max_glyph_width)
 			{
 				max_glyph_width = glyph->width;
 			}
 		}
 	}
-	
+
 	// initialize the private data
 	inPrivateData->cell_width		= max_glyph_width;
 	inPrivateData->cell_height		= TSrFont_GetAscendingHeight(inFont) +
@@ -1278,7 +1278,7 @@ TSiFont_Initialize(
 	inPrivateData->num_cells_x		= M3cTextureMap_MaxWidth / inPrivateData->cell_width;
 	inPrivateData->num_cells_y		= M3cTextureMap_MaxWidth / inPrivateData->cell_height;
 	inPrivateData->num_cells		= inPrivateData->num_cells_x * inPrivateData->num_cells_y;
-	
+
 	// try to adjust inPrivateData->num_cells_y to minimize the number of cells created
 	needed_cells_y = (num_glyphs / inPrivateData->num_cells_x) + 1;
 	if (needed_cells_y < inPrivateData->num_cells_y)
@@ -1286,7 +1286,7 @@ TSiFont_Initialize(
 		inPrivateData->num_cells_y	= needed_cells_y;
 		inPrivateData->num_cells	= inPrivateData->num_cells_x * inPrivateData->num_cells_y;
 	}
-	
+
 	// create a texture map
 	error =
 		M3rTextureMap_New(
@@ -1298,12 +1298,12 @@ TSiFont_Initialize(
 			"Font Texture",
 			&inPrivateData->texture);
 	UUmError_ReturnOnErrorMsg(error, "Unable to create texture map");
-	
+
 	M3rTextureMap_Fill_Shade(
-		inPrivateData->texture, 
+		inPrivateData->texture,
 		IMcShade_None,
 		NULL);
-	
+
 	// calculate the u and v ratios
 	inPrivateData->u_ratio			= 1.0f / (float)inPrivateData->texture->width;
 	inPrivateData->v_ratio			= 1.0f / (float)inPrivateData->texture->height;
@@ -1311,26 +1311,26 @@ TSiFont_Initialize(
 	// allocate the cells
 	inPrivateData->cells = (TStCell*)UUrMemory_Block_NewClear(sizeof(TStCell) * inPrivateData->num_cells);
 	UUmError_ReturnOnNull(inPrivateData->cells);
-	
+
 // preload some characters
 #if 1
 	if (1)
 	{
 		UUtInt16			x;
 		UUtInt16			y;
-		char				*string = 
+		char				*string =
 			"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 			"_=+-[]{};:'\",./<>?!@#$%^&*()"
 			"abcdefghijklmnopqrstuvwxyz"
 			"1234567890";
-		
+
 		for (y = 0; y < (UUtInt16)inPrivateData->num_cells_y; y++)
 		{
 			for (x = 0; x < (UUtInt16)inPrivateData->num_cells_x; x++)
 			{
 				TStGlyph	*glyph;
 				UUtUns16	character;
-				
+
 				character = TSiString_GetNextCharacter(string);
 				glyph = TSiFont_GetGlyph(inFont, character);
 				if (glyph == NULL) { break; }
@@ -1366,20 +1366,20 @@ TSiFont_GetGlyph(
 {
 	UUtUns8					glyph_array_index;
 	TStGlyph				*glyph;
-	
+
 	// no glyph yet
 	glyph = NULL;
-	
+
 	// get the index of the glyph array
 	glyph_array_index = HIGH_BYTE(inCharacter);
-	
+
 	// make sure the glyph array exists
 	if (inFont->glyph_arrays[glyph_array_index])
 	{
 		// return the glyph
 		glyph = &inFont->glyph_arrays[glyph_array_index]->glyphs[LOW_BYTE(inCharacter)];
 	}
-	
+
 	return glyph;
 }
 
@@ -1390,11 +1390,11 @@ TSiFont_GetTexture(
 	const TStFont			*inFont)
 {
 	TStFont_PrivateData		*private_data;
-	
+
 	// get the private data
 	private_data = (TStFont_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(TSgTemplate_Font_PrivateData, inFont);
 	UUmAssert(private_data);
-	
+
 	return private_data->texture;
 }
 
@@ -1408,15 +1408,15 @@ TSiFont_ProcHandler(
 	UUtError				error;
 	TStFont					*font;
 	TStFont_PrivateData		*private_data;
-	
+
 	// get a pointer to the font
 	font = (TStFont*)inInstancePtr;
 	UUmAssert(font);
-	
+
 	// get a pointer to the font's private data
 	private_data = (TStFont_PrivateData*)inPrivateData;
 	UUmAssert(private_data);
-	
+
 	switch(inMessage)
 	{
 		case TMcTemplateProcMessage_NewPostProcess:
@@ -1424,7 +1424,7 @@ TSiFont_ProcHandler(
 			error = TSiFont_Initialize(font, private_data);
 			UUmError_ReturnOnError(error);
 		break;
-		
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 			if (private_data->cells)
 			{
@@ -1432,10 +1432,10 @@ TSiFont_ProcHandler(
 				private_data->cells = NULL;
 			}
 		break;
-		
+
 		case TMcTemplateProcMessage_Update:
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
@@ -1457,15 +1457,15 @@ TSiFont_PutGlyphInCell(
 	TStCell					*cell;
 	float					x;
 	float					y;
-	
+
 	// get the private data
 	private_data = (TStFont_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(TSgTemplate_Font_PrivateData, inFont);
 	UUmAssert(private_data);
-	
+
 	// find the oldest cell
 	oldest_time = UUrMachineTime_Sixtieths();
 	oldest_cell = 0;
-	
+
 	for (i = 0; i < private_data->num_cells; i++)
 	{
 		if (private_data->cells[i].glyph == NULL)
@@ -1473,53 +1473,53 @@ TSiFont_PutGlyphInCell(
 			oldest_cell = i;
 			break;
 		}
-		
+
 		if (private_data->cells[i].time < oldest_time)
 		{
 			oldest_time = private_data->cells[i].time;
 			oldest_cell = i;
 		}
 	}
-   
+
 	// get a pointer to the cell
 	cell = &private_data->cells[oldest_cell];
-	
+
 	// make sure the old glyph no longer points to this cell
 	if (cell->glyph)
 	{
 		cell->glyph->cell = 0;
 	}
-	
-	// put the new glyph into the cell	
+
+	// put the new glyph into the cell
 	ioGlyph->cell			= (UUtUns32)cell;
 	cell->glyph				= ioGlyph;
 	cell->time				= UUrMachineTime_Sixtieths();
-	
+
 	// calculate the x and y of the cell
 	y = (float)(oldest_cell / private_data->num_cells_x);
 	x = (float)(oldest_cell - (y * private_data->num_cells_x));
-	
+
 	// calculate (left, top)
 	cell->uv[0].u = x * private_data->cell_width;
 	cell->uv[0].v = y * private_data->cell_height;
-	
+
 	// calculate (right, bottom)
 	cell->uv[1].u = cell->uv[0].u + (float)ioGlyph->width;
 	cell->uv[1].v = cell->uv[0].v + (float)(inFont->ascending_height + inFont->descending_height);
-	
+
 	// divide (left, top) and (right, bottom) values by the texture width and height
 	cell->uv[0].u *= private_data->u_ratio;
 	cell->uv[0].v *= private_data->v_ratio;
 	cell->uv[1].u *= private_data->u_ratio;
 	cell->uv[1].v *= private_data->v_ratio;
-	
+
 	// draw the glyph into the texture
 	TSiGlyph_DrawToCell(ioGlyph, inFont, private_data, (UUtInt16)x, (UUtInt16)y);
 }
 #endif	// !SINGLE_TEXTURE_CACHE
 
 // ======================================================================
-#if 0 
+#if 0
 #pragma mark -
 #endif
 // ======================================================================
@@ -1531,29 +1531,29 @@ TSiFontFamily_IsBreakingCharacter(
 {
 	char					*string;
 	UUtBool					result;
-	
+
 	string = inFontFamily->font_language->breaking_2;
 	result = UUcFalse;
-	
+
 	while (1)
 	{
 		UUtUns16		character;
-		
+
 		character = TSiString_GetNextCharacter(string);
-		
+
 		// stop if inCharacter is found in the list
 		if (character == inCharacter)
 		{
 			result = UUcTrue;
 			break;
 		}
-		
+
 		// stop if character is '\0'
 		if (character == '\0')
 		{
 			break;
 		}
-		
+
 		if (TSiCharacter_IsDoubleByte(character))
 		{
 			string += 2;
@@ -1563,12 +1563,12 @@ TSiFontFamily_IsBreakingCharacter(
 			string += 1;
 		}
 	}
-	
+
 	return result;
 }
 
 // ======================================================================
-#if 0 
+#if 0
 #pragma mark -
 #endif
 // ======================================================================
@@ -1600,10 +1600,10 @@ TSiContext_DrawLine(
 	UUtError				i;
 	IMtPoint2D				dest;
 	IMtPixel				color;
-	
+
 	// copy the destination
 	dest = *inDestination;
-	
+
 	// pre-clip top and bottom edge XXX - this may not work quite right
 	if (((dest.y + TSrFont_GetLineHeight(inTextContext->font)) < inTextureOrigin->y) ||
 		(dest.y > (inTextureOrigin->y + inTexture->height)))
@@ -1611,18 +1611,18 @@ TSiContext_DrawLine(
 		// this line is not visible
 		return;
 	}
-	
+
 	// calculate the color
 	color = IMrPixel_FromShade(inTexture->texelType, inShade);
-	
+
 	for (i = 0; i < inNumCharacters; i++)
 	{
 		TStGlyph			*glyph;
 		UUtUns16			character;
-		
+
 		// get the next character
 		character = TSiString_GetNextCharacter(inString);
-		
+
 
 
 		// get the glyph for the character
@@ -1634,11 +1634,11 @@ TSiContext_DrawLine(
 			{
 				// move to location of next character
 				dest.x += glyph->kerning;
-				
+
 				// this character is not visible go on to the next one
 				continue;
 			}
-			
+
 			// pre-clip right edge
 			if (dest.x > (inTextureOrigin->x + inTexture->width))
 			{
@@ -1655,7 +1655,7 @@ TSiContext_DrawLine(
 				inBounds,
 				&dest,
 				color);
-			
+
 			// move to location of next character
 			dest.x += glyph->kerning;
 		}
@@ -1664,7 +1664,7 @@ TSiContext_DrawLine(
 			// change the font style
 			TSiContext_SetFontStyleByChar(inTextContext, character);
 		}*/
-		
+
 		// advance the string to the next character
 		if (TSiCharacter_IsDoubleByte(character))
 		{
@@ -1730,15 +1730,15 @@ TSiContext_DrawTextLine(
 	M3tTextureCoord			sprite_uv[4 * TScTextLineDrawClumpSize], *cur_uv;
 	M3tPointScreen			sprite_dest[2 * TScTextLineDrawClumpSize], *cur_dest;
 	M3tTextureMap			*font_texture;
-	
+
 	UUmAssert(inTextContext);
 	UUmAssert(inString);
 	UUmAssert(inBounds);
-   
+
 	// get a pointer to the font
 	font = inTextContext->font;
 	UUmAssert(font);
-	
+
 #if SINGLE_TEXTURE_CACHE
 	font_texture = TSgTextureCache.texture;
 #else
@@ -1746,7 +1746,7 @@ TSiContext_DrawTextLine(
 #endif
 
 	if (font_texture == NULL) { return; }
-	
+
 	// set up the states
 	M3rDraw_State_Push();
 
@@ -1754,7 +1754,7 @@ TSiContext_DrawTextLine(
 	M3rDraw_State_SetInt(M3cDrawStateIntType_Interpolation, M3cDrawState_Interpolation_None);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_Fill, M3cDrawState_Fill_Solid);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_ZCompare, M3cDrawState_ZCompare_Off);
-	M3rDraw_State_SetInt(M3cDrawStateIntType_Fill, M3cDrawState_Fill_Solid);				
+	M3rDraw_State_SetInt(M3cDrawStateIntType_Fill, M3cDrawState_Fill_Solid);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor,	inShade);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_Alpha, inAlpha);
 	M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, font_texture);
@@ -1774,10 +1774,10 @@ TSiContext_DrawTextLine(
 	{
 		TStGlyph			*glyph;
 		UUtUns16			character;
-		
+
 		// get the next character
 		character = TSiString_GetNextCharacter(inString);
-		
+
 		// get the glyph for the character
 		glyph = TSiFont_GetGlyph(font, character);
 		if (glyph)
@@ -1817,14 +1817,14 @@ TSiContext_DrawTextLine(
 
 			// set the UVs
 			TSiGlyph_SetUVsFromCell(glyph, cur_uv);
-			
+
 			// set up the bounds
 			bounds.left		= dest.x;
 			bounds.top		= dest.y;
 			bounds.right	= bounds.left + glyph->width;
 			bounds.bottom	= bounds.top + font->ascending_height + font->descending_height;
 #endif
-			
+
 			// draw the glyph if it is visible
 			if ((error == UUcError_None) && (WMrClipRect(inBounds, &bounds, cur_uv)))
 			{
@@ -1832,12 +1832,12 @@ TSiContext_DrawTextLine(
 				cur_dest[0].y = (float)(bounds.top);
 				cur_dest[0].z = 0.5f;
 				cur_dest[0].invW = 2.f;
-				
+
 				cur_dest[1].x = (float)(bounds.right);
 				cur_dest[1].y = (float)(bounds.bottom);
 				cur_dest[1].z = 0.5f;
 				cur_dest[1].invW = 2.f;
-				
+
 				num_sprites++;
 				cur_dest += 2;
 				cur_uv += 4;
@@ -1852,9 +1852,9 @@ TSiContext_DrawTextLine(
 					update_texture = UUcFalse;
 				}
 			}
-			
+
 			dest.x += glyph->kerning;
-			
+
 			// advance the string to the next character
 			if (TSiCharacter_IsDoubleByte(character))
 			{
@@ -1874,7 +1874,7 @@ TSiContext_DrawTextLine(
 }
 
 // ======================================================================
-#if 0 
+#if 0
 #pragma mark -
 #endif
 // ======================================================================
@@ -1884,16 +1884,16 @@ TSrInitialize(
 	void)
 {
 	UUtError	error;
-	
+
 	// register the templates of the Text System
 	error = TSrRegisterTemplates();
 	UUmError_ReturnOnError(error);
 
 	error = TSrTextureCache_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 #if !SINGLE_TEXTURE_CACHE
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			TScTemplate_Font,
 			sizeof(TStFont_PrivateData),
@@ -1902,7 +1902,7 @@ TSrInitialize(
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
 #endif
 
-	error = 
+	error =
 		TMrTemplate_InstallByteSwap(
 			TScTemplate_Font,
 			TSiFont_ByteSwapper);
@@ -1910,7 +1910,7 @@ TSrInitialize(
 
 	return UUcError_None;
 }
-	
+
 // ----------------------------------------------------------------------
 void
 TSrTerminate(
@@ -1919,7 +1919,7 @@ TSrTerminate(
 }
 
 // ======================================================================
-#if 0 
+#if 0
 #pragma mark -
 #endif
 // ======================================================================
@@ -1939,13 +1939,13 @@ TSiContext_GetBestFont(
 		// try the desired style
 		ioTextContext->font =
 			TSrFontFamily_GetFont(
-				ioTextContext->font_family, 
+				ioTextContext->font_family,
 				i,
 				ioTextContext->font_style);
 		if (ioTextContext->font != NULL) {
 			break;
 		}
-		
+
 		// try plain style
 		ioTextContext->font =
 			TSrFontFamily_GetFont(
@@ -1976,7 +1976,7 @@ TSiContext_GetBestFont(
 			i++;
 		}
 	}
-	
+
 	if (ioTextContext->font == NULL) {
 		return UUcError_Generic;
 	} else {
@@ -1991,11 +1991,11 @@ TSrContext_Delete(
 	TStTextContext			*inTextContext)
 {
 	UUmAssert(inTextContext != NULL);
-	
+
 	// delete the memory held by the text context
 	UUrMemory_Block_Delete(inTextContext);
 }
-	
+
 // ----------------------------------------------------------------------
 UUtError
 TSrContext_DrawString(
@@ -2018,12 +2018,12 @@ TSrContext_DrawString(
 	UUmAssert(inBounds != NULL);
 	UUmAssert(inDestination != NULL);
 	UUmAssert(inTextContext->font_family != NULL);
-	
+
 	// format the string
 	error = TSrContext_FormatString(inTextContext, inString, inBounds, inDestination, &string_format);
 	UUmError_ReturnOnError(error);
 
-   
+
 	// get the template_tag for the texture
 	template_tag = TMrInstance_GetTemplateTag(inTexture);
 	switch (template_tag)
@@ -2033,7 +2033,7 @@ TSrContext_DrawString(
 			// set the texture origin
 			texture_origin.x = 0;
 			texture_origin.y = 0;
-			
+
 			// draw each segment of the string
 			for (i = 0; i < string_format.num_segments; i++)
 			{
@@ -2050,31 +2050,31 @@ TSrContext_DrawString(
 			}
 		}
 		break;
-		
+
 		case M3cTemplate_TextureMap_Big:
 		{
-			M3tTextureMap_Big	*texture_map_big;				
-			
+			M3tTextureMap_Big	*texture_map_big;
+
 			// get a pointer to the texture map big
 			texture_map_big = (M3tTextureMap_Big*)inTexture;
-			
+
 			// draw each line of the string
 			for (i = 0; i < string_format.num_segments; i++)
 			{
 				UUtUns16			x;
 				UUtUns16			y;
-				
+
 				for (y = 0; y < texture_map_big->num_y; y++)
 				{
 					for (x = 0; x < texture_map_big->num_x; x++)
 					{
 						UUtUns16			index;
 						M3tTextureMap		*texture_map;
-						
+
 						// get a pointer to the texture to draw into
 						index = x + (y * texture_map_big->num_x);
 						texture_map = texture_map_big->textures[index];
-						
+
 						// set the texture origin
 						texture_origin.x = x * M3cTextureMap_MaxWidth;
 						texture_origin.y = y * M3cTextureMap_MaxHeight;
@@ -2094,12 +2094,12 @@ TSrContext_DrawString(
 			}
 		}
 		break;
-		
+
 		default:
 			UUmAssert(!"unkown texture map template tag");
 		break;
 	}
-	
+
 	// update the texture
 	error = TMrInstance_Update(inTexture);
 	UUmError_ReturnOnError(error);
@@ -2131,7 +2131,7 @@ TSrContext_DrawFormattedText(
 			bounds.bottom += inOffset->y;
 		}
 		shade = (inOverrideColor == NULL) ? inStringFormat->colors[i] : *inOverrideColor;
-		
+
 		TSiContext_DrawTextLine(
 			inTextContext,
 			inStringFormat->segments[i],
@@ -2141,7 +2141,7 @@ TSrContext_DrawFormattedText(
 			&bounds,
 			NULL);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2176,11 +2176,11 @@ TSrContext_DrawText(
 		bounds.right = M3rDraw_GetWidth();
 		bounds.bottom = M3rDraw_GetHeight();
 	}
-	
+
 	// format the string
 	error = TSrContext_FormatString(inTextContext, inString, &bounds, inDestination, &string_format);
 	UUmError_ReturnOnError(error);
-	
+
 	// draw each line
 	for (i = 0; i < string_format.num_segments; i++)
 	{
@@ -2193,7 +2193,7 @@ TSrContext_DrawText(
 			&string_format.bounds[i],
 			NULL);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2232,17 +2232,17 @@ TSrContext_DrawText_DC(
 		bounds.right = M3rDraw_GetWidth();
 		bounds.bottom = M3rDraw_GetHeight();
 	}
-	
+
 	// format the string
 	error = TSrContext_FormatString(inTextContext, inString, &bounds, inDestination, &string_format);
 	UUmError_ReturnOnError(error);
-	
+
 	if (outStringRect)
 	{
 		width = 0;
 		height = 0;
 	}
-	
+
 	// draw each line
 	for (i = 0; i < string_format.num_segments; i++)
 	{
@@ -2254,22 +2254,22 @@ TSrContext_DrawText_DC(
 			M3cMaxAlpha,
 			&string_format.bounds[i],
 			inDrawContext);
-		
+
 		if (outStringRect)
 		{
 			width = UUmMax(width, (string_format.bounds[i].right - string_format.bounds[i].left));
 			height += (string_format.bounds[i].bottom - string_format.bounds[i].top);
 		}
 	}
-	
+
 	if (outStringRect)
 	{
-		outStringRect->left = 0; 
+		outStringRect->left = 0;
 		outStringRect->top = 0;
 		outStringRect->right = width;
 		outStringRect->bottom = height;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2300,7 +2300,7 @@ TSrContext_FormatString(
 
 	IMtShade				cur_shade;
 	TStFormatCharacterColor	*formatcharacter;
-	
+
 	never_wrap				= ((inTextContext->format & (TSc_SingleLine | TSc_VBottom)) != 0);
 	string					= (char*)inString;
 	bounds_width			= inBounds->right - inBounds->left;
@@ -2334,7 +2334,7 @@ TSrContext_FormatString(
 			UUtUns16				character;
 			UUtUns16				num_chars;
 			UUtUns16				prev_breaking;
-			
+
 			starting_string			= string;
 			prev_breaking			= 0;
 			num_chars				= 0;
@@ -2355,17 +2355,17 @@ TSrContext_FormatString(
 			{
 				// get the next character in the string
 				character = TSiString_GetNextCharacter(string);
-				
+
 				// stop if the end of the string is reached
 				if (character == 0)
 				{
 					done = UUcTrue;
 					break;
 				}
-				
+
 				if (inTextContext->use_formatting_commands) {
 					if (character == TScFormatCharacter_Begin) {
-						// begin a new section of the line	
+						// begin a new section of the line
 						string += 1;
 						begin_formatting = UUcTrue;
 						intraline_break = UUcTrue;
@@ -2416,7 +2416,7 @@ TSrContext_FormatString(
 				if (glyph)
 				{
 					segment_width += glyph->kerning;
-					
+
 					// stop if the line exceeds the bounds rect
 					must_break = ((!never_wrap) && (line_width + segment_width > bounds_width));
 				}
@@ -2424,12 +2424,12 @@ TSrContext_FormatString(
 				{
 					// change to new font style
 					TSiContext_SetFontStyleByChar(inTextContext, character);
-					
+
 					// save the tallest line height and descending height
 					line_height = UUmMax(TSrFont_GetLineHeight(inTextContext->font), line_height);
 					ascending_height = UUmMax(TSrFont_GetAscendingHeight(inTextContext->font), ascending_height);
 				}*/
-				
+
 				// advance to the next character in the string
 				if (TSiCharacter_IsDoubleByte(character))
 				{
@@ -2439,7 +2439,7 @@ TSrContext_FormatString(
 				{
 					string += 1;
 				}
-				
+
 				if (must_break || ((num_chars + 1) >= TScMaxCharsPerSegment))
 				{
 					// break this segment
@@ -2454,7 +2454,7 @@ TSrContext_FormatString(
 					prev_breaking = num_chars;
 				}
 			}
-			
+
 			if ((!done) && (!intraline_break) && (!never_wrap))
 			{
 				// we must break this line
@@ -2464,7 +2464,7 @@ TSrContext_FormatString(
 					// back up to a break character
 					// ------------------------------
 					char			*temp_string;
-					
+
 					temp_string = string = &starting_string[prev_breaking];
 
 					// subtract the width of the glyphs from prev_breaking to num_chars from segment_width
@@ -2494,7 +2494,7 @@ TSrContext_FormatString(
 							temp_string += 1;
 						}
 					}
-				
+
 					num_chars = prev_breaking;
 				}
 				else if (outStringFormat->line_num_segments[line_num] > 0)
@@ -2537,14 +2537,14 @@ TSrContext_FormatString(
 					// set the text at the destination's x coordinate
 					line_x = inDestination->x;
 				}
-				
+
 				segment_x = line_x;
 				for (i = segment_startindex; i < segment_num; i++) {
 					// store the position of this segment. note that the final vertical position will be set
 					// after all the lines have been processed. in the meantime, save the ascending_height of the line.
 					outStringFormat->destination[i].x = segment_x;
 					outStringFormat->destination[i].y = ascending_height;
-					
+
 					// set the bounds rect of the line
 					outStringFormat->bounds[i].left = segment_x;
 					outStringFormat->bounds[i].top = 0;
@@ -2553,14 +2553,14 @@ TSrContext_FormatString(
 
 					segment_x = outStringFormat->bounds[i].right;
 				}
-				
+
 				line_num++;
 				start_new_line = UUcTrue;
 			} else {
 				// continue the existing line
 				start_new_line = UUcFalse;
 			}
-			
+
 			// set up for the next segment
 			if (restore_formatting) {
 				cur_shade = inTextContext->shade;
@@ -2577,7 +2577,7 @@ TSrContext_FormatString(
 		outStringFormat->num_segments = segment_num;
 		outStringFormat->num_lines = line_num;
 	}
-	
+
 	// ------------------------------
 	// calculate the vertical positions
 	// ------------------------------
@@ -2585,7 +2585,7 @@ TSrContext_FormatString(
 	if (inTextContext->format & TSc_VCenter)
 	{
 		UUtUns16				total_height;
-		
+
 		// calculate how tall all the lines are
 		total_height = 0;
 		segment_startindex = 0;
@@ -2608,7 +2608,7 @@ TSrContext_FormatString(
 		// be drawn.
 		line_y = inDestination->y - outStringFormat->destination[0].y;
 	}
-	
+
 	// set the y coordinates for each line and the bounds top and bottom
 	segment_startindex = 0;
 	for (i = 0; i < outStringFormat->num_lines; i++)
@@ -2619,12 +2619,12 @@ TSrContext_FormatString(
 			outStringFormat->bounds[j + segment_startindex].bottom += line_y;
 			outStringFormat->destination[j + segment_startindex].y += line_y;
 		}
-		
+
 		line_y = outStringFormat->bounds[segment_startindex].bottom;
 		segment_startindex += outStringFormat->line_num_segments[i];
 	}
 	UUmAssert(segment_startindex == outStringFormat->num_segments);
-	
+
 	return UUcError_None;
 }
 
@@ -2635,10 +2635,10 @@ TSrContext_GetFont(
 	TStFontStyle			inStyle)
 {
 	TStFont					*font;
-	
+
 	UUmAssert(inTextContext);
 	UUmAssert((inStyle >= 0) && (inStyle <= TScStyle_NumStyles));
-	
+
 	font = NULL;
 	if (inStyle == TScStyle_InUse)
 	{
@@ -2647,13 +2647,13 @@ TSrContext_GetFont(
 	}
 	else
 	{
-		font = 
+		font =
 			TSrFontFamily_GetFont(
 				inTextContext->font_family,
 				inTextContext->font_size,
 				inStyle);
 	}
-	
+
 	return font;
 }
 
@@ -2667,33 +2667,33 @@ TSrContext_GetStringRect(
 	UUtUns16			string_length;
 	UUtUns16			i;
 	UUtUns16			width;
-	
+
 	UUmAssert(inTextContext);
 	UUmAssert(inString);
 	UUmAssert(outRect);
-	
+
 	// clear the width
 	width = 0;
-	
+
 	// calculate the length of the string (aka number of characters)
 	string_length = TSrString_GetLength(inString);
-	
+
 	// calculate the width of the string
 	for (i = 0; i < string_length; i++)
 	{
 		TStGlyph			*glyph;
 		UUtUns16			character;
-		
+
 		// get the next character in the string
 		character = TSiString_GetNextCharacter(inString);
-		
+
 		// add the glyph width
 		glyph = TSiFont_GetGlyph(inTextContext->font, character);
 		if (glyph)
 		{
 			width += glyph->kerning;
 		}
-		
+
 		if (TSiCharacter_IsDoubleByte(character))
 		{
 			inString += 2;
@@ -2703,13 +2703,13 @@ TSrContext_GetStringRect(
 			inString += 1;
 		}
 	}
-	
+
 	// set the return values
 	outRect->left	= 0;
 	outRect->top	= 0;
 	outRect->right	= width;
 	outRect->bottom	= TSrFont_GetLineHeight(inTextContext->font);
-	
+
 	return UUcError_None;
 }
 
@@ -2727,16 +2727,16 @@ TSrContext_New(
 
 	UUmAssert(inFontFamily != NULL);
 	UUmAssert(outTextContext != NULL);
-	
+
 	// make sure we have a place to store the text context's pointer
 	if (outTextContext == NULL)
 		return UUcError_Generic;
-	
+
 	// allocate the memory for the text context
 	*outTextContext = UUrMemory_Block_New(sizeof(TStTextContext));
 	if (*outTextContext == NULL)
 		return UUcError_Generic;
-	
+
 	// initialize the text context
 	(**outTextContext).font_family	= inFontFamily;
 	(**outTextContext).format		= inFormat;
@@ -2749,17 +2749,17 @@ TSrContext_New(
 	error = TSrContext_SetFontFamily(*outTextContext, inFontFamily);
 	if (error != UUcError_None)
 		return UUcError_Generic;
-	
+
 	// set the font style
 	error = TSrContext_SetFontStyle(*outTextContext, inStyle);
 	if (error != UUcError_None)
 		return UUcError_Generic;
-	
+
 	// set the font size
 	error = TSrContext_SetFontSize(*outTextContext, inSize);
 	if (error != UUcError_None)
 		return UUcError_Generic;
-	
+
 	return UUcError_None;
 }
 
@@ -2770,18 +2770,18 @@ TSrContext_SetFontFamily(
 	TStFontFamily		*inFontFamily)
 {
 	UUtError			error;
-	
+
 	UUmAssert(ioTextContext != NULL);
 	UUmAssert(inFontFamily != NULL);
 	if ((ioTextContext == NULL) || (inFontFamily == NULL)) { return UUcError_Generic; }
 
 	// save the font family
 	ioTextContext->font_family = inFontFamily;
-	
+
 	// get the best font
 	error = TSiContext_GetBestFont(ioTextContext);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -2792,17 +2792,17 @@ TSrContext_SetFontSize(
 	UUtUns16			inSize)
 {
 	UUtError			error;
-	
+
 	UUmAssert(ioTextContext != NULL);
 	if (ioTextContext == NULL) { return UUcError_Generic; }
-	
+
 	// save the desired size
 	ioTextContext->font_size = inSize;
-	
+
 	// get the best font
 	error = TSiContext_GetBestFont(ioTextContext);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -2813,19 +2813,19 @@ TSrContext_SetFontStyle(
 	TStFontStyle		inStyle)
 {
 	UUtError			error;
-	
+
 	UUmAssert(ioTextContext != NULL);
 	if (ioTextContext == NULL) { return UUcError_Generic; }
-	
+
 	// save the desired style
 	ioTextContext->font_style = inStyle;
-	
+
 	// get the best font
 	error = TSiContext_GetBestFont(ioTextContext);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
-}	
+}
 
 // ----------------------------------------------------------------------
 UUtError
@@ -2835,7 +2835,7 @@ TSrContext_SetFormat(
 {
 	UUmAssert(ioTextContext != NULL);
 	if (ioTextContext == NULL) { return UUcError_Generic; }
-	
+
 	ioTextContext->format = inFontFormat;
 	return UUcError_None;
 }
@@ -2867,7 +2867,7 @@ TSrContext_SetFormatting(
 }
 
 // ======================================================================
-#if 0 
+#if 0
 #pragma mark -
 #endif
 // ======================================================================
@@ -2890,21 +2890,21 @@ TSrFontFamily_GetFont(
 {
 	UUtUns32			i;
 	TStFont				*found_font;
-	
+
 	found_font = NULL;
 	for (i = 0; i < inFontFamily->num_fonts; i++)
 	{
 		TStFont			*font;
-		
+
 		font = inFontFamily->fonts[i];
-		
+
 		if (font == NULL) { continue; }
 		if ((font->font_size != inSize) || (font->font_style != inStyle)) { continue; }
-		
+
 		found_font = font;
 		break;
 	}
-	
+
 	return found_font;
 }
 
@@ -2923,25 +2923,25 @@ TSrFont_Get(
 	TStFontFamily		*font_family;
 	TStFont				*font;
 	UUtUns32			i;
-	
+
 	font_family = TMrInstance_GetFromName(TScTemplate_FontFamily, inName);
 	if (font_family == NULL) { return NULL; }
-	
+
 	font = NULL;
-	
+
 	for (i = 0; i < font_family->num_fonts; i++)
 	{
 		TStFont			*temp_font;
-		
+
 		temp_font = font_family->fonts[i];
-		
+
 		if ((temp_font->font_size == inSize) && (temp_font->font_style == inStyle))
 		{
 			font = temp_font;
 			break;
 		}
 	}
-	
+
 	return font;
 }
 
@@ -2951,7 +2951,7 @@ TSrFont_GetAscendingHeight(
 	TStFont				*inFont)
 {
 	UUmAssert(inFont != NULL);
-	
+
 	return inFont->ascending_height;
 }
 
@@ -2966,13 +2966,13 @@ TSrFont_GetCharacterSize(
 	TStGlyph			*glyph;
 	UUtUns16			width;
 	UUtUns16			height;
-	
+
 	UUmAssert(inFont != NULL);
-	
+
 	// initialize width and height
-	width = 0; 
+	width = 0;
 	height = 0;
-	
+
 	// get the glyph
 	glyph = TSiFont_GetGlyph(inFont, inCharacter);
 	if (glyph)
@@ -2980,12 +2980,12 @@ TSrFont_GetCharacterSize(
 		width = glyph->width;
 		height = glyph->height;
 	}
-	
+
 	if (outWidth)
 	{
 		*outWidth = width;
 	}
-	
+
 	if (outHeight)
 	{
 		*outHeight = height;
@@ -2998,7 +2998,7 @@ TSrFont_GetLeadingHeight(
 	TStFont				*inFont)
 {
 	UUmAssert(inFont != NULL);
-	
+
 	return inFont->leading_height;
 }
 
@@ -3008,7 +3008,7 @@ TSrFont_GetLineHeight(
 	TStFont				*inFont)
 {
 	UUmAssert(inFont != NULL);
-	
+
 	return inFont->ascending_height + inFont->descending_height + inFont->leading_height;
 }
 
@@ -3018,12 +3018,12 @@ TSrFont_GetDescendingHeight(
 	TStFont				*inFont)
 {
 	UUmAssert(inFont != NULL);
-	
+
 	return inFont->descending_height;
 }
 
 // ======================================================================
-#if 0 
+#if 0
 #pragma mark -
 #endif
 // ======================================================================
@@ -3035,17 +3035,17 @@ TSrString_AppendChar(
 	const UUtUns16		inMaxCharsInString)
 {
 	UUtUns16			insert_before;
-	
+
 	// set insert_before to the point after the last character in the string
 	insert_before = TSrString_GetLength(ioString);
-	
+
 	// insert the char at the end of the string
 	TSrString_InsertChar(
 		ioString,
 		insert_before,
 		inChar,
 		inMaxCharsInString);
-	
+
 	return UUcTrue;
 }
 
@@ -3060,10 +3060,10 @@ TSrString_DeleteChar(
 	char				*copy_to;
 	char				*copy_from;
 	UUtUns32			i;
-	
+
 	// check the range of inInsertBefore
 	if (inDeleteIndex > inMaxCharsInString) { return UUcFalse; }
-	
+
 	// find the copy_to point
 	copy_to = ioString;
 	for (i = 0; i < inDeleteIndex; i++)
@@ -3078,7 +3078,7 @@ TSrString_DeleteChar(
 			copy_to += 1;
 		}
 	}
-	
+
 	// copy_to is now at position to copy data from
 	copy_from = copy_to;
 
@@ -3092,7 +3092,7 @@ TSrString_DeleteChar(
 	{
 		copy_from += 1;
 	}
-	
+
 	// copy from copy_from to copy_to
 	while (1)
 	{
@@ -3103,7 +3103,7 @@ TSrString_DeleteChar(
 			*((UUtUns8*)copy_to) = (UUtUns8)character;
 			break;
 		}
-		
+
 		if (TSiCharacter_IsDoubleByte(character))
 		{
 			copy_from += 2;
@@ -3117,7 +3117,7 @@ TSrString_DeleteChar(
 			copy_to += 1;
 		}
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -3130,12 +3130,12 @@ TSrString_GetCharacterAtIndex(
 	UUtUns16			i;
 	const char			*string;
 	UUtUns16			character;
-	
+
 	string = inString;
 	for (i = 0; i < inIndex; i++)
 	{
 		character = TSiString_GetNextCharacter(string);
-		
+
 		if (TSiCharacter_IsDoubleByte(character))
 		{
 			string += 2;
@@ -3145,9 +3145,9 @@ TSrString_GetCharacterAtIndex(
 			string += 1;
 		}
 	}
-	
+
 	character = TSiString_GetNextCharacter(string);
-	
+
 	return character;
 }
 
@@ -3158,7 +3158,7 @@ TSrString_GetLength(
 {
 	UUtUns16			character = 0;
 	UUtUns16			length = 0;
-	
+
 	while (1)
 	{
 		character = TSiString_GetNextCharacter(inString);
@@ -3166,7 +3166,7 @@ TSrString_GetLength(
 		{
 			break;
 		}
-		
+
 		if (TSiCharacter_IsDoubleByte(character))
 		{
 			inString += 2;
@@ -3175,10 +3175,10 @@ TSrString_GetLength(
 		{
 			inString += 1;
 		}
-		
+
 		length++;
 	}
-	
+
 	return length;
 }
 
@@ -3197,22 +3197,22 @@ TSrString_InsertChar(
 	UUtUns32			i;
 	UUtUns16			character;
 	UUtUns32			num_bytes;
-	
+
 	// check the range of inInsertBefore
 	if (inInsertBefore > inMaxCharsInString) { return UUcFalse; }
-	
+
 	// make sure there is enough room to insert the character
 	string_length = TSrString_GetLength(ioString);
 	if ((string_length + 1) >= inMaxCharsInString) { return UUcFalse; }
 	if (inInsertBefore > string_length) { inInsertBefore = string_length; }
-	
+
 	// find the start of the strings to copy from
 	start = ioString;
 	for (i = 0; i < inInsertBefore; i++)
 	{
 		character = TSiString_GetNextCharacter(start);
 		if (character == 0) { break; }
-		
+
 		if (TSiCharacter_IsDoubleByte(character))
 		{
 			start += 2;
@@ -3222,7 +3222,7 @@ TSrString_InsertChar(
 			start += 1;
 		}
 	}
-	
+
 	// find the end of the string
 	end = start;
 	while (1)
@@ -3232,7 +3232,7 @@ TSrString_InsertChar(
 		{
 			break;
 		}
-		
+
 		if (TSiCharacter_IsDoubleByte(character))
 		{
 			end += 2;
@@ -3242,13 +3242,13 @@ TSrString_InsertChar(
 			end += 1;
 		}
 	}
-	
+
 	// calculate the number of bytes to copy, including the \0 at the end of the string
 	num_bytes = (end - start) + 1;
-	
+
 	// set the position to copy from to the current end position
 	copy_from = end;
-	
+
 	// calculate the new end position
 	if (TSiCharacter_IsDoubleByte(inChar))
 	{
@@ -3258,13 +3258,13 @@ TSrString_InsertChar(
 	{
 		end += 1;
 	}
-	
+
 	// copy the data
 	for (i = 0; i < num_bytes; i++)
 	{
 		*end-- = *copy_from--;
 	}
-	
+
 	// insert the new character
 	if (TSiCharacter_IsDoubleByte(inChar))
 	{
@@ -3274,7 +3274,7 @@ TSrString_InsertChar(
 	{
 		*((UUtUns8*)start) = (UUtUns8)inChar;
 	}
-	
+
 	return UUcTrue;
 }
 

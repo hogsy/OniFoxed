@@ -22,7 +22,7 @@ enum
 	WMcScrollbarStyle_Horizontal		= (0x0002 << 16),
 	WMcScrollbarStyle_HasDoubleArrows	= (0x0004 << 16),	/* not supported yet */
 	WMcScrollbarStyle_ArrowsAtBothEnds	= (0x0008 << 16)	/* not supported yet */
-	
+
 };
 
 enum
@@ -50,19 +50,19 @@ WMrScrollbar_Initialize(
 UUtInt32
 WMrScrollbar_GetPosition(
 	WMtScrollbar			*inScrollbar);
-	
+
 void
 WMrScrollbar_GetRange(
 	WMtScrollbar			*inScrollbar,
 	UUtInt32				*outMin,
 	UUtInt32				*outMax,
 	UUtInt32				*outRangeVisible);
-	
+
 void
 WMrScrollbar_SetPosition(
 	WMtScrollbar			*inScrollbar,
 	UUtInt32				inPosition);
-	
+
 void
 WMrScrollbar_SetRange(
 	WMtScrollbar			*inScrollbar,

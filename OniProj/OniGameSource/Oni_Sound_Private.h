@@ -18,7 +18,7 @@ typedef struct OStTypeName
 {
 	char					*name;
 	UUtUns32				type;
-	
+
 } OStTypeName;
 
 // ======================================================================
@@ -27,15 +27,15 @@ typedef struct OStTypeName
 UUtError
 OSrVariantList_Initialize(
 	void);
-	
+
 UUtError
 OSrVariantList_LevelLoad(
 	void);
-	
+
 void
 OSrVariantList_LevelUnload(
 	void);
-	
+
 void
 OSrVariantList_Terminate(
 	void);

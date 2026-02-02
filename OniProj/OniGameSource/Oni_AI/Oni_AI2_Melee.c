@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Melee.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: May 19, 2000
-	
+
 	PURPOSE: Melee AI for Oni
-	
+
 	Copyright (c) 2000
 
 */
@@ -394,35 +394,35 @@ enum {
 
 const UUtUns32 AI2cMeleeNumMoveTypes = (AI2cMoveType_Max >> AI2cMoveType_Shift);
 const AI2tMeleeMoveType AI2cMeleeMoveTypes[AI2cMoveType_Max >> AI2cMoveType_Shift] = {
-	{"Attack",			
-		AI2iMelee_Attack_Iterate,		
-		AI2iMelee_Attack_GetName,		
-		AI2iMelee_Attack_GetParams,			
-		AI2iMelee_Attack_GetAnimType,		
+	{"Attack",
+		AI2iMelee_Attack_Iterate,
+		AI2iMelee_Attack_GetName,
+		AI2iMelee_Attack_GetParams,
+		AI2iMelee_Attack_GetAnimType,
 		AI2iMelee_Attack_CanFollow,
 		AI2iMelee_Attack_Start,
 		AI2iMelee_Attack_Update,
 		AI2iMelee_Attack_Finish,
 		AI2iMelee_Attack_FaceTarget,
 		AI2iMelee_Attack_CanEvade},
-	
-	{"Position",			
-		AI2iMelee_Position_Iterate,		
-		AI2iMelee_Position_GetName,		
-		AI2iMelee_Position_GetParams,			
-		AI2iMelee_Position_GetAnimType,		
+
+	{"Position",
+		AI2iMelee_Position_Iterate,
+		AI2iMelee_Position_GetName,
+		AI2iMelee_Position_GetParams,
+		AI2iMelee_Position_GetAnimType,
 		AI2iMelee_Position_CanFollow,
 		AI2iMelee_Position_Start,
 		AI2iMelee_Position_Update,
 		AI2iMelee_Position_Finish,
 		AI2iMelee_Position_FaceTarget,
 		AI2iMelee_Position_CanEvade},
-	
-	{"Maneuver",			
-		AI2iMelee_Maneuver_Iterate,		
-		AI2iMelee_Maneuver_GetName,		
-		AI2iMelee_Maneuver_GetParams,			
-		AI2iMelee_Maneuver_GetAnimType,		
+
+	{"Maneuver",
+		AI2iMelee_Maneuver_Iterate,
+		AI2iMelee_Maneuver_GetName,
+		AI2iMelee_Maneuver_GetParams,
+		AI2iMelee_Maneuver_GetAnimType,
 		AI2iMelee_Maneuver_CanFollow,
 		AI2iMelee_Maneuver_Start,
 		AI2iMelee_Maneuver_Update,
@@ -430,11 +430,11 @@ const AI2tMeleeMoveType AI2cMeleeMoveTypes[AI2cMoveType_Max >> AI2cMoveType_Shif
 		AI2iMelee_Maneuver_FaceTarget,
 		AI2iMelee_Maneuver_CanEvade},
 
-	{"Evade",			
-		AI2iMelee_Evade_Iterate,		
-		AI2iMelee_Evade_GetName,		
-		AI2iMelee_Evade_GetParams,			
-		AI2iMelee_Evade_GetAnimType,		
+	{"Evade",
+		AI2iMelee_Evade_Iterate,
+		AI2iMelee_Evade_GetName,
+		AI2iMelee_Evade_GetParams,
+		AI2iMelee_Evade_GetAnimType,
 		AI2iMelee_Evade_CanFollow,
 		AI2iMelee_Evade_Start,
 		AI2iMelee_Evade_Update,
@@ -442,18 +442,18 @@ const AI2tMeleeMoveType AI2cMeleeMoveTypes[AI2cMoveType_Max >> AI2cMoveType_Shif
 		AI2iMelee_Evade_FaceTarget,
 		AI2iMelee_Evade_CanEvade},
 
-	{"Throw",			
-		AI2iMelee_Throw_Iterate,		
-		AI2iMelee_Throw_GetName,		
-		AI2iMelee_Throw_GetParams,			
-		AI2iMelee_Throw_GetAnimType,		
+	{"Throw",
+		AI2iMelee_Throw_Iterate,
+		AI2iMelee_Throw_GetName,
+		AI2iMelee_Throw_GetParams,
+		AI2iMelee_Throw_GetAnimType,
 		AI2iMelee_Throw_CanFollow,
 		AI2iMelee_Throw_Start,
 		AI2iMelee_Throw_Update,
 		AI2iMelee_Throw_Finish,
 		AI2iMelee_Throw_FaceTarget,
 		AI2iMelee_Throw_CanEvade}};
-	
+
 
 // *** translation from AI2tMeleeMoveState to TRtAnimState
 const TRtAnimState AI2cMelee_TotoroAnimState[AI2cMeleeMoveState_Max] =
@@ -473,21 +473,21 @@ const TRtAnimType AI2cMelee_DelayAnimType[AI2cMeleeMoveState_Max] =
 	ONcAnimType_Fly, ONcAnimType_Fly, ONcAnimType_Fly, ONcAnimType_Fly, ONcAnimType_Fly};
 
 // *** whether we block crouching by preference when we're in a given melee state
-const UUtBool AI2cMeleeState_BlockCrouching[AI2cMeleeMoveState_Max] = 
+const UUtBool AI2cMeleeState_BlockCrouching[AI2cMeleeMoveState_Max] =
 	{UUcFalse, UUcFalse, UUcTrue, UUcTrue, UUcFalse,
 	UUcFalse, UUcFalse, UUcFalse, UUcFalse,
 	UUcFalse, UUcFalse, UUcFalse, UUcFalse,
 	UUcFalse, UUcFalse, UUcFalse, UUcFalse, UUcFalse};
 
 // *** whether we can turn on the spot in order to line up an attack while in this move state
-const UUtBool AI2cMeleeState_CanTurnForAttack[AI2cMeleeMoveState_Max] = 
+const UUtBool AI2cMeleeState_CanTurnForAttack[AI2cMeleeMoveState_Max] =
 	{UUcTrue, UUcTrue, UUcTrue, UUcFalse, UUcFalse,
 	UUcTrue, UUcTrue, UUcTrue, UUcTrue,
 	UUcTrue, UUcTrue, UUcTrue, UUcTrue,
 	UUcFalse, UUcFalse, UUcFalse, UUcFalse, UUcFalse};
 
 // *** keys to hold down in order to stay in this melee state
-const LItButtonBits AI2cMeleeState_MaintainStateKeys[AI2cMeleeMoveState_Max] = 
+const LItButtonBits AI2cMeleeState_MaintainStateKeys[AI2cMeleeMoveState_Max] =
 	{0, 0, LIc_BitMask_Crouch, LIc_BitMask_Crouch, 0,
 	LIc_BitMask_Forward, LIc_BitMask_Backward, LIc_BitMask_StepLeft, LIc_BitMask_StepRight,
 	LIc_BitMask_Forward, LIc_BitMask_Backward, LIc_BitMask_StepLeft, LIc_BitMask_StepRight,
@@ -1564,7 +1564,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 		if (ioMeleeState->target->animCounter == ioMeleeState->current_react_anim_index) {
 			if (active_target != NULL) {
 				const TRtAnimation *animation = active_target->animation;
-				
+
 				if (TRrAnimation_IsAttack(animation) && (TRrAnimation_GetThrowType(animation) == 0)) {
 					// this is an attack, block until it lands
 					if (active_target->animFrame < TRrAnimation_GetLastAttackFrame(animation)) {
@@ -1588,9 +1588,9 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 
 	// run the update for our current move
 	executing_move = UUcFalse;
-	ioMeleeState->running_active_animation = ((TRrAnimation_IsAttack(active_character->animation)) || 
+	ioMeleeState->running_active_animation = ((TRrAnimation_IsAttack(active_character->animation)) ||
 											  (TRrAnimation_TestFlag(active_character->animation, ONcAnimFlag_ThrowSource)) ||
-											  (AI2rExecutor_HasAttackOverride(ioCharacter, NULL)) || 
+											  (AI2rExecutor_HasAttackOverride(ioCharacter, NULL)) ||
 											  (ONrCharacter_InAir(ioCharacter)));
 	if (ioMeleeState->current_move != NULL) {
 		UUmAssert(ioMeleeState->current_technique != NULL);
@@ -1603,13 +1603,13 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 		// update this move, and determine whether it has finished
 		move_type = (ioMeleeState->current_move->move & AI2cMoveType_Mask) >> AI2cMoveType_Shift;
 		UUmAssert((move_type >= 0) && (move_type < AI2cMeleeNumMoveTypes));
-		
+
 		if (AI2gMelee_ShowCurrentProfile) {
 			sprintf(status_line, "%s move #%d", ioMeleeState->current_technique->name, ioMeleeState->move_index + 1);
 		}
 
 		finished = AI2cMeleeMoveTypes[move_type].func_update(ioCharacter, ioMeleeState, ioMeleeState->current_move);
-		
+
 		if (AI2gMelee_ShowCurrentProfile) {
 			if (finished) {
 				strcat(status_line, " (done)");
@@ -1624,7 +1624,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 	// don't consider changing moves / techniques until all of our attack moves are done and we're on the ground
 	if (ioMeleeState->running_active_animation) {
 #if DEBUG_VERBOSE_MELEE
-		COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: can't change technique, waiting for animation %s to complete", 
+		COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: can't change technique, waiting for animation %s to complete",
 			ioCharacter->player_name, TMrInstance_GetInstanceName(active_character->animation));
 #endif
 		if (ioMeleeState->current_technique == NULL) {
@@ -1678,7 +1678,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 
 
 
-				
+
 				// we are considering a defense. we need animcheck_location_matrix to account for if the opponent
 				// has moved since starting their attack. basically this matrix must give our position
 				// relative to where the start of the opponent's animation would have been.
@@ -1693,7 +1693,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 				intersect_context.current_location_matrix.m[3][0] += position_pt->location_x * TRcPositionGranularity;
 				intersect_context.current_location_matrix.m[3][1] += position_pt->location_y * TRcPositionGranularity;
 				*/
-				
+
 				// look to see whether the attack will hit us
 				try_react = TRrCheckAnimationBounds(&evade_context);
 				if (try_react) {
@@ -1723,7 +1723,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 	cur_state = AI2iMelee_TranslateTotoroAnimState(ioCharacter, cur_to_state);
 
 #if DEBUG_VERBOSE_MELEE
-	COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: to_state %s -> current melee state '%s'", 
+	COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: to_state %s -> current melee state '%s'",
 		ioCharacter->player_name, ONrAnimStateToString(cur_to_state), AI2cMeleeMoveStateName[cur_state]);
 #endif
 
@@ -1737,7 +1737,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 	// stay with the current technique if possible
 	new_technique = ioMeleeState->current_technique;
 
-	if ((ioMeleeState->current_technique == NULL) || (AI2gUltraMode) || 
+	if ((ioMeleeState->current_technique == NULL) || (AI2gUltraMode) ||
 		(ioCharacter->flags2 & ONcCharacterFlag2_UltraMode) || (!ioMeleeState->committed_to_technique)) {
 		// we either have no technique, or are between moves in an interruptable technique (or Ultra Mode is on,
 		// which makes all techniques interruptable).
@@ -1875,7 +1875,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 						AI2_ERROR(AI2cBug, AI2cSubsystem_Melee, AI2cError_Melee_BrokenTechnique, ioCharacter,
 									ioMeleeState, ioMeleeState->current_technique, 0, 0);
 #if DEBUG_VERBOSE_MELEE
-						COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: technique %s start state NONE, error.", 
+						COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: technique %s start state NONE, error.",
 												ioCharacter->player_name, technique_itr->name);
 #endif
 						current_choice->weight = 0;
@@ -1884,7 +1884,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 						// we would need to execute a state transition in order to run this technique
 						if ((technique_itr->computed_flags & AI2cTechniqueComputedFlag_AllowTransition) == 0) {
 #if DEBUG_VERBOSE_MELEE
-							COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: technique %s start state %s requires exact match. don't consider.", 
+							COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: technique %s start state %s requires exact match. don't consider.",
 								ioCharacter->player_name, technique_itr->name, AI2cMeleeMoveStateName[technique_fromstate]);
 #endif
 							current_choice->weight = 0;
@@ -2020,7 +2020,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 					// we would need to execute a state transition in order to run this technique
 					if ((technique_itr->computed_flags & AI2cTechniqueComputedFlag_AllowTransition) == 0) {
 #if DEBUG_VERBOSE_MELEE
-						COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: technique %s start state %s requires exact match. don't consider.", 
+						COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: technique %s start state %s requires exact match. don't consider.",
 							ioCharacter->player_name, technique_itr->name, AI2cMeleeMoveStateName[technique_fromstate]);
 #endif
 						current_choice->weight = 0;
@@ -2060,7 +2060,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 				num_choices++;
 			}
 		}
-		
+
 		// no selected technique yet
 		new_technique = NULL;
 
@@ -2150,22 +2150,22 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 						// we can hit our target before they hit us. act, don't react.
 						try_react = UUcFalse;
 					}
-					
+
 				} else {
 					// this technique is not viable. forget about it.
 #if DEBUG_VERBOSE_MELEE
-					COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: technique %s is not viable, reject this choice.", 
+					COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: technique %s is not viable, reject this choice.",
 						ioCharacter->player_name, new_technique->name);
 #endif
 					total_weight -= current_choice->weight;
 					current_choice->weight = 0;
 					num_choices--;
 					new_technique = NULL;
-				}				
+				}
 			}
 		}
 	}
-	
+
 	/*
 	 * REACTION SELECTION
 	 */
@@ -2232,7 +2232,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 				UUmAssert(current_choice->weight > 0);
 				num_choices++;
 			}
-		
+
 			if (num_choices > 0) {
 				// pick techniques at random, using weight factors to bias
 				random_weight = (total_weight * ioMeleeState->reaction_seed) / UUcMaxUns16 - 0.01f;	// fudge to ensure always < total_weight
@@ -2311,7 +2311,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 	if (new_technique == NULL) {
 		if (fallen) {
 			// we are fallen and must get up - but didn't find any get-up maneuvers
-			AI2rExecutor_MoveOverride(ioCharacter, LIc_BitMask_Forward);			
+			AI2rExecutor_MoveOverride(ioCharacter, LIc_BitMask_Forward);
 			return UUcTrue;
 		} else {
 			// we are standing and we didn't find any viable techniques. return to the combat manager,
@@ -2347,7 +2347,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 			ioCharacter->player_name, (ioMeleeState->current_technique == NULL) ? "<null>" :
 			ioMeleeState->current_technique->name);
 #endif
-	
+
 		AI2iMelee_UpdateFacing(ioCharacter, ioMeleeState);
 		AI2iMelee_ApplyFacing(ioCharacter, ioMeleeState);
 
@@ -2368,7 +2368,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 
 #if DEBUG_VERBOSE_MELEE
 	COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: beginning move 0x%08X (%s)",
-		ioCharacter->player_name, ioMeleeState->current_move->move, 
+		ioCharacter->player_name, ioMeleeState->current_move->move,
 		(ioMeleeState->current_move->animation == NULL) ? "<null>" :
 			TMrInstance_GetInstanceName(ioMeleeState->current_move->animation));
 #endif
@@ -2383,7 +2383,7 @@ UUtBool AI2rMelee_Update(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState
 		// execute.
 		move_type = (ioMeleeState->current_move->move & AI2cMoveType_Mask) >> AI2cMoveType_Shift;
 		UUmAssert((move_type >= 0) && (move_type < AI2cMeleeNumMoveTypes));
-		
+
 #if DEBUG_VERBOSE_MELEE
 		COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: calling start routine for move 0x%08X",
 			ioCharacter->player_name, ioMeleeState->current_move->move);
@@ -2541,7 +2541,7 @@ static UUtBool AI2iMelee_StartNextMove(ONtCharacter *ioCharacter, AI2tMeleeState
 		COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: done %d moves, technique %s is complete", ioCharacter->player_name,
 			ioMeleeState->move_index, ioMeleeState->current_technique->name);
 #endif
-		// the technique is complete and has no moves left. however we don't finish the technique until 
+		// the technique is complete and has no moves left. however we don't finish the technique until
 		// all of our attack moves have completed executing.
 		ioMeleeState->current_move = NULL;
 		ioMeleeState->current_attackanim = NULL;
@@ -3030,7 +3030,7 @@ static UUtBool AI2iMelee_TargetIsThrowable(ONtCharacter *ioCharacter, ONtActiveC
 // consider and weight an attacking technique
 static void AI2iMelee_WeightTechnique(ONtCharacter *ioCharacter, AI2tMeleeState *ioMeleeState, AI2tMeleeProfile *ioMeleeProfile,
 									  TRtAnimIntersectContext *ioContext, UUtBool inConsiderAttack, TRtDirection inDirection,
-									  AI2tMeleeMoveState inCurrentState,  TRtAnimState inCurrentAnimState, 
+									  AI2tMeleeMoveState inCurrentState,  TRtAnimState inCurrentAnimState,
 									  UUtBool inCanBlock, UUtBool inBlockLow, UUtBool inBlockHigh,
 									  struct AI2tConsideredTechnique *ioTechnique)
 {
@@ -3477,7 +3477,7 @@ static void AI2iMelee_WeightTechnique(ONtCharacter *ioCharacter, AI2tMeleeState 
 							COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "  - delay-distance %f < %f, skip positioning move (%d)",
 													delay_distance, -AI2cMelee_SkipPositioningDistance, ioTechnique->positionmove_skip);
 #endif
-						}						
+						}
 					}
 
 					if (skip_positioning) {
@@ -3504,7 +3504,7 @@ static void AI2iMelee_WeightTechnique(ONtCharacter *ioCharacter, AI2tMeleeState 
 							delay_distance -= adjust_frames * target_closing_velocity;
 						}
 						delay_distance = UUmMax(delay_distance, 0);
-						
+
 						// how does this affect our technique's weight?
 						if (delay_distance > max_delay) {
 							// outside acceptable bounds
@@ -3566,7 +3566,7 @@ static void AI2iMelee_WeightTechnique(ONtCharacter *ioCharacter, AI2tMeleeState 
 #endif
 							return;
 						}
-						
+
 						adjust_distance += delay_distance;
 						adjust_frames += delay_frames;
 					}
@@ -3602,7 +3602,7 @@ static void AI2iMelee_WeightTechnique(ONtCharacter *ioCharacter, AI2tMeleeState 
 #endif
 						ioTechnique->weight = 0;
 						return;
-					}					
+					}
 
 					// check to make sure that we won't encounter danger in performing this move
 					test_dist = adjust_distance + ioTechnique->jump_velocity * ioMeleeProfile->min_jumpframes + move->attack_endpos;
@@ -3859,7 +3859,7 @@ static void AI2iMelee_WeightTechnique(ONtCharacter *ioCharacter, AI2tMeleeState 
 #endif
 						ioTechnique->weight = 0;
 						return;
-					}	
+					}
 
 #if DEBUG_VERBOSE_WEIGHT
 					COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "      PREDELAY: transition chain %s -> %s, length %d dist %f frames %f\n",
@@ -3951,7 +3951,7 @@ static void AI2iMelee_WeightTechnique(ONtCharacter *ioCharacter, AI2tMeleeState 
 #endif
 						ioTechnique->weight = 0;
 						return;
-					}	
+					}
 
 #if DEBUG_VERBOSE_WEIGHT
 					COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "      POSTDELAY: transition chain %s -> %s, length %d dist %f frames %f\n",
@@ -4090,7 +4090,7 @@ static void AI2iMelee_WeightTechnique(ONtCharacter *ioCharacter, AI2tMeleeState 
 								angle_to_edge = UUmMin(target_rel_angle - move->param[1],
 														move->param[2] - target_rel_angle);
 							} else {
-								angle_to_edge = UUmMin(target_rel_angle - move->param[2], 
+								angle_to_edge = UUmMin(target_rel_angle - move->param[2],
 														move->param[1] - target_rel_angle);
 							}
 
@@ -4121,7 +4121,7 @@ static void AI2iMelee_WeightTechnique(ONtCharacter *ioCharacter, AI2tMeleeState 
 						case AI2cMeleeManeuver_RandomStop:
 							// immediately stop weighting the technique; return whatever weight we already have
 							return;
-					
+
 						case AI2cMeleeManeuver_Pause:
 						case AI2cMeleeManeuver_Crouch:
 						case AI2cMeleeManeuver_Jump:
@@ -4272,7 +4272,7 @@ static void AI2iMelee_WeightTechnique(ONtCharacter *ioCharacter, AI2tMeleeState 
 				/*
 				 * double-check that we are in the right position with respect to the target
 				 */
-				
+
 				animtype = TRrAnimation_GetType(move->animation);
 
 				if (currently_behind_target) {
@@ -4735,7 +4735,7 @@ static void AI2iMelee_WeightSpacingBehavior(ONtCharacter *ioCharacter, AI2tMelee
 					case AI2cMeleeManeuver_RandomStop:
 						// immediately stop weighting the technique; return whatever weight we already have
 						return;
-				
+
 					case AI2cMeleeManeuver_Pause:
 					case AI2cMeleeManeuver_Crouch:
 					case AI2cMeleeManeuver_Jump:
@@ -4961,7 +4961,7 @@ static UUtBool AI2iMelee_AddLocalMovement(ONtCharacter *ioCharacter, AI2tMeleeSt
 		MUmVector_Copy(localmove_dest, from_pt);
 		MUmVector_ScaleIncrement(localmove_dest, AI2cMelee_PositionLocalMoveDist, localmove_dir);
 
-		error = AI2rTryLocalMovement(ioCharacter, PHcPathMode_CasualMovement, &from_pt, &localmove_dest, 
+		error = AI2rTryLocalMovement(ioCharacter, PHcPathMode_CasualMovement, &from_pt, &localmove_dest,
 									3, &localmove_success, &localmove_pt,
 									&localmove_weight, &localmove_escape);
 		found_dir = ((error == UUcError_None) && (localmove_success));
@@ -5050,28 +5050,28 @@ UUtError AI2rMelee_PrepareForUse(AI2tMeleeProfile *ioMeleeProfile)
 											ONcAnimState_Running_Right_Down, ONcAnimVarientMask_Fight);
 	if (lookup_anim != NULL) {
 		TRrAnimation_GetPosition(lookup_anim, 0, &thisframe_vel);
-		ioMeleeProfile->jump_vel[AI2cMeleeJumpType_RunForward] = thisframe_vel.z; 
+		ioMeleeProfile->jump_vel[AI2cMeleeJumpType_RunForward] = thisframe_vel.z;
 	}
 
 	lookup_anim = (TRtAnimation *) TRrCollection_Lookup(anim_collection, ONcAnimType_Run_Backwards,
 											ONcAnimState_Running_Back_Right_Down, ONcAnimVarientMask_Fight);
 	if (lookup_anim != NULL) {
 		TRrAnimation_GetPosition(lookup_anim, 0, &thisframe_vel);
-		ioMeleeProfile->jump_vel[AI2cMeleeJumpType_RunBack] = -thisframe_vel.z; 
+		ioMeleeProfile->jump_vel[AI2cMeleeJumpType_RunBack] = -thisframe_vel.z;
 	}
 
 	lookup_anim = (TRtAnimation *) TRrCollection_Lookup(anim_collection, ONcAnimType_Run_Sidestep_Left,
 											ONcAnimState_Sidestep_Left_Right_Down, ONcAnimVarientMask_Fight);
 	if (lookup_anim != NULL) {
 		TRrAnimation_GetPosition(lookup_anim, 0, &thisframe_vel);
-		ioMeleeProfile->jump_vel[AI2cMeleeJumpType_RunLeft] = thisframe_vel.x; 
+		ioMeleeProfile->jump_vel[AI2cMeleeJumpType_RunLeft] = thisframe_vel.x;
 	}
 
 	lookup_anim = (TRtAnimation *) TRrCollection_Lookup(anim_collection, ONcAnimType_Run_Sidestep_Right,
 											ONcAnimState_Sidestep_Right_Right_Down, ONcAnimVarientMask_Fight);
 	if (lookup_anim != NULL) {
 		TRrAnimation_GetPosition(lookup_anim, 0, &thisframe_vel);
-		ioMeleeProfile->jump_vel[AI2cMeleeJumpType_RunRight] = -thisframe_vel.x; 
+		ioMeleeProfile->jump_vel[AI2cMeleeJumpType_RunRight] = -thisframe_vel.x;
 	}
 
 	// we must be travelling at least half as fast sideways as we are up - if this constant from Oni_GameState.c
@@ -5172,7 +5172,7 @@ UUtError AI2rMelee_PrepareForUse(AI2tMeleeProfile *ioMeleeProfile)
 					transition->anim_distance		= -end_position->location_y * TRcPositionGranularity;
 					transition->anim_endvelocity	= -vel_estimate.z;
 				break;
-				
+
 				default:
 					UUmAssert(0);
 					transition->anim_distance		= 0;
@@ -5183,7 +5183,7 @@ UUtError AI2rMelee_PrepareForUse(AI2tMeleeProfile *ioMeleeProfile)
 			transition++;
 			ioMeleeProfile->num_transitions++;
 		}
-		
+
 		if (ioMeleeProfile->num_transitions >= AI2cMeleeProfile_MaxTransitions) {
 			overflowed = UUcTrue;
 		}
@@ -5438,7 +5438,7 @@ UUtError AI2rMelee_PrepareForUse(AI2tMeleeProfile *ioMeleeProfile)
 					extent_info = TRrAnimation_GetExtentInfo(move->animation);
 
 					technique->computed_flags |= AI2cTechniqueComputedFlag_IsAttack;
-					
+
 					if (TRrAnimation_TestAttackFlag(move->animation, (TRtAnimTime) -1, (UUtUns32) -1, ONcAttackFlag_AttackHigh))
 						technique->computed_flags |= AI2cTechniqueComputedFlag_IsHigh;
 
@@ -5455,7 +5455,7 @@ UUtError AI2rMelee_PrepareForUse(AI2tMeleeProfile *ioMeleeProfile)
 						technique->computed_flags |= AI2cTechniqueComputedFlag_HasStagger;
 
 					technique->max_damage += TRrAnimation_GetMaximumDamage(move->animation);
-					
+
 					technique->attack_maxrange = extent_info->attack_ring.max_distance;
 					technique->attack_idealrange = technique->attack_maxrange - AI2cMelee_IdealRangeSubtractFraction * extent_info->maxAttack.attack_dist;
 					technique->attack_initialframes = extent_info->firstAttack.frame_index;
@@ -5609,7 +5609,7 @@ UUtBool AI2rMelee_MoveIsValid(TRtAnimationCollection *inCollection, UUtUns32 inM
 
 		return UUcTrue;
 	}
-		
+
 
 	from_state = *ioFromState;
 	anim_type = AI2cMeleeMoveTypes[move_type >> AI2cMoveType_Shift].func_getanimtype(inMove,
@@ -5640,7 +5640,7 @@ UUtBool AI2rMelee_MoveIsValid(TRtAnimationCollection *inCollection, UUtUns32 inM
 		// any from-state will do (this probably won't ever happen)
 		anim_state = ONcAnimState_Anything;
 	}
-	
+
 	if (move_type != AI2cMoveType_Throw) {
 		// look up the animation in our collection
 		lookup_anim = (TRtAnimation *) TRrCollection_Lookup(inCollection, anim_type, anim_state, ONcAnimVarientMask_Fight);
@@ -5806,7 +5806,7 @@ static UUtBool AI2iMelee_Attack_Update(ONtCharacter *ioCharacter, AI2tMeleeState
 			// just wait until it is realised (or discarded)
 			return UUcFalse;
 		}
-		
+
 		// we have launched an attack; we cannot change our facing for this technique any longer.
 		ioMeleeState->lock_facing_for_technique = UUcTrue;
 		ioMeleeState->technique_face_direction = ioCharacter->facing;
@@ -5849,7 +5849,7 @@ static UUtBool AI2iMelee_Attack_Update(ONtCharacter *ioCharacter, AI2tMeleeState
 	if (((ioCharacter->flags2 & ONcCharacterFlag2_UltraMode) || AI2gUltraMode || (!ioMeleeState->committed_to_technique)) &&
 		(ioMeleeState->technique_face_direction != AI2cAngle_None)) {
 		// we want to turn to face the target before we start our attack
-		
+
 		if (ioMeleeState->facing_delta > AI2cMeleeDirectionalAttackMax) {
 			// we are facing in a very wrong direction, abort this attack
 #if DEBUG_VERBOSE_ATTACK
@@ -5864,7 +5864,7 @@ static UUtBool AI2iMelee_Attack_Update(ONtCharacter *ioCharacter, AI2tMeleeState
 			return UUcTrue;
 
 		}
-		
+
 		if (ioMeleeState->facing_delta > AI2cMeleeMinStartAttackAngle) {
 			// we are facing in the wrong direction - delay
 			ONrSetupAnimIntersectionContext(ioCharacter, ioMeleeState->target, UUcTrue, &intersect_context);
@@ -5997,7 +5997,7 @@ static UUtBool AI2iMelee_Attack_Update(ONtCharacter *ioCharacter, AI2tMeleeState
 							// what turning radius is required to reach the facing before we get to the target?
 							if (distance_perp - intersect_context.target_cylinder_radius > 0.1f) {
 								distance_perp -= intersect_context.target_cylinder_radius;
-								
+
 								// trigonometry tells us that r = (perp^2 + fwd^2) / 2 * perp
 								required_turning_radius = (UUmSQR(distance_perp) + UUmSQR(distance_fwd)) / (2.0f * distance_perp);
 
@@ -6111,7 +6111,7 @@ static UUtBool AI2iMelee_Attack_Update(ONtCharacter *ioCharacter, AI2tMeleeState
 #if DEBUG_VERBOSE_ATTACK
 			COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: attack 0x%08X: animation %s (type %s) direct lookup! (current tostate %s, fromstate %s)",
 							ioCharacter->player_name, inMove->move, TMrInstance_GetInstanceName(inMove->animation),
-							ONrAnimTypeToString(TRrAnimation_GetType(inMove->animation)), ONrAnimStateToString(next_animstate), 
+							ONrAnimTypeToString(TRrAnimation_GetType(inMove->animation)), ONrAnimStateToString(next_animstate),
 							ONrAnimStateToString(TRrAnimation_GetFrom(inMove->animation)));
 #endif
 		} else if (TRrAnimation_IsShortcut(inMove->animation, next_animstate)) {
@@ -6119,7 +6119,7 @@ static UUtBool AI2iMelee_Attack_Update(ONtCharacter *ioCharacter, AI2tMeleeState
 #if DEBUG_VERBOSE_ATTACK
 			COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: attack 0x%08X: animation %s (type %s) shortcut lookup! (current tostate %s, fromstate %s)",
 							ioCharacter->player_name, inMove->move, TMrInstance_GetInstanceName(inMove->animation),
-							ONrAnimTypeToString(TRrAnimation_GetType(inMove->animation)), ONrAnimStateToString(next_animstate), 
+							ONrAnimTypeToString(TRrAnimation_GetType(inMove->animation)), ONrAnimStateToString(next_animstate),
 							ONrAnimStateToString(TRrAnimation_GetFrom(inMove->animation)));
 #endif
 		}
@@ -6544,7 +6544,7 @@ static UUtBool AI2iMelee_Position_Update(ONtCharacter *ioCharacter, AI2tMeleeSta
 						// that we have to abort the technique as well...
 						AI2iMeleeState_AbortTechnique(ioCharacter, ioMeleeState);
 						return UUcTrue;
-					}	
+					}
 
 #if DEBUG_VERBOSE_POSITION
 					COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "  PositionEndTrans: transition chain %s -> %s, length %d dist %f frames %f\n",
@@ -6637,7 +6637,7 @@ static UUtBool AI2iMelee_Position_Update(ONtCharacter *ioCharacter, AI2tMeleeSta
 				AI2iMelee_SetupAttackerState(ioCharacter, ioCharacter->ai2State.meleeProfile, &anim_context.attacker,
 											ioMeleeState->current_technique_ends_in_jump, ioMeleeState->current_technique_jump_vel,
 											position_move->direction, ioMeleeState->current_technique->attack_anim);
-				
+
 				// check to see if we can intersect with the target.
 				if (!TRrCheckAnimationBounds(&anim_context)) {
 #if DEBUG_VERBOSE_POSITION
@@ -6758,7 +6758,7 @@ static UUtBool AI2iMelee_Position_Update(ONtCharacter *ioCharacter, AI2tMeleeSta
 						ioMeleeState->position_desired_state = position_move->states[0];
 						ioMeleeState->position_current_transition = NULL;
 						ioMeleeState->position_skipped_delay = UUcFalse;
-						return UUcFalse;					
+						return UUcFalse;
 					}
 
 					if ((!position_move->can_delay) || (ioMeleeState->position_state_index != 0)) {
@@ -6912,7 +6912,7 @@ static UUtBool AI2iMelee_Position_Update(ONtCharacter *ioCharacter, AI2tMeleeSta
 						ioMeleeState->position_desired_state = position_move->states[0];
 						ioMeleeState->position_current_transition = NULL;
 						ioMeleeState->position_skipped_delay = UUcFalse;
-						return UUcFalse;					
+						return UUcFalse;
 					}
 
 					if ((!position_move->can_delay) || (ioMeleeState->position_state_index != 0)) {
@@ -6928,7 +6928,7 @@ static UUtBool AI2iMelee_Position_Update(ONtCharacter *ioCharacter, AI2tMeleeSta
 						// we are colliding with the target and can't get into range, abort
 #if (DEBUG_VERBOSE_POSITION || DEBUG_VERBOSE_TECHNIQUE)
 						COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: colliding with target but can't throw. aborting!", ioCharacter->player_name);
-#endif	
+#endif
 						AI2iMeleeState_AbortTechnique(ioCharacter, ioMeleeState);
 						return UUcTrue;
 					}
@@ -6952,7 +6952,7 @@ static UUtBool AI2iMelee_Position_Update(ONtCharacter *ioCharacter, AI2tMeleeSta
 				ioMeleeState->attack_waspositioned = UUcTrue;
 				return AI2iMelee_StartNextMove(ioCharacter, ioMeleeState, inMove);
 			}
-			
+
 			ioMeleeState->position_desired_state = position_move->states[ioMeleeState->position_state_index];
 #if DEBUG_VERBOSE_POSITION
 			COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: position update: looking for next state %s (%d)",
@@ -7372,7 +7372,7 @@ static UUtBool AI2iMelee_Maneuver_Update(ONtCharacter *ioCharacter, AI2tMeleeSta
 				// just wait until it is realised (or discarded)
 				return UUcFalse;
 			}
-			
+
 			// we have actually performed this technique, we can't again for a while
 			AI2iMeleeState_ApplyTechniqueDelay(ioCharacter, ioMeleeState);
 
@@ -7442,7 +7442,7 @@ static UUtBool AI2iMelee_Maneuver_Update(ONtCharacter *ioCharacter, AI2tMeleeSta
 #endif
 		ioMeleeState->maneuver_started = UUcTrue;
 	}
-	
+
 	if (current_time > ioMeleeState->maneuver_endtime) {
 #if DEBUG_VERBOSE_MANEUVER
 		COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "maneuver timer expired (%d > %d)", current_time, ioMeleeState->maneuver_endtime);
@@ -7480,7 +7480,7 @@ static UUtBool AI2iMelee_Maneuver_Update(ONtCharacter *ioCharacter, AI2tMeleeSta
 		}
 
 		UUmAssert(!ioMeleeState->lock_facing_for_technique);
-		localmove_success = AI2iMelee_AddLocalMovement(ioCharacter, ioMeleeState, 
+		localmove_success = AI2iMelee_AddLocalMovement(ioCharacter, ioMeleeState,
 														maneuver_def->maneuver_direction, UUcTrue);
 		if (!localmove_success) {
 #if DEBUG_VERBOSE_MANEUVER
@@ -7732,7 +7732,7 @@ static UUtBool AI2iMelee_Evade_Update(ONtCharacter *ioCharacter, AI2tMeleeState 
 #if DEBUG_VERBOSE_EVADE
 			COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: evasion 0x%08X: animation %s (type %s) direct lookup! (current tostate %s, fromstate %s)",
 							ioCharacter->player_name, inMove->move, TMrInstance_GetInstanceName(inMove->animation),
-							ONrAnimTypeToString(TRrAnimation_GetType(inMove->animation)), ONrAnimStateToString(next_animstate), 
+							ONrAnimTypeToString(TRrAnimation_GetType(inMove->animation)), ONrAnimStateToString(next_animstate),
 							ONrAnimStateToString(TRrAnimation_GetFrom(inMove->animation)));
 #endif
 		} else if (TRrAnimation_IsShortcut(inMove->animation, next_animstate)) {
@@ -7740,7 +7740,7 @@ static UUtBool AI2iMelee_Evade_Update(ONtCharacter *ioCharacter, AI2tMeleeState 
 #if DEBUG_VERBOSE_EVADE
 			COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: evasion 0x%08X: animation %s (type %s) shortcut lookup! (current tostate %s, fromstate %s)",
 							ioCharacter->player_name, inMove->move, TMrInstance_GetInstanceName(inMove->animation),
-							ONrAnimTypeToString(TRrAnimation_GetType(inMove->animation)), ONrAnimStateToString(next_animstate), 
+							ONrAnimTypeToString(TRrAnimation_GetType(inMove->animation)), ONrAnimStateToString(next_animstate),
 							ONrAnimStateToString(TRrAnimation_GetFrom(inMove->animation)));
 #endif
 		}
@@ -7772,7 +7772,7 @@ static UUtBool AI2iMelee_Evade_Update(ONtCharacter *ioCharacter, AI2tMeleeState 
 	// queue up the evasion move.
 #if DEBUG_VERBOSE_EVADE
 	COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: evasion 0x%08X: executing '%s' - wait-for-state %s",
-					ioCharacter->player_name, inMove->move, evade_move->name, 
+					ioCharacter->player_name, inMove->move, evade_move->name,
 					ONrAnimTypeToString(AI2mMelee_EvadeAnimType(evade_move->evademove_flags)));
 #endif
 	AI2rExecutor_AttackOverride(ioCharacter, evade_move->keys_isdown, evade_move->keys_wentdown,
@@ -7991,7 +7991,7 @@ static UUtBool AI2iMelee_Throw_Update(ONtCharacter *ioCharacter, AI2tMeleeState 
 		AI2iMeleeState_AbortTechnique(ioCharacter, ioMeleeState);
 		return UUcTrue;
 	}
-	
+
 	if (throw_move->throwmove_flags & AI2cMelee_Throw_DisarmPistol) {
 		// the target must still have their pistol out
 		desired_varient = ONcAnimVarientMask_Righty_Pistol;
@@ -8085,7 +8085,7 @@ static UUtBool AI2iMelee_Throw_Update(ONtCharacter *ioCharacter, AI2tMeleeState 
 		COrConsole_Printf_Color(UUcTrue, 0xFFFF9090, 0xFFFF3030, "%s: throw source distance %f sends us into danger, abort",
 							ioCharacter->player_name, inMove->attack_endpos);
 #endif
-	}	
+	}
 
 	if (should_abort) {
 		AI2iMeleeState_AbortTechnique(ioCharacter, ioMeleeState);

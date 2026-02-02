@@ -1,12 +1,12 @@
 /*
 	FILE:	MD_DC_Method_Quad.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 18, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -20,7 +20,7 @@
 #include "MD_DC_Method_Triangle.h"
 #include "MD_DC_Method_Quad.h"
 
-void 
+void
 MDrDrawContext_Method_QuadGouraudInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -40,7 +40,7 @@ MDrDrawContext_Method_QuadGouraudInterpolate(
 		inVIndex3);
 }
 
-void 
+void
 MDrDrawContext_Method_QuadGouraudFlat(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -64,7 +64,7 @@ MDrDrawContext_Method_QuadGouraudFlat(
 
 }
 
-void 
+void
 MDrDrawContext_Method_QuadTextureInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,

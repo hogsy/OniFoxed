@@ -32,7 +32,7 @@ DMVMrRegisterTemplates(
 	void)
 {
 	UUtError	error;
-	
+
 	// templates without procs
 	error =
 		TMrTemplate_Register(
@@ -47,7 +47,7 @@ DMVMrRegisterTemplates(
 			sizeof(DCtCursorTypeList),
 			TMcFolding_Forbid);
 	UUmError_ReturnOnError(error);
-	
+
 	error =
 		TMrTemplate_Register(
 			DMcTemplate_DialogList,
@@ -61,7 +61,7 @@ DMVMrRegisterTemplates(
 			sizeof(VMtView_Box),
 			TMcFolding_Forbid);
 	UUmError_ReturnOnError(error);
-	
+
 	// template with procs
 	error =
 		TMrTemplate_Register(
@@ -90,7 +90,7 @@ DMVMrRegisterTemplates(
 			sizeof(VMtView_Button),
 			TMcFolding_Forbid);
 	UUmError_ReturnOnError(error);
-	
+
 	error =
 		TMrTemplate_Register(
 			VMcTemplate_View_CheckBox,

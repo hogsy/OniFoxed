@@ -101,7 +101,7 @@ pascal	OSErr	ResolveFileIDRef(ConstStr255Param volName,
 	HParamBlockRec pb;
 	OSErr error;
 	Str255 tempStr;
-	
+
 	tempStr[0] = 0;
 	if ( volName != NULL )
 	{
@@ -130,7 +130,7 @@ pascal	OSErr	FSpResolveFileIDRef(ConstStr255Param volName,
 									FSSpec *spec)
 {
 	OSErr	error;
-	
+
 	error = DetermineVRefNum(volName, vRefNum, &(spec->vRefNum));
 	if ( error == noErr )
 	{
@@ -239,7 +239,7 @@ pascal	OSErr	GetForeignPrivs(short vRefNum,
 
 	pb.foreignPrivParam.ioNamePtr = (StringPtr)name;
 	pb.foreignPrivParam.ioVRefNum = vRefNum;
-	pb.foreignPrivParam.ioForeignPrivDirID = dirID;	
+	pb.foreignPrivParam.ioForeignPrivDirID = dirID;
 	pb.foreignPrivParam.ioForeignPrivBuffer = (Ptr)foreignPrivBuffer;
 	pb.foreignPrivParam.ioForeignPrivReqCount = *foreignPrivSize;
 	error = PBGetForeignPrivsSync(&pb);
@@ -284,7 +284,7 @@ pascal	OSErr	SetForeignPrivs(short vRefNum,
 
 	pb.foreignPrivParam.ioNamePtr = (StringPtr)name;
 	pb.foreignPrivParam.ioVRefNum = vRefNum;
-	pb.foreignPrivParam.ioForeignPrivDirID = dirID;	
+	pb.foreignPrivParam.ioForeignPrivDirID = dirID;
 	pb.foreignPrivParam.ioForeignPrivBuffer = (Ptr)foreignPrivBuffer;
 	pb.foreignPrivParam.ioForeignPrivReqCount = *foreignPrivSize;
 	pb.foreignPrivParam.ioForeignPrivInfo1 = foreignPrivInfo1;
@@ -504,7 +504,7 @@ pascal	OSErr	FSpMoveRename(const FSSpec *srcSpec,
 							  ConstStr255Param copyName)
 {
 	OSErr	error;
-	
+
 	/* make sure the FSSpecs refer to the same volume */
 	if ( srcSpec->vRefNum != dstSpec->vRefNum )
 	{
@@ -512,7 +512,7 @@ pascal	OSErr	FSpMoveRename(const FSSpec *srcSpec,
 	}
 	else
 	{
-		error = HMoveRename(srcSpec->vRefNum, srcSpec->parID, srcSpec->name, 
+		error = HMoveRename(srcSpec->vRefNum, srcSpec->parID, srcSpec->name,
 							dstSpec->parID, dstSpec->name, copyName);
 	}
 	return ( error );

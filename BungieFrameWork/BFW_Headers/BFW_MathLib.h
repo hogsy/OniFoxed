@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_MathLib.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: January 9, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -29,9 +29,9 @@ extern "C" {
 #define UUcFloat_NormalizedBit	0x00800000
 #define UUcFloat_ExponentMask	0x7f800000	// bits 1- 8 [8]
 #define UUcFloat_SignBit		0x80000000	// bit     0 [1]
-	
+
 #define UUcDouble_FractionMask	((UUtUns64) 0x000fffffffffffff)	// bits 12-63
-#define UUcDouble_NormalizedBit	((UUtUns64) 0x0010000000000000) 
+#define UUcDouble_NormalizedBit	((UUtUns64) 0x0010000000000000)
 #define UUcDouble_ExponentMask	((UUtUns64) 0x7ff0000000000000) // bits  1-11
 #define UUcDouble_SignBit		((UUtUns64) 0x8000000000000000) // bit      0
 
@@ -78,12 +78,12 @@ typedef struct MUtEuler
 
 void MUrMinMaxBBox_CreateFromSphere(
 		const M3tMatrix4x3 *inMatrix,
-		const M3tBoundingSphere *inSphere, 
+		const M3tBoundingSphere *inSphere,
 		M3tBoundingBox_MinMax *outBBox);
 
 void MUrMinMaxBBox_ExpandBySphere(
 		const M3tMatrix4x3 *inMatrix,
-		const M3tBoundingSphere *inSphere, 
+		const M3tBoundingSphere *inSphere,
 		M3tBoundingBox_MinMax *ioBBox);
 
 void MUrMinMaxBBox_To_Sphere(
@@ -92,12 +92,12 @@ void MUrMinMaxBBox_To_Sphere(
 
 void MUrCylinder_CreateFromSphere(
 		const M3tMatrix4x3 *inMatrix,
-		const M3tBoundingSphere *inSphere, 
+		const M3tBoundingSphere *inSphere,
 		M3tBoundingCylinder *outCylinder);
 
 void MUrCylinder_ExpandBySphere(
 		const M3tMatrix4x3 *inMatrix,
-		const M3tBoundingSphere *inSphere, 
+		const M3tBoundingSphere *inSphere,
 		M3tBoundingCylinder *ioCylinder);
 
 void MUrInitialize(void);
@@ -191,7 +191,7 @@ void MUrPoint2D_Subtract(M3tPoint2D *result, const M3tPoint2D *inPointA, const M
 		UUmAssert((plane).a < ( (value))); \
 		UUmAssert((plane).b < ( (value))); \
 		UUmAssert((plane).c < ( (value))); \
-		UUmAssert((plane).d < ( (value))); 
+		UUmAssert((plane).d < ( (value)));
 
 #define MUmAssertVector(vec, value)	\
 	UUmAssert((vec).x > (-(value))); \
@@ -199,7 +199,7 @@ void MUrPoint2D_Subtract(M3tPoint2D *result, const M3tPoint2D *inPointA, const M
 	UUmAssert((vec).z > (-(value))); \
 	UUmAssert((vec).x < (value)); \
 	UUmAssert((vec).y < (value)); \
-	UUmAssert((vec).z < (value)); 
+	UUmAssert((vec).z < (value));
 
 #define MUmVector_IsZero(vec) \
 (	UUmFloat_CompareEqu((vec).x, 0) && \
@@ -251,7 +251,7 @@ do {	(vec).x=(a); \
 		(vec).y=(b); \
 		(vec).z=(c); } while (0)
 
-#ifndef USE_FAST_MATH	
+#ifndef USE_FAST_MATH
 #define MUmVector_Scale(vec,s)	\
 do {	(vec).x*=(s); \
 		(vec).y*=(s); \
@@ -313,7 +313,7 @@ UUtBool MUrVector_Normalize_ZeroTest(M3tVector3D *inV);
 #define MUmVector_IsNormalized(vector)	\
 		(((UUmSQR((vector).x) + UUmSQR((vector).y) + UUmSQR((vector).z)) > .99f)  && \
 		((UUmSQR((vector).x) + UUmSQR((vector).y) + UUmSQR((vector).z)) < 1.01f))
-	
+
 #define MUmPoint_Compare(pointA, pointB) \
 	(UUmFloat_CompareEqu((pointA).x, (pointB).x) && \
 	 UUmFloat_CompareEqu((pointA).y, (pointB).y) && \
@@ -389,7 +389,7 @@ float MUrPoint_ManhattanDistanceToQuad(
 	M3tPoint3D	*inPoint,
 	M3tPoint3D	*inPointArray,
 	M3tQuad		*inQuad);
-	
+
 void MUrVector_PlaneFromEdges(
 	M3tPoint3D *inEdge1a,
 	M3tPoint3D *inEdge1b,
@@ -402,9 +402,9 @@ MUrTriangle_Area(
 	M3tPoint3D*	inPoint0,
 	M3tPoint3D*	inPoint1,
 	M3tPoint3D*	inPoint2);
-	
+
 /*
- * 
+ *
  */
 
 void MUrMatrix_From_Point_And_Vectors(
@@ -443,11 +443,11 @@ UUtBool MUrPlaneEquation_IsClose(
 	const M3tPlaneEquation *inPlaneEquationB);
 
 typedef struct {
-    M3tVector3D		translation;		
+    M3tVector3D		translation;
     M3tQuaternion	rotation;
-    M3tQuaternion	stretchRotation;	
-    M3tVector3D		stretch;		
-    float			sign;				
+    M3tQuaternion	stretchRotation;
+    M3tVector3D		stretch;
+    float			sign;
 } MUtAffineParts;
 
 // strips scale and translation
@@ -548,13 +548,13 @@ void MUrMatrix_Inverse(const M3tMatrix4x3 *inV, M3tMatrix4x3 *outV);
 void MUrMatrix_Adjoint(const M3tMatrix4x3 *inV, M3tMatrix4x3 *outV);
 void MUrMatrix_Identity(M3tMatrix4x3 *ioMatrix);
 float MUrMatrix_Determinant(const M3tMatrix4x3 *m);
-void MUrMatrix_RotateX(M3tMatrix4x3 *matrix, float angle); 
-void MUrMatrix_RotateY(M3tMatrix4x3 *matrix, float angle); 
-void MUrMatrix_RotateZ(M3tMatrix4x3 *matrix, float angle); 
-void MUrMatrix3x3_Rotate(M3tMatrix3x3 *matrix, float inX, float inY, float inZ, float angle); 
-void MUrMatrix3x3_RotateX(M3tMatrix3x3 *matrix, float angle); 
-void MUrMatrix3x3_RotateY(M3tMatrix3x3 *matrix, float angle); 
-void MUrMatrix3x3_RotateZ(M3tMatrix3x3 *matrix, float angle); 
+void MUrMatrix_RotateX(M3tMatrix4x3 *matrix, float angle);
+void MUrMatrix_RotateY(M3tMatrix4x3 *matrix, float angle);
+void MUrMatrix_RotateZ(M3tMatrix4x3 *matrix, float angle);
+void MUrMatrix3x3_Rotate(M3tMatrix3x3 *matrix, float inX, float inY, float inZ, float angle);
+void MUrMatrix3x3_RotateX(M3tMatrix3x3 *matrix, float angle);
+void MUrMatrix3x3_RotateY(M3tMatrix3x3 *matrix, float angle);
+void MUrMatrix3x3_RotateZ(M3tMatrix3x3 *matrix, float angle);
 void MUrMatrix_Translate(
 	M3tMatrix4x3 		*ioMatrix,
 	const M3tVector3D	*inTranslate);
@@ -569,16 +569,16 @@ void MUrMatrixVerify(const M3tMatrix4x3 *inMatrix);
 #endif
 
 void MUrMatrix_Multiply(
-			const M3tMatrix4x3	*inMatrixA, 
-			const M3tMatrix4x3	*inMatrixB, 
+			const M3tMatrix4x3	*inMatrixA,
+			const M3tMatrix4x3	*inMatrixB,
 			M3tMatrix4x3		*outResult);
 void MUrMatrix3x3_Multiply(
-			const M3tMatrix3x3	*inMatrixA, 
-			const M3tMatrix3x3	*inMatrixB, 
+			const M3tMatrix3x3	*inMatrixA,
+			const M3tMatrix3x3	*inMatrixB,
 			M3tMatrix3x3		*outResult);
 // transpose a matrix
 void MUrMatrix3x3_Transpose(
-			const M3tMatrix3x3	*inMatrix, 
+			const M3tMatrix3x3	*inMatrix,
 			M3tMatrix3x3		*outResult);
 
 void MUrMatrix_MultiplyNormal(
@@ -593,24 +593,24 @@ void MUrMatrix_MultiplyNormals(
 	M3tVector3D			*outNormals);
 
 void MUrMatrix_MultiplyPoint(
-	const M3tPoint3D	 *inPoint, 
-	const M3tMatrix4x3	 *inMatrix, 
+	const M3tPoint3D	 *inPoint,
+	const M3tMatrix4x3	 *inMatrix,
 	M3tPoint3D			 *outPoint);
 
 void MUrMatrix3x3_MultiplyPoint(
-	const M3tPoint3D	 *inPoint, 
-	const M3tMatrix3x3	 *inMatrix, 
+	const M3tPoint3D	 *inPoint,
+	const M3tMatrix3x3	 *inMatrix,
 	M3tPoint3D			 *outPoint);
 
 void MUrMatrix3x3_TransposeMultiplyPoint(
-	const M3tPoint3D	 *inPoint, 
-	const M3tMatrix3x3	 *inMatrix, 
+	const M3tPoint3D	 *inPoint,
+	const M3tMatrix3x3	 *inMatrix,
 	M3tPoint3D			 *outPoint);
 
 void MUrMatrix_MultiplyPoints(
 	UUtUns32			inNumPoints,
-	const M3tMatrix4x3	*inMatrix, 
-	const M3tPoint3D	*inPoints, 
+	const M3tMatrix4x3	*inMatrix,
+	const M3tPoint3D	*inPoints,
 	M3tPoint3D			*outPoints);
 
 void MUrMatrix_DualAlignment(
@@ -651,18 +651,18 @@ void MUrMatrixStack_Euler(
 	M3tMatrix4x3 *topOfStack,
 	const MUtEuler *inEuler);
 
-void MUrMatrixStack_RotateX(M3tMatrix4x3 *topOfStack, float angle); 
-void MUrMatrixStack_RotateY(M3tMatrix4x3 *topOfStack, float angle); 
-void MUrMatrixStack_RotateZ(M3tMatrix4x3 *topOfStack, float angle); 
+void MUrMatrixStack_RotateX(M3tMatrix4x3 *topOfStack, float angle);
+void MUrMatrixStack_RotateY(M3tMatrix4x3 *topOfStack, float angle);
+void MUrMatrixStack_RotateZ(M3tMatrix4x3 *topOfStack, float angle);
 
 
-/* 
+/*
  * euler functions
  *
  * see EulerAngles.h or GraphicsGems IV pp 222
  *
  * include EulerAngles.h for constants for EulerFrom
- * 
+ *
  */
 
 MUtEuler Euler_(float ai, float aj, float ah, int order);
@@ -728,7 +728,7 @@ void MUrQuat_Exp(M3tQuaternion* q1, M3tQuaternion* q2);
 	UUmFloat_CompareEqu(quatA.y,quatB.y) && \
 	UUmFloat_CompareEqu(quatA.z,quatB.z) && \
 	UUmFloat_CompareEqu(quatA.w,quatB.w))
-	
+
 void MUrQuat_Inverse(const M3tQuaternion *quat, M3tQuaternion *res);
 float MUrQuat_Length(M3tQuaternion* q1);
 void MUrQuat_Lerp(const M3tQuaternion *from, const M3tQuaternion *to, float t, M3tQuaternion *res);
@@ -770,7 +770,7 @@ void MUrNormalize(M3tVector3D *ioVector);
 void MUrPoint3D_Lerp(const M3tPoint3D *inFrom, const M3tPoint3D *inTo, float t, M3tPoint3D *outResult);
 
 /*
- * 
+ *
  */
 	void MUrVector_SetLength(M3tVector3D *ioVector, float inNewMagnitude);
 
@@ -801,9 +801,9 @@ void MUrPoint3D_Lerp(const M3tPoint3D *inFrom, const M3tPoint3D *inTo, float t, 
 		const M3tPoint3D*	inPoint1,
 		const M3tPoint3D*	inPoint2,
 		M3tVector3D			*outNormal);
-	
+
 /*
- * 
+ *
  */
 
 	void
@@ -851,7 +851,7 @@ void MUrPoint3D_Lerp(const M3tPoint3D *inFrom, const M3tPoint3D *inTo, float t, 
 		float			inY,
 		float			inZ,
 		M3tMatrix4x3		*outMatrix);
-	
+
 	void
 	MUrMatrix_BuildTranslate(
 		float			inX,
@@ -864,7 +864,7 @@ void MUrPoint3D_Lerp(const M3tPoint3D *inFrom, const M3tPoint3D *inTo, float t, 
 		float			inScale,
 		M3tMatrix4x3		*outMatrix);
 
-	void 
+	void
 	MUrMatrix_BuildScale(
 		M3tPoint3D		*inScale,
 		M3tMatrix4x3		*outMatrix);
@@ -875,28 +875,28 @@ void MUrPoint3D_Lerp(const M3tPoint3D *inFrom, const M3tPoint3D *inTo, float t, 
 // Matrix3x3 operations
 	void
 	MUrMatrix3x3_MultiplyNormal(
-		const M3tVector3D	 *inNormal, 
-		const M3tMatrix3x3	 *inMatrix, 
+		const M3tVector3D	 *inNormal,
+		const M3tMatrix3x3	 *inMatrix,
 		M3tVector3D			 *outNormal);
-	
+
 	void
 	MUrMatrix3x3_MultiplyNormals(
 		UUtUns32			inNumNormals,
 		const M3tMatrix3x3	*inMatrix,
 		const M3tVector3D	*inNormals,
 		M3tVector3D			*outNormals);
-	
+
 	void
 	MUrMatrix3x3_ExtractFrom4x3(
 		M3tMatrix3x3		*outMatrix3x3,
 		const M3tMatrix4x3	*inMatrix4x3);
-	
+
 	void
 	MUrMatrix4x3_Multiply3x3(
 		const M3tMatrix4x3*		inMatrix4x3,
 		const M3tMatrix3x3*		inMatrix3x3,
 		M3tMatrix4x3			*outMatrix4x3);
-	
+
 	void
 	MUrMatrix4x3_BuildFrom3x3(
 		M3tMatrix4x3			*outMatrix4x3,

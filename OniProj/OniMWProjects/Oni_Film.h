@@ -2,9 +2,9 @@
 
 /*
 	Oni_Film.h
-	
+
 	Film recording stuff
-	
+
 	Author: Michael Evans, Quinn Dunki
 	c1998 Bungie
 */
@@ -47,7 +47,7 @@ typedef tm_template('F', 'I', 'L', 'M', "Film")
 ONtFilm
 {
 	// implied 8 bytes here
-	
+
 	M3tPoint3D	initialLocation;
 	float		initialFacing;
 	float		initialDesiredFacing;
@@ -56,7 +56,7 @@ ONtFilm
 
 	UUtUns32		length;
 	TRtAnimation	*special_anim[2];
-	
+
 	tm_pad			pad[12];
 
 	tm_varindex UUtUns32	numKeys;
@@ -66,7 +66,7 @@ ONtFilm
 typedef struct ONtFilm_DiskFormat
 {
 	// implied 8 bytes here
-	
+
 	M3tPoint3D	initialLocation;
 	float		initialFacing;
 	float		initialDesiredFacing;
@@ -98,8 +98,8 @@ typedef struct ONtFilmState
 	ONtFilm *film;
 } ONtFilmState;
 
-UUtError ONrFilm_Initialize(void);	
-void ONrFilm_Terminate(void);	
+UUtError ONrFilm_Initialize(void);
+void ONrFilm_Terminate(void);
 
 void ONrFilm_GetFrame(const ONtFilmState *inFilm, ONtInputState *outInputState);
 void ONrFilm_Create(ONtFilmState *ioFilm);

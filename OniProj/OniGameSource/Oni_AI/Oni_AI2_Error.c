@@ -1,12 +1,12 @@
 /*
 	FILE:	 Oni_AI2_Error.c
-	
+
 	AUTHOR:	 Chris Butcher
-	
+
 	CREATED: April 12, 2000
-	
+
 	PURPOSE: Error handler for Oni's AI system
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */
@@ -409,7 +409,7 @@ UUtBool AI2rHandleError(AI2tErrorSubsystem inSystem, UUtUns32 inErrorID, ONtChar
 		// try to handle using default error handler
 		handled = AI2rError_DefaultPathfindingHandler(inCharacter, inErrorID, inParam1, inParam2, inParam3, inParam4);
 		if (handled)
-			return UUcTrue;	
+			return UUcTrue;
 	}
 
 	if (errorptr->handle_function) {
@@ -579,7 +579,7 @@ void AI2rError_SetReportLevel(AI2tErrorSubsystem inSystem, AI2tErrorSeverity inR
 		AI2_ERROR(AI2cBug, AI2cSubsystem_Error, AI2cError_Error_InvalidSubsystem, NULL, 0, 0, 0, 0);
 		return;
 	}
-	
+
 	if (inSystem == AI2cSubsystem_All) {
 		for (itr = 0; itr < AI2cSubsystem_Max; itr++) {
 			AI2gError_ReportLevel[itr] = inReportLevel;
@@ -597,7 +597,7 @@ void AI2rError_SetLogLevel(AI2tErrorSubsystem inSystem, AI2tErrorSeverity inLogL
 		AI2_ERROR(AI2cBug, AI2cSubsystem_Error, AI2cError_Error_InvalidSubsystem, NULL, 0, 0, 0, 0);
 		return;
 	}
-	
+
 	if (inSystem == AI2cSubsystem_All) {
 		for (itr = 0; itr < AI2cSubsystem_Max; itr++) {
 			AI2gError_LogLevel[itr] = inLogLevel;
@@ -615,7 +615,7 @@ void AI2rError_SetSilentHandling(AI2tErrorSubsystem inSystem, UUtBool inSilentHa
 		AI2_ERROR(AI2cBug, AI2cSubsystem_Error, AI2cError_Error_InvalidSubsystem, NULL, 0, 0, 0, 0);
 		return;
 	}
-	
+
 	if (inSystem == AI2cSubsystem_All) {
 		for (itr = 0; itr < AI2cSubsystem_Max; itr++) {
 			AI2gError_SilentHandling[itr] = inSilentHandling;
@@ -948,14 +948,14 @@ static void AI2iReport_Patrol_AtWaypoint(ONtCharacter *inCharacter,
 		break;
 
 		case AI2cWaypointType_MoveToPoint:
-			sprintf(AI2gErrorBuf, "  move to point (%f %f %f)", 
+			sprintf(AI2gErrorBuf, "  move to point (%f %f %f)",
 				waypoint->data.moveToPoint.point.x,
 				waypoint->data.moveToPoint.point.y,
 				waypoint->data.moveToPoint.point.z);
 		break;
 
 		case AI2cWaypointType_MoveThroughFlag:
-			sprintf(AI2gErrorBuf, "  move through flag %d (dist %f)", 
+			sprintf(AI2gErrorBuf, "  move through flag %d (dist %f)",
 				waypoint->data.moveThroughFlag.flag,
 				waypoint->data.moveThroughFlag.required_distance);
 		break;
@@ -1255,10 +1255,10 @@ static void AI2iReport_Melee_PreComputeBroken(ONtCharacter *inCharacter,
 		if (itr >= profile->num_actions + profile->num_reactions) {
 			sprintf(techniquebuf, "<error moveindex=%d outside all techniques>", move_index);
 		} else if (itr >= profile->num_actions) {
-			sprintf(techniquebuf, "technique reaction %d(%s) move %d", 
+			sprintf(techniquebuf, "technique reaction %d(%s) move %d",
 					itr - profile->num_actions, technique->name, move_index - technique->start_index);
 		} else {
-			sprintf(techniquebuf, "technique action %d(%s) move %d", 
+			sprintf(techniquebuf, "technique action %d(%s) move %d",
 					itr, technique->name, move_index - technique->start_index);
 		}
 	}
@@ -1476,14 +1476,14 @@ UUtBool AI2rError_DefaultPathfindingHandler(ONtCharacter *inCharacter, UUtUns32 
 				}
 			}
 			break;
-			
+
 		case AI2cError_Pathfinding_AStarFailed:
 			AI2gPathfindingErrorStorage.no_astar = UUcTrue;
 			AI2gPathfindingErrorStorage.astar_start = *((M3tPoint3D *) inParam1);
 			AI2gPathfindingErrorStorage.astar_end = *((M3tPoint3D *) inParam2);
 			AI2gPathfindingErrorStorage.astar_room = (PHtRoomData *) inParam3;
 			AI2gPathfindingErrorStorage.astar_node = (PHtNode *) inParam4;
-			
+
 			ASrGetLocalStart(&AI2gPathfindingErrorStorage.astar_gridstart);
 			ASrGetLocalEnd(&AI2gPathfindingErrorStorage.astar_gridend);
 			break;

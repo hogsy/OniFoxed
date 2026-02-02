@@ -1,12 +1,12 @@
  /*
 	FILE:	BFW_Decal.c
-	
+
 	AUTHOR:	Jason Duncan, Chris Butcher
-	
+
 	CREATED: June 03, 2000
-	
+
 	PURPOSE: routines for decals
-	
+
 	Copyright 2000 bungie/microsoft
  */
 
@@ -360,9 +360,9 @@ static void P3iDecal_LinePlaneIntersection(M3tPoint3D *inPoint0, M3tPoint3D *inP
 {
 	M3tVector3D		inLine, delta_vec;
 	float			denom, t, one_minus_t, interp;
-	
+
 	MUmVector_Subtract(inLine, *inPoint1, *inPoint0);
-	
+
 	denom = inPlane->a * inLine.x + inPlane->b * inLine.y + inPlane->c * inLine.z;
 	if ((float)fabs(denom) < P3cDecal_PlaneDenomTolerance) {
 		// this is done purely because we _must_ return a value
@@ -377,7 +377,7 @@ static void P3iDecal_LinePlaneIntersection(M3tPoint3D *inPoint0, M3tPoint3D *inP
 		MUmVector_Copy(*outPoint, *inPoint0);
 		MUmVector_ScaleIncrement(*outPoint, t, inLine);
 	}
-	
+
 	if (outUV != NULL) {
 		outUV->u = inUV1->u * t + inUV0->u * one_minus_t;
 		outUV->v = inUV1->v * t + inUV0->v * one_minus_t;
@@ -771,7 +771,7 @@ static UUtBool P3iDecal_ProcessAdjacency(AKtEnvironment *inEnvironment, UUtUns32
 	UUtUns32					found_adjacencies;
 	P3tDecalEdge *				current_adjacency;
 	P3tDecalEdge *				adjacencies[P3cDecal_MaxAdjacencies];
-	
+
 	// source point buffer
 	M3tPoint3D					unprojected_points[4];
 	P3tDecalPointBuffer			source_buffer;
@@ -1532,7 +1532,7 @@ static UUtBool P3iDecal_ProcessAdjacency(AKtEnvironment *inEnvironment, UUtUns32
 			// we flipped this two-sided quote, make a note of such
 			plane_index ^= 0x80000000;
 		}
-		
+
 		if (num_quad_points > 3) {
 			MUmVector_Subtract(quad_midvector, quad_points[2], quad_points[0]);
 			MUmVector_ScaleCopy(quad_reversemidvector, -1, quad_midvector);
@@ -1714,7 +1714,7 @@ UUtError P3rCreateDecal(M3tTextureMap *inTexture, UUtUns32 inGQIndex, UUtUns32 i
 			// no collision, can't create decal
 			return UUcError_Generic;
 		}
-		
+
 		position = AKgCollisionList[0].collisionPoint;
 		inGQIndex = AKgCollisionList[0].gqIndex;
 	} else {
@@ -1726,7 +1726,7 @@ UUtError P3rCreateDecal(M3tTextureMap *inTexture, UUtUns32 inGQIndex, UUtUns32 i
 		}
 		position = *inPosition;
 	}
-	
+
 	// collide a sphere with the environment to find all nearby quads
 	sphere.radius = MUrSqrt(UUmSQR(inXScale) + UUmSQR(inYScale));
 	sphere.center = position;
@@ -1979,7 +1979,7 @@ UUtError P3rCreateDecal(M3tTextureMap *inTexture, UUtUns32 inGQIndex, UUtUns32 i
 				continue;
 			}
 
-			if (((float)fabs(P3gDecalBuildBuffer.points[j].x - compare_point.x) > P3cDecal_SharedPointTolerance) || 
+			if (((float)fabs(P3gDecalBuildBuffer.points[j].x - compare_point.x) > P3cDecal_SharedPointTolerance) ||
 				((float)fabs(P3gDecalBuildBuffer.points[j].y - compare_point.y) > P3cDecal_SharedPointTolerance) ||
 				((float)fabs(P3gDecalBuildBuffer.points[j].z - compare_point.z) > P3cDecal_SharedPointTolerance)) {
 				// the points are different and cannot be snapped to each other
@@ -2080,7 +2080,7 @@ UUtError P3rCreateDecal(M3tTextureMap *inTexture, UUtUns32 inGQIndex, UUtUns32 i
 	decal_size = sizeof(M3tDecalHeader);
 	decal_size += vert_count * (sizeof(M3tVector3D) + sizeof(M3tTextureCoord) + sizeof(UUtUns32));
 	decal_size += index_count * sizeof(UUtUns16);
-	
+
 	if (inDecalFlags & P3cDecalFlag_Manual) {
 		// write into the supplied decal buffer
 		decal_data = (char*) inDecalData->decal_header;
@@ -2191,7 +2191,7 @@ static void P3iLRAR_PurgeProc(void *inUserData)
 	P3tParticle				*particle;
 	P3tParticleClass		*particle_class;
 	P3tDecalData			*data_ptr;
-	
+
 	if( !inUserData )
 		return;
 

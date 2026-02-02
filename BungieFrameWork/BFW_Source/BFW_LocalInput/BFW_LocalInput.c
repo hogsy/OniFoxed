@@ -40,14 +40,14 @@ typedef struct LItEventQueueElement LItEventQueueElement;
 struct LItEventQueueElement
 {
 	LItEventQueueElement	*next;
-	LItInputEvent			event;	
+	LItInputEvent			event;
 };
 
 typedef struct LItEventQueue
 {
 	LItEventQueueElement	*head;
 	LItEventQueueElement	*tail;
-	
+
 } LItEventQueue;
 
 // ======================================================================
@@ -74,12 +74,12 @@ static LItCheatHook				LIgCheatHook = NULL;
 // False is the default value of LIgActionBufferUnavail so that the programmer
 // doesn't have to remember to initialize it.  It is good to initialize it, but
 // this is safer than having a variable that has to be initialize to True.
-static volatile UUtBool			LIgActionBufferUnavail;	
+static volatile UUtBool			LIgActionBufferUnavail;
 
 
 #if UUmPlatform == UUmPlatform_Win32
 HANDLE gInputMutex= NULL;
-#endif		
+#endif
 
 // ======================================================================
 // functions
@@ -92,16 +92,16 @@ LIrActionBuffer_Enter(
 #if UUmPlatform == UUmPlatform_Win32
 	WaitForSingleObject(gInputMutex, INFINITE);
 #else
-	
+
 	while(LIgActionBufferUnavail)
 	{
 	};
-	
+
 	LIgActionBufferUnavail=UUcTrue;
 #endif
 }
 
-	
+
 // ----------------------------------------------------------------------
 static void
 LIrActionBuffer_Leave(
@@ -130,7 +130,7 @@ LIiBind(
 	SLtParameter_Actual		*ioReturnValue)
 {
 	LIrBinding_Add(LIrTranslate_InputName(inParameterList[0].val.str), inParameterList[2].val.str);
-	
+
 	return UUcError_None;
 }
 
@@ -148,7 +148,7 @@ LIiUnbind(
 
 	return UUcError_None;
 }
-	
+
 // ----------------------------------------------------------------------
 static UUtError
 LIiUnbindAll(
@@ -160,7 +160,7 @@ LIiUnbindAll(
 	SLtParameter_Actual		*ioReturnValue)
 {
 	LIrBindings_RemoveAll();
-	
+
 	return UUcError_None;
 }
 
@@ -175,27 +175,27 @@ LIiEventQueue_Dequeue(
 	LItEventQueue			*ioQueue)
 {
 	LItEventQueueElement	*temp;
-	
+
 	// get the head element
 	temp = ioQueue->head;
-	
+
 	// if temp != NULL then there was at least one element in the queue
 	// so set the queue's head to the next element in the queue.  If
 	// there is only one element in the queue, next will be NULL, and
 	// the head will be set properly.
 	if (temp == NULL) return NULL;
-	
+
 	ioQueue->head = ioQueue->head->next;
-	
+
 	// if there was only one element in the queue, then set the tail to NULL
 	if (temp == ioQueue->tail)
 	{
 		ioQueue->tail = NULL;
 	}
-	
+
 	// temp no longer points to anything
 	temp->next = NULL;
-	
+
 	// return the element
 	return temp;
 }
@@ -207,7 +207,7 @@ LIiEventQueue_Enqueue(
 	LItEventQueueElement	*ioElement)
 {
 	UUmAssert(ioElement);
-	
+
 	// there is nothing after the element
 	ioElement->next = NULL;
 
@@ -220,7 +220,7 @@ LIiEventQueue_Enqueue(
 
 	// insert the element at the tail of the queue
 	ioQueue->tail = ioElement;
-	
+
 	// mark the head if there are no elements in the queue
 	if (ioQueue->head == NULL)
 	{
@@ -234,28 +234,28 @@ LIiEventQueue_Initialize(
 	void)
 {
 	UUtUns16			i;
-	
+
 	// initialize the queue
 	LIgEmptyQueue.head	= NULL;
 	LIgEmptyQueue.tail	= NULL;
 	LIgEventQueue.head	= NULL;
 	LIgEventQueue.tail	= NULL;
-	
+
 	// add elements to the empty queue
 	for (i = 0; i < LIcMaxQueueElements; i++)
 	{
 		LItEventQueueElement		*temp;
-		
+
 		// allocate a new element
 		temp =
 			(LItEventQueueElement*)UUrMemory_Block_New(
 				sizeof(LItEventQueueElement));
 		UUmError_ReturnOnNull(temp);
-		
+
 		// insert the element into the empty queue
 		LIiEventQueue_Enqueue(&LIgEmptyQueue, temp);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -265,7 +265,7 @@ LIiEventQueue_Terminate(
 	void)
 {
 	LItEventQueueElement		*temp;
-	
+
 	// clear the empty queue
 	temp = LIiEventQueue_Dequeue(&LIgEmptyQueue);
 	while (temp)
@@ -275,7 +275,7 @@ LIiEventQueue_Terminate(
 	}
 	LIgEmptyQueue.head = NULL;
 	LIgEmptyQueue.tail = NULL;
-	
+
 	// clear the event queue
 	temp = LIiEventQueue_Dequeue(&LIgEventQueue);
 	while (temp)
@@ -304,54 +304,54 @@ LIrActionBuffer_Add(
 {
 	UUtUns16			i;
 	LItBinding			*binding;
-	
+
 	#if UUmPlatform != UUmPlatform_Mac
-		
+
 		// The mac does not like hitting asserts at interrupt time when debugging
-		
+
 		UUmAssertReadPtr(inDeviceInput, sizeof(*inDeviceInput));
 		UUmAssertReadPtr(outAction, sizeof(*outAction));
 		UUmAssert(inDeviceInput->input != LIcKeyCode_None);
-	
+
 	#endif
-	
+
 	// find the binding assigned to this input
 	for (i = 0; i < LIcMaxBindings; i++)
 	{
 		binding = &LIgBindingArray[i];
 		if (binding->boundInput == inDeviceInput->input) break;
 	}
-	
+
 	// if no binding was found, exit
 	if (i == LIcMaxBindings) return;
-	
+
 	#if UUmPlatform != UUmPlatform_Mac
 		// set the data in the action
 		UUmAssertReadPtr(binding->action, sizeof(binding->action));
 	#endif
-	
+
 	switch (binding->action->inputType)
 	{
 		case LIcIT_Button:
 			outAction->buttonBits |=
 				LImMakeBitMask(binding->action->actionData);
 		break;
-		
+
 		case LIcIT_Axis_Asymmetric:
 			outAction->analogValues[binding->action->actionData] +=
 				inDeviceInput->analogValue;
 		break;
-		
+
 		case LIcIT_Axis_Symmetric_Pos:
 			outAction->analogValues[binding->action->actionData] +=
 				inDeviceInput->analogValue;
 		break;
-		
+
 		case LIcIT_Axis_Symmetric_Neg:
 			outAction->analogValues[binding->action->actionData] -=
 				inDeviceInput->analogValue;
 		break;
-		
+
 		case LIcIT_Axis_Delta:
 			outAction->analogValues[binding->action->actionData] +=
 				inDeviceInput->analogValue;
@@ -381,17 +381,17 @@ LIrActionBuffer_Get(
 
 		// take control of the action buffer
 		LIrActionBuffer_Enter();
-			
+
 		// Get the buffer which will be returned
 		returnBuffer = LIgActiveBuffer;
-		
+
 		// Flip the buffer
 		LIgActiveBuffer = !LIgActiveBuffer;
-		
+
 		*outNumActionsInBuffer = LIgBufferIndex[returnBuffer];
 		LIgBufferIndex[returnBuffer] = 0;
 		*outActionBuffer = LIgBuffer[returnBuffer];
-		
+
 		// release the action buffer
 		LIrActionBuffer_Leave();
 	}
@@ -410,19 +410,19 @@ LIiBindings_GetFreeBinding(
 {
 	UUtUns16				i;
 	LItBinding				*binding;
-	
+
 	for (i = 0; i < LIcMaxBindings; i++)
 	{
 		binding = &LIgBindingArray[i];
-		
+
 		if (binding->boundInput == LIcKeyCode_None) break;
 	}
-	
+
 	if (i == LIcMaxBindings)
 	{
 		binding = NULL;
 	}
-	
+
 	return binding;
 }
 
@@ -437,16 +437,16 @@ LIrBinding_Add(
 	LItActionDescription	*ad;
 	UUtUns16				i;
 	UUtBool					found_binding;
-	
+
 	// don't bind to LIcKeyCode_None
 	if (inBoundInput == LIcKeyCode_None) return UUcError_None;
-	
+
 	// init vars that need initing
 	error = UUcError_None;
-		
+
 	// take control of the action buffer
 	LIrActionBuffer_Enter();
-	
+
 	// ------------------------------
 	// search for a binding with a matching boundInput
 	// ------------------------------
@@ -460,12 +460,12 @@ LIrBinding_Add(
 			break;
 		}
 	}
-	
+
 	// ------------------------------
 	// find all the action descriptions and calculate the number of actions
 	// ------------------------------
 	// convert inActionName to lowercase
-	
+
 	// search for a matching action description
 	for (ad = LIgActionDescriptions;
 		 ad->actionName[0] != '\0';
@@ -473,7 +473,7 @@ LIrBinding_Add(
 	{
 		if (UUrString_Compare_NoCase(ad->actionName, inActionName) == 0) break;
 	}
-	
+
 	// if no actions were found, then exit
 	if (ad->actionName[0] == '\0')
 	{
@@ -488,7 +488,7 @@ LIrBinding_Add(
 	// don't allow the escape key's binding to change.  This
 	// test for LIcKeyCode_Escape has to happen here because
 	// the binding for escape goes through this function and if
-	// inBoundInput is checked against LIcKeyCode_Escape, the 
+	// inBoundInput is checked against LIcKeyCode_Escape, the
 	// escape key will never get bound.
 	if ((found_binding) && (binding->boundInput != LIcKeyCode_Escape))
 	{
@@ -503,10 +503,10 @@ LIrBinding_Add(
 			error = UUcError_OutOfMemory;
 			goto exit;
 		}
-		
+
 		// set the bound input
 		binding->boundInput = inBoundInput;
-		
+
 		// add the action descriptions to the binding
 		binding->action = ad;
 	}
@@ -514,9 +514,9 @@ LIrBinding_Add(
 exit:
 	// release the action buffer
 	LIrActionBuffer_Leave();
-	
+
 	//UUrMemory_Block_VerifyList();
-	
+
 	return error;
 }
 
@@ -529,18 +529,18 @@ LIrBindings_Enumerate(
 	UUtUns16			i;
 
 	UUmAssert(inBindingEnumerator);
-	
+
 	for (i = 0; i < LIcMaxBindings; i++)
 	{
 		UUtBool			result;
 		LItBinding		*binding;
-		
+
 		binding = &LIgBindingArray[i];
 		if (binding->boundInput == LIcKeyCode_None)
 		{
 			continue;
 		}
-		
+
 		result =
 			inBindingEnumerator(
 				binding->boundInput,
@@ -556,14 +556,14 @@ LIiBindings_Initialize(
 	void)
 {
 	UUtUns16			i;
-	
+
 	// initialize LIgBindingArray
 	for (i = 0; i < LIcMaxBindings; i++)
 	{
 		LIgBindingArray[i].boundInput = LIcKeyCode_None;
 		LIgBindingArray[i].action = NULL;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -574,24 +574,24 @@ LIrBinding_Remove(
 {
 	LItBinding			*binding;
 	UUtUns16			i;
-	
+
 	// don't unbind escape
 	if ((inBoundInput == LIcKeyCode_Escape) ||
 		(inBoundInput == LIcKeyCode_None))
 	{
 		return;
 	}
-	
+
 	// take control of the action buffer
 	LIrActionBuffer_Enter();
-	
+
 	// search for a binding with a matching boundInput
 	for (i = 0; i < LIcMaxBindings; i++)
 	{
 		binding = &LIgBindingArray[i];
 		if (binding->boundInput == inBoundInput) break;
 	}
-	
+
 	// turn off the binding
 	if (i != LIcMaxBindings)
 	{
@@ -609,21 +609,21 @@ LIiBindings_RemoveAll(
 	void)
 {
 	UUtUns16			i;
-	
+
 	// take control of the action buffer
 	LIrActionBuffer_Enter();
-	
+
 	// turn off all of the bindings
 	for (i = 0; i < LIcMaxBindings; i++)
 	{
 		LItBinding		*binding;
-		
+
 		binding = &LIgBindingArray[i];
-		
+
 		binding->boundInput = LIcKeyCode_None;
 		binding->action = NULL;
 	}
-	
+
 	// release the action buffer
 	LIrActionBuffer_Leave();
 }
@@ -635,7 +635,7 @@ LIrBindings_RemoveAll(
 {
 	// remove all of the bindings
 	LIiBindings_RemoveAll();
-	
+
 	// put escape back
 	LIrBinding_Add(LIcKeyCode_Escape, "escape");
 }
@@ -663,14 +663,14 @@ LIrInputEvent_Add(
 	UUtUns32			inModifiers)
 {
 	LItEventQueueElement	*temp;
-	
+
 	// don't add events when in game mode
 	if (LIgMode_Internal == LIcMode_Game) return;
-	
+
 	// get a queue element from the empty queue
 	temp = LIiEventQueue_Dequeue(&LIgEmptyQueue);
 	if (temp == NULL) return;
-	
+
 	// set up outInputEvent
 	temp->event.type		= inEventType;
 	if (inPoint)
@@ -688,7 +688,7 @@ LIrInputEvent_Add(
 		LIrPlatform_InputEvent_InterpretModifiers(
 			inEventType,
 			inModifiers);
-	
+
 	// add the event to the queue
 	LIiEventQueue_Enqueue(&LIgEventQueue, temp);
 }
@@ -699,17 +699,17 @@ LIrInputEvent_Get(
 	LItInputEvent		*outInputEvent)
 {
 	LItEventQueueElement	*temp;
-	
+
 	// update the input system
 	LIrUpdate();
-	
+
 	// set up outInputEvent
 	outInputEvent->type			= LIcInputEvent_None;
 	outInputEvent->where.x		= 0;
 	outInputEvent->where.y		= 0;
 	outInputEvent->key			= 0;
 	outInputEvent->modifiers	= 0;
-	
+
 	// try to get an event from the event queue and return the event
 	// if one was available
 	temp = LIiEventQueue_Dequeue(&LIgEventQueue);
@@ -721,13 +721,13 @@ LIrInputEvent_Get(
 		if (NULL != LIgCheatHook) {
 			LIgCheatHook(outInputEvent);
 		}
-		
+
 		// put temp into the empty queue
 		LIiEventQueue_Enqueue(&LIgEmptyQueue, temp);
-		
+
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -758,7 +758,7 @@ static void LIrMode_Set_Internal(void)
 	LItMode new_mode;
 
 	LIgMouse_Invert = ONrPersist_IsInvertMouseOn();
-	
+
 	if (!LIgGameIsActive) {
 		new_mode = LIcMode_Normal;
 	}
@@ -768,13 +768,13 @@ static void LIrMode_Set_Internal(void)
 
 	// don't switch modes if it isn't necessary
 	if (LIgMode_Internal == new_mode) return;
-	
+
 	// update the platform level
 	LIrPlatform_Mode_Set(new_mode);
-	
+
 	// clear out any old events
 	while (LIrPlatform_Update(new_mode)){};
-	
+
 	// record the mode change
 	LIgMode_Internal = new_mode;
 
@@ -832,20 +832,20 @@ LIiInterruptHandleProc(
 	{
 		// take control of the action buffers
 		LIrActionBuffer_Enter();
-		
+
 		// wrap the action buffer if it is full
 		if(LIgBufferIndex[LIgActiveBuffer] >= LIcMaxActionsInBuffer)
 		{
 			LIgBufferIndex[LIgActiveBuffer] = 0;
 		}
-		
+
 		// get an action from the platform
 		LIrPlatform_PollInputForAction(
 			&LIgBuffer[LIgActiveBuffer][LIgBufferIndex[LIgActiveBuffer]]);
 
 		// advance to the next buffer in the buffer
 		LIgBufferIndex[LIgActiveBuffer]++;
-		
+
 		// release the action buffers
 		LIrActionBuffer_Leave();
 	}
@@ -862,24 +862,24 @@ static void mac_get_input_in_game(
 	{
 		// take control of the action buffers
 		LIrActionBuffer_Enter();
-		
+
 		// wrap the action buffer if it is full
 		if(LIgBufferIndex[LIgActiveBuffer] >= LIcMaxActionsInBuffer)
 		{
 			LIgBufferIndex[LIgActiveBuffer] = 0;
 		}
-		
+
 		// get an action from the platform
 		LIrPlatform_PollInputForAction(
 			&LIgBuffer[LIgActiveBuffer][LIgBufferIndex[LIgActiveBuffer]]);
 
 		// advance to the next buffer in the buffer
 		LIgBufferIndex[LIgActiveBuffer]++;
-		
+
 		// release the action buffers
 		LIrActionBuffer_Leave();
 	}
-	
+
 	return;
 }
 #endif
@@ -894,22 +894,22 @@ LIiTerminate_AtExit(
 	void)
 {
 	// this can be called reentrantly under Win32 so make sure that doesn't happen
-	static UUtBool inside = UUcFalse;		
-		
+	static UUtBool inside = UUcFalse;
+
 	// take control of the action buffer
 	LIrActionBuffer_Enter();
-	
+
 	if (!inside)
 	{
 		inside = UUcTrue;
-		
+
 		if (LIgInterruptProcRef != NULL)
 		{
 			UUrInterruptProc_Deinstall(LIgInterruptProcRef);
 			LIgInterruptProcRef = NULL;
 		}
 	}
-	
+
 	inside = UUcFalse;
 
 	// release the action buffer
@@ -943,22 +943,22 @@ LIrInitialize(
 	LIgBufferIndex[1]		= 0;
 	LIgInterruptProcRef 	= NULL;
 	LIgActionBufferUnavail	= UUcFalse;
-	
+
 	// register an atexit proc
 	UUrAtExit_Register(LIiTerminate_AtExit);
-	
+
 	// initialize the bindings
 	error = LIiBindings_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the queues
 	error = LIiEventQueue_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the platform specific input stuff
 	error = LIrPlatform_Initialize(inInstance, inWindow);
 	UUmError_ReturnOnError(error);
-	
+
 	// install the interrupt handler
 #if UUmPlatform != UUmPlatform_Mac
 	// the whole interrupt proc thing does not work on Mac. don't use it.
@@ -1070,19 +1070,19 @@ LIrInitializeDeveloperKeys(
 	LIrBinding_Add(LIcKeyCode_L, "record_screen");
 	LIrBinding_Add(LIcKeyCode_Insert, "addflag");
 	LIrBinding_Add(LIcKeyCode_Delete, "deleteflag");
-	
+
 	LIrBinding_Add(LIcKeyCode_Subtract, "man_cam_move_up");
 	LIrBinding_Add(LIcKeyCode_Add, "man_cam_move_down");
 	LIrBinding_Add(LIcKeyCode_NumPad1, "man_cam_move_left");
 	LIrBinding_Add(LIcKeyCode_NumPad3, "man_cam_move_right");
 	LIrBinding_Add(LIcKeyCode_NumPad8, "man_cam_move_forward");
 	LIrBinding_Add(LIcKeyCode_NumPad5, "man_cam_move_backward");
-	
+
 	LIrBinding_Add(LIcKeyCode_NumPad6, "man_cam_pan_left");
 	LIrBinding_Add(LIcKeyCode_NumPad4, "man_cam_pan_right");
 	LIrBinding_Add(LIcKeyCode_UpArrow, "man_cam_pan_up");
 	LIrBinding_Add(LIcKeyCode_DownArrow, "man_cam_pan_down");
-	
+
 	LIrBinding_Add(LIcKeyCode_Comma, "place_quad");
 	LIrBinding_Add(LIcKeyCode_Period, "place_quad_mode");
 }
@@ -1113,19 +1113,19 @@ LIrUnbindDeveloperKeys(
 	LIrBinding_Remove(LIcKeyCode_L);
 	LIrBinding_Remove(LIcKeyCode_Insert);
 	LIrBinding_Remove(LIcKeyCode_Delete);
-	
+
 	LIrBinding_Remove(LIcKeyCode_Subtract);
 	LIrBinding_Remove(LIcKeyCode_Add);
 	LIrBinding_Remove(LIcKeyCode_NumPad1);
 	LIrBinding_Remove(LIcKeyCode_NumPad3);
 	LIrBinding_Remove(LIcKeyCode_NumPad8);
 	LIrBinding_Remove(LIcKeyCode_NumPad5);
-	
+
 	LIrBinding_Remove(LIcKeyCode_NumPad6);
 	LIrBinding_Remove(LIcKeyCode_NumPad4);
 	LIrBinding_Remove(LIcKeyCode_UpArrow);
 	LIrBinding_Remove(LIcKeyCode_DownArrow);
-	
+
 	LIrBinding_Remove(LIcKeyCode_Comma);
 	LIrBinding_Remove(LIcKeyCode_Period);
 }
@@ -1141,13 +1141,13 @@ LIrTerminate(
 		UUrInterruptProc_Deinstall(LIgInterruptProcRef);
 		LIgInterruptProcRef = NULL;
 	}
-	
+
 	// terminate the platform specific input stuff
 	LIrPlatform_Terminate();
-	
+
 	// terminate the queue
 	LIiEventQueue_Terminate();
-	
+
 	// terminate the bindings
 	LIiBindings_Terminate();
 
@@ -1181,7 +1181,7 @@ LIrTestKey(LItKeyCode inKeyCode)
 	return result;
 }
 
-UUtBool 
+UUtBool
 LIrKeyWentDown(LItKeyCode inKeyCode, UUtBool *ioOldKeyDown)
 {
 	UUtBool key_down = LIrTestKey(inKeyCode);

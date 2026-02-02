@@ -42,19 +42,19 @@ GLrPlatform_Initialize(
 	OSStatus				status;
 	DisplayIDType			displayID;
 	GDHandle				device;*/
-	
+
 	UUmAssert(ONgPlatformData.gameWindow);
-	
+
 	// get the device that the draw sprocket context is displayed on
 /*	dsp_context = (DSpContextReference)GetWRefCon(ONgPlatformData.gameWindow);
 	if (dsp_context == NULL) return UUcError_Generic;
-	
+
 	status = DSpContext_GetDisplayID(dsp_context, &displayID);
 	if (status != noErr) return UUcError_Generic;
-	
+
 	status = DMGetGDeviceByDisplayID(displayID, &device, UUcFalse);
 	if (status != noErr) return UUcError_Generic;
-	
+
 	// choose a pixel format
 	pixel_format = aglChoosePixelFormat(&device, 1, GLgPixelAttributes_FullScreen);
 	if (pixel_format == NULL)
@@ -62,7 +62,7 @@ GLrPlatform_Initialize(
 		pixel_format = aglChoosePixelFormat(&device, 1, GLgPixelAttributes_Window);
 		if (pixel_format == NULL) return UUcError_Generic;
 	}*/
-	
+
 	// choose a pixel format
 //	pixel_format = aglChoosePixelFormat(NULL, 0, GLgPixelAttributes_FullScreen);
 //	if (pixel_format == NULL)
@@ -74,22 +74,22 @@ GLrPlatform_Initialize(
 			if (pixel_format == NULL) { return UUcError_Generic; }
 		}
 	}
-	
+
 	// create an AGL context
 	GLgContext = aglCreateContext(pixel_format, NULL);
 	if (GLgContext == NULL) return UUcError_Generic;
-	
+
 	// attach the window to the context
 	result = aglSetDrawable(GLgContext, ONgPlatformData.gameWindow);
 	if (result == GL_FALSE) return UUcError_Generic;
-	
+
 	// set the current context
 	result = aglSetCurrentContext(GLgContext);
 	if (result == GL_FALSE) return UUcError_Generic;
-	
+
 	// destroy the pixel format
 	aglDestroyPixelFormat(pixel_format);
-	
+
 	/* Find the depth of the main screen */
 	pixelsize = (*(*GetMainDevice())->gdPMap)->pixelSize;
 	if (32 != pixelsize) exit(1);

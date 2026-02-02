@@ -37,14 +37,14 @@ typedef enum LItInputEventType
 	LIcInputEvent_KeyUp,
 	LIcInputEvent_KeyDown,
 	LIcInputEvent_KeyRepeat
-	
+
 } LItInputEventType;
 
 typedef enum LItMode
 {
 	LIcMode_Normal,
 	LIcMode_Game
-	
+
 } LItMode;
 
 // ======================================================================
@@ -114,7 +114,7 @@ enum
 	LIc_Bit_Fire1,
 	LIc_Bit_Fire2,
 	LIc_Bit_Fire3,
-	
+
 	LIcNumButtonBits
 };
 
@@ -177,7 +177,7 @@ typedef enum LItInputType
 	LIcIT_Axis_Delta,
 	LIcIT_Axis_Symmetric_Pos,
 	LIcIT_Axis_Symmetric_Neg
-	
+
 } LItInputType;
 
 // ======================================================================
@@ -185,7 +185,7 @@ typedef enum LItInputType
 typedef enum
 {
 	LIcKeyCode_None				= 0x00,
-	
+
 	LIcKeyCode_Escape			= 0x1B,
 	LIcKeyCode_F1				= 0x81,
 	LIcKeyCode_F2				= 0x82,
@@ -217,7 +217,7 @@ typedef enum
 	LIcKeyCode_Minus			= '-',
 	LIcKeyCode_Equals			= '=',
 	LIcKeyCode_BackSpace		= 0x08,
-	
+
 	LIcKeyCode_Tab				= 0x09,
 	LIcKeyCode_Q				= 'q',
 	LIcKeyCode_W				= 'w',
@@ -232,7 +232,7 @@ typedef enum
 	LIcKeyCode_LeftBracket		= '[',
 	LIcKeyCode_RightBracket		= ']',
 	LIcKeyCode_BackSlash		= '\\',
-	
+
 	LIcKeyCode_CapsLock			= 0x90,
 	LIcKeyCode_A				= 'a',
 	LIcKeyCode_S				= 's',
@@ -246,7 +246,7 @@ typedef enum
 	LIcKeyCode_Semicolon		= ';',
 	LIcKeyCode_Apostrophe		= '\'',
 	LIcKeyCode_Return			= 0x0D,
-	
+
 	LIcKeyCode_LeftShift		= 0x91,
 	LIcKeyCode_Z				= 'z',
 	LIcKeyCode_X				= 'x',
@@ -259,7 +259,7 @@ typedef enum
 	LIcKeyCode_Period			= '.',
 	LIcKeyCode_Slash			= '/',
 	LIcKeyCode_RightShift		= 0x92,
-	
+
 	LIcKeyCode_LeftControl		= 0x93,
 	LIcKeyCode_LeftOption		= 0x94,
 	LIcKeyCode_LeftAlt			= 0x95,
@@ -268,23 +268,23 @@ typedef enum
 	LIcKeyCode_RightOption		= 0x97,
 	LIcKeyCode_AppMenuKey		= 0x98,
 	LIcKeyCode_RightControl		= 0x99,
-	
+
 	LIcKeyCode_PrintScreen		= LIcKeyCode_F13,
 	LIcKeyCode_ScrollLock		= LIcKeyCode_F14,
 	LIcKeyCode_Pause			= LIcKeyCode_F15,
-	
+
 	LIcKeyCode_Insert			= 0xAA,
 	LIcKeyCode_Home				= 0xAB,
 	LIcKeyCode_PageUp			= 0xAC,
 	LIcKeyCode_Delete			= 0xAD,
 	LIcKeyCode_End				= 0xAE,
 	LIcKeyCode_PageDown			= 0xAF,
-	
+
 	LIcKeyCode_UpArrow			= 0xB0,
 	LIcKeyCode_LeftArrow		= 0xB1,
 	LIcKeyCode_DownArrow		= 0xB2,
 	LIcKeyCode_RightArrow		= 0xB3,
-	
+
 	LIcKeyCode_NumLock			= 0xB4,
 	LIcKeyCode_Divide			= 0xB5,
 	LIcKeyCode_Multiply			= 0xB6,
@@ -294,7 +294,7 @@ typedef enum
 	LIcKeyCode_NumPadEnter		= 0xBA,
 	LIcKeyCode_NumPadComma		= 0xBB,
 	LIcKeyCode_NumPadEquals		= 0xBC,
-	
+
 	LIcKeyCode_NumPad0			= 0xBD,
 	LIcKeyCode_NumPad1			= 0xBE,
 	LIcKeyCode_NumPad2			= 0xBF,
@@ -305,7 +305,7 @@ typedef enum
 	LIcKeyCode_NumPad7			= 0xC4,
 	LIcKeyCode_NumPad8			= 0xC5,
 	LIcKeyCode_NumPad9			= 0xC6,
-	
+
 	LIcKeyCode_Tilde			= '~',
 	LIcKeyCode_Exclamation		= '!',
 	LIcKeyCode_At				= '@',
@@ -327,10 +327,10 @@ typedef enum
 	LIcKeyCode_LessThan			= '<',
 	LIcKeyCode_GreaterThan		= '>',
 	LIcKeyCode_Question			= '?',
-	
+
 	LIcKeyCode_LeftWindowsKey	= 0xC7,
 	LIcKeyCode_RightWindowsKey	= 0xC9
-	
+
 } LItKeyCode;
 
 enum
@@ -367,7 +367,7 @@ enum
 	LIcKeyState_RCommandDown	= 0x0008,	/* right control key under Win32 */
 	LIcKeyState_LAltDown		= 0x0010,
 	LIcKeyState_RAltDown		= 0x0020,
-	
+
 	LIcKeyState_ShiftDown		= (LIcKeyState_LShiftDown | LIcKeyState_RShiftDown),
 	LIcKeyState_CommandDown		= (LIcKeyState_LCommandDown | LIcKeyState_RCommandDown),
 	LIcKeyState_AltDown			= (LIcKeyState_LAltDown | LIcKeyState_RAltDown)
@@ -380,7 +380,7 @@ typedef struct LItAction
 {
 	LItButtonBits		buttonBits;
 	float				analogValues[LIcNumAnalogValues];
-	
+
 } LItAction;
 
 typedef struct LItInputEvent
@@ -389,7 +389,7 @@ typedef struct LItInputEvent
 	IMtPoint2D			where;
 	UUtInt16			key;
 	UUtUns32			modifiers;
-	
+
 } LItInputEvent;
 
 // ----------------------------------------------------------------------
@@ -408,7 +408,7 @@ typedef struct LItDeviceInput
 {
 	UUtUns32				input;
 	float					analogValue;
-	
+
 } LItDeviceInput;
 
 // actions that the game understands
@@ -417,7 +417,7 @@ typedef struct LItActionDescription
 	UUtUns16				inputType;
 	UUtUns16				actionData;		// AnalogValue index or LIc_Bit_*
 	char					actionName[LIcMaxActionNameLength];
-	
+
 } LItActionDescription;
 
 // binding of device input to actions
@@ -425,7 +425,7 @@ typedef struct LItBinding
 {
 	UUtUns32				boundInput;
 	LItActionDescription	*action;
-	
+
 } LItBinding;
 
 // enumerator function pointer typedef
@@ -442,14 +442,14 @@ typedef UUtBool
 UUtBool
 LIrTestKey(LItKeyCode inKeyCode);
 
-UUtBool 
+UUtBool
 LIrKeyWentDown(LItKeyCode inKeyCode, UUtBool *ioOldKeyDown);
 
 void
 LIrActionBuffer_Add(
 	LItAction			*outAction,
 	LItDeviceInput		*inDeviceInput);
-	
+
 void
 LIrActionBuffer_Get(
 	UUtUns16			*outNumActionsInBuffer,
@@ -465,7 +465,7 @@ void
 LIrBindings_Enumerate(
 	LItEnumBindings		inBindingEnumerator,
 	UUtUns32			inUserParam);
-	
+
 void
 LIrBinding_Remove(
 	UUtUns32			inBoundInput);
@@ -473,7 +473,7 @@ LIrBinding_Remove(
 void
 LIrBindings_RemoveAll(
 	void);
-	
+
 // ----------------------------------------------------------------------
 void
 LIrInputEvent_Add(
@@ -481,7 +481,7 @@ LIrInputEvent_Add(
 	IMtPoint2D			*inPoint,
 	UUtUns32			inKey,
 	UUtUns32			inModifiers);
-	
+
 UUtBool
 LIrInputEvent_Get(
 	LItInputEvent		*outInputEvent);
@@ -498,13 +498,13 @@ void LIrInputEvent_CheatHook(LItCheatHook inHook);
 LItMode
 LIrMode_Get(
 	void);
-	
+
 void
 LIrMode_Set(
 	LItMode				inMode);
 
 void LIrGameIsActive(UUtBool inGameIsActive);
-	
+
 // ----------------------------------------------------------------------
 void
 LIrTranslate_InputCode(
@@ -537,6 +537,6 @@ LIrUpdate(
 UUtError
 LIrRegisterTemplates(
 	void);
-	
+
 // ======================================================================
 #endif /* BFW_LOCALINPUT_H */

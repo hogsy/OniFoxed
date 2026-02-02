@@ -72,7 +72,7 @@ typedef struct tParseData
 	UUtBool				parseThisType;
 } tParseData;
 
-tParseData gParseData[] = 
+tParseData gParseData[] =
 {
 	{ "texture", Imp_AddTexture, UUcTrue },
 	{ "texture_big", Imp_AddTexture_Big, UUcTrue },
@@ -140,9 +140,9 @@ iStripNonFileNameStuff(
 	char*	inStr)
 {
 	char*	p = inStr;
-	
+
 	while((*p != 0) && !UUrIsSpace(*p) && *p != '#') p++;
-	
+
 	*p = 0;
 }
 
@@ -157,12 +157,12 @@ static UUtError Imp_Process_InsTxt(BFtFileRef *inSourceFileRef)
 	char				*instanceNameStr;
 	UUtUns32			sourceModDate;
 	tParseData			*curParseData;
-	
-		
-	curFileName = BFrFileRef_GetLeafName(inSourceFileRef); 
-	
+
+
+	curFileName = BFrFileRef_GetLeafName(inSourceFileRef);
+
 	UUrMemory_Leak_Start(curFileName);
-	
+
 	error =
 		GRrGroup_Context_NewFromFileRef(
 			inSourceFileRef,
@@ -170,12 +170,12 @@ static UUtError Imp_Process_InsTxt(BFtFileRef *inSourceFileRef)
 			NULL,
 			&fileGroupContext,
 			&fileGroup);
-	if (error) 
+	if (error)
 	{
 		Imp_PrintWarning("Could not create group");
 		goto errorExit;
 	}
-	
+
 	/*
 	 * Get the parse name
 	 */
@@ -190,7 +190,7 @@ static UUtError Imp_Process_InsTxt(BFtFileRef *inSourceFileRef)
 			Imp_PrintWarning("File \"%s\": Could not get template string",  (UUtUns32)curFileName, 0, 0);
 			goto errorExit;
 		}
-		
+
 	/*
 	 * Get the instance name
 	 */
@@ -205,7 +205,7 @@ static UUtError Imp_Process_InsTxt(BFtFileRef *inSourceFileRef)
 			Imp_PrintWarning("File \"%s\": Could not get instance string",  (UUtUns32)curFileName, 0, 0);
 			goto errorExit;
 		}
-				
+
 	/*
 	 * Get the instance source file mod date
 	 */
@@ -217,8 +217,8 @@ static UUtError Imp_Process_InsTxt(BFtFileRef *inSourceFileRef)
 			Imp_PrintWarning("Could not get instance source mod date");
 			goto errorExit;
 		}
-		
-				
+
+
 	/*
 	 * Parse the data
 	 */
@@ -226,25 +226,25 @@ static UUtError Imp_Process_InsTxt(BFtFileRef *inSourceFileRef)
 		while(curParseData->name != 0)
 		{
 			if(!strcmp(curParseData->name, parserNameStr)) break;
-			
+
 			curParseData++;
-		}	
-		
+		}
+
 		if ((curParseData->name != 0) && (curParseData->parseThisType))
 		{
 			Imp_PrintMessage(IMPcMsg_Cosmetic, "template: %s"UUmNL, parserNameStr);
 			Imp_PrintMessage(IMPcMsg_Important, "\tinstanceName: %s"UUmNL, instanceNameStr);
 			Imp_PrintMessage(IMPcMsg_Cosmetic, "\tprocessing %s"UUmNL, curParseData->name);
-			
+
 			if(IMPgConstructing) TMmConstruction_MajorCheck();
-			
+
 			// cheesy hack to only parse environments when outputting lightmaps
 			if(IMPgLightmaps && IMPgLightmap_Output &&
 				(curParseData->parseFunction != IMPrEnv_Add))
 			{
 				goto errorExit;
 			}
-			
+
 			error = curParseData->parseFunction(
 				inSourceFileRef,
 				sourceModDate,
@@ -253,8 +253,8 @@ static UUtError Imp_Process_InsTxt(BFtFileRef *inSourceFileRef)
 
 			if(error != UUcError_None)
 			{
-				Imp_PrintWarning("error %d Could not parse instance file %s.", 
-					error, 
+				Imp_PrintWarning("error %d Could not parse instance file %s.",
+					error,
 					BFrFileRef_GetLeafName(inSourceFileRef));
 			}
 
@@ -264,14 +264,14 @@ static UUtError Imp_Process_InsTxt(BFtFileRef *inSourceFileRef)
 		{
 			fprintf(stderr, "\tNO PARSER FOUND"UUmNL);
 		}
-	
+
 errorExit:
 		if (NULL != fileGroupContext) {
 			GRrGroup_Context_Delete(fileGroupContext);
 		}
 
 	UUrMemory_Leak_StopAndReport();
-	
+
 	return error;
 }
 
@@ -285,17 +285,17 @@ UUtError Imp_Process_Bin(BFtFileRef *inSourceFileRef)
 	void				*separate_data;
 	UUtUns32			data_length;
 	UUtError			error;
-	
+
 	// don't processes bin files when outputting lightmaps
 	if ((IMPgLightmaps) && (IMPgLightmap_Output))
 	{
 		return UUcError_None;
 	}
-	
+
 	curFileName = BFrFileRef_GetLeafName(inSourceFileRef);
 
 	UUrMemory_Leak_Start(curFileName);
-	
+
 	// allocate memory and copy the file's contents into that memory
 	error =
 		BFrFileRef_LoadIntoMemory(
@@ -303,7 +303,7 @@ UUtError Imp_Process_Bin(BFtFileRef *inSourceFileRef)
 			&data_length,
 			&data);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to load binary file into memory");
-	
+
 	if (data_length > 0)
 	{
 		Imp_PrintMessage(IMPcMsg_Important, "\tbinaryFileName: %s"UUmNL, curFileName);
@@ -335,7 +335,7 @@ UUtError Imp_Process_Bin(BFtFileRef *inSourceFileRef)
 				0,
 				&binary_data);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create binary data instance");
-		
+
 		// copy the file data into the raw template data
 		separate_data = TMrConstruction_Separate_New(data_length, BDcTemplate_BinaryData);
 		if (separate_data == NULL) {
@@ -346,18 +346,18 @@ UUtError Imp_Process_Bin(BFtFileRef *inSourceFileRef)
 			data,
 			separate_data,
 			data_length);
-		
+
 		binary_data->data_size = data_length;
 		binary_data->data_index = (TMtSeparateFileOffset) TMrConstruction_Separate_Write(separate_data);
 
 		if(IMPgConstructing) { TMmConstruction_MajorCheck(); }
 	}
-	
+
 	// dispose of the allocated memory
 	UUrMemory_Block_Delete(data);
-	
+
 	UUrMemory_Leak_StopAndReport();
-	
+
 	return UUcError_None;
 }
 
@@ -366,17 +366,17 @@ static UUtError Imp_Process_OneSourceFile(BFtFileRef *inSourceFileRef)
 	UUtError			error;
 	const char			*curFileName;
 	char				*suffix;
-	
-	curFileName = BFrFileRef_GetLeafName(inSourceFileRef); 
-	
+
+	curFileName = BFrFileRef_GetLeafName(inSourceFileRef);
+
 	if(BFrFileRef_FileExists(inSourceFileRef) == UUcFalse)
 	{
 		Imp_PrintWarning(
-			"Batch file referred to instance file \"%s\" but that file does not exist!", 
+			"Batch file referred to instance file \"%s\" but that file does not exist!",
 			curFileName);
 		return UUcError_Generic;
 	}
-	
+
 	suffix = strrchr(curFileName, '.');
 	if (strcmp(suffix, ".bin") == 0)
 	{
@@ -389,28 +389,28 @@ static UUtError Imp_Process_OneSourceFile(BFtFileRef *inSourceFileRef)
 		error = Imp_Process_InsTxt(inSourceFileRef);
 	}
 	IMPmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
 UUtError
 Imp_BatchFile_Process(
 	BFtFileRef*			inBatchFileRef)
-{	
+{
 	UUtError		error;
 	BFtTextFile*	batchFile;
 	char*			curFileName;
-	BFtFileRef*		sourceFileRef;	
+	BFtFileRef*		sourceFileRef;
 	UUtBool			retry,processList,abort;
 	UUtUns16 		numFiles,i;
 	BFtFileRef 		*dir[IMPcMaxDirInclude];
 	UUtInt64		startTime = UUrMachineTime_High();
 	UUtUns32		startInstances = TMrConstruction_GetNumInstances();
 	char*			includeName;
-		
+
 	error = BFrTextFile_OpenForRead(inBatchFileRef, &batchFile);
 	UUmError_ReturnOnErrorMsg(error, "Could not open batch file");
-	
+
 	while(1)
 	{
 		curFileName = BFrTextFile_GetNextStr(batchFile);
@@ -418,18 +418,18 @@ Imp_BatchFile_Process(
 			break;
 		}
 		processList = UUcFalse;
-		
+
 		if ('+' == curFileName[0]) {
 			UUtBool retryFindBatchFile = UUcFalse;
 			includeName = curFileName + 1;
-	
+
 			iStripNonFileNameStuff(includeName);
 			Imp_PrintMessage(IMPcMsg_Important, "include"UUmNL);
 			Imp_PrintMessage(IMPcMsg_Important, "\tfileName: %s"UUmNL, includeName);
 			Imp_PrintMessage(IMPcMsg_Important, "*************begin*include*************"UUmNL);
 
 			abort = UUcFalse;
-			do 
+			do
 			{
 				error =
 					BFrFileRef_DuplicateAndReplaceName(
@@ -437,7 +437,7 @@ Imp_BatchFile_Process(
 						includeName,
 						&sourceFileRef);
 				UUmError_ReturnOnErrorMsgP(error, "Include File \"%s\" was not found", (UUtUns32)curFileName, 0, 0);
-				
+
 				if(BFrFileRef_FileExists(sourceFileRef)) {
 					retryFindBatchFile = UUcFalse;
 				}
@@ -477,19 +477,19 @@ Imp_BatchFile_Process(
 			char			*ins_txt_suffix = "_ins.txt";
 			char			*bin_suffix = ".bin";
 			UUtUns16		num_bin_files;
-			
+
 			includeName = curFileName + 1;
-			
+
 			iStripNonFileNameStuff(includeName);
 			Imp_PrintMessage(IMPcMsg_Important, "include multiple"UUmNL);
 			Imp_PrintMessage(IMPcMsg_Important, "\tfileName: %s"UUmNL, includeName);
-			
+
 			error =	BFrFileRef_DuplicateAndReplaceName(
 				inBatchFileRef,
 				includeName,
 				&sourceFileRef);
 			UUmError_ReturnOnErrorMsgP(error, "Unable to open directory \"%s\"", (UUtUns32)includeName,0,0);
-			
+
 			error = BFrDirectory_GetFileList(
 				sourceFileRef,
 				NULL,
@@ -507,10 +507,10 @@ Imp_BatchFile_Process(
 				&num_bin_files,
 				(dir + numFiles));
 			UUmError_ReturnOnErrorMsgP(error, "Unable to get file list \"%s\"", (UUtUns32)includeName,0,0);
-			
+
 			numFiles += num_bin_files;
 			processList = UUcTrue;
-			
+
 			BFrFileRef_Dispose(sourceFileRef);
 		}
 		else if ('!' == curFileName[0]) {
@@ -521,11 +521,11 @@ Imp_BatchFile_Process(
 		else if ('#' == curFileName[0]) {
 			continue;
 		}
-		
+
 		if (!processList)
 		{
 			iStripNonFileNameStuff(curFileName);
-		
+
 			if (0 == curFileName[0]) {
 				continue;
 			}
@@ -538,13 +538,13 @@ Imp_BatchFile_Process(
 			UUmError_ReturnOnErrorMsgP(error, "File \"%s\" was not found", (UUtUns32)curFileName, 0, 0);
 			numFiles = 1;
 		}
-		
+
 		for (i=0; i<numFiles; i++)
 		{
 			do {
 				retry = UUcFalse;
 				error = Imp_Process_OneSourceFile(dir[i]);
-				
+
 				if (error) {
 					if (IMPgSuppressErrors) {
 						Imp_PrintMessage(IMPcMsg_Important, "ERROR: failed to process this instance! Error %d", error);
@@ -571,32 +571,32 @@ Imp_BatchFile_Process(
 					}
 				}
 			} while(retry);
-		
+
 			BFrFileRef_Dispose(dir[i]);
 		}
-		
+
 		Imp_PrintMessage(IMPcMsg_Cosmetic, "***************************************"UUmNL);
 	}
-	
+
 	BFrTextFile_Close(batchFile);
 
 	{
 		UUtUns32 endInstances = TMrConstruction_GetNumInstances();
 		double timeInSeconds;
-		
+
 		timeInSeconds = (double) (UUrMachineTime_High() - startTime);
 		timeInSeconds /= UUgMachineTime_High_Frequency;
 
-		Imp_PrintMessage(IMPcMsg_Important, "%s processed in %f seconds."UUmNL, 
+		Imp_PrintMessage(IMPcMsg_Important, "%s processed in %f seconds."UUmNL,
 			BFrFileRef_GetLeafName(inBatchFileRef),
-			timeInSeconds);	
+			timeInSeconds);
 
-		Imp_PrintMessage(IMPcMsg_Important, "%d instances, %d total instances"UUmNL, 
+		Imp_PrintMessage(IMPcMsg_Important, "%d instances, %d total instances"UUmNL,
 				endInstances - startInstances,
 				endInstances);
 
 	}
-	
+
 	return UUcError_None;
 }
 

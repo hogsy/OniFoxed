@@ -1,12 +1,12 @@
 /*
 	FILE:	Imp_Texture.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: August 14, 1997
-	
+
 	PURPOSE: Header file for the BMP file format
-	
+
 	Copyright 1997
 
 */
@@ -24,7 +24,7 @@
 #include "Imp_Texture.h"
 #include "Imp_TextureFlags.h"
 
-UUtUns16	gSizeTable[9][9] = 
+UUtUns16	gSizeTable[9][9] =
 			{
 				{0, 0, 0, 0, 0, 0, 0, 0, 0},
 				{0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -64,7 +64,7 @@ Imp_AddTexture(
 	BFtFileRef*			file;
 	char				mungedInstanceName[BFcMaxFileNameLength];
 	tTextureFlags		flags;
-	
+
 	error =
 		Imp_Common_GetFileRefAndModDate(
 			inSourceFileRef,
@@ -72,10 +72,10 @@ Imp_AddTexture(
 			"file",
 			&file);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get file name");
-	
+
 	UUrString_Copy(mungedInstanceName, inInstanceName, BFcMaxFileNameLength);
 	UUrString_StripExtension(mungedInstanceName);
-	
+
 	// setup default flags
 	Imp_ClearTextureFlags(&flags);
 	flags.flags = 0;
@@ -83,7 +83,7 @@ Imp_AddTexture(
 	flags.hasFlagFile = cTextureFlagFile_No;
 
 	Imp_ProcessTextureFlags(inGroup, mungedInstanceName, &flags);
-	
+
 	error = Imp_ProcessTexture(file, 0, &flags, NULL, mungedInstanceName, IMPcIgnoreTextureRef);
 
 	BFrFileRef_Dispose(file);
@@ -145,9 +145,9 @@ static UUtError iIsValidTextureMapSize(UUtUns32 inWidth, UUtUns32 inHeight)
 }
 
 static UUtError iMakeAnimFrameFileRef(
-	BFtFileRef *inDirectoryRef, 
+	BFtFileRef *inDirectoryRef,
 	char *inBaseName,
-	UUtUns16 itr, 
+	UUtUns16 itr,
 	char *suffixName,
 	BFtFileRef **outFileRef)
 {
@@ -157,9 +157,9 @@ static UUtError iMakeAnimFrameFileRef(
 	BFtFileRef *frameFileRef;
 	UUtBool retry;
 	const char*	dirLeafName;
-	
+
 	dirLeafName = BFrFileRef_GetLeafName(inDirectoryRef);
-	
+
 	do
 	{
 		retry = UUcFalse;
@@ -168,8 +168,8 @@ static UUtError iMakeAnimFrameFileRef(
 			inBaseName,
 			itr + 1,
 			suffixName);
-			
-		error = 
+
+		error =
 			BFrFileRef_DuplicateAndAppendName(
 				inDirectoryRef,
 				frameName1,
@@ -185,8 +185,8 @@ static UUtError iMakeAnimFrameFileRef(
 				inBaseName,
 				itr + 1,
 				suffixName);
-			
-			error = 
+
+			error =
 				BFrFileRef_DuplicateAndAppendName(
 					inDirectoryRef,
 					frameName2,
@@ -194,7 +194,7 @@ static UUtError iMakeAnimFrameFileRef(
 			UUmError_ReturnOnErrorMsg(error, "could not create file ref for anim frame");
 		}
 
-		if (!BFrFileRef_FileExists(frameFileRef)) 
+		if (!BFrFileRef_FileExists(frameFileRef))
 		{
 			BFrFileRef_Dispose(frameFileRef);
 			frameFileRef = NULL;
@@ -287,14 +287,14 @@ Imp_ProcessTextureAnimation(
 			IMPcUniqueTextureName,
 			&frameTexture);
 		UUmError_ReturnOnErrorMsg(error, "failed to read anim frame");
-			
+
 		BFrFileRef_Dispose(frameFileRef);
-		
+
 		animation->maps[itr] = frameTexture;
 	}
-	
+
 	BFrFileRef_Dispose(animDirectoryRef);
-	
+
 	*outTextureAnimationRef = animation;
 
 	return UUcError_None;
@@ -360,7 +360,7 @@ static void iUpdateTextureSizeTable(const M3tTextureMap *inTexture)
 	{
 		if (gNumInvalidTextures < cMaxInvalidTextures) {
 			tInvalidTextureInfo *new_invalid_texture;
-			
+
 			new_invalid_texture = gInvalidTextureInfo + gNumInvalidTextures;
 			gNumInvalidTextures++;
 
@@ -368,7 +368,7 @@ static void iUpdateTextureSizeTable(const M3tTextureMap *inTexture)
 
 			new_invalid_texture->texelType = inTexture->texelType;
 			new_invalid_texture->width = inTexture->width;
-			new_invalid_texture->height = inTexture->height;	
+			new_invalid_texture->height = inTexture->height;
 		}
 	}
 
@@ -387,7 +387,7 @@ Imp_ProcessTexture(
 {
 	UUtError			error;
 	M3tTextureMap*		textureMap;
-	
+
 	UUtUns16			width;
 	UUtUns16			height;
 	IMtMipMap			mipMap;
@@ -396,17 +396,17 @@ Imp_ProcessTexture(
 
 	UUtUns32			imageBytes;
 	UUtUns32			totalMapBytes;
-	
+
 	UUtBool				buildInstance;
-	
+
 	const char*				leafName;
 	UUtBool				fileExists;
 
 	tTextureFlags		local_flags;
 	IMtPixelType		pixel_type;
-	
+
 	FFtFileInfo			file_info;
-		
+
 	BFtFileRef*			localFrameRef;
 	BFtFileRef*			ddsFrameRef = NULL;
 	char				suffixName[BFcMaxFileNameLength];
@@ -414,7 +414,7 @@ Imp_ProcessTexture(
 	if (inInstanceName)
 	{
 		char*	cp;
-		
+
 		cp = strchr(inInstanceName, '.');
 		UUmAssert(cp == NULL);
 	}
@@ -424,29 +424,29 @@ Imp_ProcessTexture(
 
 		// Imp_PrintMessage(IMPcMsg_Critical, "**** creating texture %s"UUmNL, name);
 	}
-	
+
 	// copy the default flags
 	local_flags = *inDefaultTextureFlags;
-		
-	do 
+
+	do
 	{
 		leafName = BFrFileRef_GetLeafName(inFileRef);
 		fileExists = BFrFileRef_FileExists(inFileRef);
-		
+
 		if(!fileExists)
 		{
 			// try to add .bmp extension first
 			BFrFileRef_SetLeafNameSuffex(inFileRef, "BMP");
 			fileExists = BFrFileRef_FileExists(inFileRef);
 		}
-		
+
 		if(!fileExists)
 		{
 			// try to add .psd extension next
 			BFrFileRef_SetLeafNameSuffex(inFileRef, "PSD");
 			fileExists = BFrFileRef_FileExists(inFileRef);
 		}
-		
+
 		if(!fileExists)
 		{
 			AUtMB_ButtonChoice choice =	AUrMessageBox(AUcMBType_AbortRetryIgnore, "Could not find file %s."UUmNL,	leafName);
@@ -473,30 +473,30 @@ Imp_ProcessTexture(
 	{
 		buildInstance = UUcFalse;
 	}
-	
+
 
 	if(buildInstance != UUcTrue)
 	{
 		return UUcError_None;
 	}
-		
+
 	// process the flags file
 		Imp_ProcessTextureFlags_FromFileRef(inFileRef, &local_flags);
-		
+
 	// Set the first frame
 	localFrameRef = inFileRef;
-	
+
 	if((local_flags.flags & M3cTextureFlags_PixelType) && IMrPixelType_HasAlpha(local_flags.pixelType))
 	{
 		// get the suffix name
 		UUrString_Copy(suffixName, BFrFileRef_GetSuffixName(inFileRef), BFcMaxFileNameLength);
 		UUrString_Capitalize(suffixName, BFcMaxFileNameLength);
-		
+
 		if(strcmp(suffixName, "PSD"))
 		{
 			BFrFileRef_SetLeafNameSuffex(localFrameRef, "PSD");
 		}
-	}	
+	}
 	else
 	{
 		UUtBool compressed;
@@ -531,7 +531,7 @@ Imp_ProcessTexture(
 				localFrameRef = ddsFrameRef;
 			}
 			else {
-				Imp_PrintWarning("file %s is newer then %s", 
+				Imp_PrintWarning("file %s is newer then %s",
 					BFrFileRef_GetLeafName(localFrameRef),
 					BFrFileRef_GetLeafName(ddsFrameRef));
 
@@ -541,13 +541,13 @@ Imp_ProcessTexture(
 
 
 	}
-	
+
 	// get the file info
 	error = FFrPeek_2D(localFrameRef, &file_info);
 	UUmError_ReturnOnErrorMsgP(error, "failed to get file info on %s", (UUtUns32) BFrFileRef_GetLeafName(localFrameRef), 0, 0);
-	
+
 	// XXX - ONE DAY MAKE SURE WE HANDLE DDS ALPHA CORRECTLY
-	
+
 	switch(file_info.format)
 	{
 		case FFcFormat_2D_PSD:
@@ -571,7 +571,7 @@ Imp_ProcessTexture(
 
 	width = width >> inReduceAmount;
 	height = height >> inReduceAmount;
-	
+
 	// set the pixel type
 	if (local_flags.flags & M3cTextureFlags_PixelType)
 	{
@@ -590,16 +590,16 @@ Imp_ProcessTexture(
 	{
 		local_flags.pixelType = pixel_type;
 	}
-	
+
 	if (local_flags.flags & M3cTextureFlags_HasMipMap)
 	{
-		totalMapBytes = IMrImage_ComputeSize(pixel_type, IMcHasMipMap, width, height);	
-	} 
+		totalMapBytes = IMrImage_ComputeSize(pixel_type, IMcHasMipMap, width, height);
+	}
 	else
 	{
 		totalMapBytes = IMrImage_ComputeSize(pixel_type, IMcNoMipMap, width, height);
 	}
-		
+
 	/*
 	 * Create the texture map instance
 	 */
@@ -612,7 +612,7 @@ Imp_ProcessTexture(
 		IMPmError_ReturnOnError(error);
 		strncpy(textureMap->debugName, "imported unique texture", 128);
 	}
-	else 
+	else
 	{
 		error =
 			TMrConstruction_Instance_Renew(
@@ -623,7 +623,7 @@ Imp_ProcessTexture(
 		IMPmError_ReturnOnError(error);
 		strncpy(textureMap->debugName, inInstanceName, 128);
 	}
-	
+
 	textureMap->flags = local_flags.flags;
 	textureMap->texelType = pixel_type;
 	textureMap->width = width;
@@ -642,16 +642,16 @@ Imp_ProcessTexture(
 #else
 	separateData = TMrConstruction_Separate_New(totalMapBytes, M3cTemplate_TextureMap);
 #endif
-	
+
 	if (!BFrFileRef_FileExists(localFrameRef))
 	{
-		UUmError_ReturnOnErrorMsgP(UUcError_Generic, "File %s does not exist.", 
+		UUmError_ReturnOnErrorMsgP(UUcError_Generic, "File %s does not exist.",
 			(UUtUns32) BFrFileRef_GetLeafName(inFileRef), 0, 0);
 	}
 
 	// read the image data
 	UUrMemory_Block_VerifyList();
-	error = 
+	error =
 		FFrRead_2D_Reduce(
 			localFrameRef,
 			pixel_type,
@@ -661,27 +661,27 @@ Imp_ProcessTexture(
 			&height,
 			&mipMap,
 			&imageData);
-	UUmError_ReturnOnErrorMsgP(error, "File %s could not be read.", 
+	UUmError_ReturnOnErrorMsgP(error, "File %s could not be read.",
 		(UUtUns32) BFrFileRef_GetLeafName(localFrameRef), 0, 0);
 	UUrMemory_Block_VerifyList();
 
 	// no means no
-	if (0 == (local_flags.flags & M3cTextureFlags_HasMipMap)) 
+	if (0 == (local_flags.flags & M3cTextureFlags_HasMipMap))
 	{
 		mipMap = IMcNoMipMap;
 	}
-		
+
 	error = iIsValidTextureMapSize(width, height);
 	if(error != UUcError_None)
 	{
-		Imp_PrintWarning("File %s had an invalid texture map size (%d,%d)"UUmNL"(1 to 256 and 8x1 ratio only)", 
+		Imp_PrintWarning("File %s had an invalid texture map size (%d,%d)"UUmNL"(1 to 256 and 8x1 ratio only)",
 			BFrFileRef_GetLeafName(inFileRef),
 			width,
 			height);
 
 		return error;
 	}
-		
+
 	/*
 	 * Copy the image into the texture map
 	 */
@@ -693,7 +693,7 @@ Imp_ProcessTexture(
 	if (separateData != NULL) {
 		UUrMemory_MoveFast(imageData, separateData, imageBytes);
 	}
-	
+
 	// if we want a mip map and our file lacks one, build it
 	if ((textureMap->flags & M3cTextureFlags_HasMipMap) && (IMcNoMipMap == mipMap))
 	{
@@ -706,12 +706,12 @@ Imp_ProcessTexture(
 			error = M3rTextureMap_BuildMipMap(scale_mode, width, height, pixel_type, separateData);
 		}
 
-		if (error != UUcError_None) 
+		if (error != UUcError_None)
 		{
 			textureMap->flags &= ~M3cTextureFlags_HasMipMap;
 		}
 	}
-	
+
 	UUrMemory_Block_Delete(imageData);
 
 	if (local_flags.numFrames > 1)
@@ -736,9 +736,9 @@ Imp_ProcessTexture(
 		UUmAssertReadPtr(outTextureRef, sizeof(*outTextureRef));
 		*outTextureRef = textureMap;
 	}
-	
+
 	if (ddsFrameRef) BFrFileRef_Dispose(ddsFrameRef);
-	
+
 	if(outNewTextureFlags != NULL)
 	{
 		*outNewTextureFlags = local_flags;
@@ -754,7 +754,7 @@ Imp_ProcessTexture(
 	if (separateData != NULL) {
 		textureMap->pixelStorage = (TMtSeparateFileOffset) TMrConstruction_Separate_Write(separateData);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -770,17 +770,17 @@ static UUtError AddTexturesInDirectory(BFtFileRef *inDirectoryRef, texture_in_di
 {
 	UUtError				error;
 	BFtFileIterator			*file_iterator;
-	
+
 	// create the file iterator for the directory
 	error = BFrDirectory_FileIterator_New( inDirectoryRef, NULL, NULL, &file_iterator);
 	IMPmError_ReturnOnError(error);
-	
+
 	while (1)
 	{
 		BFtFileRef			file_ref;
 		char				name[BFcMaxFileNameLength];
 		TMtPlaceHolder		texture_ref;
-		
+
 		// get file ref for the file
 		error = BFrDirectory_FileIterator_Next(file_iterator, &file_ref);
 		if (error != UUcError_None) { break; }
@@ -795,9 +795,9 @@ static UUtError AddTexturesInDirectory(BFtFileRef *inDirectoryRef, texture_in_di
 			valid_image_suffix = UUmString_IsEqual_NoCase(file_suffix, "bmp") | UUmString_IsEqual_NoCase(file_suffix, "psd");
 			if (!valid_image_suffix) { continue; }
 		}
-		
+
 		// get the file name
-		UUrString_Copy(name, BFrFileRef_GetLeafName(&file_ref), BFcMaxFileNameLength); 
+		UUrString_Copy(name, BFrFileRef_GetLeafName(&file_ref), BFcMaxFileNameLength);
 
 		switch(texture_case)
 		{
@@ -814,14 +814,14 @@ static UUtError AddTexturesInDirectory(BFtFileRef *inDirectoryRef, texture_in_di
 		}
 
 		UUrString_StripExtension(name);
-		
+
 		error = Imp_ProcessTexture_File(&file_ref, name, &texture_ref);
 		IMPmError_ReturnOnError(error);
 	}
-	
+
 	BFrDirectory_FileIterator_Delete(file_iterator);
 	file_iterator = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -833,16 +833,16 @@ Imp_AddTextureDirectory(
 	char*				inInstanceName)
 {
 	UUtError			error;
-		
+
 	char*				textureFileDirName;
-	BFtFileRef			textureFileDirRef = *inSourceFileRef;	
-	
+	BFtFileRef			textureFileDirRef = *inSourceFileRef;
+
 	error = GRrGroup_GetString(inGroup, "file", &textureFileDirName);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get texture file info");
 
 	error = BFrFileRef_SetName(&textureFileDirRef, textureFileDirName);
 	IMPmError_ReturnOnErrorMsg(error, "Could not make texture file dir ref");
-	
+
 	AddTexturesInDirectory(&textureFileDirRef, textures_in_directory_upper_case);
 
 	return UUcError_None;
@@ -856,10 +856,10 @@ Imp_WriteTextureSize(
 	UUtUns16	width, height;
 	UUtUns16	curWidth, curHeight;
 	UUtUns32 invalid_texture_loop;
-	
+
 	file = fopen("textureSize.txt", "wb");
 	if(file == NULL) return;
-	
+
 	curWidth = 1;
 	for(width = 0; width <= 8; width++)
 	{
@@ -887,14 +887,14 @@ Imp_WriteTextureSize(
 	{
 		tInvalidTextureInfo *cur_invalid_texture = gInvalidTextureInfo + invalid_texture_loop;
 		const char *texture_format_string = IMrPixelTypeToString(cur_invalid_texture->texelType);
-		
-		fprintf(file, "%s is resolution = %d by %d format = %s"UUmNL, 
-			cur_invalid_texture->name, 
-			cur_invalid_texture->width, 
+
+		fprintf(file, "%s is resolution = %d by %d format = %s"UUmNL,
+			cur_invalid_texture->name,
+			cur_invalid_texture->width,
 			cur_invalid_texture->height,
 			texture_format_string);
 	}
-	
+
 	fclose(file);
 }
 
@@ -909,7 +909,7 @@ Imp_ProcessTexture_File(
 	UUtUns32			file_mod_date;
 	tTextureFlags		flags;
 	char				mungedInstanceName[BFcMaxFileNameLength];
-	
+
 	UUmAssert(inFileRef);
 	UUmAssert(outTextureRef);
 	UUmAssert(inInstanceName);
@@ -917,20 +917,20 @@ Imp_ProcessTexture_File(
 	if (!BFrFileRef_FileExists(inFileRef)) {
 		Imp_PrintWarning("Could not find file %s", BFrFileRef_GetLeafName(inFileRef));
 	}
-	
+
 	// get the modification time of the file
 	error = BFrFileRef_GetModTime(inFileRef, &file_mod_date);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get file ref mod date");
-	
+
 	// set the texture flags
 	Imp_ClearTextureFlags(&flags);
 	flags.hasFlagFile = cTextureFlagFile_Yes;
 	flags.flags = M3cTextureFlags_None;
-	
+
 	//strip off extension
 	UUrString_Copy(mungedInstanceName, inInstanceName, BFcMaxFileNameLength);
 	UUrString_StripExtension(mungedInstanceName);
-	
+
 	// process M3cTextureMap_Big
 	error =
 		Imp_ProcessTexture(
@@ -941,7 +941,7 @@ Imp_ProcessTexture_File(
 			mungedInstanceName,
 			IMPcIgnoreTextureRef);
 	IMPmError_ReturnOnError(error);
-	
+
 	// get a placeholder for the M3tTextureMap_Big instance of texture_name
 	{
 		M3tTextureMap *texture = M3rTextureMap_GetPlaceholder(mungedInstanceName);
@@ -964,15 +964,15 @@ Imp_ProcessTexture_Dir(
 	UUtUns32			file_mod_date;
 	tTextureFlags		flags;
 	char				mungedInstanceName[BFcMaxFileNameLength];
-	
+
 	UUmAssert(inFileRef);
 	UUmAssert(outTextureRef);
 	UUmAssert(inInstanceName);
-	
+
 	// get the modification time of the file
 	//error = BFrFileRef_GetModTime(inFileRef, &file_mod_date);
 	//IMPmError_ReturnOnErrorMsg(error, "Could not get file ref mod date");
-	
+
 	file_mod_date		= 0;
 
 	// set the texture flags
@@ -984,7 +984,7 @@ Imp_ProcessTexture_Dir(
 	UUrString_Copy(mungedInstanceName, inInstanceName, BFcMaxFileNameLength);
 	UUrString_StripExtension(mungedInstanceName);
 	UUrString_MakeLowerCase(mungedInstanceName, BFcMaxFileNameLength);
-	
+
 	// process M3cTextureMap_Big
 	error =
 		Imp_ProcessTexture(
@@ -995,7 +995,7 @@ Imp_ProcessTexture_Dir(
 			mungedInstanceName,
 			IMPcIgnoreTextureRef);
 	IMPmError_ReturnOnError(error);
-	
+
 	// get a placeholder for the M3tTextureMap_Big instance of texture_name
 	error =
 		TMrConstruction_Instance_GetPlaceHolder(
@@ -1003,7 +1003,7 @@ Imp_ProcessTexture_Dir(
 			mungedInstanceName,
 			outTextureRef);
 	IMPmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 

@@ -1,12 +1,12 @@
 /*
 	FILE:	GL_DC_Method_Frame.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: August 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -27,7 +27,7 @@ extern GLint gl_error;
 #if 1
 #define FLUSH glFlush();
 #else
-#define FLUSH 
+#define FLUSH
 #endif
 
 void
@@ -44,7 +44,7 @@ GLrDrawContext_Method_TriSprite(
 		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -54,7 +54,7 @@ GLrDrawContext_Method_TriSprite(
 		// point[0]
 		glTexCoord2f(inTextureCoords[0].u, inTextureCoords[0].v);
 		glVertex3f(inPoints[0].x, inPoints[0].y, inPoints[0].z);
-		
+
 		// point[1]
 		glTexCoord2f(inTextureCoords[1].u, inTextureCoords[1].v);
 		glVertex3f(inPoints[1].x, inPoints[1].y, inPoints[0].z);
@@ -83,7 +83,7 @@ GLrDrawContext_Method_Sprite(
 
 	z = inPoints[0].z;
 	w = inPoints[0].invW;
-	
+
 	#if 0
 	glColor4f(
 		GLgDrawContextPrivate->constant_r,
@@ -91,7 +91,7 @@ GLrDrawContext_Method_Sprite(
 		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -101,7 +101,7 @@ GLrDrawContext_Method_Sprite(
 		// tl
 		glTexCoord2f(inTextureCoords[0].u, inTextureCoords[0].v);
 		glVertex3f(inPoints[0].x, inPoints[0].y, z);
-		
+
 		// tr
 		glTexCoord2f(inTextureCoords[1].u, inTextureCoords[1].v);
 		glVertex3f(inPoints[1].x, inPoints[0].y, z);
@@ -133,20 +133,20 @@ GLrDrawContext_Method_SpriteArray(
 	float		w;
 	UUtUns32	i;
 	UUtUns32	color;
-	
+
 	color = (UUtUns32)GLgDrawContextPrivate->statePtr[M3cDrawStateIntType_ConstantColor];
 
 	OGLrCommon_Camera_Update(OGLcCameraMode_2D);
 
 	glBegin(GL_QUADS);
-	
+
 	i = 0;
 
 	for( i = 0; i < inCount; i++ )
 	{
 		z = inPoints[0].z;
 		w = inPoints[0].invW;
-	
+
 		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -173,7 +173,7 @@ GLrDrawContext_Method_SpriteArray(
 		// tl
 		glTexCoord2f(inTextureCoords[i*4+0].u, inTextureCoords[i*4+0].v);
 		glVertex3f(inPoints[i*2+0].x, inPoints[i*2+0].y, z);
-		
+
 		// tr
 		glTexCoord2f(inTextureCoords[i*4+1].u, inTextureCoords[i*4+1].v);
 		glVertex3f(inPoints[i*2+1].x, inPoints[i*2+0].y, z);
@@ -196,7 +196,7 @@ GLrDrawContext_Method_SpriteArray(
 
 
 UUtError GLrDrawContext_Method_ScreenCapture(
-	const UUtRect			*inRect, 
+	const UUtRect			*inRect,
 	void					*outBuffer)
 {
 	GLenum glError;
@@ -212,7 +212,7 @@ UUtError GLrDrawContext_Method_ScreenCapture(
 
 	glReadPixels(x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, outBuffer);
 	OGLmAssertSuccess(glError);
- 
+
 	return UUcError_None;
 }
 
@@ -251,12 +251,12 @@ void GLrLine(
 
 	#if 0
 	glColor4f(
-		GLgDrawContextPrivate->constant_r, 
-		GLgDrawContextPrivate->constant_g, 
-		GLgDrawContextPrivate->constant_b, 
+		GLgDrawContextPrivate->constant_r,
+		GLgDrawContextPrivate->constant_g,
+		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	glBegin(GL_LINES);
 		glVertex3f(ourScreenPoints[0]->x, ourScreenPoints[0]->y, ourScreenPoints[0]->z);
 		glVertex3f(ourScreenPoints[1]->x, ourScreenPoints[1]->y, ourScreenPoints[1]->z);
@@ -298,7 +298,7 @@ void GLrTriangle(M3tTri *inTri)
 
 	clipped = UUmMax3(inTri->indices[0], inTri->indices[1], inTri->indices[2]) > GLgDrawContextPrivate->vertexCount;
 	clipped = GLgVertexArray ? clipped : UUcTrue;
-	
+
 	if (clipped) {
 		glBegin(GL_TRIANGLES);
 			glColor4ub(GLmR(ourShades[0]), GLmG(ourShades[0]), GLmB(ourShades[0]), alpha);
@@ -329,7 +329,7 @@ void GLrTriangle(M3tTri *inTri)
 			glArrayElement(inTri->indices[2]);
 		glEnd();
 	}
-	
+
 
 	FLUSH
 
@@ -363,7 +363,7 @@ void GLrQuad(M3tQuad *inQuad)
 	ourTextureCoords[1] = textureCoords + inQuad->indices[1];
 	ourTextureCoords[2] = textureCoords + inQuad->indices[2];
 	ourTextureCoords[3] = textureCoords + inQuad->indices[3];
-			
+
 	clipped = UUmMax4(inQuad->indices[0], inQuad->indices[1], inQuad->indices[2], inQuad->indices[3]) > GLgDrawContextPrivate->vertexCount;
 	clipped = GLgVertexArray ? clipped : UUcTrue;
 
@@ -443,7 +443,7 @@ void GLrPent(M3tPent *inPent)
 	ourTextureCoords[2] = textureCoords + inPent->indices[2];
 	ourTextureCoords[3] = textureCoords + inPent->indices[3];
 	ourTextureCoords[4] = textureCoords + inPent->indices[4];
-			
+
 	glBegin(GL_POLYGON);
 		glColor4ub(GLmR(ourShades[0]), GLmG(ourShades[0]), GLmB(ourShades[0]), alpha);
 		glTexCoord4f(ourTextureCoords[0]->u * ourScreenPoints[0]->invW, ourTextureCoords[0]->v * ourScreenPoints[0]->invW, 0.f, ourScreenPoints[0]->invW);
@@ -508,7 +508,7 @@ void GLrTriangle_Flat(M3tTri *inTri)
 		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	glBegin(GL_TRIANGLES);
 		glTexCoord4f(ourTextureCoords[0]->u * ourScreenPoints[0]->invW, ourTextureCoords[0]->v * ourScreenPoints[0]->invW, 0.f, ourScreenPoints[0]->invW);
 		glVertex3f(ourScreenPoints[0]->x, ourScreenPoints[0]->y, ourScreenPoints[0]->z);
@@ -544,7 +544,7 @@ void GLrQuad_Flat(M3tQuad *inQuad)
 	ourTextureCoords[1] = textureCoords + inQuad->indices[1];
 	ourTextureCoords[2] = textureCoords + inQuad->indices[2];
 	ourTextureCoords[3] = textureCoords + inQuad->indices[3];
-	
+
 	#if 0
 	glColor4f(
 		GLgDrawContextPrivate->constant_r,
@@ -552,7 +552,7 @@ void GLrQuad_Flat(M3tQuad *inQuad)
 		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	glBegin(GL_QUADS);
 		glTexCoord4f(ourTextureCoords[0]->u * ourScreenPoints[0]->invW, ourTextureCoords[0]->v * ourScreenPoints[0]->invW, 0.f, ourScreenPoints[0]->invW);
 		glVertex3f(ourScreenPoints[0]->x, ourScreenPoints[0]->y, ourScreenPoints[0]->z);
@@ -593,7 +593,7 @@ void GLrPent_Flat(M3tPent *inPent)
 	ourTextureCoords[2] = textureCoords + inPent->indices[2];
 	ourTextureCoords[3] = textureCoords + inPent->indices[3];
 	ourTextureCoords[4] = textureCoords + inPent->indices[4];
-	
+
 	#if 0
 	glColor4f(
 		GLgDrawContextPrivate->constant_r,
@@ -601,7 +601,7 @@ void GLrPent_Flat(M3tPent *inPent)
 		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	glBegin(GL_POLYGON);
 		glTexCoord4f(ourTextureCoords[0]->u * ourScreenPoints[0]->invW, ourTextureCoords[0]->v * ourScreenPoints[0]->invW, 0.f, ourScreenPoints[0]->invW);
 		glVertex3f(ourScreenPoints[0]->x, ourScreenPoints[0]->y, ourScreenPoints[0]->z);
@@ -643,7 +643,7 @@ void GLrTriangle_Gourand(M3tTri *inTri)
 	ourShades[0] = vertexShades[inTri->indices[0]];
 	ourShades[1] = vertexShades[inTri->indices[1]];
 	ourShades[2] = vertexShades[inTri->indices[2]];
-			
+
 	glBegin(GL_TRIANGLES);
 		glColor4ub(GLmR(ourShades[0]), GLmG(ourShades[0]), GLmB(ourShades[0]), alpha);
 		glVertex3f(ourScreenPoints[0]->x, ourScreenPoints[0]->y, ourScreenPoints[0]->z);
@@ -680,7 +680,7 @@ void GLrQuad_Gourand(M3tQuad *inQuad)
 	ourShades[1] = vertexShades[inQuad->indices[1]];
 	ourShades[2] = vertexShades[inQuad->indices[2]];
 	ourShades[3] = vertexShades[inQuad->indices[3]];
-	
+
 	glBegin(GL_QUADS);
 		glColor4ub(GLmR(ourShades[0]), GLmG(ourShades[0]), GLmB(ourShades[0]), alpha);
 		glVertex3f(ourScreenPoints[0]->x, ourScreenPoints[0]->y, ourScreenPoints[0]->z);
@@ -722,7 +722,7 @@ void GLrPent_Gourand(M3tPent *inPent)
 	ourShades[2] = vertexShades[inPent->indices[2]];
 	ourShades[3] = vertexShades[inPent->indices[3]];
 	ourShades[4] = vertexShades[inPent->indices[4]];
-			
+
 	glBegin(GL_POLYGON);
 		glColor4ub(GLmR(ourShades[0]), GLmG(ourShades[0]), GLmB(ourShades[0]), alpha);
 		glVertex3f(ourScreenPoints[0]->x, ourScreenPoints[0]->y, ourScreenPoints[0]->z);
@@ -758,18 +758,18 @@ void GLrTriangle_Wireframe(M3tTri *inTri)
 	ourScreenPoints[0] = screenPoints + inTri->indices[0];
 	ourScreenPoints[1] = screenPoints + inTri->indices[1];
 	ourScreenPoints[2] = screenPoints + inTri->indices[2];
-	
+
 	#if 0
 	glColor4f(
-		GLgDrawContextPrivate->constant_r, 
-		GLgDrawContextPrivate->constant_g, 
-		GLgDrawContextPrivate->constant_b, 
+		GLgDrawContextPrivate->constant_r,
+		GLgDrawContextPrivate->constant_g,
+		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	clipped = UUmMax3(inTri->indices[0], inTri->indices[1], inTri->indices[2]) > GLgDrawContextPrivate->vertexCount;
 	clipped = GLgVertexArray ? clipped : UUcTrue;
-	
+
 	if (clipped) {
 		glBegin(GL_LINE_LOOP);
 			glVertex3f(ourScreenPoints[0]->x, ourScreenPoints[0]->y, ourScreenPoints[0]->z);
@@ -784,7 +784,7 @@ void GLrTriangle_Wireframe(M3tTri *inTri)
 			glArrayElement(inTri->indices[2]);
 		glEnd();
 	}
-	
+
 
 	FLUSH
 
@@ -805,18 +805,18 @@ void GLrQuad_Wireframe(M3tQuad *inQuad)
 	ourScreenPoints[1] = screenPoints + inQuad->indices[1];
 	ourScreenPoints[2] = screenPoints + inQuad->indices[2];
 	ourScreenPoints[3] = screenPoints + inQuad->indices[3];
-	
+
 	#if 0
 	glColor4f(
-		GLgDrawContextPrivate->constant_r, 
-		GLgDrawContextPrivate->constant_g, 
-		GLgDrawContextPrivate->constant_b, 
+		GLgDrawContextPrivate->constant_r,
+		GLgDrawContextPrivate->constant_g,
+		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	clipped = UUmMax4(inQuad->indices[0], inQuad->indices[1], inQuad->indices[2], inQuad->indices[3]) > GLgDrawContextPrivate->vertexCount;
 	clipped = GLgVertexArray ? clipped : UUcTrue;
-	
+
 	if (clipped) {
 		glBegin(GL_LINE_LOOP);
 			glVertex3f(ourScreenPoints[0]->x, ourScreenPoints[0]->y, ourScreenPoints[0]->z);
@@ -833,7 +833,7 @@ void GLrQuad_Wireframe(M3tQuad *inQuad)
 			glArrayElement(inQuad->indices[3]);
 		glEnd();
 	}
-	
+
 
 	FLUSH
 
@@ -854,18 +854,18 @@ void GLrPent_Wireframe(M3tPent *inPent)
 	ourScreenPoints[2] = screenPoints + inPent->indices[2];
 	ourScreenPoints[3] = screenPoints + inPent->indices[3];
 	ourScreenPoints[4] = screenPoints + inPent->indices[4];
-	
+
 	#if 0
 	glColor4f(
-		GLgDrawContextPrivate->constant_r, 
-		GLgDrawContextPrivate->constant_g, 
-		GLgDrawContextPrivate->constant_b, 
+		GLgDrawContextPrivate->constant_r,
+		GLgDrawContextPrivate->constant_g,
+		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	clipped = UUmMax5(inPent->indices[0], inPent->indices[1], inPent->indices[2], inPent->indices[3], inPent->indices[4]) > GLgDrawContextPrivate->vertexCount;
 	clipped = GLgVertexArray ? clipped : UUcTrue;
-	
+
 	if (clipped) {
 		glBegin(GL_LINE_LOOP);
 			glVertex3f(ourScreenPoints[0]->x, ourScreenPoints[0]->y, ourScreenPoints[0]->z);
@@ -884,7 +884,7 @@ void GLrPent_Wireframe(M3tPent *inPent)
 			glArrayElement(inPent->indices[4]);
 		glEnd();
 	}
-	
+
 
 	FLUSH
 
@@ -903,15 +903,15 @@ void GLrTriangleSplit_VertexLighting(M3tTriSplit *inTri)
 	UUtUns8 alpha = (UUtUns8) MUrUnsignedSmallFloat_To_Int_Round(GLgDrawContextPrivate->constant_a * 0xff);
 
 	OGLrCommon_Camera_Update(OGLcCameraMode_2D);
-	
+
 	#if 0
 	glColor4f(
-		GLgDrawContextPrivate->constant_r, 
-		GLgDrawContextPrivate->constant_g, 
-		GLgDrawContextPrivate->constant_b, 
+		GLgDrawContextPrivate->constant_r,
+		GLgDrawContextPrivate->constant_g,
+		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	ourScreenPoints[0] = screenPoints + inTri->vertexIndices.indices[0];
 	ourScreenPoints[1] = screenPoints + inTri->vertexIndices.indices[1];
 	ourScreenPoints[2] = screenPoints + inTri->vertexIndices.indices[2];
@@ -924,7 +924,7 @@ void GLrTriangleSplit_VertexLighting(M3tTriSplit *inTri)
 
 	clipped = UUmMax3(inTri->vertexIndices.indices[0], inTri->vertexIndices.indices[1], inTri->vertexIndices.indices[2]) > GLgDrawContextPrivate->vertexCount;
 	clipped = GLgVertexArray ? clipped : UUcTrue;
-	
+
 	if (clipped) {
 		glBegin(GL_TRIANGLES);
 			glColor4ub(GLmR(vertexShades[0]), GLmG(vertexShades[0]), GLmB(vertexShades[0]), alpha);
@@ -972,15 +972,15 @@ void GLrQuadSplit_VertexLighting(M3tQuadSplit *inQuad)
 	UUtUns8 alpha = (UUtUns8) MUrUnsignedSmallFloat_To_Int_Round(GLgDrawContextPrivate->constant_a * 0xff);
 
 	OGLrCommon_Camera_Update(OGLcCameraMode_2D);
-	
+
 	#if 0
 	glColor4f(
-		GLgDrawContextPrivate->constant_r, 
-		GLgDrawContextPrivate->constant_g, 
-		GLgDrawContextPrivate->constant_b, 
+		GLgDrawContextPrivate->constant_r,
+		GLgDrawContextPrivate->constant_g,
+		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	ourScreenPoints[0] = screenPoints + inQuad->vertexIndices.indices[0];
 	ourScreenPoints[1] = screenPoints + inQuad->vertexIndices.indices[1];
 	ourScreenPoints[2] = screenPoints + inQuad->vertexIndices.indices[2];
@@ -1051,15 +1051,15 @@ void GLrPentSplit_VertexLighting(M3tPentSplit *inPent)
 	UUtUns8 alpha = (UUtUns8) MUrUnsignedSmallFloat_To_Int_Round(GLgDrawContextPrivate->constant_a * 0xff);
 
 	OGLrCommon_Camera_Update(OGLcCameraMode_2D);
-	
+
 	#if 0
 	glColor4f(
-		GLgDrawContextPrivate->constant_r, 
-		GLgDrawContextPrivate->constant_g, 
-		GLgDrawContextPrivate->constant_b, 
+		GLgDrawContextPrivate->constant_r,
+		GLgDrawContextPrivate->constant_g,
+		GLgDrawContextPrivate->constant_b,
 		GLgDrawContextPrivate->constant_a);
 	#endif
-	
+
 	ourScreenPoints[0] = screenPoints + inPent->vertexIndices.indices[0];
 	ourScreenPoints[1] = screenPoints + inPent->vertexIndices.indices[1];
 	ourScreenPoints[2] = screenPoints + inPent->vertexIndices.indices[2];
@@ -1157,7 +1157,7 @@ void GLrTriangle_EnvironmentMap_Only(M3tTri *inTri)
 
 	clipped = UUmMax3(inTri->indices[0], inTri->indices[1], inTri->indices[2]) > GLgDrawContextPrivate->vertexCount;
 	clipped = GLgVertexArray ? clipped : UUcTrue;
-	
+
 	if (clipped) {
 		glBegin(GL_TRIANGLES);
 			glColor4ub(GLmR(ourShades[0]), GLmG(ourShades[0]), GLmB(ourShades[0]), alpha);
@@ -1188,7 +1188,7 @@ void GLrTriangle_EnvironmentMap_Only(M3tTri *inTri)
 			glArrayElement(inTri->indices[2]);
 		glEnd();
 	}
-	
+
 
 	FLUSH
 
@@ -1222,7 +1222,7 @@ void GLrQuad_EnvironmentMap_Only(M3tQuad *inQuad)
 	ourTextureCoords[1] = textureCoords + inQuad->indices[1];
 	ourTextureCoords[2] = textureCoords + inQuad->indices[2];
 	ourTextureCoords[3] = textureCoords + inQuad->indices[3];
-			
+
 	clipped = UUmMax4(inQuad->indices[0], inQuad->indices[1], inQuad->indices[2], inQuad->indices[3]) > GLgDrawContextPrivate->vertexCount;
 	clipped = GLgVertexArray ? clipped : UUcTrue;
 
@@ -1302,7 +1302,7 @@ void GLrPent_EnvironmentMap_Only(M3tPent *inPent)
 	ourTextureCoords[2] = textureCoords + inPent->indices[2];
 	ourTextureCoords[3] = textureCoords + inPent->indices[3];
 	ourTextureCoords[4] = textureCoords + inPent->indices[4];
-			
+
 	glBegin(GL_POLYGON);
 		glColor4ub(GLmR(ourShades[0]), GLmG(ourShades[0]), GLmB(ourShades[0]), alpha);
 		glTexCoord4f(ourTextureCoords[0]->u * ourScreenPoints[0]->invW, ourTextureCoords[0]->v * ourScreenPoints[0]->invW, 0.f, ourScreenPoints[0]->invW);

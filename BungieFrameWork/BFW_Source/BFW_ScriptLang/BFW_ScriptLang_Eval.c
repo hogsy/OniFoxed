@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_ScriptLang_Eval.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -28,7 +28,7 @@ SLtExpr* SLrExpr_Pop(SLtContext *inContext)
 {
 	SLtExpr *result;
 	UUmAssert(inContext->curFuncState->exprTOS > 0);
-	
+
 	if (inContext->curFuncState->exprTOS > 0) {
 		inContext->curFuncState->exprTOS--;
 
@@ -38,7 +38,7 @@ SLtExpr* SLrExpr_Pop(SLtContext *inContext)
 		COrConsole_Printf("failed to pop expression stack");
 		result = NULL;
 	}
-	
+
 	return result;
 }
 
@@ -47,7 +47,7 @@ SLrExpr_PopRemove(
 	SLtContext*	inContext)
 {
 	if(inContext->curFuncState->exprTOS == 0) return;
-	
+
 	inContext->curFuncState->exprTOS--;
 }
 
@@ -77,8 +77,8 @@ static void SLrExpr_MakeRoom(SLtContext *inContext)
 {
 	if (SLcContext_ExprStack_MaxDepth == inContext->curFuncState->exprTOS) {
 		UUrMemory_MoveOverlap(
-			inContext->curFuncState->exprStack + 1, 
-			inContext->curFuncState->exprStack + 0, 
+			inContext->curFuncState->exprStack + 1,
+			inContext->curFuncState->exprStack + 0,
 			sizeof(SLtExpr) * (SLcContext_ExprStack_MaxDepth - 1));
 
 		inContext->curFuncState->exprTOS--;
@@ -97,11 +97,11 @@ SLrExpr_Push_Const(
 
 	UUmAssert(inContext->curFuncState->exprTOS < SLcContext_ExprStack_MaxDepth);
 
-	
+
 	inContext->curFuncState->exprStack[inContext->curFuncState->exprTOS].kind = SLcExprKind_Constant;
 	inContext->curFuncState->exprStack[inContext->curFuncState->exprTOS].type = inType;
 	inContext->curFuncState->exprStack[inContext->curFuncState->exprTOS].u.constant.val = inVal;
-	
+
 	inContext->curFuncState->exprTOS++;
 }
 
@@ -117,7 +117,7 @@ SLrExpr_Push_Ident(
 	inContext->curFuncState->exprStack[inContext->curFuncState->exprTOS].kind = SLcExprKind_Identifier;
 	inContext->curFuncState->exprStack[inContext->curFuncState->exprTOS].type = (SLtType)-1;
 	inContext->curFuncState->exprStack[inContext->curFuncState->exprTOS].u.ident.name = inName;
-	
+
 	inContext->curFuncState->exprTOS++;
 }
 
@@ -131,7 +131,7 @@ SLrExpr_Eval(
 {
 	UUtError	error;
 	SLtSymbol*	symbol;
-	
+
 	if (inExpr == NULL) {
 		return UUcError_Generic;
 	}
@@ -142,9 +142,9 @@ SLrExpr_Eval(
 			*outType = inExpr->type;
 			*outVal = inExpr->u.constant.val;
 			break;
-			
+
 		case SLcExprKind_Identifier:
-			error = 
+			error =
 				SLrScript_Database_Symbol_Get(
 					inContext,
 					inExpr->u.ident.name,
@@ -156,7 +156,7 @@ SLrExpr_Eval(
 			}
 			else
 			{
-				error = 	
+				error =
 					SLrScript_Database_Var_GetValue(
 						inErrorContext,
 						inContext,
@@ -166,11 +166,11 @@ SLrExpr_Eval(
 				if(error != UUcError_None) return error;
 			}
 			break;
-		
+
 		default:
 			UUmAssert(0);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -179,7 +179,7 @@ SLrStatement_Evaluate(
 	SLtContext*	inContext)
 {
 	UUmAssert(inContext->curFuncState->statementLevel > 0);
-	
+
 	return inContext->curFuncState->statementEval[inContext->curFuncState->statementLevel - 1];
 }
 
@@ -189,7 +189,7 @@ SLrStatement_Level_Push(
 	UUtBool		inEval)
 {
 	if(inContext->curFuncState->statementLevel > 0 && SLrStatement_Evaluate(inContext)) inContext->curFuncState->statement_TargetLevel = inContext->curFuncState->statementLevel + 1;
-	
+
 	inContext->curFuncState->statementEval[inContext->curFuncState->statementLevel++] = inEval;
 }
 
@@ -198,7 +198,7 @@ SLrStatement_Level_Pop(
 	SLtContext*	inContext)
 {
 	UUmAssert(inContext->curFuncState->statementLevel > 0);
-	
+
 	inContext->curFuncState->statementLevel--;
 }
 
@@ -221,21 +221,21 @@ SLrExpr_GetResult(
 {
 	UUtError	error;
 	SLtExpr*	expr;
-	
+
 	if(inContext->curFuncState->exprTOS == 0) return UUcFalse;
-	
+
 	expr = SLrExpr_Pop(inContext);
 
 	if (NULL == expr) {
 		return UUcFalse;
 	}
-	
+
 	error = SLrExpr_Eval(inContext, inErrorContext, expr, outType, outVal);
 
 	if(error != UUcError_None) {
 		return UUcFalse;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -250,15 +250,15 @@ SLrExprListToParamList(
 	SLtType		type;
 	SLtValue	val;
 	SLtContext_FuncState*	curFuncState;
-	
+
 	curFuncState = inContext->curFuncState;
-	
+
 	// CB: this is done so that we don't trash over statically allocated fixed-length buffers
 	curFuncState->numParams = UUmMin(curFuncState->numParams, SLcScript_MaxNumParams);
 
 	for(itr = 0; itr < curFuncState->numParams; itr++)
 	{
-		error = 
+		error =
 			SLrExpr_Eval(
 				inContext,
 				inErrorContext,
@@ -266,11 +266,11 @@ SLrExprListToParamList(
 				&type,
 				&val);
 		if(error != UUcError_None) return error;
-		
+
 		outParamList[itr].type = type;
 		outParamList[itr].val = val;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -285,21 +285,21 @@ SLrExpr_CompareValues_Eq(
 		case SLcType_Int32:
 			return inValA.i == inValB.i ? UUcTrue : UUcFalse;
 			break;
-		
+
 		case SLcType_Float:
 			return inValA.f == inValB.f ? UUcTrue : UUcFalse;
 			break;
-		
+
 		case SLcType_String:
 			return !strcmp(inValA.str, inValB.str) ? UUcTrue : UUcFalse;
 			break;
-		
+
 		case SLcType_Bool:
 			return inValA.b == inValB.b ? UUcTrue : UUcFalse;
 			break;
-		
+
 	}
-	
+
 	UUmAssert(0);
 	return UUcFalse;
 }
@@ -317,8 +317,8 @@ SLrExpr_ValAndType_To_Int(
 	{
 		return inVal.b;
 	}
-	
+
 	UUmAssert(0);
-	
+
 	return 0;
 }

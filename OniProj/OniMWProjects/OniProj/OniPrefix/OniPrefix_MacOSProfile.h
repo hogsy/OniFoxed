@@ -12,18 +12,18 @@
 	#define PROFILE				1
 
 	#define BRENTS_PROFILE
-	
+
 	#define UUmDebuggerSymFileName	"OniProf.xSYM"
-	
+
 	#if !defined(UUmPlatform) && !defined(UUmPlatform_Mac)
 		#define UUmPlatform_Mac			2
 		#define UUmPlatform				UUmPlatform_Mac
-	
+
 		#include "gl_code_version.h"
-	
+
 		#undef UUmPlatform
 		#undef UUmPlatform_Mac
-	
+
 	#else
 		#include "gl_code_version.h"
 

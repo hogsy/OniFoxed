@@ -4,13 +4,13 @@
 
 /*
 	FILE:	 Oni_AI2_Error.h
-	
+
 	AUTHOR:	 Chris Butcher
-	
+
 	CREATED: April 12, 1999
-	
+
 	PURPOSE: Error handler for Oni's AI system
-	
+
 	Copyright (c) 2000, Bungie Software
 
 */

@@ -49,7 +49,7 @@
 #define UUmGet4BytesFromBuffer(src,dst,type,swap_it)				\
 			(dst) = *((type*)(src));								\
 			*(UUtInt8**)&(src) += sizeof(type);					\
-			if ((swap_it)) { UUrSwap_4Byte(&(dst)); }							
+			if ((swap_it)) { UUrSwap_4Byte(&(dst)); }
 
 #define UUmWrite4BytesToBuffer(buf,val,type,num_bytes,write_big)	\
 			*((type*)(buf)) = (val);								\
@@ -60,7 +60,7 @@
 #define UUmGet2BytesFromBuffer(src,dst,type,swap_it)				\
 			(dst) = *((type*)(src));								\
 			*(UUtInt8**)&(src) += sizeof(type);						\
-			if ((swap_it)) { UUrSwap_2Byte(&(dst)); }							
+			if ((swap_it)) { UUrSwap_2Byte(&(dst)); }
 
 #define UUmWrite2BytesToBuffer(buf,val,type,num_bytes,write_big)	\
 			*((type*)(buf)) = (val);								\
@@ -97,7 +97,7 @@ enum
 enum
 {
 	SScPAStage_None,
-	
+
 	SScPAStage_Done,
 	SScPAStage_Start,
 	SScPAStage_InSoundStart,
@@ -131,7 +131,7 @@ typedef struct SStExtCommonChunk
 	UUtInt16	sampleSize;			/* number of bits per sample */
 	UUtUns32	sampleRate;			/* number of frames per second */
 	UUtUns32	compressionType;	/* compression type (4 character code) (undefined for non compressed AIFF files) */
-	
+
 } SStExtCommonChunk;
 
 typedef struct SStSoundDataChunk
@@ -140,7 +140,7 @@ typedef struct SStSoundDataChunk
 	UUtInt32	ckSize;				/* chunk size */
 	UUtInt32	offset;				/* offset to sound data */
 	UUtInt32	blockSize;			/* size of alignment blocks */
-	
+
 } SStSoundDataChunk;
 
 // ----------------------------------------------------------------------
@@ -152,7 +152,7 @@ typedef struct SStPlayingAmbient
 	SStSoundChannel				*channel1;
 	SStSoundChannel				*channel2;
 	UUtUns32					detail_time;
-	
+
 	UUtBool						has_position;
 	M3tPoint3D					position;
 	M3tVector3D					direction;
@@ -160,11 +160,11 @@ typedef struct SStPlayingAmbient
 	float						max_volume_distance;
 	float						min_volume_distance;
 	float						channel_volume;
-	
+
 	UUtUns32					volume_adjust_start_time;
 	float						volume_adjust_delta;
 	float						volume_adjust_final_volume;
-	
+
 } SStPlayingAmbient;
 
 // ======================================================================
@@ -173,8 +173,8 @@ typedef struct SStPlayingAmbient
 
 #if UUmPlatform == UUmPlatform_Win32
 
-WAVEFORMAT_EX_ADPCM				SSgWaveFormat_Mono = 
-{ 
+WAVEFORMAT_EX_ADPCM				SSgWaveFormat_Mono =
+{
 	WAVE_FORMAT_ADPCM,
 	1,
 	22050,
@@ -207,8 +207,8 @@ WAVEFORMAT_EX_ADPCM				SSgWaveFormat_Mono =
 	(UUtInt16) 0xFF18
 };
 
-WAVEFORMAT_EX_ADPCM				SSgWaveFormat_Stereo = 
-{ 
+WAVEFORMAT_EX_ADPCM				SSgWaveFormat_Stereo =
+{
 	WAVE_FORMAT_ADPCM,
 	2,
 	22050,
@@ -305,15 +305,15 @@ SStGuard						*SSgGuardAll;
 static void
 SSiPlayingAmbient_Halt(
 	SStPlayingAmbient			*inPlayingAmbient);
-	
+
 static void
 SS2iVolume_Update(
 	void);
-	
+
 static void
 SSiPlayingAmbient_Stall(
 	SStSoundChannel				*inSoundChannel);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
@@ -322,9 +322,9 @@ SSiPlayingAmbient_Stall(
 static UUtUns32 SSiGetCacheFileVersion(void)
 {
 	UUtUns32 version;
-	
+
 	version = SScSoundDataCacheFile_Version_Internal;
-	
+
 	if (SScCompressionMode_Mac == SSgCompressionMode) {
 		version |= 0x80000000;
 	}
@@ -348,19 +348,19 @@ x80tof(
 {
 	UUtInt16					sign;
 	UUtInt16					exponent;
-	UUtUns32					mantissa;	
+	UUtUns32					mantissa;
 	float						outf;
-	
+
 	/* 80-bit = sign 1, exp 15, mantissa 64 */
 	/* 32-bit = sign 1, exp 8, mantissa 23 */
 	UUmSwapBig_2Byte(&inData[0]);
 	UUmSwapBig_2Byte(&inData[1]);
 	UUmSwapBig_2Byte(&inData[2]);
-	
+
 	sign = inData[0] >> 15;
 	exponent = (inData[0] & 0x7FFF) - 16382;
 	mantissa = (inData[1] << 16) | inData[2];
-	
+
 	outf =
 		((float)mantissa/(float)UUcMaxUns32) *
 		(float)(1 << exponent) *
@@ -380,7 +380,7 @@ UUrFindTag(
 	char						*src;
 	UUtBool						found;
 	UUtUns32					src_tag;
-	
+
 	// find inTag in inSource
 	src = (char*)inSource;
 	src_tag = UUm4CharToUns32(src[0], src[1], src[2], src[3]);
@@ -393,9 +393,9 @@ UUrFindTag(
 			found = UUcTrue;
 			break;
 		}
-		
+
 		src++;
-		
+
 		src_tag <<= 8;
 		src_tag |= src[3];
 	}
@@ -416,15 +416,15 @@ UUrFindTagData(
 	// clear the outgoing data
 	*outData = NULL;
 	*outLength = 0;
-	
+
 	if (UUrFindTag(inSource, inSourceLength, inTag, outData) == UUcTrue)
 	{
 		UUtUns32				length;
 		UUtUns8					*src;
-		
+
 		// step over the tag
 		src = *outData + 4;
-		
+
 		// get the length of the data
 		length = *(UUtUns32*)src;
 		if (inFileEndian == UUcFile_BigEndian)
@@ -435,22 +435,22 @@ UUrFindTagData(
 		{
 			UUmSwapLittle_4Byte(&length);
 		}
-		
+
 		if (length > inSourceLength)
 		{
 			return UUcError_Generic;
 		}
-		
+
 		// step over the length
 		src += 4;
-		
+
 		// set the outgoing data
 		*outData = (UUtUns8*)src;
 		*outLength = length;
-		
+
 		return UUcError_None;
 	}
-	
+
 	return UUcError_Generic;
 }
 
@@ -465,21 +465,21 @@ UUrWriteTagDataToBuffer(
 	UUtFileEndian				inWriteEndian)
 {
 	UUtTag						tag;
-	
+
 	UUmAssert(sizeof(UUtTag) == ((sizeof(UUtUns8) * 4) + sizeof(UUtUns32)));
-	
+
 	if (inDestinationSize < (inSourceDataLength + sizeof(UUtTag)))
 	{
 		UUmAssert(!"inDestinationSize is too small");
 		return 0;
 	}
-	
+
 	tag.tag[0] = (UUtUns8)(inTag >> 24);
 	tag.tag[1] = (UUtUns8)(inTag >> 16);
 	tag.tag[2] = (UUtUns8)(inTag >> 8);
 	tag.tag[3] = (UUtUns8)inTag;
 	tag.size = inSourceDataLength;
-	
+
 	if (inWriteEndian == UUcFile_BigEndian)
 	{
 		UUmSwapBig_4Byte(&tag.size);
@@ -488,14 +488,14 @@ UUrWriteTagDataToBuffer(
 	{
 		UUmSwapLittle_4Byte(&tag.size);
 	}
-	
+
 	// write the tag to the destination buffer
 	UUrMemory_MoveFast(&tag, inDestinationBuffer, sizeof(UUtTag));
 	inDestinationBuffer += sizeof(UUtTag);
-	
+
 	// write teh source data to the destination buffer
 	UUrMemory_MoveFast(inSourceData, inDestinationBuffer, inSourceDataLength);
-	
+
 	return (inSourceDataLength + sizeof(UUtTag));
 }
 
@@ -520,9 +520,9 @@ SSrShowDebugInfo(
 	UUtError					error;
 	TStFontFamily				*font_family;
 	UUtUns32					platform_numlines;
-	
+
 	if (SSgShowDebugInfo == UUcFalse) { return; }
-	
+
 	error = TSrFontFamily_Get(TScFontFamily_Default, &font_family);
 	if (error == UUcError_None)
 	{
@@ -530,70 +530,70 @@ SSrShowDebugInfo(
 	}
 	DCrText_SetSize(TScFontSize_Default);
 	DCrText_SetStyle(TScFontStyle_Default);
-	
+
 	num_channels = SSiSoundChannels_GetNumChannels();
-	
+
 	SS2rPlatform_GetDebugNeeds(&platform_numlines);
 	width = 275;
 	height = (10 + (UUtInt16)DCrText_GetLineHeight() * ((UUtInt16)num_channels + (UUtInt16)platform_numlines));
-	
+
 	screen_dest.x = (float)((UUtInt16)M3rDraw_GetWidth() - width);
 	screen_dest.y = 10.0f;
 	screen_dest.z = 0.5f;
 	screen_dest.invW = 2.0f;
-	
+
 	partspec = PSrPartSpec_LoadByType(PScPartSpecType_BackgroundColor_Blue);
 	PSrPartSpec_Draw(partspec, PScPart_All, &screen_dest, (UUtInt16) width, (UUtInt16) height, (M3cMaxAlpha >> 2));
-	
+
 	DCrText_SetFormat(TSc_HLeft);
-	
+
 	dest.y = (UUtInt16)(screen_dest.y) + DCrText_GetLineHeight();
-	
+
 	for (i = 0; i < num_channels; i++)
 	{
 		SStSoundChannel			*channel;
 		IMtShade				shade;
-		
+
 		channel = SSiSoundChannels_GetChannelByID(i);
 		if (channel == NULL) { break; }
-		
+
 		shade = (channel->flags & SScSoundChannelFlag_Mono) ? IMcShade_Green : IMcShade_Red;
 		DCrText_SetShade(shade);
-		
+
 		dest.x = (UUtInt16)screen_dest.x + 5;
 		sprintf(string, "chnl %d", i);
 		DCrText_DrawText(string, NULL, &dest);
 		dest.x += 35;
-		
+
 		sprintf(string, "%1.3f", channel->volume);
-		DCrText_DrawText(string, NULL, &dest);	
+		DCrText_DrawText(string, NULL, &dest);
 		dest.x += 25;
-		
+
 //		sprintf(string, "%1.3f", channel->distance_to_listener);
-//		DCrText_DrawText(string, NULL, &dest);	
+//		DCrText_DrawText(string, NULL, &dest);
 //		dest.x += 25;
-		
+
 		if (SSiSoundChannel_IsPlaying(channel))
 		{
 			sprintf(string, "%s", "P");
 			DCrText_DrawText(string, NULL, &dest);
 		}
 		dest.x += 10;
-		
+
 		if (SSiSoundChannel_IsLooping(channel))
 		{
 			sprintf(string, "%s", "l");
 			DCrText_DrawText(string, NULL, &dest);
 		}
 		dest.x += 10;
-		
+
 		if (SSiSoundChannel_IsLocked(channel))
 		{
 			sprintf(string, "%s", "L");
 			DCrText_DrawText(string, NULL, &dest);
 		}
 		dest.x += 10;
-		
+
 		if (SSiSoundChannel_CanPan(channel))
 		{
 			sprintf(string, "%1.1f %1.1f", channel->pan_left, channel->pan_right);
@@ -606,7 +606,7 @@ SSrShowDebugInfo(
 			DCrText_DrawText(string, NULL, &dest);
 		}
 		dest.x += 40;
-		
+
 		DCrText_SetShade(shade);
 		if (SSiSoundChannel_IsPlaying(channel))
 		{
@@ -621,10 +621,10 @@ SSrShowDebugInfo(
 			}
 		}
 		dest.x += 150;
-		
+
 		dest.y += DCrText_GetLineHeight();
 	}
-	
+
 	dest.x = (UUtInt16)screen_dest.x + 5;
 	SS2rPlatform_ShowDebugInfo_Overall(&dest);
 }
@@ -660,7 +660,7 @@ SSrNameIsValidDialogName(
 static const char*
 SSiSubtitleArray_FindByName(
 	SStSubtitle					*inArray,
-	const char					*inName) 
+	const char					*inName)
 {
 	const char *result = NULL;
 
@@ -713,10 +713,10 @@ SSiSubtitleArray_FindByNumber(
 			UUtBool is_equal;
 			const char *name;
 			UUtUns32 compare_len;
-			
+
 			if (isdigit(compare_string[0])) { name = inName + 1; }
 			else { name = inName; }
-			
+
 			compare_len = strlen(compare_string);
 			is_equal = (UUrString_CompareLen_NoCase(compare_string, name, compare_len) == 0);
 
@@ -727,7 +727,7 @@ SSiSubtitleArray_FindByNumber(
 			is_equal &= compare_string[4] == inName[4];
 			is_equal &= compare_string[6] == inName[6];
 			is_equal &= compare_string[7] == inName[7];
-			
+
 			if (isalpha(compare_string[8]) == UUcTrue) {
 				is_equal &= compare_string[8] == inName[8];
 			}*/
@@ -746,7 +746,7 @@ SSiSubtitleArray_FindByNumber(
 // ----------------------------------------------------------------------
 const char*
 SSrSubtitle_Find(
-	const char					*inName) 
+	const char					*inName)
 {
 	return SSiSubtitleArray_FindByNumber(TMrInstance_GetFromName(SScTemplate_Subtitle, "subtitles"), inName);
 }
@@ -754,7 +754,7 @@ SSrSubtitle_Find(
 // ----------------------------------------------------------------------
 const char*
 SSrMessage_Find(
-	const char					*inName) 
+	const char					*inName)
 {
 	return SSiSubtitleArray_FindByName(TMrInstance_GetFromName(SScTemplate_Subtitle, "messages"), inName);
 }
@@ -774,13 +774,13 @@ SSiSoundData_Compare(
 	const SStSoundData			*item2;
 	const char					*item1_name;
 	const char					*item2_name;
-	
+
 	item1 = *((SStSoundData**)inItem1);
 	item2 = *((SStSoundData**)inItem2);
-	
+
 	item1_name = SSrSoundData_GetName(item1);
 	item2_name = SSrSoundData_GetName(item2);
-	
+
 	return strcmp(item1_name, item2_name);
 }
 
@@ -793,7 +793,7 @@ SSiSoundData_AddToArray(
 	SStSoundData				**sound_data_array;
 	UUtUns32					num_elements;
 	UUtUns32					found_location;
-	
+
 	// find the point in the array to insert the element
 	sound_data_array = (SStSoundData**)UUrMemory_Array_GetMemory(SSgDynamicSoundData);
 	num_elements = UUrMemory_Array_GetUsedElems(SSgDynamicSoundData);
@@ -836,14 +836,14 @@ SSiSoundData_AddToArray(
 	UUmAssert((found_location >= 0) && (found_location <= num_elements));
 	error = UUrMemory_Array_InsertElement(SSgDynamicSoundData, found_location, NULL);
 	UUmError_ReturnOnError(error);
-	
+
 	// set the array element
 	sound_data_array = (SStSoundData**)UUrMemory_Array_GetMemory(SSgDynamicSoundData);
 	sound_data_array[found_location] = inSoundData;
-	
+
 	return UUcError_None;
 }
-			
+
 // ----------------------------------------------------------------------
 static void SSiSoundData_StoreDeallocatedPointer(SStSoundData *inSoundData)
 {
@@ -863,7 +863,7 @@ static void SSiSoundData_StoreDeallocatedPointer(SStSoundData *inSoundData)
 static void SSiSoundData_Delete(SStSoundData *inSoundData)
 {
 	UUmAssert(inSoundData);
-	
+
 	SSiSoundData_StoreDeallocatedPointer(inSoundData);
 
 	// dispose of the data
@@ -872,7 +872,7 @@ static void SSiSoundData_Delete(SStSoundData *inSoundData)
 		UUrMemory_Block_Delete(inSoundData->data);
 		inSoundData->data = NULL;
 	}
-	
+
 	// dispose of the sound_data
 	UUrMemory_Block_Delete(inSoundData);
 }
@@ -885,9 +885,9 @@ SSiSoundData_ProcHandler(
 	void						*inPrivateData)
 {
 	SStSoundData				*sound_data;
-	
+
 	sound_data = (SStSoundData*)inInstancePtr;
-	
+
 	// handle the message
 	switch (inMessage)
 	{
@@ -899,7 +899,7 @@ SSiSoundData_ProcHandler(
 			SSiSoundData_StoreDeallocatedPointer(sound_data);
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -923,7 +923,7 @@ void SSrSoundData_GetByName_StartCache(void)
 			if (sound_directory) {
 				UUrMemory_Block_Delete(sound_directory);
 			}
-		}		
+		}
 	}
 
 	SSgSoundCacheDepth++;
@@ -1004,17 +1004,17 @@ SS2rSoundData_FlushDeallocatedPointers(
 
 	// go through all of the groups and NULL out the sound_data pointers if they've been deleted
 	group_array = (SStGroup**)UUrMemory_Array_GetMemory(SSgSoundGroups);
-	num_groups = UUrMemory_Array_GetUsedElems(SSgSoundGroups);	
+	num_groups = UUrMemory_Array_GetUsedElems(SSgSoundGroups);
 	for (itr = 0; itr < num_groups; itr++)
 	{
 		SStGroup					*group;
 		SStPermutation				*perm_array;
 		UUtUns32					num_perms;
 		UUtUns32					itr2;
-		
+
 		// get a pointer to the sound group
 		group = group_array[itr];
-		
+
 		// update the sound data pointers for the permutations of the group
 		perm_array = (SStPermutation*)UUrMemory_Array_GetMemory(group->permutations);
 		num_perms = UUrMemory_Array_GetUsedElems(group->permutations);
@@ -1078,12 +1078,12 @@ SSrSoundData_GetByName(
 {
 	UUtError					error;
 	SStSoundData				*sound_data;
-	
-	
+
+
 	UUmAssert(inSoundDataName);
-	
+
 	sound_data = NULL;
-	
+
 	// look for the a template instance of the sound data
 	error =
 		TMrInstance_GetDataPtr(
@@ -1094,7 +1094,7 @@ SSrSoundData_GetByName(
 	{
 		return sound_data;
 	}
-	
+
 #if SHIPPING_VERSION == 0
 {
 	SStSoundData				**sound_data_h;
@@ -1107,13 +1107,13 @@ SSrSoundData_GetByName(
 	// look for the sound in the dynamically allocated sound list
 	sound_data_array = (SStSoundData**)UUrMemory_Array_GetMemory(SSgDynamicSoundData);
 	num_sound_data = UUrMemory_Array_GetUsedElems(SSgDynamicSoundData);
-	
+
 	UUrString_Copy(search_sound_data_name, inSoundDataName, SScMaxNameLength);
 	search_sound_data.flags = SScSoundDataFlag_DynamicAlloc; // so SSrSoundData_GetName() looks in the data pointer
 	search_sound_data.data = search_sound_data_name;
 	search_sound_data.num_bytes = 0;
 	search_sound_data_ptr = &search_sound_data;
-	
+
 	sound_data_h =
 		(SStSoundData**)bsearch(
 			&search_sound_data_ptr,
@@ -1129,7 +1129,7 @@ SSrSoundData_GetByName(
 	}
 }
 
-/*#if 0															// CB: this debugging information is no longer useful as 
+/*#if 0															// CB: this debugging information is no longer useful as
 																// we are now storing all binary sound data in level 0,
 																// but many sounds in specific levels -> this is not
 																// necessarily a problem, so I'm removing this.
@@ -1171,9 +1171,9 @@ SSrSoundData_GetName(
 	const SStSoundData			*inSoundData)
 {
 	const char					*name;
-	
+
 	UUmAssert(inSoundData);
-	
+
 	// if the sound data was dynamically allocated then the sound name is
 	// stored at the end of the sound data
 	if ((inSoundData->flags & SScSoundDataFlag_DynamicAlloc) != 0)
@@ -1184,7 +1184,7 @@ SSrSoundData_GetName(
 	{
 		name = TMrInstance_GetInstanceName(inSoundData);
 	}
-	
+
 	return name;
 }
 
@@ -1230,7 +1230,7 @@ SSrSoundData_ReadCacheFile(
 	if (error != UUcError_None) {
 		goto exit;
 	}
-	
+
 	BFrFile_Read(file, sizeof(UUtUns32), &version);
 	BFrFile_Read(file, sizeof(UUtUns32), &time);
 
@@ -1239,17 +1239,17 @@ SSrSoundData_ReadCacheFile(
 		BFrFile_Close(file);
 		goto exit;
 	}
-	
+
 	// allocate space for the new sound
 	new_sound_data = (SStSoundData*)UUrMemory_Block_New(sizeof(SStSoundData));
 	if (new_sound_data == NULL) {
 		BFrFile_Close(file);
 		goto exit;
 	}
-	
+
 	// read the SStSoundData into new_sound_data
 	BFrFile_Read(file, sizeof(SStSoundData), new_sound_data);
-	
+
 	// allocate memory for the data
 	length = new_sound_data->num_bytes;
 	new_sound_data->data = (UUtUns8*)UUrMemory_Block_NewClear(length);
@@ -1260,13 +1260,13 @@ SSrSoundData_ReadCacheFile(
 		new_sound_data = NULL;
 		goto exit;
 	}
-	
+
 	// read the file data into the data
 	BFrFile_Read(file, length, new_sound_data->data);
-	
+
 	// close the file
 	BFrFile_Close(file);
-	
+
 exit:
 	return new_sound_data;
 }
@@ -1275,8 +1275,8 @@ exit:
 static SStSoundData *
 SSrSoundData_New_Uncached(
 	BFtFileRef					*inFileRef)
-{	
-	UUtError					error;	
+{
+	UUtError					error;
 	SStSoundData				temp_sound_data;
 	SStSoundData				*new_sound_data = NULL;
 	UUtUns8						*uncompressed_data = NULL;
@@ -1285,7 +1285,7 @@ SSrSoundData_New_Uncached(
 	UUtUns8						*raw_data;
 	UUtUns32					file_length, raw_data_length;
 	const char					*leaf_name;
-	
+
 	// load the file
 	error =	BFrFileRef_LoadIntoMemory(inFileRef, &file_length, &file_data);
 	if (error != UUcError_None) { goto exit; }
@@ -1303,14 +1303,14 @@ SSrSoundData_New_Uncached(
 			&raw_data,
 			&raw_data_length);
 	if (error != UUcError_None) { goto exit; }
-	
+
 	// allocate space for the sound data
 	new_sound_data = (SStSoundData*)UUrMemory_Block_New(sizeof(SStSoundData));
 	if (new_sound_data == NULL) { goto exit; }
-	
+
 	// copy temp_sound_data into new_sound_data
 	UUrMemory_MoveFast(&temp_sound_data, new_sound_data, sizeof(SStSoundData));
-	
+
 	// allocate space for the sound data data
 	new_sound_data->data = (UUtUns8*)UUrMemory_Block_NewClear(raw_data_length);
 	if (new_sound_data->data == NULL) {
@@ -1318,18 +1318,18 @@ SSrSoundData_New_Uncached(
 		new_sound_data = NULL;
 		goto exit;
 	}
-	
+
 	// copy the raw_data into new_sound_data->data
 	UUrMemory_MoveFast(raw_data, new_sound_data->data, raw_data_length);
-	
+
 exit:
 	if (file_data != NULL) {
 		UUrMemory_Block_Delete(file_data);
 	}
-	
+
 	return new_sound_data;
 }
-	
+
 // ----------------------------------------------------------------------
 UUtError
 SSrSoundData_Load(
@@ -1341,14 +1341,14 @@ SSrSoundData_Load(
 	SStSoundData				*sound_data = NULL;
 	BFtFileRef					ssc_file_ref;
 	UUtUns32					uncompressed_time_stamp;
-		
+
 	UUmAssert(inFileRef);
 	UUmAssert(outSoundData);
 
 	ssc_file_ref = *inFileRef;
 
 	BFrFileRef_SetLeafNameSuffex(&ssc_file_ref, "ssc");
-	
+
 	// if the ssc file exists load it
 	if (BFrFileRef_FileExists(&ssc_file_ref)) {
 		// get the modification time
@@ -1358,11 +1358,11 @@ SSrSoundData_Load(
 			returncode = error;
 			goto cleanup;
 		}
-		
+
 		// load the ssc file
 		sound_data = SSrSoundData_ReadCacheFile(inFileRef, &ssc_file_ref, uncompressed_time_stamp);
 	}
-	
+
 	// if the ssc file does not exist, then read the sound file
 	if (NULL == sound_data) {
 		// load the sound file
@@ -1372,7 +1372,7 @@ SSrSoundData_Load(
 			returncode = UUcError_Generic;
 			goto cleanup;
 		}
-		
+
 		// compress the sound data
 		if (SScCompressionMode_Mac == SSgCompressionMode) {
 			SSrIMA_CompressSoundData(sound_data);
@@ -1383,7 +1383,7 @@ SSrSoundData_Load(
 		else {
 			UUmAssert(!"invalid compression mode");
 		}
-		
+
 		// write a cache file
 		error =	SSrSoundData_WriteCacheFile(sound_data,	uncompressed_time_stamp, &ssc_file_ref);
 
@@ -1392,11 +1392,11 @@ SSrSoundData_Load(
 			goto cleanup;
 		}
 	}
-	
+
 	// store the sound data
 	inStoreSoundCallback(sound_data, BFrFileRef_GetLeafName(inFileRef));
-	
-cleanup:	
+
+cleanup:
 	// return the sound data
 	*outSoundData = sound_data;
 
@@ -1419,12 +1419,12 @@ SSrSoundData_New(
 	SStSoundData				**outSoundData)
 {
 	UUtError					error;
-	
+
 	SStSoundData				*sound_data = NULL;
-	
+
 	UUmAssert(inFileRef);
 	UUmAssert(outSoundData);
-	
+
 	error =
 		SSrSoundData_Load(
 			inFileRef,
@@ -1435,17 +1435,17 @@ SSrSoundData_New(
 	if (sound_data == NULL) {
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "couldn't load sound data from file, no error flagged");
 	}
-	
+
 	// allocate memory for the sound data and the sound name
 	sound_data->data =
 		UUrMemory_Block_Realloc(
 			sound_data->data,
 			sound_data->num_bytes + SScMaxNameLength);
 	if (sound_data->data == NULL) { goto cleanup; }
-	
+
 	// this sound_data was dynamically allocated
 	sound_data->flags |= SScSoundDataFlag_DynamicAlloc;
-	
+
 	// put the file name at the end of the sound data
 	{
 		char *dest = ((char*)sound_data->data + sound_data->num_bytes);
@@ -1453,16 +1453,16 @@ SSrSoundData_New(
 		UUrString_Copy(dest, BFrFileRef_GetLeafName(inFileRef), SScMaxNameLength);
 		UUrString_MakeLowerCase(dest, SScMaxNameLength);
 	}
-	
+
 	// add sound to SSgDynamicSoundData
 	error = SSiSoundData_AddToArray(sound_data);
 	if (error != UUcError_None) { goto cleanup; }
 
 	// set the outgoing sound data
 	*outSoundData = sound_data;
-	
+
 	return UUcError_None;
-	
+
 cleanup:
 	// delete the sound data
 	if (sound_data)
@@ -1473,7 +1473,7 @@ cleanup:
 		}
 		UUrMemory_Block_Delete(sound_data);
 	}
-	
+
 	*outSoundData = NULL;
 
 	return error;
@@ -1519,24 +1519,24 @@ SSiSoundData_ProcessAIFF(
 	SStSoundDataChunk			*sound;
 	UUtUns32					sound_size;
 	UUtBool						swap_it;
-	
+
 	UUmAssert(inFileData);
 	UUmAssertWritePtr(outSoundData, sizeof(SStSoundData));
 	UUmAssertWritePtr(outRawData, sizeof(UUtUns8*));
 	UUmAssertWritePtr(outRawDataLength, sizeof(UUtUns32));
-	
+
 	// set swap it
 	#if UUmEndian == UUmEndian_Big
 		swap_it = UUcFalse;
 	#else
 		swap_it = UUcTrue;
 	#endif
-	
+
 	// clear the outgoing data
 	UUrMemory_Clear(outSoundData, sizeof(SStSoundData));
 	*outRawData = NULL;
 	*outRawDataLength = 0;
-	
+
 	// find the FORM data
 	error =
 		UUrFindTagData(
@@ -1547,10 +1547,10 @@ SSiSoundData_ProcessAIFF(
 			(UUtUns8**)&form,
 			&form_size);
 	UUmError_ReturnOnErrorMsg(error, "Unable to find FORM tag");
-	
+
 	// back up 8 bytes to get to beginning of SStContainerChunk
 	*(UUtInt8**)&form -= (sizeof(UUtUns32) + sizeof(UUtInt32));
-	
+
 	// determine if the AIFF is compressed or not
 	UUmSwapBig_4Byte(&form->formType);
 	if (form->formType == UUm4CharToUns32('A', 'I', 'F', 'C'))
@@ -1558,7 +1558,7 @@ SSiSoundData_ProcessAIFF(
 		UUmAssert(!"compressed aiff files are not supported");
 		return UUcError_Generic;
 	}
-	
+
 	// find the COMM data
 	error =
 		UUrFindTagData(
@@ -1569,14 +1569,14 @@ SSiSoundData_ProcessAIFF(
 			&common_data,
 			&common_size);
 	UUmError_ReturnOnErrorMsg(error, "Unable to find COMM tag");
-	
+
 	// read the common data
 	UUmGet2BytesFromBuffer(common_data, common.numChannels, UUtInt16, swap_it);
 	UUmGet4BytesFromBuffer(common_data, common.numSampleFrames, UUtInt32, swap_it);
 	UUmGet2BytesFromBuffer(common_data, common.sampleSize, UUtInt16, swap_it);
 	common.sampleRate = (UUtUns32)x80tof((UUtUns16*)common_data);
 	common_data += 10;	/* skip over the 80 bytes */
-		
+
 	// find the SSND data
 	error =
 		UUrFindTagData(
@@ -1587,10 +1587,10 @@ SSiSoundData_ProcessAIFF(
 			(UUtUns8**)&sound,
 			&sound_size);
 	UUmError_ReturnOnErrorMsg(error, "Unable to find SSND tag");
-	
+
 	// back up 8 bytes to get to beginning of SStContainerChunk
 	*(UUtInt8**)&sound -= (sizeof(UUtUns32) + sizeof(UUtInt32));
-	
+
 	// get the offset to the sound data
 	UUmSwapBig_4Byte(&sound->ckSize);
 	UUmSwapBig_4Byte(&sound->offset);
@@ -1619,12 +1619,12 @@ SSiSoundData_ProcessAIFF(
 
 		outSoundData->num_bytes = length_in_bytes;
 		outSoundData->data = NULL;
-	
+
 		*outRawDataLength = length_in_bytes;
 	}
 
 
-	
+
 	// set the return data
 	{
 		UUtBool valid_sample_rate;
@@ -1652,11 +1652,11 @@ SSiSoundData_ProcessAIFF(
 
 
 		// determine the exact duration of the sound
-		outSoundData->duration_ticks = (UUtUns16) ((*outRawDataLength * UUcFramesPerSecond) / 
+		outSoundData->duration_ticks = (UUtUns16) ((*outRawDataLength * UUcFramesPerSecond) /
 			(common.numChannels * SScBytesPerSample * SScSamplesPerSecond));
 	}
-	
-	
+
+
 	return UUcError_None;
 }
 
@@ -1680,17 +1680,17 @@ SSiSoundData_ProcessWAVE(
 	UUtUns8						*data;
 	UUtUns32					data_size;
 	UUtBool						found;
-	
+
 	UUmAssert(inFileData);
 	UUmAssertWritePtr(outSoundData, sizeof(SStSoundData));
 	UUmAssertWritePtr(outRawData, sizeof(UUtUns8*));
 	UUmAssertWritePtr(outRawDataLength, sizeof(UUtUns32));
-	
+
 	// clear the outgoing data
 	UUrMemory_Clear(outSoundData, sizeof(SStSoundData));
 	*outRawData = NULL;
 	*outRawDataLength = 0;
-	
+
 	// find the RIFF data
 	error =
 		UUrFindTagData(
@@ -1701,7 +1701,7 @@ SSiSoundData_ProcessWAVE(
 			&riff,
 			&riff_size);
 	UUmError_ReturnOnErrorMsg(error, "Unable to find WAVE tag");
-	
+
 	// find the WAVE
 	found =
 		UUrFindTag(
@@ -1713,7 +1713,7 @@ SSiSoundData_ProcessWAVE(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to find WAVE tag");
 	}
-	
+
 	// find the format data
 	error =
 		UUrFindTagData(
@@ -1724,7 +1724,7 @@ SSiSoundData_ProcessWAVE(
 			&((UUtUns8*)format),
 			&format_size);
 	UUmError_ReturnOnErrorMsg(error, "Unable to find format data");
-	
+
 	// find the data
 	error =
 		UUrFindTagData(
@@ -1735,7 +1735,7 @@ SSiSoundData_ProcessWAVE(
 			&data,
 			&data_size);
 	UUmError_ReturnOnErrorMsg(error, "Unable to find data data");
-	
+
 	// process the format
 	UUmSwapLittle_2Byte(&format->wFormatTag);
 	UUmSwapLittle_2Byte(&format->nChannels);
@@ -1744,11 +1744,11 @@ SSiSoundData_ProcessWAVE(
 	UUmSwapLittle_2Byte(&format->nBlockAlign);
 	UUmSwapLittle_2Byte(&format->wBitsPerSample);
 	UUmSwapLittle_2Byte(&format->cbSize);
-	
+
 	// set the return data
 	outSoundData->flags = (format->wFormatTag == 2) ? SScSoundDataFlag_MSADPCM : SScSoundDataFlag_PCM_Little;
 	outSoundData->f = *format;
-	
+
 	*outRawData = data;
 	*outRawDataLength = data_size;
 
@@ -1757,7 +1757,7 @@ SSiSoundData_ProcessWAVE(
 		outSoundData->duration_ticks = 0;
 	} else {
 		// this data is uncompressed, calculate the sound's duration in ticks
-		outSoundData->duration_ticks = (UUtUns16) ((*outRawDataLength * UUcFramesPerSecond) / 
+		outSoundData->duration_ticks = (UUtUns16) ((*outRawDataLength * UUcFramesPerSecond) /
 			(format->nChannels * (format->wBitsPerSample >> 3) * format->nSamplesPerSec));
 	}
 
@@ -1769,10 +1769,10 @@ SSiSoundData_ProcessWAVE(
 		UUtUns32			i;
 		UUtUns32			num_shorts;
 		UUtUns16			*shorts;
-		
+
 		num_shorts = (*outRawDataLength) >> 1;
 		shorts = (UUtUns16*)(*outRawData);
-		
+
 		for (i = 0; i < num_shorts; i++)
 		{
 			UUmSwapLittle_2Byte((void*)shorts);
@@ -1780,7 +1780,7 @@ SSiSoundData_ProcessWAVE(
 		}
 	}
 #endif
-	
+
 	return UUcError_None;
 }
 #endif
@@ -1798,7 +1798,7 @@ SSrSoundData_Process(
 	UUtError					error;
 	UUtUns8						*data;
 	UUtUns32					data_size;
-	
+
 	// if RIFF data is found, the file is a WAVE file so process it as such
 	error =
 		UUrFindTagData(
@@ -1823,10 +1823,10 @@ SSrSoundData_Process(
 #endif
 
 		UUmAssert(!"wave file format not supported");
-		
+
 		return UUcError_None;
 	}
-	
+
 	// if FORM data is found, the file is an AIFF file so process it as such
 	error =
 		UUrFindTagData(
@@ -1847,10 +1847,10 @@ SSrSoundData_Process(
 				outRawData,
 				outRawDataLength);
 		UUmError_ReturnOnError(error);
-		
+
 		return UUcError_None;
 	}
-	
+
 	return UUcError_Generic;
 }
 
@@ -1951,16 +1951,16 @@ SSiSoundChannel_Play(
 	SStSoundData				*inSoundData)
 {
 	UUtBool						result;
-	
+
 	UUmAssert(inSoundChannel);
 	UUmAssert(inSoundData);
 
 	// play inSoundData on the inSoundChannel
 	result = SS2rPlatform_SoundChannel_SetSoundData(inSoundChannel, inSoundData);
 	if (result == UUcFalse) { return UUcFalse; }
-	
+
 	SS2rPlatform_SoundChannel_Play(inSoundChannel);
-	
+
 	return UUcTrue;
 }
 
@@ -1990,7 +1990,7 @@ SSiSoundChannel_SetAmbient(
 	UUtBool						inAmbient)
 {
 	UUmAssert(inSoundChannel);
-	
+
 	if (inAmbient)
 	{
 		inSoundChannel->status |= SScSCStatus_Ambient;
@@ -2008,7 +2008,7 @@ SSiSoundChannel_SetCanPan(
 	UUtBool						inCanPan)
 {
 	UUmAssert(inSoundChannel);
-	
+
 	if (inCanPan)
 	{
 		inSoundChannel->status |= SScSCStatus_CanPan;
@@ -2063,26 +2063,26 @@ SSiSoundChannel_SetPan(
 	float						inPan)
 {
 	UUmAssert(inSoundChannel);
-	
+
 	switch (inPanFlag)
 	{
 		case SScPanFlag_Left:
 			inSoundChannel->pan_left = 1.0f;
 			inSoundChannel->pan_right = inPan;
 		break;
-		
+
 		case SScPanFlag_Right:
 			inSoundChannel->pan_left = inPan;
 			inSoundChannel->pan_right = 1.0f;
 		break;
-		
+
 		case SScPanFlag_None:
 		default:
 			inSoundChannel->pan_left = 1.0f;
 			inSoundChannel->pan_right = 1.0f;
 		break;
 	}
-	
+
 	SS2rPlatform_SoundChannel_SetPan(inSoundChannel, inPanFlag, inPan);
 }
 
@@ -2111,17 +2111,17 @@ SSiSoundChannel_SetPitch(
 	float						inPitch)
 {
 	float						prev_pitch;
-	
+
 	UUmAssert(inSoundChannel);
-	
+
 	prev_pitch = inSoundChannel->pitch;
 	inSoundChannel->pitch = inPitch;
-	
+
 	if (inSoundChannel->group != NULL)
 	{
 		inSoundChannel->pitch *= inSoundChannel->group->group_pitch;
 	}
-	
+
 	if (prev_pitch != inSoundChannel->pitch)
 	{
 		SS2rPlatform_SoundChannel_SetPitch(inSoundChannel, inSoundChannel->pitch);
@@ -2169,12 +2169,12 @@ static void
 SSiSoundChannel_CalcVolume(
 	SStSoundChannel				*inSoundChannel)
 {
-	inSoundChannel->volume = 
+	inSoundChannel->volume =
 		SSgOverallVolume *
 		inSoundChannel->channel_volume *
 		inSoundChannel->distance_volume *
 		inSoundChannel->permutation_volume;
-	
+
 	if (inSoundChannel->group != NULL)
 	{
 		inSoundChannel->volume *= inSoundChannel->group->group_volume;
@@ -2188,7 +2188,7 @@ SSiSoundChannel_SetChannelVolume(
 	float						inChannelVolume)
 {
 	UUmAssert(inSoundChannel);
-	
+
 	inSoundChannel->channel_volume = UUmPin(inChannelVolume, 0.0f, 2.0f);
 	SSiSoundChannel_CalcVolume(inSoundChannel);
 	SS2rPlatform_SoundChannel_SetVolume(inSoundChannel, inSoundChannel->volume);
@@ -2237,13 +2237,13 @@ SSiSoundChannel_Spatialize(
 	float						theta;
 	float						pan;
 	UUtUns32					pan_flag;
-	
+
 	M3tPoint3D					position;
 	M3tPoint3D					listener;
 	float						dist_squared;
-	
+
 	UUmAssert(inSoundChannel);
-	
+
 	// calculate the distance to the listener
 	if (inPosition == NULL) {
 		inSoundChannel->position = SSgListener_Position;
@@ -2256,7 +2256,7 @@ SSiSoundChannel_Spatialize(
 		inSoundChannel->distance_to_listener =
 			MUrPoint_Distance(inPosition, &SSgListener_Position) * SScFootToDist;
 	}
-	
+
 	if (inSoundChannel->distance_to_listener < inMaxVolDistance)
 	{
 		// the volume is at it's max
@@ -2265,9 +2265,9 @@ SSiSoundChannel_Spatialize(
 	else
 	{
 		float				diff;
-		
+
 		diff = (inMinVolDistance - inMaxVolDistance);
-	
+
 		// calculate the distance_volume
 		if (diff <= 0.0f)
 		{
@@ -2279,11 +2279,11 @@ SSiSoundChannel_Spatialize(
 			if (distance_volume < 0.0f) { distance_volume = 0.0f; }
 		}
 	}
-	
+
 	// set the distance volume
 	SSiSoundChannel_SetDistanceVolume(inSoundChannel, distance_volume);
 	if (distance_volume <= 0.0f) { return UUcFalse; }
-	
+
 	// exit if the channel doesn't calculate the pan
 	inSoundChannel->pan_left = 1.0f;
 	inSoundChannel->pan_right = 1.0f;
@@ -2334,10 +2334,10 @@ SSiSoundChannel_Spatialize(
 			pan = 1.0f;
 		}
 	}
-	
+
 	// set the pan volume
 	SSiSoundChannel_SetPan(inSoundChannel, pan_flag, pan);
-	
+
 	return UUcTrue;
 }
 
@@ -2358,15 +2358,15 @@ SSiSoundChannels_GetChannelForPlay(
 	UUtUns32					i;
 	UUtUns32					num_channels;
 	float						distance;
-	
+
 	UUmAssert(inSoundChannels);
-	
+
 	found_channel = NULL;
 	distance = 0.0f;
-	
+
 	sound_channel_array = inSoundChannels;
 	num_channels = inNumChannels;
-	
+
 	// look for a channel which isn't locked and isn't playing anything
 	for (i = 0; i < num_channels; i++)
 	{
@@ -2377,7 +2377,7 @@ SSiSoundChannels_GetChannelForPlay(
 			break;
 		}
 	}
-	
+
 	// get the first available channel which isn't locked and is playing a sound that
 	// has a lower priority
 	if (found_channel == NULL)
@@ -2396,7 +2396,7 @@ SSiSoundChannels_GetChannelForPlay(
 			}
 		}
 	}
-	
+
 	// look for a channel which is playing any sound of the same or lower or equal priority
 	// that isn't locked and is near zero volume
 	if (found_channel == NULL)
@@ -2416,13 +2416,13 @@ SSiSoundChannels_GetChannelForPlay(
 			}
 		}
 	}
-	
+
 	// look for a channel which is playing with a lower or equal priority but
 	// with a lower volume
 	if (found_channel == NULL)
 	{
 		float					min_volume = 1.0f;
-		
+
 		for (i = 0; i < num_channels; i++)
 		{
 			if ((sound_channel_array[i].priority <= inPriority) &&
@@ -2432,7 +2432,7 @@ SSiSoundChannels_GetChannelForPlay(
 				min_volume = found_channel->volume;
 			}
 		}
-		
+
 		if (found_channel)
 		{
 			if (SSiSoundChannel_IsAmbient(found_channel) == UUcTrue)
@@ -2445,7 +2445,7 @@ SSiSoundChannels_GetChannelForPlay(
 			}
 		}
 	}
-	
+
 	// init found_channel
 	if (found_channel != NULL)
 	{
@@ -2454,7 +2454,7 @@ SSiSoundChannels_GetChannelForPlay(
 		found_channel->pan_left = 1.0f;
 		found_channel->pan_right = 1.0f;
 	}
-	
+
 	return found_channel;
 }
 
@@ -2466,7 +2466,7 @@ SSiSoundChannels_GetChannelByID(
 	SStSoundChannel				*sound_channel_array;
 	UUtUns32					i;
 	UUtUns32					num_channels;
-	
+
 	// search for the channel in the mono channel array
 	sound_channel_array = SSgSoundChannels_Mono;
 	num_channels = SSgSoundChannels_NumMono;
@@ -2477,7 +2477,7 @@ SSiSoundChannels_GetChannelByID(
 			return &sound_channel_array[i];
 		}
 	}
-	
+
 	// search for the channel in the stereo channel array
 	sound_channel_array = SSgSoundChannels_Stereo;
 	num_channels = SSgSoundChannels_NumStereo;
@@ -2488,7 +2488,7 @@ SSiSoundChannels_GetChannelByID(
 			return &sound_channel_array[i];
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -2498,9 +2498,9 @@ SSiSoundChannels_GetNumChannels(
 	void)
 {
 	UUtUns32					num_channels;
-	
+
 	num_channels = SSgSoundChannels_NumMono + SSgSoundChannels_NumStereo;
-				
+
 	return num_channels;
 }
 
@@ -2516,17 +2516,17 @@ SSiSoundChannels_Initialize(
 	UUtUns32					num_stereo_channels;
 	UUtUns32					num_mono_channels;
 	UUtUns16					sound_channel_id;
-	
+
 	UUmAssert(SSgSoundChannels_Stereo == NULL);
 	UUmAssert(SSgSoundChannels_Mono == NULL);
-	
+
 	// calculate the number of stereo channels
 	num_stereo_channels = (UUtUns32)(((float)inNumChannels * SScPercentStereo) + 0.5f);
 	num_mono_channels = inNumChannels - num_stereo_channels;
-	
+
 	*outNumStereoChannels = num_stereo_channels;
 	*outNumMonoChannels = num_mono_channels;
-	
+
 	// allocate memory for the stereo sound channels
 	if (num_stereo_channels > 0)
 	{
@@ -2543,7 +2543,7 @@ SSiSoundChannels_Initialize(
 	}
 
 	sound_channel_id = 0;
-	
+
 	// initialize each stereo sound channel
 	sound_channels = SSgSoundChannels_Stereo;
 	for (i = 0; i < num_stereo_channels; i++)
@@ -2567,7 +2567,7 @@ SSiSoundChannels_Initialize(
 		sound_channels[i].pan_right = 1.0f;
 		SS2rPlatform_SoundChannel_Initialize(&sound_channels[i]);
 	}
-	
+
 	// initialize each mono sound channel
 	sound_channels = SSgSoundChannels_Mono;
 	for (i = 0; i < num_mono_channels; i++)
@@ -2591,7 +2591,7 @@ SSiSoundChannels_Initialize(
 		sound_channels[i].pan_right = 1.0f;
 		SS2rPlatform_SoundChannel_Initialize(&sound_channels[i]);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2603,9 +2603,9 @@ SSiSoundChannels_Silence(
 	UUtUns32					i;
 	SStSoundChannel				*sound_channel_array;
 	UUtUns32					num_elements;
-	
+
 	SSrWaitGuard(SSgGuardAll);
-	
+
 	if (SSgSoundChannels_Mono)
 	{
 		// go through the sound channels and do any platform specific termination
@@ -2631,7 +2631,7 @@ SSiSoundChannels_Silence(
 			SS2rPlatform_SoundChannel_SetVolume(&sound_channel_array[i], 0.0f);
 		}
 	}
-	
+
 	SSrReleaseGuard(SSgGuardAll);
 }
 
@@ -2643,7 +2643,7 @@ SSiSoundChannels_Terminate(
 	UUtUns32					i;
 	SStSoundChannel				*sound_channel_array;
 	UUtUns32					num_elements;
-	
+
 	if (SSgSoundChannels_Mono)
 	{
 		// go through the sound channels and do any platform specific termination
@@ -2653,7 +2653,7 @@ SSiSoundChannels_Terminate(
 		{
 			SS2rPlatform_SoundChannel_Terminate(&sound_channel_array[i]);
 		}
-		
+
 		// delete the sound channel array
 		UUrMemory_Block_Delete(SSgSoundChannels_Mono);
 		SSgSoundChannels_Mono = NULL;
@@ -2669,7 +2669,7 @@ SSiSoundChannels_Terminate(
 		{
 			SS2rPlatform_SoundChannel_Terminate(&sound_channel_array[i]);
 		}
-		
+
 		// delete the sound channel array
 		UUrMemory_Block_Delete(SSgSoundChannels_Stereo);
 		SSgSoundChannels_Stereo = NULL;
@@ -2702,9 +2702,9 @@ SSrPermutation_Play(
 	float						play_volume;
 	float						play_pitch;
 	SStSoundChannel				*sound_channel;
-	
+
 	UUmAssert(inPermutation);
-	 
+
 	if (SSgUsable == UUcFalse) { return; }
 
 	if (inPermutation->sound_data == NULL)
@@ -2715,13 +2715,13 @@ SSrPermutation_Play(
 				UUcFalse);
 
 		if (inPermutation->sound_data == NULL) {
-			COrConsole_Printf("SOUND NOT FOUND: %s %s - sound %s", 
+			COrConsole_Printf("SOUND NOT FOUND: %s %s - sound %s",
 					(inDebugSoundType == NULL) ? "" : inDebugSoundType,
 					(inDebugSoundName == NULL) ? "" : inDebugSoundName, inPermutation->sound_data_name);
 			return;
 		}
 	}
-	
+
 	// search for a channel to use
 	if (inSoundChannel)
 	{
@@ -2749,25 +2749,25 @@ SSrPermutation_Play(
 		}
 	}
 	if (sound_channel == NULL) { return; }
-	
+
 	// pick a volume
 	play_volume =
 		UUmRandomRangeFloat(
 			inPermutation->min_volume_percent,
 			inPermutation->max_volume_percent);
-	
+
 	// pick a pitch
 	play_pitch =
 		UUmRandomRangeFloat(
 			inPermutation->min_pitch_percent,
 			inPermutation->max_pitch_percent);
-	
+
 	// set the volume
 	SSiSoundChannel_SetPermutationVolume(sound_channel, play_volume);
-	
+
 	// play the permutation
 	SSiSoundChannel_Play(sound_channel, inPermutation->sound_data);
-	
+
 	// set the pitch
 	SSiSoundChannel_SetPitch(sound_channel, play_pitch);
 }
@@ -2785,10 +2785,10 @@ SSiGroup_Compare(
 {
 	const SStGroup				*group1;
 	const SStGroup				*group2;
-	
+
 	group1 = *((SStGroup**)inItem1);
 	group2 = *((SStGroup**)inItem2);
-		
+
 	return strcmp(group1->group_name, group2->group_name);
 }
 
@@ -2806,21 +2806,21 @@ SSiGroup_SelectPermutation(
 	UUtBool						done;
 	UUtUns32					count;
 	UUtUns16					selected;
-	
+
 	// get the number of permutations and a pointer to the permutation_array
 	num_permutations = UUrMemory_Array_GetUsedElems(inGroup->permutations);
 	permutation_array = (SStPermutation*)UUrMemory_Array_GetMemory(inGroup->permutations);
-	
+
 	if (num_permutations == 0) { return NULL; }
 	if (num_permutations == 1) { return &permutation_array[0]; }
-	
+
 	// calculate the sum of all the weights of the permutations
 	total_weight = 0;
 	for (i = 0; i < num_permutations; i++)
 	{
 		total_weight += permutation_array[i].weight;
 	}
-	
+
 	done = UUcTrue;
 	count = 0;
 	selected = 0;
@@ -2828,7 +2828,7 @@ SSiGroup_SelectPermutation(
 	{
 		// pick a permutation
 		random_num = UUmLocalRandomRange(0, total_weight);
-		
+
 		// find the permutation which corresponds to this random number
 		permutation = NULL;
 		cumulative_weight = 0;
@@ -2844,7 +2844,7 @@ SSiGroup_SelectPermutation(
 		}
 		UUmAssert(i < num_permutations);
 		UUmAssert(permutation != NULL);
-		
+
 		// when the prevent repeats flag is set, then pick a new permutation
 		// if this is the same permutation that was picked the previous time
 		// this sound group was played
@@ -2854,13 +2854,13 @@ SSiGroup_SelectPermutation(
 		{
 			done = UUcFalse;
 		}
-		
+
 		count++;
 	}
 	while ((done == UUcFalse) && (count < 10));
-	
+
 	inGroup->flag_data = selected;
-	
+
 	return permutation;
 }
 
@@ -2872,7 +2872,7 @@ SSrGroup_CheckSoundData(
 	UUtUns32					num_permutations;
 	SStPermutation				*permutation_array;
 	UUtUns32					itr;
-	
+
 	// get the number of permutations and a pointer to the permutation_array
 	num_permutations = UUrMemory_Array_GetUsedElems(inGroup->permutations);
 	permutation_array = (SStPermutation*)UUrMemory_Array_GetMemory(inGroup->permutations);
@@ -2880,7 +2880,7 @@ SSrGroup_CheckSoundData(
 	{
 		if (permutation_array[itr].sound_data == NULL) { return UUcFalse; }
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -2892,25 +2892,25 @@ SSrGroup_Copy(
 {
 	UUtError					error;
 	UUtUns32					num_permutations;
-	
+
 	UUmAssert(inSource);
 	UUmAssert(inSource->permutations);
 	UUmAssert(ioDest);
 	UUmAssert(ioDest->permutations);
-	
+
 	// clear ioDest's permutations array
 	num_permutations = UUrMemory_Array_GetUsedElems(ioDest->permutations);
 	if (num_permutations > 0)
-	{		
+	{
 		while (num_permutations--)
 		{
 			UUrMemory_Array_DeleteElement(ioDest->permutations, 0);
 		}
 	}
-	
+
 	// copy the permutations from inSource to ioDest
 	ioDest->num_channels = inSource->num_channels;
-	
+
 	num_permutations = UUrMemory_Array_GetUsedElems(inSource->permutations);
 	if (num_permutations > 0)
 	{
@@ -2918,26 +2918,26 @@ SSrGroup_Copy(
 		SStPermutation				*dst_permutations;
 		UUtBool						mem_moved;
 		UUtUns32					i;
-		
+
 		// set the number of permutations used in ioDest
 		error = UUrMemory_Array_SetUsedElems(ioDest->permutations, num_permutations, &mem_moved);
 		UUmError_ReturnOnError(error);
-		
+
 		// get a pointer to the inSource permutations
 		src_permutations = (SStPermutation*)UUrMemory_Array_GetMemory(inSource->permutations);
 		UUmAssert(src_permutations);
-		
+
 		// get a pointer to the ioDest permutations
 		dst_permutations = (SStPermutation*)UUrMemory_Array_GetMemory(ioDest->permutations);
 		UUmAssert(dst_permutations);
-		
+
 		// copy the permutation data from inSource to ioDest
 		for (i = 0; i < num_permutations; i++)
 		{
 			dst_permutations[i] = src_permutations[i];
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2950,10 +2950,10 @@ SSrGroup_Delete(
 	UUtUns32					num_sound_groups;
 	SStGroup					**group_array;
 	UUtUns32					i;
-	
+
 	num_sound_groups = UUrMemory_Array_GetUsedElems(SSgSoundGroups);
 	group_array = (SStGroup**)UUrMemory_Array_GetMemory(SSgSoundGroups);
-	
+
 	for (i = 0; i < num_sound_groups; i++)
 	{
 		if (UUrString_Compare_NoCase(group_array[i]->group_name, inGroupName) != 0) { continue; }
@@ -2964,20 +2964,20 @@ SSrGroup_Delete(
 			UUrMemory_Array_Delete(group_array[i]->permutations);
 			group_array[i]->permutations = NULL;
 		}
-		
+
 		// delete the sound group
 		UUrMemory_Block_Delete(group_array[i]);
-		
+
 		// delete the sound group pointer
 		UUrMemory_Array_DeleteElement(SSgSoundGroups, i);
-		
+
 		if (inUpdatePointers == UUcTrue)
 		{
 			// update the pointers
 			SSrAmbient_UpdateGroupName(inGroupName, NULL);
 			SSrImpulse_UpdateGroupName(inGroupName, NULL);
 		}
-		
+
 		break;
 	}
 }
@@ -2992,17 +2992,17 @@ SSrGroup_GetByName(
 	SStGroup					*find_me_ptr = &find_me;
 	SStGroup					**found_group;
 	UUtUns32					num_elements;
-	
+
 	if (inGroupName == NULL) { return NULL; }
-	
+
 	UUrString_Copy(find_me.group_name, inGroupName, SScMaxNameLength);
-	
+
 	// get a pointer to the array
 	group_array = (SStGroup**)UUrMemory_Array_GetMemory(SSgSoundGroups);
 	if (group_array == NULL) { return NULL; }
-	
+
 	num_elements = UUrMemory_Array_GetUsedElems(SSgSoundGroups);
-	
+
 	found_group =
 		(SStGroup**)bsearch(
 			&find_me_ptr,
@@ -3022,12 +3022,12 @@ SSrGroup_GetByIndex(
 {
 	UUtUns32					num_sound_groups;
 	SStGroup					**group_array;
-	
+
 	num_sound_groups = UUrMemory_Array_GetUsedElems(SSgSoundGroups);
 	group_array = (SStGroup**)UUrMemory_Array_GetMemory(SSgSoundGroups);
-	
+
 	UUmAssert(num_sound_groups > inIndex);
-	
+
 	return group_array[inIndex];
 }
 
@@ -3066,14 +3066,14 @@ SSrGroup_New(
 {
 	UUtError					error;
 	SStGroup					*group;
-	
+
 	UUmAssert(inGroupName);
 	UUmAssert(outGroup);
-	
+
 	// allocate memory for the group sound
 	group = (SStGroup*)UUrMemory_Block_NewClear(sizeof(SStGroup));
 	UUmError_ReturnOnNull(group);
-	
+
 	// initialize the group
 	group->group_volume = 1.0f;
 	group->group_pitch = 1.0f;
@@ -3092,51 +3092,51 @@ SSrGroup_New(
 		UUrMemory_Block_Delete(group);
 		return UUcError_OutOfMemory;
 	}
-	
+
 	// insert the group into the sound groups list
 	{
 		SStGroup				**array;
 		UUtUns32				num_elements;
 		UUtInt32				min, max, midpoint, compare;
 		UUtUns32				found_location;
-		
+
 		array = (SStGroup**)UUrMemory_Array_GetMemory(SSgSoundGroups);
 		num_elements = UUrMemory_Array_GetUsedElems(SSgSoundGroups);
-		
-		min = 0; 
+
+		min = 0;
 		max = num_elements - 1;
-		
+
 		while(min <= max)
 		{
 			midpoint = (min + max) >> 1; // S.S. / 2;
-		
+
 			compare = SSiGroup_Compare(&group, &array[midpoint]);
-		
+
 			if (compare < 0) {
 				// must lie below here
 				max = midpoint - 1;
-		
+
 			} else {
 				// must lie above here
 				min = midpoint + 1;
 			}
 		}
-		
+
 		found_location = (UUtUns32)min;
-		
+
 		// create space in the array at the desired location
 		UUmAssert((found_location >= 0) && (found_location <= num_elements));
 		error = UUrMemory_Array_InsertElement(SSgSoundGroups, found_location, NULL);
 		UUmError_ReturnOnError(error);
-		
+
 		// set the array element
 		array = (SStGroup**)UUrMemory_Array_GetMemory(SSgSoundGroups);
 		array[found_location] = group;
 	}
-	
+
 	// set the outgoing data
 	if (outGroup) { *outGroup = group; }
-	
+
 	return UUcError_None;
 }
 
@@ -3147,13 +3147,13 @@ SSrGroup_Permutation_Delete(
 	UUtUns32					inPermIndex)
 {
 	UUmAssert(ioGroup);
-	
+
 	// check the index's range
 	if (inPermIndex >= UUrMemory_Array_GetUsedElems(ioGroup->permutations))
 	{
 		return;
 	}
-	
+
 	// delete the permutation
 	UUrMemory_Array_DeleteElement(ioGroup->permutations, inPermIndex);
 }
@@ -3165,18 +3165,18 @@ SSrGroup_Permutation_Get(
 	UUtUns32					inPermIndex)
 {
 	SStPermutation				*perms;
-	
+
 	UUmAssert(inGroup);
-	
+
 	// check the index's range
 	if (inPermIndex >= UUrMemory_Array_GetUsedElems(inGroup->permutations))
 	{
 		return NULL;
 	}
-	
+
 	perms = (SStPermutation*)UUrMemory_Array_GetMemory(inGroup->permutations);
 	if (perms == NULL) { return NULL; }
-	
+
 	return &perms[inPermIndex];
 }
 
@@ -3192,13 +3192,13 @@ SSrGroup_Permutation_New(
 	UUtBool						mem_moved;
 	SStPermutation				*perms;
 	UUtUns32					in_sound_data_num_channels = SSrSound_GetNumChannels(inSoundData);
-				
+
 	UUmAssert(ioGroup);
 	UUmAssert(inSoundData);
 	UUmAssert(outPermutationIndex);
-	
+
 	*outPermutationIndex = UUcMaxUns32;
-	
+
 	// make sure the number of sound channels of the permutations match
 	if (UUrMemory_Array_GetUsedElems(ioGroup->permutations) > 0)
 	{
@@ -3211,15 +3211,15 @@ SSrGroup_Permutation_New(
 	{
 		ioGroup->num_channels = in_sound_data_num_channels;
 	}
-	
+
 	// allocate a new permutation in the permutations array
 	error = UUrMemory_Array_GetNewElement(ioGroup->permutations, &index, &mem_moved);
 	UUmError_ReturnOnError(error);
-	
+
 	// get a pointer to the permutataions array
 	perms = (SStPermutation*)UUrMemory_Array_GetMemory(ioGroup->permutations);
 	UUmAssert(perms);
-	
+
 	// initialize the permutation
 	perms[index].weight					= 10;
 	perms[index].min_volume_percent		= 1.0;
@@ -3231,9 +3231,9 @@ SSrGroup_Permutation_New(
 		perms[index].sound_data_name,
 		SSrSoundData_GetName(inSoundData),
 		SScMaxNameLength);
-	
+
 	*outPermutationIndex = index;
-	
+
 	return UUcError_None;
 }
 
@@ -3248,16 +3248,16 @@ SSrGroup_Play(
 	UUtUns32					num_permutations;
 	SStPermutation				*permutation;
 	SStSoundChannel				*sound_channel;
-	
+
 	UUmAssert(inGroup);
 	UUmAssert(inGroup->permutations);
-	
+
 	if (SSgUsable == UUcFalse) { return; }
 
 	// get the number of permutations
 	num_permutations = UUrMemory_Array_GetUsedElems(inGroup->permutations);
 	if (num_permutations == 0) { return; }
-	
+
 	// pick the permutation to play
 	permutation = SSiGroup_SelectPermutation(inGroup);
 	if (permutation == NULL) {
@@ -3265,12 +3265,12 @@ SSrGroup_Play(
 		return;
 
 	} else if (permutation->sound_data == NULL) {
-		COrConsole_Printf("SOUND NOT FOUND: %s %s - sound %s", 
+		COrConsole_Printf("SOUND NOT FOUND: %s %s - sound %s",
 				(inDebugSoundType == NULL) ? "" : inDebugSoundType,
 				(inDebugSoundName == NULL) ? "" : inDebugSoundName, permutation->sound_data_name);
 		return;
 	}
-	
+
 	SSrWaitGuard(SSgGuardAll);
 
 	// get a sound channel
@@ -3303,7 +3303,7 @@ SSrGroup_Play(
 			sound_channel = NULL;
 		}
 	}
-	
+
 	if (sound_channel == NULL) {
 		SSrReleaseGuard(SSgGuardAll);
 		return;
@@ -3312,7 +3312,7 @@ SSrGroup_Play(
 //	SSrWaitGuard(&sound_channel->guard);
 
 	sound_channel->group = inGroup;
-	
+
 	// play the permutation
 	SSrPermutation_Play(permutation, sound_channel, inDebugSoundType, inDebugSoundName);
 
@@ -3339,16 +3339,16 @@ SSiGroup_PlaySpatialized(
 	SStPermutation				*permutation;
 	SStSoundChannel				*sound_channel;
 	UUtBool						result;
-	
+
 	UUmAssert(inGroup);
 	UUmAssert(inGroup->permutations);
-	
+
 	if (SSgUsable == UUcFalse) { return UUcFalse; }
 
 	// get the number of permutations
 	num_permutations = UUrMemory_Array_GetUsedElems(inGroup->permutations);
 	if (num_permutations == 0) { return UUcFalse; }
-	
+
 	// pick the permutation to play
 	permutation = SSiGroup_SelectPermutation(inGroup);
 	if (permutation == NULL) {
@@ -3356,7 +3356,7 @@ SSiGroup_PlaySpatialized(
 		return UUcFalse;
 
 	} else if (permutation->sound_data == NULL) {
-		COrConsole_Printf("SOUND NOT FOUND: %s %s - group %s - sound %s", 
+		COrConsole_Printf("SOUND NOT FOUND: %s %s - group %s - sound %s",
 				(inDebugSoundType == NULL) ? "" : inDebugSoundType,
 				(inDebugSoundName == NULL) ? "" : inDebugSoundName,
 				inGroup->group_name, permutation->sound_data_name);
@@ -3390,23 +3390,23 @@ SSiGroup_PlaySpatialized(
 			sound_channel = NULL;
 		}
 	}
-	
+
 	if (sound_channel == NULL)
 	{
 /*		if (SSgShowDebugInfo)
 		{
 			COrConsole_Printf("SSrGroup_PlaySpatialized: didn't play %s, no channels available", inGroup->group_name);
 		}*/
-		
+
 		SSrReleaseGuard(SSgGuardAll);
 		return UUcFalse;
 	}
-	
+
 	// setup the channel
 	SSiSoundChannel_SetLooping(sound_channel, UUcFalse);
 	SSiSoundChannel_SetChannelVolume(sound_channel, inVolume);
 	SSiSoundChannel_SetCanPan(sound_channel, UUcTrue);
-	
+
 	// spacialize the sound channel
 	result =
 		SSiSoundChannel_Spatialize(
@@ -3416,16 +3416,16 @@ SSiGroup_PlaySpatialized(
 			inPosition,
 			inDirection,
 			inVelocity);
-	
+
 	// play the permutation
 	if (result == UUcTrue)
 	{
 		sound_channel->group = inGroup;
 		SSrPermutation_Play(permutation, sound_channel, inDebugSoundType, inDebugSoundName);
 	}
-	
+
 	SSrReleaseGuard(SSgGuardAll);
-	
+
 	return result;
 }
 
@@ -3438,27 +3438,27 @@ SSrGroup_UpdateSoundDataPointers(
 	UUtUns32					num_groups;
 	UUtUns32					itr;
 	UUtBool						search_on_disk;
-	
+
 #if SHIPPING_VERSION == 0
 	search_on_disk = SSgSearchOnDisk;
 #else
 	search_on_disk = UUcFalse;
 #endif
-	
+
 	// go through all of the groups and updates the sound_data pointers of their
 	// permutations
 	group_array = (SStGroup**)UUrMemory_Array_GetMemory(SSgSoundGroups);
-	num_groups = UUrMemory_Array_GetUsedElems(SSgSoundGroups);	
+	num_groups = UUrMemory_Array_GetUsedElems(SSgSoundGroups);
 	for (itr = 0; itr < num_groups; itr++)
 	{
 		SStGroup					*group;
 		SStPermutation				*perm_array;
 		UUtUns32					num_perms;
 		UUtUns32					itr2;
-		
+
 		// get a pointer to the sound group
 		group = group_array[itr];
-		
+
 		// update the sound data pointers for the permutations of the group
 		perm_array = (SStPermutation*)UUrMemory_Array_GetMemory(group->permutations);
 		num_perms = UUrMemory_Array_GetUsedElems(group->permutations);
@@ -3485,10 +3485,10 @@ SSiImpulse_Compare(
 {
 	const SStImpulse			*impulse1;
 	const SStImpulse			*impulse2;
-	
+
 	impulse1 = *((SStImpulse**)inItem1);
 	impulse2 = *((SStImpulse**)inItem2);
-		
+
 	return strcmp(impulse1->impulse_name, impulse2->impulse_name);
 }
 
@@ -3500,7 +3500,7 @@ SSrImpulse_Copy(
 {
 	UUmAssert(inSource);
 	UUmAssert(ioDest);
-	
+
 	// restore the id after copying the data
 	ioDest->impulse_group = inSource->impulse_group;
 	UUrString_Copy(ioDest->impulse_group_name, inSource->impulse_group_name, SScMaxNameLength);
@@ -3510,7 +3510,7 @@ SSrImpulse_Copy(
 	ioDest->max_volume_angle = inSource->max_volume_angle;
 	ioDest->min_volume_angle = inSource->min_volume_angle;
 	ioDest->min_angle_attenuation = inSource->min_angle_attenuation;
-	
+
 	return UUcError_None;
 }
 
@@ -3523,10 +3523,10 @@ SSrImpulse_Delete(
 	UUtUns32					num_impulse_sounds;
 	SStImpulse					**impulse_array, *deleted_element = NULL;
 	UUtUns32					i;
-	
+
 	num_impulse_sounds = UUrMemory_Array_GetUsedElems(SSgImpulseSounds);
 	impulse_array = (SStImpulse**)UUrMemory_Array_GetMemory(SSgImpulseSounds);
-	
+
 	for (i = 0; i < num_impulse_sounds; i++)
 	{
 		if (UUrString_Compare_NoCase(impulse_array[i]->impulse_name, inImpulseName) == 0)
@@ -3551,12 +3551,12 @@ SSrImpulse_GetByIndex(
 {
 	UUtUns32					num_impulse_sounds;
 	SStImpulse					**impulse_array;
-	
+
 	num_impulse_sounds = UUrMemory_Array_GetUsedElems(SSgImpulseSounds);
 	impulse_array = (SStImpulse**)UUrMemory_Array_GetMemory(SSgImpulseSounds);
-	
+
 	UUmAssert(num_impulse_sounds > inIndex);
-	
+
 	return impulse_array[inIndex];
 }
 
@@ -3570,17 +3570,17 @@ SSrImpulse_GetByName(
 	SStImpulse					*find_me_ptr = &find_me;
 	SStImpulse					**found_impulse;
 	UUtUns32					num_elements;
-	
+
 	if (inImpulseName == NULL) { return NULL; }
-	
+
 	UUrString_Copy(find_me.impulse_name, inImpulseName, SScMaxNameLength);
-	
+
 	// get a pointer to the array
 	impulse_array = (SStImpulse**)UUrMemory_Array_GetMemory(SSgImpulseSounds);
 	if (impulse_array == NULL) { return NULL; }
-	
+
 	num_elements = UUrMemory_Array_GetUsedElems(SSgImpulseSounds);
-	
+
 	found_impulse =
 		(SStImpulse**)bsearch(
 			&find_me_ptr,
@@ -3610,14 +3610,14 @@ SSrImpulse_New(
 {
 	UUtError					error;
 	SStImpulse					*impulse;
-	
+
 	UUmAssert(inImpulseName);
 	UUmAssert(outImpulse);
-	
+
 	// allocate memory for the impulse sound
 	impulse = (SStImpulse*)UUrMemory_Block_New(sizeof(SStImpulse));
 	UUmError_ReturnOnNull(impulse);
-	
+
 	// initialize the impulse sound
 	UUrString_Copy(impulse->impulse_name, inImpulseName, SScMaxNameLength);
 	impulse->impulse_group = NULL;
@@ -3633,43 +3633,43 @@ SSrImpulse_New(
 	UUrMemory_Clear(impulse->alt_impulse_name, SScMaxNameLength);
 	impulse->impact_velocity = 0.0f;
 	impulse->min_occlusion = 0.0f;
-		
+
 	// insert the impulse sound into the impulse sound list
 	{
 		SStImpulse				**array;
 		UUtUns32				num_elements;
 		UUtInt32				min, max, midpoint, compare;
 		UUtUns32				found_location;
-		
+
 		array = (SStImpulse**)UUrMemory_Array_GetMemory(SSgImpulseSounds);
 		num_elements = UUrMemory_Array_GetUsedElems(SSgImpulseSounds);
-		
-		min = 0; 
+
+		min = 0;
 		max = num_elements - 1;
-		
+
 		while(min <= max)
 		{
 			midpoint = (min + max) >> 1; // S.S. / 2;
-		
+
 			compare = SSiImpulse_Compare(&impulse, &array[midpoint]);
-		
+
 			if (compare < 0) {
 				// must lie below here
 				max = midpoint - 1;
-		
+
 			} else {
 				// must lie above here
 				min = midpoint + 1;
 			}
 		}
-		
+
 		found_location = (UUtUns32)min;
-		
+
 		// create space in the array at the desired location
 		UUmAssert((found_location >= 0) && (found_location <= num_elements));
 		error = UUrMemory_Array_InsertElement(SSgImpulseSounds, found_location, NULL);
 		UUmError_ReturnOnError(error);
-		
+
 		// set the array element
 		array = (SStImpulse**)UUrMemory_Array_GetMemory(SSgImpulseSounds);
 		array[found_location] = impulse;
@@ -3677,7 +3677,7 @@ SSrImpulse_New(
 
 	// set the outgoing data
 	if (outImpulse) { *outImpulse = impulse; }
-	
+
 	return UUcError_None;
 }
 
@@ -3692,14 +3692,14 @@ SSrImpulse_Play(
 {
 	float						volume;
 	UUtBool						result;
-	
+
 	UUmAssert(inImpulse);
-	
+
 	if (SSgUsable == UUcFalse) { return; }
 
 	// find the impulse sound group if it isn't already set
 	if (inImpulse->impulse_group == NULL) { return; }
-	
+
 	if (inVolume == NULL)
 	{
 		volume = 1.0f;
@@ -3708,14 +3708,14 @@ SSrImpulse_Play(
 	{
 		volume = *inVolume;
 	}
-	
+
 	if (inImpulse->alt_threshold > 0)
 	{
 		SStSoundChannel				*channel_array;
 		UUtUns32					num_channels;
 		UUtUns32					i;
 		UUtUns32					num_playing;
-		
+
 		// scan the appropriate sound channels to determine if
 		// this group has being played the maximum number of times it
 		// is allowed to be played
@@ -3729,7 +3729,7 @@ SSrImpulse_Play(
 			channel_array = SSgSoundChannels_Mono;
 			num_channels = SSgSoundChannels_NumMono;
 		}
-		
+
 		SSrWaitGuard(SSgGuardAll);
 
 		num_playing = 0;
@@ -3737,11 +3737,11 @@ SSrImpulse_Play(
 		{
 			if (SSiSoundChannel_IsPlaying(&channel_array[i]) == UUcFalse) { continue; }
 			if (channel_array[i].group != inImpulse->impulse_group) { continue; }
-			
+
 			num_playing++;
 			if (num_playing >= inImpulse->alt_threshold) { break; }
 		}
-		
+
 		SSrReleaseGuard(SSgGuardAll);
 
 		if (num_playing >= inImpulse->alt_threshold)
@@ -3758,7 +3758,7 @@ SSrImpulse_Play(
 			return;
 		}
 	}
-	
+
 	result =
 		SSiGroup_PlaySpatialized(
 			inImpulse->impulse_group,
@@ -3807,17 +3807,17 @@ SSrImpulse_UpdateGroupName(
 	UUtUns32					num_impulse_sounds;
 	SStImpulse					**impulse_array;
 	UUtUns32					i;
-	
+
 	num_impulse_sounds = UUrMemory_Array_GetUsedElems(SSgImpulseSounds);
 	impulse_array = (SStImpulse**)UUrMemory_Array_GetMemory(SSgImpulseSounds);
-	
+
 	// get a new pointer to each SStGroup
 	for (i = 0; i < num_impulse_sounds; i++)
 	{
 		SStImpulse				*impulse;
-		
+
 		impulse = impulse_array[i];
-		
+
 		// update the impulse sound group
 		if (UUrString_Compare_NoCase(impulse->impulse_group_name, inOldGroupName) == 0)
 		{
@@ -3842,20 +3842,20 @@ SSrImpulse_UpdateGroupPointers(
 	UUtUns32					num_impulse_sounds;
 	SStImpulse					**impulse_array;
 	UUtUns32					i;
-	
+
 	num_impulse_sounds = UUrMemory_Array_GetUsedElems(SSgImpulseSounds);
 	impulse_array = (SStImpulse**)UUrMemory_Array_GetMemory(SSgImpulseSounds);
-	
+
 	// get a new pointer to each SStGroup
 	for (i = 0; i < num_impulse_sounds; i++)
 	{
 		SStImpulse				*impulse;
-		
+
 		impulse = impulse_array[i];
-		
+
 		// get a pointer to the impulse group
 		impulse->impulse_group = SSrGroup_GetByName(impulse->impulse_group_name);
-		
+
 		// update the alt_impulse
 		if (impulse->alt_threshold > 0)
 		{
@@ -3876,15 +3876,15 @@ SSiPAUpdate_CalcNextDetailTime(
 {
 	float					detail_time;
 	UUtUns32				time;
-	
+
 	if (inPlayingAmbient->ambient->detail == NULL) { return; }
-	
+
 	// get the amount of time to wait
-	detail_time = 
+	detail_time =
 		UUmRandomRangeFloat(
 			inPlayingAmbient->ambient->min_detail_time,
 			inPlayingAmbient->ambient->max_detail_time);
-	
+
 	// calculate the next detail time
 	time = UUrMachineTime_Sixtieths();
 	inPlayingAmbient->detail_time = time + (UUtUns32)(detail_time * 60.0f);
@@ -3899,14 +3899,14 @@ SSiPAUpdate_ReserveChannel(
 	UUtBool					inCanPan)
 {
 	SStSoundChannel			*channel;
-	
+
 	// get a channel
 	channel =
 		SSiSoundChannels_GetChannelForPlay(
 			((inNumChannels == 2) ? SSgSoundChannels_Stereo : SSgSoundChannels_Mono),
 			((inNumChannels == 2) ? SSgSoundChannels_NumStereo : SSgSoundChannels_NumMono),
 			inPriority);
-	
+
 	if (channel != NULL)
 	{
 		// set the status flags
@@ -3915,7 +3915,7 @@ SSiPAUpdate_ReserveChannel(
 		SSiSoundChannel_SetLooping(channel, UUcFalse);
 		SSiSoundChannel_SetUpdating(channel, UUcFalse);
 		SSiSoundChannel_SetCanPan(channel, inCanPan);
-		
+
 		// initialize the volumes, pan, and pitch.
 		// the channel volume must be set first in order to keep the distance volume
 		// from making the channel audible before it should be
@@ -3924,7 +3924,7 @@ SSiPAUpdate_ReserveChannel(
 		SSiSoundChannel_SetPitch(channel, 1.0f);
 		SSiSoundChannel_SetPan(channel, SScPanFlag_None, 1.0f);
 	}
-	
+
 	return channel;
 }
 
@@ -3936,16 +3936,16 @@ SSiPAUpdate_Start(
 	SStGroup					*group;
 	UUtUns32					num_channels;
 	UUtBool						pan;
-	
+
 	// ------------------------------
 	// reserve channel1
 	// ------------------------------
 	group = inPlayingAmbient->ambient->base_track1;
 	if (group == NULL) { group = inPlayingAmbient->ambient->in_sound; }
 	if (group == NULL) { group = inPlayingAmbient->ambient->out_sound; }
-	
-	pan = ((inPlayingAmbient->ambient->flags & SScAmbientFlag_Pan) != 0); 
-	
+
+	pan = ((inPlayingAmbient->ambient->flags & SScAmbientFlag_Pan) != 0);
+
 	if (group != NULL)
 	{
 		num_channels = SSrGroup_GetNumChannels(group);
@@ -3955,14 +3955,14 @@ SSiPAUpdate_Start(
 				inPlayingAmbient->ambient->priority,
 				inPlayingAmbient->channel_volume,
 				pan);
-		
+
 		// get a channel
 /*		inPlayingAmbient->channel1 =
 			SSiSoundChannels_GetChannelForPlay(
 				((num_channels == 2) ? SSgSoundChannels_Stereo : SSgSoundChannels_Mono),
 				((num_channels == 2) ? SSgSoundChannels_NumStereo : SSgSoundChannels_NumMono),
 				inPlayingAmbient->ambient->priority);
-		
+
 		if (inPlayingAmbient->channel1 != NULL)
 		{
 			// set the status flags
@@ -3971,7 +3971,7 @@ SSiPAUpdate_Start(
 			SSiSoundChannel_SetLooping(inPlayingAmbient->channel1, UUcFalse);
 			SSiSoundChannel_SetUpdating(inPlayingAmbient->channel1, UUcFalse);
 			SSiSoundChannel_SetCanPan(inPlayingAmbient->channel1, pan);
-			
+
 			// initialize the volumes, pan, and pitch.
 			// the channel volume must be set first in order to keep the distance volume
 			// from making the channel audible before it should be
@@ -3983,12 +3983,12 @@ SSiPAUpdate_Start(
 			SSiSoundChannel_SetPan(inPlayingAmbient->channel1, SScPanFlag_None, 1.0f);
 		}*/
 	}
-	
+
 	// ------------------------------
 	// reserve channel2
 	// ------------------------------
 	group = inPlayingAmbient->ambient->base_track2;
-	
+
 	if (group != NULL)
 	{
 		num_channels = SSrGroup_GetNumChannels(group);
@@ -3998,14 +3998,14 @@ SSiPAUpdate_Start(
 				inPlayingAmbient->ambient->priority,
 				inPlayingAmbient->channel_volume,
 				pan);
-		
+
 		// get a channel
 /*		inPlayingAmbient->channel2 =
 			SSiSoundChannels_GetChannelForPlay(
 				((num_channels == 2) ? SSgSoundChannels_Stereo : SSgSoundChannels_Mono),
 				((num_channels == 2) ? SSgSoundChannels_NumStereo : SSgSoundChannels_NumMono),
 				inPlayingAmbient->ambient->priority);
-		
+
 		if (inPlayingAmbient->channel2 != NULL)
 		{
 			// set the status flags
@@ -4014,7 +4014,7 @@ SSiPAUpdate_Start(
 			SSiSoundChannel_SetAmbient(inPlayingAmbient->channel2, UUcTrue);
 			SSiSoundChannel_SetUpdating(inPlayingAmbient->channel2, UUcFalse);
 			SSiSoundChannel_SetCanPan(inPlayingAmbient->channel2, pan);
-			
+
 			// initialize the volumes, pan, and pitch
 			// the channel volume must be set first in order to keep the distance volume
 			// from making the channel audible before it should be
@@ -4026,7 +4026,7 @@ SSiPAUpdate_Start(
 			SSiSoundChannel_SetPan(inPlayingAmbient->channel2, SScPanFlag_None, 1.0f);
 		}*/
 	}
-	
+
 	// ------------------------------
 	// move on to the next stage
 	// ------------------------------
@@ -4045,7 +4045,7 @@ SSiPAUpdate_Start(
 	{
 		inPlayingAmbient->stage = SScPAStage_InSoundStart;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -4064,7 +4064,7 @@ SSiPAUpdate_InSoundStart(
 		SSrGroup_Play(inPlayingAmbient->ambient->in_sound, inPlayingAmbient->channel1,
 					"ambient in", inPlayingAmbient->ambient->ambient_name);
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -4074,9 +4074,9 @@ SSiPAUpdate_InSoundPlaying(
 	SStPlayingAmbient			*inPlayingAmbient)
 {
 	UUtBool						next_stage;
-	
+
 	next_stage = UUcFalse;
-	
+
 	// if channel1 is NULL then the in_sound is not playing so
 	// move on to the Body_Start stage.  Otherwise, wait for the in_sound
 	// to stop playing
@@ -4091,7 +4091,7 @@ SSiPAUpdate_InSoundPlaying(
 		inPlayingAmbient->stage = SScPAStage_BodyStart;
 		next_stage = UUcTrue;
 	}
-	
+
 	return next_stage;
 }
 
@@ -4107,7 +4107,7 @@ SSiPAUpdate_DetailOnly(
 		M3tPoint3D			position;
 		float				x;
 		float				z;
-		
+
 		// get the position of the sound
 		if (inPlayingAmbient->has_position)
 		{
@@ -4117,7 +4117,7 @@ SSiPAUpdate_DetailOnly(
 		{
 			position = SSgListener_Position;
 		}
-		
+
 		// calculate a random offset from the current position
 		x =	UUmRandomRangeFloat(
 				-inPlayingAmbient->ambient->sphere_radius,
@@ -4125,10 +4125,10 @@ SSiPAUpdate_DetailOnly(
 		z = UUmRandomRangeFloat(
 				-inPlayingAmbient->ambient->sphere_radius,
 				inPlayingAmbient->ambient->sphere_radius);
-		
+
 		position.x += x;
 		position.z += z;
-		
+
 		// play the detail
 		SSiGroup_PlaySpatialized(
 			inPlayingAmbient->ambient->detail,
@@ -4141,7 +4141,7 @@ SSiPAUpdate_DetailOnly(
 			SScPriority2_Low,
 			"ambient detail",
 			inPlayingAmbient->ambient->ambient_name);
-		
+
 		// calculate the next time to play the detail
 		SSiPAUpdate_CalcNextDetailTime(inPlayingAmbient);
 	}
@@ -4155,9 +4155,9 @@ SSiPAUpdate_BodyStart(
 	SStPlayingAmbient			*inPlayingAmbient)
 {
 	UUtBool						next_stage;
-	
+
 	next_stage = UUcFalse;
-	
+
 	if ((SSiSoundChannel_IsUpdating(inPlayingAmbient->channel1) == UUcFalse) &&
 		(SSiSoundChannel_IsUpdating(inPlayingAmbient->channel2) == UUcFalse))
 	{
@@ -4169,12 +4169,12 @@ SSiPAUpdate_BodyStart(
 			SSiSoundChannel_SetLooping(
 				inPlayingAmbient->channel1,
 				((inPlayingAmbient->ambient->flags & SScAmbientFlag_PlayOnce) == 0));
-			
+
 			// play the base_track1
 			SSrGroup_Play(inPlayingAmbient->ambient->base_track1, inPlayingAmbient->channel1,
 						"ambient base1", inPlayingAmbient->ambient->ambient_name);
 		}
-	
+
 		// if the ambient sound has a base_track2, then play it
 		if ((inPlayingAmbient->ambient->base_track2 != NULL) &&
 			(inPlayingAmbient->channel2))
@@ -4183,15 +4183,15 @@ SSiPAUpdate_BodyStart(
 			SSiSoundChannel_SetLooping(
 				inPlayingAmbient->channel2,
 				((inPlayingAmbient->ambient->flags & SScAmbientFlag_PlayOnce) == 0));
-			
+
 			// play the base_track2
 			SSrGroup_Play(inPlayingAmbient->ambient->base_track2, inPlayingAmbient->channel2,
 						"ambient base2", inPlayingAmbient->ambient->ambient_name);
 		}
-		
+
 		// set the time for the detail track if there is one
 		SSiPAUpdate_CalcNextDetailTime(inPlayingAmbient);
-		
+
 		// move on to the next appropriate stage
 		if ((inPlayingAmbient->channel1 != NULL) || (inPlayingAmbient->channel2 != NULL))
 		{
@@ -4204,7 +4204,7 @@ SSiPAUpdate_BodyStart(
 			next_stage = UUcTrue;
 		}
 	}
-	
+
 	return next_stage;
 }
 
@@ -4217,16 +4217,16 @@ SSiPAUpdate_BodyPlaying(
 	UUtBool						channel2_playing;
 	UUtUns32					num_channels;
 	UUtBool						can_pan;
-	
+
 	// determine if the sound channels are playing
 	channel1_playing = SSiSoundChannel_IsPlaying(inPlayingAmbient->channel1);
 	channel2_playing = SSiSoundChannel_IsPlaying(inPlayingAmbient->channel2);
-	
+
 	// recover from losing channels
 	if ((inPlayingAmbient->ambient->base_track1 != NULL) &&
 		(inPlayingAmbient->channel1 == NULL))
 	{
-		can_pan = ((inPlayingAmbient->ambient->flags & SScAmbientFlag_Pan) != 0); 
+		can_pan = ((inPlayingAmbient->ambient->flags & SScAmbientFlag_Pan) != 0);
 		num_channels = SSrGroup_GetNumChannels(inPlayingAmbient->ambient->base_track1);
 		inPlayingAmbient->channel1 =
 			SSiPAUpdate_ReserveChannel(
@@ -4236,11 +4236,11 @@ SSiPAUpdate_BodyPlaying(
 				can_pan);
 		SSrAmbient_SetVolume(inPlayingAmbient->id, inPlayingAmbient->channel_volume, 0.5f);
 	}
-	
+
 	if ((inPlayingAmbient->ambient->base_track2 != NULL) &&
 		(inPlayingAmbient->channel2 == NULL))
 	{
-		can_pan = ((inPlayingAmbient->ambient->flags & SScAmbientFlag_Pan) != 0); 
+		can_pan = ((inPlayingAmbient->ambient->flags & SScAmbientFlag_Pan) != 0);
 		num_channels = SSrGroup_GetNumChannels(inPlayingAmbient->ambient->base_track2);
 		inPlayingAmbient->channel2 =
 			SSiPAUpdate_ReserveChannel(
@@ -4250,7 +4250,7 @@ SSiPAUpdate_BodyPlaying(
 				can_pan);
 		SSrAmbient_SetVolume(inPlayingAmbient->id, inPlayingAmbient->channel_volume, 0.5f);
 	}
-	
+
 	// update base_track1 playing
 	if ((inPlayingAmbient->ambient->base_track1 != NULL) &&
 		(inPlayingAmbient->channel1 != NULL) &&
@@ -4261,7 +4261,7 @@ SSiPAUpdate_BodyPlaying(
 		SSrGroup_Play(inPlayingAmbient->ambient->base_track1, inPlayingAmbient->channel1,
 						"ambient base1", inPlayingAmbient->ambient->ambient_name);
 	}
-	
+
 	// update base_track2 playing
 	if ((inPlayingAmbient->ambient->base_track2 != NULL) &&
 		(inPlayingAmbient->channel2 != NULL) &&
@@ -4279,14 +4279,14 @@ SSiPAUpdate_BodyPlaying(
 			if (SSiSoundChannel_IsLooping(inPlayingAmbient->channel1) == UUcTrue)
 			{
 				SSiSoundChannel_SetLooping(inPlayingAmbient->channel1, UUcFalse);
-				
+
 				// move on to body stopping
 				inPlayingAmbient->stage = SScPAStage_BodyStopping;
 				return UUcTrue;
 			}
 		}
 	}
-	
+
 	// if both channels have stopped playing move on to the body stopping stage
 	if ((channel1_playing == UUcFalse) && (channel2_playing == UUcFalse))
 	{
@@ -4302,7 +4302,7 @@ SSiPAUpdate_BodyPlaying(
 		inPlayingAmbient->stage = SScPAStage_BodyStopping;
 		return UUcTrue;
 	}
-	
+
 	// update the detail_track playing
 	if ((inPlayingAmbient->ambient->detail != NULL) &&
 		(inPlayingAmbient->detail_time < UUrMachineTime_Sixtieths()) &&
@@ -4312,7 +4312,7 @@ SSiPAUpdate_BodyPlaying(
 		float				x;
 		float				z;
 		UUtBool				result;
-		
+
 		// get the position of the sound
 		if (inPlayingAmbient->has_position)
 		{
@@ -4322,7 +4322,7 @@ SSiPAUpdate_BodyPlaying(
 		{
 			position = SSgListener_Position;
 		}
-		
+
 		// calculate a random offset from the current position
 		x =	UUmRandomRangeFloat(
 				-inPlayingAmbient->ambient->sphere_radius,
@@ -4330,12 +4330,12 @@ SSiPAUpdate_BodyPlaying(
 		z = UUmRandomRangeFloat(
 				-inPlayingAmbient->ambient->sphere_radius,
 				inPlayingAmbient->ambient->sphere_radius);
-		
+
 		position.x += x;
 		position.z += z;
-		
+
 		// play the detail
-		result = 
+		result =
 			SSiGroup_PlaySpatialized(
 				inPlayingAmbient->ambient->detail,
 				inPlayingAmbient->ambient->max_volume_distance,
@@ -4353,11 +4353,11 @@ SSiPAUpdate_BodyPlaying(
 				"SSiPAUpdate_BodyPlaying: unable to play %s",
 				inPlayingAmbient->ambient->ambient_name);
 		}*/
-		
+
 		// calculate the next time to play the detail
 		SSiPAUpdate_CalcNextDetailTime(inPlayingAmbient);
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -4369,24 +4369,24 @@ SSiPAUpdate_BodyStopping(
 	UUtBool						next_stage;
 	UUtBool						channel1_playing;
 	UUtBool						channel2_playing;
-	
+
 	next_stage = UUcFalse;
-	
+
 	// make sure the channels aren't looping
 	if (SSiSoundChannel_IsLooping(inPlayingAmbient->channel1))
 	{
 		SSiSoundChannel_SetLooping(inPlayingAmbient->channel1, UUcFalse);
 	}
-	
+
 	if (SSiSoundChannel_IsLooping(inPlayingAmbient->channel2))
 	{
 		SSiSoundChannel_SetLooping(inPlayingAmbient->channel2, UUcFalse);
 	}
-	
+
 	// determine if the sound channels are playing
 	channel1_playing = SSiSoundChannel_IsPlaying(inPlayingAmbient->channel1);
 	channel2_playing = SSiSoundChannel_IsPlaying(inPlayingAmbient->channel2);
-	
+
 	// when both channels have stopped playing move on to playing the out sound
 	if ((channel1_playing == UUcFalse) && (channel2_playing == UUcFalse))
 	{
@@ -4407,7 +4407,7 @@ SSiPAUpdate_BodyStopping(
 		inPlayingAmbient->stage = SScPAStage_OutSoundStart;
 		next_stage = UUcTrue;
 	}
-	
+
 	return next_stage;
 }
 
@@ -4418,19 +4418,19 @@ SSiPAUpdate_OutSoundStart(
 {
 	// wait for the out sound to finish in the out sound playing stage
 	inPlayingAmbient->stage = SScPAStage_OutSoundPlaying;
-	
+
 	// start the out sound
 	if ((inPlayingAmbient->ambient->out_sound != NULL) &&
 		(inPlayingAmbient->channel1 != NULL))
 	{
 		// make sure the channel isn't going to loop
 		SSiSoundChannel_SetLooping(inPlayingAmbient->channel1, UUcFalse);
-		
+
 		// play the out sound
 		SSrGroup_Play(inPlayingAmbient->ambient->out_sound, inPlayingAmbient->channel1,
 						"ambient out", inPlayingAmbient->ambient->ambient_name);
 	}
-	
+
 	// release channel2
 	if (inPlayingAmbient->channel2)
 	{
@@ -4439,7 +4439,7 @@ SSiPAUpdate_OutSoundStart(
 		SSiSoundChannel_SetLock(inPlayingAmbient->channel2, UUcFalse);
 		inPlayingAmbient->channel2 = NULL;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -4455,7 +4455,7 @@ SSiPAUpdate_OutSoundPlaying(
 		inPlayingAmbient->stage = SScPAStage_Done;
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -4466,7 +4466,7 @@ SSiPAUpdate_NonAudible(
 {
 	SSiPlayingAmbient_Halt(inPlayingAmbient);
 	inPlayingAmbient->stage = SScPAStage_Done;
-	
+
 	return UUcTrue;
 }
 
@@ -4492,7 +4492,7 @@ SSiPAUpdate_Done(
 		SSiSoundChannel_SetLock(inPlayingAmbient->channel2, UUcFalse);
 		inPlayingAmbient->channel2 = NULL;
 	}
-	
+
 	inPlayingAmbient->stage = SScPAStage_None;
 	return UUcTrue;
 }
@@ -4503,7 +4503,7 @@ SSiPAUpdate_Position(
 	SStPlayingAmbient			*inPlayingAmbient)
 {
 	if (inPlayingAmbient->has_position == UUcFalse) { return; }
-	
+
 	// update the position of the ambient sound
 	if (inPlayingAmbient->channel1 != NULL)
 	{
@@ -4515,7 +4515,7 @@ SSiPAUpdate_Position(
 			&inPlayingAmbient->direction,
 			&inPlayingAmbient->velocity);
 	}
-	
+
 	if (inPlayingAmbient->channel2 != NULL)
 	{
 		SSiSoundChannel_Spatialize(
@@ -4535,17 +4535,17 @@ SSiPAUpdate_Volume(
 {
 	UUtUns32					time;
 	UUtInt32					delta;
-	
+
 	if ((inPlayingAmbient->volume_adjust_final_volume == inPlayingAmbient->channel_volume) ||
 		(UUmFabs(inPlayingAmbient->volume_adjust_delta) < SScVolumeAdjustEpsilon))
 	{
 		return;
 	}
-	
+
 	time = UUrMachineTime_Sixtieths();
 	delta = time - inPlayingAmbient->volume_adjust_start_time;
 	inPlayingAmbient->volume_adjust_start_time = time;
-		
+
 	inPlayingAmbient->channel_volume += (inPlayingAmbient->volume_adjust_delta * (float)delta);
 
 	if (inPlayingAmbient->volume_adjust_delta > 0.0f)
@@ -4558,14 +4558,14 @@ SSiPAUpdate_Volume(
 		inPlayingAmbient->channel_volume =
 			UUmPin(inPlayingAmbient->channel_volume, inPlayingAmbient->volume_adjust_final_volume, 1.0f);
 	}
-	
+
 	if (inPlayingAmbient->channel1 != NULL)
 	{
 		SSiSoundChannel_SetChannelVolume(
 			inPlayingAmbient->channel1,
 			inPlayingAmbient->channel_volume);
 	}
-	
+
 	if (inPlayingAmbient->channel2 != NULL)
 	{
 		SSiSoundChannel_SetChannelVolume(
@@ -4582,11 +4582,11 @@ SSiPAUpdate_StopNonAudible(
 	float						volume;
 	float						distance_to_listener;
 	float						previous_distance_to_listener;
-	
+
 	// if the ambient sound isn't spatialized, don't stop the channel
 	if (inPlayingAmbient->has_position == UUcFalse) { return; }
 	if (inPlayingAmbient->stage <= SScPAStage_InSoundStart) { return; }
-	
+
 	// get the distance to listener
 	if (inPlayingAmbient->channel1 != NULL)
 	{
@@ -4606,7 +4606,7 @@ SSiPAUpdate_StopNonAudible(
 	{
 		return;
 	}
-	
+
 	// or if the volume is greater than zero,
 	// or if the distance to the listener is less than the distance threshold
 	// or if the distance to the listener is decreasing,
@@ -4614,7 +4614,7 @@ SSiPAUpdate_StopNonAudible(
 	if (volume > 0.0f) { return; }
 	if (distance_to_listener < SScDistanceThreshold) { return; }
 	if (distance_to_listener <= previous_distance_to_listener) { return; }
-	
+
 	inPlayingAmbient->stage = SScPAStage_NonAudible;
 }
 
@@ -4624,19 +4624,19 @@ SSiPlayingAmbient_Halt(
 	SStPlayingAmbient			*inPlayingAmbient)
 {
 	UUmAssert(inPlayingAmbient);
-	
+
 	// stop channel1 completely
 	if (inPlayingAmbient->channel1 != NULL)
 	{
 		SSiSoundChannel_Stop(inPlayingAmbient->channel1);
 	}
-	
+
 	// stop channel2 completely
 	if (inPlayingAmbient->channel2 != NULL)
 	{
 		SSiSoundChannel_Stop(inPlayingAmbient->channel2);
 	}
-	
+
 	// go to next stage
 	inPlayingAmbient->stage = SScPAStage_Done;
 }
@@ -4648,7 +4648,7 @@ SSiPlayingAmbient_Update(
 	UUtUns32					inIndex)
 {
 	UUtBool						next_stage;
-	
+
 	do
 	{
 		switch (inPlayingAmbient->stage)
@@ -4656,61 +4656,61 @@ SSiPlayingAmbient_Update(
 			case SScPAStage_None:
 				return;
 			break;
-			
+
 			case SScPAStage_Done:
 				next_stage = SSiPAUpdate_Done(inPlayingAmbient);
 			break;
-			
+
 			case SScPAStage_Start:
 				next_stage = SSiPAUpdate_Start(inPlayingAmbient);
 			break;
-			
+
 			case SScPAStage_InSoundStart:
 				next_stage = SSiPAUpdate_InSoundStart(inPlayingAmbient);
 			break;
-			
+
 			case SScPAStage_InSoundPlaying:
 				next_stage = SSiPAUpdate_InSoundPlaying(inPlayingAmbient);
 			break;
-			
+
 			case SScPAStage_BodyStart:
 				next_stage = SSiPAUpdate_BodyStart(inPlayingAmbient);
 			break;
-			
+
 			case SScPAStage_BodyPlaying:
 				next_stage = SSiPAUpdate_BodyPlaying(inPlayingAmbient);
 			break;
-			
+
 			case SScPAStage_BodyStopping:
 				next_stage = SSiPAUpdate_BodyStopping(inPlayingAmbient);
 			break;
-			
+
 			case SScPAStage_OutSoundStart:
 				next_stage = SSiPAUpdate_OutSoundStart(inPlayingAmbient);
 			break;
-			
+
 			case SScPAStage_OutSoundPlaying:
 				next_stage = SSiPAUpdate_OutSoundPlaying(inPlayingAmbient);
 			break;
-			
+
 			case SScPAStage_NonAudible:
 				next_stage = SSiPAUpdate_NonAudible(inPlayingAmbient);
 			break;
-			
+
 			case SScPAStage_DetailOnly:
 				next_stage = SSiPAUpdate_DetailOnly(inPlayingAmbient);
 			break;
 		}
 	}
 	while (next_stage == UUcTrue);
-	
+
 	// update the volume
 	SSiPAUpdate_Volume(inPlayingAmbient);
-	
+
 	// update the position
 	SSiPAUpdate_Position(inPlayingAmbient);
-	
-	// stop playing ambient sounds that are no longer audible 
+
+	// stop playing ambient sounds that are no longer audible
 	// and likely won't be
 	SSiPAUpdate_StopNonAudible(inPlayingAmbient);
 }
@@ -4722,7 +4722,7 @@ SSiPlayingAmbient_UpdateList(
 {
 	SStPlayingAmbient			*playing_ambient_array;
 	UUtUns32					i;
-	
+
 	SSrWaitGuard(SSgGuardAll);
 
 	// update all of the playing ambient sounds
@@ -4746,9 +4746,9 @@ SSiPlayingAmbient_UpdateSoundChannel(
 	SStPlayingAmbient			*playing_ambient_array;
 	UUtUns32					i;
 	UUtBool						updated;
-	
+
 	updated = UUcFalse;
-	
+
 	SSrWaitGuard(SSgGuardAll);
 
 	// update all of the playing ambient sounds
@@ -4756,21 +4756,21 @@ SSiPlayingAmbient_UpdateSoundChannel(
 	for (i = 0; i < SSgNumPlayingAmbients; i++)
 	{
 		SStPlayingAmbient		*playing_ambient;
-		
+
 		playing_ambient = &playing_ambient_array[i];
 
 		if (playing_ambient->stage == SScPAStage_None) { continue; }
-		
+
 		if ((playing_ambient->channel1 != inSoundChannel) &&
 			(playing_ambient->channel2 != inSoundChannel))
 		{
 			continue;
 		}
-		
+
 		// update the sound channel
 		SSiPlayingAmbient_Update(playing_ambient, i);
 		updated = UUcTrue;
-		
+
 		break;
 	}
 
@@ -4785,7 +4785,7 @@ SSiPlayingAmbient_GetNextID(
 	void)
 {
 	SSgPlayID++;
-	
+
 	if (SSgPlayID == SScInvalidID)
 	{
 		SSgPlayID = 0;
@@ -4801,23 +4801,23 @@ SSiPlayingAmbient_Stall(
 {
 	SStPlayingAmbient			*playing_ambient_array;
 	UUtUns32					i;
-	
+
 	SSrWaitGuard(SSgGuardAll);
 
 /*	if (SSgShowDebugInfo)
 	{
 		COrConsole_Printf("SSiPlayingAmbient_Stall %d %s", inSoundChannel->id, inSoundChannel->group->group_name);
 	}*/
-	
+
 	// update all of the playing ambient sounds
 	playing_ambient_array = SSgPlayingAmbient;
 	for (i = 0; i < SSgNumPlayingAmbients; i++)
 	{
 		SStPlayingAmbient		*playing_ambient;
-		
+
 		playing_ambient = &playing_ambient_array[i];
 		if (playing_ambient->stage == SScPAStage_None) { continue; }
-		
+
 		// stall the channel
 		if (playing_ambient->channel1 == inSoundChannel)
 		{
@@ -4837,7 +4837,7 @@ SSiPlayingAmbient_Stall(
 		{
 			continue;
 		}
-		
+
 		break;
 	}
 
@@ -4857,10 +4857,10 @@ SSiAmbient_Compare(
 {
 	const SStAmbient			*ambient1;
 	const SStAmbient			*ambient2;
-	
+
 	ambient1 = *((SStAmbient**)inItem1);
 	ambient2 = *((SStAmbient**)inItem2);
-		
+
 	return strcmp(ambient1->ambient_name, ambient2->ambient_name);
 }
 
@@ -4880,19 +4880,19 @@ SSiAmbient_CheckPointers(
 	{
 		ioAmbient->base_track1 = SSrGroup_GetByName(ioAmbient->base_track1_name);
 	}
-	
+
 	// check base_track2_id
 	if ((ioAmbient->base_track2 == NULL) && (ioAmbient->base_track2_name[0] != '\0'))
 	{
 		ioAmbient->base_track2 = SSrGroup_GetByName(ioAmbient->base_track2_name);
 	}
-	
+
 	// check in_sound
 	if ((ioAmbient->in_sound == NULL) && (ioAmbient->in_sound_name[0] != '\0'))
 	{
 		ioAmbient->in_sound = SSrGroup_GetByName(ioAmbient->in_sound_name);
 	}
-	
+
 	// check out_sound
 	if ((ioAmbient->out_sound == NULL) && (ioAmbient->out_sound_name[0] != '\0'))
 	{
@@ -4906,39 +4906,39 @@ SSrAmbient_CheckSoundData(
 	const SStAmbient			*inAmbient)
 {
 	UUtBool						all_sounds_found;
-	
+
 	UUmAssert(inAmbient);
-	
+
 	if (inAmbient->detail)
 	{
 		all_sounds_found = SSrGroup_CheckSoundData(inAmbient->detail);
 		if (all_sounds_found == UUcFalse) { return UUcFalse; }
 	}
-	
+
 	if (inAmbient->base_track1)
 	{
 		all_sounds_found = SSrGroup_CheckSoundData(inAmbient->base_track1);
 		if (all_sounds_found == UUcFalse) { return UUcFalse; }
 	}
-	
+
 	if (inAmbient->base_track2)
-	{	
+	{
 		all_sounds_found = SSrGroup_CheckSoundData(inAmbient->base_track2);
 		if (all_sounds_found == UUcFalse) { return UUcFalse; }
 	}
-	
+
 	if (inAmbient->in_sound)
-	{	
+	{
 		all_sounds_found = SSrGroup_CheckSoundData(inAmbient->in_sound);
 		if (all_sounds_found == UUcFalse) { return UUcFalse; }
 	}
-	
+
 	if (inAmbient->out_sound)
-	{	
+	{
 		all_sounds_found = SSrGroup_CheckSoundData(inAmbient->out_sound);
 		if (all_sounds_found == UUcFalse) { return UUcFalse; }
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -4950,7 +4950,7 @@ SSrAmbient_Copy(
 {
 	UUmAssert(inSource);
 	UUmAssert(ioDest);
-	
+
 	// restore the id after copying the data
 	ioDest->priority = inSource->priority;
 	ioDest->flags = inSource->flags;
@@ -4969,7 +4969,7 @@ SSrAmbient_Copy(
 	UUrString_Copy(ioDest->base_track2_name, inSource->base_track2_name, SScMaxNameLength);
 	UUrString_Copy(ioDest->in_sound_name, inSource->in_sound_name, SScMaxNameLength);
 	UUrString_Copy(ioDest->out_sound_name, inSource->out_sound_name, SScMaxNameLength);
-	
+
 	return UUcError_None;
 }
 
@@ -4982,10 +4982,10 @@ SSrAmbient_Delete(
 	UUtUns32					num_ambient_sounds;
 	SStAmbient					**ambient_array, *deleted_element = NULL;
 	UUtUns32					i;
-	
+
 	num_ambient_sounds = UUrMemory_Array_GetUsedElems(SSgAmbientSounds);
 	ambient_array = (SStAmbient**)UUrMemory_Array_GetMemory(SSgAmbientSounds);
-	
+
 	// delete the ambient sound which has an id equal to inAmbientID
 	for (i = 0; i < num_ambient_sounds; i++)
 	{
@@ -5011,12 +5011,12 @@ SSrAmbient_GetByIndex(
 {
 	UUtUns32					num_ambient_sounds;
 	SStAmbient					**ambient_array;
-	
+
 	num_ambient_sounds = UUrMemory_Array_GetUsedElems(SSgAmbientSounds);
 	ambient_array = (SStAmbient**)UUrMemory_Array_GetMemory(SSgAmbientSounds);
-	
+
 	UUmAssert(inIndex < num_ambient_sounds);
-	
+
 	return ambient_array[inIndex];
 }
 
@@ -5030,17 +5030,17 @@ SSrAmbient_GetByName(
 	SStAmbient					*find_me_ptr = &find_me;
 	SStAmbient					**found_ambient;
 	UUtUns32					num_elements;
-	
+
 	if (inAmbientName == NULL) { return NULL; }
-	
+
 	UUrString_Copy(find_me.ambient_name, inAmbientName, SScMaxNameLength);
-	
+
 	// get a pointer to the array
 	ambient_array = (SStAmbient**)UUrMemory_Array_GetMemory(SSgAmbientSounds);
 	if (ambient_array == NULL) { return NULL; }
-	
+
 	num_elements = UUrMemory_Array_GetUsedElems(SSgAmbientSounds);
-	
+
 	found_ambient =
 		(SStAmbient**)bsearch(
 			&find_me_ptr,
@@ -5070,9 +5070,9 @@ SSrAmbient_GetSubtitle(
 	if (SScInvalidSubtitle == inAmbient->subtitle)
 	{
 		const char				*ambient_name;
-		
+
 		inAmbient->subtitle = NULL;
-		
+
 		ambient_name = inAmbient->ambient_name;
 		if (SSrNameIsValidDialogName(ambient_name))
 		{
@@ -5080,7 +5080,7 @@ SSrAmbient_GetSubtitle(
 			inAmbient->subtitle = SSrSubtitle_Find(ambient_name);
 		}
 	}
-	
+
 	return inAmbient->subtitle;
 }
 
@@ -5092,9 +5092,9 @@ SSrAmbient_Halt(
 	SStPlayingAmbient			*playing_ambient_array;
 	UUtUns32					i;
 	UUtUns32					num_playing_ambients;
-	
+
 	if (inPlayID == SScInvalidID) { return; }
-	
+
 	SSrWaitGuard(SSgGuardAll);
 
 	// get the playing ambient with id == inPlayID
@@ -5103,15 +5103,15 @@ SSrAmbient_Halt(
 	for(i = 0; i < num_playing_ambients; i++)
 	{
 		SStPlayingAmbient		*playing_ambient;
-		
+
 		playing_ambient = &playing_ambient_array[i];
 
 		if (playing_ambient->stage == SScPAStage_None) { continue; }
 		if (playing_ambient->id != inPlayID) { continue; }
-		
+
 		SSiPlayingAmbient_Halt(playing_ambient);
 		SSiPlayingAmbient_Update(playing_ambient, i);
-		
+
 		break;
 	}
 
@@ -5126,16 +5126,16 @@ SSrAmbient_New(
 {
 	UUtError					error;
 	SStAmbient					*ambient;
-	
+
 	UUmAssert(inAmbientName);
 	UUmAssert(outAmbient);
-	
+
 	if (outAmbient) { *outAmbient = NULL; }
-	
+
 	// allocate memory for the ambient sound
 	ambient = (SStAmbient*)UUrMemory_Block_New(sizeof(SStAmbient));
 	UUmError_ReturnOnNull(ambient);
-	
+
 	// initialize the ambient sound
 	UUrString_Copy(ambient->ambient_name, inAmbientName, SScMaxNameLength);
 	ambient->priority = SScPriority2_Normal;
@@ -5158,51 +5158,51 @@ SSrAmbient_New(
 	ambient->in_sound_name[0] = '\0';
 	ambient->out_sound_name[0] = '\0';
 	ambient->subtitle = SScInvalidSubtitle;
-	
+
 	// insert the ambient sound into the ambient sound list
 	{
 		SStAmbient				**array;
 		UUtUns32				num_elements;
 		UUtInt32				min, max, midpoint, compare;
 		UUtUns32				found_location;
-		
+
 		array = (SStAmbient**)UUrMemory_Array_GetMemory(SSgAmbientSounds);
 		num_elements = UUrMemory_Array_GetUsedElems(SSgAmbientSounds);
-		
-		min = 0; 
+
+		min = 0;
 		max = num_elements - 1;
-		
+
 		while(min <= max)
 		{
 			midpoint = (min + max) >> 1; // S.S. / 2;
-		
+
 			compare = SSiAmbient_Compare(&ambient, &array[midpoint]);
-		
+
 			if (compare < 0) {
 				// must lie below here
 				max = midpoint - 1;
-		
+
 			} else {
 				// must lie above here
 				min = midpoint + 1;
 			}
 		}
-		
+
 		found_location = (UUtUns32)min;
-		
+
 		// create space in the array at the desired location
 		UUmAssert((found_location >= 0) && (found_location <= num_elements));
 		error = UUrMemory_Array_InsertElement(SSgAmbientSounds, found_location, NULL);
 		UUmError_ReturnOnError(error);
-		
+
 		// set the array element
 		array = (SStAmbient**)UUrMemory_Array_GetMemory(SSgAmbientSounds);
 		array[found_location] = ambient;
 	}
-		
+
 	// set the outgoing data
 	if (outAmbient) { *outAmbient = ambient; }
-	
+
 	return UUcError_None;
 }
 
@@ -5227,12 +5227,12 @@ SSrAmbient_SetPitch(
 	{
 		if (playing_ambient_array[i].stage == SScPAStage_None) { continue; }
 		if (playing_ambient_array[i].id != inPlayID) { continue; }
-		
+
 		if (playing_ambient_array[i].channel1 != NULL)
 		{
 			SSiSoundChannel_SetPitch(playing_ambient_array[i].channel1, inPitch);
 		}
-		
+
 		if (playing_ambient_array[i].channel2 != NULL)
 		{
 			SSiSoundChannel_SetPitch(playing_ambient_array[i].channel2, inPitch);
@@ -5256,23 +5256,23 @@ SSrAmbient_SetVolume(
 	if (SSgUsable == UUcFalse) { return; }
 
 	SSrWaitGuard(SSgGuardAll);
-	
+
 	// make sure it is in range
 	inVolume = UUmPin(inVolume, 0.0f, 1.0f);
-	
+
 	// get the playing ambient with id == inPlayID
 	playing_ambient_array = SSgPlayingAmbient;
 	num_playing_ambients = SSgNumPlayingAmbients;
 	for(i = 0; i < num_playing_ambients; i++)
 	{
 		float					volume_adjust_ticks;
-		
+
 		if (playing_ambient_array[i].stage == SScPAStage_None) { continue; }
 		if (playing_ambient_array[i].id != inPlayID) { continue; }
-		
+
 		// break if the final volume is already set
 		if (playing_ambient_array[i].volume_adjust_final_volume == inVolume) { break; }
-		
+
 		volume_adjust_ticks = inTime * 60.0f;
 		if (volume_adjust_ticks > 0.0f)
 		{
@@ -5287,19 +5287,19 @@ SSrAmbient_SetVolume(
 			// to use
 			playing_ambient_array[i].channel_volume = inVolume;
 			playing_ambient_array[i].volume_adjust_final_volume = playing_ambient_array[i].channel_volume;
-			
+
 			// set the volume of channel1 and channel2
 			if (playing_ambient_array[i].channel1 != NULL)
 			{
 				SSiSoundChannel_SetChannelVolume(playing_ambient_array[i].channel1, inVolume);
 			}
-			
+
 			if (playing_ambient_array[i].channel2 != NULL)
 			{
 				SSiSoundChannel_SetChannelVolume(playing_ambient_array[i].channel2, inVolume);
 			}
 		}
-		
+
 		break;
 	}
 
@@ -5322,19 +5322,19 @@ SSrAmbient_Start(
 	UUtUns32					num_elements;
 	UUtUns32					itr;
 	UUtUns32					num_playing;
-	
+
 	UUmAssert(inAmbient);
-	
+
 	if (SSgUsable == UUcFalse) { return SScInvalidID; }
-	
+
 	SSrWaitGuard(SSgGuardAll);
-	
+
 	// count the number of instances of this ambient sound that are already playing
 	// and keep track of the first available index of the SSgPlayingAmbient list
 	index = SScInvalidID;
 	num_playing = 0;
 	playing_ambient_array = SSgPlayingAmbient;
-	num_elements = SSgNumPlayingAmbients;	
+	num_elements = SSgNumPlayingAmbients;
 	for (itr = 0; itr < num_elements; itr++)
 	{
 		if (playing_ambient_array[itr].stage == SScPAStage_None)
@@ -5346,21 +5346,21 @@ SSrAmbient_Start(
 		if (playing_ambient_array[itr].stage >= SScPAStage_OutSoundStart) { continue; }
 		num_playing++;
 	}
-	
+
 	// stop playing if the ambient threshold has been reached
 	if (num_playing >= inAmbient->threshold)
 	{
 		SSrReleaseGuard(SSgGuardAll);
 		return SScInvalidID;
 	}
-	
+
 	// add the ambient sound to the SSgPlayingAmbient list
 	if (index == SScInvalidID)
 	{
 		SSrReleaseGuard(SSgGuardAll);
 		return SScInvalidID;
 	}
-	
+
 	playing_ambient_array[index].id = SSiPlayingAmbient_GetNextID();
 	playing_ambient_array[index].stage = SScPAStage_Start;
 	playing_ambient_array[index].ambient = inAmbient;
@@ -5379,12 +5379,12 @@ SSrAmbient_Start(
 	playing_ambient_array[index].volume_adjust_start_time = UUrMachineTime_Sixtieths();
 	playing_ambient_array[index].volume_adjust_delta = 0.0f;
 	playing_ambient_array[index].volume_adjust_final_volume = playing_ambient_array[index].channel_volume;
-	
+
 	if (inPosition)
 	{
 		playing_ambient_array[index].position = *inPosition;
 		playing_ambient_array[index].has_position = UUcTrue;
-	
+
 		if (inDirection) { playing_ambient_array[index].direction = *inDirection; }
 		if (inVelocity) { playing_ambient_array[index].velocity = *inVelocity; }
 		playing_ambient_array[index].max_volume_distance = inMaxVolDistance;
@@ -5395,9 +5395,9 @@ SSrAmbient_Start(
 		playing_ambient_array[index].max_volume_distance = inAmbient->max_volume_distance;
 		playing_ambient_array[index].min_volume_distance = inAmbient->min_volume_distance;
 	}
-	
+
 	SSiPlayingAmbient_Update(&playing_ambient_array[index], index);
-	
+
 /*	if (SSgShowDebugInfo)
 	{
 		COrConsole_Printf(
@@ -5405,9 +5405,9 @@ SSrAmbient_Start(
 			playing_ambient_array[index].id,
 			playing_ambient_array[index].ambient->ambient_name);
 	}*/
-	
+
 	SSrReleaseGuard(SSgGuardAll);
-	
+
 	return playing_ambient_array[index].id;
 }
 
@@ -5428,7 +5428,7 @@ SSrAmbient_Stop(
 	SStPlayingAmbient			*playing_ambient_array;
 	UUtUns32					i;
 	UUtUns32					num_playing_ambients;
-	
+
 	if (SSgUsable == UUcFalse) { return; }
 
 	SSrWaitGuard(SSgGuardAll);
@@ -5446,8 +5446,8 @@ SSrAmbient_Stop(
 		{
 			break;
 		}
-		
-		
+
+
 		if ((playing_ambient_array[i].ambient->flags & SScAmbientFlag_InterruptOnStop) != 0)
 		{
 			// stop channel 1
@@ -5455,7 +5455,7 @@ SSrAmbient_Stop(
 			{
 				SSiSoundChannel_Stop(playing_ambient_array[i].channel1);
 			}
-			
+
 			// stop channel 2
 			if (playing_ambient_array[i].channel2 != NULL)
 			{
@@ -5480,10 +5480,10 @@ SSrAmbient_Stop(
 				}
 			}
 		}
-		
+
 		// go to next stage
 		playing_ambient_array[i].stage = SScPAStage_BodyStopping;
-		
+
 /*		if (SSgShowDebugInfo)
 		{
 			COrConsole_Printf(
@@ -5491,10 +5491,10 @@ SSrAmbient_Stop(
 				playing_ambient_array[i].id,
 				playing_ambient_array[i].ambient->ambient_name);
 		}*/
-		
+
 		break;
 	}
-	
+
 	SSrReleaseGuard(SSgGuardAll);
 }
 
@@ -5511,7 +5511,7 @@ SSrAmbient_Update(
 	UUtUns32					num_playing_ambients;
 	UUtUns32					i;
 	UUtBool						active;
-	
+
 	if (SSgUsable == UUcFalse) { return UUcFalse; }
 
 	SSrWaitGuard(SSgGuardAll);
@@ -5524,7 +5524,7 @@ SSrAmbient_Update(
 	{
 		if (playing_ambient_array[i].stage == SScPAStage_None) { continue; }
 		if (playing_ambient_array[i].id != inPlayID) { continue; }
-		
+
 		// update the position, direction, and velocity of the playing ambient
 		if (inPosition)
 		{
@@ -5533,18 +5533,18 @@ SSrAmbient_Update(
 		}
 		if (inDirection) { playing_ambient_array[i].direction = *inDirection; }
 		if (inVelocity) { playing_ambient_array[i].velocity = *inVelocity; }
-		
+
 		if (inVolume)
 		{
 			playing_ambient_array[i].channel_volume = *inVolume;
-			
+
 			if (playing_ambient_array[i].channel1 != NULL)
 			{
 				SSiSoundChannel_SetChannelVolume(
 					playing_ambient_array[i].channel1,
 					playing_ambient_array[i].channel_volume);
 			}
-			
+
 			if (playing_ambient_array[i].channel2 != NULL)
 			{
 				SSiSoundChannel_SetChannelVolume(
@@ -5552,12 +5552,12 @@ SSrAmbient_Update(
 					playing_ambient_array[i].channel_volume);
 			}
 		}
-		
+
 		active = UUcTrue;
-		
+
 		break;
 	}
-	
+
 	SSrReleaseGuard(SSgGuardAll);
 
 	return active;
@@ -5572,17 +5572,17 @@ SSrAmbient_UpdateGroupName(
 	UUtUns32					num_ambient_sounds;
 	SStAmbient					**ambient_array;
 	UUtUns32					i;
-	
+
 	num_ambient_sounds = UUrMemory_Array_GetUsedElems(SSgAmbientSounds);
 	ambient_array = (SStAmbient**)UUrMemory_Array_GetMemory(SSgAmbientSounds);
-	
+
 	// get a new pointer to each SStGroup
 	for (i = 0; i < num_ambient_sounds; i++)
 	{
 		SStAmbient				*ambient;
-		
+
 		ambient = ambient_array[i];
-		
+
 		// update the detail group
 		if (UUrString_Compare_NoCase(ambient->detail_name, inOldGroupName) == 0)
 		{
@@ -5663,17 +5663,17 @@ SSrAmbient_UpdateGroupPointers(
 	UUtUns32					num_ambient_sounds;
 	SStAmbient					**ambient_array;
 	UUtUns32					i;
-	
+
 	num_ambient_sounds = UUrMemory_Array_GetUsedElems(SSgAmbientSounds);
 	ambient_array = (SStAmbient**)UUrMemory_Array_GetMemory(SSgAmbientSounds);
-	
+
 	// get a new pointer to each SStGroup
 	for (i = 0; i < num_ambient_sounds; i++)
 	{
 		SStAmbient				*ambient;
-		
+
 		ambient = ambient_array[i];
-		
+
 		// get pointers to all of the detail groups
 		ambient->detail = SSrGroup_GetByName(ambient->detail_name);
 		ambient->base_track1 = SSrGroup_GetByName(ambient->base_track1_name);
@@ -5715,7 +5715,7 @@ SSrGetSoundDirectory(
 	char						*soundDirName;
 	char						soundDirNameStr[BFcMaxPathLength];
 	BFtFileRef					*soundDirRef;
-	
+
 	// find the preferences file
 #if defined(SHIPPING_VERSION) && (!SHIPPING_VERSION)
 	error = BFrFileRef_Search("Preferences.txt", &prefFileRef);
@@ -5726,7 +5726,7 @@ SSrGetSoundDirectory(
 		*outDirectoryRef = NULL;
 		return UUcError_Generic;
 	}
-	
+
 	// create a group from the file
 	error =
 		GRrGroup_Context_NewFromFileRef(
@@ -5736,44 +5736,44 @@ SSrGetSoundDirectory(
 			&prefGroupContext,
 			&prefGroup);
 	if (error != UUcError_None) { return error; }
-	
+
 	// get the data file directory
 	error = GRrGroup_GetString(prefGroup, "SoundFileDir", &soundDirName);
 	if (error != UUcError_None)
 	{
 		char						*dataFileDir;
-		
+
 		// get the data file directory
 		error = GRrGroup_GetString(prefGroup, "DataFileDir", &dataFileDir);
 		if (error != UUcError_None) { return error; }
-		
+
 		// set the sound Dir name
 		sprintf(soundDirNameStr, "%s\\%s", dataFileDir, SScSoundDirectory);
 		soundDirName = soundDirNameStr;
 	}
-	
+
 	// make a file ref for the sound data folder
 	error = BFrFileRef_MakeFromName(soundDirName, &soundDirRef);
 	if (error != UUcError_None) { return error; }
-	
+
 	// delete the group context
 	GRrGroup_Context_Delete(prefGroupContext);
 	prefGroupContext = NULL;
-	
+
 	// see if the directory exists
 	if (BFrFileRef_FileExists(soundDirRef) == UUcFalse)
 	{
 		// the directory was not found delete the folder ref
 		UUrMemory_Block_Delete(soundDirRef);
 		soundDirRef = NULL;
-		
+
 		*outDirectoryRef = NULL;
-		
+
 		return UUcError_Generic;
 	}
-	
+
 	*outDirectoryRef = soundDirRef;
-	
+
 	return UUcError_None;
 }
 
@@ -5790,11 +5790,11 @@ SSiTextFile_WriteAmbient(
 	UUtUns32				num_ambients;
 	UUtUns32				i;
 	char					string[2048];
-	
+
 	// write the header
 	sprintf(string, "Name\tPriority\tIn Sound\tOut Sound\tBase Track 1\tBase Track 2\tDetail Track\tMin Detail Time\tMax Detail Time\tSphere Radius\tMax Volume Distance\tMin Volume Distance\tInterrupt On Stop\tPlay Once\n");
 	BFrFile_Write(inFile, strlen(string), string);
-	
+
 	// write the ambient sounds
 	num_ambients = SSrAmbient_GetNumAmbientSounds();
 	for (i = 0; i < num_ambients; i++)
@@ -5802,12 +5802,12 @@ SSiTextFile_WriteAmbient(
 		SStAmbient			*ambient;
 		char				number[128];
 		const char			*priority_name;
-		
+
 		ambient = SSrAmbient_GetByIndex(i);
 		if (ambient == NULL) { continue; }
-		
+
 		string[0] = '\0';
-		
+
 		strcat(string, ambient->ambient_name); strcat(string, "\t");
 
 		switch(ambient->priority)
@@ -5818,14 +5818,14 @@ SSiTextFile_WriteAmbient(
 			case SScPriority2_Highest:
 				priority_name = SSgPriority_Name[ambient->priority];
 			break;
-			
+
 			default:
 				priority_name = "";
 			break;
 		}
 
 		strcat(string, priority_name); strcat(string, "\t");
-		
+
 		if (ambient->in_sound) { strcat(string, ambient->in_sound->group_name); }
 		strcat(string, "\t");
 
@@ -5840,7 +5840,7 @@ SSiTextFile_WriteAmbient(
 
 		if (ambient->detail) { strcat(string, ambient->detail->group_name); }
 		strcat(string, "\t");
-		
+
 		sprintf(number, "%5.3f", ambient->min_detail_time); strcat(string, number); strcat(string, "\t");
 		sprintf(number, "%5.3f", ambient->max_detail_time); strcat(string, number); strcat(string, "\t");
 		sprintf(number, "%5.3f", ambient->sphere_radius); strcat(string, number); strcat(string, "\t");
@@ -5851,12 +5851,12 @@ SSiTextFile_WriteAmbient(
 		strcat(string, "\t");
 
 		if ((ambient->flags & SScAmbientFlag_PlayOnce) != 0) { strcat(string, "Y"); }
-		
+
 		strcat(string, "\n");
 
 		BFrFile_Write(inFile, strlen(string), string);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -5868,11 +5868,11 @@ SSiTextFile_WriteImpulse(
 	UUtUns32				num_impulses;
 	UUtUns32				i;
 	char					string[2048];
-	
+
 	// write the header
 	sprintf(string, "Name\tPriority\tSound\tMax Volume Distance\tMin Volume Distance\n");
 	BFrFile_Write(inFile, strlen(string), string);
-	
+
 	// write the impulse sounds
 	num_impulses = SSrImpulse_GetNumImpulseSounds();
 	for (i = 0; i < num_impulses; i++)
@@ -5880,14 +5880,14 @@ SSiTextFile_WriteImpulse(
 		SStImpulse			*impulse;
 		char				number[128];
 		const char			*priority_name;
-		
+
 		impulse = SSrImpulse_GetByIndex(i);
 		if (impulse == NULL) { continue; }
-		
+
 		string[0] = '\0';
-		
+
 		strcat(string, impulse->impulse_name); strcat(string, "\t");
-		
+
 		switch(impulse->priority)
 		{
 			case SScPriority2_Low:
@@ -5896,17 +5896,17 @@ SSiTextFile_WriteImpulse(
 			case SScPriority2_Highest:
 				priority_name = SSgPriority_Name[impulse->priority];
 			break;
-			
+
 			default:
 				priority_name = "";
 			break;
 		}
-		
+
 		strcat(string, priority_name); strcat(string, "\t");
 
 		if (impulse->impulse_group) { strcat(string, impulse->impulse_group->group_name); }
 		strcat(string, "\t");
-		
+
 		sprintf(number, "%5.3f", impulse->min_volume_distance); strcat(string, number); strcat(string, "\t");
 		sprintf(number, "%5.3f", impulse->max_volume_distance); strcat(string, number);
 
@@ -5914,7 +5914,7 @@ SSiTextFile_WriteImpulse(
 
 		BFrFile_Write(inFile, strlen(string), string);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -5926,13 +5926,13 @@ SSiTextFile_WriteGroup(
 	UUtUns32				num_groups;
 	UUtUns32				i;
 	char					string[2048];
-	
+
 	// write the header
 	sprintf(string, "Name\tVolume\n");
 	BFrFile_Write(inFile, strlen(string), string);
 	sprintf(string, "Perm\tFile Name\tWeight\tMin Volume Percent\tMax Volume Percent\tMin Pitch Percent\tMax Pitch Percent\n");
 	BFrFile_Write(inFile, strlen(string), string);
-	
+
 	// write the groups
 	num_groups = SSrGroup_GetNumSoundGroups();
 	for (i = 0; i < num_groups; i++)
@@ -5941,19 +5941,19 @@ SSiTextFile_WriteGroup(
 		SStPermutation		*perm_array;
 		UUtUns32			num_permutations;
 		UUtUns32			j;
-		
+
 		group = SSrGroup_GetByIndex(i);
 		if (group == NULL) { continue; }
-		
+
 		sprintf(string, "%s \t %5.3f \n", group->group_name, group->group_volume);
 		BFrFile_Write(inFile, strlen(string), string);
-		
+
 		perm_array = (SStPermutation*)UUrMemory_Array_GetMemory(group->permutations);
 		num_permutations = UUrMemory_Array_GetUsedElems(group->permutations);
 		for (j = 0; j < num_permutations; j++)
 		{
 			SStPermutation		*perm;
-			
+
 			perm = &perm_array[j];
 			sprintf(
 				string,
@@ -5968,7 +5968,7 @@ SSiTextFile_WriteGroup(
 			BFrFile_Write(inFile, strlen(string), string);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -5981,25 +5981,25 @@ SSiTextFile_Write(
 	char					filename[128];
 	BFtFileRef				*file_ref;
 	BFtFile					*file;
-	
+
 	// create the env file ref
 	switch (inType)
 	{
 		case SScType_Ambient:
 			sprintf(filename, "Sound_Ambient.txt");
 		break;
-		
+
 		case SScType_Impulse:
 			sprintf(filename, "Sound_Impulse.txt");
 		break;
-		
+
 		case SScType_Group:
 			sprintf(filename, "Sound_Group.txt");
 		break;
 	}
 	error = BFrFileRef_MakeFromName(filename, &file_ref);
 	UUmError_ReturnOnError(error);
-	
+
 	// create the .TXT file if it doesn't already exist
 	if (BFrFileRef_FileExists(file_ref) == UUcFalse)
 	{
@@ -6007,26 +6007,26 @@ SSiTextFile_Write(
 		error = BFrFile_Create(file_ref);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	// open the file
 	error = BFrFile_Open(file_ref, "rw", &file);
 	UUmError_ReturnOnError(error);
-	
+
 	// set the position to 0
 	error = BFrFile_SetPos(file, 0);
 	UUmError_ReturnOnError(error);
-	
+
 	// write the items
 	switch (inType)
 	{
 		case SScType_Ambient:
 			SSiTextFile_WriteAmbient(file);
 		break;
-		
+
 		case SScType_Impulse:
 			SSiTextFile_WriteImpulse(file);
 		break;
-		
+
 		case SScType_Group:
 			SSiTextFile_WriteGroup(file);
 		break;
@@ -6034,15 +6034,15 @@ SSiTextFile_Write(
 
 	// set the end of the file
 	BFrFile_SetEOF(file);
-	
+
 	// close the file
 	BFrFile_Close(file);
 	file = NULL;
-	
+
 	// delete the file ref
 	BFrFileRef_Dispose(file_ref);
 	file_ref = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -6052,7 +6052,7 @@ SSrTextFile_Write(
 	void)
 {
 	UUtError					error;
-	
+
 	error = SSiTextFile_Write(SScType_Ambient);
 	UUmError_ReturnOnError(error);
 
@@ -6061,7 +6061,7 @@ SSrTextFile_Write(
 
 	error = SSiTextFile_Write(SScType_Group);
 	UUmError_ReturnOnError(error);
-	
+
 	return error;
 }
 
@@ -6083,11 +6083,11 @@ SSrListBrokenSounds(
 	UUtUns32				num_groups;
 	UUtUns32				i;
 	char					text[1024];
-	
+
 	// make sure all of the pointers are up to date
 	SSrAmbient_UpdateGroupPointers();
 	SSrImpulse_UpdateGroupPointers();
-	
+
 	// printf a header
 	BFrFile_Printf(inFile, "********** Ambient Sound Links **********"UUmNL);
 	BFrFile_Printf(inFile, UUmNL);
@@ -6098,14 +6098,14 @@ SSrListBrokenSounds(
 	{
 		BFrFile_Printf(inFile, "Ambient\tGroup\tGroup Name"UUmNL);
 	}
-	
+
 	ambient_array = (SStAmbient**)UUrMemory_Array_GetMemory(SSgAmbientSounds);
 	for (i = 0; i < num_ambients; i++)
 	{
 		SStAmbient				*ambient;
-		
+
 		ambient = ambient_array[i];
-		
+
 		if ((ambient->in_sound_name[0] != '\0') && (ambient->in_sound == NULL))
 		{
 			sprintf(text, "%sin_sound\t%s", ambient->ambient_name, ambient->in_sound_name);
@@ -6141,13 +6141,13 @@ SSrListBrokenSounds(
 			BFrFile_Printf(inFile, "%s"UUmNL, text);
 		}
 	}
-	
+
 	if (num_ambients > 0)
 	{
 		BFrFile_Printf(inFile, UUmNL);
 		BFrFile_Printf(inFile, UUmNL);
 	}
-	
+
 	// go through all of the impulse sounds and list ones which can't find their groups
 	num_impulses = UUrMemory_Array_GetUsedElems(SSgImpulseSounds);
 	if (num_impulses > 0)
@@ -6158,9 +6158,9 @@ SSrListBrokenSounds(
 	for (i = 0; i < num_impulses; i++)
 	{
 		SStImpulse				*impulse;
-		
+
 		impulse = impulse_array[i];
-		
+
 		if ((impulse->impulse_group_name[0] != '\0') && (impulse->impulse_group == NULL))
 		{
 			sprintf(text, "%s\t%s", impulse->impulse_name, impulse->impulse_group_name);
@@ -6168,7 +6168,7 @@ SSrListBrokenSounds(
 			BFrFile_Printf(inFile, "%s"UUmNL, text);
 		}
 	}
-	
+
 	if (num_impulses > 0)
 	{
 		BFrFile_Printf(inFile, UUmNL);
@@ -6189,18 +6189,18 @@ SSrListBrokenSounds(
 			UUtUns32				j;
 			SStPermutation			*perm_array;
 			UUtUns32				num_permutations;
-			
+
 			group = group_array[i];
-			
+
 			perm_array = (SStPermutation*)UUrMemory_Array_GetMemory(group->permutations);
 			num_permutations = UUrMemory_Array_GetUsedElems(group->permutations);
-			
+
 			for (j = 0; j < num_permutations; j++)
 			{
 				SStPermutation		*perm;
-				
+
 				perm = &perm_array[j];
-				
+
 				if (perm->sound_data == NULL)
 				{
 					if (perm->sound_data_name[0] == '\0')
@@ -6225,12 +6225,12 @@ SSrListBrokenSounds(
 				}
 			}
 		}
-		
+
 		BFrFile_Printf(inFile, UUmNL);
 		BFrFile_Printf(inFile, UUmNL);
 		BFrFile_Printf(inFile, UUmNL);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -6270,9 +6270,9 @@ SS2rInitializeBasic(
 	UUtBool						inUseSound)
 {
 	UUtError					error;
-	
+
 	UUrStartupMessage("initializing basic sound system 2 layer...");
-	
+
 	SSgSoundChannels_Mono = NULL;
 	SSgSoundChannels_Stereo = NULL;
 	SSgSoundChannels_NumStereo = 0;
@@ -6284,7 +6284,7 @@ SS2rInitializeBasic(
 	// initialize the platform specific sound stuff
 	error = SS2rPlatform_Initialize(inWindow, &SSgSoundChannels_NumTotal, inUseSound);
 	if (error != UUcError_None) { goto exit; }
-	
+
 	// initialize the sound channels
 	error =
 		SSiSoundChannels_Initialize(
@@ -6292,14 +6292,14 @@ SS2rInitializeBasic(
 			&SSgSoundChannels_NumStereo,
 			&SSgSoundChannels_NumMono);
 	if (error != UUcError_None) { goto exit; }
-	
+
 	SSgChannelsInitialized = UUcTrue;
 	SSgEnabled = (SSgSoundChannels_NumTotal > 0);
 
 	// start the thread
 	error = SS2rPlatform_InitializeThread();
 	if (error != UUcError_None) { goto exit; }
-	
+
 exit:
 	return UUcError_None;
 }
@@ -6311,16 +6311,16 @@ SS2rInitializeFull(
 {
 	UUtError					error;
 	UUtUns32					itr;
-	
+
 	UUrStartupMessage("initializing full sound system 2...");
 
 /*	if (!SSgChannelsInitialized) {
 		// this requires the base level to be initialized first
 		goto exit;
 	}*/
-	
+
 	SSrWaitGuard(SSgGuardAll);
-	
+
 	// no pointer handlers yet
 	SSgImpulseHandler = NULL;
 	SSgAmbientHandler = NULL;
@@ -6328,12 +6328,12 @@ SS2rInitializeFull(
 	// register the templates
 	error = SS2rRegisterTemplates();
 	if (error != UUcError_None) { goto exit; }
-	
+
 	// register the at exit callback
 	UUrAtExit_Register(SS2rTerminate);
-	
+
 	// set the proc handler
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			SScTemplate_SoundData,
 			0,
@@ -6349,7 +6349,7 @@ SS2rInitializeFull(
 			0,
 			0);
 	if (SSgSoundGroups == NULL) { goto exit; }
-	
+
 	// allocate memory for the ambient sounds
 	SSgAmbientSounds =
 		UUrMemory_Array_New(
@@ -6358,7 +6358,7 @@ SS2rInitializeFull(
 			0,
 			0);
 	if (SSgAmbientSounds == NULL) { goto exit; }
-	
+
 	// allocate memory for the impulse sounds
 	SSgImpulseSounds =
 		UUrMemory_Array_New(
@@ -6367,7 +6367,7 @@ SS2rInitializeFull(
 			0,
 			0);
 	if (SSgImpulseSounds == NULL) { goto exit; }
-	
+
 	// allocate memory for the dynamically allocated SStSoundData array
 	SSgDynamicSoundData =
 		UUrMemory_Array_New(
@@ -6376,7 +6376,7 @@ SS2rInitializeFull(
 			0,
 			0);
 	if (SSgDynamicSoundData == NULL) { goto exit; }
-	
+
 	// allocate memory for the dynamic deallocation of SStSoundData
 	SSgDeallocatedSoundData =
 		UUrMemory_Array_New(
@@ -6397,7 +6397,7 @@ SS2rInitializeFull(
 		SSgNumPlayingAmbients = 0;
 		goto exit;
 	}
-	
+
 	for (itr = 0; itr < SSgNumPlayingAmbients; itr++)
 	{
 		SSgPlayingAmbient[itr].stage = SScPAStage_None;
@@ -6408,14 +6408,14 @@ SS2rInitializeFull(
 	SSgOverallVolume = 1.0f;
 	SSgDesiredVolume = SSgOverallVolume;
 	MUmVector_Set(SSgListener_Facing, 1.0f, 0.0f, 0.0f);
-	
+
 	error =
 		SLrGlobalVariable_Register_Bool(
 			"sound_show_debug",
 			"Displays sound debugging info",
 			&SSgShowDebugInfo);
 	if (error != UUcError_None) { goto exit; }
-	
+
 	SSgPlaybackInitialized = UUcTrue;
 	SSgUsable = SSgEnabled;
 
@@ -6449,9 +6449,9 @@ SSrPlayingChannels_Pause(
 	UUtUns32					i;
 	SStSoundChannel				*sound_channels;
 	UUtUns32					num_channels;
-	
+
 	SSrWaitGuard(SSgGuardAll);
-	
+
 	if (SSgSoundChannels_Stereo != NULL)
 	{
 		// pause all playing stereo channels
@@ -6463,7 +6463,7 @@ SSrPlayingChannels_Pause(
 			SSiSoundChannel_Pause(&sound_channels[i]);
 		}
 	}
-	
+
 	if (SSgSoundChannels_Mono != NULL)
 	{
 		// initialize each mono sound channel
@@ -6475,7 +6475,7 @@ SSrPlayingChannels_Pause(
 			SSiSoundChannel_Pause(&sound_channels[i]);
 		}
 	}
-	
+
 	SSrReleaseGuard(SSgGuardAll);
 }
 
@@ -6487,9 +6487,9 @@ SSrPlayingChannels_Resume(
 	UUtUns32					i;
 	SStSoundChannel				*sound_channels;
 	UUtUns32					num_channels;
-	
+
 	SSrWaitGuard(SSgGuardAll);
-	
+
 	if (SSgSoundChannels_Stereo != NULL)
 	{
 		// pause all playing stereo channels
@@ -6505,7 +6505,7 @@ SSrPlayingChannels_Resume(
 			SSiSoundChannel_Resume(&sound_channels[i]);
 		}
 	}
-	
+
 	if (SSgSoundChannels_Mono != NULL)
 	{
 		// initialize each mono sound channel
@@ -6521,7 +6521,7 @@ SSrPlayingChannels_Resume(
 			SSiSoundChannel_Resume(&sound_channels[i]);
 		}
 	}
-	
+
 	SSrReleaseGuard(SSgGuardAll);
 }
 
@@ -6535,7 +6535,7 @@ SSrStopAll(
 	UUtUns32					num_playing_ambients;
 	SStSoundChannel				*sound_channels;
 	UUtUns32					num_channels;
-	
+
 	SSrWaitGuard(SSgGuardAll);
 
 	if (SSgPlayingAmbient != NULL)
@@ -6548,7 +6548,7 @@ SSrStopAll(
 			SSrAmbient_Halt(playing_ambient_array[i].id);
 		}
 	}
-	
+
 	if (SSgSoundChannels_Stereo != NULL)
 	{
 		// stop all remaining playing sounds
@@ -6560,7 +6560,7 @@ SSrStopAll(
 			sound_channels[i].sound_data = NULL;
 		}
 	}
-	
+
 	if (SSgSoundChannels_Mono != NULL)
 	{
 		// initialize each mono sound channel
@@ -6586,21 +6586,21 @@ SS2rTerminate(
 	SStImpulse					**impulse_sound_array;
 	SStAmbient					**ambient_sound_array;
 	UUtUns32					i;
-	
+
 	SSgUsable = UUcFalse;
-	
+
 	if (SSgGuardAll)
 	{
 		SSrWaitGuard(SSgGuardAll);
 	}
-	
+
 	// stop the platform-specific thread so it doesn't try to update while we
 	// are in the midst of terminating
 	SS2rPlatform_TerminateThread();
-	
+
 	// terminate the sound channels
 	SSiSoundChannels_Terminate();
-	
+
 	// delete the group, array
 	if (SSgSoundGroups)
 	{
@@ -6612,7 +6612,7 @@ SS2rTerminate(
 		UUrMemory_Array_Delete(SSgSoundGroups);
 		SSgSoundGroups = NULL;
 	}
-	
+
 	// delete the impulse array
 	if (SSgImpulseSounds)
 	{
@@ -6624,7 +6624,7 @@ SS2rTerminate(
 		UUrMemory_Array_Delete(SSgImpulseSounds);
 		SSgImpulseSounds = NULL;
 	}
-	
+
 	// delete the ambient array
 	if (SSgAmbientSounds)
 	{
@@ -6636,7 +6636,7 @@ SS2rTerminate(
 		UUrMemory_Array_Delete(SSgAmbientSounds);
 		SSgAmbientSounds = NULL;
 	}
-	
+
 	// delete the deallocated-pointer array
 	// CB: this must come before we delete the sound data array, otherwise
 	// we will store ALL of the sound data pointers (which isn't useful).
@@ -6658,21 +6658,21 @@ SS2rTerminate(
 		UUrMemory_Array_Delete(SSgDynamicSoundData);
 		SSgDynamicSoundData = NULL;
 	}
-	
+
 	// delete the playing ambient
 	if (SSgPlayingAmbient)
 	{
 		UUrMemory_Block_Delete(SSgPlayingAmbient);
 		SSgPlayingAmbient = NULL;
 	}
-	
+
 	SSgTemplate_PrivateData = NULL;
-	
+
 	SS2rPlatform_Terminate();
 
 	SSgPlaybackInitialized = UUcFalse;
 	SSgChannelsInitialized = UUcFalse;
-	
+
 	if (SSgGuardAll)
 	{
 		SSrReleaseGuard(SSgGuardAll);
@@ -6687,13 +6687,13 @@ SS2rUpdate(
 	void)
 {
 	if (SSgUsable == UUcFalse) { return; }
-	
+
 	SS2iVolume_Update();
-	
+
 	SS2rPlatform_PerformanceStartFrame();
-	
+
 	SSiPlayingAmbient_UpdateList();
-	
+
 	SS2rPlatform_PerformanceEndFrame();
 }
 
@@ -6714,13 +6714,13 @@ SS2rVolume_Set(
 	float						inVolume)
 {
 	float						old_volume;
-	
+
 	if (SSgUsable == UUcFalse) { return 0.0f; }
-	
+
 	old_volume = SSgOverallVolume;
 	inVolume = UUmPin(inVolume, 0.0f, 1.0f);
 	SSgDesiredVolume = inVolume;
-	
+
 	return old_volume;
 }
 
@@ -6733,10 +6733,10 @@ SS2iVolume_Update(
 	UUtUns32					num_channels;
 	SStSoundChannel				*sound_channel_array;
 	UUtUns32					i;
-	
+
 	if (SSgUsable == UUcFalse) { return; }
 	if (SSgOverallVolume == SSgDesiredVolume) { return; }
-	
+
 	// calculate the adjustment
 	volume_delta = SSgDesiredVolume - SSgOverallVolume;
 	if (volume_delta > 0.0f)
@@ -6747,11 +6747,11 @@ SS2iVolume_Update(
 	{
 		volume_delta = UUmMax(volume_delta, -SScVolumeAdjust);
 	}
-	
+
 	// adjust the volume
 	SSgOverallVolume += volume_delta;
 	SSgOverallVolume = UUmPin(SSgOverallVolume, 0.0f, 1.0f);
-	
+
 	// adjust the volume of the sound channels
 	if (SSgSoundChannels_Stereo)
 	{
@@ -6776,5 +6776,5 @@ SS2iVolume_Update(
 				sound_channel_array[i].channel_volume);
 		}
 	}
-	
+
 }

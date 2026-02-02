@@ -2,9 +2,9 @@
 
 /*
 	Oni_Path.h
-	
+
 	This file contains all pathfinding header stuff
-	
+
 	Author: Quinn Dunki, Michael Evans
 	Copyright (c) Bungie Software 1998, 2000
 */
@@ -89,7 +89,7 @@ enum {	// Path status types
 struct PHtConnection
 {
 	UUtUns32 flags;
-	
+
 	PHtNode *from;
 	PHtNode *to;							// Who we connect (note that connections are ONE WAY)
 	UUtUns16 from_connectionindex;			// index of this connection in from->out_connections
@@ -98,7 +98,7 @@ struct PHtConnection
 	AKtGQ_General *gunk;					// Gunk quad that this connection represents
 	M3tPoint3D connection_midpoint;
 	float connection_width;
-	
+
 	UUtBool door_side;
 	UUtUns32 last_gridindex;				// unique grid construction index for the last pass we were added to
 	struct OBJtObject *door_link;			// the door that blocks this connection
@@ -125,7 +125,7 @@ struct PHtNode
 	PHtConnection *connections_in;			// List of paths that lead to us
 	AKtBNVNode *location;					// Corresponding BNV
 	UUtUns32 weight_baseindex;				// index into PHtGraph->weight_storage
-	
+
 	/*
 	 * cached room grids - both static and dynamic
 	 */
@@ -148,7 +148,7 @@ struct PHtNode
 
 	PHtNode *predecessor;					// how we got to this node (NULL if initial node)
 	PHtConnection *predecessor_conn;
-	
+
 #if TOOL_VERSION
 	UUtUns32 traverse_dist;		// debugging - for traversing the graph and displaying it
 #endif
@@ -159,10 +159,10 @@ struct PHtGraph
 	PHtNode *nodes;					// Array of graph nodes
 	UUtUns32 numNodes;
 	AKtEnvironment *env;			// The Akira environment we represent
-	
+
 	PHtNode *open;					// Shortest determined nodes
 	PHtNode *closed;				// Retired Dijkstra nodes
-	
+
 	lrar_cache *grid_cache;			// lrar cache for pathfinding grids
 	UUtUns8 *grid_storage;			// memory storage for pathfinding grids
 

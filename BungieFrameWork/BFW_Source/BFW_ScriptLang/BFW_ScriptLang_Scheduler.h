@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_ScriptLang_Scheduler.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -16,7 +16,7 @@
 
 // This will execute a command and schedule it if needed
 // This only schedules stuff called from the engine
-UUtError	
+UUtError
 SLrScheduler_Execute(
 	const char*			inName,
 	SLtErrorContext*	inErrorContext,

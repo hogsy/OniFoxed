@@ -114,7 +114,7 @@ ONiParticle3_Debug_SpawnParticle(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -123,7 +123,7 @@ ONiParticle3_Debug_KillAllParticles(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -132,7 +132,7 @@ ONiParticle3_Debug_KillNearestParticle(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -141,7 +141,7 @@ ONiParticle3_Debug_Count(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -150,7 +150,7 @@ ONiParticle3_Debug_CallEvent(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -168,7 +168,7 @@ ONiParticle3_Temporary_Start(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -177,7 +177,7 @@ ONiParticle3_Temporary_Stop(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -186,7 +186,7 @@ ONiParticle3_Temporary_Kill(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -195,7 +195,7 @@ ONiParticle3_PrintTags(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -204,7 +204,7 @@ ONiParticle3_RemoveDangerous(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -213,7 +213,7 @@ ONiParticle3_DumpParticles(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 #if TOOL_VERSION
@@ -223,7 +223,7 @@ ONiParticle3_ListCollision(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 #endif
 
@@ -233,7 +233,7 @@ ONiParticle3_StartAll(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -242,7 +242,7 @@ ONiParticle3_StopAll(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -251,7 +251,7 @@ ONiParticle3_DaodanShieldDisable(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static UUtError
@@ -260,7 +260,7 @@ ONiParticle3_WriteUsedParticles(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 #if PARTICLE_PERF_ENABLE
@@ -270,7 +270,7 @@ ONiParticle3_Perf(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 #endif
 
@@ -286,7 +286,7 @@ UUtError ONrParticle3_Initialize(void)
 	P3rRegisterCallbacks(ONiParticle3_CreationCallback, ONiParticle3_DeletionCallback, NULL, ONiParticle3_SettingsCallback);
 
 	// set up console commands
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_spawn",
 		"Spawns a new P3 particle",
@@ -294,144 +294,144 @@ UUtError ONrParticle3_Initialize(void)
 		ONiParticle3_Debug_SpawnParticle);
 	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_killall",
 		"Kills all P3 particles",
 		"",
 		ONiParticle3_Debug_KillAllParticles);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_killnearest",
 		"Kills the nearest P3 particle",
 		"[no_recreate:bool | ]",
 		ONiParticle3_Debug_KillNearestParticle);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_count",
 		"Lists a count of P3 particles",
 		"",
 		ONiParticle3_Debug_Count);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_callevent",
 		"Triggers an event on all P3 particles of a specified class",
 		"particle_class:string event_index:int",
 		ONiParticle3_Debug_CallEvent);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"particle_temp_start",
 		"Starts temporary-particle-creation mode",
 		NULL,
 		ONiParticle3_Temporary_Start);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"particle_temp_stop",
 		"Stops temporary-particle-creation mode",
 		NULL,
 		ONiParticle3_Temporary_Stop);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"particle_temp_kill",
 		"Kills any temporary particles",
 		NULL,
 		ONiParticle3_Temporary_Kill);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"particle",
 		"Sends a command to environmental particles with a given tag",
 		NULL,
 		ONiParticle3_Command);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_printtags",
 		"Prints out all environmental particles with tags",
 		"",
 		ONiParticle3_PrintTags);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_removedangerous",
 		"Removes all 'dangerous projectile' particles by making their lifetime expire",
 		"",
 		ONiParticle3_RemoveDangerous);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_dumpparticles",
 		"Dump all particles to a text file",
 		"",
 		ONiParticle3_DumpParticles);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
 #if TOOL_VERSION
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_listcollision",
 		"Dump all particle classes with collision to a text file",
 		"",
 		ONiParticle3_ListCollision);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 #endif
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_writeusedparticles",
 		"Writes all particles used on this level to a text file",
 		"",
 		ONiParticle3_WriteUsedParticles);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_startall",
 		"Creates and starts all environmental particles",
 		"",
 		ONiParticle3_StartAll);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_stopall",
 		"Stops all environmental particles",
 		"",
 		ONiParticle3_StopAll);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_daodan_disable",
 		"Disables parts of the daodan shield (for debugging)",
 		NULL,
 		ONiParticle3_DaodanShieldDisable);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
 #if PARTICLE_PERF_ENABLE
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"p3_perf",
 		"Toggles particle performance display and sets event masks",
 		NULL,
 		ONiParticle3_Perf);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 #endif
 
 	error =	SLrGlobalVariable_Register_Bool("p3_show_env_collision", "Draws particle / environment collisions.", &P3gDrawEnvCollisions);
@@ -469,7 +469,7 @@ void ONrParticle3_LevelZeroLoaded(void)
 
 	ONgParticle3_DaodanShield = P3rGetParticleClass("daodanshield_e01");
 }
-	
+
 UUtError ONrParticle3_LevelBegin(void)
 {
 #if PARTICLE_RECORD
@@ -580,7 +580,7 @@ void ONrParticle3_UpdateGraphicsQuality(void)
 
 // emit breaking glass from a quad
 void ONrParticle3_EmitGlassPieces(AKtGQ_General *inQuad, float inDamage,
-								  M3tVector3D *inBlastSource, M3tVector3D *inBlastNormal, 
+								  M3tVector3D *inBlastSource, M3tVector3D *inBlastNormal,
 								  M3tVector3D *inBlastDir, float inBlastRadius)
 {
 	M3tQuad *quad;
@@ -700,18 +700,18 @@ void ONrParticle3_EmitGlassPieces(AKtGQ_General *inQuad, float inDamage,
 			for (itr = 0; itr < num_shards; itr++) {
 				pos_x = x + P3rRandom();
 				pos_z = z + P3rRandom();
-	
+
 				exact_interp = pos_z / cells_z;
 
 				MUmVector_Copy(emit_point, *points[0]);
-				
+
 				MUmVector_ScaleIncrement(emit_point, pos_z, side_z);
 				MUmVector_ScaleIncrement(emit_point, pos_x * (1.0f - exact_interp), side_x0);
 				MUmVector_ScaleIncrement(emit_point, pos_x * exact_interp,		  side_x1);
 
 				ONiParticle3_EmitGlassPiece(&ONgParticle3_GlassShards, &glassdata,
-											&emit_point, current_time, 
-											inDamage, inBlastSource, inBlastNormal, 
+											&emit_point, current_time,
+											inDamage, inBlastSource, inBlastNormal,
 											inBlastDir, inBlastRadius);
 			}
 		}
@@ -721,7 +721,7 @@ void ONrParticle3_EmitGlassPieces(AKtGQ_General *inQuad, float inDamage,
 // emit a piece of breaking glass from a quad
 static void ONiParticle3_EmitGlassPiece(P3tEffectSpecification *inGlassType, ONtGlassData *inGlassData,
 										M3tPoint3D *inPoint, UUtUns32 inTime,
-										 float inDamage, M3tVector3D *inBlastSource, M3tVector3D *inBlastNormal, 
+										 float inDamage, M3tVector3D *inBlastSource, M3tVector3D *inBlastNormal,
 										 M3tVector3D *inBlastDir, float inBlastRadius)
 {
 	float						velocity_mag, blast_distance, outwards_interp;
@@ -845,7 +845,7 @@ UUtBool ONrParticle3_FindBodySurfacePosition(UUtUns32 inCharacterOwner, float in
 				CHECK_PART_FACE(Pos_Y, y, maxPoint, z, x);
 				CHECK_PART_FACE(Neg_Z, z, minPoint, x, y);
 				CHECK_PART_FACE(Pos_Z, z, maxPoint, x, y);
-				
+
 				// should never reach here
 				UUmAssert(0);
 				MUmVector_Set(*outPoint, 0, 0, 0);
@@ -898,7 +898,7 @@ UUtBool ONrParticle3_FindBodySurfacePosition(UUtUns32 inCharacterOwner, float in
 					// we are at the precise top of the cap
 					MUmVector_Set(right_vector, 0, 0, x_upvector);
 				}
-				 
+
 				MUrVector_CrossProduct(&outward_vector, &right_vector, &up_vector);
 				if (MUrVector_Normalize_ZeroTest(&up_vector)) {
 					// there is a problem building the orientation!
@@ -929,7 +929,7 @@ UUtBool ONrParticle3_FindBodySurfacePosition(UUtUns32 inCharacterOwner, float in
 
 				outPoint->y += inRadius * outward_vector.y;
 				outPoint->z += inRadius * outward_vector.z;
-			}		
+			}
 
 			return UUcTrue;
 		}
@@ -995,7 +995,7 @@ UUtBool ONrParticle3_FindBodyBonePosition(UUtUns32 inCharacterOwner, float inRad
 
 				x_min = pos_cap + inRadius;
 				x_max = neg_cap - inRadius;
-				
+
 			} else {
 				x_min = body_part->bbox.minPoint.x;
 				x_max = body_part->bbox.maxPoint.x;
@@ -1049,13 +1049,13 @@ static char *ONiParticle3_GetFileName(void)
 	static char buffer[1024];
 
 	sprintf(buffer, "%s particles.txt", ONgLevel->name);
-	
+
 	return buffer;
 }
 
 
 
-static void ONiParticle3_Record_CreateParticle(char *inParticleClassString, M3tPoint3D *inLocation, M3tVector3D *inVector, float inVelocity) 
+static void ONiParticle3_Record_CreateParticle(char *inParticleClassString, M3tPoint3D *inLocation, M3tVector3D *inVector, float inVelocity)
 {
 	if (NULL == particle_record) {
 		particle_record = fopen(ONiParticle3_GetFileName(), "a+");
@@ -1076,7 +1076,7 @@ static void ONiParticle3_Record_CreateParticle(char *inParticleClassString, M3tP
 }
 #endif
 
-static UUtError ONiParticle3_CreateParticle(char *inParticleClassString, M3tPoint3D *inLocation, M3tVector3D *inVector, float inVelocity) 
+static UUtError ONiParticle3_CreateParticle(char *inParticleClassString, M3tPoint3D *inLocation, M3tVector3D *inVector, float inVelocity)
 {
 	P3tParticleClass *particle_class;
 	P3tParticle *new_particle;
@@ -1089,7 +1089,7 @@ static UUtError ONiParticle3_CreateParticle(char *inParticleClassString, M3tPoin
 	AKtOctNodeIndexCache *p_envcache;
 	UUtUns32 *p_texture, *p_lensframes, current_time;
 	UUtBool is_dead;
-	
+
 	particle_class = P3rGetParticleClass(inParticleClassString);
 	if (particle_class == NULL) {
 		COrConsole_Printf("### unknown particle class '%s'", inParticleClassString);
@@ -1185,7 +1185,7 @@ static UUtError ONiParticle3_CreateParticle(char *inParticleClassString, M3tPoin
 }
 
 #if PARTICLE_RECORD
-static void ONiParticle3_Record_Kill(void) 
+static void ONiParticle3_Record_Kill(void)
 {
 	if (NULL != particle_record) {
 		fclose(particle_record);
@@ -1202,7 +1202,7 @@ static void ONiParticle3_Record_Kill(void)
 	}
 }
 
-static void ONiParticle3_Record_Play(void) 
+static void ONiParticle3_Record_Play(void)
 {
 	if (NULL != particle_record) {
 		fclose(particle_record);
@@ -1273,7 +1273,7 @@ ONiParticle3_Temporary_Start(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	P3rSetTemporaryCreation(UUcTrue);
@@ -1287,7 +1287,7 @@ ONiParticle3_Temporary_Stop(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	P3rSetTemporaryCreation(UUcFalse);
@@ -1301,7 +1301,7 @@ ONiParticle3_Temporary_Kill(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	P3rKillTemporaryParticles();
@@ -1380,7 +1380,7 @@ ONiParticle3_Debug_KillNearestParticle(
 	UUtBool is_dead;
 
 	UUmAssert(inParameterListLength == 0);
-	
+
 	player_character = ONrGameState_GetPlayerCharacter();
 
 	// no particles found yet
@@ -1623,7 +1623,7 @@ ONiParticle3_Command(
 
 	// iterate over all environmental particles with this tag
 	EPrEnumerateByTag(inParameterList[0].val.str, ONiParticle3_CommandCallback, (UUtUns32) &command_data);
-	
+
 	return UUcError_None;
 }
 
@@ -1632,7 +1632,7 @@ void ONrParticle3_Explode(UUtUns32 inExplodeID)
 {
 	ONtParticleCommandData command_data;
 	char temptag[32];
-	
+
 	command_data.type = ONcParticleCommandType_Do;
 	command_data.event_index = P3cEvent_Explode;
 	command_data.num_params = 0;
@@ -1648,7 +1648,7 @@ ONiParticle3_PrintTags(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	EPrPrintTags();
@@ -1661,7 +1661,7 @@ ONiParticle3_RemoveDangerous(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	P3rRemoveDangerousProjectiles();
@@ -1674,7 +1674,7 @@ ONiParticle3_DumpParticles(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	P3rDumpParticles();
@@ -1714,7 +1714,7 @@ ONiParticle3_StartAll(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	ONtParticle3_AllEnvParticleData user_data;
@@ -1733,7 +1733,7 @@ ONiParticle3_StopAll(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	ONtParticle3_AllEnvParticleData user_data;
@@ -1753,7 +1753,7 @@ ONiParticle3_ListCollision(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	P3rListCollision();
@@ -1767,7 +1767,7 @@ ONiParticle3_DaodanShieldDisable(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	UUtUns32 itr, part;
@@ -1842,7 +1842,7 @@ ONiParticle3_WriteUsedParticles(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	UUtError				error;
@@ -1854,14 +1854,14 @@ ONiParticle3_WriteUsedParticles(
 	sprintf(filename, "L%d_Particles.txt", ONrLevel_GetCurrentLevel());
 	error = BFrFileRef_MakeFromName(filename, &file_ref);
 	UUmError_ReturnOnError(error);
-	
+
 	// create the text file if it doesn't already exist
 	if (BFrFileRef_FileExists(file_ref) == UUcFalse)
 	{
 		error = BFrFile_Create(file_ref);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	// open the file
 	error = BFrFile_Open(file_ref, "w", &user_data.file);
 	UUmError_ReturnOnError(error);
@@ -1870,11 +1870,11 @@ ONiParticle3_WriteUsedParticles(
 	user_data.num_classes = 0;
 	EPrEnumerateParticleClassesRecursively(ONiParticle3_WriteUsedParticles_EnumCallback, (UUtUns32) &user_data);
 	COrConsole_Printf("Wrote %d particle classes to file %s...", user_data.num_classes, filename);
-	
+
 	// cleanup
 	BFrFile_Close(user_data.file);
 	BFrFileRef_Dispose(file_ref);
-	
+
 	return UUcError_None;
 }
 
@@ -1885,7 +1885,7 @@ ONiParticle3_Perf(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	UUtUns32 itr, itr2, mask;

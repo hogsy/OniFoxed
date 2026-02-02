@@ -1,8 +1,8 @@
 /*
 	BFW_Path.h
-	
+
 	This file contains all pathfinding header stuff
-	
+
 	Author: Quinn Dunki, Michael Evans
 	Copyright (c) 1998 Bungie
 */
@@ -38,7 +38,7 @@
 // constants
 #define PHcWorldCoord_YOffset	0.5f	// added to worldspace coordinates so that if they are tested they are guaranteed
 	                                    // not to lie below the room's origin
-#define PHcFlatNormal			0.5f	// Y component of normal of "flatest" surface we can walk on 
+#define PHcFlatNormal			0.5f	// Y component of normal of "flatest" surface we can walk on
 #define PHcSquareSize			4.0f	// Default size (in units) of 1 grid square
 #define PHcMaxGridSize			200		// Maximum size of working grid (each dimension)
 #define PHcComfortDistance		10.0f
@@ -83,12 +83,12 @@ extern const char *PHcDebugEventName[];
 typedef tm_struct PHtSquare
 {
 	UUtUns8 weight;	// in units
-} PHtSquare;		
+} PHtSquare;
 
 typedef tm_struct PHtDynamicSquare
 {
 	UUtUns8 obstruction;	// index into the node's obstruction table, or 0 for none
-} PHtDynamicSquare;		
+} PHtDynamicSquare;
 
 typedef tm_struct PHtDebugInfo
 {
@@ -118,7 +118,7 @@ typedef tm_struct PHtRoomData
 	UUtUns32				compressed_grid_size;
 
 	float					squareSize;		// Size (in AutoCad units) of one grid square
-	
+
 	M3tPoint3D				origin;			// Worldspace origin of the node
 	M3tPoint3D				antiOrigin;		// Opposite corner of the worldspace origin (forms an axis bounding box)
 	UUtInt16				gox;			// Offset origin for the grid. Will always be -IMPcGridBuffer
@@ -142,25 +142,25 @@ void PHrWaypointFromGunk(AKtEnvironment *inEnv, AKtGQ_General *inQQGeneral, M3tP
 typedef void (*PHtRasterizationCallback)(UUtInt16 inX, UUtInt16 inY, UUtUns8 inWeight);
 
 void PHrBresenhamAA(
-	UUtInt16 x1, 
-	UUtInt16 y1, 
-	UUtInt16 x2, 
+	UUtInt16 x1,
+	UUtInt16 y1,
+	UUtInt16 x2,
 	UUtInt16 y2,
-	PHtSquare *grid, 
-	UUtUns32 width, 
-	UUtUns32 height, 
-	PHtSquare *fill, 
+	PHtSquare *grid,
+	UUtUns32 width,
+	UUtUns32 height,
+	PHtSquare *fill,
 	PHtSquare *blend,
 	PHtRasterizationCallback callback);
 
 void PHrDynamicBresenham2(
-	UUtInt16 x1, 
-	UUtInt16 y1, 
-	UUtInt16 x2, 
-	UUtInt16 y2, 
-	PHtDynamicSquare *grid, 
-	UUtUns32 inWidth, 
-	UUtUns32 inHeight, 
+	UUtInt16 x1,
+	UUtInt16 y1,
+	UUtInt16 x2,
+	UUtInt16 y2,
+	PHtDynamicSquare *grid,
+	UUtUns32 inWidth,
+	UUtUns32 inHeight,
 	UUtUns8 inObstruction,
 	UUtBool inOverwrite);
 

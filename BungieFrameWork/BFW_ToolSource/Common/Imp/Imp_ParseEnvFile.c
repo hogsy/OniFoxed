@@ -1,12 +1,12 @@
 /*
 	FILE:	Imp_ParseEnvFile.c
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: Nov 17, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -78,8 +78,8 @@ Imp_ParseEnvFile(
 	MXtHeader*	newHeader;
 	char*		curPtr;
 	UUtUns32	length;
-	
-	error = 
+
+	error =
 		BFrFileRef_LoadIntoMemory(
 			inFileRef,
 			&length,
@@ -90,28 +90,28 @@ Imp_ParseEnvFile(
 
 		return UUcError_Generic;
 	}
-	
+
 	#if UUmEndian == UUmEndian_Big
-		
+
 		UUmSwapLittle_4Byte(&newHeader->version);
 		UUmSwapLittle_2Byte(&newHeader->numNodes);
-	
+
 	#endif
-	
+
 	if(strncmp(newHeader->stringENVF, "ENVF", 4))
 	{
 		UUmError_ReturnOnErrorMsgP(
-			UUcError_Generic, 
-			"file %s is not a binary file", 
+			UUcError_Generic,
+			"file %s is not a binary file",
 			(UUtUns32) BFrFileRef_GetLeafName(inFileRef),
 			0,
 			0);
 	}
-	
+
 	if(newHeader->version != 0) {
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "wrong version");
 	}
-	
+
 	if (0 == newHeader->numNodes) {
 		newHeader->nodes = NULL;
 		Imp_PrintWarning("This file (%s) had 0 nodes.", BFrFileRef_GetLeafName(inFileRef));
@@ -120,9 +120,9 @@ Imp_ParseEnvFile(
 		newHeader->nodes = UUrMemory_Block_New(sizeof(MXtNode) * newHeader->numNodes);
 		UUmError_ReturnOnNull(newHeader->nodes);
 	}
-	
+
 	curPtr = (char*)newHeader + sizeof(MXtHeader);
-	
+
 	for(nodeItr = 0; nodeItr < newHeader->numNodes; nodeItr++)
 	{
 		error = iParseMXtNode(BFrFileRef_GetLeafName(inFileRef), &curPtr, newHeader->nodes + nodeItr);
@@ -130,7 +130,7 @@ Imp_ParseEnvFile(
 	}
 
 	iMXtHeader_BuildHierarchy(newHeader);
-	
+
 	*outHeader = newHeader;
 
 	if (IMPgBuildTextFiles)
@@ -138,20 +138,20 @@ Imp_ParseEnvFile(
 		BFtFileRef* newFileRef;
 		const char *leafName = BFrFileRef_GetLeafName(inFileRef);
 		char newName[256];
-		
+
 		UUrString_Copy(newName, leafName, 256);
-		
+
 		newName[strlen(leafName) - 4] = '_';
-		
-		UUrString_Cat(newName, ".txt", 256);	
+
+		UUrString_Cat(newName, ".txt", 256);
 
 		error = BFrFileRef_DuplicateAndReplaceName(
 			inFileRef,
 			newName,
 			&newFileRef);
-		
+
 		if (error != UUcError_None) {
-			AUrMessageBox(AUcMBType_OK, 
+			AUrMessageBox(AUcMBType_OK,
 				"Could not make file ref for %s\n",
 				newName);
 		}
@@ -173,7 +173,7 @@ static UUtError iParseMXtNode(const char *inFileName, char	**ioPtr, MXtNode *out
 	MXtFace*		curFace;
 	char*			curPtr;
 	MXtPoint*		curPoint;
-	
+
 	#if UUmEndian == UUmEndian_Big
 		UUtUns16		itr2;
 		float*			p;
@@ -184,61 +184,61 @@ static UUtError iParseMXtNode(const char *inFileName, char	**ioPtr, MXtNode *out
 	curFace;
 
 	UUmAssertReadPtr(outNode, sizeof(*outNode));
-	
+
 
 	curPtr = *ioPtr;
-	
+
 	*outNode = *(MXtNode*)curPtr;
-	
+
 	curPtr += sizeof(MXtNode);
 
 	#if UUmEndian == UUmEndian_Big
-		
+
 		p = (float*)&outNode->matrix;
 		for(itr = 0; itr < sizeof(M3tMatrix4x3) / sizeof(float); itr++)
 		{
 			UUmSwapLittle_4Byte(p);
 			p++;
 		}
-		
+
 		UUmSwapLittle_2Byte(&outNode->numPoints);
 		UUmSwapLittle_2Byte(&outNode->numTriangles);
 		UUmSwapLittle_2Byte(&outNode->numQuads);
 		UUmSwapLittle_2Byte(&outNode->numMarkers);
 		UUmSwapLittle_2Byte(&outNode->numMaterials);
 		UUmSwapLittle_4Byte(&outNode->userDataCount);
-		
+
 	#endif
-	
+
 	outNode->userData = curPtr;
 	curPtr += sizeof(char) * outNode->userDataCount;
 
 	outNode->points = (MXtPoint*)curPtr;
 	curPtr += sizeof(MXtPoint) * outNode->numPoints;
-	
+
 	outNode->triangles = (MXtFace*)curPtr;
 	curPtr += sizeof(MXtFace) * outNode->numTriangles;
-	
+
 	outNode->quads = (MXtFace*)curPtr;
 	curPtr += sizeof(MXtFace) * outNode->numQuads;
-	
+
 	if(outNode->numMarkers > 0)
-	{ 
+	{
 		outNode->markers = UUrMemory_Block_New(sizeof(MXtMarker) * outNode->numMarkers);
 		UUmError_ReturnOnNull(outNode->markers);
-		
+
 		for(itr = 0; itr < outNode->numMarkers; itr++)
 		{
 			error = iParseMXtMarker(&curPtr, outNode->markers + itr);
 			UUmError_ReturnOnError(error);
 		}
 	}
-	
+
 	UUmAssertReadPtr(outNode->points, sizeof(M3tPoint3D) * outNode->numPoints);
 
 	outNode->materials = (MXtMaterial*)curPtr;
 	curPtr += sizeof(MXtMaterial) * outNode->numMaterials;
-	
+
 	for(itr = 0, curPoint = outNode->points;
 		itr < outNode->numPoints;
 		itr++, curPoint++)
@@ -251,12 +251,12 @@ static UUtError iParseMXtNode(const char *inFileName, char	**ioPtr, MXtNode *out
 		UUmSwapLittle_4Byte(&curPoint->normal.z);
 		UUmSwapLittle_4Byte(&curPoint->uv.u);
 		UUmSwapLittle_4Byte(&curPoint->uv.v);
-		
+
 		curPoint->uv.v = 1.f - curPoint->uv.v;
 	}
-		
+
 	#if UUmEndian == UUmEndian_Big
-	
+
 		for(itr = 0, curFace = outNode->triangles;
 			itr < outNode->numTriangles;
 			itr++, curFace++)
@@ -265,14 +265,14 @@ static UUtError iParseMXtNode(const char *inFileName, char	**ioPtr, MXtNode *out
 			UUmSwapLittle_2Byte(&curFace->indices[1]);
 			UUmSwapLittle_2Byte(&curFace->indices[2]);
 			UUmSwapLittle_2Byte(&curFace->indices[3]);
-			
+
 			UUmSwapLittle_4Byte(&curFace->dont_use_this_normal.x);
 			UUmSwapLittle_4Byte(&curFace->dont_use_this_normal.y);
 			UUmSwapLittle_4Byte(&curFace->dont_use_this_normal.z);
-		
+
 			UUmSwapLittle_2Byte(&curFace->material);
 		}
-		
+
 		for(itr = 0, curFace = outNode->quads;
 			itr < outNode->numQuads;
 			itr++, curFace++)
@@ -281,14 +281,14 @@ static UUtError iParseMXtNode(const char *inFileName, char	**ioPtr, MXtNode *out
 			UUmSwapLittle_2Byte(&curFace->indices[1]);
 			UUmSwapLittle_2Byte(&curFace->indices[2]);
 			UUmSwapLittle_2Byte(&curFace->indices[3]);
-			
+
 			UUmSwapLittle_4Byte(&curFace->dont_use_this_normal.x);
 			UUmSwapLittle_4Byte(&curFace->dont_use_this_normal.y);
 			UUmSwapLittle_4Byte(&curFace->dont_use_this_normal.z);
-		
+
 			UUmSwapLittle_2Byte(&curFace->material);
 		}
-		
+
 		for(itr = 0, curMaterial = outNode->materials;
 			itr < outNode->numMaterials;
 			itr++, curMaterial++)
@@ -313,12 +313,12 @@ static UUtError iParseMXtNode(const char *inFileName, char	**ioPtr, MXtNode *out
 			{
 				UUmSwapLittle_4Byte(&curMap->amount);
 			}
-			
+
 			UUmSwapLittle_4Byte(&curMaterial->requirements);
 		}
-		
+
 	#endif
-	
+
 #if 0
 		for(itr = 0, curFace = outNode->quads;
 		itr < outNode->numQuads;
@@ -335,7 +335,7 @@ static UUtError iParseMXtNode(const char *inFileName, char	**ioPtr, MXtNode *out
 		if (!goodFace) {
 			AUtMB_ButtonChoice choice;
 
-			choice = AUrMessageBox(AUcMBType_OKCancel, 
+			choice = AUrMessageBox(AUcMBType_OKCancel,
 				"Bad face in file %s node %s (%d,%d,%d,%d) of %d material %d of %d.  Should I try to continue (most likely will crash later)?\n",
 				inFileName,
 				outNode->name,
@@ -361,28 +361,28 @@ static UUtError iParseMXtNode(const char *inFileName, char	**ioPtr, MXtNode *out
 #endif
 
 	*ioPtr = curPtr;
-	
+
 	iClampTextureNames(outNode);
-	
+
 	return UUcError_None;
 }
 
 static UUtError iParseMXtMarker(char **ioPtr, MXtMarker *outMarker)
 {
 	char*		curPtr;
-	
+
 	#if UUmEndian == UUmEndian_Big
 
 		UUtUns16		itr;
 		float*			p;
 
 	#endif
-	
+
 	curPtr = *ioPtr;
-	
+
 	*outMarker = *(MXtMarker*)curPtr;
 	curPtr += sizeof(MXtMarker);
-	
+
 	#if UUmEndian == UUmEndian_Big
 
 		p = (float*)&outMarker->matrix;
@@ -393,14 +393,14 @@ static UUtError iParseMXtMarker(char **ioPtr, MXtMarker *outMarker)
 		}
 
 		UUmSwapLittle_4Byte(&outMarker->userDataCount);
-	
+
 	#endif
-	
+
 	outMarker->userData = curPtr;
 	curPtr += outMarker->userDataCount * sizeof(char);
-	
+
 	*ioPtr = curPtr;
-	
+
 	return UUcError_None;
 }
 
@@ -469,7 +469,7 @@ Imp_WriteHierarchyRecursive(
 	BFrFile_Printf(inFile, "%s"UUmNL, node->name);
 
 	// draw chlidren
-	if (0 != node->child) 
+	if (0 != node->child)
 	{
 		Imp_WriteHierarchyRecursive(inFile, inHeader, numSpaces + 1, node->child);
 	}
@@ -477,7 +477,7 @@ Imp_WriteHierarchyRecursive(
 	return;
 }
 
-static void 
+static void
 DumpNodeSummery(
 	BFtFile*			inFile,
 	UUtUns16			inIndex,
@@ -490,20 +490,20 @@ DumpNodeSummery(
 	BFrFile_Printf(inFile, "child %d"UUmNL, inNode->child);
 	BFrFile_Printf(inFile, "matrix:"UUmNL);
 
-	BFrFile_Printf(inFile, "%f %f %f %f"UUmNL, 
-		inNode->matrix.m[0][0], 
-		inNode->matrix.m[1][0], 
-		inNode->matrix.m[2][0], 
+	BFrFile_Printf(inFile, "%f %f %f %f"UUmNL,
+		inNode->matrix.m[0][0],
+		inNode->matrix.m[1][0],
+		inNode->matrix.m[2][0],
 		inNode->matrix.m[3][0]);
-	BFrFile_Printf(inFile, "%f %f %f %f"UUmNL, 
-		inNode->matrix.m[0][1], 
-		inNode->matrix.m[1][1], 
-		inNode->matrix.m[2][1], 
+	BFrFile_Printf(inFile, "%f %f %f %f"UUmNL,
+		inNode->matrix.m[0][1],
+		inNode->matrix.m[1][1],
+		inNode->matrix.m[2][1],
 		inNode->matrix.m[3][1]);
-	BFrFile_Printf(inFile, "%f %f %f %f"UUmNL, 
-		inNode->matrix.m[0][2], 
-		inNode->matrix.m[1][2], 
-		inNode->matrix.m[2][2], 
+	BFrFile_Printf(inFile, "%f %f %f %f"UUmNL,
+		inNode->matrix.m[0][2],
+		inNode->matrix.m[1][2],
+		inNode->matrix.m[2][2],
 		inNode->matrix.m[3][2]);
 
 	BFrFile_Printf(inFile, "numPoints %d"UUmNL, inNode->numPoints);
@@ -516,7 +516,7 @@ DumpNodeSummery(
 	return;
 }
 
-static void 
+static void
 DumpNodeDetails(
 	BFtFile*			inFile,
 	UUtUns16			inIndex,
@@ -532,17 +532,17 @@ DumpNodeDetails(
 		MXtPoint *curPoint = inNode->points + itr;
 		BFrFile_Printf(inFile, "%d"UUmNL, itr);
 
-		BFrFile_Printf(inFile, "%f %f %f"UUmNL, 
+		BFrFile_Printf(inFile, "%f %f %f"UUmNL,
 			curPoint->point.x,
 			curPoint->point.y,
 			curPoint->point.z);
 
-		BFrFile_Printf(inFile, "%f %f %f"UUmNL, 
+		BFrFile_Printf(inFile, "%f %f %f"UUmNL,
 			curPoint->normal.x,
 			curPoint->normal.y,
 			curPoint->normal.z);
 
-		BFrFile_Printf(inFile, "%f %f"UUmNL, 
+		BFrFile_Printf(inFile, "%f %f"UUmNL,
 			curPoint->uv.u,
 			curPoint->uv.v);
 
@@ -556,17 +556,17 @@ DumpNodeDetails(
 
 		BFrFile_Printf(inFile, "%d"UUmNL, itr);
 
-		BFrFile_Printf(inFile, "%d %d %d"UUmNL, 
+		BFrFile_Printf(inFile, "%d %d %d"UUmNL,
 			curTriangle->indices[0],
 			curTriangle->indices[1],
 			curTriangle->indices[2]);
 
-//		BFrFile_Printf(inFile, "%f %f %f"UUmNL, 
+//		BFrFile_Printf(inFile, "%f %f %f"UUmNL,
 //			curTriangle->normal.x,
 //			curTriangle->normal.y,
 //			curTriangle->normal.z);
 
-		BFrFile_Printf(inFile, "%d"UUmNL, 
+		BFrFile_Printf(inFile, "%d"UUmNL,
 			curTriangle->material);
 
 		BFrFile_Printf(inFile, ""UUmNL);
@@ -579,22 +579,22 @@ DumpNodeDetails(
 
 		BFrFile_Printf(inFile, "%d"UUmNL, itr);
 
-		BFrFile_Printf(inFile, "%d %d %d %d"UUmNL, 
+		BFrFile_Printf(inFile, "%d %d %d %d"UUmNL,
 			curQuad->indices[0],
 			curQuad->indices[1],
 			curQuad->indices[2],
 			curQuad->indices[3]);
 
-//		BFrFile_Printf(inFile, "%f %f %f"UUmNL, 
+//		BFrFile_Printf(inFile, "%f %f %f"UUmNL,
 //			curQuad->normal.x,
 //			curQuad->normal.y,
 //			curQuad->normal.z);
 
-		BFrFile_Printf(inFile, "%d"UUmNL, 
+		BFrFile_Printf(inFile, "%d"UUmNL,
 			curQuad->material);
 
 		BFrFile_Printf(inFile, ""UUmNL);
-	}	
+	}
 
 	BFrFile_Printf(inFile, "materials (%d)"UUmNL, inNode->numMaterials);
 	for(itr = 0; itr < inNode->numMaterials; itr++)
@@ -609,9 +609,9 @@ DumpNodeDetails(
 		BFrFile_Printf(inFile, "selfIllumination = %f"UUmNL, curMaterial->selfIllumination);
 		BFrFile_Printf(inFile, "shininess = %f"UUmNL, curMaterial->name);
 		BFrFile_Printf(inFile, "shininessStrength = %f"UUmNL, curMaterial->name);
-		BFrFile_Printf(inFile, "ambient (%f,%f,%f)"UUmNL, curMaterial->ambient[0], curMaterial->ambient[1], curMaterial->ambient[2]); 
-		BFrFile_Printf(inFile, "diffuse (%f,%f,%f)"UUmNL, curMaterial->diffuse[0], curMaterial->diffuse[1], curMaterial->diffuse[2]); 
-		BFrFile_Printf(inFile, "specular (%f,%f,%f)"UUmNL, curMaterial->specular[0], curMaterial->specular[1], curMaterial->specular[2]); 
+		BFrFile_Printf(inFile, "ambient (%f,%f,%f)"UUmNL, curMaterial->ambient[0], curMaterial->ambient[1], curMaterial->ambient[2]);
+		BFrFile_Printf(inFile, "diffuse (%f,%f,%f)"UUmNL, curMaterial->diffuse[0], curMaterial->diffuse[1], curMaterial->diffuse[2]);
+		BFrFile_Printf(inFile, "specular (%f,%f,%f)"UUmNL, curMaterial->specular[0], curMaterial->specular[1], curMaterial->specular[2]);
 		BFrFile_Printf(inFile, "requirements %08x"UUmNL, curMaterial->requirements);
 		BFrFile_Printf(inFile, UUmNL);
 
@@ -635,7 +635,7 @@ Imp_WriteTextEnvFile(
 	UUtUns16 itr;
 	UUtError error;
 	BFtFile *file;
-	
+
 	error = BFrFile_Open(inFileRef, "w", &file);
 	UUmAssert(UUcError_None == error);
 
@@ -733,9 +733,9 @@ Imp_EnvFile_Delete(
 	MXtHeader*			inHeader)
 {
 	UUtUns16	nodeItr;
-	
+
 	MXtNode*	curNode;
-	
+
 	for(nodeItr = 0, curNode = inHeader->nodes;
 		nodeItr < inHeader->numNodes;
 		nodeItr++, curNode++)
@@ -745,9 +745,9 @@ Imp_EnvFile_Delete(
 			UUrMemory_Block_Delete(curNode->markers);
 		}
 	}
-	
+
 	UUrMemory_Block_Delete(inHeader->nodes);
-	
+
 	UUrMemory_Block_Delete(inHeader);
 }
 
@@ -842,9 +842,9 @@ Imp_ParseEvaFile(
 	UUmSwapLittle_2Byte(&header.endTime);
 	UUmSwapLittle_2Byte(&header.pad);
 
-	length = 
+	length =
 		sizeof(AXtHeader) +
-		sizeof(AXtNode) * header.numNodes + 
+		sizeof(AXtNode) * header.numNodes +
 		sizeof(M3tMatrix4x3) * header.numNodes * header.numFrames;
 
 	pDataBlock = UUrMemory_Block_New(length);
@@ -856,7 +856,7 @@ Imp_ParseEvaFile(
 
 	// attach node list to the header
 	header.nodes = pNode;
-	
+
 	for(itr = 0; itr < header.numNodes; itr++)
 	{
 		error = Imp_ParseEvaNode(file, header.numFrames, pNode, pMatrix);

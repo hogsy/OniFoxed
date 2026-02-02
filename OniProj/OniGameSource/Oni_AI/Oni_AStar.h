@@ -44,11 +44,11 @@ extern AStPath				*ASgAstar_Path;
 UUtError
 ASrInitialize(
 	void);
-	
+
 void
 ASrTerminate(
 	void);
-	
+
 // ----------------------------------------------------------------------
 // allocates a data for a new path.  You really only need one of these
 // per game.  Use ASrPath_SetParams when a room has changed
@@ -93,7 +93,7 @@ ASrPath_SetParams(
 	UUtBool					inAllowStairs,
 	UUtBool					inShowDebug,
 	UUtBool					inShowEvaluation);
-	
+
 // Misc
 
 UUtError ASrGetWorldGridValue(

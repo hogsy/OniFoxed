@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Targeting.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: April 20, 1999
-	
+
 	PURPOSE: Targeting infrastructure for Oni AI system
-	
+
 	Copyright (c) 2000
 
 */
@@ -54,7 +54,7 @@ typedef struct AI2tTargetingOwner {
 } AI2tTargetingOwner;
 
 // describes a character class's ability to shoot a particular weapon
-typedef tm_struct AI2tShootingSkill 
+typedef tm_struct AI2tShootingSkill
 {
 	float						recoil_compensation;		// 0-1, 1 is no recoil
 	float						best_aiming_angle;			// read as degrees, stored as sin(theta)
@@ -67,7 +67,7 @@ typedef tm_struct AI2tShootingSkill
 	UUtUns16					delay_max;					// timers for delay after firing
 } AI2tShootingSkill;
 
-typedef tm_struct AI2tTargetingParameters 
+typedef tm_struct AI2tTargetingParameters
 {
 	// parameters for the initial deliberately-missed shots
 //	float						startle_miss_angle_min;
@@ -229,7 +229,7 @@ void AI2rTargeting_SetupNewTarget(AI2tTargetingState *ioTargetingState, ONtChara
 									UUtBool inInitialTarget);
 
 // set up targeting for a game tick
-void AI2rTargeting_Update(AI2tTargetingState *ioTargetingState, 
+void AI2rTargeting_Update(AI2tTargetingState *ioTargetingState,
 						  UUtBool inPredict, UUtBool inPointWeapon, UUtBool inShootWeapon,
 						  float *outTooCloseWeight);
 
@@ -244,7 +244,7 @@ void AI2rTargeting_Terminate(AI2tTargetingState *ioTargetingState);
 void ONrCreateTargetingVector(
 	const M3tVector3D *current_aim_pt,						// point to aim the gun at, include prediction if required
 	const M3tVector3D *targeting_frompt,					// characters location + height this frame
-	const AI2tWeaponParameters *weapon_parameters,			// 
+	const AI2tWeaponParameters *weapon_parameters,			//
 	const M3tMatrix4x3 *weapon_matrix,						// character's weapon_matrix
 	M3tVector3D *targeting_vector);							// the final vector we should be aiming along
 

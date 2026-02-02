@@ -20,10 +20,10 @@ enum
 	WMcCheckBoxStyle_None		= (0x0000 << 16),
 	WMcCheckBoxStyle_HasTitle	= (0x0001 << 16),
 	WMcCheckBoxStyle_HasIcon	= (0x0002 << 16),	/* not supported yet */
-	
+
 	WMcCheckBoxStyle_TextCheckBox	= (WMcCheckBoxStyle_HasTitle),
 	WMcCheckBoxStyle_IconCheckBox	= (WMcCheckBoxStyle_HasIcon)
-		
+
 };
 
 // ======================================================================
@@ -38,7 +38,7 @@ UUtError
 WMrCheckBox_Initialize(
 	void);
 
-void 
+void
 WMrCheckBox_SetCheck(WMtCheckBox *inCheckBox, UUtBool inValue);
 
 UUtBool

@@ -38,7 +38,7 @@ typedef enum COtCallbackAction
 	COc_ValueChanged,
 	COc_PrintRange,
 	COc_GetValue
-	
+
 } COtCallbackAction;
 
 // ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ typedef void (*COtVarCallback)(
 	COtCallbackAction	inCallbackAction,
 	void*				inCallbackData,
 	void*				inRefcon);
-	
+
 typedef void (*COtCommandCallback)(
 	UUtUns32			inArgC,
 	char**				inArgV,
@@ -101,7 +101,7 @@ COrConsole_Activate(
 void
 COrConsole_Deactivate(
 	void);
-	
+
 void
 COrConsole_Display_Lines(
 	void);
@@ -152,8 +152,8 @@ UUtBool
 COrCommand_Execute(char	*inCommandLine);
 
 extern IMtShade COgDefaultTextShade;
-extern IMtShade COgDefaultTextShadowShade; 
-	
+extern IMtShade COgDefaultTextShadowShade;
+
 #if THE_DAY_IS_MINE
 void UUcArglist_Call COrConsole_Printf(const char *format, ...);
 #else
@@ -169,7 +169,7 @@ void UUcArglist_Call COrConsole_Printf_Color(COtPriority inPriority, IMtShade in
 #if defined(DEBUGGING) && DEBUGGING
 #define COmAssert(x) if (!(x)) do { COrConsole_Printf("%s", #x); } while(0)
 #else
-#define COmAssert(x) 
+#define COmAssert(x)
 #endif
 
 UUtError

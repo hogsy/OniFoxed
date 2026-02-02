@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Doors.c
-	
+
 	AUTHOR:	Quinn Dunki
-	
+
 	CREATED: 4/8/98
-	
+
 	PURPOSE: Door stuff
-	
+
 	Copyright 1998
 
 */
@@ -83,14 +83,14 @@ static ONtCharacter *OBiDoor_FirstCharacterProximity(
 	for(itr = 0; itr < count; itr++)
 	{
 		ONtCharacter *character;
-	
+
 		character = character_list[itr];
 
 		UUmAssert(character->flags & ONcCharacterFlag_InUse);
 		UUmAssert(!(character->flags & ONcCharacterFlag_Dead));
 
 		//if (UUrBitVector_TestBit(&inDoor->doorClass->invisibility,character->teamNumber)) continue;
-		
+
 		if (OBiDoor_CharacterProximity(inDoor,character)) {
 			return character;
 		}
@@ -131,10 +131,10 @@ static UUtBool OBiDoor_CanOpen(
 	*/
 
 	OBtDoor *link;
-	
+
 	UUmAssert(inDoor->object);
 	if (inDoor == OBgDoorChainRoot && !OBgDoorChainFirst) return UUcTrue;	// End circular recursion
-	
+
 	// Check linked doors recursively first
 	OBgDoorChainFirst = UUcFalse;
 	if (inDoor->doorClass->linkID)
@@ -177,11 +177,11 @@ static void OBiDoor_Open(
 	*/
 
 	OBtDoor *link;
-	
+
 	UUmAssert(inDoor);
 	UUmAssert(inDoor->object);
 	if (inDoor == OBgDoorChainRoot && !OBgDoorChainFirst) return;	// End circular recursion
-	
+
 	// Activate linked doors recursively first
 	OBgDoorChainFirst = UUcFalse;
 	if (inDoor->doorClass->linkID)
@@ -208,7 +208,7 @@ static void OBiDoor_Open(
 			inDoor->doorClass->openCloseAnim,
 			inDoor->object->physics->animContext.animationFrame,
 			inDoor->doorClass->openCloseAnim->doorOpenFrames);
-		inDoor->object->physics->animContext.animationFrame = 
+		inDoor->object->physics->animContext.animationFrame =
 			inDoor->doorClass->openCloseAnim->numFrames - inDoor->object->physics->animContext.animationFrame - 1;
 	}
 }
@@ -223,10 +223,10 @@ static UUtBool OBiDoor_CanClose(
 
 	OBtDoor *link;
 	ONtCharacter *character;
-	
+
 	UUmAssert(inDoor->object);
 	if (inDoor == OBgDoorChainRoot && !OBgDoorChainFirst) return UUcTrue;	// End circular recursion
-	
+
 	// Check linked doors recursively first
 	OBgDoorChainFirst = UUcFalse;
 	if (inDoor->doorClass->linkID)
@@ -280,10 +280,10 @@ static void OBiDoor_Close(
 	*/
 
 	OBtDoor *link;
-	
+
 	UUmAssert(inDoor->object);
 	if (inDoor == OBgDoorChainRoot && !OBgDoorChainFirst) return;	// End circular recursion
-	
+
 	// Activate linked doors recursively first
 	OBgDoorChainFirst = UUcFalse;
 	if (inDoor->doorClass->linkID)
@@ -309,7 +309,7 @@ static void OBiDoor_Close(
 			inDoor->doorClass->openCloseAnim,
 			inDoor->object->physics->animContext.animationFrame,
 			inDoor->doorClass->openCloseAnim->numFrames);
-		inDoor->object->physics->animContext.animationFrame = 
+		inDoor->object->physics->animContext.animationFrame =
 			inDoor->doorClass->openCloseAnim->numFrames - inDoor->object->physics->animContext.animationFrame;
 	}
 }
@@ -323,10 +323,10 @@ static void OBiDoor_Lock(
 	*/
 
 	OBtDoor *link;
-	
+
 	UUmAssert(inDoor->object);
 	if (inDoor == OBgDoorChainRoot && !OBgDoorChainFirst) return;	// End circular recursion
-	
+
 	// Activate linked doors recursively first
 	OBgDoorChainFirst = UUcFalse;
 	if (inDoor->doorClass->linkID)
@@ -353,10 +353,10 @@ static void OBiDoor_Unlock(
 	*/
 
 	OBtDoor *link;
-	
+
 	UUmAssert(inDoor->object);
 	if (inDoor == OBgDoorChainRoot && !OBgDoorChainFirst) return;	// End circular recursion
-	
+
 	// Activate linked doors recursively first
 	OBgDoorChainFirst = UUcFalse;
 	if (inDoor->doorClass->linkID)
@@ -484,7 +484,7 @@ void OBrDoor_Array_Update(
 	check_player_activate = ((player_active->inputState.buttonWentDown & LIc_BitMask_Action) > 0);
 	best_angle = +1e09;
 	best_door = NULL;
-	
+
 	// Update doors
 	for (i=0; i<inDoors->numDoors; i++)
 	{
@@ -504,7 +504,7 @@ void OBrDoor_Array_Update(
 			}
 			else
 			{
-				if (door->state == OBcDoorState_Open) 
+				if (door->state == OBcDoorState_Open)
 				{
 					OBrDoor_Close(door,character);
 				}
@@ -524,7 +524,7 @@ void OBrDoor_Array_Update(
 				MUmVector_Subtract(charToDoor,door->object->physics->position,charSource);
 				MUrNormalize(&charToDoor);
 				door_angle = MUrAngleBetweenVectors3D(&charToDoor,&player_character->facingVector);
-				
+
 				if (door_angle < best_angle) {
 					best_door = door;
 					best_angle = door_angle;
@@ -543,7 +543,7 @@ void OBrDoor_Array_Update(
 			OBrDoor_Open(best_door, player_character);
 		}
 	}
-}	
+}
 
 static UUtError OBrObjectArrayFromDoorID( UUtUns16 inID, OBtObject ***ioArray, UUtUns32 *ioCount )
 {
@@ -571,10 +571,10 @@ static UUtError OBrObjectArrayFromDoorID( UUtUns16 inID, OBtObject ***ioArray, U
 		*ioCount = 0;
 		return UUcError_None;
 	}
-	
+
 	new_array = (OBtObject**) UUrMemory_Block_New(sizeof(OBtObject*) * count );
 	count = 0;
-	
+
 	for (i=0; i<oblist->numObjects; i++)
 	{
 		object = oblist->object_list + i;
@@ -620,7 +620,7 @@ UUtError OBrDoor_Array_LevelBegin(
 
 	UUtUns16 i;
 	OBtDoor *door;
-	
+
 	if (inClasses == NULL) {
 		inDoors->numDoors = 0;
 		inDoors->doors = NULL;
@@ -664,7 +664,7 @@ void OBrDoor_Array_LevelEnd(
 	* Clean up doors from a level
 	*/
 
-	if (inDoors != NULL) 
+	if (inDoors != NULL)
 	{
 		if (inDoors->doors != NULL)
 		{

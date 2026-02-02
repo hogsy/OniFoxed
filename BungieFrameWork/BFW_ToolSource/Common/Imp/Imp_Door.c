@@ -45,7 +45,7 @@ static AUtFlagElement	IMPgDoorFlags[] =
 // ======================================================================
 static UUtError IMPiDoor_ImportFurnitureGeometryArray( BFtFileRef* inSourceFileRef, OBJtFurnGeomArray **ioGeomArray )
 {
-	UUtError				error;	
+	UUtError				error;
 	MXtHeader				*header;
 	OBJtFurnGeomArray		*geom_array;
 	char					name[BFcMaxFileNameLength];
@@ -60,13 +60,13 @@ static UUtError IMPiDoor_ImportFurnitureGeometryArray( BFtFileRef* inSourceFileR
 	// parse the .env file
 	error = Imp_ParseEnvFile(inSourceFileRef, &header);
 	IMPmError_ReturnOnError(error);
-		
+
 	// copy the file name into name
 	UUrString_Copy(name, BFrFileRef_GetLeafName(inSourceFileRef), BFcMaxFileNameLength);
 	UUrString_StripExtension(name);
-	
+
 	num_geoms = 0;
-	
+
 	// calculate the number of geometries, grab the screen node and action marker
 	for( i = 0; i < header->numNodes; i++ )
 	{
@@ -86,32 +86,32 @@ static UUtError IMPiDoor_ImportFurnitureGeometryArray( BFtFileRef* inSourceFileR
 			geom_array->furn_geom[geom_index].gq_flags = AKcGQ_Flag_None;
 			geom_array->furn_geom[geom_index].geometry = NULL;
 			geom_array->furn_geom[geom_index].ls_data = NULL;
-			
+
 			// get the GQ flags
 			geom_array->furn_geom[geom_index].gq_flags = IMPrEnv_GetNodeFlags(&header->nodes[i]);
-			
+
 			// get the light data
 			IMPrFurniture_GetLightData( &header->nodes[i], i, &geom_array->furn_geom[geom_index]);
 		}
 	}
-		
+
 	for (i = 0, geom_index = 0; i < header->numNodes; i++)
 	{
 		for (m = 0; m < header->nodes[i].numMaterials; m++, geom_index++)
 		{
 			M3tGeometry		*geometry;
-			
+
 			// build the geometry instance
 			error = TMrConstruction_Instance_NewUnique( M3cTemplate_Geometry, 0, &geometry );
 			IMPmError_ReturnOnError(error);
-			
+
 			geometry->animation = NULL;
-			
+
 			// put the tris and quads associated with material m into a geometry
 			Imp_NodeMaterial_To_Geometry(&header->nodes[i], (UUtUns16)m, geometry);
-			
+
 			textureName = header->nodes[i].materials[0].maps[MXcMapping_DI].name;
-			
+
 			geometry->baseMap = M3rTextureMap_GetPlaceholder_StripExtension_UpperCase(textureName);
 			UUmAssert(geometry->baseMap);
 
@@ -132,7 +132,7 @@ static UUtError IMPiDoor_ImportFurnitureGeometryArray( BFtFileRef* inSourceFileR
 static UUtError IMPiAddDoor( BFtFileRef* inSourceFileRef, GRtGroup* inGroup, char* inInstanceName)
 {
 	BFtFileRef				*file_ref;
-	UUtError				error;	
+	UUtError				error;
 	OBJtDoorClass			*door;
 	GRtElementType			elementType;
 	char					*model_path, *string;
@@ -306,7 +306,7 @@ UUtError Imp_AddDoor( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFileModDate,
 
 	error = IMPiAddDoor( inSourceFileRef, inGroup, inInstanceName );
 	IMPmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 

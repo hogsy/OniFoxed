@@ -48,13 +48,13 @@ Imp_AddCursor(
 	UUtUns16			i;
 	DCtCursor			*cursor;
 	UUtUns16			temp;
-		
+
 	UUtBool				bool_result;
 	UUtBool				build_instance;
-	
+
 	UUtUns32			create_date;
 	UUtUns32			compile_date;
-	
+
 	// check to see if the dialogs need to be built
 	bool_result =
 		TMrConstruction_Instance_CheckExists(
@@ -64,7 +64,7 @@ Imp_AddCursor(
 	if (bool_result)
 	{
 		compile_date = UUrConvertStrToSecsSince1900(gCursorCompileTime);
-		
+
 		build_instance = (UUtBool)(create_date < inSourceFileModDate ||
 									create_date < compile_date);
 	}
@@ -72,11 +72,11 @@ Imp_AddCursor(
 	{
 		build_instance = UUcTrue;
 	}
-	
+
 	if (!build_instance) return UUcError_None;
 
 	// get a pointer to the cursor list array
-	error = 
+	error =
 		GRrGroup_GetElement(
 			inGroup,
 			"cursor_list",
@@ -90,7 +90,7 @@ Imp_AddCursor(
 
 	// get the number of cursors in the cursor list array
 	num_cursors = (UUtUns16)GRrGroup_Array_GetLength(cursor_list_array);
-	
+
 	// create a new cursor list template
 	error =
 		TMrConstruction_Instance_Renew(
@@ -99,7 +99,7 @@ Imp_AddCursor(
 			num_cursors,
 			&cursor);
 	IMPmError_ReturnOnError(error);
-	
+
 	// get the animation rate
 	error =
 		GRrGroup_GetUns16(
@@ -110,7 +110,7 @@ Imp_AddCursor(
 		cursor->animation_rate = DCcCursor_DefaultAnimationRate;
 	else
 		cursor->animation_rate = temp;
-	
+
 	// process the cursors
 	for (i = 0; i < num_cursors; i++)
 	{
@@ -118,7 +118,7 @@ Imp_AddCursor(
 		BFtFileRef		*cursor_file_ref;
 		const char		*cursor_name;
 		TMtPlaceHolder	cursor_ref;
-		
+
 		// get the cursor filename of cursor_list_array[i]
 		error =
 			GRrGroup_Array_GetElement(
@@ -131,7 +131,7 @@ Imp_AddCursor(
 			Imp_PrintWarning("Could not get the cursor file name");
 			return UUcError_Generic;
 		}
-		
+
 		// create a new file ref using the file name
 		error =
 			BFrFileRef_DuplicateAndReplaceName(
@@ -139,24 +139,24 @@ Imp_AddCursor(
 				cursor_file_name,
 				&cursor_file_ref);
 		IMPmError_ReturnOnErrorMsg(error, "cursor file was not found");
-		
+
 		// set the cursors name
 		cursor_name = BFrFileRef_GetLeafName(cursor_file_ref);
-		
+
 		// process the texture map file
 		error =
 			Imp_ProcessTexture_File(
 				cursor_file_ref,
 				cursor_name,
 				&cursor_ref);
-		
+
 		// save the cursor ref
 		cursor->cursors[i].texture_ref = (void*)cursor_ref;
-		
+
 		// dispose of the file ref
 		BFrFileRef_Dispose(cursor_file_ref);
 	}
-			
+
 	return UUcError_None;
 }
 
@@ -172,7 +172,7 @@ Imp_AddCursorTypeList(
 
 	UUtBool				bool_result;
 	UUtBool				build_instance;
-	
+
 	UUtUns32			create_date;
 	UUtUns32			compile_date;
 
@@ -185,7 +185,7 @@ Imp_AddCursorTypeList(
 	if (bool_result)
 	{
 		compile_date = UUrConvertStrToSecsSince1900(gCursorCompileTime);
-		
+
 		build_instance = (UUtBool)(create_date < inSourceFileModDate ||
 									create_date < compile_date);
 	}
@@ -193,7 +193,7 @@ Imp_AddCursorTypeList(
 	{
 		build_instance = UUcTrue;
 	}
-	
+
 	// build the cursor type list if necessary
 	if (build_instance)
 	{
@@ -205,7 +205,7 @@ Imp_AddCursorTypeList(
 		DCtCursorType			cursor_type;
 		char					*cursor_name;
 		GRtGroup				*pair;
-		
+
 		// get a pointer to the cursor_type_array
 		error =
 			GRrGroup_GetElement(
@@ -218,7 +218,7 @@ Imp_AddCursorTypeList(
 			Imp_PrintWarning("Could not get the cursor type array");
 			return UUcError_Generic;
 		}
-		
+
 		// get the number of pairs in the cursor_type_array
 		num_pairs = (UUtUns16)GRrGroup_Array_GetLength(cursor_type_array);
 
@@ -230,7 +230,7 @@ Imp_AddCursorTypeList(
 				num_pairs,
 				&cursor_type_list);
 		IMPmError_ReturnOnError(error);
-		
+
 		// process the pairs
 		for (i = 0; i < num_pairs; i++)
 		{
@@ -246,24 +246,24 @@ Imp_AddCursorTypeList(
 				Imp_PrintWarning("Could not get the cursor pair");
 				return UUcError_Generic;
 			}
-			
+
 			// get the type of the pair
 			error = GRrGroup_GetUns16(pair, "cursor_type", &cursor_type);
 			IMPmError_ReturnOnError(error);
-			
+
 			cursor_type_list->cursor_type_pair[i].cursor_type = cursor_type;
-			
+
 			// get the name of the pair
 			error = GRrGroup_GetString(pair, "cursor_name", &cursor_name);
 			IMPmError_ReturnOnError(error);
-			
+
 			UUrString_Copy(
 				cursor_type_list->cursor_type_pair[i].cursor_name,
 				cursor_name,
 				DCcMaxCursorNameLength);
 		}
 	}
-	
+
 	return UUcError_None;
 }*/
 
@@ -277,9 +277,9 @@ Imp_AddCursorList(
 {
 	UUtError			error;
 	UUtBool				build_instance;
-	
+
 	build_instance = !TMrConstruction_Instance_CheckExists(WMcTemplate_CursorList,inInstanceName);
-	
+
 	// build the cursor list if necessary
 	if (build_instance)
 	{
@@ -288,7 +288,7 @@ Imp_AddCursorList(
 		UUtUns32				num_elements;
 		UUtUns32				i;
 		WMtCursorList			*cursor_list;
-		
+
 		// get the cursor list array
 		error =
 			GRrGroup_GetElement(
@@ -301,15 +301,15 @@ Imp_AddCursorList(
 			Imp_PrintWarning("Could not get the cursor list array");
 			return UUcError_Generic;
 		}
-		
+
 		// get the number of elements in the cursor list array
 		num_elements = GRrGroup_Array_GetLength(cursor_list_array);
-		
+
 		if (num_elements == 0)
 		{
 			return UUcError_None;
 		}
-		
+
 		// create a new cursor type list template
 		error =
 			TMrConstruction_Instance_Renew(
@@ -318,14 +318,14 @@ Imp_AddCursorList(
 				num_elements,
 				&cursor_list);
 		IMPmError_ReturnOnError(error);
-		
+
 		for (i = 0; i < num_elements; i++)
 		{
 			GRtGroup				*cursor_desc_group;
 			char					*cursor_type;
 			char					*cursor_partspec_name;
 			TMtPlaceHolder			cursor_partspec;
-			
+
 			// get a group from the array
 			error =
 				GRrGroup_Array_GetElement(
@@ -338,7 +338,7 @@ Imp_AddCursorList(
 				Imp_PrintWarning("Could not get the cursor desc group");
 				return UUcError_Generic;
 			}
-			
+
 			// get the cursor type string
 			error =
 				GRrGroup_GetString(
@@ -346,7 +346,7 @@ Imp_AddCursorList(
 					"type",
 					&cursor_type);
 			IMPmError_ReturnOnError(error);
-			
+
 			// interpret the cursor type string
 			error =
 				AUrFlags_ParseFromGroupArray(
@@ -363,18 +363,18 @@ Imp_AddCursorList(
 					"partspec",
 					&cursor_partspec_name);
 			IMPmError_ReturnOnError(error);
-			
-			error = 
+
+			error =
 				TMrConstruction_Instance_GetPlaceHolder(
 					PScTemplate_PartSpecification,
 					cursor_partspec_name,
 					&cursor_partspec);
 			IMPmError_ReturnOnErrorMsg(error, "Could not get partspec placeholder");
-			
+
 			// save the partspec
 			cursor_list->cursors[i].cursor_partspec = (void*)cursor_partspec;
 		}
 	}
-	
+
 	return UUcError_None;
 }

@@ -45,19 +45,19 @@ pascal	OSErr	FSMakeFSSpecCompat(short vRefNum,
 	entry on the disk volume. That is because fileName is parsed to get the
 	name instead of getting the name back from the file system. This works
 	fine with System 6 where FSMakeSpec isn't available.
-	
+
 	vRefNum		input:	Volume specification.
 	dirID		input:	Directory ID.
 	fileName	input:	Pointer to object name, or nil when dirID specifies
 						a directory that's the object.
 	spec		output:	A file system specification to be filled in by
 						FSMakeFSSpecCompat.
-	
+
 	Result Codes
-		noErr				0		No error	
-		nsvErr				-35		Volume doesn’t exist	
+		noErr				0		No error
+		nsvErr				-35		Volume doesn’t exist
 		fnfErr				-43		File or directory does not exist
-									(FSSpec is still valid)	
+									(FSSpec is still valid)
 */
 
 /*****************************************************************************/
@@ -72,29 +72,29 @@ pascal	OSErr	FSpOpenDFCompat(const FSSpec *spec,
 	FSpOpenDFCompat uses PHBOpen because System 6 doesn't support PBHOpenDF.
 	This means FSpOpenDFCompat could accidentally open a driver if the
 	spec->name begins with a period.
-	
+
 	spec		input:	An FSSpec record specifying the file whose data
 						fork is to be opened.
 	permission	input:	A constant indicating the desired file access
 						permissions.
 	refNum		output:	A reference number of an access path to the file's
 						data fork.
-	
+
 	Result Codes
-		noErr				0		No error	
-		nsvErr				-35		No such volume	
-		ioErr				-36		I/O error	
-		bdNamErr			-37		Bad filename	
-		tmfoErr				-42		Too many files open	
-		fnfErr				-43		File not found	
-		opWrErr				-49		File already open for writing	
-		permErr				-54		Attempt to open locked file for writing	
+		noErr				0		No error
+		nsvErr				-35		No such volume
+		ioErr				-36		I/O error
+		bdNamErr			-37		Bad filename
+		tmfoErr				-42		Too many files open
+		fnfErr				-43		File not found
+		opWrErr				-49		File already open for writing
+		permErr				-54		Attempt to open locked file for writing
 		dirNFErr			-120	Directory not found or incomplete pathname
 		afpAccessDenied		-5000	User does not have the correct access to
 									the file
-	
+
 	__________
-	
+
 	See also:	FSpOpenAware
 */
 
@@ -106,29 +106,29 @@ pascal	OSErr	FSpOpenRFCompat(const FSSpec *spec,
 /*	¶ Open a file's resource fork.
 	The FSpOpenRFCompat function opens the resource fork of the file
 	specified by spec.
-	
+
 	spec		input:	An FSSpec record specifying the file whose resource
 						fork is to be opened.
 	permission	input:	A constant indicating the desired file access
 						permissions.
 	refNum		output:	A reference number of an access path to the file's
 						resource fork.
-	
+
 	Result Codes
-		noErr				0		No error	
-		nsvErr				-35		No such volume	
-		ioErr				-36		I/O error	
-		bdNamErr			-37		Bad filename	
-		tmfoErr				-42		Too many files open	
-		fnfErr				-43		File not found	
-		opWrErr				-49		File already open for writing	
-		permErr				-54		Attempt to open locked file for writing	
+		noErr				0		No error
+		nsvErr				-35		No such volume
+		ioErr				-36		I/O error
+		bdNamErr			-37		Bad filename
+		tmfoErr				-42		Too many files open
+		fnfErr				-43		File not found
+		opWrErr				-49		File already open for writing
+		permErr				-54		Attempt to open locked file for writing
 		dirNFErr			-120	Directory not found or incomplete pathname
 		afpAccessDenied		-5000	User does not have the correct access to
 									the file
-	
+
 	__________
-	
+
 	See also:	FSpOpenRFAware
 */
 
@@ -145,27 +145,27 @@ pascal	OSErr	FSpCreateCompat(const FSSpec *spec,
 	Differences from FSpCreate: FSpCreateCompat correctly sets the
 	fdScript in the file's FXInfo record to scriptTag if the problem
 	isn't fixed in the File Manager code.
-	
+
 	spec		input:	An FSSpec record specifying the file to create.
 	creator		input:	The creator of the new file.
 	fileType	input	The file type of the new file.
 	scriptCode	input:	The code of the script system in which the file
 						name is to be displayed.
-	
+
 	Result Codes
-		noErr				0		No error	
-		dirFulErr			-33		File directory full	
-		dskFulErr			-34		Disk is full	
-		nsvErr				-35		No such volume	
-		ioErr				-36		I/O error	
-		bdNamErr			-37		Bad filename	
-		fnfErr				-43		Directory not found or incomplete pathname	
-		wPrErr				-44		Hardware volume lock	
-		vLckdErr			-46		Software volume lock	
-		dupFNErr			-48		Duplicate filename and version	
-		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname	
-		afpAccessDenied		-5000	User does not have the correct access	
-		afpObjectTypeErr	-5025	A directory exists with that name	
+		noErr				0		No error
+		dirFulErr			-33		File directory full
+		dskFulErr			-34		Disk is full
+		nsvErr				-35		No such volume
+		ioErr				-36		I/O error
+		bdNamErr			-37		Bad filename
+		fnfErr				-43		Directory not found or incomplete pathname
+		wPrErr				-44		Hardware volume lock
+		vLckdErr			-46		Software volume lock
+		dupFNErr			-48		Duplicate filename and version
+		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname
+		afpAccessDenied		-5000	User does not have the correct access
+		afpObjectTypeErr	-5025	A directory exists with that name
 */
 
 /*****************************************************************************/
@@ -176,28 +176,28 @@ pascal	OSErr	FSpDirCreateCompat(const FSSpec *spec,
 /*	¶ Create a new directory.
 	The FSpDirCreateCompat function creates a new directory and returns the
 	directory ID of the newDirectory.
-	
+
 	spec			input:	An FSSpec record specifying the directory to
 							create.
 	scriptCode		input:	The code of the script system in which the
 							directory name is to be displayed.
 	createdDirID	output:	The directory ID of the directory that was
 							created.
-	
+
 	Result Codes
-		noErr				0		No error	
-		dirFulErr			-33		File directory full	
-		dskFulErr			-34		Disk is full	
-		nsvErr				-35		No such volume	
-		ioErr				-36		I/O error	
-		bdNamErr			-37		Bad filename	
-		fnfErr				-43		Directory not found or incomplete pathname	
-		wPrErr				-44		Hardware volume lock	
-		vLckdErr			-46		Software volume lock	
-		dupFNErr			-48		Duplicate filename and version	
-		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname	
-		wrgVolTypErr		-123	Not an HFS volume	
-		afpAccessDenied		-5000	User does not have the correct access	
+		noErr				0		No error
+		dirFulErr			-33		File directory full
+		dskFulErr			-34		Disk is full
+		nsvErr				-35		No such volume
+		ioErr				-36		I/O error
+		bdNamErr			-37		Bad filename
+		fnfErr				-43		Directory not found or incomplete pathname
+		wPrErr				-44		Hardware volume lock
+		vLckdErr			-46		Software volume lock
+		dupFNErr			-48		Duplicate filename and version
+		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname
+		wrgVolTypErr		-123	Not an HFS volume
+		afpAccessDenied		-5000	User does not have the correct access
 */
 
 /*****************************************************************************/
@@ -205,23 +205,23 @@ pascal	OSErr	FSpDirCreateCompat(const FSSpec *spec,
 pascal	OSErr	FSpDeleteCompat(const FSSpec *spec);
 /*	¶ Delete a file or directory.
 	The FSpDeleteCompat function deletes a file or directory.
-	
-	spec			input:	An FSSpec record specifying the file or 
+
+	spec			input:	An FSSpec record specifying the file or
 							directory to delete.
-	
+
 	Result Codes
-		noErr				0		No error	
-		nsvErr				-35		No such volume	
-		ioErr				-36		I/O error	
-		bdNamErr			-37		Bad filename	
-		fnfErr				-43		File not found	
-		wPrErr				-44		Hardware volume lock	
-		fLckdErr			-45		File is locked	
-		vLckdErr			-46		Software volume lock	
+		noErr				0		No error
+		nsvErr				-35		No such volume
+		ioErr				-36		I/O error
+		bdNamErr			-37		Bad filename
+		fnfErr				-43		File not found
+		wPrErr				-44		Hardware volume lock
+		fLckdErr			-45		File is locked
+		vLckdErr			-46		Software volume lock
 		fBsyErr				-47		File busy, directory not empty, or
-									working directory control block open	
-		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname	
-		afpAccessDenied		-5000	User does not have the correct access	
+									working directory control block open
+		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname
+		afpAccessDenied		-5000	User does not have the correct access
 */
 
 /*****************************************************************************/
@@ -233,20 +233,20 @@ pascal	OSErr	FSpGetFInfoCompat(const FSSpec *spec,
 
 	spec		input:	An FSSpec record specifying the file.
 	fndrInfo	output:	If the object is a file, then its FInfo.
-	
+
 	Result Codes
-		noErr				0		No error	
-		nsvErr				-35		No such volume	
-		ioErr				-36		I/O error	
-		bdNamErr			-37		Bad filename	
-		fnfErr				-43		File not found	
-		paramErr			-50		No default volume	
-		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname	
-		afpAccessDenied		-5000	User does not have the correct access	
-		afpObjectTypeErr	-5025	Directory not found or incomplete pathname	
-	
+		noErr				0		No error
+		nsvErr				-35		No such volume
+		ioErr				-36		I/O error
+		bdNamErr			-37		Bad filename
+		fnfErr				-43		File not found
+		paramErr			-50		No default volume
+		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname
+		afpAccessDenied		-5000	User does not have the correct access
+		afpObjectTypeErr	-5025	Directory not found or incomplete pathname
+
 	__________
-	
+
 	Also see:	FSpGetDInfo
 */
 
@@ -259,22 +259,22 @@ pascal	OSErr	FSpSetFInfoCompat(const FSSpec *spec,
 
 	spec		input:	An FSSpec record specifying the file.
 	fndrInfo	input:	The FInfo.
-	
+
 	Result Codes
-		noErr				0		No error	
-		nsvErr				-35		No such volume	
-		ioErr				-36		I/O error	
-		bdNamErr			-37		Bad filename	
-		fnfErr				-43		File not found	
-		wPrErr				-44		Hardware volume lock	
-		fLckdErr			-45		File is locked	
-		vLckdErr			-46		Software volume lock	
-		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname	
-		afpAccessDenied		-5000	User does not have the correct access	
-		afpObjectTypeErr	-5025	Object was a directory	
-	
+		noErr				0		No error
+		nsvErr				-35		No such volume
+		ioErr				-36		I/O error
+		bdNamErr			-37		Bad filename
+		fnfErr				-43		File not found
+		wPrErr				-44		Hardware volume lock
+		fLckdErr			-45		File is locked
+		vLckdErr			-46		Software volume lock
+		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname
+		afpAccessDenied		-5000	User does not have the correct access
+		afpObjectTypeErr	-5025	Object was a directory
+
 	__________
-	
+
 	Also see:	FSpSetDInfo
 */
 
@@ -285,18 +285,18 @@ pascal	OSErr	FSpSetFLockCompat(const FSSpec *spec);
 	The FSpSetFLockCompat function locks a file.
 
 	spec		input:	An FSSpec record specifying the file.
-	
+
 	Result Codes
-		noErr				0		No error	
-		nsvErr				-35		No such volume	
-		ioErr				-36		I/O error	
-		fnfErr				-43		File not found	
-		wPrErr				-44		Hardware volume lock	
-		vLckdErr			-46		Software volume lock	
-		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname	
+		noErr				0		No error
+		nsvErr				-35		No such volume
+		ioErr				-36		I/O error
+		fnfErr				-43		File not found
+		wPrErr				-44		Hardware volume lock
+		vLckdErr			-46		Software volume lock
+		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname
 		afpAccessDenied		-5000	User does not have the correct access to
-									the file	
-		afpObjectTypeErr	-5025	Folder locking not supported by volume	
+									the file
+		afpObjectTypeErr	-5025	Folder locking not supported by volume
 */
 
 /*****************************************************************************/
@@ -306,18 +306,18 @@ pascal	OSErr	FSpRstFLockCompat(const FSSpec *spec);
 	The FSpRstFLockCompat function unlocks a file.
 
 	spec		input:	An FSSpec record specifying the file.
-	
+
 	Result Codes
-		noErr				0		No error	
-		nsvErr				-35		No such volume	
-		ioErr				-36		I/O error	
-		fnfErr				-43		File not found	
-		wPrErr				-44		Hardware volume lock	
-		vLckdErr			-46		Software volume lock	
-		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname	
+		noErr				0		No error
+		nsvErr				-35		No such volume
+		ioErr				-36		I/O error
+		fnfErr				-43		File not found
+		wPrErr				-44		Hardware volume lock
+		vLckdErr			-46		Software volume lock
+		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname
 		afpAccessDenied		-5000	User does not have the correct access to
-									the file	
-		afpObjectTypeErr	-5025	Folder locking not supported by volume	
+									the file
+		afpObjectTypeErr	-5025	Folder locking not supported by volume
 */
 
 /*****************************************************************************/
@@ -329,24 +329,24 @@ pascal	OSErr	FSpRenameCompat(const FSSpec *spec,
 
 	spec		input:	An FSSpec record specifying the file.
 	newName		input:	The new name of the file or directory.
-	
+
 	Result Codes
-		noErr				0		No error	
-		dirFulErr			-33		File directory full	
-		dskFulErr			-34		Volume is full	
-		nsvErr				-35		No such volume	
-		ioErr				-36		I/O error	
-		bdNamErr			-37		Bad filename	
-		fnfErr				-43		File not found	
-		wPrErr				-44		Hardware volume lock	
-		fLckdErr			-45		File is locked	
-		vLckdErr			-46		Software volume lock	
-		dupFNErr			-48		Duplicate filename and version	
-		paramErr			-50		No default volume	
-		fsRnErr				-59		Problem during rename	
-		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname	
+		noErr				0		No error
+		dirFulErr			-33		File directory full
+		dskFulErr			-34		Volume is full
+		nsvErr				-35		No such volume
+		ioErr				-36		I/O error
+		bdNamErr			-37		Bad filename
+		fnfErr				-43		File not found
+		wPrErr				-44		Hardware volume lock
+		fLckdErr			-45		File is locked
+		vLckdErr			-46		Software volume lock
+		dupFNErr			-48		Duplicate filename and version
+		paramErr			-50		No default volume
+		fsRnErr				-59		Problem during rename
+		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname
 		afpAccessDenied		-5000	User does not have the correct access to
-									the file	
+									the file
 */
 
 /*****************************************************************************/
@@ -361,23 +361,23 @@ pascal	OSErr	FSpCatMoveCompat(const FSSpec *source,
 	dest		input:	An FSSpec record specifying the name and location
 						of the directory into which the source file or
 						directory is to be moved.
-	
+
 	Result Codes
-		noErr				0		No error	
-		nsvErr				-35		No such volume	
-		ioErr				-36		I/O error	
+		noErr				0		No error
+		nsvErr				-35		No such volume
+		ioErr				-36		I/O error
 		bdNamErr			-37		Bad filename or attempt to move into
-									a file	
-		fnfErr				-43		File not found	
-		wPrErr				-44		Hardware volume lock	
-		fLckdErr			-45		Target directory is locked	
-		vLckdErr			-46		Software volume lock	
-		dupFNErr			-48		Duplicate filename and version	
-		paramErr			-50		No default volume	
-		badMovErr			-122	Attempt to move into offspring	
-		wrgVolTypErr		-123	Not an HFS volume	
+									a file
+		fnfErr				-43		File not found
+		wPrErr				-44		Hardware volume lock
+		fLckdErr			-45		Target directory is locked
+		vLckdErr			-46		Software volume lock
+		dupFNErr			-48		Duplicate filename and version
+		paramErr			-50		No default volume
+		badMovErr			-122	Attempt to move into offspring
+		wrgVolTypErr		-123	Not an HFS volume
 		afpAccessDenied		-5000	User does not have the correct access to
-									the file	
+									the file
 */
 
 /*****************************************************************************/
@@ -395,21 +395,21 @@ pascal	OSErr	FSpExchangeFilesCompat(const FSSpec *source,
 	don't support PBExchangeFiles (even though you may get a noErr result).
 	System Update 3.0 and System 7.5 and later have the problems in
 	FSpExchangeFiles corrected.
-	
+
 	Result Codes
-		noErr				0		No error	
-		nsvErr				-35		Volume not found	
-		ioErr				-36		I/O error	
-		fnfErr				-43		File not found	
-		fLckdErr			-45		File is locked	
-		vLckdErr			-46		Volume is locked or read-only	
-		paramErr			-50		Function not supported by volume	
-		volOfflinErr		-53		Volume is offline	
-		wrgVolTypErr		-123	Not an HFS volume	
-		diffVolErr			-1303	Files on different volumes	
-		afpAccessDenied		-5000	User does not have the correct access	
-		afpObjectTypeErr	-5025	Object is a directory, not a file	
-		afpSameObjectErr	-5038	Source and destination files are the same	
+		noErr				0		No error
+		nsvErr				-35		Volume not found
+		ioErr				-36		I/O error
+		fnfErr				-43		File not found
+		fLckdErr			-45		File is locked
+		vLckdErr			-46		Volume is locked or read-only
+		paramErr			-50		Function not supported by volume
+		volOfflinErr		-53		Volume is offline
+		wrgVolTypErr		-123	Not an HFS volume
+		diffVolErr			-1303	Files on different volumes
+		afpAccessDenied		-5000	User does not have the correct access
+		afpObjectTypeErr	-5025	Object is a directory, not a file
+		afpSameObjectErr	-5038	Source and destination files are the same
 */
 
 /*****************************************************************************/
@@ -419,14 +419,14 @@ pascal	short	FSpOpenResFileCompat(const FSSpec *spec,
 /*	¶ Open a file's resource file.
 	The FSpOpenResFileCompat function opens the resource file specified
 	by spec.
-	
+
 	spec			input:	An FSSpec record specifying the file whose
 							resource file is to be opened.
 	permission		input:	A constant indicating the desired file access
 							permissions.
 	function result	output:	A resource file reference number, or if there's
 							an error -1.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				–35		No such volume
@@ -456,13 +456,13 @@ pascal	void	FSpCreateResFileCompat(const FSSpec *spec,
 	Differences from FSpCreateResFile: FSpCreateResFileCompat correctly
 	sets the fdScript in the file's FXInfo record to scriptTag if the
 	problem isn't fixed in the File Manager code.
-	
+
 	spec		input:	An FSSpec record specifying the resource file to create.
 	creator		input:	The creator of the new file.
 	fileType	input	The file type of the new file.
 	scriptCode	input:	The code of the script system in which the file
 						name is to be displayed.
-	
+
 	Result Codes
 		noErr				0		No error
 		dirFulErr			–33		Directory full

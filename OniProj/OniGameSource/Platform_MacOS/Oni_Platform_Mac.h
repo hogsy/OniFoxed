@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_Platform_Mac.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 26, 1997
-	
+
 	PURPOSE: MacOS specific code
-	
+
 	Copyright 1997
 
 */
@@ -28,16 +28,16 @@ enum {
 	_mac_always_search_any_opengl_pref_flag= 0x01,
 	_mac_saved_display_index_pref_mask= 0xF0000000,
 	_mac_saved_display_index_pref_shift= 28,
-	
+
 	CURS_RES_ID= 128,
 	MAC_PREF_RSRC_ID= 128,
-	
+
 	KEY_CONFIG_FILENAME_STR_RSRC= 1000,
 	COMMAND_LINE_ARGS_STR_RSRC= 1002,
 	OPTIONS_DLOG_RSRC= 135,
 	OPTIONS_DLOG_RSRC_OSX= 136,
 	NUMBER_OF_CUSTOMIZE_KEYS= 14,
-	
+
 	_save_button= 1,
 	_cancel_button,
 	_rh_defaults_button,
@@ -72,15 +72,15 @@ enum {
 	_hypo_label,
 	_reload_label,
 	_quit_button= 35,
-	
+
 	_ok_button_osx= 1,
 	_quit_button_osx,
 	_args_edit_text_osx,
-	
+
 	MAC_MBAR_RSRC_ID= 128,
-	
+
 	MAC_DISPLAY_SELECT_RSRC_ID= 137,
-	
+
 	_button_ok= 1,
 	_button_cancel= 2,
 	_list_item= 3,

@@ -23,35 +23,35 @@
 typedef tm_template('V', 'M', '_', 'B', "VM View Button")
 VMtView_Button
 {
-	
+
 	// button part specifications
 	VMtPartSpec			*idle;
 	VMtPartSpec			*mouse_over;
 	VMtPartSpec			*pressed;
-	
-	IMtPoint2D			text_location_offset;	// offset from top left corner of button 
+
+	IMtPoint2D			text_location_offset;	// offset from top left corner of button
 												// for the text to be drawn at
 
 	UUtUns16			flags;
 	UUtUns16			animation_rate;			// number of ticks between texture changes
 
 	char				title[32];
-	
+
 } VMtView_Button;
 
 typedef struct VMtView_Button_PrivateData
 {
 	UUtUns8				mouse_state;
-	
+
 	// vars for title text
 	tm_templateref		texture_ref;
 	UUtInt16			string_texture_width;
 	UUtInt16			string_texture_height;
 	IMtPoint2D			text_location;
-	
+
 	// time in ticks of next animation
 	UUtUns32			next_animation;
-	
+
 } VMtView_Button_PrivateData;
 
 extern TMtPrivateData*	DMgTemplate_Button_PrivateData;

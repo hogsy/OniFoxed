@@ -18,7 +18,7 @@ enum
 	EOcEF_AbsLocX				= 100,
 	EOcEF_AbsLocY				= 101,
 	EOcEF_AbsLocZ				= 102,
-	
+
 	EOcEF_OffLocX				= 103,
 	EOcEF_OffLocY				= 104,
 	EOcEF_OffLocZ				= 105,
@@ -29,7 +29,7 @@ enum
 	EOcBtn_LocY_Dec_0_1			= 109,
 	EOcBtn_LocZ_Inc_0_1			= 110,
 	EOcBtn_LocZ_Dec_0_1			= 111,
-	
+
 	EOcBtn_LocX_Inc_1_0			= 112,
 	EOcBtn_LocX_Dec_1_0			= 113,
 	EOcBtn_LocY_Inc_1_0			= 114,
@@ -43,19 +43,19 @@ enum
 	EOcBtn_LocY_Dec_10_0		= 121,
 	EOcBtn_LocZ_Inc_10_0		= 122,
 	EOcBtn_LocZ_Dec_10_0		= 123,
-	
+
 	EOcTxt_RotType				= 148,
 	EOcEF_RotX					= 124,
 	EOcEF_RotY					= 125,
 	EOcEF_RotZ					= 126,
-	
+
 	EOcBtn_RotX_Inc_1			= 127,
 	EOcBtn_RotX_Dec_1			= 128,
 	EOcBtn_RotY_Inc_1			= 129,
 	EOcBtn_RotY_Dec_1			= 130,
 	EOcBtn_RotZ_Inc_1			= 131,
 	EOcBtn_RotZ_Dec_1			= 132,
-	
+
 	EOcBtn_RotX_Inc_15			= 133,
 	EOcBtn_RotX_Dec_15			= 134,
 	EOcBtn_RotY_Inc_15			= 135,
@@ -69,7 +69,7 @@ enum
 	EOcBtn_RotY_Dec_90			= 142,
 	EOcBtn_RotZ_Inc_90			= 143,
 	EOcBtn_RotZ_Dec_90			= 144,
-	
+
 	EOcBtn_Revert				= 145,
 	EOcBtn_Gravity				= 147,
 	EOcBtn_Apply				= 146
@@ -93,7 +93,7 @@ enum
 {
 	PDcLB_DoorTypes				= 100,
 	PDcEF_ID					= 102,
-	
+
 	PDcCB_InitialLocked			= 103,
 	PDcCB_Locked				= 104,
 	PDcCB_Test					= 105,
@@ -101,7 +101,7 @@ enum
 	PDcEF_ActivationRadius		= 107,
 	PDcCB_DoubleDoors			= 108,
 	PDcCB_ManualDoor			= 109,
-	
+
 	PDcPM_Texture0				= 110,
 	PDcPM_Texture1				= 111,
 
@@ -270,13 +270,13 @@ enum
 	PCcPM_GunshotHeard			= 121,
 	PCcPM_VisualContact			= 122,
 	PCcPM_Attacked				= 123,
-	
+
 	PCcPM_LongRange				= 124,
 	PCcPM_MediumRange			= 125,
 	PCcPM_HandToHand			= 126,
 	PCcPM_MediumRetreat			= 127,
 	PCcPM_LongRetreat			= 128,
-	
+
 	PCcBtn_Revert				= 129,
 	PCcBtn_Cancel				= WMcDialogItem_Cancel,
 	PCcBtn_Save					= WMcDialogItem_OK
@@ -305,7 +305,7 @@ enum
 	PLcEF_Intensity				= 109,
 	PLcEF_BeamAngle				= 110,
 	PLcEF_FieldAngle			= 111
-	
+
 };
 
 enum
@@ -386,7 +386,7 @@ UUtError
 OWrTools_CreateObject(
 	OBJtObjectType			inObjectType,
 	const OBJtOSD_All		*inObjectSpecificData);
-	
+
 UUtError
 OWrTools_Initialize(
 	void);
@@ -396,29 +396,29 @@ OWrTools_Terminate(
 	void);
 
 UUtBool OWrObjectProperties_SetOSD(WMtDialog *inDialog, OBJtObject *inObject, OBJtOSD_All *inOSD);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OWrEOPos_Display(
 	void);
-	
+
 UUtBool
 OWrEOPos_IsVisible(
 	void);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OWrObjNew_Display(
 	void);
-	
+
 UUtBool
 OWrObjNew_IsVisible(
 	void);
-	
+
 // ----------------------------------------------------------------------
 UUtBool
 OWrProp_Display(OBJtObject *inObject);
-	
+
 UUtBool
 OWrProp_IsVisible(
 	void);
@@ -431,7 +431,7 @@ OWrLightProp_Display(
 UUtBool
 OWrLightProp_HasLight(
 	void);
-	
+
 UUtBool
 OWrLightProp_IsVisible(
 	void);

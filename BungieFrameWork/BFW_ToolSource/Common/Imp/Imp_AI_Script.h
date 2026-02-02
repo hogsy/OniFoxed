@@ -1,8 +1,8 @@
 /*
 	Imp_AI_Script.h
-	
+
 	Script level AI stuff
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -27,12 +27,12 @@ UUtError Imp_AddAIScriptTable(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 void IMPrScript_AddQuadRemap(
 	UUtUns32 inQuadIndex,
 	UUtUns32 inRefNumber,
 	GRtGroup *inEnvGroup);
-	
+
 UUtError IMPrScript_GetRemapData(
 	UUtUns16 *outCount);
 

@@ -21,7 +21,7 @@ UUtUns16 ONrMechanics_GetNextID( OBJtObjectType inObjectType )
 	UUtUns32				object_count;
 	OBJtObject				**object_list;
 	UUtError				error;
-	
+
 	mechanics_class = OBJrObjectType_GetMechanicsByType( inObjectType );		UUmAssert( mechanics_class );
 	if( !mechanics_class )
 		return 0xFFFF;
@@ -58,7 +58,7 @@ UUtError ONrMechanics_Default_ClassMethod_LevelBegin( struct ONtMechanicsClass *
 	OBJtObject					**object_list;
 	OBJtObject					*object;
 	UUtError					error;
-	
+
 	UUmAssert( inClass );
 
 	error = OBJrObjectType_GetObjectList( inClass->object_type, &object_list, &object_count );	UUmAssert( error == UUcError_None );
@@ -70,7 +70,7 @@ UUtError ONrMechanics_Default_ClassMethod_LevelBegin( struct ONtMechanicsClass *
 		object = object_list[i];
 
 		UUmAssert( object );
-		
+
 		inClass->methods.rInitialize( object );
 	}
 	return UUcError_None;
@@ -83,7 +83,7 @@ UUtError ONrMechanics_Default_ClassMethod_LevelEnd( struct ONtMechanicsClass *in
 	OBJtObject					**object_list;
 	OBJtObject					*object;
 	UUtError					error;
-	
+
 	UUmAssert( inClass );
 
 	error = OBJrObjectType_GetObjectList( inClass->object_type, &object_list, &object_count );	UUmAssert( error == UUcError_None );
@@ -95,7 +95,7 @@ UUtError ONrMechanics_Default_ClassMethod_LevelEnd( struct ONtMechanicsClass *in
 		object = object_list[i];
 
 		UUmAssert( object );
-		
+
 		inClass->methods.rTerminate( object );
 	}
 	return UUcError_None;
@@ -108,7 +108,7 @@ UUtError ONrMechanics_Default_ClassMethod_Reset( struct ONtMechanicsClass *inCla
 	OBJtObject					**object_list;
 	OBJtObject					*object;
 	UUtError					error;
-	
+
 	UUmAssert( inClass );
 
 	error = OBJrObjectType_GetObjectList( inClass->object_type, &object_list, &object_count );	UUmAssert( error == UUcError_None );
@@ -120,7 +120,7 @@ UUtError ONrMechanics_Default_ClassMethod_Reset( struct ONtMechanicsClass *inCla
 		object = object_list[i];
 
 		UUmAssert( object );
-		
+
 		inClass->methods.rReset( object );
 	}
 	return UUcError_None;
@@ -133,7 +133,7 @@ void ONrMechanics_Default_ClassMethod_Update( struct ONtMechanicsClass *inClass 
 	OBJtObject					**object_list;
 	OBJtObject					*object;
 	UUtError					error;
-	
+
 	UUmAssert( inClass );
 
 	error = OBJrObjectType_GetObjectList( inClass->object_type, &object_list, &object_count );	UUmAssert( error == UUcError_None );
@@ -145,7 +145,7 @@ void ONrMechanics_Default_ClassMethod_Update( struct ONtMechanicsClass *inClass 
 		object = object_list[i];
 
 		UUmAssert( object );
-		
+
 		inClass->methods.rUpdate( object );
 	}
 }
@@ -155,19 +155,19 @@ void ONrMechanics_DeleteClass( ONtMechanicsClass *inMechanicsClass )
 	ONtMechanicsClass			**class_list;
 	UUtUns32					num_classes;
 	UUtUns32					i;
-	
+
 	class_list = (ONtMechanicsClass**) UUrMemory_Array_GetMemory(ONgMechanicsClasses);
 
 	UUmAssert(class_list);
-	
-	num_classes = UUrMemory_Array_GetUsedElems(ONgMechanicsClasses);	
+
+	num_classes = UUrMemory_Array_GetUsedElems(ONgMechanicsClasses);
 	for (i = 0; i < num_classes; i++)
 	{
 		if (class_list[i] == inMechanicsClass)
 		{
 			UUrMemory_Array_Delete(inMechanicsClass->object_array);
 			inMechanicsClass->object_array = NULL;
-			
+
 			UUrMemory_Array_DeleteElement(ONgMechanicsClasses, i);
 			break;
 		}
@@ -194,11 +194,11 @@ UUtError ONrMechanics_Register( OBJtObjectType inObjectType, UUtUns32 inObjectTy
 	// create a new group entry in the mechanics class array
 	error = UUrMemory_Array_GetNewElement(ONgMechanicsClasses, &index, NULL);
 	UUmError_ReturnOnError(error);
-	
+
 	// allocate memory for the class
 	new_class = (ONtMechanicsClass*)UUrMemory_Block_NewClear(sizeof(ONtMechanicsClass));
 	UUmError_ReturnOnNull(new_class);
-	
+
 	// initialize this class
 	new_class->object_type		= inObjectType;
 	new_class->methods			= *inMechanicsMethods;
@@ -224,7 +224,7 @@ UUtError ONrMechanics_Register( OBJtObjectType inObjectType, UUtUns32 inObjectTy
 	// register mechanics with group
 	error = OBJrObjectType_RegisterMechanics( inObjectType, new_class );
 	UUmError_ReturnOnError(error);
-		
+
 	return UUcError_None;
 }
 
@@ -236,7 +236,7 @@ UUtError ONrMechanics_Initialize( )
 {
 	ONgMechanicsClasses = UUrMemory_Array_New( sizeof(ONtMechanicsClass*), 1, 0, 0);
 	UUmError_ReturnOnNull(ONgMechanicsClasses);
-	
+
 	return UUcError_None;
 }
 
@@ -278,9 +278,9 @@ UUtError ONrMechanics_LevelBegin( )
 	for( i = 0; i < class_count; i++ )
 	{
 		mechanics_class = class_list[i];
-		
+
 		UUmAssert( mechanics_class );
-		
+
 		if( mechanics_class->methods.rClassLevelBegin )
 			mechanics_class->methods.rClassLevelBegin( mechanics_class );
 	}
@@ -304,7 +304,7 @@ UUtError ONrMechanics_LevelEnd( )
 	for( i = 0; i < class_count; i++ )
 	{
 		mechanics_class = class_list[i];
-		
+
 		UUmAssert( mechanics_class );
 
 		if( mechanics_class->methods.rClassLevelEnd )
@@ -334,9 +334,9 @@ UUtError ONrMechanics_Reset( )
 	for( i = 0; i < class_count; i++ )
 	{
 		mechanics_class = class_list[i];
-		
+
 		UUmAssert( mechanics_class );
-		
+
 		if( mechanics_class->methods.rClassReset )
 			mechanics_class->methods.rClassReset( mechanics_class );
 	}
@@ -380,7 +380,7 @@ OBJtObject* ONrMechanics_GetObjectWithID( OBJtObjectType inObjectType, UUtUns16 
 	UUtUns16				id;
 	UUtUns32				i;
 	UUtError				error;
-	
+
 	mechanics_class = OBJrObjectType_GetMechanicsByType( inObjectType );
 	UUmAssert( mechanics_class );
 	if( !mechanics_class )

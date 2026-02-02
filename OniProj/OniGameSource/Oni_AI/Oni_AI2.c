@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2.c
-	
+
 	AUTHOR:	Michael Evans, Chris Butcher
-	
+
 	CREATED: November 15, 1999
-	
+
 	PURPOSE: AI for characters in Oni
-	
+
 	Copyright (c) 1999
 
 */
@@ -179,7 +179,7 @@ void AI2rUpdateAI(void)
 	player_character = ONrGameState_GetPlayerCharacter();
 	living_character_list = ONrGameState_LivingCharacterList_Get();
 	living_character_count = ONrGameState_LivingCharacterList_Count();
-	
+
 	for (character_index = 0; character_index < living_character_count; character_index++)
 	{
 		character = living_character_list[character_index];
@@ -272,7 +272,7 @@ void AI2rUpdateAI(void)
 					AI2rVocalize(character, AI2cVocalization_Alert, UUcFalse);
 					character->ai2State.flags |= AI2cFlag_SaidAlertSound;
 				}
-			}				
+			}
 
 			if (character->ai2State.daze_timer > 0) {
 				ONtActiveCharacter *active_character = ONrGetActiveCharacter(character);
@@ -283,8 +283,8 @@ void AI2rUpdateAI(void)
 #if AI_DEBUG_DAZE
 					if (active_character != NULL) {
 						COrConsole_Printf("%s: %d: not yet on ground (states %s -> %s)",
-									character->player_name, ONrGameState_GetGameTime(), 
-									ONrAnimStateToString(active_character->curFromState), 
+									character->player_name, ONrGameState_GetGameTime(),
+									ONrAnimStateToString(active_character->curFromState),
 									ONrAnimStateToString(active_character->nextAnimState));
 					}
 #endif
@@ -377,19 +377,19 @@ void AI2rUpdateAI(void)
 					case AI2cGoal_Idle:
 						AI2rIdle_Update(character);
 					break;
-					
+
 					case AI2cGoal_Patrol:
 						AI2rPatrol_Update(character);
 					break;
-					
+
 					case AI2cGoal_Pursuit:
 						AI2rPursuit_Update(character);
 					break;
-					
+
 					case AI2cGoal_Alarm:
 						AI2rAlarm_Update(character);
 					break;
-					
+
 					case AI2cGoal_Combat:
 						AI2rCombat_Update(character);
 					break;
@@ -423,7 +423,7 @@ void AI2rUpdateAI(void)
 		AI2rKnowledge_ImmediatePost(UUcFalse);
 		AI2rMelee_GlobalFinish();
 	}
-}	
+}
 
 // start the AI2 system for a particular level
 UUtError AI2rLevelBegin(void)
@@ -478,7 +478,7 @@ static UUtBool AI2iEnumCallback_StartCharacters(OBJtObject *inObject, UUtUns32 i
 
 	UUmAssert(inObject->object_type == OBJcType_Character);
 	char_osd = (OBJtOSD_Character *) inObject->object_data;
-	
+
 	// reset 'spawned' flag for this level
 	char_osd->flags &= ~OBJcCharFlags_Spawned;
 
@@ -502,7 +502,7 @@ static UUtBool AI2iEnumCallback_Spawn(OBJtObject *inObject, UUtUns32 inUserData)
 
 	UUmAssert(inObject->object_type == OBJcType_Character);
 	char_osd = (OBJtOSD_Character *) inObject->object_data;
-	
+
 	if (strcmp(char_osd->character_name, user_data->name) == 0) {
 		if ((!user_data->force) && (char_osd->flags & OBJcCharFlags_Spawned) && ((char_osd->flags & OBJcCharFlags_SpawnMultiple) == 0)) {
 			// can't spawn this character multiple times
@@ -529,7 +529,7 @@ static UUtBool AI2iEnumCallback_SpawnPlayer(OBJtObject *inObject, UUtUns32 inUse
 
 	UUmAssert(inObject->object_type == OBJcType_Character);
 	char_osd = (OBJtOSD_Character *) inObject->object_data;
-	
+
 	if ((char_osd->flags & OBJcCharFlags_Player) == 0) {
 		return UUcTrue;
 	}
@@ -556,13 +556,13 @@ UUtError AI2rStartAllCharacters(UUtBool inStartPlayer, UUtBool inOverride)
 	// we spawn the player first so that they are always character 0 (makes
 	// debugging easier)
 	if (inStartPlayer) {
-		OBJrObjectType_EnumerateObjects(OBJcType_Character, AI2iEnumCallback_SpawnPlayer, (UUtUns32) &player);	
+		OBJrObjectType_EnumerateObjects(OBJcType_Character, AI2iEnumCallback_SpawnPlayer, (UUtUns32) &player);
 	}
 
 	// enumerate all characters
 	user_data.spawn_player = UUcFalse;
 	user_data.spawn_all = inOverride;
-	OBJrObjectType_EnumerateObjects(OBJcType_Character, AI2iEnumCallback_StartCharacters, (UUtUns32) &user_data);	
+	OBJrObjectType_EnumerateObjects(OBJcType_Character, AI2iEnumCallback_StartCharacters, (UUtUns32) &user_data);
 
 	return UUcError_None;
 }
@@ -577,7 +577,7 @@ UUtError AI2rSpawnCharacter(char *inName, UUtBool inForce)
 	// enumerate until we find this character
 	user_data.name = inName;
 	user_data.force = inForce;
-	OBJrObjectType_EnumerateObjects(OBJcType_Character, AI2iEnumCallback_Spawn, (UUtUns32) &user_data);	
+	OBJrObjectType_EnumerateObjects(OBJcType_Character, AI2iEnumCallback_Spawn, (UUtUns32) &user_data);
 
 	return UUcError_None;
 }
@@ -588,7 +588,7 @@ ONtCharacter *AI2rRecreatePlayer(void)
 	ONtCharacter *player = NULL;
 
 	// enumerate until we find the player
-	OBJrObjectType_EnumerateObjects(OBJcType_Character, AI2iEnumCallback_SpawnPlayer, (UUtUns32) &player);	
+	OBJrObjectType_EnumerateObjects(OBJcType_Character, AI2iEnumCallback_SpawnPlayer, (UUtUns32) &player);
 	return player;
 }
 
@@ -763,7 +763,7 @@ UUtError AI2rInitializeCharacter(ONtCharacter *ioCharacter, const OBJtOSD_Charac
 			omniscient = UUcFalse;
 		}
 	}
-	
+
 	if (ioCharacter->charType != ONcChar_AI2)
 		return UUcError_None;
 
@@ -781,7 +781,7 @@ UUtError AI2rInitializeCharacter(ONtCharacter *ioCharacter, const OBJtOSD_Charac
 		ioCharacter->ai2State.flags |= AI2cFlag_Omniscient;
 	}
 	AI2rExecutor_Initialize(ioCharacter);
-	AI2rKnowledgeState_Initialize(&ioCharacter->ai2State.knowledgeState);		
+	AI2rKnowledgeState_Initialize(&ioCharacter->ai2State.knowledgeState);
 	AI2rPath_Initialize(ioCharacter);
 
 	/**** set up alert status */
@@ -872,7 +872,7 @@ UUtError AI2rInitializeCharacter(ONtCharacter *ioCharacter, const OBJtOSD_Charac
 	if (combat_found) {
 		ioCharacter->ai2State.combatSettings.flags = combat_data.flags;
 		ioCharacter->ai2State.combatSettings.medium_range = combat_data.medium_range;
-		
+
 		for (itr = 0; itr < AI2cCombatRange_NumStoredRanges; itr++) {
 			ioCharacter->ai2State.combatSettings.behavior[itr] = (AI2tBehaviorType)combat_data.behavior[itr];
 		}
@@ -1024,7 +1024,7 @@ void AI2rEnterState(ONtCharacter *ioCharacter)
 void AI2rExitState(ONtCharacter *ioCharacter)
 {
 //	UUrDebuggerMessage("*** exiting state %s\n", AI2cGoalName[ioCharacter->ai2State.currentGoal]);
-	
+
 	if (ioCharacter->ai2State.flags & AI2cFlag_StateTransition) {
 		UUmAssert(!"AI2rExitState called while in state transition");
 		UUrDebuggerMessage("*** AI ERROR: AI %s tried to exit-state while in the middle of a state transition", ioCharacter->player_name);
@@ -1216,7 +1216,7 @@ void AI2rPassive(ONtCharacter *ioCharacter, UUtBool inPassive)
 		// so that everyone doesn't play idle anims at the end of a long scripting sequence
 		ioCharacter->lastActiveAnimationTime = ONrGameState_GetGameTime();
 	}
-	
+
 	if (ioCharacter->charType != ONcChar_AI2)
 		return;
 
@@ -1275,7 +1275,7 @@ UUtBool AI2rCharacter_PotentiallyHostile(ONtCharacter *inCharacter, ONtCharacter
 			entry = AI2rKnowledge_FindEntry(inCharacter, &inCharacter->ai2State.knowledgeState, inTarget);
 			if ((entry != NULL) && ((entry->has_been_hostile) || (entry->priority >= AI2cContactPriority_Hostile_Threat))) {
 				return UUcTrue;
-			}		
+			}
 		}
 	}
 
@@ -1289,7 +1289,7 @@ UUtBool AI2rCharacter_PotentiallyHostile(ONtCharacter *inCharacter, ONtCharacter
 			return UUcTrue;
 		}
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -1590,7 +1590,7 @@ void AI2rNotifyAttackLanded(ONtCharacter *inAttacker, ONtCharacter *inDefender)
 
 	if ((inDefender->charType != ONcChar_AI2) || (inDefender->ai2State.currentGoal != AI2cGoal_Combat))
 		return;
-	
+
 	melee_state = &inDefender->ai2State.currentState->state.combat.melee;
 
 	if ((melee_state->target == inAttacker) && (melee_state->currently_blocking)) {
@@ -1708,7 +1708,7 @@ UUtBool AI2rBlockFunction(ONtCharacter *inCharacter)
 
 		if (melee_state->fight_info.fight_owner != NULL) {
 			num_attackers = melee_state->fight_info.fight_owner->num_attackers;
-			
+
 			if (num_attackers >= AI2cMelee_GroupNumAttackers) {
 				// we are fighting in a large group
 				block_percentage = (float) profile->blockgroup_percentage;
@@ -1800,7 +1800,7 @@ UUtBool AI2rVocalize(ONtCharacter *ioCharacter, UUtUns32 inVocalizationType, UUt
 
 	if ((ioCharacter->charType == ONcChar_AI2) && (inVocalizationType == AI2cVocalization_Taunt)) {
 		// check to see this taunt is part of a check-body sound... if so then don't play it
-		if ((ioCharacter->ai2State.currentGoal == AI2cGoal_Combat) && 
+		if ((ioCharacter->ai2State.currentGoal == AI2cGoal_Combat) &&
 			(ioCharacter->ai2State.currentState->state.combat.dead_done_taunt)) {
 			return UUcFalse;
 		}
@@ -1838,7 +1838,7 @@ UUtBool AI2rTryNeutralInteraction(ONtCharacter *ioCharacter, UUtBool inActivate)
 	UUtUns32 num_chars, itr;
 	AI2tNeutralState *neutral_state;
 	UUtBool found_char_already_triggered;
-	
+
 	if (ioCharacter->neutral_interaction_char != NULL) {
 		// we are already involved in a neutral interaction
 		return UUcTrue;
@@ -2034,7 +2034,7 @@ void AI2rSmite(ONtCharacter *inCharacter, UUtBool inSpareCharacter)
 			continue;
 
 		// smite one character
-		ONrCharacter_TakeDamage(*charptr, (*charptr)->hitPoints, 0.f, NULL, NULL, 
+		ONrCharacter_TakeDamage(*charptr, (*charptr)->hitPoints, 0.f, NULL, NULL,
 								WPcDamageOwner_ActOfGod, ONcAnimType_None);
 	}
 }
@@ -2267,7 +2267,7 @@ void AI2rDisplayGlobalDebuggingInfo(void)
 			} else {
 				shade = PHgPathfindingWeightColor[AI2gDebugLocalPath_Weight[itr]];
 			}
-			
+
 			if (count == 1) {
 				MUmVector_Copy(p0, AI2gDebugLocalPath_Point);
 				p0.y += 0.5f;
@@ -2276,7 +2276,7 @@ void AI2rDisplayGlobalDebuggingInfo(void)
 				p1.y += 0.5f;
 
 				M3rGeom_Line_Light(&p0, &p1, shade);
-			} else {	
+			} else {
 				MUmVector_Copy(p1, AI2gDebugLocalPath_EndPoint[itr]);
 				p1.y += 9.0f;
 
@@ -2349,7 +2349,7 @@ void AI2rDisplayDebuggingInfo(ONtCharacter *ioCharacter)
 		M3tPoint3D				position;
 		UUtError				error;
 		char					name[96];
-	
+
 		if (!AI2gDebugName_Initialized) {
 			error = AI2rDebugName_Initialize();
 			if (error != UUcError_None)
@@ -2359,7 +2359,7 @@ void AI2rDisplayDebuggingInfo(ONtCharacter *ioCharacter)
 		// erase the texture and set the text contexts shade
 		M3rTextureMap_Fill(AI2gDebugName_Texture, AI2gDebugName_WhiteColor, NULL);
 		TSrContext_SetShade(AI2gDebugName_TextContext, IMcShade_Black);
-	
+
 		// get the string
 		if (AI2gShowHealth) {
 			if (AI2gShowNames) {
@@ -2502,7 +2502,7 @@ void AI2rDisplayDebuggingInfo(ONtCharacter *ioCharacter)
 		AI2rPath_RenderPath(ioCharacter);
 		AI2rMovement_RenderPath(ioCharacter);
 	}
-		
+
 	// *** everything beyond here is only done for AI characters
 	if (ioCharacter->charType != ONcChar_AI2) {
 		return;
@@ -2563,7 +2563,7 @@ void AI2rDisplayDebuggingInfo(ONtCharacter *ioCharacter)
 			p0.x += 6.0f;
 			p1.x -= 6.0f;
 			M3rGeom_Line_Light(&p0, &p1, IMcShade_Green);
-			
+
 			p0.x -= 6.0f;
 			p1.x += 6.0f;
 			p0.z += 6.0f;
@@ -2588,21 +2588,21 @@ void AI2rDisplayDebuggingInfo(ONtCharacter *ioCharacter)
 			/*
 			 * draw debugging info about our targeting vectors
 			 */
-			
+
 			// draw a cross at the current aim point (where we want to hit)
 			MUmVector_Copy(p0, targeting_state->current_aim_pt);
 			MUmVector_Copy(p1, targeting_state->current_aim_pt);
-			
+
 			p0.x += 3.0f;
 			p1.x -= 3.0f;
 			M3rGeom_Line_Light(&p0, &p1, IMcShade_Blue);
-			
+
 			p0.x -= 3.0f;
 			p1.x += 3.0f;
 			p0.y += 3.0f;
 			p1.y -= 3.0f;
 			M3rGeom_Line_Light(&p0, &p1, IMcShade_Blue);
-			
+
 			p0.y -= 3.0f;
 			p1.y += 3.0f;
 			p0.z += 3.0f;
@@ -2613,17 +2613,17 @@ void AI2rDisplayDebuggingInfo(ONtCharacter *ioCharacter)
 			MUmVector_Add(aim_at, targeting_state->weapon_pt, targeting_state->desired_shooting_vector);
 			MUmVector_Copy(p0, aim_at);
 			MUmVector_Copy(p1, aim_at);
-			
+
 			p0.x += 3.0f;
 			p1.x -= 3.0f;
 			M3rGeom_Line_Light(&p0, &p1, IMcShade_LightBlue);
-			
+
 			p0.x -= 3.0f;
 			p1.x += 3.0f;
 			p0.y += 3.0f;
 			p1.y -= 3.0f;
 			M3rGeom_Line_Light(&p0, &p1, IMcShade_LightBlue);
-			
+
 			p0.y -= 3.0f;
 			p1.y += 3.0f;
 			p0.z += 3.0f;
@@ -2694,38 +2694,38 @@ void AI2rDisplayDebuggingInfo(ONtCharacter *ioCharacter)
 				M3rGeom_Line_Light(&p0, &p1, IMcShade_Blue);
 			}
 		}
-		
+
 		if ((AI2gDebug_ShowPrediction) && (targeting_state->predictionbuf != NULL)) {
 			/*
 			 * draw debugging info about our prediction vectors
 			 */
-			
+
 			UUtUns32 itr, sample_trend, sample_vel, sample_now;
-			UUtUns32 trend_frames, velocity_frames, delay_frames;			
-			
+			UUtUns32 trend_frames, velocity_frames, delay_frames;
+
 			trend_frames = targeting_state->targeting_params->predict_trendframes;
 			velocity_frames = targeting_state->targeting_params->predict_velocityframes;
 			delay_frames = targeting_state->targeting_params->predict_delayframes;
-			
+
 			// draw our prediction buffer
 			for (itr = 0; itr < trend_frames; itr++) {
 				// work out which indices we're using to build the current motion estimate
 				sample_trend = targeting_state->next_sample + UUmMin(targeting_state->num_samples_taken, trend_frames);
 				sample_vel   = targeting_state->next_sample + UUmMin(targeting_state->num_samples_taken, velocity_frames);
 				sample_now   = targeting_state->next_sample + UUmMin(targeting_state->num_samples_taken, delay_frames);
-				
+
 				// the buffer is predict_trendframes long
 				sample_trend %= trend_frames;
 				sample_vel   %= trend_frames;
 				sample_now   %= trend_frames;
-				
+
 				if ((targeting_state->num_samples_taken >= trend_frames) ||
 					(itr > targeting_state->next_sample)) {
 					MUmVector_Copy(p0, targeting_state->predictionbuf[itr]);
 					MUmVector_Copy(p1, targeting_state->predictionbuf[itr]);
 					p0.y += 5.0f;
 					p1.y -= 5.0f;
-					
+
 					if (itr == sample_now) {
 						shade = IMcShade_Yellow;
 					} else if (itr == sample_vel) {
@@ -2735,44 +2735,44 @@ void AI2rDisplayDebuggingInfo(ONtCharacter *ioCharacter)
 					} else {
 						shade = IMcShade_White;
 					}
-					
+
 					M3rGeom_Line_Light(&p0, &p1, shade);
 				}
 			}
-			
+
 			if (targeting_state->valid_target_pt) {
 				// draw our target point
 				MUmVector_Copy(p0, targeting_state->target_pt);
 				MUmVector_Copy(p1, p0);
-				
+
 				p0.x += 3.0f;
 				p1.x -= 3.0f;
 				M3rGeom_Line_Light(&p0, &p1, IMcShade_Purple);
-				
+
 				p0.x -= 3.0f;
 				p1.x += 3.0f;
 				p0.y += 3.0f;
 				p1.y -= 3.0f;
 				M3rGeom_Line_Light(&p0, &p1, IMcShade_Purple);
-				
+
 				p0.y -= 3.0f;
 				p1.y += 3.0f;
 				p0.z += 3.0f;
 				p1.z -= 3.0f;
 				M3rGeom_Line_Light(&p0, &p1, IMcShade_Purple);
 			}
-			
+
 			if (combat_state->target != NULL) {
 				// draw the target's predicted velocity and trend vectors
 				MUmVector_Copy(p0, targeting_state->target->location);
 				p0.y += targeting_state->target->heightThisFrame;
-				
+
 				MUmVector_Add(p1, p0, targeting_state->predicted_trend);
 				M3rGeom_Line_Light(&p0, &p1, IMcShade_LightBlue);
-				
+
 				MUmVector_Add(p1, p0, targeting_state->predicted_velocity);
 				M3rGeom_Line_Light(&p0, &p1, IMcShade_Blue);
-				
+
 				// draw a little tick on the velocity vector
 				MUmVector_ScaleIncrement(p0, targeting_state->current_prediction_accuracy, targeting_state->predicted_velocity);
 				MUmVector_Copy(p1, p0);
@@ -2803,9 +2803,9 @@ void AI2rDisplayDebuggingInfo(ONtCharacter *ioCharacter)
 		float x, y, delta_x, vertical_max, vertical_min, vertical_range, horiz_angle, dist;
 		M3tPoint3D points[9], p0, p1;
 		AI2tExecutorState *executor = &active_character->executor_state;
-		
+
 		ONrCharacter_GetEyePosition(ioCharacter, &points[0]);
-	
+
 		vertical_range = MUrACos(vision->vertical_range);
 
 		if (active_character->isAiming) {
@@ -2937,7 +2937,7 @@ static UUtError AI2rDebugName_Initialize(void)
 	 */
 
 	M3rDrawEngine_FindGrayscalePixelType(&textureFormat);
-	
+
 	AI2gDebugName_WhiteColor = IMrPixel_FromShade(textureFormat, IMcShade_White);
 
 	error = TSrFontFamily_Get(TScFontFamily_Default, &font_family);
@@ -2945,20 +2945,20 @@ static UUtError AI2rDebugName_Initialize(void)
 	{
 		goto cleanup;
 	}
-	
+
 	error = TSrContext_New(font_family, TScFontSize_Default, TScStyle_Bold, TSc_SingleLine, UUcFalse, &AI2gDebugName_TextContext);
 	if (error != UUcError_None)
 	{
 		goto cleanup;
 	}
-	
+
 	AI2gDebugName_Dest.x = 2;
 	AI2gDebugName_Dest.y =
 		TSrFont_GetLeadingHeight(TSrContext_GetFont(AI2gDebugName_TextContext, TScStyle_InUse)) +
 		TSrFont_GetAscendingHeight(TSrContext_GetFont(AI2gDebugName_TextContext, TScStyle_InUse));
-	
+
 	TSrContext_GetStringRect(AI2gDebugName_TextContext, "maximum_length_of_character_name", &AI2gDebugName_TextureBounds);
-	
+
 	error =
 		M3rTextureMap_New(
 			AI2gDebugName_TextureBounds.right,
@@ -2977,12 +2977,12 @@ static UUtError AI2rDebugName_Initialize(void)
 	M3rTextureRef_GetSize((void *) AI2gDebugName_Texture,
 					(UUtUns16*)&AI2gDebugName_TextureBounds.right,
 					(UUtUns16*)&AI2gDebugName_TextureBounds.bottom);
-	
+
 	AI2gDebugName_TextureWidth = AI2gDebugName_TextureBounds.right;
 	AI2gDebugName_TextureHeight = AI2gDebugName_TextureBounds.bottom;
-	
+
 	AI2gDebugName_WidthRatio = (float)AI2gDebugName_TextureWidth / (float)AI2gDebugName_TextureHeight;
-	
+
 	AI2gDebugName_Initialized = UUcTrue;
 
 	return UUcError_None;

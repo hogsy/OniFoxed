@@ -32,15 +32,15 @@ enum
 typedef tm_template('V', 'M', 'R', 'B', "VM View RadioButton")
 VMtView_RadioButton
 {
-	
+
 	UUtUns16			flags;
 	UUtUns16			reserved;
-	
+
 	VMtPartSpec			*off;
 	VMtPartSpec			*on;
-	
+
 	char				title[32];
-	
+
 } VMtView_RadioButton;
 
 typedef struct VMtView_RadioButton_PrivateData
@@ -48,13 +48,13 @@ typedef struct VMtView_RadioButton_PrivateData
 	UUtBool				radiobutton_state;
 	UUtUns16			radiobutton_width;
 	UUtUns16			radiobutton_height;
-	
+
 	// vars for title text
 	tm_templateref		title_texture_ref;
 	UUtInt16			title_texture_width;
 	UUtInt16			title_texture_height;
 	IMtPoint2D			title_location;
-	
+
 } VMtView_RadioButton_PrivateData;
 
 extern TMtPrivateData*	DMgTemplate_RadioButton_PrivateData;

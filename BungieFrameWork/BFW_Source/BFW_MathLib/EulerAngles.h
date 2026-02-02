@@ -7,19 +7,19 @@
 #include "BFW_Motoko.h"
 #include "BFW_MathLib.h"
 
-/*** Order type constants, constructors, extractors 
-There are 24 possible conventions, designated by:   
+/*** Order type constants, constructors, extractors
+There are 24 possible conventions, designated by:
 
-	  o EulAxI = axis used initially		    
- 	  o EulPar = parity of axis permutation	
-	  o EulRep = repetition of initial axis as last	    
-	  o EulFrm = frame from which axes are taken	    
+	  o EulAxI = axis used initially
+ 	  o EulPar = parity of axis permutation
+	  o EulRep = repetition of initial axis as last
+	  o EulFrm = frame from which axes are taken
 
-Axes I,J,K will be a permutation of X,Y,Z.	    
+Axes I,J,K will be a permutation of X,Y,Z.
 Axis H will be either I or K, depending on EulRep.
-Frame S takes axes from initial static frame.	 
-If ord = (AxI=X, Par=Even, Rep=No, Frm=S), then	 
-{a,b,c,ord} means Rz(c)Ry(b)Rx(a), where Rz(c)v	 
+Frame S takes axes from initial static frame.
+If ord = (AxI=X, Par=Even, Rep=No, Frm=S), then
+{a,b,c,ord} means Rz(c)Ry(b)Rx(a), where Rz(c)v
 rotates v around Z by c radians.
 ****************************************************/
 

@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_DrawEngine_Platform.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -26,6 +26,6 @@ MSrDrawEngine_Platform_DestroyDrawContextPrivate(
 UUtError
 MSrDrawEngine_Platform_SetupEngineCaps(
 	M3tDrawEngineCaps	*ioDrawEngineCaps);
-	
+
 
 #endif /* MS_DRAWENGINE_PLATFORM_H */

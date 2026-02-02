@@ -1,11 +1,11 @@
 /*	FILE:	Oni_DataConsole.c
-	
+
 	AUTHOR:	Quinn Dunki
-	
+
 	CREATED: April 2, 1999
-	
+
 	PURPOSE: control of interactive consoles in ONI
-	
+
 	Copyright 1998
 
 */
@@ -94,7 +94,7 @@ void ONrDataConsole_Notify_Trigger(
 
 	console = ONiDataConsoleFromTrigger(inTrigger);
 	UUmAssert(console);
-	
+
 	if (inActivated) ONrDataConsole_Activate(console,inCharacter);
 	else ONrDataConsole_Deactivate(console,inCharacter);
 }
@@ -131,7 +131,7 @@ void ONrDataConsole_Activate(
 				door = ONgGameState->doors.doors + i;
 				if (door->doorClass->openKey != inConsole->idg &&
 					door->doorClass->closeKey != inConsole->idg) continue;
-				
+
 				if (door->flags & OBcDoorFlag_Locked) door->flags &=~OBcDoorFlag_Locked;
 				else door->flags |= OBcDoorFlag_Locked;
 			}
@@ -192,7 +192,7 @@ void ONrDataConsole_Update(
 
 		default: break;
 		}
-	}			
+	}
 }
 
 UUtError ONrDataConsole_LevelBegin(

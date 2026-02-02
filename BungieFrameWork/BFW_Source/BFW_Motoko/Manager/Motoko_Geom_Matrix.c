@@ -1,12 +1,12 @@
 /*
 	FILE:	Motoko_Geom_Matrix.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: April 2, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */
@@ -20,7 +20,7 @@
 
 typedef struct M3tManager_MatrixGlobals
 {
-		
+
 	/* Model matrix stack */
 		UUtInt32				matrix_TOS;
 		M3tMatrix4x3*			matrixStack;
@@ -39,11 +39,11 @@ M3rMatrixStack_Push(
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Stack overflow");
 	}
 
-	M3gManager_MatrixGlobals.matrix_TOS++;	
-	M3gManager_MatrixGlobals.matrixStackTop++;	
-	
+	M3gManager_MatrixGlobals.matrix_TOS++;
+	M3gManager_MatrixGlobals.matrixStackTop++;
+
 	*M3gManager_MatrixGlobals.matrixStackTop = *(M3gManager_MatrixGlobals.matrixStackTop - 1);
-	
+
 	MSmStackVerify();
 
 	return UUcError_None;
@@ -54,7 +54,7 @@ M3rMatrixStack_Get(
 	M3tMatrix4x3*		*outMatrix)
 {
 	*outMatrix = M3gManager_MatrixGlobals.matrixStackTop;
-	
+
 	return UUcError_None;
 }
 
@@ -66,41 +66,41 @@ M3rMatrixStack_Pop(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Stack underflow");
 	}
-	M3gManager_MatrixGlobals.matrix_TOS--;	
-	M3gManager_MatrixGlobals.matrixStackTop--;	
-	
+	M3gManager_MatrixGlobals.matrix_TOS--;
+	M3gManager_MatrixGlobals.matrixStackTop--;
+
 	MSmStackVerify();
 
 	return UUcError_None;
 }
-		
+
 void
 M3rMatrixStack_Identity(
 	void)
 {
 	M3tMatrix4x3*	matrix = M3gManager_MatrixGlobals.matrixStackTop;
-	
+
 	matrix->m[0][0] = 1.0f;
 	matrix->m[0][1] = 0.0f;
 	matrix->m[0][2] = 0.0f;
-	
+
 	matrix->m[1][0] = 0.0f;
 	matrix->m[1][1] = 1.0f;
 	matrix->m[1][2] = 0.0f;
-	
+
 	matrix->m[2][0] = 0.0f;
 	matrix->m[2][1] = 0.0f;
 	matrix->m[2][2] = 1.0f;
-	
+
 	matrix->m[3][0] = 0.0f;
 	matrix->m[3][1] = 0.0f;
 	matrix->m[3][2] = 0.0f;
 
 	MSmStackVerify();
-	
+
 }
 
-void 
+void
 M3rMatrixStack_Clear(
 	void)
 {
@@ -109,7 +109,7 @@ M3rMatrixStack_Clear(
 	M3rMatrixStack_Identity();
 }
 
-void 
+void
 M3rMatrixStack_Rotate(
 	float				inRadians,
 	float				inX,
@@ -122,14 +122,14 @@ M3rMatrixStack_Rotate(
 	UUmAssert(inY > -1e9f && inY < 1e9f);
 	UUmAssert(inZ > -1e9f && inZ < 1e9f);
 	UUmAssertTrigRange(inRadians);
-	
+
 	MUrMatrix_BuildRotate(
 		inRadians,
 		inX,
 		inY,
 		inZ,
 		&matrix);
-	
+
 	MSmMatrixVerify(&matrix);
 	MUrMatrix_Multiply(
 		M3gManager_MatrixGlobals.matrixStackTop,
@@ -137,22 +137,22 @@ M3rMatrixStack_Rotate(
 		M3gManager_MatrixGlobals.matrixStackTop);
 	MSmStackVerify();
 }
-		
+
 void
 M3rMatrixStack_UniformScale(
 	float				inScale)
 {
 	MUrMatrixStack_Scale(M3gManager_MatrixGlobals.matrixStackTop, inScale);
 }
-		
-void 
+
+void
 M3rMatrixStack_Translate(
 	float				inX,
 	float				inY,
 	float				inZ)
 {
 	M3tVector3D translate;
-	
+
 	UUmAssert(inY > -1e9f && inY < 1e9f);
 	UUmAssert(inZ > -1e9f && inZ < 1e9f);
 
@@ -189,9 +189,9 @@ M3rManager_Matrix_Initialize(
 	M3gManager_MatrixGlobals.matrix_TOS = -1;
 	M3gManager_MatrixGlobals.matrixStack = UUrMemory_Block_New(sizeof(M3tMatrix4x4) * M3cModelMatrix_MaxDepth);
 	UUmError_ReturnOnNull(M3gManager_MatrixGlobals.matrixStack);
-	
+
 	M3gManager_MatrixGlobals.matrixStackTop = M3gManager_MatrixGlobals.matrixStack;
-	
+
 	return UUcError_None;
 }
 

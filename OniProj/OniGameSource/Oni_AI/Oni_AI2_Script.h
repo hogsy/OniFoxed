@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Script.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: April 04, 2000
-	
+
 	PURPOSE: AI interface to the scripting system for Oni
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */

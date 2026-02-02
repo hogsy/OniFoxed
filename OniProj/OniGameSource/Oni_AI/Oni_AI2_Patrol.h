@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Patrol.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: November 15, 1999
-	
+
 	PURPOSE: Patrol AI for Oni
-	
+
 	Copyright (c) 1999
 
 */

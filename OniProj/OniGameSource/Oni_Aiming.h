@@ -2,9 +2,9 @@
 
 /*
 	Oni_Aiming.h
-	
+
 	This file contains all aiming related header code
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -41,7 +41,7 @@ typedef struct
 	OBtObject *hitObject;
 } AMtRayData_Object;
 
-typedef struct 
+typedef struct
 {
 	UUtUns32 hitGQIndex;
 } AMtRayData_Environment;
@@ -64,7 +64,7 @@ typedef struct
 {
 	AMtRayResultType	resultType;
 	AMtRayData			resultData;
-	
+
 	M3tPoint3D			intersection;
 } AMtRayResults;
 
@@ -94,18 +94,18 @@ UUtBool AMrRaySphereIntersection(
 
 UUtBool AMrRayToCharacter(
 	UUtUns16 inIgnoreCharacterIndex,
-	const M3tPoint3D *inRayOrigin, 
+	const M3tPoint3D *inRayOrigin,
 	const M3tVector3D *inRayDir,
 	UUtBool inStopAtOneT,
-	ONtCharacter **outCharacter, 
-	UUtUns16 *outPartIndex, 
+	ONtCharacter **outCharacter,
+	UUtUns16 *outPartIndex,
 	M3tPoint3D *outIntersection);
 
 UUtBool AMrRayToObject(
-	const M3tPoint3D *inRayOrigin, 
+	const M3tPoint3D *inRayOrigin,
 	const M3tVector3D *inRayDir,
 	float inMaxDistance,
-	OBtObject **outObject, 
+	OBtObject **outObject,
 	M3tPoint3D *outIntersection);
 
 UUtBool PHrCollision_Point(const PHtPhysicsContext *inContext, M3tPoint3D *inFrom, M3tVector3D *inVector);

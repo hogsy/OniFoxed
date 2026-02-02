@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_ScriptLang_Error.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -44,12 +44,12 @@ void UUcArglist_Call
 SLrDebugMessage_Log(
 	char*	inMsg,
 	...);
-	
+
 void
 SLrDebugMessage_LogParamList(
 	UUtUns16			inParameterListLength,
 	SLtParameter_Actual*		inParameterList);
-	
+
 
 #endif
 

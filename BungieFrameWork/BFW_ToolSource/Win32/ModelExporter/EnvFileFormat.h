@@ -24,24 +24,24 @@ typedef short			UUtInt16;
 typedef unsigned char   UUtUns8;
 typedef signed char		UUtInt8;
 
-typedef struct M3tTextureCoord	
+typedef struct M3tTextureCoord
 {
 	float	u;
-	float	v;	
+	float	v;
 } M3tTextureCoord;
 
-typedef struct M3tPoint3D	
+typedef struct M3tPoint3D
 {
-	float	x; 
-	float	y;  
-	float	z; 	
+	float	x;
+	float	y;
+	float	z;
 } M3tPoint3D;
 
-typedef struct M3tVector3D	
+typedef struct M3tVector3D
 {
-	float	x; 
-	float	y;  
-	float	z; 	
+	float	x;
+	float	y;
+	float	z;
 } M3tVector3D;
 
 typedef struct M3tMatrix4x3
@@ -86,10 +86,10 @@ typedef struct MXtMarker
 #define MXcMapping_SI 5   // self-illumination
 #define MXcMapping_OP 6   // opacity
 #define MXcMapping_FI 7   // filter color
-#define MXcMapping_BU 8   // bump 
+#define MXcMapping_BU 8   // bump
 #define MXcMapping_RL 9   // reflection
-#define MXcMapping_RR 10  // refraction 
-#define MXcMapping_Count 11  // total 
+#define MXcMapping_RR 10  // refraction
+#define MXcMapping_Count 11  // total
 
 typedef struct MXtMapping
 {
@@ -100,7 +100,7 @@ typedef struct MXtMapping
 typedef struct MXtMaterial
 {
 	char		name[MXcMaxName];
-	
+
 	float		alpha;
 	float		selfIllumination;
 
@@ -173,8 +173,8 @@ struct AXtNode
 	UUtUns16	sibling;				// written as 0, build on read in
 	UUtUns16	child;					// written as 0, build on read in
 
-	UUtUns32	flags;	
-	
+	UUtUns32	flags;
+
 	M3tMatrix4x3	objectTM;
 	M3tMatrix4x3	*matricies;
 };

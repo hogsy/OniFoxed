@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_LSSolution.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Jan 1, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -35,7 +35,7 @@ LSrData_WriteBinary(
 
 	error = BFrFile_Open(inFileRef, "w", &file);
 	UUmError_ReturnOnError(error);
-	
+
 	// Write the endian detector
 		endianDetector = LScEndianDetector;
 
@@ -60,7 +60,7 @@ LSrData_WriteBinary(
 	// Write the point array
 		error =	BFrFile_Write(file, inData->num_points * sizeof(LStPoint), inData->the_point_list);
 		UUmError_ReturnOnError(error);
-		
+
 	BFrFile_Close(file);
 
 	return UUcError_None;
@@ -79,7 +79,7 @@ LSrData_ReadBinary(
 	UUtUns32			endianDetector;
 	UUtUns32			i;
 	LStPoint*			curPoint;
-	
+
 	error = BFrFile_Open(inFileRef, "r", &file);
 	UUmError_ReturnOnError(error);
 
@@ -88,7 +88,7 @@ LSrData_ReadBinary(
 	{
 		return UUcError_OutOfMemory;
 	}
-	
+
 	// Read the endian detector
 		error = BFrFile_Read(file, 4, &endianDetector);
 		UUmError_ReturnOnError(error);
@@ -104,13 +104,13 @@ LSrData_ReadBinary(
 				UUmError_ReturnOnErrorMsg(UUcError_Generic, "ilegal file type");
 			}
 		}
-	
+
 		error = BFrFile_ReadPos(file, curFilePos, LScPrepVersion_Length, newData->prepVersion);
 		UUmError_ReturnOnError(error);
 		curFilePos += LScPrepVersion_Length;
-		
+
 		if(strcmp(newData->prepVersion, LScPrepVersion)) return UUcError_Generic;
-		
+
 	// Read the number of points and faces
 	error = BFrFile_Read(file, 4, &newData->num_points);
 	UUmError_ReturnOnError(error);
@@ -127,7 +127,7 @@ LSrData_ReadBinary(
 	{
 		UUrSwap_4Byte(&newData->brightness);
 	}
-	
+
 	error = BFrFile_Read(file, 4, &newData->contrast);
 	UUmError_ReturnOnError(error);
 
@@ -135,7 +135,7 @@ LSrData_ReadBinary(
 	{
 		UUrSwap_4Byte(&newData->contrast);
 	}
-	
+
 	error = BFrFile_Read(file, 4, &newData->flags);
 	UUmError_ReturnOnError(error);
 
@@ -143,7 +143,7 @@ LSrData_ReadBinary(
 	{
 		UUrSwap_4Byte(&newData->flags);
 	}
-		
+
 	// Allocate memory for the points and faces
 	newData->the_point_list = UUrMemory_Block_New(newData->num_points * sizeof(LStPoint));
 	if(newData->the_point_list == NULL)
@@ -178,7 +178,7 @@ LSrData_ReadBinary(
 	}
 
 	BFrFile_Close(file);
-	
+
 	*outNewData = newData;
 
 	return UUcError_None;
@@ -188,7 +188,7 @@ UUtUns32
 LSrData_GetSize(
 	LStData*		inData)
 {
-	return sizeof(UUtUns32) * 4 + 
+	return sizeof(UUtUns32) * 4 +
 			inData->num_points * sizeof(LStPoint);
 }
 

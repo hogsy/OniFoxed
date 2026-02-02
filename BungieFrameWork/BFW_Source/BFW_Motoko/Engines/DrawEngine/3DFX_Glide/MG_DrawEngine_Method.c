@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_DrawEngine_Method.c
-	
+
 	AUTHOR:	Kevin Armstrong, Michael Evans
-	
+
 	CREATED: January 5, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1998
 
 */
@@ -46,7 +46,7 @@
 // since the table needs to grow when M3cNumTextureTypes changes
 
 // this array is in order i.e. the left column is 0..6 it is direct looked up
-static const MGtTexelTypeInfo MGgTexInfoTable[] = 
+static const MGtTexelTypeInfo MGgTexInfoTable[] =
 {
 	{	IMcPixelType_ARGB4444,	MGcTextureValid,	MGcTextureExpansion_No,		MGcTextureAlpha_Yes,	GR_TEXFMT_ARGB_4444 },
 	{	IMcPixelType_RGB555,	MGcTextureValid,	MGcTextureExpansion_No,		MGcTextureAlpha_No,		GR_TEXFMT_ARGB_1555 },
@@ -134,7 +134,7 @@ const MGtTexelTypeInfo *MGrTexelType_GetInfo(IMtPixelType inTexelType)
 	UUmAssert(MGgSizeofPixelInfoTable == IMcNumPixelTypes);
 	UUmAssert(inTexelType <= IMcNumPixelTypes);
 	UUmAssert(inTexelType >= 0);
-	
+
 	texInfo = MGgTexInfoTable + inTexelType;
 
 	UUmAssert(texInfo->texelType == inTexelType);
@@ -158,7 +158,7 @@ MGiTextureMap_BuildPrivate(
 	short glide_level_of_detail_min;
 	short glide_aspect_ratio;
 	UUtUns16 widthNBits, heightNBits;
-	
+
 	UUmAssertReadPtr(inTextureMap, sizeof(*inTextureMap));
 	UUmAssertWritePtr(outPrivate, sizeof(*outPrivate));
 	UUmAssert(0 == (inTextureMap->flags & M3cTextureFlags_Offscreen));
@@ -167,10 +167,10 @@ MGiTextureMap_BuildPrivate(
 	UUmAssert((inTextureMap->height >= 1) && (inTextureMap->height <= 256));
 
 	widthNBits = heightNBits = 15;
-	
+
 	while(!(inTextureMap->width & (1 << widthNBits))) widthNBits--;
 	while(!(inTextureMap->height & (1 << heightNBits))) heightNBits--;
-	
+
 	UUmAssert(inTextureMap->width == 1 << widthNBits);
 	UUmAssert(inTextureMap->height == 1 << heightNBits);
 
@@ -219,7 +219,7 @@ MGiTextureMap_BuildPrivate(
 	{
 		case GR_ASPECT_8x1:
 		case GR_ASPECT_1x8:
-			glide_level_of_detail_min = GR_LOD_8; 
+			glide_level_of_detail_min = GR_LOD_8;
 		break;
 
 		case GR_ASPECT_4x1:
@@ -265,7 +265,7 @@ MGiTextureMap_BuildPrivate(
 	outPrivate->flags |= (MGcTextureExpansion_Yes == texelTypeInfo->textureExpansion) ? MGcTextureFlag_Expansion: 0;
 	outPrivate->width = inTextureMap->width;
 	outPrivate->height = inTextureMap->height;
-		
+
 	return;
 }
 
@@ -319,7 +319,7 @@ static void MGiTextureMap_ClearTMUInfo(MGtTextureMapPrivate *outPrivate)
 	outPrivate->hardware_block_index_tmu1= NONE;
 	outPrivate->hardware_block_index_tmu1_odd = NONE;
 
-#if 0	// these values are valid only for uploaded 
+#if 0	// these values are valid only for uploaded
 	outPrivate->hardware_block_dirty_tmu0 = UUcTrue;
 	outPrivate->hardware_block_dirty_tmu0_even = UUcTrue;
 	outPrivate->hardware_block_dirty_tmu1 = UUcTrue;
@@ -344,13 +344,13 @@ MGrDrawEngine_Method_Texture_Init(
 
 	// always set this, even if this is an invalid texture (or offscreen for that matter)
 	MGiTextureMap_ClearTMUInfo(inTextureMapPrivate);
-	
+
 	// is this an offscreen texture
 	if (inTextureMap->flags & M3cTextureFlags_Offscreen) return UUcError_None;
 
 	// build the private data (does not include the TMU data)
 	MGiTextureMap_BuildPrivate(inTextureMap, inTextureMapPrivate);
-	
+
 
 	return UUcError_None;
 }
@@ -389,7 +389,7 @@ MGrDrawEngine_Method_Texture_Delete(
 
 	// is this an offscreen texture
 	if (inTextureMap->flags & M3cTextureFlags_Offscreen) return UUcError_None;
-	
+
 	if ((globals_3dfx.texture_memory_cache_tmu0 != NULL) && (inTextureMapPrivate->hardware_block_index_tmu0 != NONE))
 	{
 		lrar_deallocate(globals_3dfx.texture_memory_cache_tmu0, inTextureMapPrivate->hardware_block_index_tmu0);
@@ -399,7 +399,7 @@ MGrDrawEngine_Method_Texture_Delete(
 	{
 		lrar_deallocate(globals_3dfx.texture_memory_cache_tmu1, inTextureMapPrivate->hardware_block_index_tmu1);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -412,7 +412,7 @@ MGiDrawEngine_TextureMap_ProcHandler(
 	M3tTextureMap *inTexture = (M3tTextureMap*)inInstancePtr;
 	UUtError	error;
 
-{	
+{
 	void
 	MGrDrawContext_VerifyCaches(
 		void);
@@ -427,29 +427,29 @@ MGiDrawEngine_TextureMap_ProcHandler(
 			error = MGrDrawEngine_Method_Texture_Init(inTexture, (MGtTextureMapPrivate*)inPrivateData);
 			UUmError_ReturnOnError(error);
 			break;
-			
+
 		case TMcTemplateProcMessage_LoadPostProcess:
 			M3rTextureMap_Prepare(inTexture);
 
 			error = MGrDrawEngine_Method_Texture_Init(inTexture, (MGtTextureMapPrivate*)inPrivateData);
 			UUmError_ReturnOnError(error);
 			break;
-			
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 			error = MGrDrawEngine_Method_Texture_Delete(inTexture, (MGtTextureMapPrivate*)inPrivateData);
 			UUmError_ReturnOnError(error);
 			break;
-			
+
 		case TMcTemplateProcMessage_Update:
 			error = MGrDrawEngine_Method_Texture_Update(inTexture, (MGtTextureMapPrivate*)inPrivateData);
 			UUmError_ReturnOnError(error);
 			break;
-			
+
 		case TMcTemplateProcMessage_PrepareForUse:
 			break;
 	}
-	
-{	
+
+{
 	void
 	MGrDrawContext_VerifyCaches(
 		void);
@@ -457,7 +457,7 @@ MGiDrawEngine_TextureMap_ProcHandler(
 }
 	return UUcError_None;
 }
-	
+
 
 
 // ----------------------------------------------------------------------
@@ -466,13 +466,13 @@ MGrDrawEngine_Method_ContextPrivateDelete(
 	void)
 {
 	UUmAssertReadPtr(MGgDrawEngine_TexureMap_PrivateData, sizeof(void*));
-	
+
 	TMrTemplate_PrivateData_Delete(MGgDrawEngine_TexureMap_PrivateData);
 	MGgDrawEngine_TexureMap_PrivateData = NULL;
-	
+
 	// grsstclose
 	dispose_3dfx();
-	
+
 	UUrMemory_Block_Delete(MGgDrawContextPrivate);
 	MGgDrawContextPrivate = NULL;
 }
@@ -491,26 +491,26 @@ MGrDrawEngine_Method_ContextPrivateNew(
 	UUtUns16				activeDevice;
 	UUtUns16				activeMode;
 	M3tDrawEngineCaps*		drawEngineCaps;
-	
+
 	UUmAssert(MGgDrawContextPrivate == NULL);
-	
+
 	MGgDrawContextPrivate = UUrMemory_Block_New(sizeof(MGtDrawContextPrivate));
-	
+
 	if(MGgDrawContextPrivate == NULL)
 	{
 		UUrError_Report(UUcError_OutOfMemory, "Could not allocated private draw context");
 		return UUcError_OutOfMemory;
 	}
-	
+
 	/*
 	 * Get the active draw engine info
 	 */
-	 	
+
 		M3rManager_GetActiveDrawEngine(
 			&activeDrawEngine,
 			&activeDevice,
 			&activeMode);
-	
+
 	 	drawEngineCaps = M3rDrawEngine_GetCaps(activeDrawEngine);
 
 		*outAPI = M3cDrawAPI_Glide;
@@ -531,23 +531,23 @@ MGrDrawEngine_Method_ContextPrivateNew(
 		MGgDrawContextMethods.screenCapture = MGrDrawContext_Method_ScreenCapture;
 		MGgDrawContextMethods.pointVisible = MGrDrawContext_Method_PointVisible;
 		MGgDrawContextMethods.textureFormatAvailable = MGrDrawContext_TextureFormatAvailable;
-		
+
 		*outDrawContextFuncs = &MGgDrawContextMethods;
-		
+
 	MGgDrawContextPrivate->contextType = inDrawContextDescriptor->type;
-	
+
 	MGgDrawContextPrivate->width= drawEngineCaps[activeDrawEngine].displayDevices[activeDevice].displayModes[activeMode].width;
 	MGgDrawContextPrivate->height= drawEngineCaps[activeDrawEngine].displayDevices[activeDevice].displayModes[activeMode].height;
-		
+
 	initialize_3dfx(
 		MGgMotokoToGlideScreenRes[activeMode]);
-	
+
 	// Init some state
 		MGgDrawContextPrivate->vertexList = NULL;
 		MGgDrawContextPrivate->curBaseTexture = NULL;
-	
+
 	// create the texture private data
-		error = 
+		error =
 			TMrTemplate_PrivateData_New(
 				M3cTemplate_TextureMap,
 				sizeof(MGtTextureMapPrivate),
@@ -555,13 +555,13 @@ MGrDrawEngine_Method_ContextPrivateNew(
 				&MGgDrawEngine_TexureMap_PrivateData);
 		UUmError_ReturnOnError(error);
 
-	
+
 	return UUcError_None;
-	
+
 //failure:
-	
+
 	MGrDrawEngine_Method_ContextPrivateDelete();
-	
+
 	return errorCode;
 }
 
@@ -577,36 +577,36 @@ MGrDrawEngine_Method_PrivateState_New(
 	void*	inState_Private)
 {
 	MGtStatePrivate*	statePrivate = (MGtStatePrivate*)inState_Private;
-	
+
 	statePrivate->vertexList = NULL;
 	statePrivate->vertexListBV = NULL;
-	
+
 	statePrivate->vertexList = UUrMemory_Block_New(MGcMaxElements * sizeof(GrVertex));
 	UUmError_ReturnOnNull(statePrivate->vertexList);
-	
+
 	statePrivate->vertexListBV = UUrBitVector_New(MGcMaxElements);
 	UUmError_ReturnOnNull(statePrivate->vertexListBV);
-	
+
 	return UUcError_None;
 }
 
 // This lets the engine delete a new private state structure
-static void 
+static void
 MGrDrawEngine_Method_PrivateState_Delete(
 	void*	inState_Private)
 {
 	MGtStatePrivate*	statePrivate = (MGtStatePrivate*)inState_Private;
-	
+
 	if(statePrivate->vertexList != NULL)
 	{
 		UUrMemory_Block_Delete(statePrivate->vertexList);
 	}
-	
+
 	if(statePrivate->vertexListBV != NULL)
 	{
 		UUrBitVector_Dispose(statePrivate->vertexListBV);
 	}
-	
+
 	statePrivate->vertexList = NULL;
 	statePrivate->vertexListBV = NULL;
 }
@@ -626,11 +626,11 @@ MGrDrawEngine_Method_State_Update(
 	UUtUns16					interpolation;
 	UUtUns16					tmuMode;
 	M3tDrawStateVertexFormat	vertexMode;
-	
+
 	MGgDrawContextPrivate->vertexList = statePrivate->vertexList;
 	MGgDrawContextPrivate->stateInt = inState_Int;
 	MGgDrawContextPrivate->statePtr = inState_Ptr;
-	
+
 	if(inState_IntFlags & (1 << M3cDrawStateIntType_ZCompare))
 	{
 		if(inState_Int[M3cDrawStateIntType_ZCompare] == M3cDrawState_ZCompare_On)
@@ -646,7 +646,7 @@ MGrDrawEngine_Method_State_Update(
 			grDepthBufferFunction(GR_CMP_ALWAYS);
 		}
 	}
-	
+
 	if(inState_IntFlags & (1 << M3cDrawStateIntType_ZWrite))
 	{
 		if(inState_Int[M3cDrawStateIntType_ZWrite] == M3cDrawState_ZWrite_On)
@@ -658,14 +658,14 @@ MGrDrawEngine_Method_State_Update(
 			MGrSet_ZWrite(MGcZWrite_Off);
 		}
 	}
-	
-	if((inState_Int[M3cDrawStateIntType_Appearence] != M3cDrawState_Appearence_Gouraud) && 
+
+	if((inState_Int[M3cDrawStateIntType_Appearence] != M3cDrawState_Appearence_Gouraud) &&
 		(inState_Int[M3cDrawStateIntType_Fill] == M3cDrawState_Fill_Solid))
 	{
 		if(inState_PtrFlags & (1 << M3cDrawStatePtrType_BaseTextureMap))
 		{
 			M3tTextureMap* textureMap = (M3tTextureMap*)inState_Ptr[M3cDrawStatePtrType_BaseTextureMap];
-			
+
 			if(textureMap != NULL)
 			{
 				MGrSet_TextureMode(textureMap);
@@ -680,27 +680,27 @@ MGrDrawEngine_Method_State_Update(
 	{
 		MGgDrawContextPrivate->curBaseTexture = NULL;
 	}
-	
+
 	if(inState_IntFlags & ((1 << M3cDrawStateIntType_ConstantColor) | (1 << M3cDrawStateIntType_Alpha)))
 	{
 		UUtUns32 	alpha = inState_Int[M3cDrawStateIntType_Alpha];
-		UUtUns32	glideColor; 
+		UUtUns32	glideColor;
 
 		UUmAssert(alpha <= 0xff);
-				
-		glideColor = 
-			(alpha & 0xff) << 24 | 
+
+		glideColor =
+			(alpha & 0xff) << 24 |
 			(inState_Int[M3cDrawStateIntType_ConstantColor] & 0x00ffffff);
 
 		grConstantColorValue(glideColor);
 	}
-	
+
 	fill = (UUtUns16)inState_Int[M3cDrawStateIntType_Fill];
 	appearance = (UUtUns16)inState_Int[M3cDrawStateIntType_Appearence];
 	interpolation = (UUtUns16)inState_Int[M3cDrawStateIntType_Interpolation];
 	tmuMode = (UUtUns16)globals_3dfx.numTMU - 1;
 	vertexMode = (M3tDrawStateVertexFormat)inState_Int[M3cDrawStateIntType_VertexFormat];
-	
+
 	if(inState_IntFlags & (
 			(1 << M3cDrawStateIntType_Appearence) |
 			(1 << M3cDrawStateIntType_Interpolation) |
@@ -710,7 +710,7 @@ MGrDrawEngine_Method_State_Update(
 		MGtModeFunction	modeFunction;
 
 		MGgDrawContextMethods.line		= MGgLineFuncs[interpolation];
-		
+
 		if(vertexMode == M3cDrawStateVertex_Unified)
 		{
 			MGgDrawContextMethods.triangle	= (M3tDrawContextMethod_Triangle)MGgTriangleFuncs_VertexUnified[fill][appearance][interpolation];
@@ -720,7 +720,7 @@ MGrDrawEngine_Method_State_Update(
 			modeFunction = MGgModeFuncs_VertexUnified[fill][appearance][interpolation];
 		}
 		else if(vertexMode == M3cDrawStateVertex_Split)
-		{			
+		{
 			MGgDrawContextMethods.triangle	= (M3tDrawContextMethod_Triangle)MGgTriangleFuncs_VertexSplit[fill][appearance][interpolation][tmuMode];
 			MGgDrawContextMethods.quad		= (M3tDrawContextMethod_Quad)MGgQuadFuncs_VertexSplit[fill][appearance][interpolation][tmuMode];
 			MGgDrawContextMethods.pent		= (M3tDrawContextMethod_Pent)MGgPentFuncs_VertexSplit[fill][appearance][interpolation][tmuMode];
@@ -731,22 +731,22 @@ MGrDrawEngine_Method_State_Update(
 		{
 			UUmAssert(!"Illegal vertex mode");
 		}
-		
+
 		modeFunction();
-		
+
 	}
-	
+
 	if(interpolation == M3cDrawState_Interpolation_Vertex && appearance == M3cDrawState_Appearence_Texture_Lit)
 	{
 		UUmAssert(globals_3dfx.currentColorCombine == MGcColorCombine_TextureGouraud);
 	}
-	
+
 	if(inState_PtrFlags & (1 << M3cDrawStatePtrType_ScreenPointArray))
 	{
 		if(inState_Int[M3cDrawStateIntType_NumRealVertices] > 0)
 		{
 			MGtVertexCreateFunction vertexCreateFunction;
-			
+
 			if(inState_Int[M3cDrawStateIntType_VertexFormat] == M3cDrawStateVertex_Unified)
 			{
 				vertexCreateFunction = MGgVertexCreateFuncs_Unified[appearance][interpolation];
@@ -755,13 +755,13 @@ MGrDrawEngine_Method_State_Update(
 			{
 				vertexCreateFunction = MGgVertexCreateFuncs_Split[appearance][interpolation][tmuMode];
 			}
-			
+
 			vertexCreateFunction();
 		}
 	}
-	
+
 	MGgDrawContextPrivate->clipping = (UUtBool)inState_Int[M3cDrawStateIntType_Clipping];
-	
+
 	MGgBufferClear = (UUtBool) inState_Int[M3cDrawStateIntType_BufferClear];
 	MGgDoubleBuffer = (UUtBool) inState_Int[M3cDrawStateIntType_DoubleBuffer];
 
@@ -776,10 +776,10 @@ MGrDrawEngine_Initialize(
 	void)
 {
 	UUtError error;
-	
+
 	UUtUns16				curDisplayModeIndex;
 	UUtUns16				itr;
-	
+
 	// available_3dfx() loads the glide DLL and must be called before
 	// initialize_3dfx().
 	if (!available_3dfx())
@@ -796,22 +796,22 @@ MGrDrawEngine_Initialize(
 	MGgDrawEngineMethods.contextPrivateNew = MGrDrawEngine_Method_ContextPrivateNew;
 	MGgDrawEngineMethods.contextPrivateDelete = MGrDrawEngine_Method_ContextPrivateDelete;
 	MGgDrawEngineMethods.textureResetAll = MGrDrawEngine_Method_Texture_ResetAll;
-	
+
 	MGgDrawEngineMethods.privateStateSize = sizeof(MGtStatePrivate);
 	MGgDrawEngineMethods.privateStateNew = MGrDrawEngine_Method_PrivateState_New;
 	MGgDrawEngineMethods.privateStateDelete = MGrDrawEngine_Method_PrivateState_Delete;
 	MGgDrawEngineMethods.privateStateUpdate = MGrDrawEngine_Method_State_Update;
-	
+
 	MGgDrawEngineCaps.engineFlags = M3cDrawEngineFlag_3DOnly;
-	
+
 	UUrString_Copy(MGgDrawEngineCaps.engineName, M3cDrawEngine_3DFX_Glide2x, M3cMaxNameLen);
 	MGgDrawEngineCaps.engineDriver[0] = 0;
-	
+
 	MGgDrawEngineCaps.engineVersion = MGcSoftware_Version;
-	
+
 	MGgDrawEngineCaps.numDisplayDevices = 1;
 	MGgDrawEngineCaps.displayDevices[0].numDisplayModes = 0;
-	
+
 	for(itr = 0;
 		MGgPixelFormatTable[itr].glideID != GR_RESOLUTION_NONE && itr < M3cMaxDisplayModes;
 		itr++)
@@ -820,15 +820,15 @@ MGrDrawEngine_Initialize(
 			MGgFrameBufferBytes)
 		{
 			curDisplayModeIndex = MGgDrawEngineCaps.displayDevices[0].numDisplayModes++;
-			MGgDrawEngineCaps.displayDevices[0].displayModes[curDisplayModeIndex].width = 
+			MGgDrawEngineCaps.displayDevices[0].displayModes[curDisplayModeIndex].width =
 				MGgPixelFormatTable[itr].width;
-			MGgDrawEngineCaps.displayDevices[0].displayModes[curDisplayModeIndex].height = 
+			MGgDrawEngineCaps.displayDevices[0].displayModes[curDisplayModeIndex].height =
 				MGgPixelFormatTable[itr].height;
 			MGgDrawEngineCaps.displayDevices[0].displayModes[curDisplayModeIndex].bitDepth = 16;
 			MGgMotokoToGlideScreenRes[curDisplayModeIndex] = MGgPixelFormatTable[itr].glideID;
 		}
 	}
-	
+
 	error =
 		M3rManager_Register_DrawEngine(
 			&MGgDrawEngineCaps,
@@ -856,29 +856,29 @@ MGrDrawContext_Method_Frame_Start(
 {
 
 	//MGgDrawContextPrivate->stateFlags = 0xFF;
-	
+
 	if (MGgBufferClear) {
 		erase_backbuffer_3dfx();
 	}
 
 	start_rasterizing_3dfx();
-	
+
 	MGgTextureBytesDownloaded = 0;
-	
+
 	return UUcError_None;
 }
-	
+
 // ----------------------------------------------------------------------
 UUtError
 MGrDrawContext_Method_Frame_End(
 	UUtUns32	*outTextureBytesDownloaded)
 {
-	
+
 	*outTextureBytesDownloaded = MGgTextureBytesDownloaded;
 
 	stop_rasterizing_3dfx();
 	display_backbuffer_3dfx();
-	
+
 	return UUcError_None;
 }
 

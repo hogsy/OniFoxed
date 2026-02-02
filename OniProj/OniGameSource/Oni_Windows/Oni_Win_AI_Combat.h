@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	Oni_Win_Combat.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: May 5, 2000
-	
+
 	PURPOSE: AI Combat Windows
-	
+
 	Copyright (c) Bungie Software 2000
 
 */

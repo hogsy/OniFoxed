@@ -30,9 +30,9 @@ enum
 	ONcIEModType_HeavyDamage,
 	ONcIEModType_MediumDamage,
 	ONcIEModType_LightDamage,
-	
+
 	ONcIEModType_NumTypes,
-	
+
 	ONcIEModType_None			= 0xFFFFFFFF
 };
 
@@ -67,7 +67,7 @@ typedef struct ONtIEParticle
 {
 	char						particle_class_name[P3cParticleClassNameLength + 1];
 	P3tEffectSpecification		effect_spec;
-	
+
 } ONtIEParticle;
 
 typedef struct ONtIESound_Version1
@@ -199,7 +199,7 @@ ONrImpactEffect(
 	float						inAIVolumeModifier,
 	struct ONtCharacter			*inAICharacter1,
 	struct ONtCharacter			*inAICharacter2);
-	
+
 void
 ONrImpactEffect_Lookup(
 	MAtImpactType				inImpactType,
@@ -257,7 +257,7 @@ ONrImpactEffects_SetupSoundPointers(
 UUtError
 ONrImpactEffects_CreateBlank(
 	void);
-	
+
 UUtError
 ONrImpactEffects_Save(
 	UUtBool						inAutoSave);

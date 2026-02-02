@@ -1,12 +1,12 @@
 /*
 	FILE:	EM_GC_Method_Pick.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */

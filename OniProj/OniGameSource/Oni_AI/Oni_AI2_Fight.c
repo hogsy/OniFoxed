@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Fight.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: September 17, 2000
-	
+
 	PURPOSE: Fight AI for Oni
-	
+
 	Copyright (c) 2000
 
 */
@@ -241,7 +241,7 @@ static UUtBool AI2iFight_DiscardAttackCookie(AI2tFightState *ioFightState, AI2tF
 {
 	if (!ioFightInfo->has_attack_cookie)
 		return UUcFalse;
-	
+
 	ioFightInfo->has_attack_cookie = UUcFalse;
 
 	UUmAssert(ioFightState->num_attack_cookies > 0);

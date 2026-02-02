@@ -1,12 +1,12 @@
  /*
 	FILE:	Oni.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: April 2, 1997
-	
+
 	PURPOSE: main .c file for Oni
-	
+
 	Copyright 1997
 
 */
@@ -87,7 +87,7 @@ OniParseCommandLine(
 	ONgCommandLine.useOpenGL = UUcFalse;
 	ONgCommandLine.useGlide = UUcFalse;
 	ONgCommandLine.useSound = UUcTrue;
-	
+
 	for(itr = 1; itr < argc; itr++)
 	{
 		char *current_parameter = argv[itr];
@@ -166,9 +166,9 @@ ONiInitializeAll(
 	UUtError		error;
 
 	UUrStartupMessage("begin initializing oni");
-	
+
 	ONgTerminateGame = UUcFalse;
-	
+
 	/*
 	 * Initialize the template management system
 	 */
@@ -179,10 +179,10 @@ ONiInitializeAll(
 
 	if(error != UUcError_None) {
 		UUrStartupMessage("Unable to find game data folder at %s", ONcGameDataFolder1);
-	
+
 		error =	BFrFileRef_Search(ONcGameDataFolder2, &ONgGameDataFolder);
 	}
-	
+
 	if (UUcError_None != error) {
 		UUrStartupMessage("Unable to find game data folder at %s", ONcGameDataFolder2);
 		error = ONcError_NoDataFolder;
@@ -193,10 +193,10 @@ ONiInitializeAll(
 	UUrStartupMessage("initializing the template manager");
 	error = TMrInitialize(UUcTrue, &ONgGameDataFolder);
 	UUmError_ReturnOnError(error);
-		
+
 	UUrStartupMessage("calling TMrRegisterTemplates");
 	TMrRegisterTemplates();
-	
+
 	UUrStartupMessage("calling ONrRegisterTemplates");
 	ONrRegisterTemplates();
 
@@ -210,19 +210,19 @@ ONiInitializeAll(
 
 	UUrStartupMessage("initializing oni persistance");
 	ONrPersistance_Initialize();
-		
+
 	UUrStartupMessage("initializing scripting");
 	error = SLrScript_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	UUrStartupMessage("initializing binary data system");
  	error = BDrInitialize();
  	UUmError_ReturnOnError(error);
-	 	
+
 	UUrStartupMessage("initializing imaging");
 	error = IMrInitialize();
 	UUmError_ReturnOnError(error);
-	
+
 	UUrStartupMessage("initializing motoko");
 	error = M3rInitialize();
 	UUmError_ReturnOnError(error);
@@ -234,7 +234,7 @@ ONiInitializeAll(
 	UUrStartupMessage("initializing oni motoko");
 	error = ONrMotoko_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	UUrStartupMessage("initializing local input");
 	error = LIrInitialize(outPlatformData->appInstance, outPlatformData->gameWindow);
 	UUmError_ReturnOnError(error);
@@ -242,11 +242,11 @@ ONiInitializeAll(
 	UUrStartupMessage("initializing animation system");
 	error = TRrInitialize();
 	UUmError_ReturnOnError(error);
-		
+
 	UUrStartupMessage("initializing environment");
 	error = AKrInitialize();
 	UUmError_ReturnOnError(error);
-		
+
 	UUrStartupMessage("initializing text system");
 	error = TSrInitialize();
 	UUmError_ReturnOnError(error);
@@ -258,11 +258,11 @@ ONiInitializeAll(
  	UUrStartupMessage("initializing the materials");
 	error = MArMaterials_Initialize();
 	UUmError_ReturnOnErrorMsg(error, "Could not initialize the materials");
-	
+
 	UUrStartupMessage("initializing the full sound system 2");
 	error = SS2rInitializeFull();
  	UUmError_ReturnOnError(error);
-	 	
+
 	UUrStartupMessage("initializing particle 3");
 	error = P3rInitialize();
 	UUmError_ReturnOnError(error);
@@ -274,7 +274,7 @@ ONiInitializeAll(
 	UUrStartupMessage("initializing env particle system");
 	error = EPrInitialize();
 	UUmError_ReturnOnError(error);
-	
+
 
 	UUrStartupMessage("initializing physics");
 	error = PHrPhysics_Initialize();
@@ -283,55 +283,55 @@ ONiInitializeAll(
 	UUrStartupMessage("initializing game state");
 	error = ONrGameState_Initialize();
 	UUmError_ReturnOnError(error);
-		
+
 	UUrStartupMessage("initializing AI 2");
 	error = AI2rInitialize();
 	UUmError_ReturnOnError(error);
-	
+
 	UUrStartupMessage("initializing window manager");
 	error = WMrInitialize();
 	UUmError_ReturnOnError(error);
-	
+
 	UUrStartupMessage("initializing film system");
 	error = ONrFilm_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	UUrStartupMessage("initializing level");
 	error = ONrLevel_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	UUrStartupMessage("initializing oni scripting");
 	error = ONrScript_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	UUrStartupMessage("initializing OBDr");
 	error = OBDrInitialize();
 	UUmError_ReturnOnError(error);
-		
+
 	UUrStartupMessage("initializing OBJr");
  	error = OBJrInitialize();
  	UUmError_ReturnOnError(error);
-	
+
 	UUrStartupMessage("initializing oni cinematics");
  	error = OCrInitialize();
  	UUmError_ReturnOnError(error);
-	 
+
 	UUrStartupMessage("initializing oni sound");
  	error = OSrInitialize();
  	UUmError_ReturnOnError(error);
-	
+
 	UUrStartupMessage("initializing oni movie");
 	error = ONrMovie_Initialize();
 	UUmError_ReturnOnError(error);
-		
+
 	UUrStartupMessage("initializing the pause screen");
 	error = ONrInGameUI_Initialize();
 	UUmError_ReturnOnError(error);
 
 	CLrInitialize();
- 	
+
 	UUrStartupMessage("finished oni initializing");
-	
+
 	return UUcError_None;
 }
 
@@ -357,15 +357,15 @@ ONiRunGame(
 	UUtUns32		game_ticks;
 
 	UUtInt64		time_frame_start, time_frame_end;
-	
+
 	#if defined(BRENTS_CHEESY_GAME_PERF) && BRENTS_CHEESY_GAME_PERF
 		#define RECENT_FRAME_COUNT 128
-				
+
 		UUtInt64	time_gamestateupdate_start;
 		UUtInt64	time_gamestateupdate_end;
 
 		UUtInt64	time_gamestatedisplay_start;
-		
+
 		UUtUns32	time_frame_cur;
 		static UUtUns32	time_frame_recent[RECENT_FRAME_COUNT];
 		static UUtUns32	time_frame_count;
@@ -373,34 +373,34 @@ ONiRunGame(
 		UUtUns32	time_gamestateupdate_cur;
 		UUtUns32	time_gamestateupdate_total = 0;
 		UUtUns32	time_gamestatedisplay_cur;
-		UUtUns32	time_gamestatedisplay_total = 0;							
+		UUtUns32	time_gamestatedisplay_total = 0;
 	#endif
-	
+
 //UUrProfile_State_Set(UUcProfile_State_On);
-	
+
 	while(!ONgTerminateGame)
 	{
 		time_frame_start = UUrMachineTime_High();
-		
+
 		#if defined(SScMSADPCMTimer) && (SScMSADPCMTimer == 1)
 		SS2rFrame_Start();
 		#endif
-		
+
 		// step 0	update the local input
 		LIrUpdate();
-		
+
 		// step 1	clear the matrix stack, frame start ?
 		M3rMatrixStack_Clear();
-		
+
 		// step 2	update the windows
 		WMrUpdate();
 		OWrUpdate();
-		
+
 		if (!ONrGameState_IsPaused())
 		{
 			// step 3	process local input
 			LIrActionBuffer_Get(&numActionsInBuffer, &actionBuffer);
-			
+
 			{
 				UUtUns32 itr;
 
@@ -415,35 +415,35 @@ ONiRunGame(
 			// step 4	update the console time
 			error =	COrConsole_Update(numActionsInBuffer);
 			UUmError_ReturnOnErrorMsg(error, "Could not update the console.");
-			
+
 			ONrGameState_UpdateServerTime(ONgGameState);
 
 			#if defined(BRENTS_CHEESY_GAME_PERF) && BRENTS_CHEESY_GAME_PERF
-				
+
 				time_gamestateupdate_start = UUrMachineTime_High();
-				
+
 			#endif
-		
+
 			// step 6	update the game
 			error = ONrGameState_Update(numActionsInBuffer, actionBuffer, &game_ticks);
 			UUmError_ReturnOnErrorMsg(error, "Could not update game state.");
-		
+
 			#if defined(BRENTS_CHEESY_GAME_PERF) && BRENTS_CHEESY_GAME_PERF
-				
+
 				time_gamestateupdate_end = UUrMachineTime_High();
-				
+
 			#endif
 		}
 
 		// step 7	play the sounds
 		SS2rUpdate();
-		
+
 		// step 8 draw current game state
 
 		#if defined(BRENTS_CHEESY_GAME_PERF) && BRENTS_CHEESY_GAME_PERF
-			
+
 			time_gamestatedisplay_start = UUrMachineTime_High();
-			
+
 		#endif
 
 		if (ONgGameState->local.pending_splash_screen[0] != '\0') {
@@ -466,22 +466,22 @@ ONiRunGame(
 		}
 
 		time_frame_end = UUrMachineTime_High();
-		
+
 		// step 9 calculate the fps
-		
+
 		ONgNumFrames++;
-		
+
 		#if defined(BRENTS_CHEESY_GAME_PERF) && BRENTS_CHEESY_GAME_PERF
 		{
 			extern UUtBool ONgShowPerformance_Overall;
-			
+
 			time_frame_cur = (UUtUns32)(time_frame_end - time_frame_start);
 			time_frame_total += time_frame_cur;
 			time_frame_recent[time_frame_count] = time_frame_cur;
 			time_frame_count = (time_frame_count + 1) % RECENT_FRAME_COUNT;
 			time_gamestateupdate_cur = (UUtUns32)(time_gamestateupdate_end - time_gamestateupdate_start);
 			time_gamestateupdate_total += time_gamestateupdate_cur;
-			
+
 			time_gamestatedisplay_cur = (UUtUns32)(time_frame_end - time_gamestatedisplay_start);
 			time_gamestatedisplay_total += time_gamestatedisplay_cur;
 
@@ -491,7 +491,7 @@ ONiRunGame(
 				char s1[128];
 				char s2[128];
 				char s3[128];
-				
+
 				float frames_per_second_cur;
 				float frames_per_second_avg;
 
@@ -499,20 +499,20 @@ ONiRunGame(
 				float time_gamestateupdate_per_frame_avg;
 				float time_gamestatedisplay_per_frame_cur;
 				float time_gamestatedisplay_per_frame_avg;
- 
+
 				frames_per_second_cur = (float)(1.0 / (double)time_frame_cur * UUgMachineTime_High_Frequency);
 				frames_per_second_avg = (float)(((double)ONgNumFrames / (double)time_frame_total) * UUgMachineTime_High_Frequency);
-				
+
 				time_gamestateupdate_per_frame_cur = (float)time_gamestateupdate_cur / (float)time_frame_cur;
 				time_gamestateupdate_per_frame_avg = (float)time_gamestateupdate_total / (float)time_frame_total;
-				
+
 				time_gamestatedisplay_per_frame_cur = (float)time_gamestatedisplay_cur / (float)time_frame_cur;
 				time_gamestatedisplay_per_frame_avg = (float)time_gamestatedisplay_total / (float)time_frame_total;
-				
+
 				sprintf(s1, "fps_cur: %03.1f, fps_avg: %03.1f",	frames_per_second_cur, frames_per_second_avg);
 				sprintf(s2, "gsu/f cur: %02.1f, gsu/f avg: %02.1f",	time_gamestateupdate_per_frame_cur * 100.0f, time_gamestateupdate_per_frame_avg * 100.0f);
 				sprintf(s3,	"gsd/f cur: %02.1f, gsd/f avg: %02.1f", time_gamestatedisplay_per_frame_cur * 100.0f, time_gamestatedisplay_per_frame_avg * 100.0f);
-				
+
 				ONrGameState_Performance_UpdateOverall(
 					s1,
 					s2,
@@ -526,21 +526,21 @@ ONiRunGame(
 				UUtUns32 time_frame_index;
 				UUtUns32 time_frame_recent_total;
                                 extern UUtUns32 triCounter, quadCounter, pentCounter;
-                                
+
 				float frames_per_second_recent;
 
  				time_frame_recent_total = 0;
  				for (time_frame_index = 0; time_frame_index < RECENT_FRAME_COUNT; time_frame_index++) {
  					time_frame_recent_total += time_frame_recent[time_frame_index];
  				}
- 				
+
 				frames_per_second_recent = (float)(RECENT_FRAME_COUNT / (double)time_frame_recent_total * UUgMachineTime_High_Frequency);
-				
+
 				sprintf(s1, "fps:%03.1f 3:%d 4:%d 5:%d", frames_per_second_recent, triCounter, quadCounter, pentCounter);
 				sprintf(s2, "tc:%d tm:%d", gl->num_loaded_textures, gl->current_texture_memory);
 
 				ONrGameState_Performance_UpdateOverall(s1, s2, NULL);
-                                
+
                                 triCounter = 0;
                                 quadCounter = 0;
                                 pentCounter = 0;
@@ -548,7 +548,7 @@ ONiRunGame(
 #endif
 		}
 		#endif
-		
+
 		#if defined(SScMSADPCMTimer) && (SScMSADPCMTimer == 1)
 		SS2rFrame_End();
 		#endif
@@ -560,7 +560,7 @@ ONiRunGame(
 
 			ONgGameState->local.pending_pause_screen = UUcFalse;
 		}
-			
+
 		switch(ONgGameState->victory)
 		{
 			case ONcWin:
@@ -569,7 +569,7 @@ ONiRunGame(
 					UUtUns16 next_level = ONrLevel_GetNextLevel(ONgGameState->levelNumber);
 
 					ONrGameState_ClearContinue();
-					
+
 					ONrGameState_SplashScreen(ONcWinSplashScreen, OScMusicScore_Win, UUcTrue);
 					ONrLevel_Unload();
 
@@ -588,7 +588,7 @@ ONiRunGame(
 						ONgTerminateGame = UUcTrue;
 					}
 					else if (next_level != 0) {
-						ONrLevel_Load(next_level, UUcTrue);	
+						ONrLevel_Load(next_level, UUcTrue);
 					}
 					else {
 						ONgTerminateGame = UUcTrue;
@@ -599,10 +599,10 @@ ONiRunGame(
 			case ONcLose:
 				{
 					UUtUns16 old_level = ONgGameState->levelNumber;
-					
+
 					ONrGameState_SplashScreen(ONcFailSplashScreen, OScMusicScore_Lose, UUcTrue);
 					ONrLevel_Unload();
-					ONrLevel_Load(ONgGameState->levelNumber, UUcTrue);	
+					ONrLevel_Load(ONgGameState->levelNumber, UUcTrue);
 				}
 				break;
 		}
@@ -623,9 +623,9 @@ ONiConsole_Platform_Report(
 
 static UUtError ONiCreateConsoleVariables(void)
 {
-	
+
 	#if 0
-	error = 
+	error =
 		COrCommand_New(
 			"platform_report",
 			"reports information about the target platform",
@@ -633,7 +633,7 @@ static UUtError ONiCreateConsoleVariables(void)
 			NULL);
 	UUmError_ReturnOnError(error);
 	#endif
-	
+
 	return UUcError_None;
 }
 
@@ -643,12 +643,12 @@ static void RunKeyConfigFile(const char *inFileName)
 	BFtFileRef		configFileRef;
 	BFtTextFile*	configFile;
 	char*			curLine;
-	
+
 	error = BFrFileRef_Search(inFileName, &configFileRef);
 	if(error != UUcError_None) {
 		goto exit;
 	}
-	
+
 	if (!BFrFileRef_FileExists(&configFileRef)) {
 		goto exit;
 	}
@@ -658,7 +658,7 @@ static void RunKeyConfigFile(const char *inFileName)
 	if (error != UUcError_None) {
 		goto exit;
 	}
-	
+
 	while(1)
 	{
 		curLine = BFrTextFile_GetNextStr(configFile);
@@ -723,10 +723,10 @@ static void RunKeyConfigFile(const char *inFileName)
 			}
 		}
 	}
-	
+
 	BFrTextFile_Close(configFile);
 
-exit:	
+exit:
 	return;
 }
 
@@ -819,23 +819,23 @@ void OniExit(
 	ONrMotoko_TearDownDrawing();
 
 	UUrMemory_Block_VerifyList();
-	
+
 	// destropy the oni windows
 	OWrTerminate();
-	
+
 	// destroy the window manager before unloading level 0
 	WMrTerminate();
 
 	// Unload level 0
 	TMrLevel_Unload(0);
-		
+
 	UUrMemory_Block_VerifyList();
 	TMrTerminate();
 
 	UUrMemory_Block_VerifyList();
 
 	M3rTerminate();
-    
+
 #ifndef USE_OPENGL_WITH_BINK
     // now is the time to play the ending movie if we're going to do it in software
     // (after Motoko is terminated but while local input is still working)
@@ -844,9 +844,9 @@ void OniExit(
         ONrMovie_Play("outro.bik", BKcScale_Fill_Window);
     }
 #endif
-    
+
 	LIrTerminate();
-	
+
 	ONrInGameUI_Terminate();
 	WPrTerminate();
 	ONrImpactEffects_Terminate();
@@ -876,7 +876,7 @@ void OniExit(
 	IMrTerminate();
 	ONrScript_Terminate();
 	SLrScript_Terminate();
-		
+
 	UUrMemory_Block_VerifyList();
 	UUrStartupMessage("oni exit complete, shutting down...");
 
@@ -892,42 +892,42 @@ ONiMain(
 	char**		argv)
 {
 	UUtError					error;
-	
+
 	ONtGameState*				gameState = NULL;
-	
-	
+
+
 	// Brents debugging stuff
 	#if 0
 	{
 		#define ns (30)
-		
+
 		UUtUns32	i;
 		UUtInt64*	samples;
 		UUtUns32	final[ns];
-		
+
 		samples = UUrMemory_Block_New(sizeof(UUtInt64) * ns);
 		UUmError_ReturnOnNull(samples);
-		
+
 		for(i = 0; i < ns; i++)
 		{
 			Microseconds((UnsignedWide*)&samples[i]);
 			Delay(60, &final[i]);
 		}
-		
+
 		for(i = 1; i < ns; i++)
 		{
 			fprintf(stderr, "%d, %d\n", (UUtInt32)(samples[i] - samples[i-1]), final[i]);
 		}
-		
+
 		return;
 	}
 	#endif
-	
+
 	if(OniParseCommandLine(argc, argv) != UUcError_None)
 	{
 		return UUcError_BadCommandLine;
 	}
-	
+
 	/*
 	 * Initialize the Universal Utilities. This does a base level platform init. So if
 	 * this succedes we can bring up error dialogs
@@ -940,26 +940,26 @@ ONiMain(
 			/* XXX - This is really bad - should never happen */
 			return error;
 		}
-		
+
 	#if defined(PROFILE) && PROFILE
 		error = UUrProfile_Initialize();
 		UUmError_ReturnOnErrorMsg(error, "Could not initialize profiler.");
-		
+
 		UUrProfile_State_Set(UUcProfile_State_Off);
 	#endif
-		
+
 	/*
 	 * Initialize all components
 	 */
 		error = ONiInitializeAll(&ONgPlatformData);
 		UUmError_ReturnOnErrorMsg(error, "Could not initialize components.");
-	
+
 	/*
 	 * Load Level Zero
 	 */
 		error = ONrLevel_LoadZero();
 		UUmError_ReturnOnErrorMsg(error, "Could not load level zero");
-		
+
 #ifndef USE_OPENGL_WITH_BINK
 	/*
 	 * play movie before OpenGL takes over
@@ -970,18 +970,18 @@ ONiMain(
 	/*
 	 * Get the motoko drawing context
 	 */
-		error = 
+		error =
 			ONrMotoko_SetupDrawing(
 				&ONgPlatformData);
 		UUmError_ReturnOnError(error);
-	
+
 		// Now new texture maps can be created, so aiming can make its texture
 		AMrInitialize();
-			
+
 	/*
 	 * initialize the Oni Window
 	 */
-		UUrStartupMessage("Initializing the Oni Window...");	
+		UUrStartupMessage("Initializing the Oni Window...");
 		error = OWrInitialize();
 		UUmError_ReturnOnErrorMsg(error, "Unable to initialize the Oni Window");
 
@@ -1010,7 +1010,7 @@ ONiMain(
 #endif
 
 		KeyConfig();
-		
+
 	/*
 	 * run the main menu
 	 */
@@ -1023,31 +1023,31 @@ ONiMain(
 		/*
 		 * Load the level
 		 */
-			
+
 #if TOOL_VERSION
-		// Run the console config file	
+		// Run the console config file
 		UUrStartupMessage("loading config file...");
 		if (COcConfigFile_Read == ONgCommandLine.readConfigFile) COrRunConfigFile("oni_config.txt");
 #endif
 
-		
+
 		/*
 		 * Run the game
 		 */
-				
+
 		UUrStartupMessage("running game...");
 		error =	ONiRunGame();
 		UUmError_ReturnOnErrorMsg(error, "error running game");
-		
+
 		#if defined(PROFILE) && PROFILE
-	
+
 			UUrProfile_State_Set(UUcProfile_State_Off);
-	
+
 			UUrProfile_Dump("OniProfile");
 			UUrProfile_Terminate();
-		
+
 		#endif
-	
+
 		UUrMemory_Block_VerifyList();
 
 		if (NULL != ONgLevel) {
@@ -1055,7 +1055,7 @@ ONiMain(
 			ONrLevel_Unload();
 		}
 	}
-	
+
 	OniExit();
 
 	return UUcError_None;
@@ -1077,7 +1077,7 @@ main(
 #else // shift key reads in command line params
 	if (LIrTestKey(LIcKeyCode_LeftShift) || LIrTestKey(LIcKeyCode_RightShift))
 #endif
-	{	
+	{
 		argc= CLrGetCommandLine(argc, argv, &argv);
 	}
 

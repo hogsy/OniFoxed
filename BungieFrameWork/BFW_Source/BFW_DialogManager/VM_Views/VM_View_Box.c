@@ -56,10 +56,10 @@ VMrView_Box_Callback(
 	UUtUns32			inParam2)
 {
 	VMtView_Box				*box;
-	
+
 	// get a pointer to the data
 	box = (VMtView_Box*)inView->view_data;
-	
+
 	switch (inMessage)
 	{
 		case VMcMessage_Paint:
@@ -70,6 +70,6 @@ VMrView_Box_Callback(
 				(M3tPointScreen*)inParam2);
 		return 0;
 	}
-	
+
 	return VMrView_DefaultCallback(inView, inMessage, inParam1, inParam2);
 }

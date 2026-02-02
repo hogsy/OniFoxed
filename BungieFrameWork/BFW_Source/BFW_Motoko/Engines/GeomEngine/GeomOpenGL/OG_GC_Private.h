@@ -1,12 +1,12 @@
 /*
 	FILE:	OG_GC_Private.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -30,19 +30,19 @@ typedef struct OGtGeomContextPrivate	OGtGeomContextPrivate;
 struct OGtGeomContextPrivate
 {
 	M3tGeomContextMethods	contextMethods;
-	
+
 	struct TMtCache_Simple*		geometryCache;
-	
+
 	AKtEnvironment*			environment;
 	UUtUns32*				evil_stateInt;
-	
+
 	M3tPoint3D			tempPoints[OGcTempVertices_Num];
 	M3tTextureCoord		tempBaseUVs[OGcTempVertices_Num];
 	M3tTextureCoord		tempLightUVs[OGcTempVertices_Num];
 	M3tTextureMap*		tempBaseMaps[OGcTempQuads_Num];
 	M3tTextureMap*		tempLightMaps[OGcTempQuads_Num];
 	M3tTextureMap*		tempCrudMaps[OGcTempQuads_Num];
-	
+
 };
 
 extern OGtGeomContextPrivate	OGgGeomContextPrivate;

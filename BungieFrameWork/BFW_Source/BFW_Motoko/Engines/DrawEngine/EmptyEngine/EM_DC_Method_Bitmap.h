@@ -1,12 +1,12 @@
 /*
 	FILE:	EM_DC_Method_Bitmap.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Nov 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -22,7 +22,7 @@ EDrDrawContext_Method_Sprite(
 
 UUtError
 EDrDrawContext_Method_ScreenCapture(
-	const UUtRect *inRect, 
+	const UUtRect *inRect,
 	void *outBuffer);
 
 

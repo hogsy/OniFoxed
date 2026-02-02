@@ -2,13 +2,13 @@
 
 /*
 	FILE:	BFW_Ranma.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Sept 18, 1998
 
 	PURPOSE: hierirchical rigid body dynamics engine
-	
+
 	Copyright 1998
 
 */

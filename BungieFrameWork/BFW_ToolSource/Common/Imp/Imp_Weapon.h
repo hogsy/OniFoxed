@@ -1,12 +1,12 @@
 /*
 	FILE:	Imp_Weapon.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: 3/18/1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998 Bungie Software
 
 */

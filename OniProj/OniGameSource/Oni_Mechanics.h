@@ -49,7 +49,7 @@ UUtError ONrMechanics_Default_ClassMethod_Reset( struct ONtMechanicsClass *inCla
 
 // mechanics management
 UUtError ONrMechanics_Register( OBJtObjectType inObjectType, UUtUns32 inObjectTypeIndex, char *inGroupName,
-							    UUtUns32 inSizeInMemory, OBJtMethods *inMethods, UUtUns32 inFlags, 
+							    UUtUns32 inSizeInMemory, OBJtMethods *inMethods, UUtUns32 inFlags,
 								ONtMechanicsMethods* inMechanicsMethods );
 OBJtObject* ONrMechanics_GetObjectWithID( OBJtObjectType inObjectType, UUtUns16 inID );
 

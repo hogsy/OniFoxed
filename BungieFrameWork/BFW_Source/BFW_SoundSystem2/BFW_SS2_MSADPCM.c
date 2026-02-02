@@ -12,7 +12,7 @@
 
 #if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
 
-WAVEFORMATEX wave_format_ex_mono = 
+WAVEFORMATEX wave_format_ex_mono =
 {
 	WAVE_FORMAT_PCM,
 	1,
@@ -23,7 +23,7 @@ WAVEFORMATEX wave_format_ex_mono =
 	0
 };
 
-WAVEFORMATEX wave_format_ex_stereo = 
+WAVEFORMATEX wave_format_ex_stereo =
 {
 	WAVE_FORMAT_PCM,
 	2,
@@ -51,13 +51,13 @@ SSrMSADPCM_CompressSoundData(
 	UUtUns32					buffer_size;
 	WAVEFORMATEX				*src_wave_format_ex = SSrSound_IsStereo(inSoundData) ? &wave_format_ex_stereo : &wave_format_ex_mono;
 	WAVEFORMATEX				*dst_wave_format_ex = (WAVEFORMATEX *) (SSrSound_IsStereo(inSoundData) ? &SSgWaveFormat_Stereo : &SSgWaveFormat_Mono);
-	
+
 	buffer = NULL;
 	acm = NULL;
 	delete_me = NULL;
-	
+
 	if (inSoundData->data == NULL) { return; }
-		
+
 	// get the format for the PCM header
 	result =
 		acmFormatSuggest(
@@ -67,7 +67,7 @@ SSrMSADPCM_CompressSoundData(
 			sizeof(SStFormat),
 			ACM_FORMATSUGGESTF_WFORMATTAG);
 	if (result != 0) { goto cleanup; }
-	
+
 	// open the stream
 	result =
 		acmStreamOpen(
@@ -80,7 +80,7 @@ SSrMSADPCM_CompressSoundData(
 			0,
 			ACM_STREAMOPENF_NONREALTIME);
 	if (result != 0) { goto cleanup; }
-	
+
 	// calculate the buffer size
 	result =
 		acmStreamSize(
@@ -89,11 +89,11 @@ SSrMSADPCM_CompressSoundData(
 			&buffer_size,
 			ACM_STREAMSIZEF_SOURCE);
 	if (result != 0) { goto cleanup; }
-	
+
 	// allocate memory for the decompression buffer
 	buffer = (UUtUns8*)UUrMemory_Block_NewClear(buffer_size);
 	if (buffer == NULL) { goto cleanup; }
-	
+
 	// prepare the stream header
 	UUrMemory_Clear(&stream, sizeof(ACMSTREAMHEADER));
 	stream.cbStruct = sizeof(ACMSTREAMHEADER);
@@ -101,39 +101,39 @@ SSrMSADPCM_CompressSoundData(
 	stream.cbSrcLength = inSoundData->num_bytes;
 	stream.pbDst = buffer;
 	stream.cbDstLength = buffer_size;
-	
+
 	result = acmStreamPrepareHeader(acm, &stream, 0);
 	if (result != 0) { goto cleanup; }
-	
+
 	// decompress the sound data into the buffer
 	result = acmStreamConvert(acm, &stream, 0);
 	if (result == 0)
 	{
 		delete_me = inSoundData->data;
-	
+
 		// inSoundData has been compressed
 		inSoundData->flags |= SScSoundDataFlag_Compressed;
 		inSoundData->num_bytes = stream.cbDstLengthUsed;
 		inSoundData->data = buffer;
 	}
-	
+
 	// unprepare the stream header
 	result = acmStreamUnprepareHeader(acm, &stream, 0);
 	if (result != 0) { goto cleanup; }
-	
+
 cleanup:
 	if (delete_me != NULL)
 	{
 		UUrMemory_Block_Delete(delete_me);
 		delete_me = NULL;
 	}
-		
+
 	if ((inSoundData->data != buffer) && (buffer != NULL))
 	{
 		UUrMemory_Block_Delete(buffer);
 		buffer = NULL;
 	}
-	
+
 	if (acm != NULL)
 	{
 		result = acmStreamClose(acm, 0);
@@ -152,7 +152,7 @@ SSrMSADPCM_CalculateNumSamples(
 	HACMSTREAM					acm;
 	UUtUns32					buffer_size;
 	WAVEFORMATEX				*wave_format_ex = (WAVEFORMATEX *) (SSrSound_IsStereo(inSoundData) ? &SSgWaveFormat_Stereo : &SSgWaveFormat_Mono);
-	
+
 	UUmAssert(inSoundData);
 	if ((inSoundData->flags & SScSoundDataFlag_Compressed) == 0) {
 		UUmAssert(0);
@@ -161,7 +161,7 @@ SSrMSADPCM_CalculateNumSamples(
 
 	num_samples = 0;
 	acm = NULL;
-	
+
 	// get the format for the PCM header
 	DstFormat.wFormatTag = WAVE_FORMAT_PCM;
 	result =
@@ -172,7 +172,7 @@ SSrMSADPCM_CalculateNumSamples(
 			sizeof(WAVEFORMATEX),
 			ACM_FORMATSUGGESTF_WFORMATTAG);
 	if (result != 0) { goto cleanup; }
-	
+
 	// open the stream
 	result =
 		acmStreamOpen(
@@ -185,7 +185,7 @@ SSrMSADPCM_CalculateNumSamples(
 			0,
 			ACM_STREAMOPENF_NONREALTIME);
 	if (result != 0) { goto cleanup; }
-	
+
 	// calculate the buffer size
 	result =
 		acmStreamSize(
@@ -194,17 +194,17 @@ SSrMSADPCM_CalculateNumSamples(
 			&buffer_size,
 			ACM_STREAMSIZEF_SOURCE);
 	if (result != 0) { goto cleanup; }
-	
+
 	// calculate the approximate number of samples that fit into this buffer size (in bytes)
 	num_samples = buffer_size / (DstFormat.wBitsPerSample >> 3);
 
-cleanup:	
+cleanup:
 	if (acm != NULL)
 	{
 		result = acmStreamClose(acm, 0);
 		acm = NULL;
 	}
-	
+
 	return num_samples;
 }
 

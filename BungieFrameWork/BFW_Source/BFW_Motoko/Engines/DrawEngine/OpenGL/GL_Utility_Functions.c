@@ -1,12 +1,12 @@
 /*
 	FILE:	GL_DC_Method_Frame.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: August 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -58,10 +58,10 @@ GLrDrawContext_Method_Frame_Start(
 
 	// update fog params
 	OGLrCommon_glFogEnable();
-	
+
 	return UUcError_None;
 }
-	
+
 // ----------------------------------------------------------------------
 UUtError
 GLrDrawContext_Method_Frame_End(
@@ -74,7 +74,7 @@ GLrDrawContext_Method_Frame_End(
 	if (GLgDoubleBuffer) {
 		GLrPlatform_DisplayBackBuffer();
 	}
-	
+
 	return UUcError_None;
 }
 

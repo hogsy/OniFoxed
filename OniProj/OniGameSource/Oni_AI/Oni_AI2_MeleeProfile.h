@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_MeleeProfile.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: May 19, 2000
-	
+
 	PURPOSE: Definitions for Oni AI's Melee Profiles
-	
+
 	Copyright (c) 2000
 
 */
@@ -182,7 +182,7 @@ typedef struct AI2tMeleeProfile
 	UUtUns32	dodge_damage_threshold;			// attacks with dmg >= threshold have chance = base + additional
 	UUtUns32	blockskill_percentage;
 	UUtUns32	blockgroup_percentage;
-	
+
 	// weight values which control technique selection... each attack is multiplied by exactly
 	// one of these. typically the order given here will be their order from high to low.
 	float		weight_notblocking_any;

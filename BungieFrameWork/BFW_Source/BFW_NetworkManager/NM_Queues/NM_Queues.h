@@ -28,7 +28,7 @@ typedef enum NMtQueueRef
 	NMcIncomingEmptyQueue		= 2,
 	NMcOutgoingQueue			= 3,
 	NMcOutgoingEmptyQueue		= 4
-	
+
 } NMtQueueRef;
 
 // ======================================================================
@@ -39,14 +39,14 @@ typedef struct NMtDataBuffer
 	struct NMtDataBuffer	*next;
 	struct NMtDataBuffer	*prev;
 	NMtUDPData				data;
-	
+
 } NMtDataBuffer;
 
 typedef struct NMtQueue
 {
 	NMtDataBuffer			*head;
 	NMtDataBuffer			*tail;
-	
+
 } NMtQueue;
 
 typedef struct NMtQueues
@@ -56,7 +56,7 @@ typedef struct NMtQueues
 
 	NMtQueue				outgoing_queue;
 	NMtQueue				outgoing_empty_queue;
-	
+
 } NMtQueues;
 
 // ======================================================================
@@ -78,7 +78,7 @@ NMrQueue_AddBuffers(
 	NMtQueues				*inQueues,
 	NMtQueueRef				inQueueRef,
 	UUtUns16				inNumBuffersToAdd);
-	
+
 NMtDataBuffer*
 NMrQueue_DequeueBuffer(
 	NMtQueues				*inQueues,
@@ -89,7 +89,7 @@ NMrQueue_EnqueueBuffer(
 	NMtQueues				*inQueues,
 	NMtQueueRef				inQueueRef,
 	NMtDataBuffer			*inDataBuffer);
-	
+
 NMtDataBuffer*
 NMrQueue_GetNextBuffer(
 	NMtQueues				*inQueues,

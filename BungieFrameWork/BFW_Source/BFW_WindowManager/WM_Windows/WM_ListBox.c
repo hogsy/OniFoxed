@@ -39,26 +39,26 @@ typedef struct WMtListBox_PrivateData
 	UUtUns16				mouse_state;
 	UUtBool					double_click;
 	UUtBool					has_focus;
-	
+
 	UUtUns32				key_down_delta;
 	char					prefix_buffer[LBcDefaultCharsPerItem];
-	
+
 	// item data
 	UUtMemory_Array			*item_array;
 	UUtUns32				num_visible_items;
-	
+
 	UUtInt16				item_width;
 	UUtInt16				item_height;
-	
+
 	UUtUns32				start_index;	/* index of first item displayed */
-	
+
 	// scrollbar data
 	WMtScrollbar			*v_scrollbar;
 	UUtInt32				v_scroll_max;
 	UUtInt32				v_scroll_pos;
-	
+
 	float					start_ratio;	/* used to convert from v_scroll_pos to start_index */
-	
+
 } WMtListBox_PrivateData;
 
 // ----------------------------------------------------------------------
@@ -71,7 +71,7 @@ typedef struct WMtListBox_Item
 	UUtInt16				height;
 
 	UUtBool					selected;
-	
+
 } WMtListBox_Item;
 
 // ======================================================================
@@ -80,11 +80,11 @@ typedef struct WMtListBox_Item
 static void
 WMiListBox_HandleFontInfoChanged(
 	WMtListBox				*inListBox);
-	
+
 static UUtUns32
 WMiListBox_GetSelection(
 	WMtListBox				*inListBox);
-	
+
 static UUtUns32
 WMiListBox_InsertString(
 	WMtListBox				*inListBox,
@@ -94,19 +94,19 @@ WMiListBox_InsertString(
 static UUtUns32
 WMiListBox_Reset(
 	WMtListBox				*inListBox);
-	
+
 static UUtUns32
 WMiListBox_SetItemData(
 	WMtListBox				*inListBox,
 	UUtUns32				inItemIndex,
 	UUtUns32				inParam1);
-	
+
 static UUtUns32
 WMiListBox_SetSelection(
 	WMtListBox				*inListBox,
 	UUtUns32				inItemIndex,
 	UUtBool					inNotifyParent);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
@@ -117,9 +117,9 @@ WMiListBox_AdjustScrollbar(
 	WMtListBox_PrivateData	*inPrivateData)
 {
 	UUtUns32				num_items;
-	
+
 	num_items = UUrMemory_Array_GetUsedElems(inPrivateData->item_array);
-	
+
 	// make sure the start_index is the proper distance from the last item
 	if ((num_items > inPrivateData->num_visible_items) &&
 		((inPrivateData->start_index + inPrivateData->num_visible_items) > num_items))
@@ -127,15 +127,15 @@ WMiListBox_AdjustScrollbar(
 		inPrivateData->start_index =  num_items - inPrivateData->num_visible_items;
 		UUmAssert((UUtInt32)inPrivateData->start_index >= 0);
 	}
-	
+
 	// calculate the scroll max
 	inPrivateData->v_scroll_max = UUmMax(0, num_items);
-	
+
 	// calculate the scroll position
 	inPrivateData->v_scroll_pos =
 		(UUtInt32)((float)inPrivateData->start_index *
 		((float)num_items / (float)inPrivateData->num_visible_items));
-	
+
 	// set the scrollbar range and position
 	WMrScrollbar_SetRange(
 		inPrivateData->v_scrollbar,
@@ -164,13 +164,13 @@ WMiListBox_FindInsertPos(
 	WMtListBox_Item			*items;
 	UUtUns32				i;
 	UUtUns32				num_items;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	style = WMrWindow_GetStyle(inListBox);
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
 	if (items == NULL)
@@ -179,12 +179,12 @@ WMiListBox_FindInsertPos(
 		*outInsertIndex = -1;
 		return LBcNoError;
 	}
-	
+
 	num_items = UUrMemory_Array_GetUsedElems(private_data->item_array);
 	for (i = 0; i <  num_items; i++)
 	{
 		UUtInt32				result;
-		
+
 		// compare the items based on the style of the listbox
 		if (style & WMcListBoxStyle_HasStrings)
 		{
@@ -193,14 +193,14 @@ WMiListBox_FindInsertPos(
 		else if (style & WMcListBoxStyle_OwnerDraw)
 		{
 			WMtCompareItems		compare_items;
-			
+
 			compare_items.window = inListBox;
 			compare_items.window_id = WMrWindow_GetID(inListBox);
 			compare_items.item1_index = (UUtUns32)-1;
 			compare_items.item1_data = inParam1;
 			compare_items.item2_index = i;
 			compare_items.item2_data = items[i].data;
-			
+
 			result =
 				(UUtInt8)WMrMessage_Send(
 					WMrWindow_GetOwner(inListBox),
@@ -212,13 +212,13 @@ WMiListBox_FindInsertPos(
 		{
 			return LBcError;
 		}
-		
+
 		// stop if inParam1 goes before the item
 		if (result < 0) { break; }
 	}
-	
+
 	*outInsertIndex = i;
-	
+
 	return LBcNoError;
 }
 
@@ -232,14 +232,14 @@ WMiListBox_FindPrefix(
 	WMtListBox_Item			*items;
 	UUtUns32				style;
 	UUtUns32				i;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return; }
-	
+
 	style = WMrWindow_GetStyle(inListBox);
 	if ((style & WMcListBoxStyle_HasStrings) == 0) { return; }
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
 	for (i = 0; i < UUrMemory_Array_GetUsedElems(private_data->item_array); i++)
@@ -247,7 +247,7 @@ WMiListBox_FindPrefix(
 		if (UUrString_Compare_NoCase((char*)items[i].string, inPrefix) >= 0)
 		{
 			WMiListBox_SetSelection(inListBox, i, UUcTrue);
-			break;	
+			break;
 		}
 	}
 }
@@ -265,13 +265,13 @@ WMiListBox_NC_Create(
 	WMtListBox_PrivateData	*private_data;
 
 	// create the private data
-	private_data = 
+	private_data =
 		(WMtListBox_PrivateData*)UUrMemory_Block_NewClear(sizeof(WMtListBox_PrivateData));
 	if (private_data == NULL) { return WMcResult_Error; }
-	
+
 	// save the private data
 	WMrWindow_SetLong(inListBox, 0, (UUtUns32)private_data);
-	
+
 	return WMcResult_Handled;
 }
 
@@ -281,11 +281,11 @@ WMiListBox_NC_Destroy(
 	WMtListBox				*inListBox)
 {
 	WMtListBox_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return; }
-	
+
 	UUrMemory_Block_Delete(private_data);
 	WMrWindow_SetLong(inListBox, 0, 0);
 }
@@ -300,18 +300,18 @@ WMiListBox_NC_Paint(
 	IMtPoint2D				dest;
 	UUtInt16				width;
 	UUtInt16				height;
-	
+
 	partspec_ui = PSrPartSpecUI_GetActive();
 	if (partspec_ui == NULL) { return; }
-	
+
 	WMrWindow_GetSize(inListBox, &width, &height);
-	
+
 	draw_context = DCrDraw_NC_Begin(inListBox);
-	
+
 	// set the dest
 	dest.x = 0;
 	dest.y = 0;
-	
+
 	// draw the outline
 	DCrDraw_PartSpec(
 		draw_context,
@@ -321,7 +321,7 @@ WMiListBox_NC_Paint(
 		width,
 		height,
 		M3cMaxAlpha);
-			
+
 	DCrDraw_NC_End(draw_context, inListBox);
 }
 
@@ -336,27 +336,27 @@ WMiListBox_NC_CalcClientSize(
 	UUtInt16				window_height;
 	UUtInt16				part_width;
 	UUtInt16				part_height;
-	
+
 	WMrWindow_GetSize(inListBox, &window_width, &window_height);
-	
+
 	partspec_ui = PSrPartSpecUI_GetActive();
 	if (partspec_ui == NULL) { return; }
-	
+
 	PSrPartSpec_GetSize(
 		partspec_ui->editfield,
 		PScPart_LeftTop,
 		&part_width,
 		&part_height);
-	
+
 	outRect->left	= part_width;
 	outRect->top	= part_height;
-	
+
 	PSrPartSpec_GetSize(
 		partspec_ui->editfield,
 		PScPart_RightBottom,
 		&part_width,
 		&part_height);
-	
+
 	outRect->right	= window_width - part_width;
 	outRect->bottom	= window_height - part_height;
 }
@@ -371,20 +371,20 @@ WMiListBox_NC_HitTest(
 	IMtPoint2D				global_mouse;
 	IMtPoint2D				local_mouse;
 	WMtWindowArea			part;
-	
+
 	part = WMcWindowArea_None;
 
 	global_mouse.x = (UUtInt16)UUmHighWord(inParam1);
 	global_mouse.y = (UUtInt16)UUmLowWord(inParam1);
-	
+
 	WMrWindow_GlobalToLocal(inListBox, &global_mouse, &local_mouse);
-	
+
 	WMrWindow_GetClientRect(inListBox, &bounds);
 	if (IMrRect_PointIn(&bounds, &local_mouse))
 	{
 		part = WMcWindowArea_Client;
 	}
-	
+
 	return (UUtUns32)part;
 }
 
@@ -400,13 +400,13 @@ WMiListBox_Create(
 {
 	WMtListBox_PrivateData	*private_data;
 	UUtUns32				style;
-	
+
 	// ------------------------------
 	// create the private data
 	// ------------------------------
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { goto cleanup; }
-	
+
 	// ------------------------------
 	// initialize the item array
 	// ------------------------------
@@ -418,7 +418,7 @@ WMiListBox_Create(
 			0,
 			LBcDefaultNumItems);
 	if (private_data->item_array == NULL) { goto cleanup; }
-		
+
 	// ------------------------------
 	// create the scrollbars
 	// ------------------------------
@@ -440,17 +440,17 @@ WMiListBox_Create(
 				0);
 		if (private_data->v_scrollbar == NULL) { goto cleanup; }
 	}
-	
+
 	// ------------------------------
 	// calculate the sizes
 	// ------------------------------
 	WMiListBox_HandleFontInfoChanged(inListBox);
-	
+
 	return WMcResult_Handled;
 
 cleanup:
 	UUmAssert(0);
-	
+
 	if (private_data)
 	{
 		if (private_data->item_array)
@@ -458,12 +458,12 @@ cleanup:
 			UUrMemory_Array_Delete(private_data->item_array);
 			private_data->item_array = NULL;
 		}
-		
+
 		UUrMemory_Block_Delete(private_data);
 		private_data = NULL;
 		WMrWindow_SetLong(inListBox, 0, 0);
 	}
-	
+
 	return WMcResult_Error;
 }
 /*
@@ -482,13 +482,13 @@ WMiListBox_Create(
 	UUtInt16				window_height;
 	UUtInt16				diff;
 	TStFontInfo				font_info;
-	
+
 	// ------------------------------
 	// create the private data
 	// ------------------------------
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { goto cleanup; }
-	
+
 	// ------------------------------
 	// initialize
 	// ------------------------------
@@ -496,22 +496,22 @@ WMiListBox_Create(
 	WMrWindow_GetClientRect(inListBox, &client_bounds);
 	width = client_bounds.right - client_bounds.left;
 	height = client_bounds.bottom - client_bounds.top;
-	
+
 	WMrWindow_GetFontInfo(inListBox, &font_info);
 	DCrText_SetFontInfo(&font_info);
-	
+
 	private_data->item_width = width;
 	private_data->item_height = (UUtInt16)DCrText_GetLineHeight();
-	
+
 	private_data->start_index = 0;
-	
+
 	// initialize the private data
 	private_data->double_click = UUcFalse;
-	
+
 	private_data->num_visible_items = height / private_data->item_height;
-	
+
 	private_data->v_scroll_pos = 0;
-	
+
 	// adjust the height of the listbox
 	WMrWindow_GetRect(inListBox, &window_bounds);
 	window_width = window_bounds.right - window_bounds.left;
@@ -519,12 +519,12 @@ WMiListBox_Create(
 	diff = window_height - height;
 	window_height = (private_data->item_height * (UUtInt16)private_data->num_visible_items) + diff;
 	WMrWindow_SetSize(inListBox, window_width, window_height);
-	
+
 	// get the client bounds again
 	WMrWindow_GetClientRect(inListBox, &client_bounds);
 	width = client_bounds.right - client_bounds.left;
 	height = client_bounds.bottom - client_bounds.top;
-	
+
 	// ------------------------------
 	// initialize the item array
 	// ------------------------------
@@ -536,7 +536,7 @@ WMiListBox_Create(
 			0,
 			LBcDefaultNumItems);
 	if (private_data->item_array == NULL) { goto cleanup; }
-		
+
 	// ------------------------------
 	// create the scrollbars
 	// ------------------------------
@@ -557,23 +557,23 @@ WMiListBox_Create(
 				inListBox,
 				0);
 		if (private_data->v_scrollbar == NULL) { goto cleanup; }
-		
+
 		// set the location of the v_scrollbar within the listbox
 		WMrWindow_GetSize(private_data->v_scrollbar, &scrollbar_width, NULL);
 		WMrWindow_SetLocation(private_data->v_scrollbar, width - scrollbar_width + 1, -1);
-		
+
 		// adjust the scrollbar
 		WMiListBox_AdjustScrollbar(inListBox, private_data);
-		
+
 		// adjust the item_width
 		private_data->item_width -= scrollbar_width - 1;
 	}
-	
+
 	return WMcResult_Handled;
 
 cleanup:
 	UUmAssert(0);
-	
+
 	if (private_data)
 	{
 		if (private_data->item_array)
@@ -581,12 +581,12 @@ cleanup:
 			UUrMemory_Array_Delete(private_data->item_array);
 			private_data->item_array = NULL;
 		}
-		
+
 		UUrMemory_Block_Delete(private_data);
 		private_data = NULL;
 		WMrWindow_SetLong(inListBox, 0, 0);
 	}
-	
+
 	return WMcResult_Error;
 }
 */
@@ -596,14 +596,14 @@ WMiListBox_Destroy(
 	WMtListBox				*inListBox)
 {
 	WMtListBox_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return; }
-	
+
 	// reset the contents
 	WMiListBox_Reset(inListBox);
-	
+
 	// delete the item array
 	if (private_data->item_array)
 	{
@@ -619,11 +619,11 @@ WMiListBox_Focus(
 	WMtMessage				inMessage)
 {
 	WMtListBox_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return; }
-	
+
 	if (inMessage == WMcMessage_SetFocus)
 	{
 		private_data->has_focus = UUcTrue;
@@ -653,10 +653,10 @@ WMiListBox_HandleFontInfoChanged(
 	WMtListBox_Item			*items;
 	UUtUns32				num_items;
 	UUtUns32				i;
-	
+
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return; }
-	
+
 	// ------------------------------
 	// setup the window size based on the font info
 	// ------------------------------
@@ -664,22 +664,22 @@ WMiListBox_HandleFontInfoChanged(
 	WMrWindow_GetClientRect(inListBox, &client_bounds);
 	width = client_bounds.right - client_bounds.left;
 	height = client_bounds.bottom - client_bounds.top;
-	
+
 	WMrWindow_GetFontInfo(inListBox, &font_info);
 	DCrText_SetFontInfo(&font_info);
-	
+
 	private_data->item_width = width;
 	private_data->item_height = (UUtInt16)DCrText_GetLineHeight();
-	
+
 	private_data->start_index = 0;
-	
+
 	// initialize the private data
 	private_data->double_click = UUcFalse;
-	
+
 	private_data->num_visible_items = height / private_data->item_height;
-	
+
 	private_data->v_scroll_pos = 0;
-	
+
 	// adjust the height of the listbox
 	WMrWindow_GetRect(inListBox, &window_bounds);
 	window_width = window_bounds.right - window_bounds.left;
@@ -687,7 +687,7 @@ WMiListBox_HandleFontInfoChanged(
 	diff = window_height - height;
 	window_height = (private_data->item_height * (UUtInt16)private_data->num_visible_items) + diff;
 	WMrWindow_SetSize(inListBox, window_width, window_height);
-	
+
 	// get the client bounds
 	WMrWindow_GetClientRect(inListBox, &client_bounds);
 	height = client_bounds.bottom - client_bounds.top;
@@ -701,17 +701,17 @@ WMiListBox_HandleFontInfoChanged(
 		// set the location of the v_scrollbar within the listbox
 		WMrWindow_GetSize(private_data->v_scrollbar, &scrollbar_width, NULL);
 		WMrWindow_SetLocation(private_data->v_scrollbar, width - scrollbar_width + 1, -1);
-		
+
 		WMrWindow_GetSize(private_data->v_scrollbar, &width, NULL);
 		WMrWindow_SetSize(private_data->v_scrollbar, width, height + 2);
-		
+
 		// adjust the scrollbar
 		WMiListBox_AdjustScrollbar(inListBox, private_data);
-		
+
 		// adjust the item_width
 		private_data->item_width -= scrollbar_width - 1;
 	}
-	
+
 	// ------------------------------
 	// adjust the height of each item
 	// ------------------------------
@@ -734,21 +734,21 @@ WMiListBox_HandleKeyEvent(
 	UUtUns32				inParam2)
 {
 	WMtListBox_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return; }
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_KeyDown:
 		{
 			UUtUns32		index;
 			UUtUns32		num_items;
-			
+
 			index = WMiListBox_GetSelection(inListBox);
 			num_items = UUrMemory_Array_GetUsedElems(private_data->item_array);
-			
+
 			switch (inParam1)
 			{
 				case LIcKeyCode_UpArrow:
@@ -756,33 +756,33 @@ WMiListBox_HandleKeyEvent(
 					if (index > num_items) { index = 0; }
 					WMiListBox_SetSelection(inListBox, index, UUcTrue);
 				break;
-				
+
 				case LIcKeyCode_DownArrow:
 					index++;
 					if (index >= num_items) { index = num_items - 1; }
 					WMiListBox_SetSelection(inListBox, index, UUcTrue);
 				break;
-				
+
 				case LIcKeyCode_Home:
 					WMiListBox_SetSelection(inListBox, 0, UUcTrue);
 				break;
-				
+
 				case LIcKeyCode_End:
 					WMiListBox_SetSelection(inListBox, (num_items - 1), UUcTrue);
 				break;
-				
+
 				case LIcKeyCode_PageUp:
 					index -= private_data->num_visible_items;
 					if (index > num_items) { index = 0; }
 					WMiListBox_SetSelection(inListBox, index, UUcTrue);
 				break;
-				
+
 				case LIcKeyCode_PageDown:
 					index += private_data->num_visible_items;
 					if (index >= num_items) { index = num_items - 1; }
 					WMiListBox_SetSelection(inListBox, index, UUcTrue);
 				break;
-				
+
 				default:
 				{
 					char			char_string[2];
@@ -792,22 +792,22 @@ WMiListBox_HandleKeyEvent(
 						// reset the buffer
 						private_data->prefix_buffer[0] = '\0';
 					}
-					
+
 					// concatenate inParam1 to the end of the buffer
 					char_string[0] = (char)inParam1;
 					char_string[1] = '\0';
-					
+
 					UUrString_Cat(
 						private_data->prefix_buffer,
 						char_string,
 						LBcDefaultCharsPerItem);
-					
+
 					// search for that file
 					WMiListBox_FindPrefix(inListBox, private_data->prefix_buffer);
 				}
 				break;
 			}
-			
+
 			private_data->key_down_delta = UUrMachineTime_Sixtieths() + LBcKeyDownDelta;
 		}
 		break;
@@ -825,19 +825,19 @@ WMiListBox_HandleMouseEvent(
 	WMtListBox_PrivateData	*private_data;
 	IMtPoint2D				global_mouse;
 	IMtPoint2D				local_mouse;
-	
+
 	// disabled list boxes don't handle mouse events
 	if (WMrWindow_GetEnabled(inListBox) == UUcFalse) { return; }
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return; }
-	
+
 	// get the local mouse position
 	global_mouse.x = (UUtInt16)UUmHighWord(inParam1);
 	global_mouse.y = (UUtInt16)UUmLowWord(inParam1);
 	WMrWindow_GlobalToLocal(inListBox, &global_mouse, &local_mouse);
-	
+
 	// handle the message
 	switch (inMessage)
 	{
@@ -846,11 +846,11 @@ WMiListBox_HandleMouseEvent(
 			private_data->mouse_state = LIcMouseState_LButtonDown;
 			private_data->double_click = UUcFalse;
 		break;
-		
+
 		case WMcMessage_LMouseDblClck:
 			private_data->double_click = UUcTrue;
 		break;
-		
+
 		case WMcMessage_LMouseUp:
 		{
 			UUtInt32			i;
@@ -858,12 +858,12 @@ WMiListBox_HandleMouseEvent(
 			UUtInt32			stop_index;
 			UUtRect				bounds;
 			WMtListBox_Item		*items;
-			
+
 			// make sure the mouse went down in the list box
 			if (private_data->mouse_state != LIcMouseState_LButtonDown) { break; }
-			
+
 			private_data->mouse_state &= ~LIcMouseState_LButtonDown;
-			
+
 			// get the array pointer
 			items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
 
@@ -873,26 +873,26 @@ WMiListBox_HandleMouseEvent(
 				UUmMin(
 					UUrMemory_Array_GetUsedElems(private_data->item_array),
 					(private_data->start_index + private_data->num_visible_items));
-			
+
 			bounds.left = 0;
 			bounds.top = 0;
 			bounds.right = 0;
 			bounds.bottom = 0;
-			
+
 			for (i = start_index; i < stop_index; i++)
 			{
 				bounds.right = items[i].width;
 				bounds.bottom = bounds.top + items[i].height;
-				
+
 				if (IMrRect_PointIn(&bounds, &local_mouse))
 				{
 					WMiListBox_SetSelection(inListBox, i, UUcTrue);
 					break;
 				}
-				
+
 				bounds.top += items[i].height;
 			}
-			
+
 			if ((i != stop_index) && (private_data->double_click))
 			{
 				// tell the parent
@@ -918,49 +918,49 @@ WMiListBox_HandleVerticalScroll(
 	WMtListBox_PrivateData	*private_data;
 	UUtInt32				client_height;
 	UUtRect					client_rect;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return; }
-	
+
 	// calculate the client height
 	WMrWindow_GetClientRect(inListBox, &client_rect);
 	client_height = client_rect.bottom - client_rect.top;
-	
+
 	// interpret the parameters of the message
 	switch (UUmHighWord(inParam1))
 	{
 		case SBcNotify_LineUp:
 			scroll_increment = -1;
 		break;
-		
+
 		case SBcNotify_LineDown:
 			scroll_increment = 1;
 		break;
-		
+
 		case SBcNotify_PageUp:
 			scroll_increment =
 				UUmMin(
 					-1,
 					-client_height / private_data->item_height);
 		break;
-		
+
 		case SBcNotify_PageDown:
 			scroll_increment =
 				UUmMax(
 					1,
 					client_height / private_data->item_height);
 		break;
-		
+
 		case SBcNotify_ThumbPosition:
 			scroll_increment = inParam2 - private_data->v_scroll_pos;
 		break;
-		
+
 		default:
 			scroll_increment = 0;
 		break;
 	}
-	
+
 	// calculate the increment
 	scroll_increment =
 		UUmMax(
@@ -968,7 +968,7 @@ WMiListBox_HandleVerticalScroll(
 			UUmMin(
 				scroll_increment,
 				private_data->v_scroll_max - private_data->v_scroll_pos));
-	
+
 	// adjust the the thumb position
 	if (scroll_increment != 0)
 	{
@@ -999,35 +999,35 @@ WMiListBox_Paint(
 	UUtBool					enabled;
 	UUtUns32				style;
 	TStFontInfo				font_info;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return; }
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
-	
+
 	// get the partspec ui
 	partspec_ui = PSrPartSpecUI_GetActive();
 	if (partspec_ui == NULL) { return; }
-	
+
 	style = WMrWindow_GetStyle(inListBox);
-	
+
 	WMrWindow_GetFontInfo(inListBox, &font_info);
 	DCrText_SetFontInfo(&font_info);
-	
+
 	ascending_height = DCrText_GetAscendingHeight();
-	
+
 	draw_context = DCrDraw_Begin(inListBox);
-	
+
 	enabled = WMrWindow_GetEnabled(inListBox);
-	
+
 	// set the dest
 	dest.x = 0;
 	dest.y = 0;
-	
+
 	WMrWindow_GetClientRect(inListBox, &bounds);
-	
+
 	// calculate the start and stop index
 	start_index = (UUtInt32) private_data->start_index;
 	start_index = UUmMax(0, start_index);
@@ -1035,7 +1035,7 @@ WMiListBox_Paint(
 		UUmMin(
 			UUrMemory_Array_GetUsedElems(private_data->item_array),
 			(private_data->start_index + private_data->num_visible_items));
-	
+
 	// draw the contents
 	for (i = start_index, draw_line = 0; i < stop_index; i++, draw_line++)
 	{
@@ -1050,11 +1050,11 @@ WMiListBox_Paint(
 				items[i].height,
 				M3cMaxAlpha);
 		}
-		
+
 		if (style & WMcListBoxStyle_OwnerDraw)
 		{
 			WMtDrawItem					draw_item;
-			
+
 			// set up the owner draw struct
 			draw_item.draw_context		= draw_context;
 			draw_item.window			= inListBox;
@@ -1067,12 +1067,12 @@ WMiListBox_Paint(
 			draw_item.rect.bottom		= dest.y + items[i].height;
 			draw_item.string			= items[i].string;
 			draw_item.data				= items[i].data;
-			
+
 			if (items[i].selected)
 			{
 				draw_item.state = WMcDrawItemState_Selected;
 			}
-			
+
 			WMrMessage_Send(
 				WMrWindow_GetOwner(inListBox),
 				WMcMessage_DrawItem,
@@ -1082,13 +1082,13 @@ WMiListBox_Paint(
 		else if (style & WMcListBoxStyle_HasStrings)
 		{
 			IMtPoint2D				item_dest;
-			
+
 			item_dest = dest;
-			
+
 			if ((style & WMcListBoxStyle_Directory) == WMcListBoxStyle_Directory)
 			{
 				PStPartSpec			*icon;
-				
+
 				switch (items[i].data)
 				{
 					case LBcDirItemType_File:
@@ -1098,14 +1098,14 @@ WMiListBox_Paint(
 					case LBcDirItemType_Directory:
 						icon = partspec_ui->folder;
 					break;
-					
+
 					case LBcDirItemType_Volume:
 					break;
 				}
-				
+
 				item_dest.x += 2;
 				item_dest.y += 1;
-			
+
 				DCrDraw_PartSpec(
 					draw_context,
 					icon,
@@ -1114,7 +1114,7 @@ WMiListBox_Paint(
 					(items[i].height - 3),
 					(items[i].height - 3),
 					M3cMaxAlpha);
-					
+
 				item_dest.x += items[i].height;
 				item_dest.y -= 1;
 			}
@@ -1122,23 +1122,23 @@ WMiListBox_Paint(
 			{
 				item_dest.x += LBcDefaultTextOffset_X;
 			}
-			
+
 			item_dest.y += (UUtInt16)ascending_height;
-			
+
 			// always set these in case some per line text formatting needs to be done
 			DCrText_SetShade(enabled ? font_info.font_shade : IMcShade_Gray50);
 			DCrText_SetFormat(TSc_HLeft);
-			
+
 			DCrDraw_String(
 				draw_context,
 				(char*)items[i].string,
 				NULL,
 				&item_dest);
 		}
-		
+
 		dest.y += items[i].height;
 	}
-	
+
 	DCrDraw_End(draw_context, inListBox);
 }
 
@@ -1156,23 +1156,23 @@ WMiListBox_AddString(
 	WMtListBox_PrivateData	*private_data;
 	UUtInt32				item_index;
 	UUtUns32				style;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
 
 	item_index = -1;
 	style = WMrWindow_GetStyle(inListBox);
-	
+
 	// sort the array
 	if (style & WMcListBoxStyle_Sort)
 	{
 		UUtUns32			result;
-		
+
 		result = WMiListBox_FindInsertPos(inListBox, private_data, inParam1, &item_index);
 		if (result != LBcNoError) { return result; }
 	}
-	
+
 	return WMiListBox_InsertString(inListBox, item_index, inParam1);
 }
 
@@ -1185,11 +1185,11 @@ WMiListBox_DeleteString(
 	WMtListBox_PrivateData	*private_data;
 	WMtListBox_Item			*items;
 	UUtUns32				style;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	style = WMrWindow_GetStyle(inListBox);
 
 	// check the range
@@ -1198,26 +1198,26 @@ WMiListBox_DeleteString(
 	{
 		return LBcError;
 	}
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
-	
+
 	// delete the item data
 	if ((style & WMcListBoxStyle_HasStrings) != 0)
 	{
 		UUrMemory_Block_Delete((char*)items[inItemIndex].string);
 		items[inItemIndex].string = NULL;
 	}
-	
+
 	// delete the item
 	UUrMemory_Array_DeleteElement(private_data->item_array, inItemIndex);
-	
+
 	// adjust the scrollbar
 	if (style & WMcListBoxStyle_HasScrollbar)
 	{
 		WMiListBox_AdjustScrollbar(inListBox, private_data);
 	}
-		
+
 	return LBcNoError;
 }
 
@@ -1231,11 +1231,11 @@ WMiListBox_GetItemData(
 	WMtListBox_Item			*items;
 	UUtUns32				index;
 	UUtUns32				data;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	if (inItemIndex == LBcSelected)
 	{
 		index = WMiListBox_GetSelection(inListBox);
@@ -1244,21 +1244,21 @@ WMiListBox_GetItemData(
 	{
 		index = inItemIndex;
 	}
-	
+
 	// check the bounds on the index
 	if ((index < 0) ||
 		(index >= UUrMemory_Array_GetUsedElems(private_data->item_array)))
 	{
 		return LBcError;
 	}
-	
+
 	// get a pointer to the items array
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
 	if (items == NULL) { return LBcError; }
-	
+
 	// get the data
 	data = items[index].data;
-	
+
 	return data;
 }
 
@@ -1268,11 +1268,11 @@ WMiListBox_GetNumLines(
 	WMtListBox				*inListBox)
 {
 	WMtListBox_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	return UUrMemory_Array_GetUsedElems(private_data->item_array);
 }
 
@@ -1287,13 +1287,13 @@ WMiListBox_GetText(
 	UUtUns32				index;
 	WMtListBox_Item			*items;
 	UUtUns32				style;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
 
 	style = WMrWindow_GetStyle(inListBox);
-	
+
 	// set the index
 	if (inItemIndex == LBcSelected)
 	{
@@ -1303,17 +1303,17 @@ WMiListBox_GetText(
 	{
 		index = inItemIndex;
 	}
-	
+
 	// check the bounds on the index
 	if ((index < 0) ||
 		(index >= UUrMemory_Array_GetUsedElems(private_data->item_array)))
 	{
 		return LBcError;
 	}
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
-	
+
 	// assume that outString is big enough to hold the contents of the array
 	if ((style & WMcListBoxStyle_HasStrings) != 0)
 	{
@@ -1327,7 +1327,7 @@ WMiListBox_GetText(
 	{
 		*((UUtUns32*)outString) = items[index].data;
 	}
-	
+
 	return LBcNoError;
 }
 
@@ -1342,11 +1342,11 @@ WMiListBox_GetTextLength(
 	WMtListBox_Item			*items;
 	UUtUns16				string_length;
 	UUtUns32				style;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	style = WMrWindow_GetStyle(inListBox);
 	if ((style & WMcListBoxStyle_HasStrings) == 0) { return LBcError; }
 
@@ -1359,20 +1359,20 @@ WMiListBox_GetTextLength(
 	{
 		index = inItemIndex;
 	}
-	
+
 	// check the bounds on the index
 	if ((index < 0) ||
 		(index >= UUrMemory_Array_GetUsedElems(private_data->item_array)))
 	{
 		return LBcError;
 	}
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
-	
+
 	// get the length of the string
 	string_length = TSrString_GetLength((char*)items[index].data);
-	
+
 	return string_length;
 }
 
@@ -1385,14 +1385,14 @@ WMiListBox_GetSelection(
 	WMtListBox_Item			*items;
 	UUtUns32				i;
 	UUtUns32				style;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	style = WMrWindow_GetStyle(inListBox);
 	if (style & WMcListBoxStyle_MultipleSelection) { return LBcError; }
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
 
@@ -1403,7 +1403,7 @@ WMiListBox_GetSelection(
 			return i;
 		}
 	}
-	
+
 	return LBcError;
 }
 
@@ -1420,13 +1420,13 @@ WMiListBox_InsertString(
 	WMtListBox_Item			*items;
 	UUtUns32				index;
 	UUtUns32				style;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	style = WMrWindow_GetStyle(inListBox);
-	
+
 	// make room in the array
 	if (inItemIndex != -1)
 	{
@@ -1437,7 +1437,7 @@ WMiListBox_InsertString(
 				inItemIndex,
 				&mem_moved);
 		if (error != UUcError_None) { return LBcError; }
-		
+
 		index = inItemIndex;
 	}
 	else
@@ -1450,10 +1450,10 @@ WMiListBox_InsertString(
 				&mem_moved);
 		if (error != UUcError_None) { return LBcError; }
 	}
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
-	
+
 	// initialize the element
 	items[index].data = 0;
 	items[index].width = private_data->item_width;
@@ -1478,13 +1478,13 @@ WMiListBox_InsertString(
 	{
 		items[index].data = inParam1;
 	}
-	
+
 	// adjust the scrollbar
 	if (style & WMcListBoxStyle_HasScrollbar)
 	{
 		WMiListBox_AdjustScrollbar(inListBox, private_data);
 	}
-	
+
 	return (UUtUns32)index;
 }
 
@@ -1498,11 +1498,11 @@ WMiListBox_ReplaceString(
 	WMtListBox_PrivateData	*private_data;
 	WMtListBox_Item			*items;
 	UUtUns32				style;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	style = WMrWindow_GetStyle(inListBox);
 
 	// CB: check that we are within the bounds of the array
@@ -1511,10 +1511,10 @@ WMiListBox_ReplaceString(
 	{
 		return LBcError;
 	}
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
-	
+
 	// set the new item for the element
 	if ((style & WMcListBoxStyle_HasStrings) != 0)
 	{
@@ -1533,7 +1533,7 @@ WMiListBox_ReplaceString(
 	{
 		items[inItemIndex].data = inParam1;
 	}
-	
+
 	return (UUtUns32)inItemIndex;
 }
 
@@ -1546,20 +1546,20 @@ WMiListBox_Reset(
 	UUtUns32				num_items;
 	WMtListBox_Item			*items;
 	UUtUns32				style;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
 
 	style = WMrWindow_GetStyle(inListBox);
-	
+
 	// clear the array
 	num_items = UUrMemory_Array_GetUsedElems(private_data->item_array);
 	if (num_items == 0) { return LBcNoError; }
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
-	
+
 	// delete all the items in the array
 	while (num_items--)
 	{
@@ -1569,10 +1569,10 @@ WMiListBox_Reset(
 			UUrMemory_Block_Delete((char*)items[num_items].string);
 			items[num_items].string = NULL;
 		}
-		
+
 		UUrMemory_Array_DeleteElement(private_data->item_array, num_items);
 	}
-	
+
 	private_data->start_index = 0;
 	private_data->start_ratio = 0.0f;
 
@@ -1581,7 +1581,7 @@ WMiListBox_Reset(
 	{
 		WMiListBox_AdjustScrollbar(inListBox, private_data);
 	}
-	
+
 	return LBcNoError;
 }
 
@@ -1598,34 +1598,34 @@ WMiListBox_SelectString(
 	UUtUns32				i;
 	UUtUns32				start_index;
 	UUtBool					found;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	style = WMrWindow_GetStyle(inListBox);
 	if ((style & WMcListBoxStyle_HasStrings) == 0) { return LBcError; }
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
-	
+
 	found = UUcFalse;
 	start_index = inItemIndex;
 	if (start_index == LBcSelected)
 	{
 		start_index = 0;
 	}
-	
+
 	for (i = start_index; i < UUrMemory_Array_GetUsedElems(private_data->item_array); i++)
 	{
 		if (strcmp((char*)items[i].string, inString) == 0)
 		{
 			WMiListBox_SetSelection(inListBox, i, UUcTrue);
 			found = UUcTrue;
-			break;	
+			break;
 		}
 	}
-	
+
 	if (i == UUrMemory_Array_GetUsedElems(private_data->item_array))
 	{
 		for (i = 0; i < start_index; i++)
@@ -1634,11 +1634,11 @@ WMiListBox_SelectString(
 			{
 				WMiListBox_SetSelection(inListBox, i, UUcTrue);
 				found = UUcTrue;
-				break;	
+				break;
 			}
 		}
 	}
-	
+
 	if (!found)
 	{
 		// CB: we could not find the string. deselect.
@@ -1661,25 +1661,25 @@ WMiListBox_SetDirectoryInfo(
 	UUtUns32					result;
 	BFtFileIterator				*file_iterator;
 	UUtError					error;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	style = WMrWindow_GetStyle(inListBox);
 	if ((style & WMcListBoxStyle_Directory) != WMcListBoxStyle_Directory) { return LBcError; }
-	
+
 	// get a pointer to the directory info
 	directory_info = (WMtListBox_DirectoryInfo*)inParam1;
 	if (directory_info == NULL) { return LBcError; }
-	
+
 	// clear the listbox
 	if (inReset)
 	{
 		result = WMiListBox_Reset(inListBox);
 		if (result == LBcError) { return LBcError; }
 	}
-	
+
 	// make a directory file iterator
 	if ((directory_info->flags & LBcDirectoryInfoFlag_Files) != 0)
 	{
@@ -1690,20 +1690,20 @@ WMiListBox_SetDirectoryInfo(
 				(directory_info->suffix[0] == '\0') ? NULL : directory_info->suffix,
 				&file_iterator);
 		if (error != UUcError_None) { return LBcError; }
-		
+
 		// fill the listbox with files
 		while (1)
 		{
 			BFtFileRef file_ref;
-			
+
 			// get a file ref
 			error = BFrDirectory_FileIterator_Next(file_iterator, &file_ref);
 			if (error != UUcError_None) { break; }
-			
+
 			// add the name of the file to the listbox
 			result = WMiListBox_AddString(inListBox, (UUtUns32)BFrFileRef_GetLeafName(&file_ref));
 			if (result == LBcError) { break; }
-			
+
 			// add the file type
 			result = WMiListBox_SetItemData(inListBox, result, LBcDirItemType_File);
 		}
@@ -1712,7 +1712,7 @@ WMiListBox_SetDirectoryInfo(
 		UUrMemory_Block_Delete(file_iterator);
 		file_iterator = NULL;
 	}
-	
+
 	// fill the listbox with directories
 	if ((directory_info->flags & LBcDirectoryInfoFlag_Directory) != 0)
 	{
@@ -1723,35 +1723,35 @@ WMiListBox_SetDirectoryInfo(
 				NULL,
 				&file_iterator);
 		if (error != UUcError_None) { return LBcError; }
-	
+
 		// fill the listbox with directories
 		while (1)
 		{
 			BFtFileRef dir_ref;
-			
+
 			// get a directory ref
 			error = BFrDirectory_FileIterator_Next(file_iterator, &dir_ref);
 			if (error != UUcError_None) { break; }
-			
+
 			// determine if the dir_ref is really a directory
 			if (BFrFileRef_IsDirectory(&dir_ref) == UUcFalse)
 			{
 				continue;
 			}
-			
+
 			// add the name of the directory to the listbox
 			result = WMiListBox_AddString(inListBox, (UUtUns32)BFrFileRef_GetLeafName(&dir_ref));
 			if (result == LBcError) { break; }
-			
+
 			// add the directory type
 			result = WMiListBox_SetItemData(inListBox, result, LBcDirItemType_Directory);
 		}
-		
+
 		// delete the file_iterator
 		UUrMemory_Block_Delete(file_iterator);
 		file_iterator = NULL;
 	}
-	
+
 	return LBcNoError;
 }
 
@@ -1768,20 +1768,20 @@ WMiListBox_SetItemData(
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	// check the range of inItemIndex
 	if ((inItemIndex < 0) ||
 		(inItemIndex >= UUrMemory_Array_GetUsedElems(private_data->item_array)))
 	{
 		return LBcError;
 	}
-	
+
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
-	
+
 	// set the item data for the specified item
 	items[inItemIndex].data = inParam1;
-	
+
 	return LBcNoError;
 }
 
@@ -1793,15 +1793,15 @@ WMiListBox_SetNumLines(
 {
 	WMtListBox_PrivateData	*private_data;
 	UUtUns32				result;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	// reset the listbox
 	result = WMiListBox_Reset(inListBox);
 	if (result == LBcError) { return result; }
-	
+
 	// set the number of elements in the private_data->item_array to inNumLines
 	UUrMemory_Array_MakeRoom(private_data->item_array, inNumLines, NULL);
 
@@ -1819,17 +1819,17 @@ WMiListBox_SetSelection(
 	WMtListBox_Item			*items;
 	UUtUns32				style;
 	UUtUns32				i;
-	
+
 	// get the private data
 	private_data = (WMtListBox_PrivateData*)WMrWindow_GetLong(inListBox, 0);
 	if (private_data == NULL) { return LBcError; }
-	
+
 	style = WMrWindow_GetStyle(inListBox);
 	if (style & WMcListBoxStyle_MultipleSelection) { return LBcError; }
 
 	// get the array pointer
 	items = (WMtListBox_Item*)UUrMemory_Array_GetMemory(private_data->item_array);
-	
+
 	if (inItemIndex == LBcSelected)
 	{
 		// clear the selection
@@ -1841,42 +1841,42 @@ WMiListBox_SetSelection(
 	else
 	{
 		UUtInt32			diff;
-		
+
 		// clear the previous selection
 		for (i = 0; i < UUrMemory_Array_GetUsedElems(private_data->item_array); i++)
 		{
 			items[i].selected = UUcFalse;
 		}
-		
+
 		// check the bounds on the index
 		if ((inItemIndex < 0) ||
 			(inItemIndex >= UUrMemory_Array_GetUsedElems(private_data->item_array)))
 		{
 			return LBcError;
 		}
-		
+
 		// set the selection
 		items[inItemIndex].selected = UUcTrue;
-	
+
 		// adjust the list to see the newly selected item
 		diff = (UUtInt32)(private_data->start_index - inItemIndex);
 		if (diff > 0)
 		{
 			// current selection is above the scroll pos in the list
-			if (((UUtInt32)inItemIndex - diff) < (UUtInt32)private_data->start_index) 
+			if (((UUtInt32)inItemIndex - diff) < (UUtInt32)private_data->start_index)
 			{
 				// set the new start index
 				private_data->start_index = inItemIndex;
 				UUmAssert((UUtInt32)private_data->start_index >= 0);
-				
-				// the scroll position needs to be changed to make the 
+
+				// the scroll position needs to be changed to make the
 				// current selection visible
 				if (private_data->start_ratio != 0.0f)
 				{
 					private_data->v_scroll_pos =
 						(UUtInt32)((float)private_data->start_index / private_data->start_ratio);
 				}
-				
+
 				WMrScrollbar_SetPosition(private_data->v_scrollbar, private_data->v_scroll_pos);
 			}
 		}
@@ -1889,20 +1889,20 @@ WMiListBox_SetSelection(
 				private_data->start_index =
 					inItemIndex - private_data->num_visible_items + 1;
 				UUmAssert((UUtInt32)private_data->start_index >= 0);
-					
-				// the scroll position needs to be changed to make the 
+
+				// the scroll position needs to be changed to make the
 				// current selection visible
 				if (private_data->start_ratio)
 				{
 					private_data->v_scroll_pos =
 						(UUtInt32)((float)private_data->start_index / private_data->start_ratio);
 				}
-				
+
 				WMrScrollbar_SetPosition(private_data->v_scrollbar, private_data->v_scroll_pos);
 			}
 		}
 	}
-	
+
 	if (inNotifyParent)
 	{
 		// tell the parent
@@ -1912,7 +1912,7 @@ WMiListBox_SetSelection(
 			UUmMakeLong(LBcNotify_SelectionChanged, WMrWindow_GetID(inListBox)),
 			(UUtUns32)inListBox);
 	}
-	
+
 	return LBcNoError;
 }
 
@@ -1930,42 +1930,42 @@ WMiListBox_Callback(
 	UUtUns32				inParam2)
 {
 	UUtUns32				result;
-	
+
 	switch(inMessage)
 	{
 		case WMcMessage_NC_Create:
 			result = WMiListBox_NC_Create(inListBox);
 			if (result == WMcResult_Error) { return WMcResult_Error; }
 		break; /* the default window needs to handle the message as well */
-		
+
 		case WMcMessage_NC_Destroy:
 			WMiListBox_NC_Destroy(inListBox);
 		break;
-		
+
 		case WMcMessage_NC_HitTest:
 			result = WMiListBox_NC_HitTest(inListBox, inParam1);
 		return result;
-		
+
 		case WMcMessage_NC_Paint:
 			WMiListBox_NC_Paint(inListBox);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_NC_CalcClientSize:
 			WMiListBox_NC_CalcClientSize(inListBox, (UUtRect*)inParam1);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Create:
 			result = WMiListBox_Create(inListBox);
 		return result;
-		
+
 		case WMcMessage_Destroy:
 			WMiListBox_Destroy(inListBox);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Paint:
 			WMiListBox_Paint(inListBox);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_LMouseDown:
 		case WMcMessage_LMouseUp:
 		case WMcMessage_LMouseDblClck:
@@ -1975,7 +1975,7 @@ WMiListBox_Callback(
 				inParam1,
 				inParam2);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_KeyDown:
 			WMiListBox_HandleKeyEvent(
 				inListBox,
@@ -1983,12 +1983,12 @@ WMiListBox_Callback(
 				inParam1,
 				inParam1);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_SetFocus:
 		case WMcMessage_KillFocus:
 			WMiListBox_Focus(inListBox, inMessage);
 		break;
-		
+
 		case WMcMessage_GetDialogCode:
 			result =
 				WMcDialogCode_WantAlphas |
@@ -1996,11 +1996,11 @@ WMiListBox_Callback(
 				WMcDialogCode_WantNavigation |
 				WMcDialogCode_WantArrows;
 		return result;
-		
+
 		case WMcMessage_FontInfoChanged:
 			WMiListBox_HandleFontInfoChanged(inListBox);
 		break;
-		
+
 		case LBcMessage_AddString:
 			result = WMiListBox_AddString(inListBox, inParam1);
 		return result;
@@ -2008,68 +2008,68 @@ WMiListBox_Callback(
 		case LBcMessage_DeleteString:
 			result = WMiListBox_DeleteString(inListBox, inParam2);
 		return result;
-		
+
 		case LBcMessage_GetItemData:
 			result = WMiListBox_GetItemData(inListBox, inParam2);
 		return result;
-		
+
 		case LBcMessage_GetNumLines:
 			result = WMiListBox_GetNumLines(inListBox);
 		return result;
-		
+
 		case LBcMessage_GetSelection:
 			result = WMiListBox_GetSelection(inListBox);
 		return result;
-		
+
 		case LBcMessage_GetText:
 			result = WMiListBox_GetText(inListBox, inParam2, (char*)inParam1);
 		return result;
-		
+
 		case LBcMessage_GetTextLength:
 			result = WMiListBox_GetTextLength(inListBox, inParam2);
 		return result;
-		
+
 		case LBcMessage_InsertString:
 			result = WMiListBox_InsertString(inListBox, inParam2, inParam1);
 		return result;
-		
+
 		case LBcMessage_ReplaceString:
 			result = WMiListBox_ReplaceString(inListBox, inParam2, inParam1);
 		return result;
-		
+
 		case LBcMessage_Reset:
 			result = WMiListBox_Reset(inListBox);
 		return result;
-		
+
 		case LBcMessage_SelectString:
 			result = WMiListBox_SelectString(inListBox, inParam1, (char*)inParam2);
 		return result;
-		
+
 		case LBcMessage_SetDirectoryInfo:
 			result = WMiListBox_SetDirectoryInfo(inListBox, inParam1, (UUtBool)inParam2);
 		return result;
-		
+
 		case LBcMessage_SetItemData:
 			result = WMiListBox_SetItemData(inListBox, inParam2, inParam1);
 		return result;
-		
+
 		case LBcMessage_SetNumLines:
 			result = WMiListBox_SetNumLines(inListBox, inParam1);
 		break;
-		
+
 		case LBcMessage_SetSelection:
 			result = WMiListBox_SetSelection(inListBox, inParam2, (UUtBool)inParam1);
 		return result;
-		
+
 		case LBcMessage_SetLineColor:
 		return LBcError;
-		
+
 		case SBcMessage_VerticalScroll:
 			WMiListBox_HandleVerticalScroll(inListBox, inParam1, inParam2);
 			WMrWindow_SetFocus(inListBox);
 		return WMcResult_Handled;
 	}
-	
+
 	return WMrWindow_DefaultCallback(inListBox, inMessage, inParam1, inParam2);
 }
 
@@ -2085,20 +2085,20 @@ WMrListBox_Initialize(
 {
 	UUtError				error;
 	WMtWindowClass			window_class;
-	
+
 	// register the window class
 	UUrMemory_Clear(&window_class, sizeof(WMtWindowClass));
 	window_class.type = WMcWindowType_ListBox;
 	window_class.callback = WMiListBox_Callback;
 	window_class.private_data_size = sizeof(WMtListBox_PrivateData*);
-	
+
 	error = WMrWindowClass_Register(&window_class);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
-void 
+void
 WMrListBox_Reset(WMtListBox *inListBox)
 {
 	UUtUns32 result;
@@ -2108,7 +2108,7 @@ WMrListBox_Reset(WMtListBox *inListBox)
 	return;
 }
 
-void 
+void
 WMrListBox_SetSelection(WMtListBox *inListBox, UUtBool inNotifyParent, UUtUns32 inIndex)
 {
 	UUtUns32 result;
@@ -2128,7 +2128,7 @@ WMrListBox_AddString(WMtListBox *inListBox, const char *inString)
 	return result;
 }
 
-void 
+void
 WMrListBox_SetItemData(WMtListBox *inListBox, UUtUns32 inItemData, UUtUns32 inIndex)
 {
 	UUtUns32 result;
@@ -2138,7 +2138,7 @@ WMrListBox_SetItemData(WMtListBox *inListBox, UUtUns32 inItemData, UUtUns32 inIn
 	return;
 }
 
-void 
+void
 WMrListBox_GetText(WMtListBox *inListBox, char *ioBuffer, UUtUns32 inIndex)
 {
 	UUtUns32 result;
@@ -2173,9 +2173,9 @@ WMrListBox_GetSelection(
 	WMtListBox					*inListBox)
 {
 	UUtUns32 result;
-	
+
 	result = WMrMessage_Send(inListBox, LBcMessage_GetSelection, 0, 0);
-	
+
 	return result;
 }
 
@@ -2190,19 +2190,19 @@ WMrListBox_SetDirectoryInfo(
 {
 	UUtUns32					result;
 	WMtListBox_DirectoryInfo	dir_info;
-	
+
 	dir_info.directory_ref = inDirectoryRef;
 	dir_info.flags = inFlags;
 	UUrString_Copy(dir_info.prefix, inPrefix, BFcMaxFileNameLength);
 	UUrString_Copy(dir_info.suffix, inSuffix, BFcMaxFileNameLength);
-	
+
 	result =
 		WMrMessage_Send(
 			inListBox,
 			LBcMessage_SetDirectoryInfo,
 			(UUtUns32)&dir_info,
 			(UUtUns32)inReset);
-	
+
 	return result;
 }
 
@@ -2212,8 +2212,8 @@ WMrListBox_SelectString(
 	const char					*inString)
 {
 	UUtUns32					result;
-	
+
 	result = WMrMessage_Send(inListBox, LBcMessage_SelectString, LBcSelected, (UUtUns32)inString);
-	
+
 	return result;
 }

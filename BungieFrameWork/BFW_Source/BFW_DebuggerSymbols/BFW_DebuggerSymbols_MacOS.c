@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_DebuggerSymbols_MacOS.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: July 12, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -50,10 +50,10 @@ DSiSymFile_Create(
 	char*		xsymMemory;
 
 	if(DSgHeaderBlock != NULL) return UUcError_None;
-	
+
 	error = BFrFileRef_MakeFromName(UUmDebuggerSymFileName, &xsymFileRef);
 	UUmError_ReturnOnError(error);
-	
+
 	error = BFrFile_Open(xsymFileRef, "r", &xsymFile);
 	UUmError_ReturnOnErrorMsg(error, UUmDebuggerSymFileName);
 
@@ -62,32 +62,32 @@ DSiSymFile_Create(
 
 	xsymMemory = malloc(xsymFileSize);
 	UUmError_ReturnOnNull(xsymMemory);
-	
+
 	error = BFrFile_Read(xsymFile, xsymFileSize, xsymMemory);
 	UUmError_ReturnOnError(error);
-	
+
 	DSgHeaderBlock = (DISK_SYMBOL_HEADER_BLOCK_v32*)xsymMemory;
-	
+
 	DSgPageSize = DSgHeaderBlock->dshb_page_size;
-	
+
 	DSgFRTE = (FILE_REFERENCE_TABLE_ENTRY_v32*)(xsymMemory + DSgHeaderBlock->dshb_frte.dti_first_page * DSgPageSize);
 	DSgNTE = (NAME_TABLE_ENTRY*)(xsymMemory + DSgHeaderBlock->dshb_nte.dti_first_page * DSgPageSize);
 	DSgRTE = (RESOURCE_TABLE_ENTRY_v32*)(xsymMemory + DSgHeaderBlock->dshb_rte.dti_first_page * DSgPageSize);
 	DSgMTE = (MODULES_TABLE_ENTRY_v33*)(xsymMemory + DSgHeaderBlock->dshb_mte.dti_first_page * DSgPageSize);
 	DSgFITE = (FRTE_INDEX_TABLE_ENTRY_v32*)(xsymMemory + DSgHeaderBlock->dshb_fite.dti_first_page * DSgPageSize);
 	DSgCSNTE = (CONTAINED_STATEMENTS_TABLE_ENTRY_v32*)(xsymMemory + DSgHeaderBlock->dshb_csnte.dti_first_page * DSgPageSize);
-	
+
 	DSgMTE_EntriesPerPage = DSgPageSize / sizeof(MODULES_TABLE_ENTRY_v33);
 	DSgMTE_Offset = DSgPageSize % sizeof(MODULES_TABLE_ENTRY_v33);
 	DSgCSNTE_EntriesPerPage = DSgPageSize / sizeof(CONTAINED_STATEMENTS_TABLE_ENTRY_v32);
 	DSgCSNTE_Offset = DSgPageSize % sizeof(CONTAINED_STATEMENTS_TABLE_ENTRY_v32);
 	DSgFRTE_EntriesPerPage = DSgPageSize / sizeof(FILE_REFERENCE_TABLE_ENTRY_v32);
 	DSgFRTE_Offset = DSgPageSize % sizeof(FILE_REFERENCE_TABLE_ENTRY_v32);
-	
+
 	BFrFile_Close(xsymFile);
-	
+
 	BFrFileRef_Dispose(xsymFileRef);
-	
+
 	return UUcError_None;
 }
 
@@ -116,24 +116,24 @@ DSiSymTable_MTE_FindFromRTEAndResourceOffset(
 	RESOURCE_TABLE_ENTRY_v32*	targetRTE;
 	MODULES_TABLE_ENTRY_v33*	curMTE;
 	UUtUns32					curIndex;
-	
+
 	targetRTE = DSgRTE + inRTEIndex;
-	
+
 	for(curIndex = targetRTE->rte_mte_first;
 		curIndex < targetRTE->rte_mte_last;
 		curIndex++)
-	{	
+	{
 		curMTE = DSmMTE_PointerFromIndex(curIndex);
-		
+
 		UUmAssert(curMTE->mte_rte_index == 1);
-		
-		if(inResourceOffset >= curMTE->mte_res_offset && 
+
+		if(inResourceOffset >= curMTE->mte_res_offset &&
 			inResourceOffset < curMTE->mte_res_offset + curMTE->mte_size)
 		{
 			return curIndex;
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -153,28 +153,28 @@ DSiSymTable_CSNTE_FindFromMTEAndResourceOffset(
 	UUtBool									foundChange = UUcFalse;
 	UUtUns32								curFilePos = 0;
 	UUtUns32								returnFilePos = 0;
-	
+
 	targetMTE = DSmMTE_PointerFromIndex(inMTEIndex);
-	
+
 	mteRelativeOffset = inResourceOffset - targetMTE->mte_res_offset;
-	
+
 	for(curIndex = targetMTE->mte_csnte_idx_1;
 		curIndex < targetMTE->mte_csnte_idx_2;
 		curIndex++)
 	{
 		curCSNTE = DSmCSNTE_PointerFromIndex(curIndex);
-		
+
 		if(curCSNTE->csnte_file_.change == SOURCE_FILE_CHANGE_v32)
 		{
 			UUmAssert(foundChange == UUcFalse);
 			foundChange = UUcTrue;
 			continue;
 		}
-		
+
 		UUmAssert(curCSNTE->csnte_.mte_index == inMTEIndex);
-		
+
 		curFilePos += curCSNTE->csnte_.file_delta;
-		
+
 		offsetDistance = fabs((UUtInt32)curCSNTE->csnte_.mte_offset - mteRelativeOffset);
 		if(offsetDistance < minOffsetDistance)
 		{
@@ -183,9 +183,9 @@ DSiSymTable_CSNTE_FindFromMTEAndResourceOffset(
 			csnteIndex = curIndex;
 		}
 	}
-	
+
 	*outMTERelativeSourcePos = returnFilePos;
-	
+
 	return csnteIndex;
 }
 
@@ -196,11 +196,11 @@ DSiMTE_GetFunctionName(
 {
 	MODULES_TABLE_ENTRY_v33*	mte;
 	unsigned char*				pString;
-	
+
 	mte = DSmMTE_PointerFromIndex(inMTEIndex);
-	
+
 	pString = (unsigned char*)(DSgNTE + mte->mte_nte_index);
-	
+
 	UUrString_PStr2CStr(pString, outFunctionName, DScNameBufferSize);
 }
 
@@ -212,15 +212,15 @@ DSiMTE_GetFileName(
 	MODULES_TABLE_ENTRY_v33*		mte;
 	FILE_REFERENCE_TABLE_ENTRY_v32*	frte;
 	unsigned char*					pString;
-	
+
 	mte = DSmMTE_PointerFromIndex(inMTEIndex);
-	
+
 	frte = DSmFRTE_PointerFromIndex(mte->mte_imp_fref.fref_frte_index);
-	
+
 	UUmAssert(frte->frte_file_.name_entry == FILE_NAME_INDEX_v32);
 
 	pString = (unsigned char*)(DSgNTE + frte->frte_file_.nte_index);
-	
+
 	UUrString_PStr2CStr(pString, outFileName, DScNameBufferSize);
 }
 
@@ -237,25 +237,25 @@ DSiSourceFile_GetLineFromOffset(
 	UUtUns32	curLineNum;
 	char*		cp;
 	char		c;
-	
+
 	error = BFrFileRef_MakeFromName(inFileName, &fileRef);
 	if(error != UUcError_None) return UUcMaxUns32;
-	
+
 	error = BFrFileRef_LoadIntoMemory(fileRef, &fileSize, &fileMemory);
 	if(error != UUcError_None) return UUcMaxUns32;
 
 	BFrFileRef_Dispose(fileRef);
-	
+
 	cp = fileMemory;
 	curLineNum = 0;
 	curFilePos = 0;
-	
+
 	for(;;)
 	{
 		if(curFilePos >= fileSize || curFilePos >= inFileOffset) break;
 
 		c = *cp;
-		
+
 		if(c == '\n')
 		{
 			curLineNum++;
@@ -266,13 +266,13 @@ DSiSourceFile_GetLineFromOffset(
 			curLineNum++;
 			if(cp[1] == '\n') cp++;
 		}
-		
+
 		cp++;
 		curFilePos++;
 	}
-	
+
 	UUrMemory_Block_Delete(fileMemory);
-	
+
 	return curLineNum;
 }
 
@@ -308,47 +308,47 @@ DSrProgramCounter_GetFileAndLine(
 #if defined(DEBUGGING) && (DEBUGGING)
 	MODULES_TABLE_ENTRY_v33*				mte;
 	CONTAINED_STATEMENTS_TABLE_ENTRY_v32*	csnte;
-	
+
 	UUtUns32					resourceOffset;
 	extern UUtUns32				__code_start__[];		// generated by the linker
 	UUtUns32					code_start;
-	
+
 	UUtUns32					mteIndex;
 	UUtUns32					csnteIndex;
 	UUtUns32					mteRelativeSourcePos;
-	
+
 	UUtUns32					line;
-	
+
 	if(DSgHeaderBlock == NULL) return UUcError_Generic;
-	
+
 	code_start = (UUtUns32)__code_start__;
-	
+
 	resourceOffset = inProgramCounter - code_start;
-	
+
 	mteIndex =
 		DSiSymTable_MTE_FindFromRTEAndResourceOffset(
 			1,
 			resourceOffset);
-	
+
 	csnteIndex =
 		DSiSymTable_CSNTE_FindFromMTEAndResourceOffset(
 			mteIndex,
 			resourceOffset,
 			&mteRelativeSourcePos);
-	
+
 	mte = DSmMTE_PointerFromIndex(mteIndex);
 	csnte = DSmCSNTE_PointerFromIndex(csnteIndex);
-	
+
 	DSiMTE_GetFunctionName(mteIndex, outFunctionName);
 	DSiMTE_GetFileName(mteIndex, outFile);
 	line = DSiSourceFile_GetLineFromOffset(outFile, mte->mte_imp_fref.fref_offset + mteRelativeSourcePos);
-	
+
 	*outLine = line;
 #else
 	strcpy(outFile, "<unknown");
 	strcpy(outFunctionName, "<unknown>");
 	*outLine = 0;
 #endif
-	
+
 	return UUcError_None;
 }

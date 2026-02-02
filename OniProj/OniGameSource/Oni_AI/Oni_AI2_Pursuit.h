@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Pursuit.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: June 21, 2000
-	
+
 	PURPOSE: Pursuit AI for Oni
-	
+
 	Copyright (c) 2000
 
 */

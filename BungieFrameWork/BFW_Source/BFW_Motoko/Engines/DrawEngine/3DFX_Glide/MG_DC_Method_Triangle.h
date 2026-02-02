@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_DC_Method_Triangle.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 18, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -14,7 +14,7 @@
 #define MG_DC_METHOD_TRIANGLE_H
 
 // Triangle functions
-	void 
+	void
 	MGrTriangle_Point(
 		M3tTri*		inTri);
 
@@ -51,76 +51,76 @@
 		M3tTri*		inTri);
 
 // Trisplit functions
-	
+
 	// texture lit
-	
+
 		// interp none
-		
+
 		void
 		MGrTriSplit_Solid_TextureLit_InterpNone_LMOff(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureLit_InterpNone_LMOn_1TMU(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureLit_InterpNone_LMOn_2TMU(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureLit_InterpNone_LMOnly_1TMU(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureLit_InterpNone_LMOnly_2TMU(
 			M3tTriSplit*		inTri);
-	
-		
+
+
 		// interp vertex
-		
+
 		void
 		MGrTriSplit_Solid_TextureLit_InterpVertex_LMOff(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureLit_InterpVertex_LMOn_1TMU(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureLit_InterpVertex_LMOn_2TMU(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureLit_InterpVertex_LMOnly_1TMU(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureLit_InterpVertex_LMOnly_2TMU(
 			M3tTriSplit*		inTri);
 
 	// texture unlit
-	
+
 		void
 		MGrTriSplit_Solid_TextureUnlit_LMOff(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureUnlit_LMOn_1TMU(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureUnlit_LMOn_2TMU(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureUnlit_LMOnly_1TMU(
 			M3tTriSplit*		inTri);
-	
+
 		void
 		MGrTriSplit_Solid_TextureUnlit_LMOnly_2TMU(
 			M3tTriSplit*		inTri);
-	
-	
+
+
 
 #endif /* MG_DC_METHOD_TRIANGLE_H */

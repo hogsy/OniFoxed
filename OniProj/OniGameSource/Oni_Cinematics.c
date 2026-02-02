@@ -38,7 +38,7 @@ typedef enum OCtPart
 	OCcPart_TopLeft				= (OCcPart_Top | OCcPart_Left),
 	OCcPart_TopCenter			= (OCcPart_Top | OCcPart_Col_Center),
 	OCcPart_TopRight			= (OCcPart_Top | OCcPart_Right),
-	
+
 	OCcPart_CenterLeft			= (OCcPart_Row_Center | OCcPart_Left),
 	OCcPart_CenterCenter		= (OCcPart_Row_Center | OCcPart_Col_Center),
 	OCcPart_CenterRight			= (OCcPart_Row_Center | OCcPart_Right),
@@ -72,17 +72,17 @@ enum
 typedef struct OCtCinematic
 {
 	UUtUns32					flags;
-	
+
 	M3tTextureMap				*texture;
 	UUtInt16					draw_width;
 	UUtInt16					draw_height;
-	
+
 	M3tPointScreen				position;
 	M3tPoint3D					delta;
 	UUtUns32					steps;
 	UUtUns8						start;
 	UUtUns8						end;
-		
+
 } OCtCinematic;
 
 typedef enum OCtMod
@@ -100,7 +100,7 @@ typedef struct OCtIndexPositions
 	UUtBool						add_screen_width;
 	UUtBool						add_screen_height;
 	OCtPart						part;
-	
+
 } OCtIndexPositions;
 
 // ======================================================================
@@ -114,7 +114,7 @@ static PStPartSpec				*OCgBorder;
 static OCtIndexPositions		ONgIndexPositions[26] =
 {
 	{ OCcMod_None,	OCcMod_None,	UUcFalse,	UUcFalse,	OCcPart_None },			// 0
-	
+
 	{ OCcMod_Add,	OCcMod_Add,		UUcFalse,	UUcFalse,	OCcPart_TopLeft },		// 1
 	{ OCcMod_None,	OCcMod_Add,		UUcFalse,	UUcFalse,	OCcPart_TopCenter },	// 2
 	{ OCcMod_Sub,	OCcMod_Add,		UUcTrue,	UUcFalse,	OCcPart_TopRight },		// 3
@@ -124,22 +124,22 @@ static OCtIndexPositions		ONgIndexPositions[26] =
 	{ OCcMod_Add,	OCcMod_Sub,		UUcFalse,	UUcTrue,	OCcPart_BottomLeft },	// 7
 	{ OCcMod_None,	OCcMod_Sub,		UUcFalse,	UUcTrue,	OCcPart_BottomCenter },	// 8
 	{ OCcMod_Sub,	OCcMod_Sub,		UUcTrue,	UUcTrue,	OCcPart_BottomRight },	// 9
-	
+
 	{ OCcMod_Sub,	OCcMod_Sub,		UUcFalse,	UUcFalse,	OCcPart_BottomRight },	// 10
 	{ OCcMod_Add,	OCcMod_Sub,		UUcFalse,	UUcFalse,	OCcPart_BottomLeft },	// 11
 	{ OCcMod_None,	OCcMod_Sub,		UUcFalse,	UUcFalse,	OCcPart_BottomCenter },	// 12
 	{ OCcMod_Sub,	OCcMod_Sub,		UUcTrue,	UUcFalse,	OCcPart_BottomRight },	// 13
 	{ OCcMod_Add,	OCcMod_Sub,		UUcTrue,	UUcFalse,	OCcPart_BottomLeft },	// 14
-	
+
 	{ OCcMod_Sub,	OCcMod_Add,		UUcFalse,	UUcFalse,	OCcPart_TopRight },		// 15
 	{ OCcMod_Add,	OCcMod_Add,		UUcTrue,	UUcFalse,	OCcPart_TopLeft },		// 16
-	
+
 	{ OCcMod_Sub,	OCcMod_None,	UUcFalse,	UUcFalse,	OCcPart_CenterRight },	// 17
 	{ OCcMod_Add,	OCcMod_None,	UUcTrue,	UUcFalse,	OCcPart_CenterLeft },	// 18
-	
+
 	{ OCcMod_Sub,	OCcMod_Sub,		UUcFalse,	UUcTrue,	OCcPart_BottomRight },	// 19
 	{ OCcMod_Add,	OCcMod_Sub,		UUcTrue,	UUcTrue,	OCcPart_BottomLeft },	// 20
-	
+
 	{ OCcMod_Sub,	OCcMod_Add,		UUcFalse,	UUcTrue,	OCcPart_TopRight },		// 21
 	{ OCcMod_Add,	OCcMod_Add,		UUcFalse,	UUcTrue,	OCcPart_TopLeft },		// 22
 	{ OCcMod_None,	OCcMod_Add,		UUcFalse,	UUcTrue,	OCcPart_TopCenter },	// 23
@@ -173,7 +173,7 @@ OCiGetIndexPosition(
 			outPosition->x = -ONgXOffset;
 		break;
 	}
-	
+
 	switch (ONgIndexPositions[inIndex].y_mod)
 	{
 		case OCcMod_None:
@@ -190,7 +190,7 @@ OCiGetIndexPosition(
 	}
 
 	outPosition->z = 0.0f;
-	
+
 	// move to the right or bottom of the screen if necessary
 	if (ONgIndexPositions[inIndex].add_screen_width)
 	{
@@ -217,33 +217,33 @@ OCiCinematic_CalcPositionFromIndex(
 {
 	// get the position of inIndex
 	OCiGetIndexPosition(inIndex, outPosition);
-	
+
 	// offset the position based on the part to set the position to
 	switch (ONgIndexPositions[inIndex].part & (OCcPart_Top | OCcPart_Row_Center | OCcPart_Bottom))
 	{
 		case OCcPart_Top:
 		break;
-		
+
 		case OCcPart_Row_Center:
 			outPosition->y =
 				(float)(OCcCinematic_Height - ioCinematic->draw_height) / 2.0f;
 		break;
-		
+
 		case OCcPart_Bottom:
 			outPosition->y -= (float)ioCinematic->draw_height;
 		break;
 	}
-	
+
 	switch (ONgIndexPositions[inIndex].part & (OCcPart_Left | OCcPart_Col_Center | OCcPart_Right))
 	{
 		case OCcPart_Left:
 		break;
-		
+
 		case OCcPart_Col_Center:
 			outPosition->x =
 				(float)(OCcCinematic_Width - ioCinematic->draw_width) / 2.0f;
 		break;
-		
+
 		case OCcPart_Right:
 			outPosition->x -= (float)ioCinematic->draw_width;
 		break;
@@ -262,7 +262,7 @@ OCiCinematic_Draw(
 
 	UUtInt32					draw_width;
 	UUtInt32					draw_height;
-	
+
 	// set UVs
 	if (inCinematic->flags & OCcCinematicFlag_Mirror)
 	{
@@ -273,7 +273,7 @@ OCiCinematic_Draw(
 		// tr
 		uv[1].u = 0.0f;
 		uv[1].v = 0.0f;
-		
+
 		// bl
 		uv[2].u = 1.0f;
 		uv[2].v = 1.0f;
@@ -287,11 +287,11 @@ OCiCinematic_Draw(
 		// tl
 		uv[0].u = 0.0f;
 		uv[0].v = 0.0f;
-		
+
 		// tr
 		uv[1].u = 1.0f;
 		uv[1].v = 0.0f;
-		
+
 		// bl
 		uv[2].u = 0.0f;
 		uv[2].v = 1.0f;
@@ -300,11 +300,11 @@ OCiCinematic_Draw(
 		uv[3].u = 1.0f;
 		uv[3].v = 1.0f;
 	}
-	
+
 	// set the dest
 	dest[0] = inCinematic->position;
 	dest[1] = inCinematic->position;
-	
+
 	dest[1].x += (float)inCinematic->draw_width;
 	dest[1].y += (float)inCinematic->draw_height;
 
@@ -315,45 +315,45 @@ OCiCinematic_Draw(
 
 	draw_width = MUrFloat_Round_To_Int(dest[1].x - dest[0].x);
 	draw_height = MUrFloat_Round_To_Int(dest[1].y - dest[0].y);
-	
+
 	M3rDraw_State_Push();
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Appearence,
 		M3cDrawState_Appearence_Texture_Unlit);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Interpolation,
 		M3cDrawState_Interpolation_None);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Fill,
 		M3cDrawState_Fill_Solid);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_ConstantColor,
 		IMcShade_White);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Alpha,
 		M3cMaxAlpha);
-	
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_BaseTextureMap,
 		inCinematic->texture);
-	
+
 	M3rDraw_State_Commit();
-	
+
 	M3rDraw_Sprite(
 		dest,
 		uv);
-	
+
 	M3rDraw_State_Pop();
 
 	// draw the border
 	dest[0].x -= 3.0f;
 	dest[0].y -= 3.0f;
-	
+
 	// get a pointer to the border if one doesn't already exist
 	if (OCgBorder == NULL)
 	{
@@ -362,7 +362,7 @@ OCiCinematic_Draw(
 			"cinematic_border",
 			&OCgBorder);
 	}
-	
+
 	PSrPartSpec_Draw(
 		OCgBorder,
 		PScPart_All,
@@ -391,11 +391,11 @@ OCrCinematic_Draw(
 	if (ONrGameState_IsSkippingCutscene()) {
 		return;
 	}
-	
+
 	// get a pointer to the cinematics array
 	cinematics = (OCtCinematic*)UUrMemory_Array_GetMemory(ONgCinematics);
 	if (cinematics == NULL) { return; }
-	
+
 	// draw the cinematics
 	num_cinematics = UUrMemory_Array_GetUsedElems(ONgCinematics);
 	for (i = 0; i < num_cinematics; i++)
@@ -423,7 +423,7 @@ OCrCinematic_Start(
 
 	M3tPoint3D					start;
 	M3tPoint3D					end;
-		
+
 	// make sure the parameters are valid
 	if ((inTextureName == NULL) || (inTextureName[0] == '\0')) { return; }
 	if (inStart > OCcNumStartPositions) { return; }
@@ -433,21 +433,21 @@ OCrCinematic_Start(
 	{
 		return;
 	}
-		
+
 	// find the texture
 	error =	TMrInstance_GetDataPtr(M3cTemplate_TextureMap, inTextureName, &texture);
 	if (error != UUcError_None) { return; }
-	
+
 	if (inDrawWidth == -1) { inDrawWidth = texture->width; }
 	if (inDrawHeight == -1) { inDrawHeight = texture->height; }
-	
+
 	// add the cinematic to the array
 	error = UUrMemory_Array_GetNewElement(ONgCinematics, &index, &mem_moved);
 	if (error != UUcError_None) { return; }
-	
+
 	cinematics = UUrMemory_Array_GetMemory(ONgCinematics);
 	if (cinematics == NULL) { return; }
-	
+
 	// initialize the cinematic
 	cinematics[index].flags = inMirror ? OCcCinematicFlag_Mirror : OCcCinematicFlag_None;
 	cinematics[index].texture = texture;
@@ -460,7 +460,7 @@ OCrCinematic_Start(
 	cinematics[index].steps = 0;
 	cinematics[index].start = inStart;
 	cinematics[index].end = inEnd;
-	
+
 	// set the position based on the start
 	OCiCinematic_CalcPositionFromIndex(
 		&cinematics[index],
@@ -468,7 +468,7 @@ OCrCinematic_Start(
 		&start);
 	cinematics[index].position.x = start.x;
 	cinematics[index].position.y = start.y;
-	
+
 	if (inEnd == inStart)
 	{
 		MUmVector_Set(cinematics[index].delta, 0.0f, 0.0f, 0.0f);
@@ -476,16 +476,16 @@ OCrCinematic_Start(
 	else
 	{
 		float					distance;
-		
+
 		// get the end position
 		OCiCinematic_CalcPositionFromIndex(&cinematics[index], inEnd, &end);
-		
+
 		// calculate the movement delta
 		MUmVector_Subtract(cinematics[index].delta, end, start);
 		distance = MUrVector_Length(&cinematics[index].delta);
 		MUrNormalize(&cinematics[index].delta);
 		MUmVector_Scale(cinematics[index].delta, inVelocity);
-		
+
 		// calculate the number of steps needed to read the end
 		cinematics[index].steps = (UUtUns32)(distance/inVelocity);
 	}
@@ -506,11 +506,11 @@ OCrCinematic_Stop(
 	M3tPoint3D					end;
 	UUtUns32					i;
 	UUtUns32					index;
-	
+
 	// get a pointer to the cinematics array
 	cinematics = (OCtCinematic*)UUrMemory_Array_GetMemory(ONgCinematics);
 	if (cinematics == NULL) { return; }
-	
+
 	// find the texture
 	error =	TMrInstance_GetDataPtr(M3cTemplate_TextureMap, inTextureName, &texture);
 	if (error != UUcError_None) { return; }
@@ -526,16 +526,16 @@ OCrCinematic_Stop(
 		}
 	}
 	if (index == OCcInvalidCinematic) { return; }
-	
+
 	// clear out all the flags other than the mirror flag
 	cinematics[index].flags &= OCcCinematicFlag_Mirror;
-	
+
 	// set the needed fields
 	cinematics[index].flags |= OCcCinematicFlag_Stop;
 	cinematics[index].steps = 0;
 	cinematics[index].start = cinematics[index].end;
 	cinematics[index].end = inEnd;
-	
+
 	// set the position based on the start
 	OCiCinematic_CalcPositionFromIndex(
 		&cinematics[index],
@@ -543,7 +543,7 @@ OCrCinematic_Stop(
 		&start);
 	cinematics[index].position.x = start.x;
 	cinematics[index].position.y = start.y;
-	
+
 	if (inEnd == cinematics[index].start)
 	{
 		MUmVector_Set(cinematics[index].delta, 0.0f, 0.0f, 0.0f);
@@ -551,16 +551,16 @@ OCrCinematic_Stop(
 	else
 	{
 		float					distance;
-		
+
 		// get the end position
 		OCiCinematic_CalcPositionFromIndex(&cinematics[index], inEnd, &end);
-		
+
 		// calculate the movement delta
 		MUmVector_Subtract(cinematics[index].delta, end, start);
 		distance = MUrVector_Length(&cinematics[index].delta);
 		MUrNormalize(&cinematics[index].delta);
 		MUmVector_Scale(cinematics[index].delta, inVelocity);
-		
+
 		// calculate the number of steps needed to read the end
 		cinematics[index].steps = (UUtUns32)(distance/inVelocity);
 	}
@@ -583,14 +583,14 @@ OCrCinematic_Update(
 	OCtCinematic				*cinematics;
 	UUtUns32					num_cinematics;
 	UUtInt32					i;
-	
+
 	// make sure there are cinematics to draw
 	num_cinematics = UUrMemory_Array_GetUsedElems(ONgCinematics);
 	if (num_cinematics == 0) { return; }
-	
+
 	// get a pointer to the cinematics array
 	cinematics = (OCtCinematic*)UUrMemory_Array_GetMemory(ONgCinematics);
-	
+
 	// update the cinematics
 	for (i = 0; i < (UUtInt32)num_cinematics; i++)
 	{
@@ -604,7 +604,7 @@ OCrCinematic_Update(
 		else if ((cinematics[i].flags & OCcCinematicFlag_AtEnd) == 0)
 		{
 			M3tPoint3D			position;
-			
+
 			// put the cinematic exactly at the desired position
 			OCiCinematic_CalcPositionFromIndex(
 				&cinematics[i],
@@ -612,9 +612,9 @@ OCrCinematic_Update(
 				&position);
 			cinematics[i].position.x = position.x;
 			cinematics[i].position.y = position.y;
-			
+
 			cinematics[i].flags |= OCcCinematicFlag_AtEnd;
-			
+
 			// if stopping delete the element
 			if ((cinematics[i].flags & OCcCinematicFlag_Stop) != 0)
 			{
@@ -622,7 +622,7 @@ OCrCinematic_Update(
 			}
 		}
 	}
-	
+
 	// delete the cinematics that are marked for deletion
 	for (i = (UUtInt32)(UUrMemory_Array_GetUsedElems(ONgCinematics)) - 1; i >= 0; i--)
 	{
@@ -630,7 +630,7 @@ OCrCinematic_Update(
 		{
 			// delete the element
 			UUrMemory_Array_DeleteElement(ONgCinematics, (UUtUns32)i);
-			
+
 			// the delete element call may have moved the array
 			cinematics = (OCtCinematic*)UUrMemory_Array_GetMemory(ONgCinematics);
 		}
@@ -661,7 +661,7 @@ OCiCinematic_ScriptStart(
 	if (inParameterList[4].type != SLcType_Int32) { return UUcError_Generic; }
 	if (inParameterList[5].type != SLcType_Float) { return UUcError_Generic; }
 	if (inParameterList[6].type != SLcType_Bool) { return UUcError_Generic; }
-	
+
 	OCrCinematic_Start(
 		(char*)inParameterList[0].val.str,
 		(UUtInt16)inParameterList[1].val.i,
@@ -670,10 +670,10 @@ OCiCinematic_ScriptStart(
 		(UUtUns8)inParameterList[4].val.i,
 		(float)inParameterList[5].val.f,
 		(UUtBool)inParameterList[6].val.b);
-	
+
 	*outTicksTillCompletion = 0;
 	*outStall = UUcFalse;
-	
+
 	return UUcError_None;
 }
 
@@ -691,15 +691,15 @@ OCiCinematic_ScriptStop(
 	if (inParameterList[0].type != SLcType_String) { return UUcError_Generic; }
 	if (inParameterList[1].type != SLcType_Int32) { return UUcError_Generic; }
 	if (inParameterList[2].type != SLcType_Float) { return UUcError_Generic; }
-	
+
 	OCrCinematic_Stop(
 		(char*)inParameterList[0].val.str,
 		(UUtUns8)inParameterList[1].val.i,
 		(float)inParameterList[2].val.f);
-	
+
 	*outTicksTillCompletion = 0;
 	*outStall = UUcFalse;
-	
+
 	return UUcError_None;
 }
 
@@ -714,11 +714,11 @@ OCrInitialize(
 	void)
 {
 	UUtError					error;
-	
+
 	ONgCinematicRef = 0;
 	ONgXOffset = 20.0f;
 	ONgYOffset = 65.0f;
-	
+
 	// allocate memory for the cinematics array
 	ONgCinematics =
 		UUrMemory_Array_New(
@@ -744,7 +744,7 @@ OCrInitialize(
 			&ONgYOffset);
 	UUmError_ReturnOnError(error);
 #endif
-	
+
 	// register the script commands
 	error =
 		SLrScript_Command_Register_Void(
@@ -753,7 +753,7 @@ OCrInitialize(
 			"bitmap_name:string draw_width:int draw_height:int start:int end:int velocity:float mirror:bool",
 			OCiCinematic_ScriptStart);
 	UUmError_ReturnOnError(error);
-	
+
 	error =
 		SLrScript_Command_Register_Void(
 			"cinematic_stop",

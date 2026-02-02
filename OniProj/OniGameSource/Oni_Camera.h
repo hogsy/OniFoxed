@@ -2,9 +2,9 @@
 
 /*
 	Oni_Camera.h
-	
+
 	Header file for camera AI stuff
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -26,7 +26,7 @@ typedef struct CAtViewData
 
 typedef struct CAtOrbitData
 {
-	float			current_angle;		
+	float			current_angle;
 	float			stop_angle;
 	float			speed;
 } CAtOrbitData;
@@ -98,7 +98,7 @@ CAtCameraMode CArGetMode(void);
 void CArGetMatrix(const CAtCamera *inCamera, M3tMatrix4x3 *outMatrix);
 void CArFollow_Enter(void);
 void CArAnimate_Enter(OBtAnimation *inAnimation);
-void CArOrbit_Enter(float inSpeed, float inStopAngle); 
+void CArOrbit_Enter(float inSpeed, float inStopAngle);
 void CArManual_Enter(void);
 void CArManual_LookAt(M3tPoint3D *inLocation, float	inDistance);
 void CArInterpolate_Enter_Matrix(const M3tMatrix4x3 *inMatrix, UUtUns32 inNumFrames);
@@ -108,7 +108,7 @@ void CArInterpolate_Enter_Detached(void);
 M3tVector3D CArBuildUpVector(const M3tVector3D *inViewVector);
 
 void CArUpdate(
-	UUtUns32 ticks, 
+	UUtUns32 ticks,
 	UUtUns32 numActions,
 	const struct LItAction *actionBuffer);
 
@@ -117,7 +117,7 @@ UUtError CArLevelBegin(
 
 void CArLevelEnd(
 	void);
-	
+
 UUtError CArInitialize(
 	void);
 
@@ -133,7 +133,7 @@ static UUcInline M3tPoint3D CArGetFacing(void)
 {
 	return CAgCamera.viewData.viewVector;
 }
-	
+
 void CArEnableJello(UUtBool inJello);
 
 #endif

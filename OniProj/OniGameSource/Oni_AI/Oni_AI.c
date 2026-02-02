@@ -1,8 +1,8 @@
 /*
 	Oni_AI.c
-	
+
 	Top level AI stuff
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -34,19 +34,19 @@ UUtError AIrRegisterTemplates(
 	/**************
 	* Register templates
 	*/
-	
+
 	UUtError error;
-		
+
 	error = TMrTemplate_Register(AIcTemplate_WaypointArray,sizeof(AItWaypointArray),TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 	error = TMrTemplate_Register(AIcTemplate_CharacterSetupArray,sizeof(AItCharacterSetupArray),TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 	error = TMrTemplate_Register(NMcTemplate_SpawnPointArray,sizeof(NMtSpawnPointArray),TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	error = TMrTemplate_Register(AIcTemplate_ScriptTriggerClassArray,sizeof(AItScriptTriggerClassArray),TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 

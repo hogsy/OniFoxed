@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	Oni_Script.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Nov 13, 1999
-	
+
 	PURPOSE:
-	
+
 	Copyright 1997, 1998
 
 */

@@ -2,13 +2,13 @@
 
 /*
 	FILE:	Oni_Motoko.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 28, 1998
-	
+
 	PURPOSE: Motoko stuff for Oni
-	
+
 	Copyright 1999
 
 */
@@ -30,7 +30,7 @@ typedef enum ONtGraphicsQuality
 	ONcGraphicsQuality_Medium = ONcGraphicsQuality_2,
 	ONcGraphicsQuality_High = ONcGraphicsQuality_3,
 	ONcGraphicsQuality_SuperHigh = ONcGraphicsQuality_4,
-	
+
 	ONcGraphicsQuality_Min = ONcGraphicsQuality_0,
 	ONcGraphicsQuality_Max = ONcGraphicsQuality_4,
 	ONcGraphicsQuality_Default = ONcGraphicsQuality_Max
@@ -45,7 +45,7 @@ ONrMotoko_Initialize(
 void
 ONrMotoko_Terminate(
 	void);
-	
+
 UUtError
 ONrMotoko_SetupDrawing(
 	ONtPlatformData*	inPlatformData);
@@ -68,7 +68,7 @@ UUtBool ONrMotoko_GraphicsQuality_SupportHighQualityCorpses(void);
 UUtBool ONrMotoko_GraphicsQuality_NeverUseSuperLow(void);
 UUtBool ONrMotoko_GraphicsQuality_HardwareBink(void);
 UUtInt32 ONrMotoko_GraphicsQuality_RayCount(void);
-	
+
 extern float ONgMotoko_FieldOfView;
 #define ONcMotoko_NearPlane 2.0f
 //#define ONcMotoko_FarPlane 1000.0f

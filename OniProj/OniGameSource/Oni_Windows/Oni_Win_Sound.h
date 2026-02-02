@@ -230,13 +230,13 @@ OWrSAS_Display(
 	WMtDialog					*inParentDialog,
 	UUtUns32					*ioAmbientSoundID,
 	SStAmbient					**ioAmbientSound);
-	
+
 UUtError
 OWrSIS_Display(
 	WMtDialog					*inParentDialog,
 	UUtUns32					*ioImpulseSoundID,
 	SStImpulse					**ioImpulseSound);
-	
+
 UUtError
 OWrSoundToAnim_Display(
 	void);

@@ -11,5 +11,5 @@ Imp_BatchFile_Activate_All(
 UUtError
 Imp_BatchFile_Activate_Type(
 	const char *inType, UUtBool inImport);
-	
+
 UUtError Imp_Process_Bin(BFtFileRef *inSourceFileRef);

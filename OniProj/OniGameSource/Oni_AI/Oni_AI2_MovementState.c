@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_MovementState.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 29, 2000
-	
+
 	PURPOSE: Incarnated Movement AI for Oni
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */
@@ -149,7 +149,7 @@ static PHtNode *AI2iMovementState_GetCurrentNode(ONtCharacter *ioCharacter, AI2t
 
 void AI2rMovementState_Initialize(ONtCharacter *ioCharacter, AI2tMovementState *ioMovementState,
 								  AI2tMovementStub *inStub)
-{	
+{
 	UUtBool moved;
 	M3tPoint3D position;
 
@@ -274,7 +274,7 @@ static UUtBool AI2iMovementState_FindClearPoint(ONtCharacter *ioCharacter, M3tPo
 	}
 
 	// we are standing inside an obstruction! try to find a clear point.
-	error = AI2rFindNearbyPoint(ioCharacter, PHcPathMode_CheckClearSpace, ioPoint, 
+	error = AI2rFindNearbyPoint(ioCharacter, PHcPathMode_CheckClearSpace, ioPoint,
 								AI2cMovementState_ObstructionCheckDistance, AI2cMovementState_ObstructionMinDistance,
 								ioCharacter->facing, M3cPi / AI2cMovementState_ObstructionCheckAttempts, AI2cMovementState_ObstructionCheckAttempts,
 								PHcDanger, 5, &localpath_success, &localpath_point, &localpath_weight, &localpath_escape);
@@ -376,7 +376,7 @@ exit:
 void AI2rMovementState_NewMovementMode(ONtCharacter *ioCharacter, AI2tMovementState *ioMovementState)
 {
 	AI2tMovementMode new_mode, slow_mode;
-	
+
 	new_mode = ioCharacter->movementOrders.movementMode;
 
 	if (ioMovementState->temporarily_slowed) {
@@ -442,18 +442,18 @@ void AI2rMovementState_ResetAimingVarient(ONtCharacter *ioCharacter, AI2tMovemen
 	} else {
 		// determine aiming/looking status based on movement mode
 		switch(mode) {
-			
+
 		case AI2cMovementMode_NoAim_Walk:
 		case AI2cMovementMode_NoAim_Run:
 			ioMovementState->aiming_weapon = UUcFalse;
 			break;
-			
+
 		case AI2cMovementMode_Creep:
 		case AI2cMovementMode_Walk:
 		case AI2cMovementMode_Run:
 			ioMovementState->aiming_weapon = UUcTrue;
 			break;
-			
+
 		default:
 			UUmAssert(!"AI2rMovementState_ChangeMovementMode: unknown movement mode");
 			break;
@@ -574,7 +574,7 @@ UUtBool AI2rMovementState_AdvanceThroughGrid(ONtCharacter *ioCharacter, AI2tMove
 		return UUcFalse;
 	}
 
-	while (AI2iMovementState_CheckPathPointHit(ioCharacter, ioMovementState)) {	
+	while (AI2iMovementState_CheckPathPointHit(ioCharacter, ioMovementState)) {
 		ioMovementState->grid_current_point++;
 
 		if (ioMovementState->grid_current_point >= ioMovementState->grid_num_points) {
@@ -757,7 +757,7 @@ static UUtBool AI2iMovementState_SetupPath(ONtCharacter *ioCharacter, AI2tMoveme
 	success = ASrPath_SetParams(ASgAstar_Path, inNode, room, &ioMovementState->grid_path_start, &ioMovementState->grid_path_end,
 								ioCharacter, ioCharacter->pathState.moving_onto_stairs, (inActiveTransition && AI2gDebug_ShowActivationPaths),
 								AI2gDebug_ShowAstarEvaluation);
-	
+
 	if (success) {
 		success = ASrPath_Generate(ASgAstar_Path, AI2cMax_PathPoints, &ioMovementState->grid_num_points,
 									ioMovementState->grid_path, ioCharacter, UUcTrue, (inActiveTransition || ioMovementState->grid_failure));
@@ -778,7 +778,7 @@ static UUtBool AI2iMovementState_SetupPath(ONtCharacter *ioCharacter, AI2tMoveme
 	return UUcTrue;
 }
 
-static UUtBool AI2iMovementState_AdjustPathPoint(ONtCharacter *ioCharacter, AI2tMovementState *ioMovementState, 
+static UUtBool AI2iMovementState_AdjustPathPoint(ONtCharacter *ioCharacter, AI2tMovementState *ioMovementState,
 												 UUtUns32 inPointIndex, M3tPoint3D *inNewPoint)
 {
 	UUtBool success;
@@ -819,8 +819,8 @@ static UUtBool AI2iMovementState_AdjustPathPoint(ONtCharacter *ioCharacter, AI2t
 			// one or more of the points lies off the grid; we cannot make this adjustment
 #if DEBUG_PATH_REUSE
 			COrConsole_Printf_Color(UUcTrue, 0xFF700D6F, 0xFF300030, "%d %s: adjustpt off grid (%d,%d)->(%d,%d) on %dx%d, fail",
-									ONrGameState_GetGameTime(), ioCharacter->player_name, 
-									old_point.x, old_point.y, new_point.x, new_point.y, 
+									ONrGameState_GetGameTime(), ioCharacter->player_name,
+									old_point.x, old_point.y, new_point.x, new_point.y,
 									ioMovementState->grid_room->gridX, ioMovementState->grid_room->gridY);
 #endif
 			success = UUcFalse;
@@ -837,7 +837,7 @@ static UUtBool AI2iMovementState_AdjustPathPoint(ONtCharacter *ioCharacter, AI2t
 			path_is_clear = PHrLocalPathWeight(ioCharacter, PHcPathMode_DirectedMovement, cur_pathnode,
 												ioMovementState->grid_room, obstruction_bv,
 												PHcBorder2, 3, old_point.x, old_point.y, new_point.x, new_point.y,
-												&escape_path, &low_weight, &high_weight, &dummy_stop_x, &dummy_stop_y);		
+												&escape_path, &low_weight, &high_weight, &dummy_stop_x, &dummy_stop_y);
 			success = (path_is_clear) && (!escape_path);
 #if DEBUG_PATH_REUSE
 			if (success) {
@@ -903,9 +903,9 @@ UUtBool AI2rMovementState_MakePath(ONtCharacter *ioCharacter, AI2tMovementState 
 #endif
 
 	inReusePath = inReusePath && (ioMovementState->grid_num_points > 0);
-	inReusePath = inReusePath && AI2iMovementState_AdjustPathPoint(ioCharacter, ioMovementState, 
+	inReusePath = inReusePath && AI2iMovementState_AdjustPathPoint(ioCharacter, ioMovementState,
 																	0, &ioMovementState->grid_path_start);
-	inReusePath = inReusePath && AI2iMovementState_AdjustPathPoint(ioCharacter, ioMovementState, 
+	inReusePath = inReusePath && AI2iMovementState_AdjustPathPoint(ioCharacter, ioMovementState,
 																	ioMovementState->grid_num_points - 1, &ioMovementState->grid_path_end);
 
 	if (inReusePath) {
@@ -1005,9 +1005,9 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 		UUmAssert(ioMovementState->grid_current_point >= 0);
 		UUmAssert(ioMovementState->grid_current_point < ioMovementState->grid_num_points);
 		UUmAssertReadPtr(ioMovementState->next_path_point, sizeof(AStPathPoint));
-		
+
 		// we have somewhere to go, and a way to get there
-		ioMovementState->move_direction = MUrATan2(ioMovementState->vector_to_point.x, 
+		ioMovementState->move_direction = MUrATan2(ioMovementState->vector_to_point.x,
 													ioMovementState->vector_to_point.z);
 		UUmTrig_ClipLow(ioMovementState->move_direction);
 
@@ -1129,7 +1129,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 		AI2gMovementState_BadnessCharacter = ioCharacter;
 
 		/* determine which directions we should be moving in by building the badness structure */
-		AI2iMovementState_ResetBadness(&AI2gMovementState_NumBadnessValues, AI2cMovementState_MaxBadnessValues, 
+		AI2iMovementState_ResetBadness(&AI2gMovementState_NumBadnessValues, AI2cMovementState_MaxBadnessValues,
 										AI2gMovementState_BadnessValues);
 		for (itr = 0, collision = ioMovementState->collision; itr < ioMovementState->numCollisions; itr++, collision++) {
 			AI2iMovementState_AddBadnessFromCollision(&AI2gMovementState_NumBadnessValues, AI2cMovementState_MaxBadnessValues,
@@ -1139,7 +1139,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 #if TOOL_VERSION
 		/* copy the current badness ring into the character for storage */
 		ioMovementState->numBadnessValues = AI2gMovementState_NumBadnessValues;
-		UUrMemory_MoveFast(AI2gMovementState_BadnessValues, ioMovementState->badnesslist, 
+		UUrMemory_MoveFast(AI2gMovementState_BadnessValues, ioMovementState->badnesslist,
 							AI2cMovementState_MaxBadnessValues * sizeof(AI2tBadnessValue));
 #endif
 
@@ -1152,7 +1152,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 			}
 		}
 
-		ioMovementState->move_direction = AI2iMovementState_LeastBadDirection(&AI2gMovementState_NumBadnessValues, AI2cMovementState_MaxBadnessValues, 
+		ioMovementState->move_direction = AI2iMovementState_LeastBadDirection(&AI2gMovementState_NumBadnessValues, AI2cMovementState_MaxBadnessValues,
 																				AI2gMovementState_BadnessValues, starting_dir);
 
 		AI2gMovementState_BadnessCharacter = NULL;
@@ -1197,7 +1197,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 	} else {
 		// we aren't standing still, so unset this field
 		ioMovementState->turning_to_face_direction = AI2cAngle_None;
-				
+
 		// we are moving and face in a fixed direction based on our current movement direction.
 		// however, we may change this movement direction, **UNLESS** we are locked to a particular
 		// direction by a PathRelative facing command.
@@ -1221,7 +1221,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 	}
 
 	/* looking or aiming? */
-	if ((ioCharacter->inventory.weapons[0] != NULL) && ((movement_mode != AI2cMovementMode_NoAim_Run) && 
+	if ((ioCharacter->inventory.weapons[0] != NULL) && ((movement_mode != AI2cMovementMode_NoAim_Run) &&
 										  (movement_mode != AI2cMovementMode_NoAim_Walk))) {
 		currently_aiming = UUcTrue;
 	} else {
@@ -1263,7 +1263,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 		break;
 
 	case AI2cAimingMode_LookInDirection:
-		aim_direction = MUrATan2(aim_data->lookInDirection.vector.x, 
+		aim_direction = MUrATan2(aim_data->lookInDirection.vector.x,
 								aim_data->lookInDirection.vector.z);
 		UUmTrig_ClipLow(aim_direction);
 
@@ -1307,7 +1307,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 			case AI2cMovementMode_Walk:
 				disable_sidestep = ioMovementState->no_walking_sidestep;
 			break;
-			
+
 			case AI2cMovementMode_NoAim_Run:
 			case AI2cMovementMode_Run:
 				disable_sidestep = ioMovementState->no_running_sidestep;
@@ -1365,21 +1365,21 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 			}
 		} else {
 			/* determine whether we need to change facing direction in order to keep aiming where we are */
-			
+
 			if (ioMovementState->move_direction == AI2cAngle_None) {
 				// we aren't trying to move, so unset this field
 				ioMovementState->turning_on_spot = UUcFalse;
-				
+
 				if (ioMovementState->turning_to_face_direction != AI2cAngle_None) {
 					// if we're already turning to a particular direction, then stay
 					// with those orders if we can
 					facing_direction = ioMovementState->turning_to_face_direction;
 				}
-				
+
 				// how well will our current facing direction satisfy our aiming?
 				delta_aim = desired_facing_direction - facing_direction;
 				UUmTrig_Clip(delta_aim);
-				
+
 				cur_anim_type = ONrCharacter_GetAnimType(ioCharacter);
 				switch(cur_anim_type) {
 					case ONcAnimType_Muro_Thunderbolt:
@@ -1423,7 +1423,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 				} else {
 					aim_range = AI2cMovement_StandingLookRange;
 				}
-				
+
 				// if this isn't satisfied, turn to where we're aiming.
 				if ((delta_aim > aim_range) && (delta_aim < M3c2Pi - aim_range)) {
 					facing_direction = desired_facing_direction;
@@ -1433,7 +1433,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 				// calculate which direction we want to aim in relative to our currently planned facing direction
 				delta_aim = desired_facing_direction - facing_direction;
 				UUmTrig_ClipAbsPi(delta_aim);
-				
+
 				if (in_melee && !disable_sidestep) {
 					// facing range is deliberately made small so that we face directly at target
 					// and can block if necessary
@@ -1454,7 +1454,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 								ioMovementState->move_direction, disable_sidestep, disable_walk_backwards);
 /*					COrConsole_Printf("try new direction (facing %f desired %f -> delta %f, invalid %s), found %s from (desire %f, move %f) [was %s]",
 						facing_direction, desired_facing_direction, delta_aim,
-						(ioMovementState->invalid_movement_direction) ? "yes" : "no", AI2cMovementDirectionName[new_movement_direction], 
+						(ioMovementState->invalid_movement_direction) ? "yes" : "no", AI2cMovementDirectionName[new_movement_direction],
 						desired_facing_direction, ioMovementState->move_direction, AI2cMovementDirectionName[ioMovementState->current_direction]);*/
 
 					if (new_movement_direction != ioMovementState->current_direction) {
@@ -1465,7 +1465,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 
 					ioMovementState->invalid_movement_direction = UUcFalse;
 				}
-				
+
 				// update our facing direction for this new movement direction
 				facing_direction = ioMovementState->move_direction -
 					AI2cMovementDirection_Offset[ioMovementState->current_direction];
@@ -1530,31 +1530,31 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 			// use these to determine our forward and perpendicular distance to the path point.
 			theta = ioCharacter->facing - AI2cMovementDirection_Offset[ioMovementState->current_direction];
 			UUmTrig_ClipLow(theta);
-			
+
 			costheta = MUrCos(theta); sintheta = MUrSin(theta);
-			
+
 			distance_fwd  = (float)fabs(sintheta * ioMovementState->vector_to_point.x
 				+ costheta * ioMovementState->vector_to_point.z);
 			distance_perp = (float)fabs(costheta * ioMovementState->vector_to_point.x
 				- sintheta * ioMovementState->vector_to_point.z);
-			
+
 			// only execute this code if it's relevant
 			will_overturn = UUcFalse;
 			if (check_overturn) {
 				// how closely must we hit this point?
 				point_hit_distance = AI2iMovementState_GetPointHitDistance(ioCharacter, ioMovementState, ioMovementState->next_path_point);
-								
+
 				// what turning radius is required to hit this point with the desired precision?
 				if (distance_perp - point_hit_distance > 0.1f) {
 					distance_perp -= point_hit_distance;
-					
+
 					// trigonometry tells us that r = (perp^2 + fwd^2) / 2 * perp
 					required_turning_radius = (UUmSQR(distance_perp) + UUmSQR(distance_fwd)) / (2.0f * distance_perp);
 				} else {
 					// we are already on target to hit the point within the point hit distance, don't worry about it
 					required_turning_radius = 1000.0f;
 				}
-				
+
 				// what is our current turning radius?
 				if ((ioCharacter->inventory.weapons[0] == NULL) || (!currently_aiming)) {
 					have_weapon = UUcFalse;
@@ -1567,11 +1567,11 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 				movement_rate = ONrCharacterClass_MovementSpeed(ioCharacter->characterClass, ioMovementState->current_direction,
 																movement_mode, have_weapon, have_twohanded_weapon);
 				turning_radius = movement_rate / turning_rate;
-				
+
 				// can we make it to the point?
-				will_overturn = (turning_radius > AI2cTurningRadius_SafetyMargin * required_turning_radius);				
+				will_overturn = (turning_radius > AI2cTurningRadius_SafetyMargin * required_turning_radius);
 			}
-			
+
 			// work out if we need to check overshoot
 			will_overshoot = UUcFalse;
 			check_overshoot = AI2iMovementState_StopAtPathPoint(ioCharacter, ioMovementState, &stopatpoint_radius);
@@ -1597,11 +1597,11 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 					stopping_distance = ONrCharacterClass_StoppingDistance(ioCharacter->characterClass, ioMovementState->current_direction,
 																			movement_mode);
 					distance_to_stop_in = AI2cStoppingDistance_SafetyMargin * (distance_fwd + stopatpoint_radius);
-			
+
 					will_overshoot = (stopping_distance > distance_to_stop_in);
 				}
 			}
-						
+
 			if ((will_overturn || will_overshoot) && can_slow_down) {
 				// could we make it to the point if walking?
 				if (check_overturn) {
@@ -1611,20 +1611,20 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 					turning_radius = movement_rate / turning_rate;
 					will_overturn = (turning_radius > AI2cTurningRadius_SafetyMargin * required_turning_radius);
 				}
-				
+
 				if (check_overshoot) {
 					// what is our current stopping distance?
-					stopping_distance = ONrCharacterClass_StoppingDistance(ioCharacter->characterClass, ioMovementState->current_direction, slow_mode);			
+					stopping_distance = ONrCharacterClass_StoppingDistance(ioCharacter->characterClass, ioMovementState->current_direction, slow_mode);
 					will_overshoot = (stopping_distance > distance_to_stop_in);
 				}
-				
+
 				if (!(will_overturn || will_overshoot)) {
 					// slow to a walking pace until we reach desired facing, or hit this point successfully
 					ioMovementState->temporarily_slowed = UUcTrue;
 					ioMovementState->temporary_mode = movement_mode = slow_mode;
 				}
 			}
-			
+
 			if (will_overturn) {
 				// stop and turn on the spot until we reach 'close enough' to the desired facing
 				ioMovementState->turning_on_spot = UUcTrue;
@@ -1646,7 +1646,7 @@ static void AI2iMovementState_Calculate_Movement(ONtCharacter *ioCharacter, AI2t
 				}
 			}
 		}
-	
+
 		// stop so we don't overshoot
 		if (ioMovementState->overshoot_timer) {
 			actual_movement_direction = AI2cMovementDirection_Stopped;
@@ -1720,7 +1720,7 @@ static UUtBool AI2iMovementState_FinalPathPoint(ONtCharacter *ioCharacter, AI2tM
 {
 	if (ioMovementState->grid_current_point < ioMovementState->grid_num_points - 1)
 		return UUcFalse;
-	
+
 	return (ioCharacter->pathState.path_current_node == ioCharacter->pathState.path_num_nodes - 1);
 }
 
@@ -1729,10 +1729,10 @@ static UUtBool AI2iMovementState_StopAtPathPoint(ONtCharacter *ioCharacter, AI2t
 	// only consider stopping at destination
 	if (!AI2iMovementState_FinalPathPoint(ioCharacter, ioMovementState))
 		return UUcFalse;
-	
+
 	return AI2rPath_StopAtDest(ioCharacter, outRadius);
 }
-												
+
 static float AI2iMovementState_GetPointHitDistance(ONtCharacter *ioCharacter, AI2tMovementState *ioMovementState, AStPathPoint *inPathPoint)
 {
 	float stopping_tolerance, hit_tolerance;
@@ -1919,7 +1919,7 @@ static void AI2iMovementState_AddBadnessIncrements(UUtUns32 *ioNumValues, UUtUns
 	}
 }
 
-static AI2tBadnessValue *AI2iMovementState_NewBadnessValue(UUtUns32 *ioNumValues, UUtUns32 inMaxNumValues, AI2tBadnessValue *ioValues, 
+static AI2tBadnessValue *AI2iMovementState_NewBadnessValue(UUtUns32 *ioNumValues, UUtUns32 inMaxNumValues, AI2tBadnessValue *ioValues,
 														   AI2tBadnessValue *inInsertPtr)
 {
 	AI2tBadnessValue *newptr;
@@ -2241,7 +2241,7 @@ static AI2tCollision *AI2iMovementState_FindCollision(ONtCharacter *ioCharacter,
 		return collision;
 	} else {
 		return NULL;
-	}	
+	}
 }
 
 // find an existing collision or create a new collision if we don't already have one
@@ -2271,8 +2271,8 @@ static AI2tCollision *AI2iMovementState_MakeCollision(ONtCharacter *ioCharacter,
 
 		// the direction to the collision is the inverse of the normal
 		collision->direction = MUrATan2(-inPlane->a, -inPlane->c);
-		UUmTrig_ClipLow(collision->direction);	
-		
+		UUmTrig_ClipLow(collision->direction);
+
 		AI2_ERROR(AI2cStatus, AI2cSubsystem_Movement, AI2cError_Movement_Collision, ioCharacter,
 				inCollisionID, inPoint, inPlane, &collision->direction);
 	} else {
@@ -2465,7 +2465,7 @@ void AI2rMovementState_RenderCollision(M3tPoint3D *inPoint, UUtUns32 inNumCollis
 
 			do {
 				angle += AI2cMovementState_Render_BadnessAngle;
-				
+
 				if (angle > nextptr->angle) {
 					angle = nextptr->angle;
 					value = nextptr->value;
@@ -2481,7 +2481,7 @@ void AI2rMovementState_RenderCollision(M3tPoint3D *inPoint, UUtUns32 inNumCollis
 				MUmVector_Add(line_end, line_end, center_pt);
 				M3rGeom_Line_Light(&line_start, &line_end, IMcShade_Red);
 			} while (!exit);
-			
+
 			ptr = nextptr;
 
 		} while (ptr != inBadnessValues);
@@ -2498,7 +2498,7 @@ void AI2rMovementState_RenderPath(ONtCharacter *ioCharacter, AI2tMovementState *
 
 #if TOOL_VERSION
 	// draw our wall collisions
-	AI2rMovementState_RenderCollision(&ioCharacter->actual_position, ioMovementState->numCollisions, ioMovementState->collision, 
+	AI2rMovementState_RenderCollision(&ioCharacter->actual_position, ioMovementState->numCollisions, ioMovementState->collision,
 										ioMovementState->numBadnessValues, ioMovementState->badnesslist);
 #endif
 
@@ -2536,13 +2536,13 @@ void AI2rMovementState_RenderPath(ONtCharacter *ioCharacter, AI2tMovementState *
 		line_end.z += radius;
 		M3rGeom_Line_Light(&line_start, &line_end, IMcShade_Blue);
 
-		line_start.x -= 2 * radius;		
+		line_start.x -= 2 * radius;
 		M3rGeom_Line_Light(&line_start, &line_end, IMcShade_Blue);
 
 		line_end.z -= 2 * radius;
 		M3rGeom_Line_Light(&line_start, &line_end, IMcShade_Blue);
 
-		line_start.x += 2 * radius;	
+		line_start.x += 2 * radius;
 		M3rGeom_Line_Light(&line_start, &line_end, IMcShade_Blue);
 
 		jack_shade = IMcShade_Red;

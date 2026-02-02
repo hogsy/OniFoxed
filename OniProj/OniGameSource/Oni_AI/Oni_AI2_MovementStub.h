@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_MovementStub.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 29, 2000
-	
+
 	PURPOSE: Non-incarnated Movement AI for Oni
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */

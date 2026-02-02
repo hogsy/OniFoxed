@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_Collision.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 10, 1998
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1998
 
 */
@@ -25,7 +25,7 @@ typedef tm_enum CLtQuadProjection
 	CLcProjection_XY,
 	CLcProjection_XZ,
 	CLcProjection_YZ
-	
+
 } CLtQuadProjection;
 
 typedef enum CLtCollisionType
@@ -41,12 +41,12 @@ UUtBool CLrSphere_Ray(
 	const M3tBoundingSphere *inSphere,
 	float *outT,
 	UUtBool *outIsExit);
-	
+
 UUtBool CLrQuad_Cylinder(
 	const M3tPoint3D			*inPointArray,
 	const M3tQuad		*inQuad,
 	const M3tBoundingCylinder	*inCylinder);
-	
+
 UUtBool
 CLrSphere_Line(
 	const M3tPoint3D*			inStart,
@@ -64,12 +64,12 @@ CLrBox_Line(
 	const M3tBoundingBox_MinMax*	inBox,
 	const M3tPoint3D*				inStartPoint,
 	const M3tPoint3D*				inEndPoint);
-	
+
 UUtBool
 CLrBox_Sphere(
 	M3tBoundingBox_MinMax*	inBox,
 	M3tBoundingSphere*		inSphere);
-	
+
 
 UUtBool
 CLrQuad_PointInQuad(
@@ -84,7 +84,7 @@ CLrLine_Plane(
 	M3tPoint3D *inLineB,
 	M3tPlaneEquation *inPlane,
 	M3tPoint3D *outIntersection);	// optional
-		
+
 UUtBool
 CLrQuad_Line(
 	CLtQuadProjection			inProjection,
@@ -113,8 +113,8 @@ CLrQuad_Quad(
 	M3tPoint3D					*outIntersectionR,	// Ignored if above is null
 	M3tPlaneEquation			*outPlaneA,			// return the plane of quad A or NULL if you don't care
 	M3tPlaneEquation			*outPlaneB);
-	
-	
+
+
 UUtBool
 CLrQuad_SphereTrivialReject(
 	CLtQuadProjection			inProjection,
@@ -141,9 +141,9 @@ CLrQuad_Box(
 	const M3tPlaneEquation*			inPlaneArray,
 	UUtUns32						inPlaneEquIndex,
 	const M3tQuad*		inQuad,
-	const M3tBoundingBox_MinMax*	inBox);	
+	const M3tBoundingBox_MinMax*	inBox);
 
-void 
+void
 CLrPlaneEquationFromQuad(
 	const M3tQuad			*inQuad,
 	const M3tPoint3D		*inPointArray,
@@ -158,12 +158,12 @@ UUtBool
 CLrBox_Point(
 	M3tBoundingBox *inBox,
 	M3tPoint3D *inPoint);
-	
+
 UUtBool
 CLrBox_Box(
 	M3tBoundingBox *inBoxA,
 	M3tBoundingBox *inBoxB);
-	
+
 UUtBool CLrHotdog_Sphere(
 	M3tBoundingHotdog *inDog,
 	M3tBoundingSphere *inSphere);

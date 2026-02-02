@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_GC_Method_Env.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Jan 14, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -39,7 +39,7 @@ MSrGeomContext_Method_Env_SetCamera(
 	UUmAssertReadPtr(inCamera, sizeof(M3tManager_GeomCamera));
 
 	MSgGeomContextPrivate->visCamera = (M3tManager_GeomCamera*)inCamera;
-	
+
 	return UUcError_None;
 }
 
@@ -91,43 +91,43 @@ MSrGeomContext_Method_Env_DrawGQList(
 	UUtUns8*				clipCodes;
 	M3tPoint3D*				worldPoints;
 	UUtUns32*				gqVertexNeededBV;
-	
+
 	UUtUns32				curVertexItr;
 	UUtUns32				curVertexIndex;
-	
+
 	UUtUns8					clipCodeOR;
 	UUtUns8					clipCodeAND;
-	
+
 	AKtGQ_General*			gqGeneralArray;
 	AKtGQ_Render*			gqRenderArray;
 	AKtGQ_Collision*		gqCollisionArray;
 	AKtGQ_General*			curGQGeneral;
 	AKtGQ_Render*			curGQRender;
-	
+
 	UUtUns32				numTextureCoords;
 	UUtUns32				numPoints;
-	
+
 //	M3tTextureMap*			texMap;
 	M3tTextureMap**			textureMapArray;
-	
+
 	UUtUns32				gqIndexItr;
 	UUtUns32				curGQIndex;
-	
+
 	UUtBool					useDebugMaps = UUcFalse;
 	UUtBool					drawGhostGQs = UUcFalse;
 	UUtUns32				debugState;
 	UUtUns16				reflectionPlaneIndex = 700;
-	
+
 	static UUtBool			flash = 0;
-	
+
 	UUmAssertReadPtr(MSgGeomContextPrivate, sizeof(MSgGeomContextPrivate));
-	
+
 	screenPoints		= MSgGeomContextPrivate->gqVertexData.screenPoints;
 	clipCodes			= MSgGeomContextPrivate->gqVertexData.clipCodes;
 	frustumPoints		= MSgGeomContextPrivate->gqVertexData.frustumPoints;
 	gqVertexNeededBV	= MSgGeomContextPrivate->gqVertexData.bitVector;
-	
-	
+
+
 	worldPoints			= MSgGeomContextPrivate->environment->pointArray->points;
 	gqGeneralArray		= MSgGeomContextPrivate->environment->gqGeneralArray->gqGeneral;
 	gqRenderArray		= MSgGeomContextPrivate->environment->gqRenderArray->gqRender;
@@ -136,47 +136,47 @@ MSrGeomContext_Method_Env_DrawGQList(
 
 	// debugState = MSgGeomContextPrivate->stateInt[M3cGeomStateIntType_DebugMode];
 	debugState = 0;
-	
+
 	useDebugMaps = (UUtBool)((debugState & M3cGeomState_DebugMode_UseEnvDbgTexture) != 0);
 	drawGhostGQs = (UUtBool)((debugState & M3cGeomState_DebugMode_DrawGhostGQs) != 0);
-		
+
 	M3rDraw_State_Push();
-	
-	
+
+
 	#if 0
-	
+
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_Appearence,
 			M3cDrawState_Appearence_Gouraud);
-				
+
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_Interpolation,
 			M3cDrawState_Interpolation_None);
-	
+
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_Fill,
 			M3cDrawState_Fill_Line);
-	
+
 	#else
 
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Appearence,
 		M3cDrawState_Appearence_Texture_Unlit);
-			
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_ConstantColor,
 		0xFFFFFFFF);
 
 	M3rDraw_State_SetInt(
-		M3cDrawStateIntType_Alpha, 
+		M3cDrawStateIntType_Alpha,
 		M3cMaxAlpha);
-			
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Interpolation,
 		M3cDrawState_Interpolation_None);
-	
+
 	#endif
-	
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_ScreenPointArray,
 		screenPoints);
@@ -186,42 +186,42 @@ MSrGeomContext_Method_Env_DrawGQList(
 		MSgGeomContextPrivate->environment->textureCoordArray->textureCoords);
 
 	MSrTransform_UpdateMatrices();
-	
+
 	numPoints = MSgGeomContextPrivate->environment->pointArray->numPoints;
 	numTextureCoords = MSgGeomContextPrivate->environment->textureCoordArray->numTextureCoords;
-	
+
 	MSgGeomContextPrivate->gqVertexData.maxClipVertices = numPoints + M3cExtraCoords;
 	MSgGeomContextPrivate->gqVertexData.maxClipTextureCords = numTextureCoords + M3cExtraCoords;
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_NumRealVertices,
 		numPoints);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_VertexFormat,
 		M3cDrawStateVertex_Split);
-	
+
 	UUmAssertReadPtr(gqVertexNeededBV, sizeof(UUtUns32));
-	
+
 	UUrBitVector_ClearBitAll(
 		gqVertexNeededBV,
 		numPoints);
-	
+
 	// Traverse the bit vector
 	for(gqIndexItr = 0; gqIndexItr < inNumGQs; gqIndexItr++)
 	{
 		curGQIndex = inGQIndices[gqIndexItr];
-		
+
 		curGQGeneral = gqGeneralArray + curGQIndex;
-		
+
 		// mark all 4 vertices as needed
 		for(curVertexItr = 0; curVertexItr < 4; curVertexItr++)
 		{
 			curVertexIndex = curGQGeneral->m3Quad.vertexIndices.indices[curVertexItr];
-			
+
 			UUrBitVector_SetBit(gqVertexNeededBV, curVertexIndex);
 		}
-		
+
 		//UUmAssert(!(curGQGeneral->flags & AKcGQ_Flag_Transparent));
 	}
 
@@ -236,13 +236,13 @@ MSrGeomContext_Method_Env_DrawGQList(
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		gqVertexNeededBV);
-	
+
 	M3rDraw_State_Commit();
-	
+
 	for(gqIndexItr = 0; gqIndexItr < inNumGQs; gqIndexItr++)
 	{
 		curGQIndex = inGQIndices[gqIndexItr];
-		
+
 		curGQRender = gqRenderArray + curGQIndex;
 		curGQGeneral = gqGeneralArray + curGQIndex;
 
@@ -252,15 +252,15 @@ MSrGeomContext_Method_Env_DrawGQList(
 		for(curVertexItr = 0; curVertexItr < 4; curVertexItr++)
 		{
 			curVertexIndex = curGQGeneral->m3Quad.vertexIndices.indices[curVertexItr];
-			
+
 			clipCodeOR |= clipCodes[curVertexIndex];
 			clipCodeAND &= clipCodes[curVertexIndex];
-			
+
 		}
-		
+
 		// trivial reject
 		if(clipCodeAND != 0) continue;
-			
+
 #if TOOL_VERSION
 		// CB: flashTexture only exists in the tool version now
 		if (gqIndexItr == AKgHighlightGQIndex)
@@ -272,7 +272,7 @@ MSrGeomContext_Method_Env_DrawGQList(
 		else if ((curGQGeneral->flags & AKcGQ_Flag_Draw_Flash))
 		{
 			curGQGeneral->flags &= ~AKcGQ_Flag_Draw_Flash;
-			
+
 			if(curGQGeneral->flags & AKcGQ_Flag_Flash_State)
 			{
 				curGQGeneral->flags &= ~AKcGQ_Flag_Flash_State;
@@ -312,7 +312,7 @@ MSrGeomContext_Method_Env_DrawGQList(
 		if (inTransparentList) {
 			M3rDraw_State_SetInt(M3cDrawStateIntType_Alpha, curGQRender->alpha);
 		}
-				
+
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_Clipping,
 			clipCodeOR != 0);
@@ -336,7 +336,7 @@ MSrGeomContext_Method_Env_DrawGQList(
 			// Clip xxx we turn environment quads to triangles so we clip right here
 			// S.S. vertices reordered to correspond to geometry type
 			// GL_TRIANGLE_FAN; previously used GL_QUAD
-			
+
 			MSgGeomContextPrivate->gqVertexData.newClipTextureIndex = numTextureCoords;
 			MSgGeomContextPrivate->gqVertexData.newClipVertexIndex = numPoints;
 
@@ -401,9 +401,9 @@ MSrGeomContext_Method_Env_DrawGQList(
 			M3rDraw_Quad(&curGQGeneral->m3Quad);
 		}
 	}
-		
+
 	M3rDraw_State_Pop();
-	
+
 	return UUcError_None;
 }
 

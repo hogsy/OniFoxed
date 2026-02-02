@@ -23,6 +23,6 @@ MSrDrawContext_GetWidth(
 UUtUns16
 MSrDrawContext_GetHeight(
 	M3tDrawContext		*inDrawContext);
-	
+
 // ======================================================================
 #endif /* MS_DC_METHOD_QUERY_H */

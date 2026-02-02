@@ -19,7 +19,7 @@ IMPrFurniture_GetLightData(
 	MXtNode					*inNode,
 	UUtUns32				inIndex,
 	OBJtFurnGeom			*ioFurnGeom);
-	
+
 UUtError
 Imp_AddFurniture(
 	BFtFileRef*			inSourceFileRef,

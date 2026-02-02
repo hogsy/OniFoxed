@@ -37,7 +37,7 @@ enum
 	OS2cVersion_4			= 4,	/* added alternate impulse to SStImpulse */
 	OS2cVersion_5			= 5,	/* added threshold to SStAmbient */
 	OS2cVersion_6			= 6,	/* added flag and flag_data to SStGroup  and min_occlusion to SStAmbient and SStImpulse */
-	
+
 	OS2cCurrentVersion		= OS2cVersion_6
 };
 
@@ -50,7 +50,7 @@ OStBinaryData
 {
 	UUtUns32				data_size;
 	tm_separate				data_index;
-	
+
 } OStBinaryData;
 
 // ======================================================================
@@ -71,15 +71,15 @@ void
 OSrAmbient_ChangeName(
 	SStAmbient				*inAmbient,
 	const char				*inName);
-	
+
 UUtError
 OSrAmbient_Delete(
 	const char				*inName);
-	
+
 SStAmbient*
 OSrAmbient_GetByName(
 	const char				*inName);
-	
+
 void
 OSrAmbient_Halt(
 	SStPlayID					inAmbientID);
@@ -93,7 +93,7 @@ UUtError
 OSrAmbient_Save(
 	SStAmbient				*inAmbient,
 	BFtFileRef				*inParentDirRef);
-	
+
 SStPlayID
 OSrAmbient_Start(
 	const SStAmbient			*inAmbient,
@@ -113,7 +113,7 @@ OSrAmbient_Update(
 	const M3tPoint3D			*inPosition,
 	const M3tVector3D			*inDirection,
 	const M3tVector3D			*inVelocity);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OSrGroup_BuildHashTable(
@@ -123,39 +123,39 @@ void
 OSrGroup_ChangeName(
 	SStGroup				*inGroup,
 	const char				*inName);
-	
+
 UUtError
 OSrGroup_Delete(
 	const char				*inName);
-	
+
 SStGroup*
 OSrGroup_GetByName(
 	const char				*inName);
-	
+
 UUtError
 OSrGroup_New(
 	const char				*inName,
 	SStGroup				**outGroup);
-	
+
 UUtError
 OSrGroup_Save(
 	SStGroup				*inGroup,
 	BFtFileRef				*inParentDirRef);
-	
+
 // ----------------------------------------------------------------------
 void
 OSrImpulse_ChangeName(
 	SStImpulse				*inImpulse,
 	const char				*inName);
-	
+
 UUtError
 OSrImpulse_Delete(
 	const char				*inName);
-	
+
 SStImpulse*
 OSrImpulse_GetByName(
 	const char				*inName);
-	
+
 UUtError
 OSrImpulse_New(
 	const char				*inName,
@@ -168,7 +168,7 @@ OSrImpulse_Play(
 	const M3tVector3D		*inDirection,
 	const M3tVector3D		*inVelocity,
 	float					*inVolume);
-	
+
 void
 OSrImpulse_PlayByName(
 	const char				*inImpulseName,
@@ -176,12 +176,12 @@ OSrImpulse_PlayByName(
 	const M3tVector3D		*inDirection,
 	const M3tVector3D		*inVelocity,
 	float					*inVolume);
-	
+
 UUtError
 OSrImpulse_Save(
 	SStImpulse				*inImpulse,
 	BFtFileRef				*inParentDirRef);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OSrGetSoundBinaryDirectory(
@@ -193,7 +193,7 @@ OSrGetSoundFileRef(
 	const char				*inSuffix,
 	BFtFileRef				*inDirRef,
 	BFtFileRef				**outFileRef);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OSrPlayList_Build(
@@ -202,7 +202,7 @@ OSrPlayList_Build(
 UUtError
 OSrSoundObjects_WriteAiffList(
 	void);
-	
+
 UUtError
 OSrNeutralInteractions_WriteAiffList(
 	void);
@@ -239,25 +239,25 @@ OSrMusic_Halt(
 UUtBool
 OSrMusic_IsPlaying(
 	void);
-	
+
 void
 OSrMusic_SetVolume(
 	float					inVolume,
 	float					inTime);
-	
+
 void
 OSrMusic_Start(
 	const char				*inMusicName,
 	float					inVolume);
-	
+
 void
 OSrMusic_Stop(
 	void);
-	
+
 // ----------------------------------------------------------------------
 void
 OSrMusic_SetIsOn_Hook(UUtBool inIsOn);
-	
+
 void
 OSrMusic_SetVolume_Hook(float oldVolume, float newVolume);
 
@@ -281,7 +281,7 @@ OSrInitialize(
 UUtError
 OSrLevel_Load(
 	UUtUns32				inLevelNum);
-	
+
 void
 OSrUpdateSoundPointers(
 	void);
@@ -289,29 +289,29 @@ OSrUpdateSoundPointers(
 void
 OSrLevel_Unload(
 	void);
-	
+
 void
 OSrMakeGoodName(
 	const char				*inName,
 	char					*outName);
-	
+
 void
 OSrSetEnabled(
 	UUtBool					inEnabled);
-	
+
 void
 OSrSetScriptOnly(
 	UUtBool					inIsScriptOnly);
-	
+
 void
 OSrTerminate(
 	void);
-	
+
 void
 OSrUpdate(
 	const M3tPoint3D		*inPosition,
 	const M3tVector3D		*inFacing);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OSrRegisterTemplates(

@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Fight.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: September 17, 2000
-	
+
 	PURPOSE: Fight AI for Oni
-	
+
 	Copyright (c) 2000
 
 */

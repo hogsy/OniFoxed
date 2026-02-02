@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_DC_CreateVertex.c
-	
+
 	AUTHOR:	Brent Pease
-	
+
 	CREATED: July 31, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1999
 
 */
@@ -32,21 +32,21 @@ MGrVertexCreate_XYZ(
 	UUtUns16		block8;
 	const UUtUns32*	curBVPtr;
 	UUtUns32		curBV;
-	
+
 	UUmAssert(sizeof(GrVertex) == 15 * sizeof(float));
 	UUmAssert(sizeof(GrVertex) * 8 == UUcProcessor_CacheLineSize * 15);
-	
+
 	numVertices = (UUtUns16)MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_NumRealVertices];
 	curBVPtr = MGgDrawContextPrivate->statePtr[M3cDrawStatePtrType_VertexBitVector];
-	
+
 	curMotokoVertex = MGmGetScreenPoints(MGgDrawContextPrivate);
-	
+
 	curGlideVertex = MGgDrawContextPrivate->vertexList;
-	
+
 	block8 = numVertices >> 3;
-	
+
 	curBV = 0xFFFFFFFF;
-	
+
 	for(vertexItr = 0;
 		vertexItr < block8;
 		vertexItr++, curGlideVertex += 8, curMotokoVertex += 8)
@@ -54,19 +54,19 @@ MGrVertexCreate_XYZ(
 		if(curBVPtr != NULL)
 		{
 			curBV = curBVPtr[vertexItr >> 2] >> ((vertexItr & 0x3) << 3);
-			
+
 			if(!curBV) continue;
 		}
 
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 1, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 2, 0);
-		
+
 		if(curBV & (1 << 0))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 0, curGlideVertex + 0);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 3, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 4, 0);
 
@@ -74,7 +74,7 @@ MGrVertexCreate_XYZ(
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 1, curGlideVertex + 1);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 5, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 6, 0);
 
@@ -82,7 +82,7 @@ MGrVertexCreate_XYZ(
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 2, curGlideVertex + 2);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 7, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 8, 0);
 
@@ -90,7 +90,7 @@ MGrVertexCreate_XYZ(
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 3, curGlideVertex + 3);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 9, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 10, 0);
 
@@ -98,7 +98,7 @@ MGrVertexCreate_XYZ(
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 4, curGlideVertex + 4);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 11, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 12, 0);
 
@@ -106,7 +106,7 @@ MGrVertexCreate_XYZ(
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 5, curGlideVertex + 5);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 13, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 14, 0);
 
@@ -114,15 +114,15 @@ MGrVertexCreate_XYZ(
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 6, curGlideVertex + 6);
 		}
-		
+
 		if(curBV & (1 << 7))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 7, curGlideVertex + 7);
 		}
 	}
-	
+
 	// don't forget trailing vertices
-	
+
 	for(vertexItr = block8 * 8;
 		vertexItr < numVertices;
 		vertexItr++, curGlideVertex++, curMotokoVertex++)
@@ -130,9 +130,9 @@ MGrVertexCreate_XYZ(
 		if(curBVPtr == NULL || UUrBitVector_TestBit(curBVPtr, vertexItr))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex, curGlideVertex);
-		}	
+		}
 	}
-	
+
 }
 
 void
@@ -147,21 +147,21 @@ MGrVertexCreate_XYZ_RGB(
 	const UUtUns32*	curBVPtr;
 	UUtUns32		curBV;
 	UUtUns32*		curVertexShade = MGmGetVertexShades(MGgDrawContextPrivate);
-	
+
 	UUmAssert(sizeof(GrVertex) == 15 * sizeof(float));
 	UUmAssert(sizeof(GrVertex) * 8 == UUcProcessor_CacheLineSize * 15);
-	
+
 	numVertices = (UUtUns16)MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_NumRealVertices];
 	curBVPtr = MGgDrawContextPrivate->statePtr[M3cDrawStatePtrType_VertexBitVector];
-	
+
 	curMotokoVertex = MGmGetScreenPoints(MGgDrawContextPrivate);
-	
+
 	curGlideVertex = MGgDrawContextPrivate->vertexList;
-	
+
 	block8 = numVertices >> 3;
-	
+
 	curBV = 0xFF;
-	
+
 	for(vertexItr = 0;
 		vertexItr < block8;
 		vertexItr++, curGlideVertex += 8, curMotokoVertex += 8, curVertexShade += 8)
@@ -169,20 +169,20 @@ MGrVertexCreate_XYZ_RGB(
 		if(curBVPtr != NULL)
 		{
 			curBV = curBVPtr[vertexItr >> 2] >> ((vertexItr & 0x3) << 3);
-			
+
 			if(!curBV) continue;
 		}
 
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 1, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 2, 0);
-		
+
 		if(curBV & (1 << 0))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 0, curGlideVertex + 0);
 			MGmConvertVertex_RGB(curVertexShade[0], curGlideVertex + 0);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 3, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 4, 0);
 
@@ -191,7 +191,7 @@ MGrVertexCreate_XYZ_RGB(
 			MGmConvertVertex_XYZ(curMotokoVertex + 1, curGlideVertex + 1);
 			MGmConvertVertex_RGB(curVertexShade[1], curGlideVertex + 1);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 5, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 6, 0);
 
@@ -200,7 +200,7 @@ MGrVertexCreate_XYZ_RGB(
 			MGmConvertVertex_XYZ(curMotokoVertex + 2, curGlideVertex + 2);
 			MGmConvertVertex_RGB(curVertexShade[2], curGlideVertex + 2);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 7, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 8, 0);
 
@@ -209,7 +209,7 @@ MGrVertexCreate_XYZ_RGB(
 			MGmConvertVertex_XYZ(curMotokoVertex + 3, curGlideVertex + 3);
 			MGmConvertVertex_RGB(curVertexShade[3], curGlideVertex + 3);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 9, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 10, 0);
 
@@ -218,7 +218,7 @@ MGrVertexCreate_XYZ_RGB(
 			MGmConvertVertex_XYZ(curMotokoVertex + 4, curGlideVertex + 4);
 			MGmConvertVertex_RGB(curVertexShade[4], curGlideVertex + 4);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 11, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 12, 0);
 
@@ -227,7 +227,7 @@ MGrVertexCreate_XYZ_RGB(
 			MGmConvertVertex_XYZ(curMotokoVertex + 5, curGlideVertex + 5);
 			MGmConvertVertex_RGB(curVertexShade[5], curGlideVertex + 5);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 13, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 14, 0);
 
@@ -236,16 +236,16 @@ MGrVertexCreate_XYZ_RGB(
 			MGmConvertVertex_XYZ(curMotokoVertex + 6, curGlideVertex + 6);
 			MGmConvertVertex_RGB(curVertexShade[6], curGlideVertex + 6);
 		}
-		
+
 		if(curBV & (1 << 7))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 7, curGlideVertex + 7);
 			MGmConvertVertex_RGB(curVertexShade[7], curGlideVertex + 7);
 		}
 	}
-	
+
 	// don't forget trailing vertices
-	
+
 	for(vertexItr = block8 * 8;
 		vertexItr < numVertices;
 		vertexItr++, curGlideVertex++, curMotokoVertex++, curVertexShade++)
@@ -254,9 +254,9 @@ MGrVertexCreate_XYZ_RGB(
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex, curGlideVertex);
 			MGmConvertVertex_RGB(curVertexShade[0], curGlideVertex);
-		}	
+		}
 	}
-	
+
 }
 
 void
@@ -273,24 +273,24 @@ MGrVertexCreate_XYZ_BaseUV(
 	MGtTextureMapPrivate*	baseMapPrivate = MGmGetBaseMapPrivate(MGgDrawContextPrivate);
 	M3tTextureCoord*		curTextureCoord = MGmGetTextureCoords(MGgDrawContextPrivate);
 	float					uScale, vScale;
-	
+
 	UUmAssert(sizeof(GrVertex) == 15 * sizeof(float));
 	UUmAssert(sizeof(GrVertex) * 8 == UUcProcessor_CacheLineSize * 15);
-	
+
 	numVertices = (UUtUns16)MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_NumRealVertices];
 	curBVPtr = MGgDrawContextPrivate->statePtr[M3cDrawStatePtrType_VertexBitVector];
-	
+
 	curMotokoVertex = MGmGetScreenPoints(MGgDrawContextPrivate);
-	
+
 	curGlideVertex = MGgDrawContextPrivate->vertexList;
-	
+
 	block8 = numVertices >> 3;
-	
+
 	curBV = 0xFFFFFFFF;
-	
+
 	uScale = baseMapPrivate->u_scale;
 	vScale = baseMapPrivate->v_scale;
-	
+
 	for(vertexItr = 0;
 		vertexItr < block8;
 		vertexItr++, curGlideVertex += 8, curMotokoVertex += 8, curTextureCoord += 8)
@@ -298,20 +298,20 @@ MGrVertexCreate_XYZ_BaseUV(
 		if(curBVPtr != NULL)
 		{
 			curBV = curBVPtr[vertexItr >> 2] >> ((vertexItr & 0x3) << 3);
-			
+
 			if(!curBV) continue;
 		}
 
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 1, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 2, 0);
-		
+
 		if(curBV & (1 << 0))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 0, curGlideVertex + 0);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 0, curGlideVertex + 0);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 3, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 4, 0);
 
@@ -320,7 +320,7 @@ MGrVertexCreate_XYZ_BaseUV(
 			MGmConvertVertex_XYZ(curMotokoVertex + 1, curGlideVertex + 1);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 1, curGlideVertex + 1);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 5, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 6, 0);
 
@@ -329,7 +329,7 @@ MGrVertexCreate_XYZ_BaseUV(
 			MGmConvertVertex_XYZ(curMotokoVertex + 2, curGlideVertex + 2);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 2, curGlideVertex + 2);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 7, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 8, 0);
 
@@ -338,7 +338,7 @@ MGrVertexCreate_XYZ_BaseUV(
 			MGmConvertVertex_XYZ(curMotokoVertex + 3, curGlideVertex + 3);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 3, curGlideVertex + 3);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 9, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 10, 0);
 
@@ -347,7 +347,7 @@ MGrVertexCreate_XYZ_BaseUV(
 			MGmConvertVertex_XYZ(curMotokoVertex + 4, curGlideVertex + 4);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 4, curGlideVertex + 4);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 11, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 12, 0);
 
@@ -356,7 +356,7 @@ MGrVertexCreate_XYZ_BaseUV(
 			MGmConvertVertex_XYZ(curMotokoVertex + 5, curGlideVertex + 5);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 5, curGlideVertex + 5);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 13, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 14, 0);
 
@@ -365,14 +365,14 @@ MGrVertexCreate_XYZ_BaseUV(
 			MGmConvertVertex_XYZ(curMotokoVertex + 6, curGlideVertex + 6);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 6, curGlideVertex + 6);
 		}
-		
+
 		if(curBV & (1 << 7))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 7, curGlideVertex + 7);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 7, curGlideVertex + 7);
 		}
 	}
-	
+
 	// don't forget trailing vertices
 	for(vertexItr = block8 * 8;
 		vertexItr < numVertices;
@@ -382,7 +382,7 @@ MGrVertexCreate_XYZ_BaseUV(
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex, curGlideVertex);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord, curGlideVertex);
-		}	
+		}
 	}
 }
 
@@ -401,39 +401,39 @@ MGrVertexCreate_XYZ_RGB_BaseUV(
 	M3tTextureCoord*		curTextureCoord = MGmGetTextureCoords(MGgDrawContextPrivate);
 	UUtUns32*				curVertexShade = MGmGetVertexShades(MGgDrawContextPrivate);
 	float					uScale, vScale;
-	
+
 	UUmAssert(sizeof(GrVertex) == 15 * sizeof(float));
 	UUmAssert(sizeof(GrVertex) * 8 == UUcProcessor_CacheLineSize * 15);
-	
+
 	numVertices = (UUtUns16)MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_NumRealVertices];
 	curBVPtr = MGgDrawContextPrivate->statePtr[M3cDrawStatePtrType_VertexBitVector];
-	
+
 	curMotokoVertex = MGmGetScreenPoints(MGgDrawContextPrivate);
-	
+
 	curGlideVertex = MGgDrawContextPrivate->vertexList;
-		
+
 	curBV = 0xFFFFFFFF;
-	
+
 	uScale = baseMapPrivate->u_scale;
 	vScale = baseMapPrivate->v_scale;
-	
+
 	for(vertexItr = 0;
 		vertexItr < numVertices;
 		vertexItr++, curGlideVertex += 1, curMotokoVertex += 1, curTextureCoord += 1, curVertexShade += 1)
 	{
 		if ((curBVPtr != NULL) && (0 == (vertexItr % 8))) {
 			curBV = curBVPtr[vertexItr >> 5] >> (((vertexItr >> 3) & 0x3) << 3);
-				
+
 			if(!curBV) continue;
 		}
-		
+
 		if(curBV & (1 << (vertexItr % 8)))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex, curGlideVertex);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord, curGlideVertex );
 			MGmConvertVertex_RGB(*curVertexShade, curGlideVertex);
 		}
-	}	
+	}
 }
 #else
 {
@@ -448,24 +448,24 @@ MGrVertexCreate_XYZ_RGB_BaseUV(
 	M3tTextureCoord*		curTextureCoord = MGmGetTextureCoords(MGgDrawContextPrivate);
 	UUtUns32*				curVertexShade = MGmGetVertexShades(MGgDrawContextPrivate);
 	float					uScale, vScale;
-	
+
 	UUmAssert(sizeof(GrVertex) == 15 * sizeof(float));
 	UUmAssert(sizeof(GrVertex) * 8 == UUcProcessor_CacheLineSize * 15);
-	
+
 	numVertices = (UUtUns16)MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_NumRealVertices];
 	curBVPtr = MGgDrawContextPrivate->statePtr[M3cDrawStatePtrType_VertexBitVector];
-	
+
 	curMotokoVertex = MGmGetScreenPoints(MGgDrawContextPrivate);
-	
+
 	curGlideVertex = MGgDrawContextPrivate->vertexList;
-	
+
 	block8 = numVertices >> 3;
-	
+
 	curBV = 0xFFFFFFFF;
-	
+
 	uScale = baseMapPrivate->u_scale;
 	vScale = baseMapPrivate->v_scale;
-	
+
 	for(vertexItr = 0;
 		vertexItr < block8;
 		vertexItr++, curGlideVertex += 8, curMotokoVertex += 8, curTextureCoord += 8, curVertexShade += 8)
@@ -473,21 +473,21 @@ MGrVertexCreate_XYZ_RGB_BaseUV(
 		if(curBVPtr != NULL)
 		{
 			curBV = curBVPtr[vertexItr >> 2] >> ((vertexItr & 0x3) << 3);
-			
+
 			if(!curBV) continue;
 		}
 
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 1, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 2, 0);
-		
+
 		if(curBV & (1 << 0))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 0, curGlideVertex + 0);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 0, curGlideVertex + 0);
 			MGmConvertVertex_RGB(curVertexShade[0], curGlideVertex + 0);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 3, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 4, 0);
 
@@ -497,7 +497,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV(
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 1, curGlideVertex + 1);
 			MGmConvertVertex_RGB(curVertexShade[1], curGlideVertex + 1);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 5, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 6, 0);
 
@@ -507,7 +507,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV(
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 2, curGlideVertex + 2);
 			MGmConvertVertex_RGB(curVertexShade[2], curGlideVertex + 2);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 7, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 8, 0);
 
@@ -517,7 +517,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV(
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 3, curGlideVertex + 3);
 			MGmConvertVertex_RGB(curVertexShade[3], curGlideVertex + 3);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 9, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 10, 0);
 
@@ -527,7 +527,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV(
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 4, curGlideVertex + 4);
 			MGmConvertVertex_RGB(curVertexShade[4], curGlideVertex + 4);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 11, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 12, 0);
 
@@ -537,7 +537,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV(
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 5, curGlideVertex + 5);
 			MGmConvertVertex_RGB(curVertexShade[5], curGlideVertex + 5);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 13, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 14, 0);
 
@@ -547,7 +547,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV(
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord + 6, curGlideVertex + 6);
 			MGmConvertVertex_RGB(curVertexShade[6], curGlideVertex + 6);
 		}
-		
+
 		if(curBV & (1 << 7))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 7, curGlideVertex + 7);
@@ -555,7 +555,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV(
 			MGmConvertVertex_RGB(curVertexShade[7], curGlideVertex + 7);
 		}
 	}
-	
+
 	// don't forget trailing vertices
 	for(vertexItr = block8 * 8;
 		vertexItr < numVertices;
@@ -566,7 +566,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV(
 			MGmConvertVertex_XYZ(curMotokoVertex, curGlideVertex);
 			MGmConvertVertex_UV(uScale, vScale, 0, curTextureCoord, curGlideVertex);
 			MGmConvertVertex_RGB(curVertexShade[0], curGlideVertex);
-		}	
+		}
 	}
 }
 #endif
@@ -589,26 +589,26 @@ MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV(
 	UUtUns32*				curVertexShade = MGmGetVertexShades(MGgDrawContextPrivate);
 	float					uScaleBase, vScaleBase;
 	float					uScaleEnv, vScaleEnv;
-	
+
 	UUmAssert(sizeof(GrVertex) == 15 * sizeof(float));
 	UUmAssert(sizeof(GrVertex) * 8 == UUcProcessor_CacheLineSize * 15);
-	
+
 	numVertices = (UUtUns16)MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_NumRealVertices];
 	curBVPtr = MGgDrawContextPrivate->statePtr[M3cDrawStatePtrType_VertexBitVector];
-	
+
 	curMotokoVertex = MGmGetScreenPoints(MGgDrawContextPrivate);
-	
+
 	curGlideVertex = MGgDrawContextPrivate->vertexList;
-	
+
 	block8 = numVertices >> 3;
-	
+
 	curBV = 0xFFFFFFFF;
-	
+
 	uScaleBase = baseMapPrivate->u_scale;
 	vScaleBase = baseMapPrivate->v_scale;
 	uScaleEnv = envMapPrivate->u_scale;
 	vScaleEnv = envMapPrivate->v_scale;
-	
+
 	for(vertexItr = 0;
 		vertexItr < block8;
 		vertexItr++, curGlideVertex += 8, curMotokoVertex += 8, curTextureCoord += 8, curEnvTextureCoord += 8, curVertexShade += 8)
@@ -616,14 +616,14 @@ MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV(
 		if(curBVPtr != NULL)
 		{
 			curBV = curBVPtr[vertexItr >> 2] >> ((vertexItr & 0x3) << 3);
-			
+
 			if(!curBV) continue;
 		}
 
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 1, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 2, 0);
-		
+
 		if(curBV & (1 << 0))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 0, curGlideVertex + 0);
@@ -631,7 +631,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV(
 			MGmConvertVertex_UV(uScaleEnv, vScaleEnv, 1, curEnvTextureCoord + 0, curGlideVertex + 0);
 			MGmConvertVertex_RGB(curVertexShade[0], curGlideVertex + 0);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 3, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 4, 0);
 
@@ -642,7 +642,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV(
 			MGmConvertVertex_UV(uScaleEnv, vScaleEnv, 1, curEnvTextureCoord + 1, curGlideVertex + 1);
 			MGmConvertVertex_RGB(curVertexShade[1], curGlideVertex + 1);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 5, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 6, 0);
 
@@ -653,7 +653,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV(
 			MGmConvertVertex_UV(uScaleEnv, vScaleEnv, 1, curEnvTextureCoord + 2, curGlideVertex + 2);
 			MGmConvertVertex_RGB(curVertexShade[2], curGlideVertex + 2);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 7, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 8, 0);
 
@@ -664,7 +664,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV(
 			MGmConvertVertex_UV(uScaleEnv, vScaleEnv, 1, curEnvTextureCoord + 3, curGlideVertex + 3);
 			MGmConvertVertex_RGB(curVertexShade[3], curGlideVertex + 3);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 9, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 10, 0);
 
@@ -675,7 +675,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV(
 			MGmConvertVertex_UV(uScaleEnv, vScaleEnv, 1, curEnvTextureCoord + 4, curGlideVertex + 4);
 			MGmConvertVertex_RGB(curVertexShade[4], curGlideVertex + 4);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 11, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 12, 0);
 
@@ -686,7 +686,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV(
 			MGmConvertVertex_UV(uScaleEnv, vScaleEnv, 1, curEnvTextureCoord + 5, curGlideVertex + 5);
 			MGmConvertVertex_RGB(curVertexShade[5], curGlideVertex + 5);
 		}
-		
+
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 13, 0);
 		UUrProcessor_ZeroCacheLine((char*)curGlideVertex + UUcProcessor_CacheLineSize * 14, 0);
 
@@ -697,7 +697,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV(
 			MGmConvertVertex_UV(uScaleEnv, vScaleEnv, 1, curEnvTextureCoord + 6, curGlideVertex + 6);
 			MGmConvertVertex_RGB(curVertexShade[6], curGlideVertex + 6);
 		}
-		
+
 		if(curBV & (1 << 7))
 		{
 			MGmConvertVertex_XYZ(curMotokoVertex + 7, curGlideVertex + 7);
@@ -706,7 +706,7 @@ MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV(
 			MGmConvertVertex_RGB(curVertexShade[7], curGlideVertex + 7);
 		}
 	}
-	
+
 	// don't forget trailing vertices
 	for(vertexItr = block8 * 8;
 		vertexItr < numVertices;
@@ -718,6 +718,6 @@ MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV(
 			MGmConvertVertex_UV(uScaleBase, vScaleBase, 0, curTextureCoord, curGlideVertex);
 			MGmConvertVertex_UV(uScaleEnv, vScaleEnv, 1, curEnvTextureCoord, curGlideVertex);
 			MGmConvertVertex_RGB(curVertexShade[0], curGlideVertex);
-		}	
+		}
 	}
 }

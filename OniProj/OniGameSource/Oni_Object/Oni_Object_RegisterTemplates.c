@@ -19,7 +19,7 @@ OBJrRegisterTemplates(
 	void)
 {
 	UUtError				error;
-	
+
 	error =
 		TMrTemplate_Register(
 			OBJcTemplate_LSData,

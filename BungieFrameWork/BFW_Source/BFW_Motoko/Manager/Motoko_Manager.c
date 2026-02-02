@@ -1,12 +1,12 @@
 /*
 	FILE:	Motoko_Manager.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 5, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997-1999
 
 */
@@ -98,19 +98,19 @@ M3iGeometryProcHandler(
 
 	switch(inMessage)
 	{
-		case TMcTemplateProcMessage_LoadPostProcess:		
+		case TMcTemplateProcMessage_LoadPostProcess:
 			M3gNumPoints += geometry->pointArray->numPoints;
 			M3gNumObjs++;
 
 		case TMcTemplateProcMessage_Update:
 			#if defined(DEBUGGING) && DEBUGGING
-			
+
 				error = M3rVerify_Geometry(geometry);
-			
+
 			#endif
-			
+
 			geometry->geometryFlags |= M3cGeometryFlag_RemoveBackface;
-			
+
 			if(geometry->baseMap != NULL)
 			{
 				switch(geometry->baseMap->texelType)
@@ -124,12 +124,12 @@ M3iGeometryProcHandler(
 						break;
 				}
 			}
-			
+
 		break;
 
 		case TMcTemplateProcMessage_NewPostProcess:
 			break;
-		
+
 		case TMcTemplateProcMessage_PrepareForUse:
 			break;
 	}
@@ -146,10 +146,10 @@ M3iBigTextureInit(
 	// calculate the number of sub_textures needed
 	inTextureMap->num_x = inTextureMap->width / M3cTextureMap_MaxWidth;
 	inTextureMap->num_y = inTextureMap->height / M3cTextureMap_MaxHeight;
-	
+
 	if ((inTextureMap->width & (M3cTextureMap_MaxWidth - 1)) > 0) inTextureMap->num_x++;
 	if ((inTextureMap->height & (M3cTextureMap_MaxHeight - 1)) > 0) inTextureMap->num_y++;
-	
+
 	return UUcError_None;
 }
 
@@ -165,7 +165,7 @@ M3iBigTextureUpdate(
 	{
 		TMrInstance_Update(inTextureMap->textures[i]);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -178,35 +178,35 @@ M3iBigTextureProcHandler(
 {
 	UUtError				error;
 	M3tTextureMap_Big		*texture_map;
-	
+
 	UUmAssert(inInstancePtr);
-	
+
 	// get a pointer to the texture map
 	texture_map = (M3tTextureMap_Big*)inInstancePtr;
-	
+
 	switch(inMessage)
 	{
 		case TMcTemplateProcMessage_NewPostProcess:
 		break;
-					
+
 		case TMcTemplateProcMessage_LoadPostProcess:
 			error = M3iBigTextureInit(texture_map);
 			UUmError_ReturnOnError(error);
 		break;
-			
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 		break;
-			
+
 		case TMcTemplateProcMessage_Update:
 			error = M3iBigTextureUpdate(texture_map);
 			UUmError_ReturnOnError(error);
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -230,41 +230,41 @@ static UUtUns32
 M3rCacheProc_ComputeSize(
 	void*		inInstanceData)
 {
-	
+
 	return 0;
 }
 
-UUtError 
+UUtError
 M3rInitialize(
 	void)
 {
 	UUtError	error;
-	
+
 	UUmAssert(M3cDrawStateIntType_NumTypes <= 32); // make sure we can fit in a UUtUns32
 
 	UUrStartupMessage("initializing 3D display system..");
-	
+
 	/*
 	 * Register our templates
 	 */
 		error = M3rRegisterTemplates();
 		UUmError_ReturnOnError(error);
-	
+
 	M3gNumDrawEngines = 0;
 	M3gNumGeomEngines = 0;
-	
+
 	error = M3rSort_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	M3gSIMDPresent = UUrPlatform_SIMD_IsPresent();
-	
-		
+
+
 	UUrStartupMessage("initializing geometry engines...");
-	
+
 	UUrStartupMessage("initializing draw engines...");
 
-/* good-bye, Glide!	
-	if (!ONgCommandLine.useOpenGL)	
+/* good-bye, Glide!
+	if (!ONgCommandLine.useOpenGL)
 	{
 		MGrDrawEngine_Initialize();
 	}
@@ -284,45 +284,45 @@ M3rInitialize(
 	//RVrDrawEngine_Initialize();
 
 	//MSrDrawEngine_Initialize();
-	
+
 	MSrGeomEngine_Initialize();
 
 #ifndef __ONADA__
 	OGrGeomEngine_Initialize();
 #endif
-	
+
 #if UUmPlatform == UUmPlatform_Win32
 
 	//MDrDrawEngine_Initialize();
-	
+
 #endif
-	
+
 	error = M3rManager_Matrix_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = M3rManager_Texture_Initialize();
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		TMrTemplate_PrivateData_New(
 			M3cTemplate_TextureMap_Big,
 			0,
 			M3iBigTextureProcHandler,
 			&M3gTemplate_TextureMapBig_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install big texture proc handler");
-	
-	error = 
+
+	error =
 		TMrTemplate_PrivateData_New(
 			M3cTemplate_Geometry,
 			0,
 			M3iGeometryProcHandler,
 			&M3gTemplate_Geometry_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install geomety private data");
-		
+
 	return UUcError_None;
 }
 
-void 
+void
 M3rTerminate(
 	void)
 {
@@ -330,7 +330,7 @@ M3rTerminate(
 	#if UUmPlatform == UUmPlatform_Win32
 		//MDrDrawEngine_Terminate();
 	#endif
-	
+
 	//GLrDrawEngine_Terminate();
 	//MGrDrawEngine_Terminate();
 	//MSrDrawEngine_Terminate();
@@ -363,15 +363,15 @@ M3rDrawEngine_MakeActive(
 	UUtUns16				inDisplayModeIndex)		// Only relevent for full screen mode
 {
 //	UUmAssert(M3gGeomContext == NULL); -S.S. resolution changing caused this assert to fire
-	
+
 	UUmAssert(inDrawEngineIndex < M3gNumDrawEngines);
-	
+
 	M3gActiveDrawEngine = inDrawEngineIndex;
 	M3gActiveDisplayDevice = inDisplayDeviceIndex;
 	M3gActiveDisplayMode = inDisplayModeIndex;
-	
+
 	M3gFullScreen = inFullScreen;
-	
+
 	return UUcError_None;
 }
 
@@ -384,11 +384,11 @@ M3rGeomEngine_MakeActive(
 	UUtUns16				inGeomEngineIndex)
 {
 	// UUmAssert(M3gGeomContext == NULL); -S.S. resolution swicthing code hits this
-	
+
 	UUmAssert(inGeomEngineIndex < M3gNumGeomEngines);
 
 	M3gActiveGeomEngine = inGeomEngineIndex;
-	
+
 	return UUcError_None;
 }
 
@@ -423,10 +423,10 @@ M3rDrawContext_New(
 	UUtError					error;
 
 	UUmAssert(M3gActiveDrawEngine != 0xFFFF);
-	
+
 	error = M3rDraw_State_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error =
 		M3gDrawEngineList[M3gActiveDrawEngine].methods.contextPrivateNew(
 			inDrawContextDescriptor,
@@ -434,15 +434,15 @@ M3rDrawContext_New(
 			M3gFullScreen,
 			&M3gManagerDrawContext.apiIndex);
 	UUmError_ReturnOnErrorMsg(error, "Could not create draw context private");
-	
-	error = 
+
+	error =
 		TMrTemplate_CallProc(
 			M3cTemplate_TextureMap,
 			TMcTemplateProcMessage_LoadPostProcess);
 	UUmError_ReturnOnError(error);
-		
+
 	M3gManagerDrawContext.bitVector = NULL;
-	
+
 	// initially we are not sorting
 	M3gDraw_Sorting = UUcFalse;
 
@@ -457,11 +457,11 @@ M3rDrawContext_Delete(
 	TMrTemplate_CallProc(
 		M3cTemplate_TextureMap,
 		TMcTemplateProcMessage_DisposePreProcess);
-	
+
 	M3rDraw_State_Terminate();
-	
+
 	M3gDrawEngineList[M3gActiveDrawEngine].methods.contextPrivateDelete();
-	
+
 	if(M3gManagerDrawContext.bitVector != NULL)
 	{
 		UUrBitVector_Dispose(M3gManagerDrawContext.bitVector);
@@ -475,45 +475,45 @@ M3rDrawContext_ResetTextures(
 	M3gDrawEngineList[M3gActiveDrawEngine].methods.textureResetAll();
 }
 
-UUtError 
+UUtError
 M3rGeomContext_New(
 	M3tDrawContextDescriptor*	inDrawContextDescriptor)
 {
 	UUtError					error;
-			
-	// check to make sure that the active draw engine is compatable with this geom engine		
+
+	// check to make sure that the active draw engine is compatable with this geom engine
 	if(((1 << M3gActiveDrawEngine) & M3gGeomEngineList[M3gActiveGeomEngine].caps.compatibleDrawEngineBV) == 0)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "active draw and geom engines are not compatable");
 	}
-	
+
 	error =
 		M3rDrawContext_New(
 			inDrawContextDescriptor);
 	UUmError_ReturnOnErrorMsg(error, "Could not setup draw context");
-	
+
 	error =
 		M3gGeomEngineList[M3gActiveGeomEngine].methods.contextPrivateNew(
 			inDrawContextDescriptor,
 			&M3gManagerGeomContext.geomContext);
 	UUmError_ReturnOnErrorMsg(error, "Could not setup draw context private");
-	
+
 	UUmAssert(M3gManagerGeomContext.geomContext != NULL);
 	if(M3gManagerGeomContext.geomContext == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not setup draw context private");
 	}
-	
+
 	// Initialize the camera
 		M3rManager_Camera_Initialize();
-	
+
 	error = M3rGeom_State_Initialize();
 	UUmError_ReturnOnError(error);
-		
+
 	M3gGeomContext = M3gManagerGeomContext.geomContext;
 
 	M3rMatrixStack_Clear();
-		
+
 	return UUcError_None;
 }
 
@@ -521,37 +521,37 @@ void
 M3rGeomContext_Delete(
 	void)
 {
-	
+
 	M3rGeom_State_Terminate();
-			
+
 	M3gGeomEngineList[M3gActiveGeomEngine].methods.contextPrivateDelete();
-	
+
 	M3rDrawContext_Delete();
-	
+
 	M3gGeomContext = NULL;
 }
 
-UUtError 
+UUtError
 M3rManager_Register_DrawEngine(
 	M3tDrawEngineCaps*			inDrawEngineCaps,
 	M3tDrawEngineMethods*		inDrawEngineMethods)
 {
 	 M3gDrawEngineList[M3gNumDrawEngines].methods = *inDrawEngineMethods;
 	 M3gDrawEngineList[M3gNumDrawEngines].caps = *inDrawEngineCaps;
-	 
+
 	 M3gNumDrawEngines++;
-	 
+
 	 return UUcError_None;
 }
 
-UUtError 
+UUtError
 M3rManager_Register_GeomEngine(
 	M3tGeomEngineCaps*			inGeomEngineCaps,
 	M3tGeomEngineMethods*		inGeomEngineMethods)
 {
 	 M3gGeomEngineList[M3gNumGeomEngines].methods = *inGeomEngineMethods;
 	 M3gGeomEngineList[M3gNumGeomEngines].caps = *inGeomEngineCaps;
-	 
+
 	 M3gNumGeomEngines++;
 
 	 return UUcError_None;
@@ -569,7 +569,7 @@ M3rDrawEngine_GetCaps(
 	UUtUns16	inDrawEngineIndex)
 {
 	UUmAssert(inDrawEngineIndex < M3gNumDrawEngines);
-	
+
 	return &M3gDrawEngineList[inDrawEngineIndex].caps;
 }
 
@@ -585,18 +585,18 @@ M3rGeomEngine_GetCaps(
 	UUtUns16	inGeomEngineIndex)
 {
 	UUmAssert(inGeomEngineIndex < M3gNumGeomEngines);
-	
+
 	return &M3gGeomEngineList[inGeomEngineIndex].caps;
 }
 
 
-void 
+void
 M3rGeometry_MultiplyAndDraw(
 	M3tGeometry *inGeometryObject,
 	const M3tMatrix4x3 *inMatrix)
 {
 	M3rMatrixStack_Push();
-	
+
 	M3rMatrixStack_Multiply(inMatrix);
 	M3rGeometry_Draw(inGeometryObject);
 

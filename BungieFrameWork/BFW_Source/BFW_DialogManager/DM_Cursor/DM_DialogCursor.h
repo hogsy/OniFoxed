@@ -28,16 +28,16 @@ typedef UUtUns16				DCtCursorType;
 enum
 {
 	DCcCursorType_Arrow				= 1,
-	
+
 	DCcNumCursorTypes
-	
+
 };
 
 // ----------------------------------------------------------------------
 typedef tm_struct DCtCursorTexture
 {
 	tm_templateref			texture_ref;
-	
+
 } DCtCursorTexture;
 
 // ----------------------------------------------------------------------
@@ -46,18 +46,18 @@ typedef tm_template('D', 'C', 'C', '_', "DC Cursor List")
 DCtCursor
 {
 	tm_pad							pad0[20];
-	
+
 	UUtUns16						animation_rate;
-	
+
 	tm_varindex	UUtUns16			num_cursors;
 	tm_vararray	DCtCursorTexture	cursors[1];
-	
+
 } DCtCursor;
 
 typedef struct DCtCursor_PrivateData
 {
 	UUtUns16				current_cursor;
-	
+
 	// time in ticks of next animation
 	UUtUns32				next_animation;
 
@@ -68,7 +68,7 @@ typedef tm_struct DCtCursorTypePair
 {
 	UUtUns16				cursor_type;
 	char					cursor_name[32];
-	
+
 } DCtCursorTypePair;
 
 // ----------------------------------------------------------------------
@@ -77,10 +77,10 @@ typedef tm_template('C', 'T', 'L', '_', "Cursor Type List")
 DCtCursorTypeList
 {
 	tm_pad							pad0[22];
-	
+
 	tm_varindex UUtUns16			num_cursor_type_pairs;
 	tm_vararray DCtCursorTypePair	cursor_type_pair[1];
-	
+
 } DCtCursorTypeList;
 
 
@@ -99,23 +99,23 @@ DCrCursor_Draw(
 	DCtCursor				*inCursor,
 	IMtPoint2D				*inDestination,
 	float					inLayer);
-	
+
 UUtError
 DCrCursor_Load(
 	DCtCursorType			inCursorType,
 	DCtCursor				**outCursorList);
-	
+
 UUtError
 DCrCursor_ProcHandler(
 	TMtTemplateProc_Message	inMessage,
 	void*					inInstancePtr,
 	void*					inDataPtr);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 DCrInitialize(
 	void);
-	
+
 void
 DCrTerminate(
 	void);

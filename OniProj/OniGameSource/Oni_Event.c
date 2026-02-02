@@ -153,7 +153,7 @@ UUtUns32 ONrEventList_Read( ONtEventList *inEventList, UUtUns16	inVersion, UUtBo
 	for( i = 0; i < inEventList->event_count; i++ )
 	{
 		UUtUns16					event_type;
-		
+
 		event = &inEventList->events[i];
 
 		OBJmGet2BytesFromBuffer( inBuffer, event_type, UUtUns16, inSwapIt );
@@ -162,7 +162,7 @@ UUtUns32 ONrEventList_Read( ONtEventList *inEventList, UUtUns16	inVersion, UUtBo
 		num_bytes += sizeof(UUtUns16);
 
 		desc = ONrEvent_GetDescription( event->event_type );
-		
+
 		UUmAssert( desc );
 
 		switch( desc->params_type )
@@ -194,12 +194,12 @@ UUtError ONrEventList_Write( ONtEventList *inEventList, UUtUns8 *ioBuffer, UUtUn
 	UUtUns32					i;
 	ONtEvent					*event;
 	ONtEventDescription			*desc;
-	
+
 	// set the number of bytes available
 	bytes_available = *ioBufferSize;
 
 	OBJmWrite2BytesToBuffer( ioBuffer, inEventList->event_count, UUtUns16,	bytes_available, OBJcWrite_Little);
-	
+
 	for( i = 0; i < inEventList->event_count; i++ )
 	{
 		event = &inEventList->events[i];
@@ -207,7 +207,7 @@ UUtError ONrEventList_Write( ONtEventList *inEventList, UUtUns8 *ioBuffer, UUtUn
 		OBJmWrite2BytesToBuffer(ioBuffer, event->event_type, UUtInt16, bytes_available, OBJcWrite_Little);
 
 		desc = ONrEvent_GetDescription( event->event_type );
-		
+
 		UUmAssert( desc );
 
 		switch( desc->params_type )
@@ -249,7 +249,7 @@ UUtUns32 ONrEventList_GetWriteSize( ONtEventList *inEventList )
 		num_bytes += sizeof(UUtUns16);
 
 		desc = ONrEvent_GetDescription( event->event_type );
-		
+
 		UUmAssert( desc );
 
 		switch( desc->params_type )
@@ -293,9 +293,9 @@ UUtError ONrEventList_Execute( ONtEventList *inEventList, ONtCharacter *inCharac
 {
 	ONtEvent					*event;
 	UUtUns32					i;
-	
+
 	ONgEvent_Character = inCharacter;
-	
+
 	for( i = 0; i < inEventList->event_count; i++ )
 	{
 		event = &inEventList->events[i];
@@ -357,7 +357,7 @@ void ONrEvent_Handle_DoorLock( ONtEvent *inEvent )
 	UUmAssert( inEvent );
 
 	id			= (UUtUns16) inEvent->params.params_id16.id;
-	
+
 	OBJrDoor_Lock_ID( id );
 
 }
@@ -414,9 +414,9 @@ UUtError ONrEvent_GetName( ONtEvent *inEvent, char* ioName, UUtUns32 inMaxLength
 	char						temp_name[100];
 
 	desc = ONrEvent_GetDescription( inEvent->event_type );
-	
+
 	UUmAssert( desc );
-	
+
 	switch( desc->params_type )
 	{
 		case ONcEventParams_None:

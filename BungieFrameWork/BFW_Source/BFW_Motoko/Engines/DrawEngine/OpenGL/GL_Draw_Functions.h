@@ -1,12 +1,12 @@
 /*
 	FILE:	GL_DC_Method_Frame.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: August 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -20,7 +20,7 @@ void
 GLrDrawContext_Method_TriSprite(
 	const M3tPointScreen	*inPoints,				// points[3]
 	const M3tTextureCoord	*inTextureCoords);		// UVs[3]
-	
+
 void
 GLrDrawContext_Method_Sprite(
 	const M3tPointScreen	*inPoints,				// tl, br
@@ -34,7 +34,7 @@ GLrDrawContext_Method_SpriteArray(
 	const UUtUns32			inCount );
 
 UUtError GLrDrawContext_Method_ScreenCapture(
-	const UUtRect			*inRect, 
+	const UUtRect			*inRect,
 	void					*outBuffer);
 
 UUtBool GLrDrawContext_Method_PointVisible(

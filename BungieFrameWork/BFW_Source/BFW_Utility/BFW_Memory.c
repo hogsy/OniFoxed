@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Memory.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 18, 1997
-	
+
 	PURPOSE: memory manager
-	
+
 	Copyright 1997
 
 */
@@ -45,7 +45,7 @@ struct UUtMemory_Pool_Heap
 {
 	char				*heapMemory;
 	UUtUns32			nextFreeIndex;
-	
+
 	UUtMemory_Pool_Heap	*next;
 };
 
@@ -54,7 +54,7 @@ struct UUtMemory_Pool
 	UUtBool				fixed;
 	UUtUns32			chunkSize;
 	UUtMemory_Pool_Heap	*heapList;
-	
+
 	UUtMemory_Pool_Heap	*activeHeap;
 };
 
@@ -64,9 +64,9 @@ struct UUtMemory_Heap_Subheap
 {
 	char*					memory;
 	UUtUns32*				blockBV;
-	
+
 	UUtUns32				blocksLeft;
-	
+
 	UUtMemory_Heap_Subheap	*next;
 };
 
@@ -85,14 +85,14 @@ struct UUtMemory_Array
 	UUtUns32	allocChunkSize;
 	UUtUns32	numElemsAlloced;
 	void		*data;
-	
+
 };
 
 struct UUtMemory_ParallelArray_Member
 {
 	UUtUns32	elemSize;
 	void		*data;
-	
+
 };
 
 struct UUtMemory_ParallelArray
@@ -102,22 +102,22 @@ struct UUtMemory_ParallelArray
 	UUtUns32						numMemberArrays;
 	UUtUns32						allocChunkSize;
 	UUtMemory_ParallelArray_Member	members[UUcMemory_ParallelArray_MaxMembers];
-	
+
 };
 
 #if DEBUGGING_MEMORY
-	
+
 	#define UUcMemory_MinUsageThreshold	(10 * 1024 * 1024)
 	UUtUns32	gMemoryTracker_NumRecords = 0;
 	UUtUns32	gMemoryTracker_NumBlocks;
-	
+
 	typedef struct UUtMemory_LeakStack
 	{
 		char*		fileName;
 		UUtInt32	lineNum;
 		UUtUns32	timeStamp;
 		const char*	comment;
-		
+
 	} UUtMemory_LeakStack;
 
 	#define cMaxLeakStackLength	30
@@ -128,34 +128,34 @@ struct UUtMemory_ParallelArray
 
 	UUtInt32	gCurMemUsage = 0;
 	UUtInt32	gMaxMemUsage = 0;
-	
+
 	UUtBool		gReport_ForceGlobal = UUcFalse;
 	UUtBool		UUgMemory_VerifyForceDisable	= UUcFalse;
 	UUtBool		UUgMemory_VerifyForceEnable		= UUcFalse;
 	UUtBool		UUgMemory_VerifyEnable			= UUcTrue;
-	
+
 	#if !defined(UUmDebugMemAggressive)
-	
+
 		#define UUmDebugMemAggressive 0
-	
+
 	#endif
-	
+
 	#if !defined(UUmDebugDelete)
-	
+
 		#define UUmDebugDelete	0
-	
+
 	#endif
-	
+
 	#define UUcMaxDebugFileLength	256
 	#define UUcMaxCallChainLength	100
-	
+
 	typedef struct UUtBookkeepBlock
 	{
 		struct UUtBookkeepBlock	*next;
-		
+
 		UUtUns32				numChains;
 		UUtUns32				callChainList[UUcMaxCallChainLength];
-		
+
 		char					file[UUcMaxDebugFileLength];
 		UUtInt32				line;
 		UUtUns32				realBytes;			// memory requested
@@ -163,58 +163,58 @@ struct UUtMemory_ParallelArray
 		UUtInt32				*beginMagic;
 		UUtInt32				*endMagic;
 		void*					realBlock;
-		
+
 		#if defined(UUmDebugMemAggressive) && UUmDebugMemAggressive
-			
+
 			UUtInt32				*endAggressive;
-			
+
 		#endif
-		
+
 		UUtInt32			checkSum;
-		
+
 		UUtUns32			timeStamp;
-		
+
 		UUtUns32			numTimesRealloced;
-		
+
 		UUtUns16			reported;
-		
+
 		UUtUns16			stackLevel;
-		
+
 	} UUtBookkeepBlock;
-	
+
 	#if defined(UUmDebugDelete) && UUmDebugDelete
-	
+
 		typedef struct UUtDeletedBookkeepBlock
 		{
 			struct UUtDeletedBookkeepBlock	*next;
-			
+
 			char							file[UUcMaxDebugFileLength];
 			UUtInt32						line;
-			
+
 			void							*addr;
-			
+
 		} UUtDeletedBookkeepBlock;
-	
+
 		UUtDeletedBookkeepBlock	*gDeletedBlockList = NULL;
-		
+
 	#endif
-	
+
 	#define UUcMemoryTracker_FileLength	(32)
-	
+
 	typedef struct UUtMemoryTracker
 	{
 		char		fileName[UUcMemoryTracker_FileLength];
 		UUtUns32	lineNum;
-		
+
 		UUtUns32	memoryAllocated;
-		
+
 	} UUtMemoryTracker;
-	
+
 	/* Eventually move this into a per instance structure */
 	UUtBookkeepBlock	*gBlockListHead = NULL;
 
 	AUtSharedElemArray*	gMemoryTracker	= NULL;
-	
+
 #endif /*	DEBUGGING_MEMORY	*/
 
 
@@ -224,7 +224,7 @@ struct UUtMemory_ParallelArray
 	Since Oni doesn't handle allocation failure, I'm doing it here.
 	Anyone who has a problem with that can start working on the Mac build
 	and then come yell at me :o)
-*/ 
+*/
 
 enum {
 	RELIEF_FUND_SIZE= 1024 * 32
@@ -239,7 +239,7 @@ static void out_of_memory(
 	free(stefans_emergency_relief_fund);
 	stefans_emergency_relief_fund= NULL;
 	AUrMessageBox(AUcMBType_OK, "Sorry, Oni has run out of memory!");
-	
+
 #if UUmPlatform == UUmPlatform_Mac
 	// somehow, someway, even calling ExitToShell() is causing atexit-registered functions
 	// to be triggered, which tends to blow up on the Mac
@@ -251,7 +251,7 @@ static void out_of_memory(
 		ExitToShell();
 	}
 #endif
-	
+
 	exit(1);
 
 	return;
@@ -276,10 +276,10 @@ static UUtUns32 iSizeToAllocSize(UUtUns32 inSize)
 void *UUrAlignMemory(void *inMemory)
 {
 	UUtUns32	alignedMemory;
-	
+
 	alignedMemory = (UUtUns32)(((UUtUns32)inMemory + UUcProcessor_CacheLineSize_Mask) &
 		~UUcProcessor_CacheLineSize_Mask);
-	
+
 	return (void *) alignedMemory;
 }
 
@@ -289,10 +289,10 @@ void *UUrAlignMemory(void *inMemory)
 static void *iAlignMemory_PlusPointerSpace(void *inMemory)
 {
 	UUtUns32	alignedMemory;
-	
+
 	alignedMemory = (UUtUns32)(((UUtUns32)inMemory + UUcProcessor_CacheLineSize_Mask + 4) &
 		~UUcProcessor_CacheLineSize_Mask);
-	
+
 	return (void *) alignedMemory;
 }
 
@@ -372,13 +372,13 @@ UUrMemory_Tracker_Compare(
 	UUtMemoryTracker*	inElemB)
 {
 	UUtInt16	result;
-	
+
 	result = strcmp(inElemA->fileName, inElemB->fileName);
 	if(result != 0) return result;
-	
+
 	if(inElemA->lineNum > inElemB->lineNum) return 1;
 	if(inElemA->lineNum < inElemB->lineNum) return -1;
-	
+
 	return 0;
 }
 
@@ -390,7 +390,7 @@ UUiMemory_Debug_FindBookkeepBlock(
 	void*	inMemory)
 {
 	UUtBookkeepBlock	*bookkeepBlock;
-	
+
 	for(
 		bookkeepBlock = gBlockListHead;
 		bookkeepBlock;
@@ -402,34 +402,34 @@ UUiMemory_Debug_FindBookkeepBlock(
 			break;
 		}
 	}
-	
+
 	return bookkeepBlock;
 }
 
 /*******************************************************************************
  *
  ******************************************************************************/
-static void 
+static void
 UUiMemory_Debug_VerifyBlock(
 	UUtBookkeepBlock*	inBookkeepBlock)
 {
-	
+
 	if(*inBookkeepBlock->beginMagic != UUmMemoryBeginMagic)
 	{
 		UUmDebugStr("beginMagic is bogus");
 		return;
 	}
-	
+
 	if(*inBookkeepBlock->endMagic != UUmMemoryEndMagic)
 	{
 		UUmDebugStr("endMagic is bogus");
 		return;
 	}
-	
+
 	#if defined(UUmDebugMemAggressive) && UUmDebugMemAggressive
 	{
 		UUtInt32	*curLong;
-		
+
 		for(
 			curLong = inBookkeepBlock->endMagic + 1;
 			curLong < inBookkeepBlock->endAggressive;
@@ -448,12 +448,12 @@ UUiMemory_Debug_VerifyBlock(
 /*******************************************************************************
  *
  ******************************************************************************/
-void 
+void
 UUrMemory_Block_VerifyList(
 	void)
 {
 	UUtBookkeepBlock	*bookkeepBlock;
-	
+
 	if (UUgMemory_VerifyForceDisable || !(UUgMemory_VerifyForceEnable || UUgMemory_VerifyEnable))
 		return;
 
@@ -469,19 +469,19 @@ UUrMemory_Block_VerifyList(
 /*******************************************************************************
  *
  ******************************************************************************/
-void 
+void
 UUrMemory_Block_Verify(
 	void*	inMemory)
 {
 	UUtBookkeepBlock	*bookkeepBlock;
-	
+
 	bookkeepBlock = UUiMemory_Debug_FindBookkeepBlock(inMemory);
-	
+
 	if (NULL == bookkeepBlock)
 	{
 		UUmDebugStr("This is not a valid BFW Memory Block");
 	}
-	
+
 	UUiMemory_Debug_VerifyBlock(bookkeepBlock);
 }
 
@@ -534,9 +534,9 @@ UUrMemory_ArrayElement_Delete(
 	UUmAssertReadPtr(inBasePtr, inElemSize * inArrayLength);
 	UUmAssert(inDeleteElemIndex < inArrayLength);
 	UUmAssert(inElemSize > 0);
-	
+
 	if(inDeleteElemIndex == inArrayLength - 1) return;	// no need to delete because it is the last element
-	
+
 	memmove(
 		(char*)inBasePtr + inDeleteElemIndex * inElemSize,
 		(char*)inBasePtr + (inDeleteElemIndex + 1) * inElemSize,
@@ -573,12 +573,12 @@ void UUrMemory_Set32(void *inDst, UUtUns32 inFillValue, UUtUns32 inSize)
 {
 	UUtUns32 original_write_size = inSize;
 	UUtUns32 *p32Dst = (UUtUns32 *) inDst;
-	
+
 	UUmAssert(((UUtUns32)inDst & 0x3) == 0);
 	UUmAssertWritePtr(inDst, inSize);
-	
+
 	UUmAssert(UUcProcessor_CacheLineSize == 32);
-	
+
 	if (inSize >= UUcProcessor_CacheLineSize) {
 
 		// align to cache line boundary
@@ -592,7 +592,7 @@ void UUrMemory_Set32(void *inDst, UUtUns32 inFillValue, UUtUns32 inSize)
 		while(inSize > UUcProcessor_CacheLineSize)
 		{
 			UUrProcessor_ZeroCacheLine(p32Dst, 0);
-			
+
 			*p32Dst++ = inFillValue;
 			*p32Dst++ = inFillValue;
 			*p32Dst++ = inFillValue;
@@ -601,7 +601,7 @@ void UUrMemory_Set32(void *inDst, UUtUns32 inFillValue, UUtUns32 inSize)
 			*p32Dst++ = inFillValue;
 			*p32Dst++ = inFillValue;
 			*p32Dst++ = inFillValue;
-			
+
 			inSize -= UUcProcessor_CacheLineSize;
 		}
 	}
@@ -624,14 +624,14 @@ void UUrMemory_Set32(void *inDst, UUtUns32 inFillValue, UUtUns32 inSize)
 			inSize--;
 		}
 	}
-	
+
 }
 
 /*******************************************************************************
  * NOTE: I know my memory begins on a cache aligned boundary and has at least
  *			a cache line of slop at the end
  ******************************************************************************/
-static void 
+static void
 UUiMemory_Block_Copy(
 	void*		inDest,
 	void*		inSrc,
@@ -646,40 +646,40 @@ UUiMemory_Block_Copy(
 
 	srcPtr = (double *)inSrc;
 	destPtr = (double *)inDest;
-	
+
 	UUmAssert(((unsigned long)inDest & UUcProcessor_CacheLineSize_Mask) == 0);
 	UUmAssert(((unsigned long)inSrc & UUcProcessor_CacheLineSize_Mask) == 0);
-	
+
 	for(i = (inLen + UUcProcessor_CacheLineSize_Mask) >> UUcProcessor_CacheLineBits; i-- > 0;)
 	{
 		UUrProcessor_ZeroCacheLine(destPtr, 0);
-		
+
 		#if UUcProcessor_CacheLineBits == 5
-			
+
 			/* XXX - Does this suck on intel ? */
-			
+
 			ft0 = srcPtr[0];
 			ft1 = srcPtr[1];
 			ft2 = srcPtr[2];
 			ft3 = srcPtr[3];
 			srcPtr += 4;
-			
+
 			destPtr[0] = ft0;
 			destPtr[1] = ft1;
 			destPtr[2] = ft2;
 			destPtr[3] = ft3;
 			destPtr += 4;
-			
+
 		#else
-		
+
 			#error handle me
-		
+
 		#endif
 	}
 }
 
 /*******************************************************************************
- * Make sure memory is cache line aligned and has at least an extra cache line 
+ * Make sure memory is cache line aligned and has at least an extra cache line
  * at the end. This lets me make some very convient assumptions about my memory!
  ******************************************************************************/
 void *
@@ -690,11 +690,11 @@ UUrMemory_Block_New_Real(
 	UUtUns32	alignedMemory;
 	UUtUns32	mungedSize;
 
-	if (0 == inSize) 
+	if (0 == inSize)
 	{
 		return NULL;
 	}
-	
+
 	// Make sure that we allocate memory in cache size chunks
 		mungedSize = (inSize + UUcProcessor_CacheLineSize_Mask) & ~UUcProcessor_CacheLineSize_Mask;
 
@@ -705,14 +705,14 @@ UUrMemory_Block_New_Real(
 			out_of_memory();
 			return NULL;
 		}
-	
+
 	// Align to cache line
 		alignedMemory = ((UUtUns32)newMemory + UUcProcessor_CacheLineSize_Mask + 4) &
 			~UUcProcessor_CacheLineSize_Mask;
-	
+
 	// Keep the original pointer
 		*(UUtUns32 *)(alignedMemory - 4) = (UUtUns32)newMemory;
-	
+
 	return (void *)(alignedMemory);
 }
 
@@ -723,13 +723,13 @@ UUrMemory_Block_NewClear_Real(
 	UUtUns32	inSize)
 {
 	void*	newMemory;
-	
+
 	newMemory = UUrMemory_Block_New_Real(inSize);
 
 	if (NULL != newMemory) {
 		UUrMemory_Clear(newMemory, inSize);
 	}
-		
+
 	return newMemory;
 }
 
@@ -746,39 +746,39 @@ UUrMemory_Block_RecordUsage(
 	UUtMemoryTracker*	addedTracker;
 
 	if(gMemoryTracker == NULL) return;
-	
+
 	gMemoryTracker_NumRecords++;
-	
+
 	AUrSharedElemArray_Reset(gMemoryTracker);
-	
+
 	gMemoryTracker_NumBlocks = 0;
-	
+
 	for(
 		curBookkeepBlock = gBlockListHead;
 		curBookkeepBlock != NULL;
 		curBookkeepBlock = curBookkeepBlock->next)
 	{
 		UUrString_Copy(curTracker.fileName, curBookkeepBlock->file, UUcMemoryTracker_FileLength);
-		
+
 		curTracker.lineNum = curBookkeepBlock->line;
 		curTracker.memoryAllocated = 0;
-		
-		error = 
+
+		error =
 			AUrSharedElemArray_AddElem(
 				gMemoryTracker,
 				&curTracker,
 				&curTrackerIndex);
 		if(error != UUcError_None) return;
-		
+
 		addedTracker = (UUtMemoryTracker*)AUrSharedElemArray_GetList(gMemoryTracker) + curTrackerIndex;
 		addedTracker->memoryAllocated += curBookkeepBlock->allocedBytes;
-		
+
 		gMemoryTracker_NumBlocks++;
 	}
 }
 
 /*******************************************************************************
- * Since we want to return memory that is cache line aligned and has an extra 
+ * Since we want to return memory that is cache line aligned and has an extra
  * cache line of slop at the end this code embarks the reader on a journey to hell.
  * enjoy.
  ******************************************************************************/
@@ -797,23 +797,23 @@ UUrMemory_Block_New_Debug(
 	{
 		return NULL;
 	}
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	// Make sure that we allocate memory in cache size chunks
 		mungedSize = (inSize + UUcProcessor_CacheLineSize_Mask) & ~UUcProcessor_CacheLineSize_Mask;
-	
+
 	// Add space for the begin magic cookie, need to keep start address cache line aligned
 		allocSize = mungedSize + UUcProcessor_CacheLineSize;
-	
+
 	// Add space for the end magic cookie
 		allocSize += 4;
-	
+
 	#if defined(UUmDebugMemAggressive) && UUmDebugMemAggressive
-		
+
 		// Add enough space for end slop
 			allocSize += UUmMemory_EndSlopSize;
-		
+
 	#endif
 
 	// Allocated the debug block
@@ -830,29 +830,29 @@ UUrMemory_Block_New_Debug(
 			UUrMemory_Block_Delete_Real(newBookkeepBlock);
 			return NULL;
 		}
-		
+
 		newBookkeepBlock->realBlock = newRealBlock;
-		
+
 	#if defined(UUmDebugMemAggressive) && UUmDebugMemAggressive
-		
+
 		newBookkeepBlock->endAggressive = (UUtInt32 *)(newRealBlock + allocSize);
-		
+
 	#endif
-	
+
 	// Skip over the initial cache line for the begin magic cookie
 		newRealBlock += UUcProcessor_CacheLineSize;
-	
+
 	// construct the bookkeeping block
-	
+
 		// get the call chain
 		newBookkeepBlock->numChains =
 			UUrStack_GetPCChain(
 				newBookkeepBlock->callChainList,
 				UUcMaxCallChainLength);
-		
+
 		{
 			char* rc;
-			
+
 			rc = strrchr(inFile, BFcPathSeparator);
 			if(rc != NULL)
 			{
@@ -871,7 +871,7 @@ UUrMemory_Block_New_Debug(
 				}
 			}
 		}
-		
+
 		newBookkeepBlock->line = inLine;
 		newBookkeepBlock->realBytes = inSize;
 		newBookkeepBlock->allocedBytes = allocSize;
@@ -881,7 +881,7 @@ UUrMemory_Block_New_Debug(
 		newBookkeepBlock->stackLevel = gReport_ForceGlobal ? 0 : gLeakStack_TOS - 1;
 		newBookkeepBlock->reported = UUcFalse;
 		newBookkeepBlock->numTimesRealloced = 0;
-	
+
 	#if 0
 	// add this to the shared array
 	if(gMemoryTracker != NULL)
@@ -890,23 +890,23 @@ UUrMemory_Block_New_Debug(
 		UUtError			error;
 		UUtUns32			curTrackerIndex;
 		UUtMemoryTracker*	addedTracker;
-		
+
 		curTracker.fileName = inFile;
 		curTracker.lineNum = inLine;
 		curTracker.memoryAllocated = 0;
-		
-		error = 
+
+		error =
 			AUrSharedElemArray_AddElem(
 				gMemoryTracker,
 				&curTracker,
 				&curTrackerIndex);
 		if(error != UUcError_None) return NULL;
-		
+
 		addedTracker = (UUtMemoryTracker*)AUrSharedElemArray_GetList(gMemoryTracker) + curTrackerIndex;
 		addedTracker->memoryAllocated += allocSize;
 	}
 	#endif
-	
+
 	// set our magic values that warn us if we wandered past the ends
 		*newBookkeepBlock->beginMagic = UUmMemoryBeginMagic;
 		*newBookkeepBlock->endMagic = UUmMemoryEndMagic;
@@ -915,29 +915,29 @@ UUrMemory_Block_New_Debug(
 		#if defined(DEBUGGING_JUNKMEM) && DEBUGGING_JUNKMEM
 			UUrMemory_Set32(newRealBlock, UUmMemoryBlock_Garbage, mungedSize);
 		#endif
-		
+
 	#if defined(UUmDebugMemAggressive) && UUmDebugMemAggressive
 
 		// Clear out the end slop space to garbage
 			UUrMemory_Set32(newBookkeepBlock->endMagic + 1, UUmMemoryBlock_Garbage, UUmMemory_EndSlopSize);
 
 	#endif
-	
+
 	/* add to our bookkeeping list */
 	newBookkeepBlock->next = gBlockListHead;
 	gBlockListHead = newBookkeepBlock;
-	
+
 	gCurMemUsage += inSize;
 	if(gCurMemUsage > gMaxMemUsage)
 	{
 		gMaxMemUsage = gCurMemUsage;
-		
+
 		if(gCurMemUsage >= UUcMemory_MinUsageThreshold)
 		{
 			UUrMemory_Block_RecordUsage();
 		}
 	}
-	
+
 	return newRealBlock;
 }
 
@@ -948,13 +948,13 @@ UUrMemory_Block_NewClear_Debug(
 	UUtUns32	inSize)
 {
 	void*	newMemory;
-	
+
 	newMemory = UUrMemory_Block_New_Debug(inFile, inLine, inSize);
 
 	if (NULL != newMemory) {
 		UUrMemory_Clear(newMemory, inSize);
 	}
-		
+
 	return newMemory;
 }
 
@@ -963,16 +963,16 @@ UUrMemory_Block_NewClear_Debug(
 /*******************************************************************************
  *
  ******************************************************************************/
-void 
+void
 UUrMemory_Block_Delete_Real(
 	void		*inMemory)
 {
 	unsigned long *realMemory;
 
 	UUmAssert(NULL != inMemory);	// we could use real memory w/ assertions some day
-	
+
 	realMemory = (unsigned long *)((char *)inMemory - 4);
-	
+
 	free((void *)*realMemory);
 }
 
@@ -981,7 +981,7 @@ UUrMemory_Block_Delete_Real(
 /*******************************************************************************
  *
  ******************************************************************************/
-void 
+void
 UUrMemory_Block_Delete_Debug(
 	char			*inFile,
 	UUtInt32		inLine,
@@ -991,10 +991,10 @@ UUrMemory_Block_Delete_Debug(
 	void				*targetDeleteMemory;
 
 	UUmAssert(NULL != inMemory);
-	
+
 	(void)(inLine);
 	(void)(inFile);
-	
+
 	UUrMemory_Block_VerifyList();
 	for(
 		curBlock = gBlockListHead, prevBlock = NULL;
@@ -1005,30 +1005,30 @@ UUrMemory_Block_Delete_Debug(
 		{
 			break;
 		}
-		
+
 		prevBlock = curBlock;
 	}
-	
+
 	if(curBlock == NULL)
 	{
 		#if defined(UUmDebugDelete) && UUmDebugDelete
 		{
 			UUtDeletedBookkeepBlock	*curDeletedBlock;
-			
+
 			/* Traverse the deleted block list */
-			
+
 			curDeletedBlock = gDeletedBlockList;
-			
+
 			while(curDeletedBlock)
 			{
 				if(curDeletedBlock->addr == inMemory)
 				{
 					break;
 				}
-				
+
 				curDeletedBlock = curDeletedBlock->next;
 			}
-			
+
 			if(curDeletedBlock == NULL)
 			{
 				UUmDebugStr("This block was never allocated nor deleted by me...");
@@ -1036,29 +1036,29 @@ UUrMemory_Block_Delete_Debug(
 			else
 			{
 				char buffer[UUcMaxFunctionHistoryLength + 512];
-				
+
 				sprintf(
 					buffer,
 					"This block was deleted before by:"UUmNL"File: %s"UUmNL"Line: %d"UUmNL"FuncHistory: Not Available"UUmNL,
 					curDeletedBlock->file,
 					curDeletedBlock->line);
-				
+
 				UUrEnterDebugger(buffer);
 			}
 		}
 		#else
-		
+
 			UUmDebugStr("This is not a valid UU memory block");
-		
+
 		#endif
 	}
-	
+
 	UUmAssert((char *)inMemory == (char *)curBlock->beginMagic + 4);
-	
-	
+
+
 	targetDeleteMemory = curBlock->realBlock;
-		
-	
+
+
 	/* Remove this block from the list of alloced blocks */
 	if(prevBlock == NULL)
 	{
@@ -1068,35 +1068,35 @@ UUrMemory_Block_Delete_Debug(
 	{
 		prevBlock->next = curBlock->next;
 	}
-	
+
 	/* Garbage Out the memory */
 	#if defined(DEBUGGING_JUNKMEM) && DEBUGGING_JUNKMEM
 		UUrMemory_Set32(targetDeleteMemory, UUm4CharToUns32('D', 'L', 'T', 'D'), curBlock->allocedBytes);
 	#endif
 
-	
+
 	{
 		/* Actually delete the memory */
-		
+
 		UUrMemory_Block_Delete_Real(targetDeleteMemory);
-	
+
 	}
-	
+
 	#if defined(UUmDebugDelete) && UUmDebugDelete
-	{	
+	{
 		UUtDeletedBookkeepBlock	*newDeletedBlock;
-		
+
 		/* Add a new deleted block to gDeletedBlockList */
-		 
+
 		 newDeletedBlock = (UUtDeletedBookkeepBlock *)UUrMemory_Block_New_Real(sizeof(UUtDeletedBookkeepBlock));
-		 
+
 		 if(newDeletedBlock != NULL)
 		 {
-		 	
+
 		 	UUrString_Copy(newDeletedBlock->file, inFile, UUcMaxDebugFileLength);
 		 	newDeletedBlock->line = inLine;
 		 	newDeletedBlock->addr = inMemory;
-		 	
+
 		 	newDeletedBlock->next =  gDeletedBlockList;
 		 	gDeletedBlockList = newDeletedBlock;
 		 }
@@ -1104,19 +1104,19 @@ UUrMemory_Block_Delete_Debug(
 		 {
 		 	/* Do nothing */
 		 }
-	}	
+	}
 	#endif
-	
+
 	gCurMemUsage -= curBlock->realBytes;
-	
+
 	UUmAssert(gCurMemUsage >= 0);
-	
+
 	/* Delete the book keeping memory */
-	UUrMemory_Block_Delete_Real(curBlock);	
+	UUrMemory_Block_Delete_Real(curBlock);
 }
 
 #endif
-	
+
 /*
 
   starting at memory location inMemory shift everything shift
@@ -1126,7 +1126,7 @@ UUrMemory_Block_Delete_Debug(
 static void iShiftMemory(UUtUns32 inMemory, UUtUns32 len, int shift)
 {
 	UUtUns32 dst;
-	
+
 	dst = inMemory;
 	dst += shift;
 
@@ -1135,11 +1135,11 @@ static void iShiftMemory(UUtUns32 inMemory, UUtUns32 len, int shift)
 
 /*******************************************************************************
 
- realloc returns a void pointer to the reallocated (and possibly moved) memory block. 
- The return value is NULL if the size is zero and the buffer argument is not NULL, or 
+ realloc returns a void pointer to the reallocated (and possibly moved) memory block.
+ The return value is NULL if the size is zero and the buffer argument is not NULL, or
  if there is not enough available memory to expand the block to the given size. In the first case,
- the original block is freed. In the second, the original block is unchanged. The return value points 
- to a storage space that is guaranteed to be suitably aligned for storage of any type of object. 
+ the original block is freed. In the second, the original block is unchanged. The return value points
+ to a storage space that is guaranteed to be suitably aligned for storage of any type of object.
  To get a pointer to a type other than void, use a type cast on the return value.
 
  ******************************************************************************/
@@ -1231,7 +1231,7 @@ UUrMemory_Block_Realloc_Debug(
 	UUtInt32	inLine,
 	void		*inMemory,
 	UUtUns32	inSize)
-{	
+{
 	UUrMemory_Block_VerifyList();
 
  // case 1 (NULL == inMemory) this is an allocate
@@ -1241,7 +1241,7 @@ UUrMemory_Block_Realloc_Debug(
  // case 1 (NULL == inMemory) this is an allocate
 	if (NULL == inMemory) {
 		void *allocated = UUrMemory_Block_New_Debug(inFile, inLine, inSize);
-		
+
 		return allocated;
 	}
 
@@ -1258,7 +1258,7 @@ UUrMemory_Block_Realloc_Debug(
 		UUtBookkeepBlock*	oldBookkeep = UUiMemory_Debug_FindBookkeepBlock(inMemory);
 		char*				newMemory = UUrMemory_Block_New_Debug(inFile, inLine, inSize);
 		UUtBookkeepBlock*	newBookkeep = UUiMemory_Debug_FindBookkeepBlock(newMemory);
-		
+
 		// we must find the bookkeep block
 		UUmAssert(NULL != oldBookkeep);
 
@@ -1266,26 +1266,26 @@ UUrMemory_Block_Realloc_Debug(
 		if (NULL == newMemory)
 		{
 			return NULL;
-		} 
+		}
 
 		// otherwise copy and then delete the old
 		UUrMemory_MoveFast(
 			inMemory,
 			newMemory,
 			UUmMin(oldBookkeep->realBytes, inSize));
-		
+
 		UUrString_Copy(newBookkeep->file, oldBookkeep->file, UUcMaxDebugFileLength);
-		
+
 		newBookkeep->line = oldBookkeep->line;
 		newBookkeep->timeStamp = oldBookkeep->timeStamp;
 		newBookkeep->stackLevel = oldBookkeep->stackLevel;
 		newBookkeep->numTimesRealloced = oldBookkeep->numTimesRealloced;
-		
+
 		newBookkeep->numTimesRealloced++;
-		
+
 		UUrMemory_Block_Delete_Debug(inFile, inLine, inMemory);
 
-		return newMemory;	
+		return newMemory;
 	}
 }
 
@@ -1299,37 +1299,37 @@ UUiMemory_Pool_AddHeap(
 	UUtMemory_Pool	*inMemoryPool)
 {
 	UUtMemory_Pool_Heap	*newHeap;
-	
+
 	if(inMemoryPool->activeHeap && inMemoryPool->activeHeap->next != NULL)
 	{
 		inMemoryPool->activeHeap = inMemoryPool->activeHeap->next;
-		
+
 		goto done;
 	}
-	
+
 	UUrMemory_Leak_ForceGlobal_Begin();
-	
+
 	newHeap = UUrMemory_Block_New(sizeof(UUtMemory_Pool_Heap));
 	if(newHeap == NULL)
 	{
 		return UUcError_OutOfMemory;
 	}
-	
+
 	newHeap->heapMemory = UUrMemory_Block_New(inMemoryPool->chunkSize);
 	if(newHeap->heapMemory == NULL)
 	{
 		UUrMemory_Block_Delete(newHeap);
-		
+
 		return UUcError_OutOfMemory;
 	}
-	
+
 	//UUrMemory_Set32(newHeap->heapMemory, 0xBEEFBEEF, inMemoryPool->chunkSize);
-	
+
 	UUrMemory_Leak_ForceGlobal_End();
 
 	newHeap->nextFreeIndex = 0;
 	newHeap->next = NULL;
-	
+
 	if(inMemoryPool->activeHeap != NULL)
 	{
 		inMemoryPool->activeHeap->next = newHeap;
@@ -1341,21 +1341,21 @@ UUiMemory_Pool_AddHeap(
 	}
 
 done:
-	
+
 	#if 0// DEBUGGING_MEMORY
 	{
 		UUtUns32	i;
-		
+
 		for(i = 0; i < 1000; i++)
 		{
 			UUmAssert(*((UUtUns32*)inMemoryPool->activeHeap->heapMemory + i) == UUmMemoryBlock_Garbage);
 		}
-		
+
 		UUrMemory_Set32(inMemoryPool->activeHeap->heapMemory, UUmMemoryBlock_Garbage, inMemoryPool->chunkSize);
 	}
-	
+
 	#endif
-		
+
 	return UUcError_None;
 }
 
@@ -1363,14 +1363,14 @@ done:
  *
  ******************************************************************************/
 
-UUtMemory_Pool* 
+UUtMemory_Pool*
 UUrMemory_Pool_New_Real(
 	UUtUns32		inChunkSize,
 	UUtBool			inFixed)
 {
 	UUtMemory_Pool	*newMemoryPool;
 	UUtUns32 mungedSize;
-	
+
 	newMemoryPool = UUrMemory_Block_New(sizeof(UUtMemory_Pool));
 	if(newMemoryPool == NULL)
 	{
@@ -1378,41 +1378,41 @@ UUrMemory_Pool_New_Real(
 	}
 
 	mungedSize = (inChunkSize + UUcProcessor_CacheLineSize - 1) & ~UUcProcessor_CacheLineSize_Mask;
-	
+
 	newMemoryPool->chunkSize = mungedSize;
 	newMemoryPool->heapList = NULL;
 	newMemoryPool->activeHeap = NULL;
 	newMemoryPool->fixed = inFixed;
-	
+
 	if(UUiMemory_Pool_AddHeap(newMemoryPool) != UUcError_None)
 	{
 		return NULL;
 	}
-	
+
 	return newMemoryPool;
 }
-	
+
 /*******************************************************************************
  *
  ******************************************************************************/
-void 
+void
 UUrMemory_Pool_Delete_Real(
 	UUtMemory_Pool	*inMemoryPool)
 {
 	UUtMemory_Pool_Heap	*curHeap, *nextHeap;
-	
+
 	curHeap = inMemoryPool->heapList;
-	
+
 	while(curHeap != NULL)
 	{
 		nextHeap  = curHeap->next;
-		
+
 		UUrMemory_Block_Delete(curHeap->heapMemory);
 		UUrMemory_Block_Delete(curHeap);
-		
+
 		curHeap = nextHeap;
 	}
-	
+
 	UUrMemory_Block_Delete(inMemoryPool);
 }
 
@@ -1420,7 +1420,7 @@ UUrMemory_Pool_Delete_Real(
 /*******************************************************************************
  *
  ******************************************************************************/
-UUtMemory_Pool* 
+UUtMemory_Pool*
 UUrMemory_Pool_New_Debug(
 	char			*inFile,
 	long			inLine,
@@ -1433,7 +1433,7 @@ UUrMemory_Pool_New_Debug(
 /*******************************************************************************
  *
  ******************************************************************************/
-void 
+void
 UUrMemory_Pool_Delete_Debug(
 	char			*inFile,
 	long			inLine,
@@ -1473,9 +1473,9 @@ UUrMemory_Pool_Block_New(
 	UUtError			error;
 
 	UUmAssertReadPtr(inMemoryPool, sizeof(*inMemoryPool));
-		
+
 	mungedSize = (inSize + UUcProcessor_CacheLineSize - 1) & ~UUcProcessor_CacheLineSize_Mask;
-	
+
 	if(mungedSize > inMemoryPool->chunkSize)
 	{
 		return NULL;
@@ -1488,17 +1488,17 @@ UUrMemory_Pool_Block_New(
 		{
 			returnMemory = inMemoryPool->activeHeap->heapMemory + inMemoryPool->activeHeap->nextFreeIndex;
 			UUmAssertReadPtr(returnMemory, inSize);
-			
+
 			inMemoryPool->activeHeap->nextFreeIndex += mungedSize;
-			
+
 			goto done;
 		};
-	
+
 	if(inMemoryPool->fixed == UUcTrue)
 	{
 		return NULL;
 	}
-	
+
 	/*
 	 * Check previous heaps
 	 */
@@ -1509,14 +1509,14 @@ UUrMemory_Pool_Block_New(
 			{
 				returnMemory = curHeap->heapMemory + curHeap->nextFreeIndex;
 				UUmAssertReadPtr(returnMemory, inSize);
-				
+
 				curHeap->nextFreeIndex += mungedSize;
 				goto done;
 			}
-			
+
 			curHeap = curHeap->next;
 		}
-	
+
 	/*
 	 * Add a new heap
 	 */
@@ -1525,51 +1525,51 @@ UUrMemory_Pool_Block_New(
 		{
 			return NULL;
 		}
-	
+
 	returnMemory = inMemoryPool->activeHeap->heapMemory;
 	UUmAssertReadPtr(returnMemory, inSize);
-	
+
 	inMemoryPool->activeHeap->nextFreeIndex += mungedSize;
 
 done:
-	
+
 	UUmAssertReadPtr(returnMemory, inSize);
-	
+
 	#if defined(DEBUGGING_JUNKMEM) && DEBUGGING_JUNKMEM
-	
+
 		UUrMemory_Set32(returnMemory, UUmMemoryBlock_Garbage, inSize);
 
 	#endif
-	
+
 	return returnMemory;
 }
 
 /*******************************************************************************
  *
  ******************************************************************************/
-void 
+void
 UUrMemory_Pool_Reset(
 	UUtMemory_Pool	*inMemoryPool)
 {
 	UUtMemory_Pool_Heap	*curHeap;
 
 	UUmAssert(NULL != inMemoryPool);
-	
+
 	curHeap = inMemoryPool->heapList;
-	
+
 	while(curHeap)
 	{
 		curHeap->nextFreeIndex = 0;
-		
+
 		#if defined(DEBUGGING_JUNKMEM) && DEBUGGING_JUNKMEM
-			
+
 			UUrMemory_Set32(curHeap->heapMemory, UUmMemoryBlock_Garbage, inMemoryPool->chunkSize);
-			
+
 		#endif
-		
+
 		curHeap = curHeap->next;
 	}
-	
+
 	inMemoryPool->activeHeap = inMemoryPool->heapList;
 }
 
@@ -1581,24 +1581,24 @@ UUiMemory_Heap_AddSubheap(
 	UUtMemory_Heap	*inMemoryHeap)
 {
 	UUtMemory_Heap_Subheap	*newSubheap;
-	
+
 	newSubheap = UUrMemory_Block_New(sizeof(UUtMemory_Heap_Subheap));
 	UUmError_ReturnOnNull(newSubheap);
-	
+
 	newSubheap->memory = UUrMemory_Block_New(inMemoryHeap->chunkSize);
 	UUmError_ReturnOnNull(newSubheap->memory);
-	
+
 	newSubheap->blockBV = UUrBitVector_New(inMemoryHeap->blocksPerHeap);
 	UUmError_ReturnOnNull(newSubheap->blockBV);
-	
+
 	UUrBitVector_ClearBitAll(newSubheap->blockBV, inMemoryHeap->blocksPerHeap);
-	
+
 	newSubheap->next = NULL;
 	newSubheap->blocksLeft = inMemoryHeap->blocksPerHeap;
-	
+
 	newSubheap->next = inMemoryHeap->subheapList;
 	inMemoryHeap->subheapList = newSubheap;
-		
+
 	return UUcError_None;
 }
 
@@ -1610,7 +1610,7 @@ UUrMemory_Heap_Reset(
 	UUtMemory_Heap	*inMemoryHeap)
 {
 	UUtMemory_Heap_Subheap	*curSubheap;
-	
+
 	for(curSubheap = inMemoryHeap->subheapList; curSubheap; curSubheap = curSubheap->next)
 	{
 		UUrBitVector_ClearBitAll(curSubheap->blockBV, inMemoryHeap->blocksPerHeap);
@@ -1622,7 +1622,7 @@ UUrMemory_Heap_Reset(
 /*******************************************************************************
  *
  ******************************************************************************/
-UUtMemory_Heap* 
+UUtMemory_Heap*
 UUrMemory_Heap_New_Debug(
 	char			*inFile,
 	long			inLine,
@@ -1635,7 +1635,7 @@ UUrMemory_Heap_New_Debug(
 /*******************************************************************************
  *
  ******************************************************************************/
-void 
+void
 UUrMemory_Heap_Delete_Debug(
 	char			*inFile,
 	long			inLine,
@@ -1653,7 +1653,7 @@ UUrMemory_Heap_Delete_Debug(
 /*******************************************************************************
  *
  ******************************************************************************/
-UUtMemory_Heap* 
+UUtMemory_Heap*
 UUrMemory_Heap_New_Real(
 	UUtUns32		inChunkSize,
 	UUtBool			inFixed)
@@ -1661,10 +1661,10 @@ UUrMemory_Heap_New_Real(
 	UUtMemory_Heap	*newMemoryHeap;
 	UUtUns32		blocksPerHeap;
 	UUtUns32		chunkSize;
-	
+
 	newMemoryHeap = UUrMemory_Block_New(sizeof(UUtMemory_Heap));
 	if(newMemoryHeap == NULL) return NULL;
-	
+
 	chunkSize = (inChunkSize + UUcProcessor_CacheLineSize - 1) & ~UUcProcessor_CacheLineSize_Mask;
 	newMemoryHeap->chunkSize = chunkSize;
 
@@ -1673,37 +1673,37 @@ UUrMemory_Heap_New_Real(
 
 	newMemoryHeap->subheapList = NULL;
 	newMemoryHeap->fixed = inFixed;
-	
+
 	if(UUiMemory_Heap_AddSubheap(newMemoryHeap) != UUcError_None)
 	{
 		return NULL;
 	}
-	
+
 	return newMemoryHeap;
 }
-	
+
 /*******************************************************************************
  *
  ******************************************************************************/
-void 
+void
 UUrMemory_Heap_Delete_Real(
 	UUtMemory_Heap	*inMemoryHeap)
 {
 	UUtMemory_Heap_Subheap	*curSubheap, *nextSubheap;
-	
+
 	curSubheap = inMemoryHeap->subheapList;
-	
+
 	while(curSubheap != NULL)
 	{
 		nextSubheap  = curSubheap->next;
-		
+
 		UUrMemory_Block_Delete(curSubheap->memory);
 		UUrMemory_Block_Delete(curSubheap->blockBV);
 		UUrMemory_Block_Delete(curSubheap);
-		
+
 		curSubheap = nextSubheap;
 	}
-	
+
 	UUrMemory_Block_Delete(inMemoryHeap);
 }
 
@@ -1746,37 +1746,37 @@ UUrMemory_Heap_Block_New_Real(
 	UUtError				error;
 	UUtUns32				numBlocks;
 	UUtMemory_Heap_Subheap*	curSubheap;
-	
+
 	UUtUns32				blocksPerHeap;
 	UUtUns32				curBlockIndex;
 	UUtUns32				nextBlockIndex;
-	
+
 	char*					resultMemory;
-	
+
 	UUmAssert(NULL != inMemoryHeap);
-	
+
 	UUrMemory_Block_VerifyList();
-		
+
 	numBlocks = (inSize + UUcProcessor_CacheLineSize - 1) & ~UUcProcessor_CacheLineSize_Mask;
 	numBlocks >>= UUcProcessor_CacheLineBits;
-	
+
 	curSubheap = inMemoryHeap->subheapList;
-	
+
 	blocksPerHeap = inMemoryHeap->blocksPerHeap;
-	
+
 	if(numBlocks > blocksPerHeap) return NULL;
-	
+
 	if(numBlocks < 2) numBlocks = 2;
-	
+
 	for(
 		curSubheap = inMemoryHeap->subheapList;
 		curSubheap != NULL;
 		curSubheap = curSubheap->next)
 	{
 		if(numBlocks > curSubheap->blocksLeft) continue;
-		
+
 		curBlockIndex = 0;
-		
+
 		while(curBlockIndex != UUcBitVector_None && curBlockIndex + numBlocks < blocksPerHeap)
 		{
 			nextBlockIndex =
@@ -1784,14 +1784,14 @@ UUrMemory_Heap_Block_New_Real(
 					curSubheap->blockBV,
 					curBlockIndex,
 					curBlockIndex+numBlocks-1);
-			
+
 			if(nextBlockIndex == UUcBitVector_None)
 			{
 				// found a space big enough
 				resultMemory = curSubheap->memory + curBlockIndex * UUcProcessor_CacheLineSize;
 				goto found;
 			}
-			
+
 			curBlockIndex =
 				UUrBitVector_FindFirstSetRange(
 					curSubheap->blockBV,
@@ -1799,23 +1799,23 @@ UUrMemory_Heap_Block_New_Real(
 					blocksPerHeap) + 1;
 		}
 	}
-		
+
 	error = UUiMemory_Heap_AddSubheap(inMemoryHeap);
 	if(error != UUcError_None) return NULL;
-	
+
 	UUmAssert(inMemoryHeap->subheapList->blocksLeft == blocksPerHeap);
 
 	curBlockIndex = 0;
 	curSubheap = inMemoryHeap->subheapList;
 	resultMemory = curSubheap->memory;
-	
+
 found:
-	
+
 	UUrBitVector_SetBit(curSubheap->blockBV, curBlockIndex);
 	UUrBitVector_SetBit(curSubheap->blockBV, curBlockIndex+numBlocks-1);
-	
-	curSubheap->blocksLeft -= numBlocks;	
-	
+
+	curSubheap->blocksLeft -= numBlocks;
+
 	return resultMemory;
 }
 
@@ -1832,7 +1832,7 @@ UUrMemory_Heap_Block_Delete_Real(	// This is used to allocate a block within a h
 	UUtUns32				startBVIndex;
 	UUtUns32				endBVIndex;
 	UUtUns32				blocksPerHeap;
-	
+
 	chunkSize = inMemoryHeap->chunkSize;
 	blocksPerHeap = inMemoryHeap->blocksPerHeap;
 
@@ -1844,11 +1844,11 @@ UUrMemory_Heap_Block_Delete_Real(	// This is used to allocate a block within a h
 		if((curSubheap->memory <= (char*)inBlock) && ((char*)inBlock < curSubheap->memory + chunkSize))
 		{
 			startBVIndex = ((char*)inBlock - curSubheap->memory) >> UUcProcessor_CacheLineBits;
-			
+
 			UUmAssert(UUrBitVector_TestBit(curSubheap->blockBV, startBVIndex));
-			
+
 			UUrBitVector_ClearBit(curSubheap->blockBV, startBVIndex);
-			endBVIndex = 
+			endBVIndex =
 				UUrBitVector_FindFirstSetRange(
 					curSubheap->blockBV,
 					startBVIndex + 1,
@@ -1857,13 +1857,13 @@ UUrMemory_Heap_Block_Delete_Real(	// This is used to allocate a block within a h
 			UUmAssert(UUrBitVector_TestBit(curSubheap->blockBV, endBVIndex));
 
 			UUrBitVector_ClearBit(curSubheap->blockBV, endBVIndex);
-			
+
 			curSubheap->blocksLeft += endBVIndex - startBVIndex + 1;
-			
+
 			return;
 		}
 	}
-	
+
 	UUmAssert(0);
 }
 
@@ -1895,7 +1895,7 @@ UUrMemory_Heap_Block_Verify(
 			UUmAssert(!"This block is illegal");
 		}
 	}
-	
+
 	UUmAssert(!"This block is illegal");
 }
 #endif
@@ -1903,7 +1903,7 @@ UUrMemory_Heap_Block_Verify(
 /*******************************************************************************
  *
  ******************************************************************************/
-UUtMemory_Array* 
+UUtMemory_Array*
 UUrMemory_Array_New_Real(			// This is used to create a new array
 	UUtUns32			inElementSize,			// The size of each element
 	UUtUns32			inAllocChunkSize,		// The chunk size of incremental allocations
@@ -1911,19 +1911,19 @@ UUrMemory_Array_New_Real(			// This is used to create a new array
 	UUtUns32			inNumElemsToAlloc)		// The number of elements to allocate
 {
 	UUtMemory_Array	*newMemoryArray;
-	
+
 	newMemoryArray = UUrMemory_Block_New(sizeof(UUtMemory_Array));
 
-	if (NULL == newMemoryArray) 
+	if (NULL == newMemoryArray)
 	{
 		return NULL;
 	}
-	
+
 	newMemoryArray->elemSize = inElementSize;
 	newMemoryArray->allocChunkSize = inAllocChunkSize;
 	newMemoryArray->numElemsUsed = inNumInitialElemsUsed;
 	newMemoryArray->numElemsAlloced = inNumElemsToAlloc;
-	
+
 	if(inNumElemsToAlloc > 0)
 	{
 		newMemoryArray->data = UUrMemory_Block_New(inElementSize * inNumElemsToAlloc);
@@ -1936,13 +1936,13 @@ UUrMemory_Array_New_Real(			// This is used to create a new array
 	{
 		newMemoryArray->data = NULL;
 	}
-	
+
 	return newMemoryArray;
 }
 
 #if DEBUGGING_MEMORY
 
-UUtMemory_Array* 
+UUtMemory_Array*
 UUrMemory_Array_New_Debug(			// This is used to create a new array
 	char*				inFile,
 	UUtInt32			inLine,
@@ -1952,19 +1952,19 @@ UUrMemory_Array_New_Debug(			// This is used to create a new array
 	UUtUns32			inNumElemsToAlloc)		// The number of elements to allocate
 {
 	UUtMemory_Array	*newMemoryArray;
-	
+
 	newMemoryArray = UUrMemory_Block_New_Debug(inFile, inLine, sizeof(UUtMemory_Array));
 
-	if (NULL == newMemoryArray) 
+	if (NULL == newMemoryArray)
 	{
 		return NULL;
 	}
-	
+
 	newMemoryArray->elemSize = inElementSize;
 	newMemoryArray->allocChunkSize = inAllocChunkSize;
 	newMemoryArray->numElemsUsed = inNumInitialElemsUsed;
 	newMemoryArray->numElemsAlloced = inNumElemsToAlloc;
-	
+
 	if (inNumElemsToAlloc > 0)
 	{
 		newMemoryArray->data = UUrMemory_Block_New(inElementSize * inNumElemsToAlloc);
@@ -1977,7 +1977,7 @@ UUrMemory_Array_New_Debug(			// This is used to create a new array
 	{
 		newMemoryArray->data = NULL;
 	}
-	
+
 	return newMemoryArray;
 }
 
@@ -1986,35 +1986,35 @@ UUrMemory_Array_New_Debug(			// This is used to create a new array
 /*******************************************************************************
  *
  ******************************************************************************/
-void 
+void
 UUrMemory_Array_Delete_Real(		// This is used to delete a array
 	UUtMemory_Array*	inMemoryArray)
 {
 	UUmAssert(inMemoryArray != NULL);
-	
+
 	if(inMemoryArray->data != NULL)
 	{
 		UUrMemory_Block_Delete(inMemoryArray->data);
 	}
-	
+
 	UUrMemory_Block_Delete(inMemoryArray);
 }
 
 #if DEBUGGING_MEMORY
 
-void 
+void
 UUrMemory_Array_Delete_Debug(		// This is used to delete a array
 	char*				inFile,
 	UUtInt32			inLine,
 	UUtMemory_Array*	inMemoryArray)
 {
 	UUmAssert(inMemoryArray != NULL);
-	
+
 	if(inMemoryArray->data != NULL)
 	{
 		UUrMemory_Block_Delete_Debug(inFile, inLine, inMemoryArray->data);
 	}
-	
+
 	UUrMemory_Block_Delete(inMemoryArray);
 }
 
@@ -2023,21 +2023,21 @@ UUrMemory_Array_Delete_Debug(		// This is used to delete a array
 /*******************************************************************************
  *
  ******************************************************************************/
-UUtError 
+UUtError
 UUrMemory_Array_MakeRoom(			// This is used to make sure that enough elems have been allocated
 	UUtMemory_Array*	inMemoryArray,
 	UUtUns32			inNumElems,
 	UUtBool				*outMemoryMoved)
 {
 	void	*newData;
-	
+
 	UUmAssert(inMemoryArray != NULL);
-	
+
 	if(outMemoryMoved != NULL)
 	{
 		*outMemoryMoved = UUcFalse;
 	}
-	
+
 	if(inNumElems > inMemoryArray->numElemsAlloced)
 	{
 		if(inMemoryArray->data == NULL)
@@ -2054,16 +2054,16 @@ UUrMemory_Array_MakeRoom(			// This is used to make sure that enough elems have 
 		{
 			goto failure;
 		}
-		
+
 		if(outMemoryMoved != NULL)
 		{
 			*outMemoryMoved = UUcTrue;
 		}
-		
+
 		inMemoryArray->data = newData;
 		inMemoryArray->numElemsAlloced = inNumElems;
 	}
-	
+
 	return UUcError_None;
 
 failure:
@@ -2093,16 +2093,16 @@ UUrMemory_Array_GetNewElement(		// This is used to get an additional element fro
 	UUtBool				*outMemoryMoved)
 {
 	UUtUns32	newIndex;
-	
+
 	UUmAssert(inMemoryArray != NULL);
 
 	if(outMemoryMoved != NULL)
 	{
 		*outMemoryMoved = UUcFalse;
 	}
-	
+
 	newIndex = inMemoryArray->numElemsUsed++;
-	
+
 	if(inMemoryArray->numElemsUsed >= inMemoryArray->numElemsAlloced)
 	{
 		if(UUrMemory_Array_MakeRoom(
@@ -2113,13 +2113,13 @@ UUrMemory_Array_GetNewElement(		// This is used to get an additional element fro
 			goto failure;
 		}
 	}
-	
+
 	*outNewIndex = newIndex;
-	
+
 	return UUcError_None;
 
 failure:
-	
+
 	return UUcError_OutOfMemory;
 
 }
@@ -2134,11 +2134,11 @@ UUrMemory_Array_DeleteElement(		// This always moves memory
 {
 	UUmAssert(inMemoryArray != NULL);
 	UUmAssert(inMemoryArray->numElemsUsed > 0);
-	
+
 	UUmAssert(inIndex < inMemoryArray->numElemsUsed);
-	
+
 	inMemoryArray->numElemsUsed -= 1;
-	
+
 	if(inIndex < inMemoryArray->numElemsUsed)
 	{
 		char	*dst	= (char *)inMemoryArray->data + inMemoryArray->elemSize * inIndex;
@@ -2146,7 +2146,7 @@ UUrMemory_Array_DeleteElement(		// This always moves memory
 		UUtUns32 size	= inMemoryArray->elemSize * (inMemoryArray->numElemsUsed - inIndex);
 
 		UUrMemory_MoveOverlap(src, dst, size);
-	}					
+	}
 }
 
 /*******************************************************************************
@@ -2173,7 +2173,7 @@ UUrMemory_Array_SetUsedElems(	// This is used to set the number of elements in u
 	UUmAssert(inMemoryArray != NULL);
 
 	inMemoryArray->numElemsUsed = inElemsUsed;
-	
+
 	return UUrMemory_Array_MakeRoom(inMemoryArray, inElemsUsed, outMemoryMoved);
 }
 
@@ -2181,55 +2181,55 @@ UUrMemory_Array_SetUsedElems(	// This is used to set the number of elements in u
  *
  ******************************************************************************/
 UUtError
-UUrMemory_Array_InsertElement(	
+UUrMemory_Array_InsertElement(
 	UUtMemory_Array*	inMemoryArray,
 	UUtUns32			inIndex,
 	UUtBool				*outMemoryMoved)
 {
 	UUtError	error;
-	
+
 	inMemoryArray->numElemsUsed++;
-	
+
 	error = UUrMemory_Array_MakeRoom(inMemoryArray, inMemoryArray->numElemsUsed, outMemoryMoved);
 	UUmError_ReturnOnError(error);
-	
+
 	UUrMemory_MoveOverlap(
 		(char*)inMemoryArray->data + inMemoryArray->elemSize * inIndex,
 		(char*)inMemoryArray->data + inMemoryArray->elemSize * (inIndex + 1),
 		(inMemoryArray->numElemsUsed - inIndex - 1) * inMemoryArray->elemSize);
-	
+
 	return UUcError_None;
 }
 
 /*******************************************************************************
  *
  ******************************************************************************/
-UUtMemory_ParallelArray* 
+UUtMemory_ParallelArray*
 UUrMemory_ParallelArray_New_Real(		// This is used to create a new parallel array
 	UUtUns32					inAllocChunkSize,		// The chunk size of incremental allocations
 	UUtUns32					inNumInitialElemsUsed,	// The number of elements initially used
 	UUtUns32					inNumElemsToAlloc)		// The number of elements to allocate
 {
 	UUtMemory_ParallelArray	*newParallelArray;
-	
+
 	newParallelArray = UUrMemory_Block_New(sizeof(UUtMemory_ParallelArray));
-	
+
 	if (newParallelArray == NULL)
 	{
 		return NULL;
 	}
-	
+
 	newParallelArray->numElemsUsed = inNumInitialElemsUsed;
 	newParallelArray->numElemsAlloced = inNumElemsToAlloc;
 	newParallelArray->allocChunkSize = inAllocChunkSize;
 	newParallelArray->numMemberArrays = 0;
-	
+
 	return newParallelArray;
 }
 
 #if DEBUGGING_MEMORY
 
-UUtMemory_ParallelArray* 
+UUtMemory_ParallelArray*
 UUrMemory_ParallelArray_New_Debug(
 	char*			inFile,
 	long			inLine,
@@ -2238,23 +2238,23 @@ UUrMemory_ParallelArray_New_Debug(
 	UUtUns32		inNumElemsToAlloc)
 {
 	UUtMemory_ParallelArray	*newParallelArray;
-	
+
 	newParallelArray = UUrMemory_Block_New_Debug(inFile, inLine, sizeof(UUtMemory_ParallelArray));
-	
+
 	if (newParallelArray == NULL)
 	{
 		goto failure;
 	}
-	
+
 	newParallelArray->numElemsUsed = inNumInitialElemsUsed;
 	newParallelArray->numElemsAlloced = inNumElemsToAlloc;
 	newParallelArray->allocChunkSize = inAllocChunkSize;
 	newParallelArray->numMemberArrays = 0;
-	
+
 	return newParallelArray;
 
 failure:
-	
+
 	return NULL;
 }
 
@@ -2263,14 +2263,14 @@ failure:
 /*******************************************************************************
  *
  ******************************************************************************/
-void 
+void
 UUrMemory_ParallelArray_Delete_Real(	// This is used to delete a parallel array
 	UUtMemory_ParallelArray*	inParallelArray)
 {
 	UUtUns32	i;
 
 	UUmAssert(NULL != inParallelArray);
-	
+
 	for(i = 0; i < inParallelArray->numMemberArrays; i++)
 	{
 		if(inParallelArray->members[i].data != NULL)
@@ -2278,13 +2278,13 @@ UUrMemory_ParallelArray_Delete_Real(	// This is used to delete a parallel array
 			UUrMemory_Block_Delete(inParallelArray->members[i].data);
 		}
 	}
-	
+
 	UUrMemory_Block_Delete(inParallelArray);
 }
 
 #if DEBUGGING_MEMORY
 
-void 
+void
 UUrMemory_ParallelArray_Delete_Debug(
 	char*						inFile,
 	long						inLine,
@@ -2301,7 +2301,7 @@ UUrMemory_ParallelArray_Delete_Debug(
 			UUrMemory_Block_Delete_Debug(inFile, inLine, inParallelArray->members[i].data);
 		}
 	}
-	
+
 	UUrMemory_Block_Delete_Debug(inFile, inLine, inParallelArray);
 }
 
@@ -2309,7 +2309,7 @@ UUrMemory_ParallelArray_Delete_Debug(
 /*******************************************************************************
  *
  ******************************************************************************/
-UUtMemory_ParallelArray_Member* 
+UUtMemory_ParallelArray_Member*
 UUrMemory_ParallelArray_Member_New(	// This is used to create a new member array
 	UUtMemory_ParallelArray*	inParallelArray,
 	UUtUns32					inElementSize)
@@ -2317,38 +2317,38 @@ UUrMemory_ParallelArray_Member_New(	// This is used to create a new member array
 	UUtMemory_ParallelArray_Member	*newParallelArrayMember;
 
 	UUmAssert(NULL != inParallelArray);
-	
+
 	if(inParallelArray->numMemberArrays >= UUcMemory_ParallelArray_MaxMembers)
 	{
 		return NULL;
 	}
-	
+
 	newParallelArrayMember = &inParallelArray->members[inParallelArray->numMemberArrays++];
-	
+
 	newParallelArrayMember->elemSize = inElementSize;
-	
+
 	if(inParallelArray->numElemsAlloced > 0)
 	{
 		newParallelArrayMember->data = UUrMemory_Block_New(inElementSize * inParallelArray->numElemsAlloced);
-		
+
 		if(newParallelArrayMember->data == NULL)
 		{
 			goto failure;
 		}
 	}
-	
+
 	return newParallelArrayMember;
-	
+
 failure:
-	
+
 	return NULL;
-	
+
 }
 
 /*******************************************************************************
  *
  ******************************************************************************/
-UUtError 
+UUtError
 UUrMemory_ParallelArray_MakeRoom(		// This is used to make sure that enough elems have been allocated
 	UUtMemory_ParallelArray*	inParallelArray,
 	UUtUns32					inNumElems,
@@ -2363,7 +2363,7 @@ UUrMemory_ParallelArray_MakeRoom(		// This is used to make sure that enough elem
 	{
 		*outMemoryMoved = UUcFalse;
 	}
-	
+
 	if(inNumElems > inParallelArray->numElemsAlloced)
 	{
 		inParallelArray->numElemsAlloced = inNumElems;
@@ -2371,7 +2371,7 @@ UUrMemory_ParallelArray_MakeRoom(		// This is used to make sure that enough elem
 		{
 			*outMemoryMoved = UUcTrue;
 		}
-		
+
 		for(i = 0; i < inParallelArray->numMemberArrays; i++)
 		{
 			if(inParallelArray->members[i].data == NULL)
@@ -2389,12 +2389,12 @@ UUrMemory_ParallelArray_MakeRoom(		// This is used to make sure that enough elem
 				{
 					goto failure;
 				}
-				
+
 				inParallelArray->members[i].data = newData;
 			}
 		}
 	}
-	
+
 	return UUcError_None;
 
 failure:
@@ -2413,9 +2413,9 @@ UUrMemory_ParallelArray_DeleteElement(	// This is used to delete a element in ev
 	UUtUns32	i;
 
 	UUmAssert(NULL != inParallelArray);
-	
+
 	inParallelArray->numElemsUsed -= 1;
-	
+
 	for(i = 0; i < inParallelArray->numMemberArrays; i++)
 	{
 		char	*src	= (char *)inParallelArray->members[i].data + inParallelArray->members[i].elemSize * (inIndex + 1);
@@ -2448,12 +2448,12 @@ UUrMemory_ParallelArray_SetUsedElems(	// This is used to set the number of eleme
 	UUtBool						*outMemoryMoved)
 {
 	UUmAssert(inParallelArray != NULL);
-	
+
 	inParallelArray->numElemsUsed = inElemsUsed;
 
 	return UUrMemory_ParallelArray_MakeRoom(inParallelArray, inElemsUsed, outMemoryMoved);
 }
-			
+
 /*******************************************************************************
  *
  ******************************************************************************/
@@ -2471,7 +2471,7 @@ UUrMemory_ParallelArray_AddNewElem(			// This adds a new element to every member
 	if (NULL != outMemoryMoved) {
 		*outMemoryMoved = UUcFalse;
 	}
-	
+
 	if(inParallelArray->numElemsUsed >= inParallelArray->numElemsAlloced)
 	{
 		if(UUrMemory_ParallelArray_MakeRoom(
@@ -2482,7 +2482,7 @@ UUrMemory_ParallelArray_AddNewElem(			// This adds a new element to every member
 			return UUcError_OutOfMemory;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2541,17 +2541,17 @@ UUrMemory_String_New(
 	UUtUns32	inTableSize)
 {
 	UUtMemory_String*	newMemoryString;
-	
+
 	newMemoryString = UUrMemory_Block_New(sizeof(UUtMemory_String) + inTableSize - 4);
-	
+
 	if(newMemoryString == NULL)
 	{
 		return NULL;
 	}
-	
+
 	newMemoryString->tableSize = inTableSize;
 	newMemoryString->data[0] = 0;
-	
+
 	return newMemoryString;
 }
 
@@ -2579,38 +2579,38 @@ UUrMemory_String_GetStr(
 	if ('\0' == *inStr) {
 		return UUgMemory_String_Zero;
 	}
-	
+
 	length = (UUtInt32)strlen(inStr);
 	if(length >= (UUtInt32)inMemoryString->tableSize) return NULL;
-	
+
 	p = inMemoryString->data;
-	
+
 	while(1)
 	{
 		if(*p == 0)
 		{
 			break;
 		}
-		
+
 		if(!strcmp(p, inStr))
 		{
 			return p;
 		}
-		
+
 		p += strlen(p) + 1;
 	}
-	
+
 	length = strlen(inStr);
-	
+
 	if((UUtUns32)((p - inMemoryString->data) + length + 2) > inMemoryString->tableSize)
 	{
 		return NULL;
 	}
-	
+
 	strcpy(p, inStr);
 	*(p + length) = 0;
 	*(p + length + 1) = 0;
-	
+
 	return p;
 }
 
@@ -2646,12 +2646,12 @@ UUrMemory_Leak_Start_Real(
 	const char*	inComment)
 {
 	UUmAssert(gLeakStack_TOS < cMaxLeakStackLength);
-	
+
 	gLeakStack[gLeakStack_TOS].fileName = inFileName;
 	gLeakStack[gLeakStack_TOS].lineNum = inLineNum;
 	gLeakStack[gLeakStack_TOS].timeStamp = UUrMachineTime_Sixtieths();
 	gLeakStack[gLeakStack_TOS].comment = inComment;
-	
+
 	gLeakStack_TOS++;
 }
 
@@ -2663,7 +2663,7 @@ UUrMemory_Leak_StopAndReport_Real(
 	void)
 {
 	UUtError	error;
-	
+
 	FILE *memLeakFile = NULL;
 
 	UUtBookkeepBlock*	curBookkeepBlock;
@@ -2674,16 +2674,16 @@ UUrMemory_Leak_StopAndReport_Real(
 	UUtUns32			line;
 	UUtUns16			itr;
 	UUtBool				firstTime = UUcTrue;
-	
+
 	gLeakStack_TOS--;
-	
+
 	if (memLeakFile == NULL)
 	{
 		memLeakFile = UUrFOpen(UUmMemLeakFileName, "a");
 	}
-	
+
 	if(memLeakFile == NULL) return;
-	
+
 	for(
 		curBookkeepBlock = gBlockListHead;
 		curBookkeepBlock != NULL;
@@ -2694,7 +2694,7 @@ UUrMemory_Leak_StopAndReport_Real(
 		{
 			continue;
 		}
-		
+
 		if(firstTime == UUcTrue)
 		{
 			firstTime = UUcFalse;
@@ -2707,7 +2707,7 @@ UUrMemory_Leak_StopAndReport_Real(
 		}
 
 		curBookkeepBlock->reported = UUcTrue;
-		
+
 		fprintf(
 			memLeakFile,
 			"Memory leak; FILE %s\n""\tLINE %d\n""\tSIZE %d\n""\tTIMSTAMP: %d\n",
@@ -2715,7 +2715,7 @@ UUrMemory_Leak_StopAndReport_Real(
 			curBookkeepBlock->line,
 			curBookkeepBlock->realBytes,
 			curBookkeepBlock->timeStamp);
-		
+
 		fprintf(
 			stderr,
 			"Memory leak; FILE %s\n""\tLINE %d\n""\tSIZE %d\n""\tTIMSTAMP: %d\n",
@@ -2723,10 +2723,10 @@ UUrMemory_Leak_StopAndReport_Real(
 			curBookkeepBlock->line,
 			curBookkeepBlock->realBytes,
 			curBookkeepBlock->timeStamp);
-		
+
 		for(itr = 0; itr < curBookkeepBlock->numChains; itr++)
 		{
-			error = 
+			error =
 				DSrProgramCounter_GetFileAndLine(
 					curBookkeepBlock->callChainList[itr],
 					file,
@@ -2745,14 +2745,14 @@ UUrMemory_Leak_StopAndReport_Real(
 			}
 			fprintf(memLeakFile, "---\n");
 		}
-		
+
 		fprintf(memLeakFile,"*****************************************************\n");
-		
+
 		leakSize += curBookkeepBlock->realBytes;
-		
+
 		giveBeep = 1;
 	}
-	
+
 	if(giveBeep)
 	{
 		if(memLeakFile != NULL)
@@ -2761,18 +2761,18 @@ UUrMemory_Leak_StopAndReport_Real(
 			fprintf(memLeakFile, "Leak Size: %d\n", leakSize);
 			fprintf(memLeakFile, "**************\n");
 		}
-		
+
 		fprintf(stderr, "Detected memory leak, %s\n", gLeakStack[gLeakStack_TOS].comment);
 	}
 
-	if (NULL != memLeakFile) 
+	if (NULL != memLeakFile)
 	{
 		fclose(memLeakFile);
 	}
 }
 #endif
 
-UUtError 
+UUtError
 UUrMemory_Initialize(
 	void)
 {
@@ -2781,18 +2781,18 @@ UUrMemory_Initialize(
 	#if DEBUGGING_MEMORY
 	{
 		FILE*	file;
-		
+
 		gStartTime = UUrMachineTime_Sixtieths();
-		
+
 		file = UUrFOpen(UUmMemLeakFileName, "w");
 		if(file)
 		{
 			fclose(file);
 		}
-	
+
 	}
 	UUrMemory_Leak_Start("These leaks are global");
-	
+
 	gMemoryTracker = AUrSharedElemArray_New(sizeof(UUtMemoryTracker), (AUtSharedElemArray_Equal)UUrMemory_Tracker_Compare);
 	UUmError_ReturnOnNull(gMemoryTracker);
 	#endif
@@ -2805,7 +2805,7 @@ UUrMemory_Initialize(
 	{
 		err= UUcError_Generic;
 	}
-	
+
 	return err;
 }
 
@@ -2819,24 +2819,24 @@ UUrMemory_Tracker_Sort_Compare(
 {
 	UUtBool result;
 	UUmAssertReadPtr(gTrackerList, sizeof(*gTrackerList));
-	
+
 	result = (gTrackerList[inElemA].memoryAllocated < gTrackerList[inElemB].memoryAllocated);
-	
+
 	return 0;
 }
 #endif
 
-void 
+void
 UUrMemory_Terminate(
 	void)
 {
 
 #if DEBUGGING_MEMORY
 	fprintf(stderr, "Max mem used: %d\n", gMaxMemUsage);
-	
+
 	{
 		FILE*	file;
-		
+
 		file = fopen("memTracker.txt", "w");
 		if(file != NULL)
 		{
@@ -2847,32 +2847,32 @@ UUrMemory_Terminate(
 			UUtUns32*			sortedIndexList;
 			UUtUns32*			allocSortedIndexList;
 			UUtUns32			itr;
-			
+
 			allocSortedIndexList = UUrMemory_Block_New((AUrSharedElemArray_GetNum(gMemoryTracker) + 16) * sizeof(UUtUns32));
 			if(allocSortedIndexList == NULL)
 			{
 				UUmAssert(0);
 				return;
 			}
-			
+
 			trackerList = (UUtMemoryTracker*)AUrSharedElemArray_GetList(gMemoryTracker);
 			numTrackers = AUrSharedElemArray_GetNum(gMemoryTracker);
 			sortedIndexList = AUrSharedElemArray_GetSortedIndexList(gMemoryTracker);
-			
+
 			for(itr = 0; itr < numTrackers; itr++)
 			{
 				allocSortedIndexList[itr] = itr;
 			}
-			
+
 			gTrackerList = (UUtMemoryTracker*)AUrSharedElemArray_GetList(gMemoryTracker);
-			
+
 
 			AUrQSort_32(
 				allocSortedIndexList,
 				numTrackers,
 				UUrMemory_Tracker_Sort_Compare);
-			
-			
+
+
 			fprintf(file, "num times recorded: %d\n", gMemoryTracker_NumRecords);
 			fprintf(file, "num blocks: %d\n", gMemoryTracker_NumBlocks);
 			fprintf(file, "====================================\n");
@@ -2881,7 +2881,7 @@ UUrMemory_Terminate(
 			for(trackerItr = 0; trackerItr < numTrackers; trackerItr++)
 			{
 				curTracker = trackerList + allocSortedIndexList[trackerItr];
-				
+
 				fprintf(file, "************************************\n");
 				fprintf(file, "FILE: %s\n", curTracker->fileName);
 				fprintf(file, "LINE: %d\n", curTracker->lineNum);
@@ -2894,23 +2894,23 @@ UUrMemory_Terminate(
 			for(trackerItr = 0; trackerItr < numTrackers; trackerItr++)
 			{
 				curTracker = trackerList + sortedIndexList[trackerItr];
-				
+
 				fprintf(file, "************************************\n");
 				fprintf(file, "FILE: %s\n", curTracker->fileName);
 				fprintf(file, "LINE: %d\n", curTracker->lineNum);
 				fprintf(file, "SIZE: %u\n", curTracker->memoryAllocated);
 			}
-			
+
 			UUrMemory_Block_Delete(allocSortedIndexList);
-			
+
 			fclose(file);
 		}
-	
+
 	}
-	
+
 	AUrSharedElemArray_Delete(gMemoryTracker);
 	gMemoryTracker = NULL;
-	
+
 	UUrMemory_Leak_StopAndReport();
 
 #endif

@@ -26,7 +26,7 @@ enum
 	WMcButtonFlag_None			= 0x0000 << 16,
 	WMcButtonFlag_Hilite		= 0x0001 << 16,
 	WMcButtonFlag_Toggle		= 0x0002 << 16
-	
+
 };
 
 // ======================================================================
@@ -43,12 +43,12 @@ WMiButton_Create(
 	WMtButton				*inButton)
 {
 	UUtUns32				button_data;
-	
+
 	// initialize
 	button_data = WMrWindow_GetLong(inButton, 0);
 	button_data = LIcMouseState_None;
 	WMrWindow_SetLong(inButton, 0, button_data);
-	
+
 	if ((WMrWindow_GetStyle(inButton) & WMcButtonStyle_Default) != 0)
 	{
 		WMrMessage_Send(
@@ -57,12 +57,12 @@ WMiButton_Create(
 			WMrWindow_GetID(inButton),
 			0);
 	}
-	
+
 	if (WMgWindow_ClickSound == NULL)
 	{
 		WMgWindow_ClickSound = SSrImpulse_GetByName(WMcButton_ClickSound);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -79,21 +79,21 @@ WMiButton_HandleMouseEvent(
 	IMtPoint2D				global_mouse;
 	UUtUns32				button_data;
 	UUtUns32				style;
-	
+
 	// get the button data
 	button_data = WMrWindow_GetLong(inButton, 0);
-	
+
 	// get the button style
 	style = WMrWindow_GetStyle(inButton);
-	
+
 	// get the mouse location
 	global_mouse.x = (UUtInt16)UUmHighWord(inParam1);
 	global_mouse.y = (UUtInt16)UUmLowWord(inParam1);
-	
+
 	// determine if the mouse is over the button
 	WMrWindow_GetRect(inButton, &button_rect);
 	mouse_over_button = IMrRect_PointIn(&button_rect, &global_mouse);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_MouseMove:
@@ -111,7 +111,7 @@ WMiButton_HandleMouseEvent(
 				WMrWindow_SetLong(inButton, 0, button_data);
 			}
 		break;
-		
+
 		case WMcMessage_LMouseDown:
 			// save the button data changes
 			button_data |= WMcButtonFlag_Hilite;
@@ -121,18 +121,18 @@ WMiButton_HandleMouseEvent(
 			WMrWindow_SetFocus(inButton);
 			WMrWindow_CaptureMouse(inButton);
 		break;
-		
+
 		case WMcMessage_LMouseUp:
 		{
 			UUtBool						was_down;
-			
+
 			was_down = (UUmLowWord(button_data) == LIcMouseState_LButtonDown);
-			
+
 			// save the button data changes
 			button_data &= ~WMcButtonFlag_Hilite;
 			button_data &= ~LIcMouseState_LButtonDown;
 			WMrWindow_SetLong(inButton, 0, button_data);
-			
+
 			WMrWindow_CaptureMouse(NULL);
 			if ((mouse_over_button) && (was_down == UUcTrue))
 			{
@@ -142,7 +142,7 @@ WMiButton_HandleMouseEvent(
 					SSrImpulse_Play(WMgWindow_ClickSound, NULL, NULL, NULL, NULL);
 				}
 #endif
-				
+
 				// tell the parent
 				WMrMessage_Send(
 					WMrWindow_GetParent(inButton),
@@ -169,25 +169,25 @@ WMiButton_Paint(
 	UUtUns32				style;
 	PStPartSpec				*part;
 	UUtBool					enabled;
-	
+
 	partspec_ui = PSrPartSpecUI_GetActive();
 	if (partspec_ui == NULL) return;
 
 	draw_context = DCrDraw_Begin(inButton);
-	
+
 	enabled = WMrWindow_GetEnabled(inButton);
 	style = WMrWindow_GetStyle(inButton);
-	
+
 	// set the dest
 	dest.x = 0;
 	dest.y = 0;
-	
+
 	// get the window rect
 	WMrWindow_GetSize(inButton, &width, &height);
-	
+
 	// get the button data
 	button_data = WMrWindow_GetLong(inButton, 0);
-	
+
 	// draw the background
 	if (style & WMcButtonStyle_HasBackground)
 	{
@@ -217,23 +217,23 @@ WMiButton_Paint(
 			height,
 			enabled ? (UUtUns16)WMcAlpha_Enabled : (UUtUns16)WMcAlpha_Disabled);
 	}
-	
+
 	// draw the title
 	if (style & WMcButtonStyle_HasTitle)
 	{
 		UUtRect			bounds;
 		TStFontInfo		font_info;
-		
+
 		WMrWindow_GetFontInfo(inButton, &font_info);
 		DCrText_SetFontInfo(&font_info);
-		
+
 		WMrWindow_GetClientRect(inButton, &bounds);
-		
+
 		DCrText_SetShade(enabled ? font_info.font_shade : IMcShade_Gray50);
 		DCrText_SetFormat(TSc_HCenter | TSc_VCenter);
 		DCrDraw_String(draw_context, WMrWindow_GetTitlePtr(inButton), &bounds, &dest);
 	}
-	
+
 	DCrDraw_End(draw_context, inButton);
 }
 
@@ -245,14 +245,14 @@ WMiButton_HandleSetToggle(
 {
 	UUtUns32				style;
 	UUtUns32				button_data;
-	
+
 	// make sure this is a toggle button
 	style = WMrWindow_GetStyle(inButton);
 	if ((style & WMcButtonStyle_Toggle) == 0) { return; }
-	
+
 	// get the button data
 	button_data = WMrWindow_GetLong(inButton, 0);
-	
+
 	if (inToggle == UUcTrue)
 	{
 		button_data |= WMcButtonFlag_Toggle;
@@ -261,7 +261,7 @@ WMiButton_HandleSetToggle(
 	{
 		button_data &= ~WMcButtonFlag_Toggle;
 	}
-	
+
 	// set the button data
 	WMrWindow_SetLong(inButton, 0, button_data);
 }
@@ -280,12 +280,12 @@ WMiButton_Callback(
 	UUtUns32				inParam2)
 {
 	UUtError				error;
-	
+
 	switch(inMessage)
 	{
 		case WMcMessage_NC_HitTest:
 		return WMcWindowArea_Client;
-		
+
 		case WMcMessage_Create:
 			error = WMiButton_Create(inButton);
 			if (error != UUcError_None)
@@ -293,29 +293,29 @@ WMiButton_Callback(
 				return WMcResult_Error;
 			}
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_MouseMove:
 		case WMcMessage_LMouseDown:
 		case WMcMessage_LMouseUp:
 			WMiButton_HandleMouseEvent(inButton, inMessage, inParam1, inParam2);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Paint:
 			WMiButton_Paint(inButton);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_GetDialogCode:
 			if ((WMrWindow_GetStyle(inButton) & WMcButtonStyle_Default) != 0)
 			{
 				return WMcDialogCode_Default;
 			}
 		break;
-		
+
 		case TBcMessage_SetToggle:
 			WMiButton_HandleSetToggle(inButton, (UUtBool)inParam1);
 		return WMcResult_Handled;
 	}
-	
+
 	return WMrWindow_DefaultCallback(inButton, inMessage, inParam1, inParam2);
 }
 
@@ -331,16 +331,16 @@ WMrButton_Initialize(
 {
 	UUtError				error;
 	WMtWindowClass			window_class;
-	
+
 	// register the window class
 	UUrMemory_Clear(&window_class, sizeof(WMtWindowClass));
 	window_class.type = WMcWindowType_Button;
 	window_class.callback = WMiButton_Callback;
 	window_class.private_data_size = sizeof(UUtUns32);
-	
+
 	error = WMrWindowClass_Register(&window_class);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 

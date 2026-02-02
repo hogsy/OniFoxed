@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Memory.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 18, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */
@@ -15,7 +15,7 @@
 
 UUtError UUrMemory_Initialize(
 	void);
-	
+
 void UUrMemory_Terminate(
 	void);
 

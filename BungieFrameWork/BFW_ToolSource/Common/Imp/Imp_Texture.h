@@ -1,12 +1,12 @@
 /*
 	FILE:	Imp_Texture.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: August 14, 1997
-	
+
 	PURPOSE: Header file for the BMP file format
-	
+
 	Copyright 1997
 
 */
@@ -34,7 +34,7 @@ Imp_AddTexture_Big(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup			*inGroup,
 	char				*inInstanceName);
-	
+
 UUtError
 Imp_AddTextureDirectory(
 	BFtFileRef*			inSourceFileRef,
@@ -59,7 +59,7 @@ void iBuildMipMap(M3tTextureMap *inTextureMap, UUtUns16 width, UUtUns16 height, 
 void
 Imp_WriteTextureSize(
 	void);
-	
+
 UUtError
 Imp_ProcessTexture_File(
 	BFtFileRef			*inFileRef,
@@ -75,5 +75,5 @@ Imp_ProcessTexture_Big_File(
 
 UUtError Imp_AddLocalTexture( BFtFileRef* inSourceFileRef, char* inTextureName, M3tTextureMap **ioTextureMap );
 UUtError Imp_AddLocalTextures( BFtFileRef *inDirectoryRef );
-	
+
 #endif /* IMP_TEXTURE_H */

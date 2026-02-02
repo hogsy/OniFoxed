@@ -95,15 +95,15 @@ SSiSoundChannelList_Add(
 	UUtError					error;
 	UUtUns32					index;
 	SStSoundChannel				**sound_channel_array;
-	
+
 	error = UUrMemory_Array_GetNewElement(SSgSoundChannelList, &index, NULL);
 	UUmError_ReturnOnError(error);
-	
+
 	sound_channel_array = (SStSoundChannel**)UUrMemory_Array_GetMemory(SSgSoundChannelList);
 	UUmAssert(sound_channel_array);
-	
+
 	sound_channel_array[index] = inSoundChannel;
-	
+
 	return UUcError_None;
 }
 
@@ -115,7 +115,7 @@ SSiSoundChannelList_Delete(
 	SStSoundChannel				**sound_channel_array;
 	UUtUns32					num_elements;
 	UUtUns32					i;
-	
+
 	sound_channel_array = (SStSoundChannel**)UUrMemory_Array_GetMemory(SSgSoundChannelList);
 	num_elements = UUrMemory_Array_GetUsedElems(SSgSoundChannelList);
 	for (i = 0; i < num_elements; i++)
@@ -134,14 +134,14 @@ static UUtError
 SSiSoundChannelList_Initialize(
 	void)
 {
-	SSgSoundChannelList = 
+	SSgSoundChannelList =
 		UUrMemory_Array_New(
 			sizeof(SStSoundChannel*),
 			5,
 			0,
 			SScMaxSoundChannels);
 	UUmError_ReturnOnNull(SSgSoundChannelList);
-	
+
 	return UUcError_None;
 }
 
@@ -173,12 +173,12 @@ SSiPlatform_SoundChannel_MSADPCM_Initialize(
 #if defined(SScMSADPCMTimer) && (SScMSADPCMTimer == 1)
 	t1 = timeGetTime();
 #endif
-	
+
 	// determine the best format for the destination
 	UUrMemory_Clear(&inSoundChannel->pd.DstHeader, sizeof(WAVEFORMATEX));
 	inSoundChannel->pd.DstHeader.wFormatTag = WAVE_FORMAT_PCM;
 
-	
+
 	// get the format for the PCM header
 	result =
 		acmFormatSuggest(
@@ -192,13 +192,13 @@ SSiPlatform_SoundChannel_MSADPCM_Initialize(
 		return_val = UUcFalse;
 		goto end;
 	}
-	
+
 	if (inSoundChannel->pd.acm != NULL)
 	{
 		acmStreamClose(inSoundChannel->pd.acm, 0);
 		inSoundChannel->pd.acm = NULL;
 	}
-	
+
 	// open the stream
 	result =
 		acmStreamOpen(
@@ -233,18 +233,18 @@ SSiPlatform_SoundChannel_MSADPCM_Initialize(
 		return_val = UUcFalse;
 		goto end;
 	}
-	
+
 #if defined(SScMSADPCMTimer) && (SScMSADPCMTimer == 1)
 	t2 = timeGetTime();
-	
+
 	SSgMSADPCMTimer_Max = UUmMax(SSgMSADPCMTimer_Max, (t2 - t1));
 	SSgMSADPCMTimer_Min = UUmMin(SSgMSADPCMTimer_Min, (t2 - t1));
-	
+
 	decomp_time += (t2 - t1);
 #endif
-	
+
 	return_val = UUcTrue;
-	
+
 end:
 	return return_val;
 }
@@ -255,7 +255,7 @@ SSiPlatform_SoundChannel_MSADPCM_Terminate(
 	SStSoundChannel				*inSoundChannel)
 {
 	HRESULT						result;
-	
+
 #if defined(SScMSADPCMTimer) && (SScMSADPCMTimer == 1)
 	t1 = timeGetTime();;
 #endif
@@ -268,10 +268,10 @@ SSiPlatform_SoundChannel_MSADPCM_Terminate(
 
 #if defined(SScMSADPCMTimer) && (SScMSADPCMTimer == 1)
 	t2 = timeGetTime();
-	
+
 	SSgMSADPCMTimer_Max = UUmMax(SSgMSADPCMTimer_Max, (t2 - t1));
 	SSgMSADPCMTimer_Min = UUmMin(SSgMSADPCMTimer_Min, (t2 - t1));
-	
+
 	decomp_time += (t2 - t1);
 #endif
 }
@@ -291,7 +291,7 @@ SSiPlatform_SoundChannel_MSADPCM_DecompressData(
 	UUtUns32					src_size;
 	UUtUns32					write_size;
 	UUtBool						return_val;
-	
+
 #if defined(SScMSADPCMTimer) && (SScMSADPCMTimer == 1)
 	t1 = timeGetTime();
 #endif
@@ -307,16 +307,16 @@ SSiPlatform_SoundChannel_MSADPCM_DecompressData(
 		return_val = UUcFalse;
 		goto end;
 	}
-	
+
 	src =
 		((UUtUns8*)inSoundChannel->sound_data->data) +
 		inSoundChannel->pd.num_packets_decompressed;
-		
-	src_size = 
+
+	src_size =
 		UUmMin(
 			inSoundChannel->pd.DefaultReadSize,
 			(inSoundChannel->sound_data->num_bytes - inSoundChannel->pd.num_packets_decompressed));
-		
+
 	// determine the write size
 	result =
 		acmStreamSize(
@@ -329,9 +329,9 @@ SSiPlatform_SoundChannel_MSADPCM_DecompressData(
 		return_val = UUcFalse;
 		goto end;
 	}
-	
+
 	UUmAssert(write_size <= inSoundChannel->pd.decompressed_data_length);
-	
+
 	// prepare the stream
 	ZeroMemory(&inSoundChannel->pd.stream, sizeof(ACMSTREAMHEADER));
 	inSoundChannel->pd.stream.cbStruct = sizeof(ACMSTREAMHEADER);
@@ -339,7 +339,7 @@ SSiPlatform_SoundChannel_MSADPCM_DecompressData(
 	inSoundChannel->pd.stream.cbSrcLength = src_size;
 	inSoundChannel->pd.stream.pbDst = inSoundChannel->pd.decompressed_data;
 	inSoundChannel->pd.stream.cbDstLength = write_size;
-	
+
 	result =
 		acmStreamPrepareHeader(
 			inSoundChannel->pd.acm,
@@ -350,7 +350,7 @@ SSiPlatform_SoundChannel_MSADPCM_DecompressData(
 		return_val = UUcFalse;
 		goto end;
 	}
-		
+
 	// decompress sound data into the buffer
 	result =
 		acmStreamConvert(
@@ -362,7 +362,7 @@ SSiPlatform_SoundChannel_MSADPCM_DecompressData(
 		return_val = UUcFalse;
 		goto end;
 	}
-	
+
 	#if defined(DEBUGGING) && (DEBUGGING != 0)
 	if (inSoundChannel->pd.stream.cbDstLengthUsed == 0)
 	{
@@ -375,26 +375,26 @@ SSiPlatform_SoundChannel_MSADPCM_DecompressData(
 	inSoundChannel->pd.decompressed_packets_length = inSoundChannel->pd.stream.cbDstLengthUsed;
 	inSoundChannel->pd.num_packets_decompressed += inSoundChannel->pd.stream.cbSrcLengthUsed;
 	inSoundChannel->pd.bytes_read = 0;
-	
+
 	result =
 		acmStreamUnprepareHeader(
 			inSoundChannel->pd.acm,
 			&inSoundChannel->pd.stream,
 			0);
-	
+
 
 #if defined(SScMSADPCMTimer) && (SScMSADPCMTimer == 1)
 	t2 = timeGetTime();
-	
+
 	SSgMSADPCMTimer_Max = UUmMax(SSgMSADPCMTimer_Max, (t2 - t1));
 	SSgMSADPCMTimer_Min = UUmMin(SSgMSADPCMTimer_Min, (t2 - t1));
-	
+
 	decomp_time += (t2 - t1);
 	decomp_count++;
 #endif
-	
+
 	return_val = UUcTrue;
-	
+
 end:
 	return return_val;
 }
@@ -407,12 +407,12 @@ SSiPlatform_SoundChannel_IMA_DecompressData(
 	UUtUns32					number_of_packets_decompressed;
 	UUtUns32					num_channels = SSrSound_IsStereo(inSoundChannel->sound_data) ? 2 : 1;
 	WAVEFORMATEX				*wave_format_ex = (WAVEFORMATEX *) (SSrSound_IsStereo(inSoundChannel->sound_data) ? &SSgWaveFormat_Stereo : &SSgWaveFormat_Mono);
-	
+
 	if (inSoundChannel->pd.num_packets_decompressed >= wave_format_ex->nBlockAlign)
 	{
 		return UUcFalse;
 	}
-	
+
 	// decompress sound data into the buffer
 	number_of_packets_decompressed =
 		SSrIMA_DecompressSoundData(
@@ -420,7 +420,7 @@ SSiPlatform_SoundChannel_IMA_DecompressData(
 			inSoundChannel->pd.decompressed_data,
 			SScNumPacketsToDecompress,
 			inSoundChannel->pd.num_packets_decompressed);
-	
+
 	inSoundChannel->pd.decompressed_packets_length =
 		number_of_packets_decompressed *
 		sizeof(UUtUns16) *
@@ -439,18 +439,18 @@ SSiPlatform_SoundChannel_Terminate(
 	char						*inErrorString)
 {
 	HRESULT						result;
-	
+
 	if (inErrorString)
 	{
 		UUrError_Report(UUcError_Generic, inErrorString);
 	}
-	
+
 	if (inSoundChannel->pd.decompressed_data != NULL)
 	{
 		UUrMemory_Block_Delete(inSoundChannel->pd.decompressed_data);
 		inSoundChannel->pd.decompressed_data = NULL;
 	}
-	
+
 	if (inSoundChannel->pd.soundBuffer3D)
 	{
 		result = IDirectSound3DBuffer_Release(inSoundChannel->pd.soundBuffer3D);
@@ -460,7 +460,7 @@ SSiPlatform_SoundChannel_Terminate(
 		}
 		inSoundChannel->pd.soundBuffer3D = NULL;
 	}
-	
+
 	if (inSoundChannel->pd.soundBuffer)
 	{
 		result = IDirectSoundBuffer_Release(inSoundChannel->pd.soundBuffer);
@@ -470,7 +470,7 @@ SSiPlatform_SoundChannel_Terminate(
 		}
 		inSoundChannel->pd.soundBuffer = NULL;
 	}
-	
+
 	SSiSoundChannelList_Delete(inSoundChannel);
 }
 
@@ -492,12 +492,12 @@ SSiPlatform_UpdateSoundBuffer_MSADPCM(
 	UUtBool						data_decompressed;
 	WAVEFORMATEX				*wave_format_ex = (WAVEFORMATEX *) (SSrSound_IsStereo(inSoundChannel->sound_data) ? &SSgWaveFormat_Stereo : &SSgWaveFormat_Mono);
 
-	
+
 	// determine which half of the buffer to fill
 	section = inSoundChannel->pd.section;
-	
+
 	// lock the buffer
-	result = 
+	result =
 		IDirectSoundBuffer_Lock(
 			inSoundChannel->pd.soundBuffer,
 			inSoundChannel->pd.buffer_pos[section],
@@ -508,42 +508,42 @@ SSiPlatform_UpdateSoundBuffer_MSADPCM(
 			&audioDataSize2,
 			0);
 	if (result != DS_OK) { return UUcFalse; }
-	
+
 	bytes_remaining = 0;
 	write_size = 0;
 	dest = (UUtUns8*)audioData;
-	
+
 	do
 	{
-		if ((inSoundChannel->pd.bytes_read == 0) || 
+		if ((inSoundChannel->pd.bytes_read == 0) ||
 			(inSoundChannel->pd.bytes_read == inSoundChannel->pd.decompressed_packets_length))
 		{
 			// decompress some more sound data
 			data_decompressed = SSiPlatform_SoundChannel_MSADPCM_DecompressData(inSoundChannel);
-			//data_decompressed = SSiPlatform_SoundChannel_IMA_DecompressData(inSoundChannel);		
+			//data_decompressed = SSiPlatform_SoundChannel_IMA_DecompressData(inSoundChannel);
 			if (!data_decompressed)
 			{
 				bytes_remaining = (inSoundChannel->pd.section_size - inSoundChannel->pd.bytes_written);
 				break;
 			}
 		}
-		
+
 		// determine how many bytes to write
 		write_size =
 			UUmMin(
 				(inSoundChannel->pd.section_size - inSoundChannel->pd.bytes_written),
 				(inSoundChannel->pd.decompressed_packets_length - inSoundChannel->pd.bytes_read));
 		if (write_size == 0) { break; }
-		
+
 		// copy data from the decompressed_data into the buffer
 		src = inSoundChannel->pd.decompressed_data + inSoundChannel->pd.bytes_read;
 		dest = ((UUtUns8*)audioData) + inSoundChannel->pd.bytes_written;
 		UUrMemory_MoveFast(src, dest, write_size);
-		
+
 		// increment the number of sound bytes read and the number of buffer bytes written
 		inSoundChannel->pd.bytes_read += write_size;
 		inSoundChannel->pd.bytes_written += write_size;
-		
+
 		bytes_remaining = (inSoundChannel->pd.section_size - inSoundChannel->pd.bytes_written);
 	}
 	while (bytes_remaining > 0);
@@ -552,24 +552,24 @@ SSiPlatform_UpdateSoundBuffer_MSADPCM(
 	{
 		dest += write_size;
 		UUrMemory_Set8(
-			dest, 
+			dest,
 			((wave_format_ex->wBitsPerSample == 8) ? 0x80 : 0),
 			bytes_remaining);
-		
+
 		if (SSiSoundChannel_IsAmbient(inSoundChannel) == UUcFalse)
 		{
 			bytes_remaining = 0;
 		}
-		
+
 		inSoundChannel->pd.stop = UUcTrue;
 		inSoundChannel->pd.stop_section = section;
 		inSoundChannel->pd.stop_pos =
 			inSoundChannel->pd.bytes_written +
 			(section * inSoundChannel->pd.section_size);
 	}
-	
+
 	// unlock the buffer
-	result = 
+	result =
 		IDirectSoundBuffer_Unlock(
 			inSoundChannel->pd.soundBuffer,
 			audioData,
@@ -577,7 +577,7 @@ SSiPlatform_UpdateSoundBuffer_MSADPCM(
 			audioData2,
 			audioDataSize2);
 	if (result != DS_OK) { return UUcFalse; }
-	
+
 	// if this is a looping sound, fill in the remaining bytes with another permutation
 	if (bytes_remaining > 0)
 	{
@@ -593,7 +593,7 @@ SSiPlatform_UpdateSoundBuffer_MSADPCM(
 			SSiSoundChannel_SetUpdating(inSoundChannel, UUcFalse);
 		}
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -614,12 +614,12 @@ SSiPlatform_UpdateSoundBuffer_IMA(
 	UUtUns8						*dest;
 	UUtInt32					bytes_remaining;
 	UUtBool						data_decompressed;
-	
+
 	// determine which half of the buffer to fill
 	section = inSoundChannel->pd.section;
-	
+
 	// lock the buffer
-	result = 
+	result =
 		IDirectSoundBuffer_Lock(
 			inSoundChannel->pd.soundBuffer,
 			inSoundChannel->pd.buffer_pos[section],
@@ -630,14 +630,14 @@ SSiPlatform_UpdateSoundBuffer_IMA(
 			&audioDataSize2,
 			0);
 	if (result != DS_OK) { return UUcFalse; }
-	
+
 	bytes_remaining = 0;
 	write_size = 0;
 	dest = (UUtUns8*)audioData;
-	
+
 	do
 	{
-		if ((inSoundChannel->pd.bytes_read == 0) || 
+		if ((inSoundChannel->pd.bytes_read == 0) ||
 			(inSoundChannel->pd.bytes_read == inSoundChannel->pd.decompressed_packets_length))
 		{
 			// decompress some more sound data
@@ -648,23 +648,23 @@ SSiPlatform_UpdateSoundBuffer_IMA(
 				break;
 			}
 		}
-		
+
 		// determine how many bytes to write
 		write_size =
 			UUmMin(
 				(inSoundChannel->pd.section_size - inSoundChannel->pd.bytes_written),
 				(inSoundChannel->pd.decompressed_packets_length - inSoundChannel->pd.bytes_read));
 		if (write_size == 0) { break; }
-		
+
 		// copy data from the decompressed_data into the buffer
 		src = inSoundChannel->pd.decompressed_data + inSoundChannel->pd.bytes_read;
 		dest = ((UUtUns8*)audioData) + inSoundChannel->pd.bytes_written;
 		UUrMemory_MoveFast(src, dest, write_size);
-		
+
 		// increment the number of sound bytes read and the number of buffer bytes written
 		inSoundChannel->pd.bytes_read += write_size;
 		inSoundChannel->pd.bytes_written += write_size;
-		
+
 		bytes_remaining = (inSoundChannel->pd.section_size - inSoundChannel->pd.bytes_written);
 	}
 	while (bytes_remaining > 0);
@@ -673,24 +673,24 @@ SSiPlatform_UpdateSoundBuffer_IMA(
 	{
 		dest += write_size;
 		UUrMemory_Set8(
-			dest, 
+			dest,
 			((inSoundChannel->sound_data->f.wBitsPerSample == 8) ? 0x80 : 0),
 			bytes_remaining);
-		
+
 		if (SSiSoundChannel_IsAmbient(inSoundChannel) == UUcFalse)
 		{
 			bytes_remaining = 0;
 		}
-		
+
 		inSoundChannel->pd.stop = UUcTrue;
 		inSoundChannel->pd.stop_section = section;
 		inSoundChannel->pd.stop_pos =
 			inSoundChannel->pd.bytes_written +
 			(section * inSoundChannel->pd.section_size);
 	}
-	
+
 	// unlock the buffer
-	result = 
+	result =
 		IDirectSoundBuffer_Unlock(
 			inSoundChannel->pd.soundBuffer,
 			audioData,
@@ -698,7 +698,7 @@ SSiPlatform_UpdateSoundBuffer_IMA(
 			audioData2,
 			audioDataSize2);
 	if (result != DS_OK) { return UUcFalse; }
-	
+
 	// if this is a looping sound, fill in the remaining bytes with another permutation
 	if (bytes_remaining > 0)
 	{
@@ -714,7 +714,7 @@ SSiPlatform_UpdateSoundBuffer_IMA(
 			SSiSoundChannel_SetUpdating(inSoundChannel, UUcFalse);
 		}
 	}
-	
+
 	return UUcTrue;
 }
 #endif
@@ -735,10 +735,10 @@ SSiPlatform_UpdateSoundBuffer_Uncompressed(
 	UUtUns8						*src;
 	UUtUns8						*dest;
 	UUtInt32					bytes_remaining;
-	
+
 	// determine which half of the buffer to fill
 	section = inSoundChannel->pd.section;
-	
+
 	// determine how many bytes to write
 	write_size =
 		UUmMin(
@@ -749,12 +749,12 @@ SSiPlatform_UpdateSoundBuffer_Uncompressed(
 		inSoundChannel->pd.stop = UUcTrue;
 		return UUcFalse;
 	}
-	
+
 	// set the source pointer
 	src = ((UUtUns8*)inSoundChannel->sound_data->data) + inSoundChannel->pd.bytes_read;
 
 	// lock the buffer
-	result = 
+	result =
 		IDirectSoundBuffer_Lock(
 			inSoundChannel->pd.soundBuffer,
 			inSoundChannel->pd.buffer_pos[section],
@@ -765,15 +765,15 @@ SSiPlatform_UpdateSoundBuffer_Uncompressed(
 			&audioDataSize2,
 			0);
 	if (result != DS_OK) { return UUcFalse; }
-	
+
 	// copy data from the sound data into the buffer
 	dest = ((UUtUns8*)audioData) + inSoundChannel->pd.bytes_written;
 	UUrMemory_MoveFast(src, dest, write_size);
-	
+
 	// increment the number of sound bytes read and the number of buffer bytes written
 	inSoundChannel->pd.bytes_read += write_size;
 	inSoundChannel->pd.bytes_written += write_size;
-	
+
 	// fill the remaining bytes with silence if this is not a looping channel
 	bytes_remaining = (inSoundChannel->pd.section_size - inSoundChannel->pd.bytes_written);
 	if ((bytes_remaining > 0) && (SSiSoundChannel_IsLooping(inSoundChannel) == UUcFalse))
@@ -783,21 +783,21 @@ SSiPlatform_UpdateSoundBuffer_Uncompressed(
 			dest,
 			((inSoundChannel->sound_data->f.wBitsPerSample == 8) ? 0x80 : 0),
 			bytes_remaining);
-		
+
 		if (SSiSoundChannel_IsAmbient(inSoundChannel) == UUcFalse)
 		{
 			bytes_remaining = 0;
 		}
-		
+
 		inSoundChannel->pd.stop = UUcTrue;
 		inSoundChannel->pd.stop_section = section;
 		inSoundChannel->pd.stop_pos =
 			inSoundChannel->pd.bytes_written +
 			(section * inSoundChannel->pd.section_size);
 	}
-	
+
 	// unlock the buffer
-	result = 
+	result =
 		IDirectSoundBuffer_Unlock(
 			inSoundChannel->pd.soundBuffer,
 			audioData,
@@ -805,7 +805,7 @@ SSiPlatform_UpdateSoundBuffer_Uncompressed(
 			audioData2,
 			audioDataSize2);
 	if (result != DS_OK) { return UUcFalse; }
-	
+
 	// if this is a looping sound, fill in the remaining bytes with another permutation
 	if (bytes_remaining > 0)
 	{
@@ -821,7 +821,7 @@ SSiPlatform_UpdateSoundBuffer_Uncompressed(
 			SSiSoundChannel_SetUpdating(inSoundChannel, UUcFalse);
 		}
 	}
-	
+
 	return UUcTrue;
 }
 #endif
@@ -832,9 +832,9 @@ SSiPlatform_UpdateSoundBuffer(
 	SStSoundChannel				*inSoundChannel)
 {
 	UUtBool						result;
-	
+
 	result = SSiPlatform_UpdateSoundBuffer_MSADPCM(inSoundChannel);
-	
+
 	return result;
 }
 
@@ -845,9 +845,9 @@ SSiPlatform_GetPlaySection(
 	UUtUns32						inPlayPos)
 {
 	UUtUns32						section;
-	
+
 	section = inPlayPos / inSoundChannel->pd.section_size;
-	
+
 	return section;
 }
 
@@ -863,9 +863,9 @@ SSiPlatform_SilenceSection(
 	void							*audioData2;
 	UUtUns32						audioDataSize2;
 	UUtUns8							*dest;
-	
+
 	// lock the buffer
-	result = 
+	result =
 		IDirectSoundBuffer_Lock(
 			inSoundChannel->pd.soundBuffer,
 			inSoundChannel->pd.buffer_pos[inSection],
@@ -876,18 +876,18 @@ SSiPlatform_SilenceSection(
 			&audioDataSize2,
 			0);
 	if (result != DS_OK) { return; }
-	
+
 	// copy data from the sound data into the buffer
 	dest = (UUtUns8*)audioData;
-	
+
 	// write silence into the buffer
 	UUrMemory_Set8(
 		dest,
 		0,
 		inSoundChannel->pd.section_size);
-	
+
 	// unlock the buffer
-	result = 
+	result =
 		IDirectSoundBuffer_Unlock(
 			inSoundChannel->pd.soundBuffer,
 			audioData,
@@ -907,16 +907,16 @@ SSiPlatform_Update(
 		SStSoundChannel				**sound_channel_array;
 		UUtUns32					num_elements;
 		UUtUns32					i;
-		
+
 		if (!SS2rEnabled()) {
 			// CB: the sound system is not actually enabled, exit the thread
 			ExitThread(0);
 		}
-		
+
 		SSrWaitGuard(SSgGuardAll);
 
 		// go through all of the notifications and toggle the events
-		// of the buffers that have reached their 
+		// of the buffers that have reached their
 		num_elements = UUrMemory_Array_GetUsedElems(SSgSoundChannelList);
 		sound_channel_array = (SStSoundChannel**)UUrMemory_Array_GetMemory(SSgSoundChannelList);
 		for (i = 0; i < num_elements; i++)
@@ -925,27 +925,27 @@ SSiPlatform_Update(
 			UUtUns32				play_pos;
 			UUtUns32				current;
 			UUtUns32				next;
-			
+
 			sound_channel = sound_channel_array[i];
-			
+
 			// only check buffers which are playing
 			if (SSiSoundChannel_IsPlaying(sound_channel) == UUcFalse)
 			{
 				continue;
 			}
-			
+
 			// get the position of the buffer
 			IDirectSoundBuffer_GetCurrentPosition(sound_channel->pd.soundBuffer, &play_pos, NULL);
-			
+
 			current = sound_channel->pd.section;
 			next = current + 1;
 			if (next >= SScNotifiesPerChannel) { next = 0; }
-			
+
 			// update the sound channel if the play position is past the buffer_pos
 			if (sound_channel->pd.stop == UUcTrue)
 			{
 				UUtUns32				play_section;
-				
+
 				play_section = SSiPlatform_GetPlaySection(sound_channel, play_pos);
 				if (play_section == sound_channel->pd.stop_section)
 				{
@@ -953,7 +953,7 @@ SSiPlatform_Update(
 
 					SSiPlatform_SilenceSection(sound_channel, next);
 				}
-				
+
 				if (sound_channel->pd.can_stop == UUcTrue)
 				{
 					if ((sound_channel->pd.stop_pos <= play_pos) ||
@@ -963,13 +963,13 @@ SSiPlatform_Update(
 					}
 				}
 			}
-			else 
+			else
 			{
 				if ((current == 0) && (sound_channel->pd.buffer_pos[next] < play_pos))
 				{
 					continue;
 				}
-				
+
 				if (sound_channel->pd.buffer_pos[current] <= play_pos)
 				{
 					// update the sound buffer
@@ -980,13 +980,13 @@ SSiPlatform_Update(
 			}
 		}
 		SSrReleaseGuard(SSgGuardAll);
-		
+
 		Sleep(25);
 	}
-	
+
 	// exit the thread
 	ExitThread(0);
-	
+
 	return 0;
 }
 
@@ -1011,16 +1011,16 @@ SS2rPlatform_ShowDebugInfo_Overall(
 #if defined(SScMSADPCMTimer) && (SScMSADPCMTimer == 1)
 	char						string[128];
 	float						avg;
-	
+
 	sprintf(
 		string,
 		"max %d min %d",
 		SSgMSADPCMTimer_Max,
 		SSgMSADPCMTimer_Min);
-	
+
 	DCrText_DrawText(string, NULL, inDest);
 	inDest->y += DCrText_GetLineHeight();
-	
+
 	if (SSgMSADPCMTimer_NumDecompress_Frame != 0)
 	{
 		avg = (float)SSgMSADPCMTimer_DecompressTime_Frame / (float)SSgMSADPCMTimer_NumDecompress_Frame;
@@ -1035,10 +1035,10 @@ SS2rPlatform_ShowDebugInfo_Overall(
 		SSgMSADPCMTimer_DecompressTime_Frame,
 		SSgMSADPCMTimer_NumDecompress_Frame,
 		avg);
-	
+
 	DCrText_DrawText(string, NULL, inDest);
 	inDest->y += DCrText_GetLineHeight();
-	
+
 	if (SSgMSADPCMTimer_NumDecompress_Total != 0)
 	{
 		avg = (float)SSgMSADPCMTimer_DecompressTime_Total / (float)SSgMSADPCMTimer_NumDecompress_Total;
@@ -1053,14 +1053,14 @@ SS2rPlatform_ShowDebugInfo_Overall(
 		SSgMSADPCMTimer_DecompressTime_Total,
 		SSgMSADPCMTimer_NumDecompress_Total,
 		avg);
-	
+
 	DCrText_DrawText(string, NULL, inDest);
 	inDest->y += DCrText_GetLineHeight();
 
 #else
-	
+
 	return;
-	
+
 #endif
 }
 
@@ -1082,7 +1082,7 @@ SS2rPlatform_PerformanceEndFrame(
 {
 #if defined(SScMSADPCMTimer) && (SScMSADPCMTimer == 1)
 	t1 = timeGetTime();
-	
+
 	SSgMSADPCMTimer_NumDecompress_Frame = decomp_count;
 	SSgMSADPCMTimer_NumDecompress_Total += decomp_count;
 	SSgMSADPCMTimer_DecompressTime_Frame = decomp_time;
@@ -1104,7 +1104,7 @@ SS2rPlatform_SoundChannel_Initialize(
 	DSBUFFERDESC				buffer_desc;
 	HRESULT						result;
 	UUtUns32					i;
-	
+
 	// initialize the sound channel
 	inSoundChannel->pd.soundBuffer = NULL;
 	inSoundChannel->pd.soundBuffer3D = NULL;
@@ -1119,7 +1119,7 @@ SS2rPlatform_SoundChannel_Initialize(
 	inSoundChannel->pd.num_packets_decompressed = 0;
 	inSoundChannel->pd.decompressed_packets_length = 0;
 	inSoundChannel->pd.acm = NULL;
-	
+
 	for (i = 0; i < SScNotifiesPerChannel; i++)
 	{
 		inSoundChannel->pd.buffer_pos[i] = 0;
@@ -1134,7 +1134,7 @@ SS2rPlatform_SoundChannel_Initialize(
 	wave_format.nBlockAlign		= wave_format.wBitsPerSample * wave_format.nChannels / 8;
 	wave_format.nAvgBytesPerSec	= wave_format.nSamplesPerSec * wave_format.nBlockAlign;
 	wave_format.cbSize			= 0;
-	
+
 	// set up the buffer description
 	UUrMemory_Clear(&buffer_desc, sizeof(DSBUFFERDESC));
 	buffer_desc.dwSize			= sizeof(DSBUFFERDESC);
@@ -1147,11 +1147,11 @@ SS2rPlatform_SoundChannel_Initialize(
 		DSBCAPS_CTRLFREQUENCY;
 	buffer_desc.dwBufferBytes	= wave_format.nAvgBytesPerSec * 3;
 	buffer_desc.lpwfxFormat		= &wave_format;
-	
+
 	// save the buffer size
 	inSoundChannel->pd.buffer_size = buffer_desc.dwBufferBytes;
 	inSoundChannel->pd.section_size = buffer_desc.dwBufferBytes / SScNotifiesPerChannel;
-	
+
 	// create the sound buffer
 	result =
 		IDirectSound_CreateSoundBuffer(
@@ -1164,25 +1164,25 @@ SS2rPlatform_SoundChannel_Initialize(
 		UUrError_Report(UUcError_Generic, SSiP_DS_GetErrorMsg(result));
 		return;
 	}
-	
+
 	// add the channel to the list
-	
+
 	// set the buffer_positions for the update to watch for
 	for (i = 0; i < SScNotifiesPerChannel; i++)
 	{
 		inSoundChannel->pd.buffer_pos[i] = (inSoundChannel->pd.section_size * i);
 	}
-	
+
 	// add the sound channel to the sound channel update list
 	SSiSoundChannelList_Add(inSoundChannel);
-	
+
 	// allocate memory for SScNumPacketsToDecompress packet worth of decompressed data
 	inSoundChannel->pd.decompressed_data_length =
 		(SScIMA_SamplesPerPacket *
 		sizeof(UUtUns16) *
 		SScNumPacketsToDecompress *
 		wave_format.nChannels);
-	inSoundChannel->pd.decompressed_data = 
+	inSoundChannel->pd.decompressed_data =
 		UUrMemory_Block_New(inSoundChannel->pd.decompressed_data_length);
 	inSoundChannel->pd.decompressed_packets_length = 0;
 	inSoundChannel->pd.num_packets_decompressed = 0;
@@ -1194,19 +1194,19 @@ SS2rPlatform_SoundChannel_Pause(
 	SStSoundChannel				*inSoundChannel)
 {
 	HRESULT						result;
-	
+
 	UUmAssert(inSoundChannel);
-	
+
 	// make sure the channel is playing
 	if (SSiSoundChannel_IsPlaying(inSoundChannel) == UUcFalse) { return; }
-	
+
 	// stop the channel buffer
 	result = IDirectSoundBuffer_Stop(inSoundChannel->pd.soundBuffer);
 	if (result != DS_OK)
 	{
 		UUrError_Report(UUcError_Generic, SSiP_DS_GetErrorMsg(result));
 	}
-	
+
 	// set the status field
 	SSiSoundChannel_SetPaused(inSoundChannel, UUcTrue);
 }
@@ -1217,20 +1217,20 @@ SS2rPlatform_SoundChannel_Play(
 	SStSoundChannel				*inSoundChannel)
 {
 	HRESULT						result;
-	
+
 	UUmAssert(inSoundChannel);
 	UUmAssert(inSoundChannel->pd.soundBuffer);
-	
+
 	// if the channel is already playing then don't do anything
 	if (SSiSoundChannel_IsPlaying(inSoundChannel) == UUcTrue) { return; }
-	
+
 	// play the sound
 	result = IDirectSoundBuffer_Play(inSoundChannel->pd.soundBuffer, 0, 0, DSBPLAY_LOOPING);
 	if (result != DS_OK)
 	{
 		UUrError_Report(UUcError_Generic, SSiP_DS_GetErrorMsg(result));
 	}
-	
+
 	// set the status field
 	SSiSoundChannel_SetPlaying(inSoundChannel, UUcTrue);
 }
@@ -1241,23 +1241,23 @@ SS2rPlatform_SoundChannel_Resume(
 	SStSoundChannel				*inSoundChannel)
 {
 	HRESULT						result;
-	
+
 	UUmAssert(inSoundChannel);
-	
+
 	// make sure the channel is playing and paused
 	if ((SSiSoundChannel_IsPlaying(inSoundChannel) == UUcFalse) ||
 		(SSiSoundChannel_IsPaused(inSoundChannel) == UUcFalse))
 	{
 		return;
 	}
-	
+
 	// stop the channel buffer
 	result = IDirectSoundBuffer_Play(inSoundChannel->pd.soundBuffer, 0, 0, DSBPLAY_LOOPING);
 	if (result != DS_OK)
 	{
 		UUrError_Report(UUcError_Generic, SSiP_DS_GetErrorMsg(result));
 	}
-	
+
 	// set the status field
 	SSiSoundChannel_SetPaused(inSoundChannel, UUcFalse);
 }
@@ -1269,11 +1269,11 @@ SS2rPlatform_SoundChannel_SetSoundData(
 	SStSoundData				*inSoundData)
 {
 	UUtBool						result;
-	
+
 	UUmAssert(inSoundChannel);
 	UUmAssert(inSoundChannel->pd.soundBuffer);
-	UUmAssert(inSoundData);	
-		
+	UUmAssert(inSoundData);
+
 //	SSrWaitGuard(&inSoundChannel->guard);
 
 	// set the sound data and number of bytes read
@@ -1283,17 +1283,17 @@ SS2rPlatform_SoundChannel_SetSoundData(
 	inSoundChannel->pd.stop = UUcFalse;
 	inSoundChannel->pd.can_stop = UUcFalse;
 	inSoundChannel->pd.stop_pos = 0;
-		
+
 	// decompress data from the sound data into the buffer
 	if ((inSoundChannel->sound_data->flags & SScSoundDataFlag_Compressed) != 0)
 	{
 		inSoundChannel->pd.num_packets_decompressed = 0;
-		
+
 		if (inSoundChannel->pd.acm != NULL)
 		{
 			SSiPlatform_SoundChannel_MSADPCM_Terminate(inSoundChannel);
 		}
-		
+
 		result = SSiPlatform_SoundChannel_MSADPCM_Initialize(inSoundChannel);
 		if (result == UUcFalse)
 		{
@@ -1302,21 +1302,21 @@ SS2rPlatform_SoundChannel_SetSoundData(
 			return result;
 		}
 	}
-	
+
 	// set the section if the sound is not playing
 	if ((SSiSoundChannel_IsPlaying(inSoundChannel) == UUcFalse) &&
 		(SSiSoundChannel_IsUpdating(inSoundChannel) == UUcFalse))
 	{
 		// set the section to 0 so that section zero gets filled
 		inSoundChannel->pd.section = 0;
-		
+
 		// set the position
 		IDirectSoundBuffer_SetCurrentPosition(inSoundChannel->pd.soundBuffer, 0);
 	}
-	
+
 	// fill in the section
 	result = SSiPlatform_UpdateSoundBuffer(inSoundChannel);
-	
+
 //	SSrReleaseGuard(&inSoundChannel->guard);
 
 	return result;
@@ -1330,7 +1330,7 @@ SS2rPlatform_SoundChannel_SetPan(
 	float						inPan)
 {
 	UUtInt32					pan;
-	
+
 	// calculate the pan
 	switch (inPanFlags)
 	{
@@ -1344,7 +1344,7 @@ SS2rPlatform_SoundChannel_SetPan(
 				pan = DSBPAN_LEFT;
 			}
 		break;
-		
+
 		case SScPanFlag_Right:
 			if (inPan > SScZeroSound)
 			{
@@ -1355,13 +1355,13 @@ SS2rPlatform_SoundChannel_SetPan(
 				pan = DSBPAN_RIGHT;
 			}
 		break;
-		
+
 		case SScPanFlag_None:
 		default:
 			pan = DSBPAN_CENTER;
 		break;
 	}
-	
+
 	// set the pan
 	IDirectSoundBuffer_SetPan(inSoundChannel->pd.soundBuffer, pan);
 }
@@ -1373,10 +1373,10 @@ SS2rPlatform_SoundChannel_SetPitch(
 	float						inPitch)
 {
 	UUtInt32					frequency;
-	
+
 	// calculate the frequency
 	frequency = (UUtInt32)(22050.0f * inPitch);
-	
+
 	// set the frequency
 	IDirectSoundBuffer_SetFrequency(inSoundChannel->pd.soundBuffer, frequency);
 }
@@ -1388,7 +1388,7 @@ SS2rPlatform_SoundChannel_SetVolume(
 	float						inVolume)
 {
 	UUtInt32					volume;
-	
+
 	// calculate the volume
 	if (inVolume > SScZeroSound)
 	{
@@ -1398,7 +1398,7 @@ SS2rPlatform_SoundChannel_SetVolume(
 	{
 		volume = DSBVOLUME_MIN;
 	}
-	
+
 	// set the volume
 	IDirectSoundBuffer_SetVolume(inSoundChannel->pd.soundBuffer, volume);
 }
@@ -1413,7 +1413,7 @@ SS2rPlatform_SoundChannel_Silence(
 	UUtUns32					audioDataSize;
 
 	// lock the buffer
-	result = 
+	result =
 		IDirectSoundBuffer_Lock(
 			inSoundChannel->pd.soundBuffer,
 			0,
@@ -1424,12 +1424,12 @@ SS2rPlatform_SoundChannel_Silence(
 			NULL,
 			DSBLOCK_ENTIREBUFFER);
 	if (result != DS_OK) { return; }
-	
+
 	// write silence into the buffer
 	UUrMemory_Set16(audioData, 0, (audioDataSize >> 1));
-	
+
 	// unlock the buffer
-	result = 
+	result =
 		IDirectSoundBuffer_Unlock(
 			inSoundChannel->pd.soundBuffer,
 			audioData,
@@ -1445,15 +1445,15 @@ SS2rPlatform_SoundChannel_Stop(
 	SStSoundChannel				*inSoundChannel)
 {
 	HRESULT						result;
-	
+
 	// set the status field
 	SSiSoundChannel_SetPlaying(inSoundChannel, UUcFalse);
-	
+
 	// clear some of the platform data
 	inSoundChannel->pd.bytes_read = 0;
 	inSoundChannel->pd.bytes_written = 0;
 	inSoundChannel->pd.section = 0;
-	
+
 	// stop the buffer
 	result = IDirectSoundBuffer_Stop(inSoundChannel->pd.soundBuffer);
 	if (result != DS_OK)
@@ -1496,7 +1496,7 @@ SS2rPlatform_Initialize(
 	OSVERSIONINFO				info;
 	UUtError					error;
 	BOOL						success;
-	
+
 	*outNumChannels = 0;
 
 	// init the main vars
@@ -1508,7 +1508,7 @@ SS2rPlatform_Initialize(
 	SSgEventThread			= NULL;
 	SSgEventThreadID		= 0;
 	SSgSoundChannelList		= NULL;
-	
+
 	if (!inUseSound) {
 		return UUcError_None;
 	}
@@ -1553,7 +1553,7 @@ SS2rPlatform_Initialize(
 		return UUcError_Generic;
 	}
 	UUmAssert(SSgDirectSound);
-		
+
 	// get the capabilities of the device
 	SSgDSCaps.dwSize = sizeof(SSgDSCaps);
 	result = IDirectSound_GetCaps(SSgDirectSound, &SSgDSCaps);
@@ -1589,12 +1589,12 @@ SS2rPlatform_Initialize(
 	UUrStartupMessage("direct sound dwTotalHwMemBytes = %d", SSgDSCaps.dwTotalHwMemBytes);
 	UUrStartupMessage("direct sound dwUnlockTransferRateHwBuffers = %d", SSgDSCaps.dwUnlockTransferRateHwBuffers);
 
-	
+
 	// set the number of channels
 //	SSgNumChannels = SSgDSCaps.dwFreeHwMixingStreamingBuffers;
 //	if (SSgNumChannels == 0) { SSgNumChannels = SScMaxSoundChannels; }
 	SSgNumChannels = SScMaxSoundChannels;
-	
+
 	UUrStartupMessage("setting the direct sound cooperative level");
 
 	// set cooperative level
@@ -1605,7 +1605,7 @@ SS2rPlatform_Initialize(
 //		UUrError_Report(UUcError_Generic, SSiP_DS_GetErrorMsg(result));
 		goto cleanup;
 	}
-	
+
 	// ------------------------------
 	// Create the Primary Buffer
 	// ------------------------------
@@ -1613,12 +1613,12 @@ SS2rPlatform_Initialize(
 	UUrMemory_Clear(&pb_desc, sizeof(DSBUFFERDESC));
 	pb_desc.dwSize				= sizeof(DSBUFFERDESC);
 	pb_desc.dwFlags				= DSBCAPS_PRIMARYBUFFER;
-	
+
 /*	if (SSgUse3DSound)
 	{
 		pb_desc.dwFlags			|= DSBCAPS_CTRL3D;
 	}*/
-	
+
 	// create the primary buffer
     result =
     	IDirectSound_CreateSoundBuffer(
@@ -1629,21 +1629,21 @@ SS2rPlatform_Initialize(
     if (result != DS_OK)
     {
 //   	UUrError_Report(UUcError_Generic, SSiP_DS_GetErrorMsg(result));
-        goto cleanup; 
+        goto cleanup;
     }
-    
+
 	// set up the wave format structure
 	UUrMemory_Clear(&wave_format, sizeof(WAVEFORMATEX));
 	wave_format.wFormatTag		= WAVE_FORMAT_PCM;
 	wave_format.nChannels		= 2;
 	wave_format.nSamplesPerSec	= 22050;
 	wave_format.wBitsPerSample	= 16;
-	wave_format.nBlockAlign		= 
+	wave_format.nBlockAlign		=
 		wave_format.wBitsPerSample * wave_format.nChannels / 8;
 	wave_format.nAvgBytesPerSec	=
 		wave_format.nSamplesPerSec * wave_format.nBlockAlign;
 	wave_format.cbSize			= 0;
-	
+
     // set the primary buffer's format
     result = IDirectSoundBuffer_SetFormat(SSgPrimaryBuffer, &wave_format);
     if (result != DS_OK)
@@ -1651,7 +1651,7 @@ SS2rPlatform_Initialize(
     	UUrError_Report(UUcError_Generic, SSiP_DS_GetErrorMsg(result));
     	goto cleanup;
     }
-    
+
 	// play the primary sound buffer
 	result = IDirectSoundBuffer_Play(SSgPrimaryBuffer, 0, 0, DSBPLAY_LOOPING);
 	if (result != DS_OK)
@@ -1659,7 +1659,7 @@ SS2rPlatform_Initialize(
 //		UUrError_Report(UUcError_Generic, SSiP_DS_GetErrorMsg(result));
 		goto cleanup;
 	}
-	
+
 	// ------------------------------
 	// Intitialize the buffer update
 	// ------------------------------
@@ -1670,7 +1670,7 @@ SS2rPlatform_Initialize(
 //		UUrError_Report(error, "Unable to create the sound channel list.");
 		goto cleanup;
 	}
-		
+
 	// ------------------------------
 	// Intitialize Direct Sound 3D
 	// ------------------------------
@@ -1682,7 +1682,7 @@ SS2rPlatform_Initialize(
 		{
 			SSgUse3DSound = UUcFalse;
 		}
-	
+
 		// do reverb initialization
 		if (SSgUseReverb)
 		{
@@ -1693,17 +1693,17 @@ SS2rPlatform_Initialize(
 			}
 		}
 	}*/
-	
+
 	// ------------------------------
 	// set the number of sound channels
 	// ------------------------------
 	*outNumChannels = SSgNumChannels;
-	
+
 	return UUcError_None;
 
 cleanup:
 	SS2rPlatform_Terminate();
-	
+
 	return UUcError_Generic;
 }
 
@@ -1726,7 +1726,7 @@ SS2rPlatform_InitializeThread(
 	{
 		return UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1736,7 +1736,7 @@ SS2rPlatform_TerminateThread(
 	void)
 {
 	SSgUpdate_Run = UUcFalse;
-	
+
 	// clear the thread vars
 	if (SSgEventThread)
 	{
@@ -1752,11 +1752,11 @@ SS2rPlatform_Terminate(
 	void)
 {
 	HRESULT					result;
-	
+
 	SS2rPlatform_TerminateThread();
-	
+
 	SSiSoundChannelList_Terminate();
-	
+
 	// release the primary sound buffer
 	if (SSgPrimaryBuffer)
 	{
@@ -1774,7 +1774,7 @@ SS2rPlatform_Terminate(
 
 		SSgPrimaryBuffer = NULL;
 	}
-	
+
 	// release the direct sound object
 	if (SSgDirectSound)
 	{
@@ -1786,7 +1786,7 @@ SS2rPlatform_Terminate(
 
 		SSgDirectSound = NULL;
 	}
-	
+
 	SSgNumChannels = 0;
 }
 
@@ -1801,7 +1801,7 @@ SSrDeleteGuard(
 	SStGuard					*inGuard)
 {
 	DeleteCriticalSection(inGuard);
-	
+
 	UUrMemory_Block_Delete(inGuard);
 }
 
@@ -1811,10 +1811,10 @@ SSrCreateGuard(
 	SStGuard					**inGuard)
 {
 	SStGuard					*guard;
-	
+
 	guard = UUrMemory_Block_New(sizeof(CRITICAL_SECTION));
 	InitializeCriticalSection(guard);
-	
+
 	*inGuard = guard;
 }
 
@@ -1845,78 +1845,78 @@ SSiP_DS_GetErrorMsg(
 	HRESULT				inResult)
 {
 	char				*errorMsg;
-	
+
 	switch (inResult)
 	{
 		case DSERR_ALLOCATED:
 			errorMsg = "The call failed because resources (such as a priority level) were already being used by another caller.";
 			break;
-			
+
 		case DSERR_CONTROLUNAVAIL:
 			errorMsg = "The control (vol,pan,etc.) requested by the caller is not available.";
 			break;
-			
+
 		case DSERR_INVALIDPARAM:
 			errorMsg = "An invalid parameter was passed to the returning function.";
 			break;
-			
+
 		case DSERR_INVALIDCALL:
 			errorMsg = "This call is not valid for the current state of this object.";
 			break;
-			
+
 		case DSERR_GENERIC:
 			errorMsg = "An undetermined error occured inside the DirectSound subsystem.";
 			break;
-			
+
 		case DSERR_PRIOLEVELNEEDED:
 			errorMsg = "The caller does not have the priority level required for the function to succeed.";
 			break;
-			
+
 		case DSERR_OUTOFMEMORY:
 			errorMsg = "Not enough free memory is available to complete the operation.";
 			break;
-			
+
 		case DSERR_BADFORMAT:
 			errorMsg = "The specified WAVE format is not supported.";
 			break;
-			
+
 		case DSERR_UNSUPPORTED:
 			errorMsg = "The function called is not supported at this time.";
 			break;
-			
+
 		case DSERR_NODRIVER:
 			errorMsg = "No sound driver is available for use.";
 			break;
-			
+
 		case DSERR_ALREADYINITIALIZED:
 			errorMsg = "This object is already initialized.";
 			break;
-			
+
 		case DSERR_NOAGGREGATION:
 			errorMsg = "This object does not support aggregation.";
 			break;
-			
+
 		case DSERR_BUFFERLOST:
 			errorMsg = "The buffer memory has been lost, and must be restored.";
 			break;
-			
+
 		case DSERR_OTHERAPPHASPRIO:
 			errorMsg = "Another app has a higher priority level, preventing this call from succeeding.";
 			break;
-			
+
 		case DSERR_UNINITIALIZED:
 			errorMsg = "This object has not been initialized.";
 			break;
-			
+
 		case DSERR_NOINTERFACE:
 			errorMsg = "The requested COM interface is not available.";
 			break;
-			
+
 		default:
 			errorMsg = "Unknown error.";
 			break;
 	}
-	
+
 	return errorMsg;
 }
 

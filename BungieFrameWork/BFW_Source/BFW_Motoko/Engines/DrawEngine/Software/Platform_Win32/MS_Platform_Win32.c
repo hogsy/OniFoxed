@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_Platform_Mac.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 19, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */
@@ -34,7 +34,7 @@ static UUtBool					MSgOS_NT_4;
 UUtError
 MSiInitBuffers(
 	MStDrawContextPrivate		*inDrawContextPrivate);
-	
+
 static BOOL PASCAL
 MSiDeviceCallback(
 	LPGUID						inGuid,
@@ -57,12 +57,12 @@ static void MSiPlatform_Win32_ClearZBuffer(
 	UUtInt32	numDoubles;
 	double		*dPtr;
 	double		clearValue;
-	
+
 	numDoubles = drawContextPrivate->height * drawContextPrivate->zBufferRowBytes / sizeof(double);
 	dPtr = (double *)drawContextPrivate->zBufferBaseAddr;
-	
+
 	clearValue = *(double *)&drawContextPrivate->platformSpecific.zClearValue0;
-	
+
 	while(numDoubles-- > 0)
 	{
 		*dPtr++ = clearValue;
@@ -76,12 +76,12 @@ static void MSiPlatform_Win32_ClearImageBuffer(
 	UUtInt32	numDoubles;
 	double		*dPtr;
 	double		clearValue;
-	
+
 	numDoubles = drawContextPrivate->height * drawContextPrivate->imageBufferRowBytes / sizeof(double);
 	dPtr = (double *)drawContextPrivate->imageBufferBaseAddr;
-	
+
 	clearValue = *(double *)&drawContextPrivate->platformSpecific.imageClearValue0;
-	
+
 	while(numDoubles-- > 0)
 	{
 		*dPtr++ = clearValue;
@@ -101,7 +101,7 @@ MSrDrawEngine_Platform_SetupDrawContextPrivate(
 	UUtUns32						win_flags;
 	M3tDrawContextDescriptorOnScreen	*onScreen;
 	OSVERSIONINFO					info;
-	
+
 	M3tDrawEngineCaps				*current_draw_engine_caps;
 	M3tDrawEngineCapList			*draw_engine_caps_list;
 	UUtUns16						activeDrawEngine;
@@ -110,10 +110,10 @@ MSrDrawEngine_Platform_SetupDrawContextPrivate(
 
 	// get a pointer to onScreen
 	onScreen = &inDrawContextDescriptor->drawContext.onScreen;
-	
+
 	// set use MSgOS_NT_4 to false
 	MSgOS_NT_4 = UUcFalse;
-	
+
 	// find out which OS the game is running under
 	info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 	if (GetVersionEx(&info))
@@ -122,22 +122,22 @@ MSrDrawEngine_Platform_SetupDrawContextPrivate(
 		if (info.dwPlatformId == VER_PLATFORM_WIN32_NT)
 			MSgOS_NT_4 = UUcTrue;
 	}
-	
+
 	// ----------------------------------------
 	// Create the direct draw object
 	// ----------------------------------------
-	
+
 	// get a pointer tothe draw engine caps list
 	draw_engine_caps_list = M3rDrawEngine_GetCapList();
-	
+
 	UUmAssert(draw_engine_caps_list);
-	
+
 	// get the index of the active draw engine
 	M3rManager_GetActiveDrawEngine(&activeDrawEngine, &activeDevice, &activeMode);
-	
+
 	// get a pointer to the current draw engine's caps
 	current_draw_engine_caps = &draw_engine_caps_list->drawEngines[activeDrawEngine];
-	
+
 	// create the DirectDraw object
 	if (MSgOS_NT_4)
 	{
@@ -146,7 +146,7 @@ MSrDrawEngine_Platform_SetupDrawContextPrivate(
 			DirectDrawCreate(
 				NULL,
 				&platformSpecific->dd,
-				NULL);	
+				NULL);
 	}
 	else
 	{
@@ -155,18 +155,18 @@ MSrDrawEngine_Platform_SetupDrawContextPrivate(
 			DirectDrawCreate(
 				(LPGUID)current_draw_engine_caps->displayDevices[activeDevice].platformDevice,
 				&platformSpecific->dd,
-				NULL);	
+				NULL);
 	}
 	if (result != DD_OK)
 	{
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	// ----------------------------------------
 	// Setup the connection to the window
 	// ----------------------------------------
-	
+
 	// set the flags for the window
 	if (inFullScreen == UUcTrue)
 	{
@@ -176,7 +176,7 @@ MSrDrawEngine_Platform_SetupDrawContextPrivate(
 	{
 		win_flags = DDSCL_NOWINDOWCHANGES | DDSCL_NORMAL;
 	}
-	
+
 	// set the cooperative level
 	result =
 		IDirectDraw_SetCooperativeLevel(
@@ -188,14 +188,14 @@ MSrDrawEngine_Platform_SetupDrawContextPrivate(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	// ----------------------------------------
 	// setup the buffers and whatnots
 	// ----------------------------------------
 	platformSpecific->imageClearValue0 = 0;
 	platformSpecific->imageClearValue1 = 0;
 
-	
+
 	if (inDrawContextDescriptor->type == M3cDrawContextType_OnScreen)
 	{
 		// set dimension and location data
@@ -224,7 +224,7 @@ MSrDrawEngine_Platform_SetupDrawContextPrivate(
 	{
 		UUmAssert(!"Must be onscreen");
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -251,7 +251,7 @@ MSrDrawContext_Method_Frame_Start(
 	DDSURFACEDESC				ddsd;
 //	DDBLTFX						dd_blt_fx;
 	HRESULT						ddResult = DD_OK;
-	
+
 	// use the blitter to do a color fill on the backbuffer
 /*	dd_blt_fx.dwSize = sizeof(DDBLTFX);
 	dd_blt_fx.dwFillColor = platformSpecific->imageClearValue0;
@@ -266,7 +266,7 @@ MSrDrawContext_Method_Frame_Start(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(ddResult));
 	}
-	
+
 
 	// use the blitter to do a color fill on the backbuffer
 	dd_blt_fx.dwSize = sizeof(DDBLTFX);
@@ -282,13 +282,13 @@ MSrDrawContext_Method_Frame_Start(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(ddResult));
 	}*/
-	
+
 	if(drawContextPrivate->screenFlags & M3cDrawContextScreenFlags_DoubleBuffer)
 	{
 		// lock the backBuffer
 		UUrMemory_Clear(&ddsd, sizeof(ddsd));
 		ddsd.dwSize = sizeof(ddsd);
-		
+
 		ddResult = IDirectDrawSurface_Lock(
 			platformSpecific->backBuffer,
 			NULL,
@@ -299,15 +299,15 @@ MSrDrawContext_Method_Frame_Start(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(ddResult));
 		}
-	
-		
+
+
 		drawContextPrivate->imageBufferBaseAddr = ddsd.lpSurface;
 		drawContextPrivate->imageBufferRowBytes = (UUtUns16)ddsd.lPitch;
-		
+
 		// lock the zBuffer
 		UUrMemory_Clear(&ddsd, sizeof(ddsd));
 		ddsd.dwSize = sizeof(ddsd);
-		
+
 		ddResult = IDirectDrawSurface_Lock(
 			platformSpecific->zBuffer,
 			NULL,
@@ -318,13 +318,13 @@ MSrDrawContext_Method_Frame_Start(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(ddResult));
 		}
-		
+
 		drawContextPrivate->zBufferBaseAddr = ddsd.lpSurface;
 		drawContextPrivate->zBufferRowBytes = (UUtUns16)ddsd.lPitch;
-		
+
 		// clear the imageBuffer
 		MSiPlatform_Win32_ClearImageBuffer(drawContextPrivate);
-		
+
 		// clear the zBuffer
 		MSiPlatform_Win32_ClearZBuffer(drawContextPrivate);
 	}
@@ -332,10 +332,10 @@ MSrDrawContext_Method_Frame_Start(
 	{
 		UUmAssert(!"Implement me");
 	}
-			
+
 	return UUcError_None;
 }
-	
+
 // ----------------------------------------------------------------------
 UUtError
 MSrDrawContext_Method_Frame_End(
@@ -345,7 +345,7 @@ MSrDrawContext_Method_Frame_End(
 	MStPlatformSpecific*	platformSpecific = &drawContextPrivate->platformSpecific;
 
 	HRESULT					ddResult = DD_OK;
-	
+
 	if(drawContextPrivate->screenFlags & M3cDrawContextScreenFlags_DoubleBuffer)
 	{
 		// unlock the zBuffer
@@ -367,7 +367,7 @@ MSrDrawContext_Method_Frame_End(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(ddResult));
 		}
-		
+
 		ddResult =
 			IDirectDrawSurface_BltFast(
 				platformSpecific->frontBuffer,
@@ -385,7 +385,7 @@ MSrDrawContext_Method_Frame_End(
 	{
 		UUmAssert(!"Implement me");
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -394,7 +394,7 @@ UUtError
 MSrDrawContext_Method_Frame_Sync(
 	M3tDrawContext		*drawContext)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -406,14 +406,14 @@ MSrDrawEngine_Platform_SetupEngineCaps(
 	HRESULT				result;
 
 	ioDrawEngineCaps->numDisplayDevices = 0;
-	
+
 	// enumerate the direct draw devices
 	result = DirectDrawEnumerate(MSiDeviceCallback, ioDrawEngineCaps);
 	if (result != DD_OK)
 	{
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -429,13 +429,13 @@ MSiInitBuffers(
 {
 	DDSURFACEDESC				ddsd;
 	HRESULT						result;
-	
+
 	// setup the direct draw surface description for the front buffer
 	UUrMemory_Clear(&ddsd, sizeof(DDSURFACEDESC));
 	ddsd.dwSize					= sizeof(DDSURFACEDESC);
 	ddsd.dwFlags				= DDSD_CAPS;
 	ddsd.ddsCaps.dwCaps			= DDSCAPS_PRIMARYSURFACE;
-	
+
 	// create the frontBuffer
 	result =
 		IDirectDraw_CreateSurface(
@@ -448,7 +448,7 @@ MSiInitBuffers(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-		
+
 	inDrawContextPrivate->platformSpecific.bpp = 16;
 
 	// setup the direct draw surface description for the back buffer
@@ -471,7 +471,7 @@ MSiInitBuffers(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	// create the zbuffer
 	UUrMemory_Clear(&ddsd, sizeof(DDSURFACEDESC));
 	ddsd.dwSize				= sizeof(DDSURFACEDESC);
@@ -482,7 +482,7 @@ MSiInitBuffers(
 	ddsd.dwWidth			= inDrawContextPrivate->width;
 	ddsd.dwHeight			= inDrawContextPrivate->height;
 	ddsd.dwZBufferBitDepth	= inDrawContextPrivate->platformSpecific.bpp;
-	
+
 	result =
 		IDirectDraw_CreateSurface(
 			inDrawContextPrivate->platformSpecific.dd,
@@ -494,10 +494,10 @@ MSiInitBuffers(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	inDrawContextPrivate->zBufferBaseAddr = ddsd.lpSurface;
 	inDrawContextPrivate->zBufferRowBytes = (UUtUns16)ddsd.lPitch;
-	
+
 	inDrawContextPrivate->platformSpecific.zClearValue0 = 0xFFFFFFFF;
 	inDrawContextPrivate->platformSpecific.zClearValue1 = 0xFFFFFFFF;
 
@@ -516,27 +516,27 @@ MSiDeviceCallback(
 	UUtUns32					index;
 	LPDIRECTDRAW				dd;
 	HRESULT						result;
-	
+
 	// if inData is null, something went terribly wrong
 	if (inData == NULL)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// get a pointer to the draw engine caps
 	draw_engine_caps = (M3tDrawEngineCaps*)inData;
-	
+
 	// get an index into the display devices array
 	index = draw_engine_caps->numDisplayDevices;
 	if (index >= M3cMaxDisplayDevices)
 	{
 		return DDENUMRET_CANCEL;
 	}
-	
+
 	// initialize the display device
 	draw_engine_caps->displayDevices[index].platformDevice = (LPVOID)inGuid;
 	draw_engine_caps->displayDevices[index].numDisplayModes = 0;
-		
+
 	// create the DirectDraw object
 	result = DirectDrawCreate(inGuid, &dd, NULL);
 	if (result != DD_OK)
@@ -565,7 +565,7 @@ MSiDeviceCallback(
 
 	// increment the number of display devices
 	draw_engine_caps->numDisplayDevices++;
-	
+
 
 cleanup:
 	// cleanup before leaving
@@ -574,8 +574,8 @@ cleanup:
 		IDirectDraw_Release(dd);
 		dd = NULL;
 	}
-	
-	return DDENUMRET_OK;	
+
+	return DDENUMRET_OK;
 }
 
 // ----------------------------------------------------------------------
@@ -586,50 +586,50 @@ MSiModeCallback(
 {
 	M3tDisplayDevice			*display_device;
 	UUtUns16					index;
-	
+
 	// if inData is NULL, something went terribly wrong
 	if (inData == NULL)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// if the surface description is null something went wrong
 	if (inSurfaceDesc == NULL)
 	{
 		return DDENUMRET_CANCEL;
 	}
-	
+
 	// double check structure size
 	if (inSurfaceDesc->dwSize != sizeof(DDSURFACEDESC))
 	{
 		return DDENUMRET_CANCEL;
 	}
-	
+
 	// only use surfaces that have 16 bit pixels
 	if (inSurfaceDesc->ddpfPixelFormat.dwRGBBitCount != 16)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// get a pointer to the display device
 	display_device = (M3tDisplayDevice*)inData;
-	
+
 	// get an index into the display modes array
 	index = display_device->numDisplayModes;
 	if (index >= M3cMaxDisplayModes)
 	{
 		return DDENUMRET_CANCEL;
 	}
-	
+
 	// fill in info about the display mode
 	display_device->displayModes[index].width = (UUtUns16)inSurfaceDesc->dwWidth;
 	display_device->displayModes[index].height = (UUtUns16)inSurfaceDesc->dwHeight;
 	display_device->displayModes[index].bitDepth =
 		(UUtUns16)inSurfaceDesc->ddpfPixelFormat.dwRGBBitCount;
 	display_device->displayModes[index].pad = 0;
-	
+
 	// increment the number of display devices
 	display_device->numDisplayModes++;
-	
+
 	return DDENUMRET_OK;
 }

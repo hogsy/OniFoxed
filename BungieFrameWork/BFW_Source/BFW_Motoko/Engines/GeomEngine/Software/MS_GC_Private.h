@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_GC_Private.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -30,26 +30,26 @@ typedef struct MStGeomContextPrivate	MStGeomContextPrivate;
 typedef void
 (*MSrClip_PolyComputeVertexProc)(
 	UUtUns32				inClipPlane,
-	
+
 	UUtUns32				inIndexIn0,
 	UUtUns32				inIndexOut0,
 	UUtUns32				inIndexNew0,
-	
+
 	UUtUns32				inIndexIn1,
 	UUtUns32				inIndexOut1,
 	UUtUns32				inIndexNew1,
-	
+
 	UUtUns8					*outClipCodeNew0,
 	UUtUns8					*outClipCodeNew1);
 
 typedef void
 (*MSrClip_LineComputeVertexProc)(
 	UUtUns32				inClipPlane,
-	
+
 	UUtUns32				inIndexIn,
 	UUtUns32				inIndexOut,
 	UUtUns32				inIndexNew,
-	
+
 	UUtUns8					*outClipCodeNew);
 
 typedef void
@@ -158,13 +158,13 @@ typedef struct MStProcessingFuncs
 	MStTransform_FaceNormalToWorld								transformFaceNormalToWorld;
 	MStTransform_BoundingBoxToFrustumScreen						transformBoundingBoxToFrustumScreen;
 	MStTransform_BoundingBoxClipStatus							transformBoundingBoxClipStatus;
-	
+
 	MStShade_Vertices_Gouraud									shadeVerticesGouraud;
 	MStShade_Vertices_GouraudActive								shadeVerticesGouraudActive;
 	MStShade_Faces_Gouraud										shadeFacesGouraud;
-	
+
 	MStBackface_Remove											backfaceRemove;
-	
+
 } MStProcessingFuncs;
 
 typedef struct MStDebugEnvMap
@@ -185,22 +185,22 @@ typedef struct MStTransformedVertexData
 	UUtUns8*			clipCodes;
 	M3tTextureCoord*	textureCoords;
 	M3tPoint3D*			worldPoints;
-	
+
 	// New indices - needs to be reset every time a clipping function is called
 	UUtUns32 newClipTextureIndex;
 	UUtUns32 newClipVertexIndex;
-	
+
 	// maximum extra vertices - used for debugging
 	UUtUns32 maxClipVertices;
 	UUtUns32 maxClipTextureCords;
-		
+
 } MStTransformedVertexData;
 
 typedef struct MStLight_Directional
 {
 	M3tVector3D	normalizedDirection;
 	M3tColorRGB	color;
-	
+
 } MStLight_Directional;
 
 #define MScDirectionalLight_Max (4)
@@ -211,90 +211,90 @@ struct MStGeomContextPrivate
 	M3tMatrix4x4			matrix_localToFrustum;
 
 	//M3tPoint3D		submitPoints[5];
-	
+
 	long			width;
 	long			height;
-	
+
 	float			scaleX;
 	float			scaleY;
-	
+
 	UUtUns32		curFrame;
-	
+
 	const UUtInt32*		stateInt;
-	
+
 	M3tManager_GeomCamera*	activeCamera;
-	
+
 	// matrix
 		M3tMatrix4x3*			matrix_localToWorld;
-		
+
 	/* Light info */
 		M3tLight_Ambient		light_Ambient;
 
 		UUtUns32				light_NumDirectionalLights;
 		MStLight_Directional	light_DirectionalList[MScDirectionalLight_Max];
-		
+
 		UUtUns32				light_NumPointLights;
 		M3tLight_Point			light_PointList[MScPointLight_Max];
 
 		// re-add these when they are supported
 		//UUtUns32				light_NumConeLights;
 		//M3tLight_Cone*			light_ConeList;
-		
+
 	/* Temporary memory */
 		MStTransformedVertexData	objectVertexData;
-		
+
 		M3tPoint3D*				worldPoints;
 		M3tVector3D*			worldViewVectors;	// Only used for SIMD
 		M3tVector3D*			worldTriNormals;
 		M3tVector3D*			worldVertexNormals;
-		
+
 		UUtUns32*				activeVerticesBV;
 		UUtUns32*				activeTrisBV;
-		
+
 		void*					shades_vertex;
 		void*					shades_tris;
-		
+
 	// Points to the texture coord array
 		//M3tTextureCoord*		textureCoords;
 		//UUtUns32				maxTextureCoords;
-		
+
 	/* Attribute info */
 		M3tColorRGB				diffuseColor;
-	
+
 	// Environment and visibility crap
 		AKtEnvironment*			environment;
 		M3tManager_GeomCamera*	visCamera;
 		M3tBoundingBox_MinMax	visBBox;
-		
+
 		MStTransformedVertexData	gqVertexData;
 		//MStTransformedVertexData	otVertexData;
-		
+
 	// clipper function pointers
 		MSrClip_PolyComputeVertexProc	polyComputeVertexProc;
 		MSrClip_LineComputeVertexProc	lineComputeVertexProc;
-		
+
 	// debugging texture - NULL in ship version
-		M3tTextureMap*					flashTexture;		
-	
+		M3tTextureMap*					flashTexture;
+
 	// debugging array - NULL in ship version
 		UUtUns32			numDebugEnvMap;
 		MStDebugEnvMap*		debugEnvMap;
 
 	//
 		MStProcessingFuncs	sisdFunctions;
-		
+
 		#if UUmSIMD != UUmSIMD_None
-		
+
 			MStProcessingFuncs	simdFunctions;
 			float*				envPointSIMD;
-			
+
 		#endif
-		
+
 		MStProcessingFuncs*	activeFunctions;
-	
+
 	// template env map texture cords
 		M3tTextureCoord*	envMapCoords;
-	
+
 };
 
 extern MStGeomContextPrivate*	MSgGeomContextPrivate;

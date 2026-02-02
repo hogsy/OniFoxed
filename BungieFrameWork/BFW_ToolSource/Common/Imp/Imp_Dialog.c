@@ -41,7 +41,7 @@ typedef struct tViewProc
 // ======================================================================
 static char*	gDialogCompileTime = __DATE__" "__TIME__;
 
-static AUtFlagElement	IMPgDialogFlags[] = 
+static AUtFlagElement	IMPgDialogFlags[] =
 {
 	{ "none", 						DMcDialogFlag_None },
 	{ "dialog_centered",			DMcDialogFlag_Centered },
@@ -49,7 +49,7 @@ static AUtFlagElement	IMPgDialogFlags[] =
 	{ NULL,							0 }
 };
 
-static AUtFlagElement	IMPgViewFlags[] = 
+static AUtFlagElement	IMPgViewFlags[] =
 {
 	{ "none", 						VMcViewFlag_None },
 	{ "view_visible",				VMcViewFlag_Visible },
@@ -88,7 +88,7 @@ iProcessControls(
 	UUtUns16			i;
 
 	// get pointer to control list
-	error = 
+	error =
 		GRrGroup_GetElement(
 			inGroup,
 			"controlList",
@@ -99,7 +99,7 @@ iProcessControls(
 		Imp_PrintWarning("Could not get the control list");
 		return error;
 	}
-	
+
 	// get the number of controls in the control_list
 	num_controls = (UUtUns16)GRrGroup_Array_GetLength(control_list);
 
@@ -117,7 +117,7 @@ iProcessControls(
 		DMtControl			*control;
 		GRtGroup			*control_group;
 		char				*control_name;
-		
+
 		// get the control element
 		error =
 			GRrGroup_Array_GetElement(
@@ -130,7 +130,7 @@ iProcessControls(
 			Imp_PrintWarning("Could not get the control group");
 			return error;
 		}
-		
+
 		// create an instance of this control
 		error =
 			TMrConstruction_Instance_NewUnique(
@@ -149,7 +149,7 @@ iProcessControls(
 				"width",
 				&control->width);
 		IMPmError_ReturnOnError(error);
-		
+
 		// get the height
 		error =
 			GRrGroup_GetUns16(
@@ -157,7 +157,7 @@ iProcessControls(
 				"height",
 				&control->height);
 		IMPmError_ReturnOnError(error);
-		
+
 		// get the controls location
 		error = Imp_ProcessLocation(control_group, &control->location);
 		if (error != UUcError_None)
@@ -165,7 +165,7 @@ iProcessControls(
 			Imp_PrintWarning("Could not process the control's location");
 			return error;
 		}
-		
+
 		// get the controls id number
 		error =
 			GRrGroup_GetUns16(
@@ -177,7 +177,7 @@ iProcessControls(
 			Imp_PrintWarning("Could not get the controls id number");
 			return error;
 		}
-				
+
 		// get the controls name
 		error =
 			GRrGroup_GetString(
@@ -185,15 +185,15 @@ iProcessControls(
 				"control_name",
 				&control_name);
 		IMPmError_ReturnOnErrorMsg(error, "Cound not get the controls name");
-		
+
 		// process the control flags
 		error =	Imp_ProcessDialogFlags(control_group, IMPgControlFlags, &control->flags);
 		IMPmError_ReturnOnErrorMsg(error, "Error processing the flags.");
-		
+
 		// what type of control are we dealing with
 		if (strncmp(control_name, "button", strlen("button")) == 0)
 		{
-			error = 
+			error =
 				TMrConstruction_Instance_GetPlaceHolder(
 					DMcTemplate_Control_Button,
 					control_name,
@@ -201,7 +201,7 @@ iProcessControls(
 		}
 		else if (strncmp(control_name, "edit", strlen("edit")) == 0)
 		{
-			error = 
+			error =
 				TMrConstruction_Instance_GetPlaceHolder(
 					DMcTemplate_Control_EditField,
 					control_name,
@@ -209,7 +209,7 @@ iProcessControls(
 		}
 		else if (strncmp(control_name, "picture", strlen("picture")) == 0)
 		{
-			error = 
+			error =
 				TMrConstruction_Instance_GetPlaceHolder(
 					DMcTemplate_Control_Picture,
 					control_name,
@@ -217,7 +217,7 @@ iProcessControls(
 		}
 		else if (strncmp(control_name, "text", strlen("text")) == 0)
 		{
-			error = 
+			error =
 				TMrConstruction_Instance_GetPlaceHolder(
 					DMcTemplate_Control_Text,
 					control_name,
@@ -227,17 +227,17 @@ iProcessControls(
 		{
 			error = UUcError_Generic;
 		}
-		
+
 		if (error != UUcError_None)
 		{
 			Imp_PrintWarning("Could not get the control's control_ref");
 			return error;
 		}
-		
+
 		// set the control
 		inDialog->dialog_controls->controls[i] = control;
 	}
-	
+
 	return UUcError_None;
 }*/
 
@@ -257,13 +257,13 @@ Imp_ProcessDialogFlags(
 	GRtElementType		element_type;
 	GRtElementArray		*flag_array;
 	UUtUns32			flags;
-	
+
 	// init the flags
 	*outFlags = 0;
 	flags = 0;
-	
+
 	// get the flag string
-	error = 
+	error =
 		GRrGroup_GetElement(
 			inGroup,
 			"flags",
@@ -274,7 +274,7 @@ Imp_ProcessDialogFlags(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Error getting flags");
 	}
-			
+
 	// process the flags
 	error =
 		AUrFlags_ParseFromGroupArray(
@@ -286,10 +286,10 @@ Imp_ProcessDialogFlags(
 	{
 		IMPmError_ReturnOnErrorMsg(error, "Unable to parse the flags.");
 	}
-	
+
 	// set the outgoing string
 	*outFlags = flags;
-	
+
 	return UUcError_None;
 }
 
@@ -302,11 +302,11 @@ Imp_ProcessLocation(
 	UUtError			error;
 	GRtElementType		element_type;
 	GRtGroup			*location;
-	
+
 	// initialize outLocation
 	outLocation->x = 0;
 	outLocation->y = 0;
-	
+
 	// get the location group
 	error =
 		GRrGroup_GetElement(
@@ -323,15 +323,15 @@ Imp_ProcessLocation(
 		Imp_PrintWarning("Could not get location");
 		return UUcError_Generic;
 	}
-	
+
 	// get the location x
 	error = GRrGroup_GetUns16(location, "x", (UUtUns16*)&outLocation->x);
 	IMPmError_ReturnOnError(error);
-	
+
 	// get the location y
 	error = GRrGroup_GetUns16(location, "y", (UUtUns16*)&outLocation->y);
 	IMPmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -351,7 +351,7 @@ Imp_ProcessTextures(
 
 	// get pointer to texture list
 	// it is okay for the list not to exist
-	error = 
+	error =
 		GRrGroup_GetElement(
 			inGroup,
 			inTextureListName,
@@ -359,16 +359,16 @@ Imp_ProcessTextures(
 			&texture_list);
 	if (error != UUcError_None)
 		return UUcError_None;
-		
+
 	if (element_type != GRcElementType_Array)
 	{
 		Imp_PrintWarning("Could not get the texture list");
 		return UUcError_Generic;
 	}
-	
+
 	// get the number of textures in the texture_list
 	num_textures = (UUtUns16)GRrGroup_Array_GetLength(texture_list);
-		
+
 	// create a new texture list template
 	error =
 		TMrConstruction_Instance_NewUnique(
@@ -376,7 +376,7 @@ Imp_ProcessTextures(
 			num_textures,
 			inTextureList);
 	IMPmError_ReturnOnError(error);
-	
+
 	// process the textures
 	for (i = 0; i < num_textures; i++)
 	{
@@ -384,9 +384,9 @@ Imp_ProcessTextures(
 		BFtFileRef		*texture_file_ref;
 		char			*texture_name;
 		TMtPlaceHolder	texture_ref;
-		
+
 		// get the name of texture[i]
-		error = 
+		error =
 			GRrGroup_Array_GetElement(
 				texture_list,
 				i,
@@ -397,7 +397,7 @@ Imp_ProcessTextures(
 			Imp_PrintWarning("Could not get the texture file name");
 			return UUcError_Generic;
 		}
-		
+
 		// create a new file ref using the texture's file name
 		error =
 			BFrFileRef_DuplicateAndReplaceName(
@@ -405,21 +405,21 @@ Imp_ProcessTextures(
 				texture_file,
 				&texture_file_ref);
 		IMPmError_ReturnOnErrorMsg(error, "texture file was not found");
-		
+
 		// set the textures name
-		texture_name = BFrFileRef_GetLeafName(texture_file_ref); 
-		
+		texture_name = BFrFileRef_GetLeafName(texture_file_ref);
+
 		// process the texture map file
 		error =	Imp_ProcessTexture_Big_File(texture_file_ref, texture_name, &texture_ref);
 		IMPmError_ReturnOnErrorMsg(error, "Could not import the texture file.");
-		
+
 		// save the texture ref
 		(*inTextureList)->textures[i].texture_ref = (void*)texture_ref;
 
 		// dispose of the file ref
 		BFrFileRef_Dispose(texture_file_ref);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -440,10 +440,10 @@ Imp_AddView(
 
 	UUtBool				bool_result;
 	UUtBool				build_instance;
-	
+
 	UUtUns32			create_date;
 	UUtUns32			compile_date;
-	
+
 	// check to see if the dialogs need to be built
 	bool_result =
 		TMrConstruction_Instance_CheckExists(
@@ -453,7 +453,7 @@ Imp_AddView(
 	if (bool_result)
 	{
 		compile_date = UUrConvertStrToSecsSince1900(gDialogCompileTime);
-		
+
 		build_instance = (UUtBool)(create_date < inSourceFileModDate ||
 									create_date < compile_date);
 	}
@@ -461,7 +461,7 @@ Imp_AddView(
 	{
 		build_instance = UUcTrue;
 	}
-	
+
 	if (build_instance)
 	{
 		UUtUns16					id;
@@ -478,7 +478,7 @@ Imp_AddView(
 		TMtPlaceHolder				view_data;
 		UUtUns16					i;
 		tViewProc					*viewproc;
-		
+
 		// get the id
 		error =
 			GRrGroup_GetUns16(
@@ -486,7 +486,7 @@ Imp_AddView(
 				"id",
 				&id);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get view id");
-		
+
 		// get the type name
 		error =
 			GRrGroup_GetString(
@@ -494,7 +494,7 @@ Imp_AddView(
 				"type",
 				&type_name);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get view type");
-		
+
 		// get the flags
 		error =
 			Imp_ProcessDialogFlags(
@@ -502,14 +502,14 @@ Imp_AddView(
 				IMPgViewFlags,
 				&flags);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get view flags");
-		
+
 		// get the location
 		error =
 			Imp_ProcessLocation(
 				inGroup,
 				&location);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get view location");
-		
+
 		// get the width
 		error =
 			GRrGroup_GetInt16(
@@ -525,7 +525,7 @@ Imp_AddView(
 				"height",
 				&height);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get view height");
-		
+
 		// get the view data
 		view_data = NULL;
 		for (viewproc = IMPgViewProc;
@@ -537,7 +537,7 @@ Imp_AddView(
 				viewproc->view_proc(inGroup, &view_data);
 			}
 		}
-				
+
 		// get the views array
 		error =
 			GRrGroup_GetElement(
@@ -558,13 +558,13 @@ Imp_AddView(
 				views_array = NULL;
 			}
 		}
-		
+
 		// get the number of elements in the views array
 		if (views_array)
 			num_child_views = (UUtUns16)GRrGroup_Array_GetLength(views_array);
 		else
 			num_child_views = 0;
-			
+
 		// create an view template instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -573,7 +573,7 @@ Imp_AddView(
 				num_child_views,
 				&view);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create a view template");
-		
+
 		// set the fields of view
 		view->id			= id;
 		view->type			= type;
@@ -582,14 +582,14 @@ Imp_AddView(
 		view->width			= width;
 		view->height		= height;
 		view->view_data		= (TMtPlaceHolder*)view_data;
-		
+
 		// copy the views from the views_array
 		for (i = 0; i < num_child_views; i++)
 		{
 			void			*view_description;
 			TMtPlaceHolder	view_ref;
 			char			*instance_name;
-			
+
 			// get the name of the view
 			error =
 				GRrGroup_Array_GetElement(
@@ -598,7 +598,7 @@ Imp_AddView(
 					&element_type,
 					&view_description);
 			IMPmError_ReturnOnErrorMsg(error, "Could not get view ref name");
-			
+
 			if (element_type == GRcElementType_String)
 			{
 				instance_name = view_description;
@@ -612,7 +612,7 @@ Imp_AddView(
 						"instance",
 						&instance_name);
 				IMPmError_ReturnOnErrorMsg(error, "Could not get instance name");
-				
+
 				// process the group
 				error =
 					Imp_AddView(
@@ -624,7 +624,7 @@ Imp_AddView(
 			}
 
 			// get a place holder for the view
-			error = 
+			error =
 				TMrConstruction_Instance_GetPlaceHolder(
 					VMcTemplate_View,
 					instance_name,
@@ -634,7 +634,7 @@ Imp_AddView(
 			view->child_views[i].view_ref = (void*)view_ref;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -650,10 +650,10 @@ Imp_AddDialogData(
 
 	UUtBool				bool_result;
 	UUtBool				build_instance;
-	
+
 	UUtUns32			create_date;
 	UUtUns32			compile_date;
-	
+
 	DMtDialogData		*dialogdata;
 
 	// check to see if the dialogs need to be built
@@ -665,7 +665,7 @@ Imp_AddDialogData(
 	if (bool_result)
 	{
 		compile_date = UUrConvertStrToSecsSince1900(gDialogCompileTime);
-		
+
 		build_instance = (UUtBool)(create_date < inSourceFileModDate ||
 									create_date < compile_date);
 	}
@@ -673,7 +673,7 @@ Imp_AddDialogData(
 	{
 		build_instance = UUcTrue;
 	}
-	
+
 	// build the dialogs if necessary
 	if (build_instance)
 	{
@@ -685,7 +685,7 @@ Imp_AddDialogData(
 				0,
 				&dialogdata);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create a dialogdata template");
-		
+
 		// get the animation rate
 		error =
 			GRrGroup_GetUns16(
@@ -705,7 +705,7 @@ Imp_AddDialogData(
 				dialogdata->animation_rate = 0;
 			}
 		}
-		
+
 		// import the background
 		error =
 			Imp_ProcessTextures(
@@ -723,9 +723,9 @@ Imp_AddDialogData(
 				&dialogdata->flags);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get the dialogdata location");
 	}*/
-	
+
 	return UUcError_None;
-}	
+}
 
 // ----------------------------------------------------------------------
 UUtError
@@ -739,10 +739,10 @@ Imp_AddDialog(
 
 	UUtBool				bool_result;
 	UUtBool				build_instance;
-	
+
 	UUtUns32			create_date;
 	UUtUns32			compile_date;
-	
+
 	DMtDialog			*dialog;
 
 	// check to see if the dialogs need to be built
@@ -754,7 +754,7 @@ Imp_AddDialog(
 	if (bool_result)
 	{
 		compile_date = UUrConvertStrToSecsSince1900(gDialogCompileTime);
-		
+
 		build_instance = (UUtBool)(create_date < inSourceFileModDate ||
 									create_date < compile_date);
 	}
@@ -762,12 +762,12 @@ Imp_AddDialog(
 	{
 		build_instance = UUcTrue;
 	}
-	
+
 	// build the dialogs if necessary
 	if (build_instance)
 	{
 		char			*view_name;
-		
+
 		// create a new dialog template
 		error =
 			TMrConstruction_Instance_Renew(
@@ -776,7 +776,7 @@ Imp_AddDialog(
 				0,
 				&dialog);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create a dialog template");
-		
+
 		// get the name of the view
 		error =
 			GRrGroup_GetString(
@@ -784,16 +784,16 @@ Imp_AddDialog(
 				"view",
 				&view_name);
 		IMPmError_ReturnOnErrorMsg(error, "Could not find a view in the dialog ins file");
-		
+
 		// get a place holder for the view
-		error = 
+		error =
 			TMrConstruction_Instance_GetPlaceHolder(
 				VMcTemplate_View,
 				view_name,
 				(TMtPlaceHolder*)&dialog->view_ref);
 		IMPmError_ReturnOnErrorMsg(error, "Could not get view placeholder for dialog");
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -809,7 +809,7 @@ Imp_AddDialogTypeList(
 
 	UUtBool				bool_result;
 	UUtBool				build_instance;
-	
+
 	UUtUns32			create_date;
 	UUtUns32			compile_date;
 
@@ -822,7 +822,7 @@ Imp_AddDialogTypeList(
 	if (bool_result)
 	{
 		compile_date = UUrConvertStrToSecsSince1900(gDialogCompileTime);
-		
+
 		build_instance = (UUtBool)(create_date < inSourceFileModDate ||
 									create_date < compile_date);
 	}
@@ -830,7 +830,7 @@ Imp_AddDialogTypeList(
 	{
 		build_instance = UUcTrue;
 	}
-	
+
 	// build the dialogs if necessary
 	if (build_instance)
 	{
@@ -842,7 +842,7 @@ Imp_AddDialogTypeList(
 		DMtDialogType			dialog_type;
 		char					*dialog_name;
 		GRtGroup				*pair;
-		
+
 		// get a pointer to the dialog_type_array
 		error =
 			GRrGroup_GetElement(
@@ -855,7 +855,7 @@ Imp_AddDialogTypeList(
 			Imp_PrintWarning("Could not get the dialog type array");
 			return UUcError_Generic;
 		}
-		
+
 		// get the number of pairs in the dialog_type_array
 		num_pairs = (UUtUns16)GRrGroup_Array_GetLength(dialog_type_array);
 
@@ -867,12 +867,12 @@ Imp_AddDialogTypeList(
 				num_pairs,
 				&dialog_type_list);
 		IMPmError_ReturnOnError(error);
-		
+
 		// process the pairs
 		for (i = 0; i < num_pairs; i++)
 		{
 			UUtUns16			j;
-			
+
 			// get pair[i]
 			error =
 				GRrGroup_Array_GetElement(
@@ -885,11 +885,11 @@ Imp_AddDialogTypeList(
 				Imp_PrintWarning("Could not get the pair");
 				return UUcError_Generic;
 			}
-			
+
 			// get the type of the pair
 			error = GRrGroup_GetUns16(pair, "dialog_type", &dialog_type);
 			IMPmError_ReturnOnError(error);
-			
+
 			// check for duplicates
 			for (j = 0; j < i; j++)
 			{
@@ -898,19 +898,19 @@ Imp_AddDialogTypeList(
 					Imp_PrintWarning("WARNING: Two dialogs have the same dialog type.");
 				}
 			}
-			
+
 			dialog_type_list->dialog_type_pair[i].dialog_type = dialog_type;
-			
+
 			// get the name of the pair
 			error = GRrGroup_GetString(pair, "dialog_name", &dialog_name);
 			IMPmError_ReturnOnError(error);
-			
+
 			UUrString_Copy(
 				dialog_type_list->dialog_type_pair[i].dialog_name,
 				dialog_name,
 				DMcMaxDialogNameLength);
 		}
 	}
-	
+
 	return UUcError_None;
 }

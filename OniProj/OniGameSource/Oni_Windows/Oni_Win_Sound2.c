@@ -159,8 +159,8 @@ enum
 	OWcISP_Btn_SetImpulse			= 112,
 	OWcISP_Btn_EditImpulse			= 113,
 	OWcISP_EF_Threshold				= 114,
-	OWcISP_EF_ImpactVelocity		= 115,	
-	OWcISP_EF_MinOcclusion			= 116,	
+	OWcISP_EF_ImpactVelocity		= 115,
+	OWcISP_EF_MinOcclusion			= 116,
 	OWcISP_Btn_Cancel				= WMcDialogItem_Cancel,
 	OWcISP_Btn_Save					= WMcDialogItem_OK
 };
@@ -268,7 +268,7 @@ typedef struct OWtSMData
 	OWtSMType					type;
 	BFtFileRef					*dir_ref;
 	const char					*extension;
-	
+
 	UUtBool						can_paste;
 	union
 	{
@@ -276,7 +276,7 @@ typedef struct OWtSMData
 		SStGroup				group;
 		SStImpulse				impulse;
 	}u;
-	
+
 } OWtSMData;
 
 typedef struct OWtAmbientProp
@@ -284,11 +284,11 @@ typedef struct OWtAmbientProp
 	BFtFileRef					*parent_dir_ref;
 	SStAmbient					*ambient;
 	SStPlayID					play_id;
-	
+
 	SStAmbient					ta;					// temp ambient
-	
+
 	UUtBool						can_save;
-		
+
 } OWtAmbientProp;
 
 typedef struct OWtGroupProp
@@ -299,18 +299,18 @@ typedef struct OWtGroupProp
 	SStGroup					tg;					// temp group
 
 	UUtBool						can_save;
-	
+
 } OWtGroupProp;
 
 typedef struct OWtImpulseProp
 {
 	BFtFileRef					*parent_dir_ref;
 	SStImpulse					*impulse;
-	
+
 	SStImpulse					ti;					// temp impulse
-	
+
 	UUtBool						can_save;
-	
+
 } OWtImpulseProp;
 
 typedef struct OWtWS
@@ -319,7 +319,7 @@ typedef struct OWtWS
 	BFtFileRef					*base_dir_ref;
 	SStSoundData				*selected_sound_data;
 	BFtFileRef					*selected_category;
-	
+
 } OWtWS;
 
 typedef struct OWtSelectData
@@ -327,32 +327,32 @@ typedef struct OWtSelectData
 	OWtSMType					type;
 	BFtFileRef					*dir_ref;
 	const char					*extension;
-	
+
 	union
 	{
 		SStAmbient				*ambient;
 		SStGroup				*group;
 		SStImpulse				*impulse;
 	} u;
-	
+
 } OWtSelectData;
 
 typedef struct OWtCreateDialogue
 {
 	BFtFileRef					*dir_ref;
-	
+
 } OWtCreateDialogue;
 
 typedef struct OWtCreateImpulse
 {
 	BFtFileRef					*dir_ref;
-	
+
 } OWtCreateImpulse;
 
 typedef struct OWtCreateGroup
 {
 	BFtFileRef					*dir_ref;
-	
+
 } OWtCreateGroup;
 
 typedef struct OWtStAP
@@ -365,17 +365,17 @@ typedef struct OWtStAP
 	char						anim_name[ONcMaxVariantNameLength];
 	char						variant_name[ONcMaxVariantNameLength];
 	char						impulse_name[SScMaxNameLength];
-	
+
 } OWtStAP;
 
 typedef struct OWtSA
 {
 	TRtAnimation				*animation;			/* in/out */
-	
+
 	TRtAnimation				**animation_list;	/* internal use only */
 	UUtUns32					num_animations;		/* internal use only */
 	UUtUns32					insert_from_index;	/* internal use only */
-	
+
 } OWtSA;
 
 // ======================================================================
@@ -396,12 +396,12 @@ static void
 OWiEditGroup(
 	WMtDialog					*inParentDialog,
 	SStGroup					*inGroup);
-	
+
 static void
 OWiEditImpulse(
 	WMtDialog					*inParentDialog,
 	SStImpulse					*inImpulse);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
@@ -452,36 +452,36 @@ OWiCN_Callback(
 	UUtBool						handled;
 	WMtWindow					*editfield;
 	char						*name;
-	
+
 	handled = UUcTrue;
-	
+
 	// get a pointer to the name
 	name = (char*)WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			// get a pointer to the edit field
 			editfield = WMrDialog_GetItemByID(inDialog, OWcCN_EF_Name);
 			UUmAssert(editfield);
-			
+
 			// set a limit on the length of the name
 			WMrMessage_Send(editfield, EFcMessage_SetMaxChars, (BFcMaxFileNameLength - 1), 0);
-			
+
 			// set the name
 			WMrMessage_Send(editfield, EFcMessage_SetText, (UUtUns32)name, 0);
-			
+
 			// set focus to the editfield
 			WMrWindow_SetFocus(editfield);
 		break;
-		
+
 		case WMcMessage_Command:
 			if (UUmHighWord(inParam1) != WMcNotify_Click) { break; }
-			
+
 			// get a pointer to the edit field
 			editfield = WMrDialog_GetItemByID(inDialog, OWcCN_EF_Name);
 			UUmAssert(editfield);
-			
+
 			switch (UUmLowWord(inParam1))
 			{
 				case OWcCN_Btn_OK:
@@ -491,7 +491,7 @@ OWiCN_Callback(
 						EFcMessage_GetText,
 						(UUtUns32)name,
 						BFcMaxFileNameLength);
-					
+
 					if (name[0] == '\0')
 					{
 						WMrDialog_MessageBox(
@@ -506,21 +506,21 @@ OWiCN_Callback(
 						WMrDialog_ModalEnd(inDialog, OWcCN_Btn_OK);
 					}
 				break;
-				
+
 				case OWcCN_Btn_Cancel:
 					// end the dialog
 					WMrDialog_ModalEnd(inDialog, OWcCN_Btn_Cancel);
 				break;
 			}
-			
-			
+
+
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -542,33 +542,33 @@ OWiWS_SelectSoundData(
 	UUtUns32					item_data;
 
 	file_ref = NULL;
-	
+
 	// get a pointer to the user data
 	ws = (OWtWS*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(ws);
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcWS_LB_DirContents);
 	UUmAssert(listbox);
-	
+
 	ws->selected_sound_data = NULL;
 	ws->selected_category = NULL;
 
 	// get the data of the currently selected item
 	item_data = WMrListBox_GetItemData(listbox, (UUtUns32)-1);
-	if (item_data == LBcDirItemType_File) {	
+	if (item_data == LBcDirItemType_File) {
 		// get the selected file's name
 		WMrMessage_Send(listbox, LBcMessage_GetText, (UUtUns32)selected_file_name, (UUtUns32)-1);
 		UUrString_MakeLowerCase(selected_file_name, BFcMaxFileNameLength);
-		
+
 		// get the SStSoundData* corresponding to this file
 		ws->selected_sound_data = SSrSoundData_GetByName(selected_file_name, UUcTrue);
 		if (ws->selected_sound_data != NULL) { goto cleanup; }
-			
+
 		// create the file ref
 		error =	BFrFileRef_DuplicateAndAppendName(OWgWS_DirRef, selected_file_name, &file_ref);
 		if (error != UUcError_None) { goto cleanup; }
-		
+
 		// create a new sound data
 		error = SSrSoundData_New(file_ref, &ws->selected_sound_data);
 		if (error != UUcError_None) { goto cleanup; }
@@ -579,7 +579,7 @@ OWiWS_SelectSoundData(
 		// get the selected directory's name
 		WMrMessage_Send(listbox, LBcMessage_GetText, (UUtUns32)selected_file_name, (UUtUns32)-1);
 		UUrString_MakeLowerCase(selected_file_name, BFcMaxFileNameLength);
-		
+
 		// create the directory's file ref
 		error = BFrFileRef_DuplicateAndAppendName(OWgWS_DirRef, selected_file_name, &ws->selected_category);
 		if (error != UUcError_None) { goto cleanup; }
@@ -596,7 +596,7 @@ cleanup:
 		UUrMemory_Block_Delete(file_ref);
 		file_ref = NULL;
 	}
-	
+
 	return error;
 }
 
@@ -612,20 +612,20 @@ OWiWS_FillListbox(
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcWS_LB_DirContents);
 	UUmAssert(listbox);
-	
+
 	// initialize the directory info
 	directory_info.directory_ref = inFileRef;
 	directory_info.flags = (LBcDirectoryInfoFlag_Files | LBcDirectoryInfoFlag_Directory);
 	directory_info.prefix[0] = '\0';
 	UUrString_Copy(directory_info.suffix, ".wav", BFcMaxFileNameLength);
-	
+
 	// add .wav files and the folders to the listbox
 	WMrMessage_Send(
 		listbox,
 		LBcMessage_SetDirectoryInfo,
 		(UUtUns32)&directory_info,
 		(UUtUns32)UUcTrue);
-	
+
 	// add .aif files to listbox
 	directory_info.flags = LBcDirectoryInfoFlag_Files;
 	UUrString_Copy(directory_info.suffix, ".aif", BFcMaxFileNameLength);
@@ -634,7 +634,7 @@ OWiWS_FillListbox(
 		LBcMessage_SetDirectoryInfo,
 		(UUtUns32)&directory_info,
 		(UUtUns32)UUcFalse);
-	
+
 	// add .aiff files to listbox
 	directory_info.flags = LBcDirectoryInfoFlag_Files;
 	UUrString_Copy(directory_info.suffix, ".aiff", BFcMaxFileNameLength);
@@ -662,43 +662,43 @@ OWiWS_SetPopup(
 	BFtFileRef					*dir_ref;
 	BFtFileRef					*parent;
 	UUtUns16					i;
-	
+
 	error = BFrFileRef_Duplicate(inDirRef, &dir_ref);
 	UUmError_ReturnOnError(error);
-	
+
 	WMrPopupMenu_Reset(inPopup);
 	i = 0;
-	
+
 	while (1)
 	{
 		WMtMenuItemData				item_data;
-		
+
 		// add the current directory name to the popup
 		item_data.flags = WMcMenuItemFlag_Enabled;
 		item_data.id = i++;
 		UUrString_Copy(item_data.title, BFrFileRef_GetLeafName(dir_ref), WMcMaxTitleLength);
 		WMrPopupMenu_InsertItem(inPopup, &item_data, 0);
-		
+
 		// stop if the root binary sound directory was added
 		if (BFrFileRef_IsEqual(inBaseDirRef, dir_ref) == UUcTrue) { break; }
-		
-		// get the parent directory 
+
+		// get the parent directory
 		error = BFrFileRef_GetParentDirectory(dir_ref, &parent);
 		if (error != UUcError_None) { break; }
-		
+
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = parent;
 		parent = NULL;
 	}
-	
+
 	WMrPopupMenu_SetSelection(inPopup, 0);
-	
+
 	if (dir_ref)
 	{
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -709,21 +709,21 @@ OWiWS_EnableButtons(
 	WMtWindow					*inListBox)
 {
 	UUtUns32					item_data;
-	UUtBool						can_select;	
+	UUtBool						can_select;
 	WMtWindow					*button;
 	OWtWS						*ws;
-	
+
 	// get a pointer to the user data
 	ws = (OWtWS*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(ws);
-	
+
 	can_select = UUcFalse;
-	
+
 	// get the data of the currently selected item
 	item_data = WMrListBox_GetItemData(inListBox, (UUtUns32)-1);
 	if (item_data == LBcDirItemType_File) { can_select = UUcTrue; }
 	if ((ws->allow_categories) && (item_data == LBcDirItemType_Directory)) { can_select = UUcTrue; }
-	
+
 	// enable or disable the select button depending on the type of
 	// item currently selected
 	button = WMrDialog_GetItemByID(inDialog, OWcWS_Btn_Select);
@@ -739,11 +739,11 @@ OWiWS_SelectItem(
 	UUtError					error;
 	OWtWS						*ws;
 	UUtUns32					item_data;
-	
+
 	// get a pointer to the user data
 	ws = (OWtWS*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(ws);
-	
+
 	// get the data of the currently selected item
 	item_data = WMrListBox_GetItemData(inListBox, (UUtUns32)(-1));
 	if (item_data == LBcDirItemType_File)
@@ -757,55 +757,55 @@ OWiWS_SelectItem(
 		BFtFileRef					*parent_dir_ref;
 		BFtFileRef					*open_dir_ref;
 		char						name[BFcMaxFileNameLength];
-		
+
 		parent_dir_ref = NULL;
 		open_dir_ref = NULL;
 		name[0] = '\0';
-		
+
 		// get the parent dir ref
 		error = BFrFileRef_Duplicate(OWgWS_DirRef, &parent_dir_ref);
 		if (error != UUcError_None) { goto cleanup; }
-		
+
 		// make a dir ref for the directory being opened
 		WMrListBox_GetText(inListBox, name, (UUtUns32)(-1));
 		error = BFrFileRef_DuplicateAndAppendName(parent_dir_ref, name, &open_dir_ref);
 		if (error != UUcError_None) { goto cleanup; }
-		
+
 		// fill in the listbox
 		OWiWS_FillListbox(inDialog, open_dir_ref);
-		
+
 		// dispose of the current directory ref
 		if (OWgWS_DirRef != NULL)
 		{
 			BFrFileRef_Dispose(OWgWS_DirRef);
 			OWgWS_DirRef = NULL;
 		}
-		
+
 		// set the new directory ref
 		error = BFrFileRef_Duplicate(open_dir_ref, &OWgWS_DirRef);
 		if (error != UUcError_None) { goto cleanup; }
-		
+
 		// fill the popup menu
 		error =
 			OWiWS_SetPopup(
 				WMrDialog_GetItemByID(inDialog, OWcWS_PM_Directory),
 				ws->base_dir_ref,
 				OWgWS_DirRef);
-		
+
 cleanup:
 		if (parent_dir_ref != NULL)
 		{
 			BFrFileRef_Dispose(parent_dir_ref);
 			parent_dir_ref = NULL;
 		}
-		
+
 		if (open_dir_ref != NULL)
 		{
 			BFrFileRef_Dispose(open_dir_ref);
 			open_dir_ref = NULL;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -816,16 +816,16 @@ OWiWS_InitDialog(
 {
 	UUtError					error;
 	OWtWS						*ws;
-	
+
 	// get the user data
 	ws = (OWtWS*)WMrDialog_GetUserData(inDialog);
 	if (ws == NULL) { goto cleanup; }
-	
+
 	// init ws
 	ws->base_dir_ref = NULL;
 	ws->selected_sound_data = NULL;
 	ws->selected_category = NULL;
-	
+
 	if (ws->allow_categories) {
 		WMrWindow_SetTitle(inDialog, "Select Sound File or Directory", WMcMaxTitleLength);
 	} else {
@@ -844,16 +844,16 @@ OWiWS_InitDialog(
 
 		goto cleanup;
 	}
-	
+
 	if (OWgWS_DirRef == NULL)
 	{
 		error = BFrFileRef_Duplicate(ws->base_dir_ref, &OWgWS_DirRef);
 		if (error != UUcError_None) { goto cleanup; }
 	}
-	
+
 	// fill the directory
 	OWiWS_FillListbox(inDialog, OWgWS_DirRef);
-	
+
 	// fill the popup menu
 	error =
 		OWiWS_SetPopup(
@@ -861,9 +861,9 @@ OWiWS_InitDialog(
 			ws->base_dir_ref,
 			OWgWS_DirRef);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	return;
-	
+
 cleanup:
 	WMrDialog_ModalEnd(inDialog, OWcWS_Btn_Cancel);
 }
@@ -877,7 +877,7 @@ OWiWS_Destroy(
 
 	// get a pointer to the user data
 	ws = (OWtWS*)WMrDialog_GetUserData(inDialog);
-	
+
 	if (ws->base_dir_ref)
 	{
 		BFrFileRef_Dispose(ws->base_dir_ref);
@@ -894,7 +894,7 @@ OWiWS_HandleCommand(
 {
 	UUtUns16					command_type;
 	UUtUns16					control_id;
-	
+
 	// interpret inParam1
 	command_type = UUmHighWord(inParam1);
 	control_id = UUmLowWord(inParam1);
@@ -905,11 +905,11 @@ OWiWS_HandleCommand(
 			OWiWS_SelectSoundData(inDialog);
 			WMrDialog_ModalEnd(inDialog, OWcWS_Btn_Select);
 		break;
-		
+
 		case OWcWS_Btn_Cancel:
 			WMrDialog_ModalEnd(inDialog, OWcWS_Btn_Cancel);
 		break;
-		
+
 		case OWcWS_LB_DirContents:
 			if (command_type == LBcNotify_SelectionChanged)
 			{
@@ -933,33 +933,33 @@ OWiWS_HandleMenuCommand(
 	UUtUns32					i;
 	BFtFileRef					*dir_ref;
 	UUtError					error;
-	
+
 	// if inItemID == 0 then the popup menu is still on the same item
 	// so no updating needs to be done
 	if (inItemID == 0) { return; }
-	
+
 	// get the dir ref of the current item in the popup menu
 	error = BFrFileRef_Duplicate(OWgWS_DirRef, &dir_ref);
 	if (error != UUcError_None) { return; }
-	
+
 	// go up the hierarchy of directories until the desired directory is found
 	for (i = 0; i < (UUtUns32)inItemID; i++)
 	{
 		BFtFileRef					*parent_ref;
-		
+
 		error = BFrFileRef_GetParentDirectory(dir_ref, &parent_ref);
 		if (error != UUcError_None) { return; }
-		
+
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = parent_ref;
 	}
-	
+
 	// fill in the listbox
 	OWiWS_FillListbox(inDialog, dir_ref);
-	
+
 	BFrFileRef_Dispose(OWgWS_DirRef);
 	BFrFileRef_Duplicate(dir_ref, &OWgWS_DirRef);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
 }
@@ -973,35 +973,35 @@ OWiWS_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiWS_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiWS_Destroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiWS_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiWS_HandleMenuCommand(
 				inDialog,
 				(WMtWindow*)inParam2,
 				(UUtUns32)UUmLowWord(inParam1));
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -1023,12 +1023,12 @@ OWiSPP_SaveFields(
 	float						max_volume_percent;
 	float						min_pitch_percent;
 	float						max_pitch_percent;
-		
+
 	// get the fields
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSPP_EF_Weight);
 	WMrMessage_Send(editfield, EFcMessage_GetText, (UUtUns32)string, 128);
 	sscanf(string, "%d", &weight);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSPP_EF_MinVol);
 	WMrMessage_Send(editfield, EFcMessage_GetText, (UUtUns32)string, 128);
 	sscanf(string, "%f", &min_volume_percent);
@@ -1044,7 +1044,7 @@ OWiSPP_SaveFields(
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSPP_EF_MaxPitch);
 	WMrMessage_Send(editfield, EFcMessage_GetText, (UUtUns32)string, 128);
 	sscanf(string, "%f", &max_pitch_percent);
-	
+
 	// check ranges
 	if (min_volume_percent > max_volume_percent)
 	{
@@ -1066,18 +1066,18 @@ OWiSPP_SaveFields(
 		WMrWindow_SetFocus(WMrDialog_GetItemByID(inDialog, OWcSPP_EF_MinPitch));
 		return UUcFalse;
 	}
-	
+
 	// get a pointer to the permutation
 	perm = (SStPermutation*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(perm);
-	
+
 	// save the data
 	perm->weight = weight;
 	perm->min_volume_percent = min_volume_percent;
 	perm->max_volume_percent = max_volume_percent;
 	perm->min_pitch_percent = min_pitch_percent;
 	perm->max_pitch_percent = max_pitch_percent;
-	
+
 	return UUcTrue;
 }
 
@@ -1091,7 +1091,7 @@ OWiSPP_InitDialog(
 	WMtWindow					*editfield;
 	const char					*name;
 	char						string[128];
-	
+
 	// get a pointer to the permutation
 	perm = (SStPermutation*)WMrDialog_GetUserData(inDialog);
 	if (perm == NULL)
@@ -1099,18 +1099,18 @@ OWiSPP_InitDialog(
 		WMrDialog_ModalEnd(inDialog, OWcSPP_Btn_Cancel);
 		return;
 	}
-	
+
 	// set the name
 	name = SSrPermutation_GetName(perm);
 	text = WMrDialog_GetItemByID(inDialog, OWcSPP_Txt_Name);
 	UUmAssert(text);
 	WMrWindow_SetTitle(text, name, BFcMaxFileNameLength);
-	
+
 	// set the edit fields
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSPP_EF_Weight);
 	sprintf(string, "%d", perm->weight);
 	WMrMessage_Send(editfield, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSPP_EF_MinVol);
 	sprintf(string, "%1.2f", perm->min_volume_percent);
 	WMrMessage_Send(editfield, EFcMessage_SetText, (UUtUns32)string, 0);
@@ -1143,7 +1143,7 @@ OWiSPP_HandleCommand(
 				WMrDialog_ModalEnd(inDialog, OWcSPP_Btn_Save);
 			}
 		break;
-		
+
 		case OWcSPP_Btn_Cancel:
 			WMrDialog_ModalEnd(inDialog, OWcSPP_Btn_Cancel);
 		break;
@@ -1159,24 +1159,24 @@ OWiSPP_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiSPP_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiSPP_HandleCommand(inDialog, inParam1);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -1196,11 +1196,11 @@ OWiASP_EnableButtons(
 	char						name[SScMaxNameLength];
 	SStAmbient					*found_ambient;
 	UUtBool						no_name_conflict;
-	
+
 	// determine if there is a name conflict
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_Name);
 	WMrEditField_GetText(editfield, name, SScMaxNameLength);
-	
+
 	found_ambient = OSrAmbient_GetByName(name);
 	if (name[0] == '\0')
 	{
@@ -1214,7 +1214,7 @@ OWiASP_EnableButtons(
 	{
 		no_name_conflict = UUcFalse;
 	}
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcASP_Btn_InGroupEdit);
 	WMrWindow_SetEnabled(button, (inAP->ta.in_sound != NULL));
 
@@ -1229,13 +1229,13 @@ OWiASP_EnableButtons(
 
 	button = WMrDialog_GetItemByID(inDialog, OWcASP_Btn_DetailEdit);
 	WMrWindow_SetEnabled(button, (inAP->ta.detail != NULL));
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcASP_Btn_Start);
 	WMrWindow_SetEnabled(button, (inAP->play_id == SScInvalidID));
 
 	button = WMrDialog_GetItemByID(inDialog, OWcASP_Btn_Stop);
 	WMrWindow_SetEnabled(button, (inAP->play_id != SScInvalidID));
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcASP_Btn_Save);
 	WMrWindow_SetEnabled(button, inAP->can_save && no_name_conflict);
 }
@@ -1251,15 +1251,15 @@ OWiASP_RecordData(
 	WMtWindow					*editfield;
 	UUtUns16					priority;
 	char						name[SScMaxNameLength];
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_Name);
 	WMrEditField_GetText(editfield, name, SScMaxNameLength);
 	UUrString_Copy(inAP->ta.ambient_name, name, SScMaxNameLength);
-	
+
 	popup = WMrDialog_GetItemByID(inDialog, OWcASP_PM_Priority);
 	WMrPopupMenu_GetItemID(popup, -1, &priority);
 	inAP->ta.priority = (SStPriority2)priority;
-	
+
 	checkbox = WMrDialog_GetItemByID(inDialog, OWcASP_CB_InterruptOnStop);
 	if (WMrCheckBox_GetCheck(checkbox) == UUcTrue)
 	{
@@ -1269,7 +1269,7 @@ OWiASP_RecordData(
 	{
 		inAP->ta.flags &= ~SScAmbientFlag_InterruptOnStop;
 	}
-	
+
 	checkbox = WMrDialog_GetItemByID(inDialog, OWcASP_CB_PlayOnce);
 	if (WMrCheckBox_GetCheck(checkbox) == UUcTrue)
 	{
@@ -1279,7 +1279,7 @@ OWiASP_RecordData(
 	{
 		inAP->ta.flags &= ~SScAmbientFlag_PlayOnce;
 	}
-	
+
 	checkbox = WMrDialog_GetItemByID(inDialog, OWcASP_CB_CanPan);
 	if (WMrCheckBox_GetCheck(checkbox) == UUcTrue)
 	{
@@ -1289,7 +1289,7 @@ OWiASP_RecordData(
 	{
 		inAP->ta.flags &= ~SScAmbientFlag_Pan;
 	}
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_SphereRadius);
 	inAP->ta.sphere_radius = WMrEditField_GetFloat(editfield);
 
@@ -1298,13 +1298,13 @@ OWiASP_RecordData(
 
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_MaxElapsedTime);
 	inAP->ta.max_detail_time = WMrEditField_GetFloat(editfield);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_MaxVolDist);
 	inAP->ta.max_volume_distance = WMrEditField_GetFloat(editfield);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_MinVolDist);
 	inAP->ta.min_volume_distance = WMrEditField_GetFloat(editfield);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_Threshold);
 	inAP->ta.threshold = (UUtUns32)WMrEditField_GetInt32(editfield);
 
@@ -1382,11 +1382,11 @@ OWiASP_Save(
 	WMtWindow					*editfield;
 	char						name[BFcMaxFileNameLength];
 	SStAmbient					*found_ambient;
-	
+
 	// make sure the sound has a name
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_Name);
 	WMrEditField_GetText(editfield, name, BFcMaxFileNameLength);
-	
+
 	if (strlen(name) == 0)
 	{
 		WMrDialog_MessageBox(
@@ -1396,9 +1396,9 @@ OWiASP_Save(
 			WMcMessageBoxStyle_OK);
 		return UUcFalse;
 	}
-	
+
 	OSrMakeGoodName(name, name);
-	
+
 	if (inAP->ambient == NULL)
 	{
 		found_ambient = OSrAmbient_GetByName(name);
@@ -1411,7 +1411,7 @@ OWiASP_Save(
 				WMcMessageBoxStyle_OK);
 			return UUcFalse;
 		}
-		
+
 		error = OSrAmbient_New(name, &inAP->ambient);
 		if (error != UUcError_None)
 		{
@@ -1441,10 +1441,10 @@ OWiASP_Save(
 			}
 		}
 	}
-	
+
 	// get the data
-	OWiASP_RecordData(inDialog, inAP);	
-	
+	OWiASP_RecordData(inDialog, inAP);
+
 	if (inAP->ta.min_volume_distance < inAP->ta.max_volume_distance)
 	{
 		WMrDialog_MessageBox(
@@ -1454,7 +1454,7 @@ OWiASP_Save(
 			WMcMessageBoxStyle_OK);
 		return UUcFalse;
 	}
-	
+
 	// set the data for the ambient sound
 	inAP->ambient->priority = inAP->ta.priority;
 	inAP->ambient->flags = inAP->ta.flags;
@@ -1475,10 +1475,10 @@ OWiASP_Save(
 	UUrString_Copy(inAP->ambient->base_track2_name, inAP->ta.base_track2_name, SScMaxNameLength);
 	UUrString_Copy(inAP->ambient->in_sound_name, inAP->ta.in_sound_name, SScMaxNameLength);
 	UUrString_Copy(inAP->ambient->out_sound_name, inAP->ta.out_sound_name, SScMaxNameLength);
-	
+
 	// save the ambient sound to disk
 	OSrAmbient_Save(inAP->ambient, inAP->parent_dir_ref);
-	
+
 	return UUcTrue;
 }
 
@@ -1487,7 +1487,7 @@ static UUtBool
 OWiASP_CheckGroups(
 	WMtDialog					*inDialog,
 	SStAmbient					*inAmbient)
-{	
+{
 	if (inAmbient->base_track1 != NULL)
 	{
 		if ((inAmbient->in_sound != NULL) &&
@@ -1498,10 +1498,10 @@ OWiASP_CheckGroups(
 				"Error",
 				"The in sound and base track 1 must use the same number of sound channels.",
 				WMcMessageBoxStyle_OK);
-				
+
 			return UUcFalse;
 		}
-		
+
 		if ((inAmbient->out_sound != NULL) &&
 			(inAmbient->base_track1->num_channels != inAmbient->out_sound->num_channels))
 		{
@@ -1510,10 +1510,10 @@ OWiASP_CheckGroups(
 				"Error",
 				"The out sound and base track 1 must use the same number of sound channels.",
 				WMcMessageBoxStyle_OK);
-				
+
 			return UUcFalse;
 		}
-		
+
 		if ((inAmbient->in_sound != NULL) && (inAmbient->out_sound != NULL))
 		{
 			if (inAmbient->in_sound->num_channels != inAmbient->out_sound->num_channels)
@@ -1523,7 +1523,7 @@ OWiASP_CheckGroups(
 					"Error",
 					"The in sound and the out sound must use the same number of sound channels.",
 					WMcMessageBoxStyle_OK);
-				
+
 				return UUcFalse;
 			}
 		}
@@ -1542,23 +1542,23 @@ OWiASP_SetFields(
 	WMtWindow					*text;
 	WMtWindow					*popup;
 	WMtWindow					*checkbox;
-	
-	if (inAP->ambient) 
+
+	if (inAP->ambient)
 	{
 		editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_Name);
 		WMrEditField_SetText(editfield, inAP->ambient->ambient_name);
 	}
-		
+
 	text = WMrDialog_GetItemByID(inDialog, OWcASP_Txt_InGroup);
 	WMrWindow_SetTitle(text, inAP->ta.in_sound_name, SScMaxNameLength);
 	if (inAP->ta.in_sound) { WMrText_SetShade(text, IMcShade_Black); }
 	else { WMrText_SetShade(text, IMcShade_Red); }
-	
+
 	text = WMrDialog_GetItemByID(inDialog, OWcASP_Txt_OutGroup);
 	WMrWindow_SetTitle(text, inAP->ta.out_sound_name, SScMaxNameLength);
 	if (inAP->ta.out_sound) { WMrText_SetShade(text, IMcShade_Black); }
 	else { WMrText_SetShade(text, IMcShade_Red); }
-	
+
 	text = WMrDialog_GetItemByID(inDialog, OWcASP_Txt_BT1);
 	WMrWindow_SetTitle(text, inAP->ta.base_track1_name, SScMaxNameLength);
 	if (inAP->ta.base_track1) { WMrText_SetShade(text, IMcShade_Black); }
@@ -1573,31 +1573,31 @@ OWiASP_SetFields(
 	WMrWindow_SetTitle(text, inAP->ta.detail_name, SScMaxNameLength);
 	if (inAP->ta.detail) { WMrText_SetShade(text, IMcShade_Black); }
 	else { WMrText_SetShade(text, IMcShade_Red); }
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_MinElapsedTime);
 	WMrEditField_SetFloat(editfield, inAP->ta.min_detail_time);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_MaxElapsedTime);
 	WMrEditField_SetFloat(editfield, inAP->ta.max_detail_time);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_SphereRadius);
 	WMrEditField_SetFloat(editfield, inAP->ta.sphere_radius);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_MinVolDist);
 	WMrEditField_SetFloat(editfield, inAP->ta.min_volume_distance);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_MaxVolDist);
 	WMrEditField_SetFloat(editfield, inAP->ta.max_volume_distance);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_Threshold);
 	WMrEditField_SetInt32(editfield, inAP->ta.threshold);
 
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_MinOcclusion);
 	WMrEditField_SetFloat(editfield, inAP->ta.min_occlusion);
-	
+
 	popup = WMrDialog_GetItemByID(inDialog, OWcASP_PM_Priority);
 	WMrPopupMenu_SetSelection(popup, inAP->ta.priority);
-	
+
 	checkbox = WMrDialog_GetItemByID(inDialog, OWcASP_CB_InterruptOnStop);
 	WMrCheckBox_SetCheck(checkbox, ((inAP->ta.flags & SScAmbientFlag_InterruptOnStop) != 0));
 
@@ -1616,7 +1616,7 @@ OWiASP_InitDialog(
 	UUtError					error;
 	OWtAmbientProp				*ap;
 	WMtWindow					*editfield;
-	
+
 	// get the ambient properties
 	ap = (OWtAmbientProp*)WMrDialog_GetUserData(inDialog);
 	if (ap == NULL)
@@ -1624,7 +1624,7 @@ OWiASP_InitDialog(
 		WMrDialog_ModalEnd(inDialog, OWcASP_Btn_Cancel);
 		return;
 	}
-	
+
 	// initialize the ambient properties
 	ap->play_id = SScInvalidID;
 	UUrMemory_Clear(&ap->ta, sizeof(SStAmbient));
@@ -1634,24 +1634,24 @@ OWiASP_InitDialog(
 	{
 		ap->ta.priority = SScPriority2_Normal;
 		ap->ta.flags = SScAmbientFlag_None;
-		
+
 		ap->ta.sphere_radius = 10.0f;
 		ap->ta.min_detail_time = 1.0f;
 		ap->ta.max_detail_time = 1.0f;
-		
+
 		ap->ta.max_volume_distance = 10.0f;
 		ap->ta.min_volume_distance = 50.0f;
-		
+
 		ap->ta.threshold = SScAmbientThreshold;
 		ap->ta.min_occlusion = 0.0f;
-		
+
 		ap->ta.base_track1 = NULL;
 		ap->ta.base_track2 = NULL;
 		ap->ta.detail = NULL;
 		ap->ta.in_sound = NULL;
 		ap->ta.out_sound = NULL;
-		
-		if ((ap->parent_dir_ref != NULL) && 
+
+		if ((ap->parent_dir_ref != NULL) &&
 			(BFrFileRef_FileExists(ap->parent_dir_ref) == UUcTrue))
 		{
 			ap->can_save = UUcTrue;
@@ -1660,15 +1660,15 @@ OWiASP_InitDialog(
 	else
 	{
 		ap->ta = *ap->ambient;
-		
+
 		// does the ambient sound have a file ref
 		if (ap->parent_dir_ref != NULL)
 		{
 			BFtFileRef				*dir_ref;
 			char					name[SScMaxNameLength];
-			
+
 			sprintf(name, "%s.%s", ap->ambient->ambient_name, OScAmbientSuffix);
-			
+
 			error =
 				BFrFileRef_DuplicateAndAppendName(
 					ap->parent_dir_ref,
@@ -1680,13 +1680,13 @@ OWiASP_InitDialog(
 				{
 					ap->can_save = UUcTrue;
 				}
-				
+
 				UUrMemory_Block_Delete(dir_ref);
 				dir_ref = NULL;
 			}
 		}
 	}
-	
+
 	// set the maximum number of characters for the ambient name
 	editfield = WMrDialog_GetItemByID(inDialog, OWcASP_EF_Name);
 	WMrMessage_Send(
@@ -1694,13 +1694,13 @@ OWiASP_InitDialog(
 		EFcMessage_SetMaxChars,
 		BFcMaxFileNameLength - strlen(".abc"),
 		0);
-	
+
 	// set the fields
 	OWiASP_SetFields(inDialog, ap);
-	
+
 	// enable the buttons
 	OWiASP_EnableButtons(inDialog, ap);
-	
+
 	// set the focus to the name
 	WMrWindow_SetFocus(editfield);
 }
@@ -1718,31 +1718,31 @@ OWiASP_HandleCommand(
 	UUtBool						update_fields;
 	SStGroup					*group;
 	OWtSelectResult				result;
-	
+
 	ap = (OWtAmbientProp*)WMrDialog_GetUserData(inDialog);
-	
+
 	update_fields = UUcTrue;
-	
+
 	control_id = UUmLowWord(inParam);
 	command_type = UUmHighWord(inParam);
-	
+
 	switch (control_id)
 	{
 		case OWcASP_EF_Name:
 			if (command_type != EFcNotify_ContentChanged) { break; }
-			
+
 			// if the ambient sound was locked, then the can_save bool
 			// is null.  If the name changes, then the user wants to make
 			// a new ambient sound so allow this by setting the ambient to
 			// null and setting can_save to UUcTrue
-			if (ap->can_save == UUcFalse) 
+			if (ap->can_save == UUcFalse)
 			{
 				ap->ambient = NULL;
 				ap->can_save = UUcTrue;
 			}
 			update_fields = UUcFalse;
 		break;
-		
+
 		case OWcASP_Btn_InGroupSet:
 			if (command_type != WMcNotify_Click) { break; }
 			result = OWrSelect_SoundGroup(&group);
@@ -1752,7 +1752,7 @@ OWiASP_HandleCommand(
 			{
 				ap->ta.in_sound = NULL;
 			}
-			
+
 			if (ap->ta.in_sound != NULL)
 			{
 				UUrString_Copy(
@@ -1765,12 +1765,12 @@ OWiASP_HandleCommand(
 				UUrMemory_Clear(ap->ta.in_sound_name, SScMaxNameLength);
 			}
 		break;
-		
+
 		case OWcASP_Btn_InGroupEdit:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiEditGroup(inDialog, ap->ta.in_sound);
 		break;
-		
+
 		case OWcASP_Btn_OutGroupSet:
 			if (command_type != WMcNotify_Click) { break; }
 			result = OWrSelect_SoundGroup(&group);
@@ -1780,7 +1780,7 @@ OWiASP_HandleCommand(
 			{
 				ap->ta.out_sound = NULL;
 			}
-			
+
 			if (ap->ta.out_sound != NULL)
 			{
 				UUrString_Copy(
@@ -1793,12 +1793,12 @@ OWiASP_HandleCommand(
 				UUrMemory_Clear(ap->ta.out_sound_name, SScMaxNameLength);
 			}
 		break;
-		
+
 		case OWcASP_Btn_OutGroupEdit:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiEditGroup(inDialog, ap->ta.out_sound);
 		break;
-		
+
 		case OWcASP_Btn_BT1Set:
 			if (command_type != WMcNotify_Click) { break; }
 			result = OWrSelect_SoundGroup(&group);
@@ -1808,7 +1808,7 @@ OWiASP_HandleCommand(
 			{
 				ap->ta.base_track1 = NULL;
 			}
-			
+
 			if (ap->ta.base_track1 != NULL)
 			{
 				UUrString_Copy(
@@ -1821,12 +1821,12 @@ OWiASP_HandleCommand(
 				UUrMemory_Clear(ap->ta.base_track1_name, SScMaxNameLength);
 			}
 		break;
-		
+
 		case OWcASP_Btn_BT1Edit:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiEditGroup(inDialog, ap->ta.base_track1);
 		break;
-		
+
 		case OWcASP_Btn_BT2Set:
 			if (command_type != WMcNotify_Click) { break; }
 			result = OWrSelect_SoundGroup(&group);
@@ -1845,12 +1845,12 @@ OWiASP_HandleCommand(
 				UUrMemory_Clear(ap->ta.base_track2_name, SScMaxNameLength);
 			}
 		break;
-		
+
 		case OWcASP_Btn_BT2Edit:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiEditGroup(inDialog, ap->ta.base_track2);
 		break;
-		
+
 		case OWcASP_Btn_DetailSet:
 			if (command_type != WMcNotify_Click) { break; }
 			result = OWrSelect_SoundGroup(&group);
@@ -1869,12 +1869,12 @@ OWiASP_HandleCommand(
 				UUrMemory_Clear(ap->ta.detail_name, SScMaxNameLength);
 			}
 		break;
-		
+
 		case OWcASP_Btn_DetailEdit:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiEditGroup(inDialog, ap->ta.detail);
 		break;
-		
+
 		case OWcASP_Btn_Inc1:
 			if (command_type != WMcNotify_Click) { break; }
 			ap->ta.sphere_radius += 1.0f;
@@ -1883,7 +1883,7 @@ OWiASP_HandleCommand(
 				ap->ta.sphere_radius = ap->ta.min_volume_distance;
 			}
 		break;
-		
+
 		case OWcASP_Btn_Dec1:
 			if (command_type != WMcNotify_Click) { break; }
 			ap->ta.sphere_radius -= 1.0f;
@@ -1892,7 +1892,7 @@ OWiASP_HandleCommand(
 				ap->ta.sphere_radius = 0.0f;
 			}
 		break;
-		
+
 		case OWcASP_Btn_Inc10:
 			if (command_type != WMcNotify_Click) { break; }
 			ap->ta.sphere_radius += 10.0f;
@@ -1901,7 +1901,7 @@ OWiASP_HandleCommand(
 				ap->ta.sphere_radius = ap->ta.min_volume_distance;
 			}
 		break;
-		
+
 		case OWcASP_Btn_Dec10:
 			if (command_type != WMcNotify_Click) { break; }
 			ap->ta.sphere_radius -= 10.0f;
@@ -1910,7 +1910,7 @@ OWiASP_HandleCommand(
 				ap->ta.sphere_radius = 0.0f;
 			}
 		break;
-		
+
 		case OWcASP_Btn_Start:
 			if (command_type != WMcNotify_Click) { break; }
 			if ((ap->play_id == SScInvalidID) ||
@@ -1920,7 +1920,7 @@ OWiASP_HandleCommand(
 				ap->play_id = SSrAmbient_Start_Simple(&ap->ta, NULL);
 			}
 		break;
-		
+
 		case OWcASP_Btn_Stop:
 			if (command_type != WMcNotify_Click) { break; }
 			if (ap->play_id != SScInvalidID)
@@ -1929,12 +1929,12 @@ OWiASP_HandleCommand(
 				SSrAmbient_Stop(ap->play_id);
 			}
 		break;
-		
+
 		case OWcASP_Btn_Cancel:
 			if (command_type != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, OWcASP_Btn_Cancel);
 		break;
-		
+
 		case OWcASP_Btn_Save:
 			if (command_type != WMcNotify_Click) { break; }
 			if (OWiASP_Save(inDialog, ap) == UUcTrue)
@@ -1942,17 +1942,17 @@ OWiASP_HandleCommand(
 				WMrDialog_ModalEnd(inDialog, OWcASP_Btn_Save);
 			}
 		break;
-		
+
 		default:
 			update_fields = UUcFalse;
 		break;
 	}
-	
+
 	if (update_fields)
 	{
 		OWiASP_SetFields(inDialog, ap);
 	}
-	
+
 	// update the buttons
 	OWiASP_EnableButtons(inDialog, ap);
 }
@@ -1962,7 +1962,7 @@ OWiASP_HandleDestroy(
 	WMtDialog					*inDialog)
 {
 	OWtAmbientProp				*ap;
-	
+
 	ap = (OWtAmbientProp*)WMrDialog_GetUserData(inDialog);
 	if ((ap->play_id != SScInvalidID) &&
 		(SSrAmbient_Update(ap->play_id, NULL, NULL, NULL, NULL) == UUcTrue))
@@ -1978,7 +1978,7 @@ OWiASP_Paint(
 	WMtDialog					*inDialog)
 {
 	OWtAmbientProp				*ap;
-	
+
 	ap = (OWtAmbientProp*)WMrDialog_GetUserData(inDialog);
 	if ((ap->play_id != SScInvalidID) &&
 		(SSrAmbient_Update(ap->play_id, NULL, NULL, NULL, NULL) == UUcFalse))
@@ -1997,32 +1997,32 @@ OWiASP_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiASP_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiASP_HandleDestroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiASP_HandleCommand(inDialog, (WMtWindow*)inParam2, inParam1);
 		break;
-		
+
 		case WMcMessage_Paint:
 			OWiASP_Paint(inDialog);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -2036,16 +2036,16 @@ OWrAmbientProperties_Display(
 	OWtAmbientProp				ap;
 	BFtFileRef					*file_ref;
 	BFtFileRef					*dir_ref;
-	
+
 	UUmAssert(inAmbient);
-	
+
 	dir_ref = NULL;
 	file_ref = NULL;
-	
+
 	// get the sound binary directory
 	error = OSrGetSoundBinaryDirectory(&dir_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// get the file ref of the sound
 	error =
 		OSrGetSoundFileRef(
@@ -2054,24 +2054,24 @@ OWrAmbientProperties_Display(
 			dir_ref,
 			&file_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// dispose of the sound binary directory ref
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	// get the parent directory of the sound
 	error = BFrFileRef_GetParentDirectory(file_ref, &dir_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// dispose of the file ref of the sound
 	BFrFileRef_Dispose(file_ref);
 	file_ref = NULL;
-	
+
 	// set up the properties
 	UUrMemory_Clear(&ap, sizeof(OWtAmbientProp));
 	ap.parent_dir_ref = dir_ref;
 	ap.ambient = inAmbient;
-		
+
 	// edit the sound
 	error =
 		WMrDialog_ModalBegin(
@@ -2081,28 +2081,28 @@ OWrAmbientProperties_Display(
 			(UUtUns32)&ap,
 			NULL);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// dispose of the parent directory of the sound
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return UUcError_None;
-	
+
 error:
 	if (dir_ref)
 	{
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	if (file_ref)
 	{
 		BFrFileRef_Dispose(file_ref);
 		file_ref = NULL;
 	}
-	
+
 	return error;
-}	
+}
 
 // ======================================================================
 #if 0
@@ -2122,7 +2122,7 @@ OWiSGP_EnableButtons(
 	UUtBool						no_name_conflict;
 	SStGroup					*found_group;
 	char						name[BFcMaxFileNameLength];
-	
+
 	// get a pointer to the listbox
 	permutation_selected = UUcFalse;
 	if ((inGP->tg.permutations != NULL) &&
@@ -2131,11 +2131,11 @@ OWiSGP_EnableButtons(
 		listbox = WMrDialog_GetItemByID(inDialog, OWcSGP_LB_Permutations);
 		permutation_selected = (WMrListBox_GetSelection(listbox) != LBcError);
 	}
-	
+
 	// determine if there is a name conflict
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSGP_EF_Name);
 	WMrEditField_GetText(editfield, name, BFcMaxFileNameLength);
-	
+
 	found_group = OSrGroup_GetByName(name);
 	if (name[0] == '\0')
 	{
@@ -2149,20 +2149,20 @@ OWiSGP_EnableButtons(
 	{
 		no_name_conflict = UUcFalse;
 	}
-	
+
 	// update the buttons
 	button = WMrDialog_GetItemByID(inDialog, OWcSGP_Btn_AddPerm);
 	WMrWindow_SetEnabled(button, UUcTrue);
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSGP_Btn_EditPerm);
 	WMrWindow_SetEnabled(button, permutation_selected);
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSGP_Btn_PlayPerm);
 	WMrWindow_SetEnabled(button, permutation_selected);
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSGP_Btn_DeletePerm);
 	WMrWindow_SetEnabled(button, permutation_selected);
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSGP_Btn_Save);
 	WMrWindow_SetEnabled(button, inGP->can_save && no_name_conflict);
 }
@@ -2176,23 +2176,23 @@ OWiSGP_FillListbox(
 	WMtDialog					*listbox;
 	UUtUns32					i;
 	UUtUns32					num_permutations;
-	
+
 	// get the group properties
 	gp = (OWtGroupProp*)WMrDialog_GetUserData(inDialog);
 
 	// get the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSGP_LB_Permutations);
-	
+
 	// reset the listbox
 	WMrListBox_Reset(listbox);
-	
+
 	// add the permutations
 	num_permutations = UUrMemory_Array_GetUsedElems(gp->tg.permutations);
 	for (i = 0; i < num_permutations; i++)
 	{
 		WMrMessage_Send(listbox, LBcMessage_AddString, i, 0);
 	}
-	
+
 	WMrListBox_SetSelection(listbox, UUcFalse, 0);
 }
 
@@ -2222,7 +2222,7 @@ OWiSGP_Perm_Add(
 			&message);
 	UUmError_ReturnOnError(error);
 	if (message == OWcWS_Btn_Cancel) { return UUcError_None; }
-	
+
 	if (inGP->tg.num_channels == 0)
 	{
 		inGP->tg.num_channels = SSrSound_GetNumChannels(ws.selected_sound_data);
@@ -2234,17 +2234,17 @@ OWiSGP_Perm_Add(
 			"Error",
 			"The selected sound does not have the same number of channels as the other sounds.",
 			WMcMessageBoxStyle_OK);
-			
+
 		return UUcError_None;
 	}
-		
+
 	// add the permutation
 	error = UUrMemory_Array_GetNewElement(inGP->tg.permutations, &index, NULL);
 	if (error != UUcError_None) { goto error; }
-	
+
 	perm_array = (SStPermutation*)UUrMemory_Array_GetMemory(inGP->tg.permutations);
 	UUmAssert(perm_array);
-	
+
 	perm = &perm_array[index];
 
 	perm->weight					= 10;
@@ -2257,9 +2257,9 @@ OWiSGP_Perm_Add(
 		perm->sound_data_name,
 		SSrSoundData_GetName(ws.selected_sound_data),
 		SScMaxNameLength);
-	
+
 	// edit the permutation
-/*	
+/*
 NOTE: removed per Marty's request
 
 	error =
@@ -2270,24 +2270,24 @@ NOTE: removed per Marty's request
 			(UUtUns32)perm,
 			&message);
 	UUmError_ReturnOnError(error);
-	
+
 	if (message == OWcSPP_Btn_Save)*/
 	{
 		WMtWindow				*listbox;
-		
+
 		// update the dialog's fields
 		OWiSGP_FillListbox(inDialog);
-		
+
 		// get a pointer to the listbox
 		listbox = WMrDialog_GetItemByID(inDialog, OWcSGP_LB_Permutations);
 		UUmAssert(listbox);
-		
+
 		// select the permutation that was just added
 		WMrMessage_Send(listbox, LBcMessage_SetSelection, (UUtUns32)UUcTrue, index);
 	}
 
 	return UUcError_None;
-	
+
 error:
 	// report the error
 	WMrDialog_MessageBox(
@@ -2321,14 +2321,14 @@ OWiSGP_Perm_Delete(
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSGP_LB_Permutations);
 	UUmAssert(listbox);
-	
+
 	// get the selected permutation's index
 	perm_index = WMrListBox_GetSelection(listbox);
 	UUmAssert(perm_index < UUrMemory_Array_GetUsedElems(inGP->tg.permutations));
-	
+
 	// delete the selected permutation
 	UUrMemory_Array_DeleteElement(inGP->tg.permutations, perm_index);
-	
+
 	// update the listbox
 	OWiSGP_FillListbox(inDialog);
 }
@@ -2345,22 +2345,22 @@ OWiSGP_Perm_Edit(
 	UUtError					error;
 	SStPermutation				*perm;
 	SStPermutation				*perm_array;
-	
+
 	if (UUrMemory_Array_GetUsedElems(inGP->tg.permutations) == 0) { return; }
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSGP_LB_Permutations);
 	UUmAssert(listbox);
-	
+
 	// get the selected permutation's index
 	perm_index = WMrListBox_GetSelection(listbox);
 	UUmAssert(perm_index < UUrMemory_Array_GetUsedElems(inGP->tg.permutations));
-	
+
 	perm_array = (SStPermutation*)UUrMemory_Array_GetMemory(inGP->tg.permutations);
 	UUmAssert(perm_array);
-	
+
 	perm = &perm_array[perm_index];
-	
+
 	// edit the permutation
 	error =
 		WMrDialog_ModalBegin(
@@ -2386,14 +2386,14 @@ OWiSGP_Perm_Play(
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSGP_LB_Permutations);
 	UUmAssert(listbox);
-	
+
 	// get the selected permutation's index
 	perm_index = WMrListBox_GetSelection(listbox);
 	UUmAssert(perm_index < UUrMemory_Array_GetUsedElems(inGP->tg.permutations));
-	
+
 	perm_array = (SStPermutation*)UUrMemory_Array_GetMemory(inGP->tg.permutations);
 	UUmAssert(perm_array);
-	
+
 	perm = &perm_array[perm_index];
 
 	// play the permutation
@@ -2410,11 +2410,11 @@ OWiSGP_Save(
 	WMtWindow					*editfield;
 	char						name[BFcMaxFileNameLength];
 	SStGroup					*found_group;
-		
+
 	// make sure the group has a name
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSGP_EF_Name);
 	WMrEditField_GetText(editfield, name, SScMaxNameLength);
-	
+
 	if (strlen(name) == 0)
 	{
 		WMrDialog_MessageBox(
@@ -2424,7 +2424,7 @@ OWiSGP_Save(
 			WMcMessageBoxStyle_OK);
 		return UUcFalse;
 	}
-	
+
 	OSrMakeGoodName(name, name);
 
 	if (inGP->group == NULL)
@@ -2439,7 +2439,7 @@ OWiSGP_Save(
 				WMcMessageBoxStyle_OK);
 			return UUcFalse;
 		}
-		
+
 		// create the group
 		error = OSrGroup_New(name, &inGP->group);
 		if (error != UUcError_None)
@@ -2470,22 +2470,22 @@ OWiSGP_Save(
 			}
 		}
 	}
-	
+
 	// set the data for the group
 	UUrMemory_Array_Delete(inGP->group->permutations);
-	
+
 	inGP->group->group_volume = inGP->tg.group_volume;
 	inGP->group->group_pitch = inGP->tg.group_pitch;
 	inGP->group->flags = inGP->tg.flags;
 	inGP->group->flag_data = inGP->tg.flag_data;
 	inGP->group->permutations = inGP->tg.permutations;
 	inGP->group->num_channels = inGP->tg.num_channels;
-	
+
 	inGP->tg.permutations = NULL;
-	
+
 	// save the group to disk
 	OSrGroup_Save(inGP->group, inGP->parent_dir_ref);
-	
+
 	return UUcTrue;
 }
 
@@ -2498,7 +2498,7 @@ OWiSGP_InitDialog(
 	WMtWindow					*editfield;
 	WMtWindow					*checkbox;
 	UUtError					error;
-	
+
 	// get the group properties
 	gp = (OWtGroupProp*)WMrDialog_GetUserData(inDialog);
 	if (gp == NULL)
@@ -2513,7 +2513,7 @@ OWiSGP_InitDialog(
 	gp->tg.flag_data = 0;
 	gp->tg.num_channels = 0;
 	gp->can_save = UUcFalse;
-		
+
 	// set the maximum number of characters for the group name
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSGP_EF_Name);
 	WMrMessage_Send(
@@ -2521,7 +2521,7 @@ OWiSGP_InitDialog(
 		EFcMessage_SetMaxChars,
 		BFcMaxFileNameLength - strlen(".abc"),
 		0);
-	
+
 	// set the fields
 	if (gp->group == NULL)
 	{
@@ -2536,7 +2536,7 @@ OWiSGP_InitDialog(
 			WMrDialog_ModalEnd(inDialog, OWcSGP_Btn_Cancel);
 			return;
 		}
-		
+
 		if ((gp->parent_dir_ref != NULL) &&
 			(BFrFileRef_FileExists(gp->parent_dir_ref) == UUcTrue))
 		{
@@ -2550,7 +2550,7 @@ OWiSGP_InitDialog(
 		// set the pitch field
 		editfield = WMrDialog_GetItemByID(inDialog, OWcSGP_EF_Pitch);
 		WMrEditField_SetFloat(editfield, gp->tg.group_pitch);
-		
+
 		// set the prevent repeats checkbox
 		checkbox = WMrDialog_GetItemByID(inDialog, OWcSGP_CB_PreventRepeats);
 		WMrCheckBox_SetCheck(checkbox, ((gp->tg.flags & SScGroupFlag_PreventRepeats) != 0));
@@ -2560,15 +2560,15 @@ OWiSGP_InitDialog(
 		UUtUns32					i;
 		UUtUns32					num_permutations;
 		SStPermutation				*perm_array;
-		
+
 		// get the values of the group
 		gp->tg.group_volume = gp->group->group_volume;
 		gp->tg.group_pitch = gp->group->group_pitch;
 		gp->tg.num_channels = (UUtUns8)gp->group->num_channels;
-		
+
 		// set the name field
 		WMrEditField_SetText(editfield, gp->group->group_name);
-		
+
 		// set the volume field
 		editfield = WMrDialog_GetItemByID(inDialog, OWcSGP_EF_Volume);
 		WMrEditField_SetFloat(editfield, gp->group->group_volume);
@@ -2576,11 +2576,11 @@ OWiSGP_InitDialog(
 		// set the pitch field
 		editfield = WMrDialog_GetItemByID(inDialog, OWcSGP_EF_Pitch);
 		WMrEditField_SetFloat(editfield, gp->group->group_pitch);
-		
+
 		// set the prevent repeats checkbox
 		checkbox = WMrDialog_GetItemByID(inDialog, OWcSGP_CB_PreventRepeats);
 		WMrCheckBox_SetCheck(checkbox, ((gp->group->flags & SScGroupFlag_PreventRepeats) != 0));
-		
+
 		// create a temp permutation array
 		num_permutations = UUrMemory_Array_GetUsedElems(gp->group->permutations);
 		gp->tg.permutations =
@@ -2594,27 +2594,27 @@ OWiSGP_InitDialog(
 			WMrDialog_ModalEnd(inDialog, OWcSGP_Btn_Cancel);
 			return;
 		}
-		
+
 		// copy the permutations
 		perm_array = (SStPermutation*)UUrMemory_Array_GetMemory(gp->tg.permutations);
 		for (i = 0; i < num_permutations; i++)
 		{
 			SStPermutation			*perm;
-			
+
 			perm = SSrGroup_Permutation_Get(gp->group, i);
 			perm_array[i] = *perm;
 		}
-		
+
 		OWiSGP_FillListbox(inDialog);
-		
+
 		// does the group have a file ref
 		if (gp->parent_dir_ref != NULL)
 		{
 			BFtFileRef				*dir_ref;
 			char					name[BFcMaxFileNameLength];
-			
+
 			sprintf(name, "%s.%s", gp->group->group_name, OScGroupSuffix);
-			
+
 			error =
 				BFrFileRef_DuplicateAndAppendName(
 					gp->parent_dir_ref,
@@ -2626,15 +2626,15 @@ OWiSGP_InitDialog(
 				{
 					gp->can_save = UUcTrue;
 				}
-				
+
 				UUrMemory_Block_Delete(dir_ref);
 				dir_ref = NULL;
 			}
 		}
 	}
-	
+
 	OWiSGP_EnableButtons(inDialog, gp);
-	
+
 	// set the focus to the name
 	WMrWindow_SetFocus(WMrDialog_GetItemByID(inDialog, OWcSGP_EF_Name));
 }
@@ -2649,80 +2649,80 @@ OWiSGP_HandleCommand(
 	UUtUns16					control_id;
 	UUtUns16					command_type;
 	OWtGroupProp				*gp;
-	
+
 	gp = (OWtGroupProp*)WMrDialog_GetUserData(inDialog);
-	
+
 	control_id = UUmLowWord(inParam);
 	command_type = UUmHighWord(inParam);
-	
+
 	switch (control_id)
 	{
 		case OWcSGP_EF_Name:
 			if (command_type != EFcNotify_ContentChanged) { break; }
-			
+
 			// if the sound group was locked, then the can_save bool
 			// is null.  If the name changes, then the user wants to make
 			// a new sound group so allow this by setting the group to
 			// null and setting can_save to UUcTrue
-			if (gp->can_save == UUcFalse) 
+			if (gp->can_save == UUcFalse)
 			{
 				gp->group = NULL;
 				gp->can_save = UUcTrue;
 			}
 		break;
-		
+
 		case OWcSGP_LB_Permutations:
 			if (command_type == WMcNotify_DoubleClick)
 			{
 				OWiSGP_Perm_Edit(inDialog, gp);
 			}
 		break;
-		
+
 		case OWcSGP_Btn_AddPerm:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSGP_Perm_Add(inDialog, gp);
 		break;
-		
+
 		case OWcSGP_Btn_EditPerm:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSGP_Perm_Edit(inDialog, gp);
 		break;
-		
+
 		case OWcSGP_Btn_PlayPerm:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSGP_Perm_Play(inDialog, gp);
 		break;
-		
+
 		case OWcSGP_Btn_DeletePerm:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSGP_Perm_Delete(inDialog, gp);
 		break;
-		
+
 		case OWcSGP_Btn_Play:
 			if (command_type != WMcNotify_Click) { break; }
 			SSrGroup_Play(&gp->tg, NULL, NULL, NULL);
 		break;
-		
+
 		case OWcSGP_EF_Volume:
 			if (command_type != EFcNotify_ContentChanged) { break; }
 			gp->tg.group_volume = WMrEditField_GetFloat(inControl);
 		break;
-				
+
 		case OWcSGP_EF_Pitch:
 			if (command_type != EFcNotify_ContentChanged) { break; }
 			gp->tg.group_pitch = WMrEditField_GetFloat(inControl);
 		break;
-		
+
 		case OWcSGP_CB_PreventRepeats:
 			if (command_type != WMcNotify_Click) { break; }
 			gp->tg.flags = WMrCheckBox_GetCheck(inControl);
 		break;
-		
+
 		case OWcSGP_Btn_Cancel:
 			if (command_type != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, OWcSGP_Btn_Cancel);
 		break;
-		
+
 		case OWcSGP_Btn_Save:
 			if (command_type != WMcNotify_Click) { break; }
 			if (OWiSGP_Save(inDialog, gp))
@@ -2731,7 +2731,7 @@ OWiSGP_HandleCommand(
 			}
 		break;
 	}
-	
+
 	OWiSGP_EnableButtons(inDialog, gp);
 }
 
@@ -2741,7 +2741,7 @@ OWiSGP_HandleDestroy(
 	WMtDialog					*inDialog)
 {
 	OWtGroupProp				*gp;
-	
+
 	gp = (OWtGroupProp*)WMrDialog_GetUserData(inDialog);
 	if ((gp) && (gp->tg.permutations))
 	{
@@ -2763,23 +2763,23 @@ OWiSGP_HandleDrawItem(
 	SStPermutation				*perm_array;
 	SStPermutation				*perm;
 	char						string[128];
-	
+
 	// get a pointer to the group properties
 	gp = (OWtGroupProp*)WMrDialog_GetUserData(inDialog);
 	if ((gp == NULL) || (gp->tg.permutations == NULL)) { return; }
 	if (inDrawItem->data >= UUrMemory_Array_GetUsedElems(gp->tg.permutations)) { return; }
-	
+
 	// get a pointer to the permutation
 	perm_array = (SStPermutation*)UUrMemory_Array_GetMemory(gp->tg.permutations);
 	if (perm_array == NULL) { return; }
-	
+
 	perm = &perm_array[inDrawItem->data];
 	if (perm == NULL) { return; }
-	
+
 	// set the dest
 	dest.x = inDrawItem->rect.left;
 	dest.y = inDrawItem->rect.top;
-	
+
 	// calc the width and height of the line
 	line_width = inDrawItem->rect.right - inDrawItem->rect.left;
 	line_height = inDrawItem->rect.bottom - inDrawItem->rect.top;
@@ -2789,7 +2789,7 @@ OWiSGP_HandleDrawItem(
 	DCrText_SetStyle(TScStyle_Plain);
 	if (perm->sound_data == NULL) { DCrText_SetShade(IMcShade_Red); }
 	else { DCrText_SetShade(IMcShade_Black); }
-	
+
 	// draw the perm's sound_data instance name
 	dest.x = 4;
 	DCrDraw_String(
@@ -2797,28 +2797,28 @@ OWiSGP_HandleDrawItem(
 		SSrPermutation_GetName(perm),
 		&inDrawItem->rect,
 		&dest);
-	
+
 	// draw the perm's weight
 	dest.x = 160;
 	sprintf(string, "%d", perm->weight);
 	DCrDraw_String(inDrawItem->draw_context, string, &inDrawItem->rect, &dest);
-	
-	// draw the perm's min_volume_percent 
+
+	// draw the perm's min_volume_percent
 	dest.x = 200;
 	sprintf(string, "%1.2f", perm->min_volume_percent);
 	DCrDraw_String(inDrawItem->draw_context, string, &inDrawItem->rect, &dest);
-	
-	// draw the perm's max_volume_percent 
+
+	// draw the perm's max_volume_percent
 	dest.x = 230;
 	sprintf(string, "%1.2f", perm->max_volume_percent);
 	DCrDraw_String(inDrawItem->draw_context, string, &inDrawItem->rect, &dest);
-	
-	// draw the perm's min_pitch_percent 
+
+	// draw the perm's min_pitch_percent
 	dest.x = 265;
 	sprintf(string, "%1.2f", perm->min_pitch_percent);
 	DCrDraw_String(inDrawItem->draw_context, string, &inDrawItem->rect, &dest);
-	
-	// draw the perm's max_volume_percent 
+
+	// draw the perm's max_volume_percent
 	dest.x = 295;
 	sprintf(string, "%1.2f", perm->max_pitch_percent);
 	DCrDraw_String(inDrawItem->draw_context, string, &inDrawItem->rect, &dest);
@@ -2833,32 +2833,32 @@ OWiSGP_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiSGP_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiSGP_HandleDestroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiSGP_HandleCommand(inDialog, (WMtWindow*)inParam2, inParam1);
 		break;
-		
+
 		case WMcMessage_DrawItem:
-			OWiSGP_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);			
+			OWiSGP_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -2878,24 +2878,24 @@ OWiEditGroup(
 	BFtFileRef					*start_ref;
 	BFtFileRef					*parent_dir_ref;
 	OWtGroupProp				gp;
-	
+
 	// get the parent directory of the sound
 	error = OSrGetSoundBinaryDirectory(&start_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	error = OSrGetSoundFileRef(inGroup->group_name, OScGroupSuffix, start_ref, &file_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	error = BFrFileRef_GetParentDirectory(file_ref, &parent_dir_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// set up the group properties
 	UUrMemory_Clear(&gp, sizeof(OWtGroupProp));
 	gp.parent_dir_ref = parent_dir_ref;
 	gp.group = inGroup;
-	
+
 	if (gp.parent_dir_ref == NULL) { goto error; }
-	
+
 	// edit the group
 	error =
 		WMrDialog_ModalBegin(
@@ -2912,13 +2912,13 @@ OWiEditGroup(
 		BFrFileRef_Dispose(start_ref);
 		start_ref = NULL;
 	}
-	
+
 	if (file_ref)
 	{
 		BFrFileRef_Dispose(file_ref);
 		file_ref = NULL;
 	}
-	
+
 	if (gp.parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(gp.parent_dir_ref);
@@ -2926,20 +2926,20 @@ OWiEditGroup(
 	}
 
 	return;
-	
+
 error:
 	if (start_ref)
 	{
 		BFrFileRef_Dispose(start_ref);
 		start_ref = NULL;
 	}
-	
+
 	if (file_ref)
 	{
 		BFrFileRef_Dispose(file_ref);
 		file_ref = NULL;
 	}
-	
+
 	if (gp.parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(gp.parent_dir_ref);
@@ -2969,11 +2969,11 @@ OWiISP_EnableButtons(
 	char						name[SScMaxNameLength];
 	SStImpulse					*found_impulse;
 	UUtBool						no_name_conflict;
-	
+
 	// determine if there is a name conflict
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_Name);
 	WMrEditField_GetText(editfield, name, SScMaxNameLength);
-	
+
 	found_impulse = OSrImpulse_GetByName(name);
 	if (name[0] == '\0')
 	{
@@ -2987,16 +2987,16 @@ OWiISP_EnableButtons(
 	{
 		no_name_conflict = UUcFalse;
 	}
-		
+
 	button = WMrDialog_GetItemByID(inDialog, OWcISP_Btn_Edit);
 	WMrWindow_SetEnabled(button, (inIP->ti.impulse_group != NULL));
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcISP_Btn_Play);
 	WMrWindow_SetEnabled(button, (inIP->ti.impulse_group != NULL));
 
 	button = WMrDialog_GetItemByID(inDialog, OWcISP_Btn_Save);
 	WMrWindow_SetEnabled(button, inIP->can_save && no_name_conflict);
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcISP_Btn_EditImpulse);
 	WMrWindow_SetEnabled(button, (inIP->ti.alt_impulse != NULL));
 }
@@ -3011,15 +3011,15 @@ OWiISP_RecordData(
 	WMtWindow					*popup;
 	UUtUns16					priority;
 	char						name[SScMaxNameLength];
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_Name);
 	WMrEditField_GetText(editfield, name, SScMaxNameLength);
 	UUrString_Copy(inIP->ti.impulse_name, name, SScMaxNameLength);
-	
+
 	popup = WMrDialog_GetItemByID(inDialog, OWcISP_PM_Priority);
 	WMrPopupMenu_GetItemID(popup, -1, &priority);
 	inIP->ti.priority = (SStPriority2)priority;
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_MinVolDist);
 	inIP->ti.min_volume_distance = WMrEditField_GetFloat(editfield);
 
@@ -3028,19 +3028,19 @@ OWiISP_RecordData(
 
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_MaxVolAngle);
 	inIP->ti.max_volume_angle = WMrEditField_GetFloat(editfield);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_MinVolAngle);
 	inIP->ti.min_volume_angle = WMrEditField_GetFloat(editfield);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_MinAngleAttn);
 	inIP->ti.min_angle_attenuation = WMrEditField_GetFloat(editfield);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_ImpactVelocity);
 	inIP->ti.impact_velocity = WMrEditField_GetFloat(editfield);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_MinOcclusion);
 	inIP->ti.min_occlusion = WMrEditField_GetFloat(editfield);
-	
+
 	if (inIP->ti.impulse_group)
 	{
 		UUrString_Copy(
@@ -3052,7 +3052,7 @@ OWiISP_RecordData(
 	{
 		UUrMemory_Clear(inIP->ti.impulse_group_name, SScMaxNameLength);
 	}
-	
+
 	if (inIP->ti.alt_impulse)
 	{
 		UUrString_Copy(
@@ -3064,7 +3064,7 @@ OWiISP_RecordData(
 	{
 		UUrMemory_Clear(inIP->ti.alt_impulse_name, SScMaxNameLength);
 	}
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_Threshold);
 	inIP->ti.alt_threshold = (UUtUns32)WMrEditField_GetInt32(editfield);
 }
@@ -3079,11 +3079,11 @@ OWiISP_Save(
 	WMtWindow					*editfield;
 	char						name[SScMaxNameLength];
 	SStImpulse					*found_impulse;
-	
+
 	// make sure the sound has a name
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_Name);
 	WMrEditField_GetText(editfield, name, SScMaxNameLength);
-	
+
 	if (strlen(name) == 0)
 	{
 		WMrDialog_MessageBox(
@@ -3093,7 +3093,7 @@ OWiISP_Save(
 			WMcMessageBoxStyle_OK);
 		return UUcFalse;
 	}
-	
+
 	OSrMakeGoodName(name, name);
 
 	if (inIP->impulse == NULL)
@@ -3108,7 +3108,7 @@ OWiISP_Save(
 				WMcMessageBoxStyle_OK);
 			return UUcFalse;
 		}
-		
+
 		error = OSrImpulse_New(name, &inIP->impulse);
 		if (error != UUcError_None)
 		{
@@ -3138,10 +3138,10 @@ OWiISP_Save(
 			}
 		}
 	}
-	
+
 	// record the data
 	OWiISP_RecordData(inDialog, inIP);
-	
+
 	if (inIP->ti.min_volume_distance < inIP->ti.max_volume_distance)
 	{
 		WMrDialog_MessageBox(
@@ -3151,7 +3151,7 @@ OWiISP_Save(
 			WMcMessageBoxStyle_OK);
 		return UUcFalse;
 	}
-	
+
 	// set the data for the impulse sound
 	inIP->impulse->impulse_group = inIP->ti.impulse_group;
 	inIP->impulse->priority = inIP->ti.priority;
@@ -3164,15 +3164,15 @@ OWiISP_Save(
 	inIP->impulse->alt_impulse = inIP->ti.alt_impulse;
 	inIP->impulse->impact_velocity = inIP->ti.impact_velocity;
 	inIP->impulse->min_occlusion = inIP->ti.min_occlusion;
-	
+
 	if (inIP->impulse->impulse_group)
 	{
 		UUrString_Copy(
 			inIP->impulse->impulse_group_name,
-			inIP->impulse->impulse_group->group_name, 
+			inIP->impulse->impulse_group->group_name,
 			SScMaxNameLength);
 	}
-	
+
 	if (inIP->impulse->alt_impulse)
 	{
 		UUrString_Copy(
@@ -3180,7 +3180,7 @@ OWiISP_Save(
 			inIP->impulse->alt_impulse->impulse_name,
 			SScMaxNameLength);
 	}
-	
+
 	// save the impulse sound to disk
 	OSrImpulse_Save(inIP->impulse, inIP->parent_dir_ref);
 
@@ -3196,18 +3196,18 @@ OWiISP_SetFields(
 	WMtWindow					*editfield;
 	WMtWindow					*text;
 	WMtWindow					*popup;
-	
+
 	if (inIP->impulse)
 	{
 		editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_Name);
 		WMrEditField_SetText(editfield, inIP->impulse->impulse_name);
 	}
-	
+
 	text = WMrDialog_GetItemByID(inDialog, OWcISP_Txt_Group);
 	WMrWindow_SetTitle(text, inIP->ti.impulse_group_name, SScMaxNameLength);
 	if (inIP->ti.impulse_group) { WMrText_SetShade(text, IMcShade_Black); }
 	else { WMrText_SetShade(text, IMcShade_Red); }
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_MaxVolDist);
 	WMrEditField_SetFloat(editfield, inIP->ti.max_volume_distance);
 
@@ -3222,21 +3222,21 @@ OWiISP_SetFields(
 
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_MinAngleAttn);
 	WMrEditField_SetFloat(editfield, inIP->ti.min_angle_attenuation);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_ImpactVelocity);
 	WMrEditField_SetFloat(editfield, inIP->ti.impact_velocity);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_MinOcclusion);
 	WMrEditField_SetFloat(editfield, inIP->ti.min_occlusion);
-	
+
 	popup = WMrDialog_GetItemByID(inDialog, OWcISP_PM_Priority);
 	WMrPopupMenu_SetSelection(popup, inIP->ti.priority);
-	
+
 	text = WMrDialog_GetItemByID(inDialog, OWcISP_Txt_AltImpulse);
 	WMrWindow_SetTitle(text, inIP->ti.alt_impulse_name, SScMaxNameLength);
 	if (inIP->ti.alt_impulse_name) { WMrText_SetShade(text, IMcShade_Black); }
 	else { WMrText_SetShade(text, IMcShade_Red); }
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_Threshold);
 	WMrEditField_SetInt32(editfield, inIP->ti.alt_threshold);
 }
@@ -3249,7 +3249,7 @@ OWiISP_InitDialog(
 	UUtError					error;
 	OWtImpulseProp				*ip;
 	WMtWindow					*editfield;
-	
+
 	// get the impulse properties
 	ip = (OWtImpulseProp*)WMrDialog_GetUserData(inDialog);
 	if (ip == NULL)
@@ -3257,7 +3257,7 @@ OWiISP_InitDialog(
 		WMrDialog_ModalEnd(inDialog, OWcISP_Btn_Cancel);
 		return;
 	}
-	
+
 	// initialize the impulse properties
 	if (ip->impulse == NULL)
 	{
@@ -3266,21 +3266,21 @@ OWiISP_InitDialog(
 		ip->ti.impulse_group = NULL;
 
 		ip->ti.priority = SScPriority2_Normal;
-		
+
 		ip->ti.max_volume_distance = 10.0f;
 		ip->ti.min_volume_distance = 50.0f;
-		
+
 		ip->ti.min_volume_angle = 360.0f;
 		ip->ti.max_volume_angle = 360.0f;
 		ip->ti.min_angle_attenuation = 0.0f;
-		
+
 		ip->ti.alt_threshold = 0;
 		ip->ti.alt_impulse = NULL;
 		UUrMemory_Clear(ip->ti.alt_impulse_name, SScMaxNameLength);
-		
+
 		ip->ti.impact_velocity = 0.0f;
 		ip->ti.min_occlusion = 0.0f;
-		
+
 		if ((ip->parent_dir_ref != NULL) &&
 			(BFrFileRef_FileExists(ip->parent_dir_ref) == UUcTrue))
 		{
@@ -3292,31 +3292,31 @@ OWiISP_InitDialog(
 		UUrString_Copy(ip->ti.impulse_name, ip->impulse->impulse_name, SScMaxNameLength);
 		UUrString_Copy(ip->ti.impulse_group_name, ip->impulse->impulse_group_name, SScMaxNameLength);
 		ip->ti.impulse_group = ip->impulse->impulse_group;
-		
+
 		ip->ti.priority = ip->impulse->priority;
-		
+
 		ip->ti.max_volume_distance = ip->impulse->max_volume_distance;
 		ip->ti.min_volume_distance = ip->impulse->min_volume_distance;
-		
+
 		ip->ti.min_volume_angle = ip->impulse->min_volume_angle;
 		ip->ti.max_volume_angle = ip->impulse->max_volume_angle;
 		ip->ti.min_angle_attenuation = ip->impulse->min_angle_attenuation;
-		
+
 		ip->ti.alt_threshold = ip->impulse->alt_threshold;
 		ip->ti.alt_impulse = ip->impulse->alt_impulse;
 		UUrString_Copy(ip->ti.alt_impulse_name, ip->impulse->alt_impulse_name, SScMaxNameLength);
-		
+
 		ip->ti.impact_velocity = ip->impulse->impact_velocity;
 		ip->ti.min_occlusion = ip->impulse->min_occlusion;
-		
+
 		// does the impulse sound have a file ref
 		if (ip->parent_dir_ref != NULL)
 		{
 			BFtFileRef				*dir_ref;
 			char					name[SScMaxNameLength];
-			
+
 			sprintf(name, "%s.%s", ip->impulse->impulse_name, OScImpulseSuffix);
-			
+
 			error =
 				BFrFileRef_DuplicateAndAppendName(
 					ip->parent_dir_ref,
@@ -3328,13 +3328,13 @@ OWiISP_InitDialog(
 				{
 					ip->can_save = UUcTrue;
 				}
-				
+
 				UUrMemory_Block_Delete(dir_ref);
 				dir_ref = NULL;
 			}
 		}
 	}
-	
+
 	// set the maximum number of characters for the impulse name
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_Name);
 	WMrMessage_Send(
@@ -3342,23 +3342,23 @@ OWiISP_InitDialog(
 		EFcMessage_SetMaxChars,
 		BFcMaxFileNameLength - strlen(".abc"),
 		0);
-	
+
 	// set the fields
 	OWiISP_SetFields(inDialog, ip);
-	
+
 	// enable the buttons
 	OWiISP_EnableButtons(inDialog, ip);
-	
+
 	// disable the angle fields
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_MinVolAngle);
 	WMrWindow_SetEnabled(editfield, UUcFalse);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_MaxVolAngle);
 	WMrWindow_SetEnabled(editfield, UUcFalse);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcISP_EF_MinAngleAttn);
 	WMrWindow_SetEnabled(editfield, UUcFalse);
-	
+
 	// set the focus to the name
 	WMrWindow_SetFocus(WMrDialog_GetItemByID(inDialog, OWcISP_EF_Name));
 }
@@ -3377,37 +3377,37 @@ OWiISP_HandleCommand(
 	SStImpulse					*impulse;
 	UUtBool						update_fields;
 	OWtSelectResult				result;
-	
+
 	ip = (OWtImpulseProp*)WMrDialog_GetUserData(inDialog);
-	
+
 	update_fields = UUcTrue;
 
 	control_id = UUmLowWord(inParam);
 	command_type = UUmHighWord(inParam);
-	
+
 	switch (control_id)
 	{
 		case OWcISP_EF_Name:
 			if (command_type != EFcNotify_ContentChanged) { break; }
-			
+
 			// if the impulse sound was locked, then the can_save bool
 			// is null.  If the name changes, then the user wants to make
 			// a new impulse sound so allow this by setting the impulse to
 			// null and setting can_save to UUcTrue
-			if (ip->can_save == UUcFalse) 
+			if (ip->can_save == UUcFalse)
 			{
 				ip->impulse = NULL;
 				ip->can_save = UUcTrue;
 			}
 			update_fields = UUcFalse;
 		break;
-		
+
 		case OWcISP_Btn_Set:
 			if (command_type != WMcNotify_Click) { break; }
 			result = OWrSelect_SoundGroup(&group);
 			if (result == OWcSelectResult_Cancel) { break; }
 			ip->ti.impulse_group = group;
-			
+
 			if (ip->ti.impulse_group != NULL)
 			{
 				UUrString_Copy(
@@ -3420,24 +3420,24 @@ OWiISP_HandleCommand(
 				UUrMemory_Clear(ip->ti.impulse_group_name, SScMaxNameLength);
 			}
 		break;
-		
+
 		case OWcISP_Btn_Edit:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiEditGroup(inDialog, ip->ti.impulse_group);
 		break;
-		
+
 		case OWcISP_Btn_Play:
 			if (command_type != WMcNotify_Click) { break; }
 			if (ip->ti.impulse_group)
 			{
 				M3tPoint3D				position;
 				float					volume;
-				
+
 				OWiISP_RecordData(inDialog, ip);
-				
+
 				MUmVector_Set(position, 1.0f, 0.0f, 0.0f);
 				SSrListener_SetPosition(&position, &position);
-				
+
 				MUmVector_Set(position, 0.0f, 0.0f, 1.0f);
 				volume = 1.0f;
 
@@ -3449,16 +3449,16 @@ OWiISP_HandleCommand(
 					&volume);
 			}
 		break;
-		
+
 		case OWcISP_Btn_SetImpulse:
 		{
 			OWtSelectResult				result;
-			
+
 			if (command_type != WMcNotify_Click) { break; }
 			result = OWrSelect_ImpulseSound(&impulse);
 			if (result == OWcSelectResult_Cancel) { break; }
 			ip->ti.alt_impulse = impulse;
-			
+
 			if (ip->ti.alt_impulse != NULL)
 			{
 				UUrString_Copy(
@@ -3472,17 +3472,17 @@ OWiISP_HandleCommand(
 			}
 		}
 		break;
-		
+
 		case OWcISP_Btn_EditImpulse:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiEditImpulse(inDialog, ip->ti.alt_impulse);
 		break;
-		
+
 		case OWcISP_Btn_Cancel:
 			if (command_type != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, OWcISP_Btn_Cancel);
 		break;
-		
+
 		case OWcISP_Btn_Save:
 			if (command_type != WMcNotify_Click) { break; }
 			if (OWiISP_Save(inDialog, ip) == UUcTrue)
@@ -3490,17 +3490,17 @@ OWiISP_HandleCommand(
 				WMrDialog_ModalEnd(inDialog, OWcISP_Btn_Save);
 			}
 		break;
-		
+
 		default:
 			update_fields = UUcFalse;
 		break;
 	}
-	
+
 	if (update_fields)
 	{
 		OWiISP_SetFields(inDialog, ip);
 	}
-	
+
 	// update the buttons
 	OWiISP_EnableButtons(inDialog, ip);
 }
@@ -3514,24 +3514,24 @@ OWiISP_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiISP_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiISP_HandleCommand(inDialog, (WMtWindow*)inParam2, inParam1);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -3545,16 +3545,16 @@ OWrImpulseProperties_Display(
 	OWtImpulseProp				ip;
 	BFtFileRef					*file_ref;
 	BFtFileRef					*dir_ref;
-	
+
 	UUmAssert(inImpulse);
-	
+
 	dir_ref = NULL;
 	file_ref = NULL;
-	
+
 	// get the sound binary directory
 	error = OSrGetSoundBinaryDirectory(&dir_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// get the file ref of the sound
 	error =
 		OSrGetSoundFileRef(
@@ -3563,24 +3563,24 @@ OWrImpulseProperties_Display(
 			dir_ref,
 			&file_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// dispose of the sound binary directory ref
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	// get the parent directory of the sound
 	error = BFrFileRef_GetParentDirectory(file_ref, &dir_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// dispose of the file ref of the sound
 	BFrFileRef_Dispose(file_ref);
 	file_ref = NULL;
-	
+
 	// set up the properties
 	UUrMemory_Clear(&ip, sizeof(OWtImpulseProp));
 	ip.parent_dir_ref = dir_ref;
 	ip.impulse = inImpulse;
-		
+
 	// edit the sound
 	error =
 		WMrDialog_ModalBegin(
@@ -3590,28 +3590,28 @@ OWrImpulseProperties_Display(
 			(UUtUns32)&ip,
 			NULL);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// dispose of the parent directory of the sound
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return UUcError_None;
-	
+
 error:
 	if (dir_ref)
 	{
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	if (file_ref)
 	{
 		BFrFileRef_Dispose(file_ref);
 		file_ref = NULL;
 	}
-	
+
 	return error;
-}	
+}
 
 // ======================================================================
 #if 0
@@ -3629,24 +3629,24 @@ OWiEditImpulse(
 	BFtFileRef					*start_ref;
 	BFtFileRef					*parent_dir_ref;
 	OWtImpulseProp				ip;
-	
+
 	// get the parent directory of the sound
 	error = OSrGetSoundBinaryDirectory(&start_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	error = OSrGetSoundFileRef(inImpulse->impulse_name, OScImpulseSuffix, start_ref, &file_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	error = BFrFileRef_GetParentDirectory(file_ref, &parent_dir_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// set up the impulse properties
 	UUrMemory_Clear(&ip, sizeof(OWtImpulseProp));
 	ip.parent_dir_ref = parent_dir_ref;
 	ip.impulse = inImpulse;
-	
+
 	if (ip.parent_dir_ref == NULL) { goto error; }
-	
+
 	// edit the impulse
 	error =
 		WMrDialog_ModalBegin(
@@ -3663,13 +3663,13 @@ OWiEditImpulse(
 		BFrFileRef_Dispose(start_ref);
 		start_ref = NULL;
 	}
-	
+
 	if (file_ref)
 	{
 		BFrFileRef_Dispose(file_ref);
 		file_ref = NULL;
 	}
-	
+
 	if (ip.parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(ip.parent_dir_ref);
@@ -3677,20 +3677,20 @@ OWiEditImpulse(
 	}
 
 	return;
-	
+
 error:
 	if (start_ref)
 	{
 		BFrFileRef_Dispose(start_ref);
 		start_ref = NULL;
 	}
-	
+
 	if (file_ref)
 	{
 		BFrFileRef_Dispose(file_ref);
 		file_ref = NULL;
 	}
-	
+
 	if (ip.parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(ip.parent_dir_ref);
@@ -3718,10 +3718,10 @@ OWiListDirectory(
 {
 	UUtError					error;
 	BFtFileIterator				*file_iterator;
-	
+
 	// reset the listbox
 	WMrListBox_Reset(inListBox);
-	
+
 	// create a file iterator
 	error =
 		BFrDirectory_FileIterator_New(
@@ -3730,7 +3730,7 @@ OWiListDirectory(
 			NULL,
 			&file_iterator);
 	UUmError_ReturnOnError(error);
-	
+
 	// fill in the listbox
 	while (1)
 	{
@@ -3738,32 +3738,32 @@ OWiListDirectory(
 		char					name[BFcMaxFileNameLength];
 		UUtUns32				index;
 		UUtBool					is_dir;
-		
+
 		// get the next file or dir ref
 		error = BFrDirectory_FileIterator_Next(file_iterator, &ref);
 		if (error != UUcError_None) { break; }
-		
+
 		// find out if this ref is a directory
 		is_dir = BFrFileRef_IsDirectory(&ref);
-		
+
 		if ((!is_dir) && (UUrString_Compare_NoCase(inSuffix, BFrFileRef_GetSuffixName(&ref)) != 0)) {
 			continue;
 		}
-		
+
 		// add the file or dir to the listbox
 		UUrString_Copy(name, BFrFileRef_GetLeafName(&ref), BFcMaxFileNameLength);
 		UUrString_StripExtension(name);
 		index = WMrListBox_AddString(inListBox, name);
 		WMrListBox_SetItemData(inListBox, (UUtUns32)is_dir, index);
 	}
-	
+
 	// delete the file iterator
 	BFrDirectory_FileIterator_Delete(file_iterator);
 	file_iterator = NULL;
-	
+
 	// set the selection to the first item in the list
 	WMrListBox_SetSelection(inListBox, UUcTrue, 0);
-	
+
 	return UUcError_None;
 }
 
@@ -3778,7 +3778,7 @@ OWiSetPopup(
 	BFtFileRef					*dir_ref;
 	BFtFileRef					*parent;
 	UUtUns16					i;
-	
+
 	binary_sound_dir_ref = NULL;
 	dir_ref = NULL;
 
@@ -3791,11 +3791,11 @@ OWiSetPopup(
 
 	WMrPopupMenu_Reset(inPopup);
 	i = 0;
-	
+
 	while (1)
 	{
 		WMtMenuItemData				item_data;
-		
+
 		// add the current directory name to the popup
 		item_data.flags = WMcMenuItemFlag_Enabled;
 		item_data.id = i++;
@@ -3813,15 +3813,15 @@ OWiSetPopup(
 		dir_ref = parent;
 		parent = NULL;
 	}
-	
+
 	WMrPopupMenu_SetSelection(inPopup, 0);
-	
+
 	BFrFileRef_Dispose(binary_sound_dir_ref);
 	binary_sound_dir_ref = NULL;
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -3842,7 +3842,7 @@ OWiSM_EnableButtons(
 	UUtBool						is_dir;
 	UUtBool						is_item;
 	OWtSMData					*sm_data;
-	
+
 	sm_data = (OWtSMData*)WMrDialog_GetUserData(inDialog);
 	if (sm_data->dir_ref == NULL) { return; }
 
@@ -3851,28 +3851,28 @@ OWiSM_EnableButtons(
 	result = WMrListBox_GetItemData(listbox, selected_index);
 	if (result == 0) { is_dir = UUcFalse; } else { is_dir = UUcTrue; }
 	is_item = is_dir == UUcFalse;
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSM_Btn_EditItem);
 	WMrWindow_SetEnabled(button, is_item);
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSM_Btn_DeleteItem);
 	WMrWindow_SetEnabled(button, is_item);
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSM_Btn_PlayItem);
 	if (button != NULL) { WMrWindow_SetEnabled(button, is_item); }
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSM_Btn_CopyItem);
 	WMrWindow_SetEnabled(button, is_item);
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSM_Btn_PasteItem);
 	WMrWindow_SetEnabled(button, sm_data->can_paste);
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSM_Btn_NewCategory);
 	WMrWindow_SetEnabled(button, UUcTrue);
 
 	button = WMrDialog_GetItemByID(inDialog, OWcSM_Btn_RenameCategory);
 	WMrWindow_SetEnabled(button, UUcFalse);
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSM_Btn_DeleteCategory);
 	WMrWindow_SetEnabled(button, UUcFalse);
 }
@@ -3885,13 +3885,13 @@ OWiSM_GetDirectoryRef(
 	UUtError					error;
 	BFtFileRef					*out_ref;
 	OWtSMData					*sm_data;
-	
+
 	sm_data = (OWtSMData*)WMrDialog_GetUserData(inDialog);
 	if (sm_data->dir_ref == NULL) { return NULL; }
-	
+
 	error = BFrFileRef_Duplicate(sm_data->dir_ref, &out_ref);
 	if (error != UUcError_None) { return NULL; }
-	
+
 	return out_ref;
 }
 
@@ -3901,10 +3901,10 @@ OWiSM_GetExtension(
 	WMtDialog					*inDialog)
 {
 	OWtSMData					*sm_data;
-	
+
 	sm_data = (OWtSMData*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(sm_data);
-	
+
 	return sm_data->extension;
 }
 
@@ -3914,10 +3914,10 @@ OWiSM_GetType(
 	WMtDialog					*inDialog)
 {
 	OWtSMData					*sm_data;
-	
+
 	sm_data = (OWtSMData*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(sm_data);
-	
+
 	return sm_data->type;
 }
 
@@ -3931,13 +3931,13 @@ OWiSM_SetDirectoryRef(
 	BFtFileRef					*old_ref;
 	BFtFileRef					*copy_ref;
 	OWtSMData					*sm_data;
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	// get the sound manipulator data
 	sm_data = (OWtSMData*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(sm_data);
-	
+
 	// delete the old ref
 	old_ref = sm_data->dir_ref;
 	if (old_ref != NULL)
@@ -3945,20 +3945,20 @@ OWiSM_SetDirectoryRef(
 		BFrFileRef_Dispose(old_ref);
 		old_ref = NULL;
 	}
-	
+
 	if (inDirRef != NULL)
 	{
 		error = BFrFileRef_Duplicate(inDirRef, &copy_ref);
-		if (error != UUcError_None) { copy_ref = NULL; } 
+		if (error != UUcError_None) { copy_ref = NULL; }
 	}
 	else
 	{
 		copy_ref = NULL;
 	}
-	
+
 	// set the new ref
 	sm_data->dir_ref = copy_ref;
-	
+
 	error = OWiSetPopup(WMrDialog_GetItemByID(inDialog, OWcSM_PM_Category), copy_ref);
 
 	UUrMemory_Block_VerifyList();
@@ -3974,35 +3974,35 @@ OWiSM_Category_Open(
 	BFtFileRef					*parent_dir_ref;
 	BFtFileRef					*open_dir_ref;
 	char						name[BFcMaxFileNameLength];
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	parent_dir_ref = NULL;
 	open_dir_ref = NULL;
 	name[0] = '\0';
-	
+
 	// get the parent dir ref
 	parent_dir_ref = OWiSM_GetDirectoryRef(inDialog);
 	if (parent_dir_ref == NULL) { return; }
-	
+
 	// make a dir ref for the directory being opened
 	WMrListBox_GetText(inListBox, name, (UUtUns32)(-1));
 	error = BFrFileRef_DuplicateAndAppendName(parent_dir_ref, name, &open_dir_ref);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// fill in the listbox
 	error = OWiListDirectory(inListBox, open_dir_ref, OWiSM_GetExtension(inDialog));
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	OWiSM_SetDirectoryRef(inDialog, open_dir_ref);
-	
+
 cleanup:
 	if (parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(parent_dir_ref);
 		parent_dir_ref = NULL;
 	}
-	
+
 	if (open_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(open_dir_ref);
@@ -4023,11 +4023,11 @@ OWiSM_Category_New(
 	BFtFileRef					*new_dir_ref;
 	char						name[BFcMaxFileNameLength];
 	char						*error_string;
-	
+
 	parent_dir_ref = NULL;
 	new_dir_ref = NULL;
 	error_string = "Unable to create the category.";
-	
+
 	// get the name of the category
 	UUrMemory_Clear(name, BFcMaxFileNameLength);
 	error =
@@ -4038,25 +4038,25 @@ OWiSM_Category_New(
 			(UUtUns32)name,
 			&message);
 	if ((error != UUcError_None) || (message == OWcCN_Btn_Cancel)) { return; }
-	
+
 	// get the directory to place the category in
 	parent_dir_ref = OWiSM_GetDirectoryRef(inDialog);
-	
+
 	// get a file ref for the directory
 	error = BFrFileRef_DuplicateAndAppendName(parent_dir_ref, name, &new_dir_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// see if this directory already exists
 	if (BFrFileRef_FileExists(new_dir_ref) == UUcTrue)
 	{
 		error_string = "A category with this name already exists.";
 		goto error;
 	}
-	
+
 	// create the category as a directory on disk
 	error = BFrDirectory_Create(new_dir_ref, NULL);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// set the directory as the focus
 	OWiSM_SetDirectoryRef(inDialog, new_dir_ref);
 	OWiListDirectory(
@@ -4064,29 +4064,29 @@ OWiSM_Category_New(
 		new_dir_ref,
 		OWiSM_GetExtension(inDialog));
 	OWiSM_EnableButtons(inDialog);
-	
+
 	// cleanup
 	BFrFileRef_Dispose(parent_dir_ref);
 	parent_dir_ref = NULL;
-	
+
 	BFrFileRef_Dispose(new_dir_ref);
 	new_dir_ref = NULL;
-	
+
 	return;
-	
+
 error:
 	if (parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(parent_dir_ref);
 		parent_dir_ref = NULL;
 	}
-	
+
 	if (new_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(new_dir_ref);
 		new_dir_ref = NULL;
 	}
-	
+
 	WMrDialog_MessageBox(
 		inDialog,
 		"Error",
@@ -4101,7 +4101,7 @@ OWiSM_Category_Delete_Contents(
 {
 	UUtError					error;
 	BFtFileIterator				*file_iterator;
-	
+
 	error =
 		BFrDirectory_FileIterator_New(
 			inDirRef,
@@ -4109,26 +4109,26 @@ OWiSM_Category_Delete_Contents(
 			NULL,
 			&file_iterator);
 	if (error != UUcError_None) { return; }
-	
+
 	while (1)
 	{
 		BFtFileRef					file_ref;
 		char						name[BFcMaxFileNameLength];
 		char						ext[BFcMaxFileNameLength];
-		
+
 		error = BFrDirectory_FileIterator_Next(file_iterator, &file_ref);
 		if (error != UUcError_None) { break; }
-		
+
 		if (BFrFileRef_IsDirectory(&file_ref) == UUcTrue)
 		{
 			OWiSM_Category_Delete_Contents(&file_ref);
 			continue;
 		}
-		
+
 		UUrString_Copy(name, BFrFileRef_GetLeafName(&file_ref), BFcMaxFileNameLength);
 		UUrString_Copy(ext, strrchr(name, '.'), BFcMaxFileNameLength);
 		UUrString_StripExtension(name);
-		
+
 		if (UUrString_Compare_NoCase(ext, ".amb") == 0)
 		{
 			OSrAmbient_Delete(name);
@@ -4142,7 +4142,7 @@ OWiSM_Category_Delete_Contents(
 			OSrGroup_Delete(name);
 		}
 	}
-	
+
 	BFrDirectory_FileIterator_Delete(file_iterator);
 	file_iterator = NULL;
 }
@@ -4161,7 +4161,7 @@ OWiSM_Category_Delete(
 
 	parent_dir_ref = NULL;
 	delete_dir_ref = NULL;
-	
+
 	// make sure the user is aware of what is about to happen
 	result =
 		WMrDialog_MessageBox(
@@ -4170,26 +4170,26 @@ OWiSM_Category_Delete(
 			"Are you sure you want to delete the category, and all its contents?",
 			WMcMessageBoxStyle_Yes_No);
 	if (result == WMcDialogItem_No) { return; }
-	
+
 	// get the directory to delete the category from
 	parent_dir_ref = OWiSM_GetDirectoryRef(inDialog);
-	
+
 	// get the name of the category
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items);
 	WMrListBox_GetText(listbox, name, (UUtUns32)(-1));
-	
+
 	// create a ref
 	error = BFrFileRef_DuplicateAndAppendName(parent_dir_ref, name, &delete_dir_ref);
 	if (error != UUcError_None) { goto error; }
-	
-	// delete the .amb, .imp, and .grp sounds seperately in order to 
+
+	// delete the .amb, .imp, and .grp sounds seperately in order to
 	// update other systems that may use them.
 //	OWiSM_Category_Delete_Contents(delete_dir_ref);
-	
+
 	// delete the directory and any remaining contents
 	error = BFrDirectory_DeleteDirectoryAndContents(delete_dir_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	// set the directory as the focus
 	OWiSM_SetDirectoryRef(inDialog, parent_dir_ref);
 	OWiListDirectory(
@@ -4197,29 +4197,29 @@ OWiSM_Category_Delete(
 		parent_dir_ref,
 		OWiSM_GetExtension(inDialog));
 	OWiSM_EnableButtons(inDialog);
-	
+
 	// cleanup
 	BFrFileRef_Dispose(parent_dir_ref);
 	parent_dir_ref = NULL;
-	
+
 	BFrFileRef_Dispose(delete_dir_ref);
 	delete_dir_ref = NULL;
-	
+
 	return;
-	
+
 error:
 	if (parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(parent_dir_ref);
 		parent_dir_ref = NULL;
 	}
-		
+
 	if (delete_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(delete_dir_ref);
 		delete_dir_ref = NULL;
 	}
-	
+
 	WMrDialog_MessageBox(
 		inDialog,
 		"Error",
@@ -4235,10 +4235,10 @@ OWiSM_Item_Copy(
 	OWtSMData					*sm_data;
 	WMtWindow					*listbox;
 	char						selected_name[BFcMaxFileNameLength];
-	
+
 	sm_data = (OWtSMData*)WMrDialog_GetUserData(inDialog);
 	if (sm_data->dir_ref == NULL) { return; }
-	
+
 	// get the name of the selected item the user wants to delete
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items);
 	WMrListBox_GetText(listbox, selected_name, (UUtUns32)(-1));
@@ -4248,37 +4248,37 @@ OWiSM_Item_Copy(
 		case OWcSMType_Ambient:
 		{
 			SStAmbient			*ambient;
-			
+
 			ambient = SSrAmbient_GetByName(selected_name);
-			
+
 			UUrMemory_MoveFast(ambient, &sm_data->u.ambient, sizeof(SStAmbient));
 			UUrMemory_Clear(&sm_data->u.ambient.ambient_name, SScMaxNameLength);
 		}
 		break;
-		
+
 		case OWcSMType_Group:
 		{
 			SStGroup			*group;
-			
+
 			group = SSrGroup_GetByName(selected_name);
-			
+
 			UUrMemory_MoveFast(group, &sm_data->u.group, sizeof(SStGroup));
 			UUrMemory_Clear(&sm_data->u.group.group_name, SScMaxNameLength);
 		}
 		break;
-		
+
 		case OWcSMType_Impulse:
 		{
 			SStImpulse			*impulse;
-			
+
 			impulse = SSrImpulse_GetByName(selected_name);
-			
+
 			UUrMemory_MoveFast(impulse, &sm_data->u.impulse, sizeof(SStImpulse));
 			UUrMemory_Clear(&sm_data->u.impulse.impulse_name, SScMaxNameLength);
 		}
 		break;
 	}
-	
+
 	sm_data->can_paste = UUcTrue;
 }
 
@@ -4307,24 +4307,24 @@ OWiSM_Item_Delete(
 
 	parent_dir_ref = NULL;
 	file_ref = NULL;
-	
+
 	// get the name of the selected item the user wants to delete
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items);
 	WMrListBox_GetText(listbox, selected_name, (UUtUns32)(-1));
-	
+
 	// get the parent directory
 	parent_dir_ref = OWiSM_GetDirectoryRef(inDialog);
 	if (parent_dir_ref == NULL) { goto error; }
-	
+
 	// delete the file
 	file_ref = NULL;
 	sprintf(file_name, "%s.%s", selected_name, OWiSM_GetExtension(inDialog));
 	error = BFrFileRef_DuplicateAndAppendName(parent_dir_ref, file_name, &file_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 	error = BFrFile_Delete(file_ref);
 	if (error != UUcError_None) { goto error; }
-	
+
 UUrMemory_Block_VerifyList();
 
 	// delete the selected item
@@ -4333,29 +4333,29 @@ UUrMemory_Block_VerifyList();
 		case OWcSMType_Ambient:
 			OSrAmbient_Delete(selected_name);
 		break;
-		
+
 		case OWcSMType_Group:
 			OSrGroup_Delete(selected_name);
 		break;
-		
+
 		case OWcSMType_Impulse:
 			OSrImpulse_Delete(selected_name);
 		break;
 	}
-	
+
 UUrMemory_Block_VerifyList();
 
 	// update the listbox
 	OWiListDirectory(listbox, parent_dir_ref, OWiSM_GetExtension(inDialog));
 	OWiSM_EnableButtons(inDialog);
-	
+
 	// cleanup
 	BFrFileRef_Dispose(parent_dir_ref);
 	parent_dir_ref = NULL;
 
 	BFrFileRef_Dispose(file_ref);
 	file_ref = NULL;
-	
+
 UUrMemory_Block_VerifyList();
 
 	return;
@@ -4366,7 +4366,7 @@ error:
 		BFrFileRef_Dispose(parent_dir_ref);
 		parent_dir_ref = NULL;
 	}
-	
+
 	if ((file_ref != NULL) && (BFrFileRef_IsLocked(file_ref) == UUcTrue))
 	{
 		error_string = "Unable to delete the item because the file is locked.";
@@ -4397,22 +4397,22 @@ OWiSM_Item_Edit_Ambient(
 	char						name[BFcMaxFileNameLength];
 	UUtUns32					message;
 	OWtAmbientProp				ap;
-	
+
 	// get the name of the ambient sound the user wants to edit
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items);
 	WMrListBox_GetText(listbox, name, (UUtUns32)(-1));
-	
+
 	// get the ambient to edit
 	ambient = OSrAmbient_GetByName(name);
 	if (ambient == NULL) { return; }
-	
+
 	// set up the ambient properties
 	UUrMemory_Clear(&ap, sizeof(OWtAmbientProp));
 	ap.parent_dir_ref = OWiSM_GetDirectoryRef(inDialog);
 	ap.ambient = ambient;
-	
+
 	if (ap.parent_dir_ref == NULL) { goto error; }
-	
+
 	// edit the ambient
 	error =
 		WMrDialog_ModalBegin(
@@ -4427,14 +4427,14 @@ OWiSM_Item_Edit_Ambient(
 	OWiListDirectory(listbox, ap.parent_dir_ref, OWiSM_GetExtension(inDialog));
 	WMrListBox_SelectString(listbox, name);
 	OWiSM_EnableButtons(inDialog);
-	
+
 	// cleanup
 	if (ap.parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(ap.parent_dir_ref);
 		ap.parent_dir_ref = NULL;
 	}
-	
+
 	return;
 
 error:
@@ -4456,22 +4456,22 @@ OWiSM_Item_Edit_Group(
 	WMtWindow					*listbox;
 	SStGroup					*group;
 	char						name[BFcMaxFileNameLength];
-	
+
 	// get the name of the group the user wants to edit
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items);
 	WMrListBox_GetText(listbox, name, (UUtUns32)(-1));
-	
+
 	// get the group to edit
 	group = OSrGroup_GetByName(name);
 	if (group == NULL) { return; }
-	
+
 	// set up the group properties
 	UUrMemory_Clear(&gp, sizeof(OWtGroupProp));
 	gp.parent_dir_ref = OWiSM_GetDirectoryRef(inDialog);
 	gp.group = group;
-	
+
 	if (gp.parent_dir_ref == NULL) { goto error; }
-	
+
 	// edit the group
 	error =
 		WMrDialog_ModalBegin(
@@ -4486,14 +4486,14 @@ OWiSM_Item_Edit_Group(
 	OWiListDirectory(listbox, gp.parent_dir_ref, OScGroupSuffix);
 	WMrListBox_SelectString(listbox, name);
 	OWiSM_EnableButtons(inDialog);
-	
+
 	// cleanup
 	if (gp.parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(gp.parent_dir_ref);
 		gp.parent_dir_ref = NULL;
 	}
-	
+
 	return;
 
 error:
@@ -4515,22 +4515,22 @@ OWiSM_Item_Edit_Impulse(
 	char						name[BFcMaxFileNameLength];
 	UUtUns32					message;
 	OWtImpulseProp				ip;
-	
+
 	// get the name of the impulse sound the user wants to edit
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items);
 	WMrListBox_GetText(listbox, name, (UUtUns32)(-1));
-	
+
 	// get the impulse sound to edit
 	impulse = OSrImpulse_GetByName(name);
 	if (impulse == NULL) { return; }
-	
+
 	// set up the impulse properties
 	UUrMemory_Clear(&ip, sizeof(OWtImpulseProp));
 	ip.parent_dir_ref = OWiSM_GetDirectoryRef(inDialog);
 	ip.impulse = impulse;
-	
+
 	if (ip.parent_dir_ref == NULL) { goto error; }
-	
+
 	// edit the impulse sound
 	error =
 		WMrDialog_ModalBegin(
@@ -4545,14 +4545,14 @@ OWiSM_Item_Edit_Impulse(
 	OWiListDirectory(listbox, ip.parent_dir_ref, OWiSM_GetExtension(inDialog));
 	WMrListBox_SelectString(listbox, name);
 	OWiSM_EnableButtons(inDialog);
-	
+
 	// cleanup
 	if (ip.parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(ip.parent_dir_ref);
 		ip.parent_dir_ref = NULL;
 	}
-	
+
 	return;
 
 error:
@@ -4573,11 +4573,11 @@ OWiSM_Item_Edit(
 		case OWcSMType_Ambient:
 			OWiSM_Item_Edit_Ambient(inDialog);
 		break;
-		
+
 		case OWcSMType_Group:
 			OWiSM_Item_Edit_Group(inDialog);
 		break;
-		
+
 		case OWcSMType_Impulse:
 			OWiSM_Item_Edit_Impulse(inDialog);
 		break;
@@ -4592,11 +4592,11 @@ OWiSM_Item_New_Ambient(
 	UUtError					error;
 	UUtUns32					message;
 	OWtAmbientProp				ap;
-	
+
 	// set up the ambient sound properties
 	ap.parent_dir_ref = OWiSM_GetDirectoryRef(inDialog);
 	ap.ambient = NULL;
-	
+
 	if (ap.parent_dir_ref == NULL)
 	{
 		WMrDialog_MessageBox(
@@ -4606,7 +4606,7 @@ OWiSM_Item_New_Ambient(
 			WMcMessageBoxStyle_OK);
 		return;
 	}
-	
+
 	// create the ambient sound
 	error =
 		WMrDialog_ModalBegin(
@@ -4622,25 +4622,25 @@ OWiSM_Item_New_Ambient(
 			"Error",
 			"Unable to create the new ambient sound",
 			WMcMessageBoxStyle_OK);
-			
+
 		return;
 	}
-	
+
 	if (message == OWcASP_Btn_Save)
 	{
 		WMtWindow					*listbox;
-		
+
 		listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items);
-		
+
 		// fill in the listbox
 		error = OWiListDirectory(listbox, ap.parent_dir_ref, OWiSM_GetExtension(inDialog));
 		if (error != UUcError_None) { return; }
-		
+
 		// select the new group
 		WMrListBox_SelectString(listbox, ap.ambient->ambient_name);
 		OWiSM_EnableButtons(inDialog);
 	}
-	
+
 	if (ap.parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(ap.parent_dir_ref);
@@ -4656,11 +4656,11 @@ OWiSM_Item_New_Group(
 	UUtError					error;
 	UUtUns32					message;
 	OWtGroupProp				gp;
-	
+
 	// set up the group properties
 	gp.parent_dir_ref = OWiSM_GetDirectoryRef(inDialog);
 	gp.group = NULL;
-	
+
 	if (gp.parent_dir_ref == NULL)
 	{
 		WMrDialog_MessageBox(
@@ -4670,7 +4670,7 @@ OWiSM_Item_New_Group(
 			WMcMessageBoxStyle_OK);
 		return;
 	}
-	
+
 	// create the group
 	error =
 		WMrDialog_ModalBegin(
@@ -4686,25 +4686,25 @@ OWiSM_Item_New_Group(
 			"Error",
 			"Unable to create the new group",
 			WMcMessageBoxStyle_OK);
-			
+
 		return;
 	}
-	
+
 	if (message == OWcSGP_Btn_Save)
 	{
 		WMtWindow					*listbox;
-		
+
 		listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items);
-		
+
 		// fill in the listbox
 		error = OWiListDirectory(listbox, gp.parent_dir_ref, OWiSM_GetExtension(inDialog));
 		if (error != UUcError_None) { return; }
-		
+
 		// select the new group
 		WMrListBox_SelectString(listbox, gp.group->group_name);
 		OWiSM_EnableButtons(inDialog);
 	}
-	
+
 	if (gp.parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(gp.parent_dir_ref);
@@ -4720,11 +4720,11 @@ OWiSM_Item_New_Impulse(
 	UUtError					error;
 	UUtUns32					message;
 	OWtImpulseProp				ip;
-	
+
 	// set up the group properties
 	ip.parent_dir_ref = OWiSM_GetDirectoryRef(inDialog);
 	ip.impulse = NULL;
-	
+
 	if (ip.parent_dir_ref == NULL)
 	{
 		WMrDialog_MessageBox(
@@ -4734,7 +4734,7 @@ OWiSM_Item_New_Impulse(
 			WMcMessageBoxStyle_OK);
 		return;
 	}
-	
+
 	// create the impulse sound
 	error =
 		WMrDialog_ModalBegin(
@@ -4750,25 +4750,25 @@ OWiSM_Item_New_Impulse(
 			"Error",
 			"Unable to create the new group",
 			WMcMessageBoxStyle_OK);
-			
+
 		return;
 	}
-	
+
 	if (message == OWcISP_Btn_Save)
 	{
 		WMtWindow					*listbox;
-		
+
 		listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items);
-		
+
 		// fill in the listbox
 		error = OWiListDirectory(listbox, ip.parent_dir_ref, OWiSM_GetExtension(inDialog));
 		if (error != UUcError_None) { return; }
-		
+
 		// select the new impulse sound
 		WMrListBox_SelectString(listbox, ip.impulse->impulse_name);
 		OWiSM_EnableButtons(inDialog);
 	}
-	
+
 	if (ip.parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(ip.parent_dir_ref);
@@ -4786,11 +4786,11 @@ OWiSM_Item_New(
 		case OWcSMType_Ambient:
 			OWiSM_Item_New_Ambient(inDialog);
 		break;
-		
+
 		case OWcSMType_Group:
 			OWiSM_Item_New_Group(inDialog);
 		break;
-		
+
 		case OWcSMType_Impulse:
 			OWiSM_Item_New_Impulse(inDialog);
 		break;
@@ -4809,35 +4809,35 @@ OWiSM_Item_Paste(
 	BFtFileRef					*dir_ref;
 	char						name[SScMaxNameLength];
 	WMtWindow					*listbox;
-	
+
 	sm_data = (OWtSMData*)WMrDialog_GetUserData(inDialog);
 	if (sm_data->dir_ref == NULL) { goto error; }
-	
+
 	dir_ref = OWiSM_GetDirectoryRef(inDialog);
 	if (dir_ref == NULL) { goto error; }
-	
+
 	done = UUcFalse;
 	i = 1;
 	do
 	{
 		sprintf(name, "temp_%03d", i);
-		
+
 		switch (OWiSM_GetType(inDialog))
 		{
 			case OWcSMType_Ambient:
 			{
 				SStAmbient			*ambient;
-				
+
 				ambient = OSrAmbient_GetByName(name);
 				if (ambient == NULL)
 				{
 					// create the new ambient sound
 					error = OSrAmbient_New(name, &ambient);
 					if (error != UUcError_None) { goto error; }
-					
+
 					// set all of the data for the ambient sound
 					SSrAmbient_Copy(&sm_data->u.ambient, ambient);
-					
+
 					// save the new ambient sound
 					OSrAmbient_Save(ambient, dir_ref);
 
@@ -4845,21 +4845,21 @@ OWiSM_Item_Paste(
 				}
 			}
 			break;
-			
+
 			case OWcSMType_Group:
 			{
 				SStGroup			*group;
-				
+
 				group = OSrGroup_GetByName(name);
 				if (group == NULL)
 				{
 					// create the new sound group
 					error = OSrGroup_New(name, &group);
 					if (error != UUcError_None) { goto error; }
-					
+
 					// set all of the data for the sound group
 					SSrGroup_Copy(&sm_data->u.group, group);
-					
+
 					// save the new sound group
 					OSrGroup_Save(group, dir_ref);
 
@@ -4867,21 +4867,21 @@ OWiSM_Item_Paste(
 				}
 			}
 			break;
-			
+
 			case OWcSMType_Impulse:
 			{
 				SStImpulse			*impulse;
-				
+
 				impulse = OSrImpulse_GetByName(name);
 				if (impulse == NULL)
 				{
 					// create the new impulse sound
 					error = OSrImpulse_New(name, &impulse);
 					if (error != UUcError_None) { goto error; }
-					
+
 					// set all of the data for the impulse sound
 					SSrImpulse_Copy(&sm_data->u.impulse, impulse);
-					
+
 					// save the new impulse sound
 					OSrImpulse_Save(impulse, dir_ref);
 
@@ -4890,22 +4890,22 @@ OWiSM_Item_Paste(
 			}
 			break;
 		}
-		
+
 		i++;
 	}
 	while (done == UUcFalse);
-	
+
 	// refresh the listbox and select the item that was just added
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items),
 	OWiListDirectory(listbox, dir_ref, sm_data->extension);
 	WMrListBox_SelectString(listbox, name);
-	
+
 	if (dir_ref)
 	{
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	return;
 
 error:
@@ -4914,7 +4914,7 @@ error:
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	WMrDialog_MessageBox(
 		inDialog,
 		"Error",
@@ -4933,41 +4933,41 @@ OWiSM_Item_Play(
 	// get the name of the group the user wants to edit
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items);
 	WMrListBox_GetText(listbox, name, (UUtUns32)(-1));
-	
+
 	switch (OWiSM_GetType(inDialog))
 	{
 		case OWcSMType_Ambient:
 		break;
-		
+
 		case OWcSMType_Group:
 		{
 			SStGroup					*group;
-		
+
 			// get the group to play
 			group = OSrGroup_GetByName(name);
 			if (group == NULL) { break; }
-			
+
 			// play the group
 			SSrGroup_Play(group, NULL, NULL, NULL);
 		}
 		break;
-		
+
 		case OWcSMType_Impulse:
 		{
 			SStImpulse					*impulse;
 			M3tPoint3D					position;
 			float						volume;
-			
+
 			// get the impulse to play
 			impulse = OSrImpulse_GetByName(name);
 			if ((impulse == NULL) || (impulse->impulse_group == NULL)) { break; }
-			
+
 			MUmVector_Set(position, 1.0f, 0.0f, 0.0f);
 			SSrListener_SetPosition(&position, &position);
-			
+
 			MUmVector_Set(position, 0.0f, 0.0f, 1.0f);
 			volume = 1.0f;
-			
+
 			SSrImpulse_Play(
 				impulse,
 				&position,
@@ -4989,62 +4989,62 @@ OWiSM_InitDialog(
 	OWtSMData					*sm_data;
 	OWtSMType					type;
 	BFtFileRef					*dir_ref;
-	
+
 	// get the type
 	type = (OWtSMType)WMrDialog_GetUserData(inDialog);
-	
-	// allocate memory for the 
+
+	// allocate memory for the
 	sm_data = UUrMemory_Block_New(sizeof(OWtSMData));
 	if (sm_data == NULL)
 	{
 		WMrDialog_ModalEnd(inDialog, 0);
 		return;
 	}
-	
+
 	WMrDialog_SetUserData(inDialog, (UUtUns32)sm_data);
-	
+
 	// set up the sm_data
 	sm_data->type = type;
 	sm_data->dir_ref = NULL;
 	sm_data->can_paste = UUcFalse;
-	
+
 	switch (sm_data->type)
 	{
 		case OWcSMType_Ambient:
 			sm_data->extension = OScAmbientSuffix;
 		break;
-		
+
 		case OWcSMType_Group:
 			sm_data->extension = OScGroupSuffix;
 		break;
-		
+
 		case OWcSMType_Impulse:
 			sm_data->extension = OScImpulseSuffix;
 		break;
 	}
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items);
 	if (listbox == NULL) { goto cleanup; }
-	
+
 	// get the directory ref
 	error = OSrGetSoundBinaryDirectory(&dir_ref);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// fill in the listbox
 	error = OWiListDirectory(listbox, dir_ref, sm_data->extension);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// set the directory ref
 	OWiSM_SetDirectoryRef(inDialog, dir_ref);
-	
+
 	OWiSM_EnableButtons(inDialog);
 
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return;
-	
+
 cleanup:
 	if (dir_ref)
 	{
@@ -5063,17 +5063,17 @@ OWiSM_HandleCommand(
 {
 	UUtUns16					control_id;
 	UUtUns16					command_type;
-	
+
 	control_id = UUmLowWord(inParam);
 	command_type = UUmHighWord(inParam);
-	
+
 	switch (control_id)
 	{
 		case WMcDialogItem_Cancel:
 			if (command_type != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, 0);
 		break;
-		
+
 		case OWcSM_LB_Items:
 			if (command_type == LBcNotify_SelectionChanged)
 			{
@@ -5082,7 +5082,7 @@ OWiSM_HandleCommand(
 			else if (command_type == WMcNotify_DoubleClick)
 			{
 				UUtUns32				item_data;
-				
+
 				item_data = WMrListBox_GetItemData(inControl, (UUtUns32)(-1));
 				if (item_data != 0)
 				{
@@ -5096,48 +5096,48 @@ OWiSM_HandleCommand(
 				}
 			}
 		break;
-		
+
 		case OWcSM_Btn_NewItem:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSM_Item_New(inDialog);
 		break;
-		
+
 		case OWcSM_Btn_EditItem:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSM_Item_Edit(inDialog);
 		break;
-		
+
 		case OWcSM_Btn_PlayItem:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSM_Item_Play(inDialog);
 		break;
-		
+
 		case OWcSM_Btn_DeleteItem:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSM_Item_Delete(inDialog);
 		break;
-		
+
 		case OWcSM_Btn_CopyItem:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSM_Item_Copy(inDialog);
 		break;
-		
+
 		case OWcSM_Btn_PasteItem:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSM_Item_Paste(inDialog);
 		break;
-		
+
 		case OWcSM_Btn_NewCategory:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSM_Category_New(inDialog);
 		break;
-		
+
 		case OWcSM_Btn_DeleteCategory:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSM_Category_Delete(inDialog);
 		break;
 	}
-	
+
 	OWiSM_EnableButtons(inDialog);
 }
 
@@ -5147,9 +5147,9 @@ OWiSM_HandleDestroy(
 	WMtDialog					*inDialog)
 {
 	OWtSMData					*sm_data;
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	sm_data = (OWtSMData*)WMrDialog_GetUserData(inDialog);
 	if (sm_data)
 	{
@@ -5158,11 +5158,11 @@ OWiSM_HandleDestroy(
 			BFrFileRef_Dispose(sm_data->dir_ref);
 			sm_data->dir_ref = NULL;
 		}
-		
+
 		UUrMemory_Block_Delete(sm_data);
 		WMrDialog_SetUserData(inDialog, 0);
 	}
-	
+
 	UUrMemory_Block_VerifyList();
 }
 
@@ -5176,35 +5176,35 @@ OWiSM_HandleMenuCommand(
 	UUtUns32					i;
 	BFtFileRef					*dir_ref;
 	UUtError					error;
-	
+
 	// if inItemID == 0 then the popup menu is still on the same item
 	// so no updating needs to be done
 	if (inItemID == 0) { return; }
-	
+
 	// get the dir ref of the current item in the popup menu
 	dir_ref = OWiSM_GetDirectoryRef(inDialog);
 	if (dir_ref == NULL) { return; }
-	
+
 	// go up the hierarchy of directories until the desired directory is found
 	for (i = 0; i < (UUtUns32)inItemID; i++)
 	{
 		BFtFileRef					*parent_ref;
-		
+
 		error = BFrFileRef_GetParentDirectory(dir_ref, &parent_ref);
 		if (error != UUcError_None) { return; }
-		
+
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = parent_ref;
 	}
-	
+
 	// fill in the listbox
 	OWiListDirectory(
 		WMrDialog_GetItemByID(inDialog, OWcSM_LB_Items),
 		dir_ref,
 		OWiSM_GetExtension(inDialog));
-	
+
 	OWiSM_SetDirectoryRef(inDialog, dir_ref);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
 }
@@ -5220,23 +5220,23 @@ OWiSM_HandleDrawItem(
 	UUtInt16					line_width;
 	UUtInt16					line_height;
 	PStPartSpec					*partspec;
-	
+
 	// get a pointer to the partspec_ui
 	partspec_ui = PSrPartSpecUI_GetActive();
 	UUmAssert(partspec_ui);
-	
+
 	// set the dest
 	dest.x = inDrawItem->rect.left;
 	dest.y = inDrawItem->rect.top;
-	
+
 	// calc the width and height of the line
 	line_width = inDrawItem->rect.right - inDrawItem->rect.left;
 	line_height = inDrawItem->rect.bottom - inDrawItem->rect.top;
-	
+
 	// set the text destination
 	dest.x += 2;
 	dest.y += 1;
-	
+
 	// draw the text
 	DCrText_SetFormat(TSc_HLeft | TSc_VCenter);
 	DCrText_SetStyle(TScStyle_Plain);
@@ -5249,7 +5249,7 @@ OWiSM_HandleDrawItem(
 	{
 		partspec = partspec_ui->file;
 	}
-	
+
 	// draw the icon
 	DCrDraw_PartSpec(
 		inDrawItem->draw_context,
@@ -5259,7 +5259,7 @@ OWiSM_HandleDrawItem(
 		(line_height - 3),
 		(line_height - 3),
 		M3cMaxAlpha);
-	
+
 	// draw the name
 	dest.x += line_height + 2;
 	DCrDraw_String(
@@ -5278,39 +5278,39 @@ OWiSM_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiSM_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiSM_HandleDestroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiSM_HandleCommand(inDialog, (WMtWindow*)inParam2, inParam1);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiSM_HandleMenuCommand(
 				inDialog,
 				(WMtWindow*)inParam2,
 				UUmLowWord(inParam1));
 		break;
-		
+
 		case WMcMessage_DrawItem:
 			OWiSM_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -5321,14 +5321,14 @@ OWrSM_Display(
 {
 	UUtError					error;
 	WMtDialogID					dialog_id;
-	
+
 	switch (inType)
 	{
 		case OWcSMType_Ambient:		dialog_id = OWcDialog_Ambient_Sound_Manager; break;
 		case OWcSMType_Group:		dialog_id = OWcDialog_Sound_Group_Manager; break;
 		case OWcSMType_Impulse:		dialog_id = OWcDialog_Impulse_Sound_Manager; break;
 	}
-	
+
 	error =
 		WMrDialog_ModalBegin(
 			dialog_id,
@@ -5337,7 +5337,7 @@ OWrSM_Display(
 			inType,
 			NULL);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -5354,10 +5354,10 @@ OWiSS_EnableButtons(
 	WMtWindow					*button;
 	WMtWindow					*listbox;
 	UUtUns32					item_data;
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcSS_Btn_Select);
 	WMrWindow_SetEnabled(button, UUcFalse);
-	
+
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSS_LB_Items);
 	item_data = WMrListBox_GetItemData(listbox, (UUtUns32)(-1));
 	if (item_data != 0)
@@ -5378,13 +5378,13 @@ OWiSS_GetDirectoryRef(
 	UUtError					error;
 	BFtFileRef					*out_ref;
 	OWtSelectData				*sd;
-	
+
 	sd = (OWtSelectData*)WMrDialog_GetUserData(inDialog);
 	if (sd->dir_ref == NULL) { return NULL; }
-	
+
 	error = BFrFileRef_Duplicate(sd->dir_ref, &out_ref);
 	if (error != UUcError_None) { return NULL; }
-	
+
 	return out_ref;
 }
 
@@ -5396,7 +5396,7 @@ OWiSS_GetExtension(
 	OWtSelectData				*sd;
 
 	sd = (OWtSelectData*)WMrDialog_GetUserData(inDialog);
-	
+
 	return sd->extension;
 }
 
@@ -5410,13 +5410,13 @@ OWiSS_SetDirectoryRef(
 	BFtFileRef					*old_ref;
 	BFtFileRef					*copy_ref;
 	OWtSelectData				*sd;
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	// get the select data
 	sd = (OWtSelectData*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(sd);
-	
+
 	// delete the old ref
 	old_ref = sd->dir_ref;
 	if (old_ref != NULL)
@@ -5424,20 +5424,20 @@ OWiSS_SetDirectoryRef(
 		BFrFileRef_Dispose(old_ref);
 		old_ref = NULL;
 	}
-	
+
 	if (inDirRef != NULL)
 	{
 		error = BFrFileRef_Duplicate(inDirRef, &copy_ref);
-		if (error != UUcError_None) { copy_ref = NULL; } 
+		if (error != UUcError_None) { copy_ref = NULL; }
 	}
 	else
 	{
 		copy_ref = NULL;
 	}
-	
+
 	// set the new ref
 	sd->dir_ref = copy_ref;
-	
+
 	error = OWiSetPopup(WMrDialog_GetItemByID(inDialog, OWcSM_PM_Category), copy_ref);
 
 	UUrMemory_Block_VerifyList();
@@ -5451,25 +5451,25 @@ OWiSS_SetSelection(
 	WMtWindow					*listbox;
 	char						name[BFcMaxFileNameLength];
 	OWtSelectData				*sd;
-	
+
 	// get the select data
 	sd = (OWtSelectData*)WMrDialog_GetUserData(inDialog);
-	
+
 	// get the name of the selected item
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSS_LB_Items);
 	WMrListBox_GetText(listbox, name, (UUtUns32)(-1));
-	
+
 	// display the selected item
 	switch (sd->type)
 	{
 		case OWcSMType_Ambient:
 			sd->u.ambient = OSrAmbient_GetByName(name);
 		break;
-		
+
 		case OWcSMType_Group:
 			sd->u.group = OSrGroup_GetByName(name);
 		break;
-		
+
 		case OWcSMType_Impulse:
 			sd->u.impulse = OSrImpulse_GetByName(name);
 		break;
@@ -5486,35 +5486,35 @@ OWiSS_Category_Open(
 	BFtFileRef					*parent_dir_ref;
 	BFtFileRef					*open_dir_ref;
 	char						name[BFcMaxFileNameLength];
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	parent_dir_ref = NULL;
 	open_dir_ref = NULL;
 	name[0] = '\0';
-	
+
 	// get the parent dir ref
 	parent_dir_ref = OWiSS_GetDirectoryRef(inDialog);
 	if (parent_dir_ref == NULL) { return; }
-	
+
 	// make a dir ref for the directory being opened
 	WMrListBox_GetText(inListBox, name, (UUtUns32)(-1));
 	error = BFrFileRef_DuplicateAndAppendName(parent_dir_ref, name, &open_dir_ref);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// fill in the listbox
 	error = OWiListDirectory(inListBox, open_dir_ref, OWiSS_GetExtension(inDialog));
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	OWiSS_SetDirectoryRef(inDialog, open_dir_ref);
-	
+
 cleanup:
 	if (parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(parent_dir_ref);
 		parent_dir_ref = NULL;
 	}
-	
+
 	if (open_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(open_dir_ref);
@@ -5533,10 +5533,10 @@ OWiSS_InitDialog(
 	OWtSelectData				*sd;
 	BFtFileRef					*dir_ref;
 	WMtWindow					*listbox;
-	
+
 	// get the select data
 	sd = (OWtSelectData*)WMrDialog_GetUserData(inDialog);
-	
+
 	// get the directory ref
 	if (OWgSelectSound_DirRef == NULL)
 	{
@@ -5548,30 +5548,30 @@ OWiSS_InitDialog(
 		error = BFrFileRef_Duplicate(OWgSelectSound_DirRef, &dir_ref);
 		if (error != UUcError_None) { goto cleanup; }
 	}
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSS_LB_Items);
 	if (listbox == NULL) { goto cleanup; }
-	
+
 	// fill in the listbox
 	error = OWiListDirectory(listbox, dir_ref, sd->extension);
 	if (error != UUcError_None) { goto cleanup; }
 
 	// set the directory ref
 	OWiSS_SetDirectoryRef(inDialog, dir_ref);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return;
-	
+
 cleanup:
 	if (dir_ref)
 	{
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	WMrDialog_ModalEnd(inDialog, OWcSS_Btn_Cancel);
 }
 
@@ -5585,12 +5585,12 @@ OWiSS_HandleCommand(
 	UUtUns16					control_id;
 	UUtUns16					command_type;
 	OWtSelectData				*sd;
-	
+
 	sd = (OWtSelectData*)WMrDialog_GetUserData(inDialog);
-	
+
 	control_id = UUmLowWord(inParam);
 	command_type = UUmHighWord(inParam);
-	
+
 	switch (control_id)
 	{
 		case OWcSS_LB_Items:
@@ -5601,7 +5601,7 @@ OWiSS_HandleCommand(
 			else if (command_type == WMcNotify_DoubleClick)
 			{
 				UUtUns32				item_data;
-				
+
 				item_data = WMrListBox_GetItemData(inControl, (UUtUns32)(-1));
 				if (item_data != 0)
 				{
@@ -5616,12 +5616,12 @@ OWiSS_HandleCommand(
 				}
 			}
 		break;
-		
+
 		case OWcSS_Btn_None:
 			if (command_type != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, OWcSS_Btn_None);
 		break;
-		
+
 		case OWcSS_Btn_New:
 			if (command_type != WMcNotify_Click) { break; }
 			OWrSM_Display(sd->type);
@@ -5630,12 +5630,12 @@ OWiSS_HandleCommand(
 				sd->dir_ref,
 				sd->extension);
 		break;
-		
+
 		case OWcSS_Btn_Cancel:
 			if (command_type != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, OWcSS_Btn_Cancel);
 		break;
-		
+
 		case OWcSS_Btn_Select:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiSS_SetSelection(inDialog);
@@ -5650,7 +5650,7 @@ OWiSS_HandleDestroy(
 	WMtDialog					*inDialog)
 {
 	OWtSelectData				*sd;
-	
+
 	sd = (OWtSelectData*)WMrDialog_GetUserData(inDialog);
 	if (sd)
 	{
@@ -5661,7 +5661,7 @@ OWiSS_HandleDestroy(
 				BFrFileRef_Dispose(OWgSelectSound_DirRef);
 				OWgSelectSound_DirRef = NULL;
 			}
-			
+
 			OWgSelectSound_DirRef = sd->dir_ref;
 			sd->dir_ref = NULL;
 		}
@@ -5678,35 +5678,35 @@ OWiSS_HandleMenuCommand(
 	UUtUns32					i;
 	BFtFileRef					*dir_ref;
 	UUtError					error;
-	
+
 	// if inItemID == 0 then the popup menu is still on the same item
 	// so no updating needs to be done
 	if (inItemID == 0) { return; }
-	
+
 	// get the dir ref of the current item in the popup menu
 	dir_ref = OWiSS_GetDirectoryRef(inDialog);
 	if (dir_ref == NULL) { return; }
-	
+
 	// go up the hierarchy of directories until the desired directory is found
 	for (i = 0; i < (UUtUns32)inItemID; i++)
 	{
 		BFtFileRef					*parent_ref;
-		
+
 		error = BFrFileRef_GetParentDirectory(dir_ref, &parent_ref);
 		if (error != UUcError_None) { return; }
-		
+
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = parent_ref;
 	}
-	
+
 	// fill in the listbox
 	OWiListDirectory(
 		WMrDialog_GetItemByID(inDialog, OWcSS_LB_Items),
 		dir_ref,
 		OWiSS_GetExtension(inDialog));
-	
+
 	OWiSS_SetDirectoryRef(inDialog, dir_ref);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
 }
@@ -5720,36 +5720,36 @@ OWiSS_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiSS_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiSS_HandleDestroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiSS_HandleCommand(inDialog, (WMtWindow*)inParam2, inParam1);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiSS_HandleMenuCommand(inDialog, (WMtWindow*)inParam2, UUmLowWord(inParam1));
 		break;
-		
+
 		case WMcMessage_DrawItem:
 			OWiSM_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -5762,14 +5762,14 @@ OWrSelect_AmbientSound(
 	OWtSelectData				sd;
 	UUtUns32					message;
 	OWtSelectResult				result;
-	
+
 	sd.type = OWcSMType_Ambient;
 	sd.dir_ref = NULL;
 	sd.extension = OScAmbientSuffix;
 	sd.u.ambient = NULL;
-	
+
 	result = OWcSelectResult_Cancel;
-	
+
 	error =
 		WMrDialog_ModalBegin(
 			OWcDialog_Select_Sound,
@@ -5778,7 +5778,7 @@ OWrSelect_AmbientSound(
 			(UUtUns32)&sd,
 			&message);
 	if (error != UUcError_None) { return result; }
-	
+
 	if (message == OWcSS_Btn_Select)
 	{
 		*outAmbient = sd.u.ambient;
@@ -5794,7 +5794,7 @@ OWrSelect_AmbientSound(
 		*outAmbient = NULL;
 		result = OWcSelectResult_Cancel;
 	}
-	
+
 	return result;
 }
 
@@ -5807,12 +5807,12 @@ OWrSelect_SoundGroup(
 	OWtSelectData				sd;
 	UUtUns32					message;
 	OWtSelectResult				result;
-	
+
 	sd.type = OWcSMType_Group;
 	sd.dir_ref = NULL;
 	sd.extension = OScGroupSuffix;
 	sd.u.group = NULL;
-	
+
 	result = OWcSelectResult_Cancel;
 
 	error =
@@ -5823,7 +5823,7 @@ OWrSelect_SoundGroup(
 			(UUtUns32)&sd,
 			&message);
 	if (error != UUcError_None) { return result; }
-	
+
 	if (message == OWcSS_Btn_Select)
 	{
 		*outGroup = sd.u.group;
@@ -5839,7 +5839,7 @@ OWrSelect_SoundGroup(
 		*outGroup = NULL;
 		result = OWcSelectResult_Cancel;
 	}
-	
+
 	return result;
 }
 
@@ -5852,12 +5852,12 @@ OWrSelect_ImpulseSound(
 	OWtSelectData				sd;
 	UUtUns32					message;
 	OWtSelectResult				result;
-	
+
 	sd.type = OWcSMType_Impulse;
 	sd.dir_ref = NULL;
 	sd.extension = OScImpulseSuffix;
 	sd.u.impulse = NULL;
-	
+
 	result = OWcSelectResult_Cancel;
 
 	error =
@@ -5868,7 +5868,7 @@ OWrSelect_ImpulseSound(
 			(UUtUns32)&sd,
 			&message);
 	if (error != UUcError_None) { return result; }
-	
+
 	if (message == OWcSS_Btn_Select)
 	{
 		*outImpulse = sd.u.impulse;
@@ -5884,7 +5884,7 @@ OWrSelect_ImpulseSound(
 		*outImpulse = NULL;
 		result = OWcSelectResult_Cancel;
 	}
-	
+
 	return result;
 }
 
@@ -5904,28 +5904,28 @@ OWiViewAnimation_InitDialog(
 	WMtWindow					*listbox;
 	UUtUns32					i;
 	UUtRect						rect;
-	
+
 	// set the window's position to the left hand side of the screen
 	WMrWindow_GetRect(inDialog, &rect);
 	WMrWindow_SetLocation(inDialog, 0, rect.top);
-	
+
 	// get a pointer to the user data
 	sa = (OWtSA*)UUrMemory_Block_NewClear(sizeof(OWtSA));
 	UUmError_ReturnOnNull(sa);
 	WMrDialog_SetUserData(inDialog, (UUtUns32)sa);
-	
+
 	sa->insert_from_index = 0;
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSA_LB_Animations);
-	
+
 	// get the number of animations
 	sa->num_animations = TMrInstance_GetTagCount(TRcTemplate_Animation);
 	if (sa->num_animations == 0) { return UUcError_Generic; }
-	
+
 	sa->animation_list = (TRtAnimation**)UUrMemory_Block_New(sizeof(TRtAnimation*) * sa->num_animations);
 	if (sa->animation_list == NULL) { return UUcError_Generic; }
-	
+
 	// build the list of pointers to the animations
 	error =
 		TMrInstance_GetDataPtr_List(
@@ -5935,20 +5935,20 @@ OWiViewAnimation_InitDialog(
 			sa->animation_list);
 	UUmError_ReturnOnError(error);
 	UUmAssert(sa->num_animations == num_anims);
-	
+
 	// set the number of lines the listbox is going to have
 	WMrMessage_Send(listbox, LBcMessage_SetNumLines, sa->num_animations, 0);
-	
+
 	// add lines to the dialog
 	for (i = 0; i < sa->num_animations; i++)
 	{
 		WMrMessage_Send(listbox, LBcMessage_AddString, 0, 0);
 	}
 	WMrMessage_Send(listbox, LBcMessage_SetSelection, (UUtUns32)UUcFalse, 0);
-	
+
 	// set the focus to the listbox
 	WMrWindow_SetFocus(listbox);
-	
+
 	// disable the play button if there is no character
 	if (ONrGameState_GetPlayerCharacter() == NULL)
 	{
@@ -5957,7 +5957,7 @@ OWiViewAnimation_InitDialog(
 		button = WMrDialog_GetItemByID(inDialog, OWcVA_Btn_Play);
 		WMrWindow_SetEnabled(button, UUcFalse);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -5967,7 +5967,7 @@ OWiViewAnimation_HandleDestroy(
 	WMtDialog					*inDialog)
 {
 	OWtSA						*sa;
-	
+
 	sa = (OWtSA*)WMrDialog_GetUserData(inDialog);
 	if (sa != NULL)
 	{
@@ -5979,7 +5979,7 @@ OWiViewAnimation_HandleDestroy(
 		UUrMemory_Block_Delete(sa);
 		sa = NULL;
 	}
-	
+
 	OWgViewAnimation = NULL;
 }
 
@@ -5994,23 +5994,23 @@ OWiViewAnimation_HandlePlay(
 	TRtAnimation				*animation;
 	ONtCharacter				*player;
 	ONtActiveCharacter			*active_character;
-	
+
 	// get the index of tha animation from the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSA_LB_Animations);
 	result = WMrMessage_Send(listbox, LBcMessage_GetSelection, 0, 0);
 	if (result == LBcError) { return; }
-	
+
 	// make sure the animation exists
 	animation = inSA->animation_list[result];
 	if (animation == NULL) { return; }
-	
+
 	// get the player's character
 	player = ONrGameState_GetPlayerCharacter();
 	if (player == NULL) { return; }
-	
+
 	active_character = ONrForceActiveCharacter(player);
 	if (active_character == NULL) { return; }
-	
+
 	// play the animation
 	if (1)
 	{
@@ -6025,11 +6025,11 @@ OWiViewAnimation_HandlePlay(
 	else
 	{
 /*		ONtOverlay					overlay;
-		
+
 		overlay.animation = animation;
 		overlay.frame = 0;
 		overlay.flags = 0;
-		
+
 		ONrOverlay_Set(
 			&overlay,
 			player->animation,
@@ -6045,9 +6045,9 @@ OWiViewAnimation_HandleCommand(
 	UUtUns32					inParam2)
 {
 	OWtSA						*sa;
-	
+
 	sa = (OWtSA*)WMrDialog_GetUserData(inDialog);
-	
+
 	switch(UUmLowWord(inParam1))
 	{
 		case OWcVA_LB_Animations:
@@ -6060,7 +6060,7 @@ OWiViewAnimation_HandleCommand(
 		case OWcVA_Btn_Play:
 			OWiViewAnimation_HandlePlay(inDialog, sa);
 		break;
-		
+
 		case OWcVA_Btn_Close:
 			WMrWindow_Delete(inDialog);
 		break;
@@ -6084,21 +6084,21 @@ OWiViewAnimation_HandleDrawItem(
 	// set the dest
 	dest.x = inDrawItem->rect.left;
 	dest.y = inDrawItem->rect.top;
-	
+
 	// calc the width and height of the line
 	line_width = inDrawItem->rect.right - inDrawItem->rect.left;
 	line_height = inDrawItem->rect.bottom - inDrawItem->rect.top;
-	
+
 	// draw the Text
 	DCrText_SetFormat(TSc_HLeft | TSc_VCenter);
 	DCrText_SetStyle(TScStyle_Plain);
 	DCrText_SetShade(IMcShade_Black);
-	
+
 	dest.x = 5;
 	dest.y += 1;
-	
+
 	animation = sa->animation_list[inDrawItem->item_id];
-	
+
 	DCrDraw_String(
 		inDrawItem->draw_context,
 		TMrInstance_GetInstanceName(animation),
@@ -6116,9 +6116,9 @@ OWiViewAnimation_Callback(
 {
 	UUtBool						handled;
 	UUtError					error;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -6128,24 +6128,24 @@ OWiViewAnimation_Callback(
 				WMrWindow_Delete(inDialog);
 			}
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiViewAnimation_HandleDestroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiViewAnimation_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_DrawItem:
 			OWiViewAnimation_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -6155,9 +6155,9 @@ OWrViewAnimation_Display(
 	void)
 {
 	UUtError					error;
-	
+
 	if (OWgViewAnimation != NULL) { return; }
-	
+
 	error =
 		WMrDialog_Create(
 			OWcDialog_View_Animation,
@@ -6184,25 +6184,25 @@ OWiSelectAnimation_InitDialog(
 	WMtWindow					*listbox;
 	UUtUns32					i;
 	UUtRect						rect;
-	
+
 	// set the window's position to the left hand side of the screen
 	WMrWindow_GetRect(inDialog, &rect);
 	WMrWindow_SetLocation(inDialog, 0, rect.top);
-	
+
 	// get a pointer to the user data
 	sa = (OWtSA*)WMrDialog_GetUserData(inDialog);
 	sa->insert_from_index = 0;
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSA_LB_Animations);
-	
+
 	// get the number of animations
 	sa->num_animations = TMrInstance_GetTagCount(TRcTemplate_Animation);
 	if (sa->num_animations == 0) { return UUcError_Generic; }
-	
+
 	sa->animation_list = (TRtAnimation**)UUrMemory_Block_New(sizeof(TRtAnimation*) * sa->num_animations);
 	if (sa->animation_list == NULL) { return UUcError_Generic; }
-	
+
 	// build the list of pointers to the animations
 	error =
 		TMrInstance_GetDataPtr_List(
@@ -6212,20 +6212,20 @@ OWiSelectAnimation_InitDialog(
 			sa->animation_list);
 	UUmError_ReturnOnError(error);
 	UUmAssert(sa->num_animations == num_anims);
-	
+
 	// set the number of lines the listbox is going to have
 	WMrMessage_Send(listbox, LBcMessage_SetNumLines, sa->num_animations, 0);
-	
+
 	// add lines to the dialog
 	for (i = 0; i < sa->num_animations; i++)
 	{
 		WMrMessage_Send(listbox, LBcMessage_AddString, 0, 0);
 	}
 	WMrMessage_Send(listbox, LBcMessage_SetSelection, (UUtUns32)UUcFalse, 0);
-	
+
 	// set the focus to the listbox
 	WMrWindow_SetFocus(listbox);
-	
+
 	return UUcError_None;
 }
 
@@ -6235,9 +6235,9 @@ OWiSelectAnimation_HandleDestroy(
 	WMtDialog					*inDialog)
 {
 	OWtSA						*sa;
-	
+
 	sa = (OWtSA*)WMrDialog_GetUserData(inDialog);
-	
+
 	if (sa->animation_list != NULL)
 	{
 		UUrMemory_Block_Delete(sa->animation_list);
@@ -6253,9 +6253,9 @@ OWiSelectAnimation_HandleSelect(
 {
 	WMtWindow					*listbox;
 	UUtUns32					result;
-	
+
 	listbox = WMrDialog_GetItemByID(inDialog, OWcSA_LB_Animations);
-	
+
 	result = WMrMessage_Send(listbox, LBcMessage_GetSelection, 0, 0);
 	if (result != LBcError)
 	{
@@ -6272,9 +6272,9 @@ OWiSelectAnimation_HandleCommand(
 	UUtUns32					inParam2)
 {
 	OWtSA						*sa;
-	
+
 	sa = (OWtSA*)WMrDialog_GetUserData(inDialog);
-	
+
 	switch(UUmLowWord(inParam1))
 	{
 		case OWcSA_LB_Animations:
@@ -6283,16 +6283,16 @@ OWiSelectAnimation_HandleCommand(
 				OWiSelectAnimation_HandleSelect(inDialog, sa);
 			}
 		break;
-		
+
 		case OWcSA_Btn_None:
 			sa->animation = NULL;
 			WMrDialog_ModalEnd(inDialog, OWcSA_Btn_None);
 		break;
-		
+
 		case OWcSA_Btn_Cancel:
 			WMrDialog_ModalEnd(inDialog, OWcSA_Btn_Cancel);
 		break;
-		
+
 		case OWcSA_Btn_Select:
 			OWiSelectAnimation_HandleSelect(inDialog, sa);
 		break;
@@ -6316,21 +6316,21 @@ OWiSelectAnimation_HandleDrawItem(
 	// set the dest
 	dest.x = inDrawItem->rect.left;
 	dest.y = inDrawItem->rect.top;
-	
+
 	// calc the width and height of the line
 	line_width = inDrawItem->rect.right - inDrawItem->rect.left;
 	line_height = inDrawItem->rect.bottom - inDrawItem->rect.top;
-	
+
 	// draw the Text
 	DCrText_SetFormat(TSc_HLeft | TSc_VCenter);
 	DCrText_SetStyle(TScStyle_Plain);
 	DCrText_SetShade(IMcShade_Black);
-	
+
 	dest.x = 5;
 	dest.y += 1;
-	
+
 	animation = sa->animation_list[inDrawItem->item_id];
-	
+
 	DCrDraw_String(
 		inDrawItem->draw_context,
 		TMrInstance_GetInstanceName(animation),
@@ -6348,9 +6348,9 @@ OWiSelectAnimation_Callback(
 {
 	UUtBool						handled;
 	UUtError					error;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -6360,24 +6360,24 @@ OWiSelectAnimation_Callback(
 				WMrDialog_ModalEnd(inDialog, OWcSA_Btn_Cancel);
 			}
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiSelectAnimation_HandleDestroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiSelectAnimation_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_DrawItem:
 			OWiSelectAnimation_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -6396,16 +6396,16 @@ OWiStAP_EnableButtons(
 	WMtWindow					*popup;
 	WMtWindow					*editfield;
 	WMtWindow					*text;
-	
+
 	button = WMrDialog_GetItemByID(inDialog, OWcStAP_Btn_SetAnim);
 	WMrWindow_SetEnabled(button, (inProperties->anim_type == OScAnimType_Animation));
-	
+
 	popup = WMrDialog_GetItemByID(inDialog, OWcStAP_PM_Modifier);
 	WMrWindow_SetEnabled(popup, (inProperties->anim_type != OScAnimType_Animation));
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcStAP_EF_Frame);
 	WMrWindow_SetEnabled(editfield, (inProperties->anim_type == OScAnimType_Animation));
-	
+
 	text = WMrDialog_GetItemByID(inDialog, OWcStAP_Txt_Duration);
 	WMrWindow_SetVisible(text, (inProperties->anim_type == OScAnimType_Animation));
 }
@@ -6419,9 +6419,9 @@ OWiStAP_HandleSetAnimation(
 	UUtError			error;
 	OWtSA				sa;
 	UUtUns32			message;
-	
+
 	sa.animation = inProperties->animation;
-	
+
 	// select an animation
 	WMrWindow_SetVisible(inDialog, UUcFalse);
 	error =
@@ -6433,7 +6433,7 @@ OWiStAP_HandleSetAnimation(
 			&message);
 	WMrWindow_SetVisible(inDialog, UUcTrue);
 	if (error != UUcError_None) { return; }
-	
+
 	if (message == OWcSA_Btn_None)
 	{
 		inProperties->animation = NULL;
@@ -6453,13 +6453,13 @@ OWiStAP_HandleSetAnimation(
 				ONcMaxVariantNameLength);
 		}
 	}
-	
+
 	if (inProperties->animation)
 	{
 		WMtWindow					*text;
 		TRtAnimTime					duration;
 		char						string[128];
-		
+
 		// set the animation name
 		text = WMrDialog_GetItemByID(inDialog, OWcStAP_Txt_AnimName);
 		WMrText_SetShade(text, IMcShade_Black);
@@ -6508,14 +6508,14 @@ OWiStAP_InitDialog(
 	ONtVariantList				*variant_list;
 	WMtWindow					*text;
 	UUtRect						rect;
-	
+
 	properties = (OWtStAP*)WMrDialog_GetUserData(inDialog);
 	if (properties == NULL)
 	{
 		WMrDialog_ModalEnd(inDialog, OWcStAP_Btn_Cancel);
 		return;
 	}
-	
+
 	// set the window's position to the left hand side of the screen
 	WMrWindow_GetRect(inDialog, &rect);
 	WMrWindow_SetLocation(inDialog, 0, rect.top);
@@ -6532,13 +6532,13 @@ OWiStAP_InitDialog(
 		WMrDialog_ModalEnd(inDialog, OWcStAP_Btn_Cancel);
 		return;
 	}
-			
+
 	// add the variants to the popup
 	for (i = 0; i < variant_list->numVariants; i++)
 	{
 		WMrPopupMenu_AppendItem_Light(popup, (UUtUns16)i, variant_list->variant[i]->name);
 	}
-		
+
 	// set the variant
 	if (properties->variant_name[0] == '\0')
 	{
@@ -6552,24 +6552,24 @@ OWiStAP_InitDialog(
 			WMrPopupMenu_SetSelection(popup, 0);
 		}
 	}
-	
+
 	// build the anim type popup menu
 	popup = WMrDialog_GetItemByID(inDialog, OWcStAP_PM_AnimType);
 	for (type = 0; type < OScAnimType_NumTypes; type++)
 	{
 		const char				*anim_name;
-		
+
 		anim_name = OSrAnimType_GetName(type);
 		WMrPopupMenu_AppendItem_Light(popup, (UUtUns16)type, anim_name);
 	}
-	
+
 	// set the anim type
 	error = WMrPopupMenu_SetSelection(popup, (UUtUns16)properties->anim_type);
 	if (error != UUcError_None)
 	{
 		WMrPopupMenu_SetSelection(popup, 0);
 	}
-	
+
 	// set the mod type
 	popup = WMrDialog_GetItemByID(inDialog, OWcStAP_PM_Modifier);
 	error = WMrPopupMenu_SetSelection(popup, (UUtUns16)properties->mod_type);
@@ -6577,11 +6577,11 @@ OWiStAP_InitDialog(
 	{
 		WMrPopupMenu_SetSelection(popup, 0);
 	}
-	
+
 	// set the frame number
 	editfield = WMrDialog_GetItemByID(inDialog, OWcStAP_EF_Frame);
 	WMrEditField_SetInt32(editfield, (UUtInt32)properties->frame);
-	
+
 	// set the anim name edit field
 	if (properties->anim_type == OScAnimType_Animation)
 	{
@@ -6589,7 +6589,7 @@ OWiStAP_InitDialog(
 		char						string[128];
 		const char					*animation_name;
 		IMtShade					shade;
-		
+
 		if (properties->animation != NULL)
 		{
 			animation_name = TMrInstance_GetInstanceName(properties->animation);
@@ -6602,7 +6602,7 @@ OWiStAP_InitDialog(
 			duration = 0;
 			shade = IMcShade_Red;
 		}
-		
+
 		// set the animation name
 		text = WMrDialog_GetItemByID(inDialog, OWcStAP_Txt_AnimName);
 		WMrText_SetShade(text, shade);
@@ -6636,13 +6636,13 @@ OWiStAP_InitDialog(
 			"0",
 			OScMaxAnimNameLength);
 	}
-	
+
 	// set the impulse text field
 	text = WMrDialog_GetItemByID(inDialog, OWcStAP_Txt_SoundName);
 	WMrWindow_SetTitle(text, properties->impulse_name, SScMaxNameLength);
 	if (properties->impulse == NULL) { WMrText_SetShade(text, IMcShade_Red); }
 	else { WMrText_SetShade(text, IMcShade_Black); }
-		
+
 	// update the controls
 	OWiStAP_EnableButtons(inDialog, properties);
 }
@@ -6655,24 +6655,24 @@ OWiStAP_HandleCommand(
 	UUtUns32					inParam2)
 {
 	OWtStAP						*properties;
-	
+
 	properties = (OWtStAP*)WMrDialog_GetUserData(inDialog);
-	
+
 	switch (UUmLowWord(inParam1))
 	{
 		case OWcStAP_Btn_SetAnim:
 			OWiStAP_HandleSetAnimation(inDialog, properties);
 		break;
-		
+
 		case OWcStAP_Btn_SetSound:
 		{
 			SStImpulse			*impulse;
 			OWtSelectResult		result;
 			WMtWindow			*text;
-			
+
 			result = OWrSelect_ImpulseSound(&impulse);
 			if (result == OWcSelectResult_Cancel) { break; }
-			
+
 			properties->impulse = impulse;
 			if (impulse == NULL)
 			{
@@ -6685,7 +6685,7 @@ OWiStAP_HandleCommand(
 					impulse->impulse_name,
 					SScMaxNameLength);
 			}
-			
+
 			text = WMrDialog_GetItemByID(inDialog, OWcStAP_Txt_SoundName);
 			WMrWindow_SetTitle(
 				text,
@@ -6695,22 +6695,22 @@ OWiStAP_HandleCommand(
 			else { WMrText_SetShade(text, IMcShade_Black); }
 		}
 		break;
-		
+
 		case OWcStAP_EF_Frame:
 		{
 			WMtWindow			*editfield;
-			
+
 			if (UUmHighWord(inParam1) != EFcNotify_ContentChanged) { break; }
-			
+
 			editfield = WMrDialog_GetItemByID(inDialog, OWcStAP_EF_Frame);
 			properties->frame = (UUtUns32)WMrEditField_GetInt32(editfield);
 		}
 		break;
-		
+
 		case OWcStAP_Btn_Cancel:
 			WMrDialog_ModalEnd(inDialog, OWcStAP_Btn_Cancel);
 		break;
-		
+
 		case OWcStAP_Btn_Save:
 			if ((properties->animation != NULL) &&
 				(properties->frame > TRrAnimation_GetDuration(properties->animation)))
@@ -6723,7 +6723,7 @@ OWiStAP_HandleCommand(
 				WMrWindow_SetFocus(WMrDialog_GetItemByID(inDialog, OWcStAP_EF_Frame));
 				break;
 			}
-			
+
 			WMrDialog_ModalEnd(inDialog, OWcStAP_Btn_Save);
 		break;
 	}
@@ -6738,10 +6738,10 @@ OWiStAP_HandleMenuCommand(
 {
 	OWtStAP						*properties;
 	UUtUns32					item_id;
-	
+
 	properties = (OWtStAP*)WMrDialog_GetUserData(inDialog);
 	item_id = (UUtUns32)(UUmLowWord(inItemID));
-	
+
 	switch (WMrWindow_GetID(inPopupMenu))
 	{
 		case OWcStAP_PM_Variant:
@@ -6755,7 +6755,7 @@ OWiStAP_HandleMenuCommand(
 			else
 			{
 				ONtVariantList		*variant_list;
-				
+
 				TMrInstance_GetDataPtr(
 					ONcTemplate_VariantList,
 					"variant_list",
@@ -6772,12 +6772,12 @@ OWiStAP_HandleMenuCommand(
 		case OWcStAP_PM_AnimType:
 			properties->anim_type = item_id;
 		break;
-		
+
 		case OWcStAP_PM_Modifier:
 			properties->mod_type = item_id;
 		break;
 	}
-	
+
 	// update the controls
 	OWiStAP_EnableButtons(inDialog, properties);
 }
@@ -6791,28 +6791,28 @@ OWiStAP_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiStAP_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiStAP_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiStAP_HandleMenuCommand(inDialog, (WMtWindow*)inParam2, inParam1);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -6828,7 +6828,7 @@ OWiStA_FillListBox(
 {
 	UUtUns32					i;
 	UUtUns32					num_variants;
-	
+
 	WMrMessage_Send(inListBox, LBcMessage_Reset, 0, 0);
 
 	num_variants = OSrVariantList_GetNumVariants();
@@ -6837,13 +6837,13 @@ OWiStA_FillListBox(
 		OStVariant					*variant;
 		UUtUns32					num_sounds;
 		UUtUns32					j;
-		
+
 		variant = OSrVariantList_Variant_GetByIndex(i);
 		num_sounds = OSrVariant_GetNumSounds(variant);
 		for (j = 0; j < num_sounds; j++)
 		{
 			UUtUns32					item_data;
-			
+
 			item_data = UUmMakeLong(i, j);
 			WMrMessage_Send(inListBox, LBcMessage_AddString, (UUtUns32)item_data, 0);
 		}
@@ -6861,7 +6861,7 @@ OWiStA_HandleDelete(
 	UUtBool						is_animation;
 	UUtUns32					variant_index;
 	UUtUns32					result;
-	
+
 	// ask before deleting
 	result =
 		WMrDialog_MessageBox(
@@ -6870,22 +6870,22 @@ OWiStA_HandleDelete(
 			"Are you sure you want to delete the Animation Sound?",
 			WMcMessageBoxStyle_Yes_No);
 	if (result == WMcDialogItem_No) { return; }
-	
+
 	listbox = WMrDialog_GetItemByID(inDialog, OWcStA_LB_Data);
 	item_data = WMrMessage_Send(listbox, LBcMessage_GetItemData, 0, (UUtUns32)-1);
-	
+
 	is_animation = (item_data & 0x80000000) != 0;
 	variant_index = UUmHighWord(item_data) & 0x7FFF;
-	
+
 	variant = OSrVariantList_Variant_GetByIndex(variant_index);
 	if (variant == NULL) { return; }
-	
+
 	// delete the sound animation from the variant
 	OSrVariant_SoundAnimation_DeleteByIndex(variant, UUmLowWord(item_data));
-	
+
 	// save the data
 	OSrVariantList_Save(UUcFalse);
-	
+
 	// fill the listbox
 	OWiStA_FillListBox(listbox);
 }
@@ -6904,24 +6904,24 @@ OWiStA_HandlePlay(
 	M3tVector3D					velocity;
 	UUtBool						is_animation;
 	UUtUns32					variant_index;
-	
+
 	listbox = WMrDialog_GetItemByID(inDialog, OWcStA_LB_Data);
 	item_data = WMrMessage_Send(listbox, LBcMessage_GetItemData, 0, (UUtUns32)-1);
-	
+
 	is_animation = (item_data & 0x80000000) != 0;
 	variant_index = UUmHighWord(item_data) & 0x7FFF;
-	
+
 	variant = OSrVariantList_Variant_GetByIndex(variant_index);
 	if (variant == NULL) { return; }
-	
+
 	sound_animation = OSrVariant_SoundAnimation_GetByIndex(variant, UUmLowWord(item_data));
 	if (sound_animation == NULL) { return; }
-	
+
 	// set the listener position
 	MUmVector_Set(position, 0.0f, 0.0f, 0.0f);
 	MUmVector_Set(facing, 1.0f, 0.0f, 1.0f);
 	SSrListener_SetPosition(&position, &facing);
-	
+
 	// play the sound
 	MUmVector_Set(position, 5.0f, 0.0f, 5.0f);
 	MUmVector_Set(velocity, 0.0f, 0.0f, 0.0f);
@@ -6942,19 +6942,19 @@ OWiStA_HandleEdit(
 	UUtUns32					message;
 	UUtBool						is_animation;
 	UUtUns32					variant_index;
-	
+
 	listbox = WMrDialog_GetItemByID(inDialog, OWcStA_LB_Data);
 	item_data = WMrMessage_Send(listbox, LBcMessage_GetItemData, 0, (UUtUns32)-1);
-	
+
 	is_animation = (item_data & 0x80000000) != 0;
 	variant_index = UUmHighWord(item_data) & 0x7FFF;
-	
+
 	variant = OSrVariantList_Variant_GetByIndex(variant_index);
 	if (variant == NULL) { return UUcError_Generic; }
-	
+
 	sound_animation = OSrVariant_SoundAnimation_GetByIndex(variant, UUmLowWord(item_data));
 	if (sound_animation == NULL) { return UUcError_Generic; }
-	
+
 	// initialize the properties
 	properties.anim_type = sound_animation->anim_type;
 	properties.mod_type = sound_animation->mod_type;
@@ -6983,10 +6983,10 @@ OWiStA_HandleEdit(
 		properties.impulse_name,
 		sound_animation->impulse_name,
 		SScMaxNameLength);
-	
+
 	// edit the properties
 	WMrWindow_SetVisible(inDialog, UUcFalse);
-	error = 
+	error =
 		WMrDialog_ModalBegin(
 			OWcDialog_Sound_to_Anim_Prop,
 			inDialog,
@@ -6995,18 +6995,18 @@ OWiStA_HandleEdit(
 			&message);
 	WMrWindow_SetVisible(inDialog, UUcTrue);
 	UUmError_ReturnOnError(error);
-	
+
 	if (message == OWcStAP_Btn_Save)
 	{
 		OStVariant				*new_variant;
-		
+
 		// delete the old sound variant
 		OSrVariant_SoundAnimation_DeleteByIndex(variant, UUmLowWord(item_data));
-				
+
 		// if the variant changed, then delete the sound animation from the old variant
 		new_variant = OSrVariantList_Variant_GetByName(properties.variant_name);
 		if (new_variant == NULL) { return UUcError_Generic; }
-			
+
 		// add the sound animation to the new variant
 		error =
 			OSrVariant_SoundAnimation_Add(
@@ -7024,14 +7024,14 @@ OWiStA_HandleEdit(
 				"Unable to update the sound to the variant.",
 				WMcMessageBoxStyle_OK);
 		}
-		
+
 		// save the data
 		OSrVariantList_Save(UUcFalse);
-	
+
 		// fill in the listbox
 		OWiStA_FillListBox(WMrDialog_GetItemByID(inDialog, OWcStA_LB_Data));
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -7043,7 +7043,7 @@ OWiStA_HandleNew(
 	UUtError					error;
 	UUtUns32					message;
 	OWtStAP						properties;
-	
+
 	UUrMemory_Clear(&properties, sizeof(OWtStAP));
 	properties.anim_type = OScAnimType_Any;
 	properties.impulse = NULL;
@@ -7051,9 +7051,9 @@ OWiStA_HandleNew(
 	properties.frame = 0;
 	properties.variant_name[0] = '\0';
 	properties.impulse_name[0] = '\0';
-	
+
 	WMrWindow_SetVisible(inDialog, UUcFalse);
-	error = 
+	error =
 		WMrDialog_ModalBegin(
 			OWcDialog_Sound_to_Anim_Prop,
 			inDialog,
@@ -7062,14 +7062,14 @@ OWiStA_HandleNew(
 			&message);
 	WMrWindow_SetVisible(inDialog, UUcTrue);
 	UUmError_ReturnOnError(error);
-	
+
 	if (message == OWcStAP_Btn_Save)
 	{
 		OStVariant					*variant;
-		
+
 		variant = OSrVariantList_Variant_GetByName(properties.variant_name);
 		if (variant == NULL) { return UUcError_Generic; }
-		
+
 		// add the item
 		error =
 			OSrVariant_SoundAnimation_Add(
@@ -7087,14 +7087,14 @@ OWiStA_HandleNew(
 				"Unable to add the sound to the variant.",
 				WMcMessageBoxStyle_OK);
 		}
-		
+
 		// save the data
 		OSrVariantList_Save(UUcFalse);
-		
+
 		// fill in the listbox
 		OWiStA_FillListBox(WMrDialog_GetItemByID(inDialog, OWcStA_LB_Data));
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -7105,11 +7105,11 @@ OWiStA_InitDialog(
 {
 	WMtWindow					*listbox;
 	UUtRect						rect;
-	
+
 	// set the window's position to the left hand side of the screen
 	WMrWindow_GetRect(inDialog, &rect);
 	WMrWindow_SetLocation(inDialog, 0, rect.top);
-	
+
 	// update the sound animation pointers
 	OSrSA_UpdatePointers();
 
@@ -7130,26 +7130,26 @@ OWiStA_HandleCommand(
 		case WMcDialogItem_Cancel:
 			WMrDialog_ModalEnd(inDialog, 0);
 		break;
-		
+
 		case OWcStA_LB_Data:
 			if (UUmHighWord(inParam1) == WMcNotify_DoubleClick)
 			{
 				OWiStA_HandleEdit(inDialog);
 			}
 		break;
-		
+
 		case OWcStA_Btn_Delete:
 			OWiStA_HandleDelete(inDialog);
 		break;
-		
+
 		case OWcStA_Btn_Play:
 			OWiStA_HandlePlay(inDialog);
 		break;
-		
+
 		case OWcStA_Btn_Edit:
 			OWiStA_HandleEdit(inDialog);
 		break;
-		
+
 		case OWcStA_Btn_New:
 			OWiStA_HandleNew(inDialog);
 		break;
@@ -7175,15 +7175,15 @@ OWiStA_HandleDrawItem(
 	// get a pointer to the partspec_ui
 	partspec_ui = PSrPartSpecUI_GetActive();
 	UUmAssert(partspec_ui);
-	
+
 	// set the dest
 	dest.x = inDrawItem->rect.left;
 	dest.y = inDrawItem->rect.top;
-	
+
 	// calc the width and height of the line
 	line_width = inDrawItem->rect.right - inDrawItem->rect.left;
 	line_height = inDrawItem->rect.bottom - inDrawItem->rect.top;
-	
+
 	if (inDrawItem->rect.top > 5)
 	{
 		// draw a divider
@@ -7196,22 +7196,22 @@ OWiStA_HandleDrawItem(
 			2,
 			M3cMaxAlpha);
 	}
-	
+
 	is_animation = (inDrawItem->data & 0x80000000) != 0;
 	variant_index = UUmHighWord(inDrawItem->data) & 0x7FFF;
-	
+
 	// get the variant and animation sound
 	variant = OSrVariantList_Variant_GetByIndex(variant_index);
 	if (variant == NULL) { return; }
-	
+
 	sound_animation = OSrVariant_SoundAnimation_GetByIndex(variant, UUmLowWord(inDrawItem->data));
 	if (sound_animation == NULL) { return; }
-	
+
 	// draw the Text
 	DCrText_SetFormat(TSc_HLeft | TSc_VCenter);
 	DCrText_SetStyle(TScStyle_Plain);
 	DCrText_SetShade(IMcShade_Black);
-	
+
 	dest.x = 5;
 	dest.y += 1;
 
@@ -7220,14 +7220,14 @@ OWiStA_HandleDrawItem(
 		OSrVariant_GetName(variant),
 		&inDrawItem->rect,
 		&dest);
-	
+
 	dest.x = 125;
-	
+
 	anim_type = sound_animation->anim_type;
 	if (anim_type == OScAnimType_Animation)
 	{
 		TRtAnimation				*animation;
-		
+
 		animation = sound_animation->animation;
 		if (animation == NULL)
 		{
@@ -7252,22 +7252,22 @@ OWiStA_HandleDrawItem(
 		char							string[128];
 		const char						*mod_name;
 		const char						*anim_name;
-		
+
 		mod_name = OSrModType_GetName(sound_animation->mod_type);
 		anim_name = OSrAnimType_GetName(anim_type);
-		
+
 		sprintf(string, "%s %s", mod_name, anim_name);
 		DCrDraw_String(inDrawItem->draw_context, string, &inDrawItem->rect, &dest);
 	}
 	DCrText_SetShade(IMcShade_Black);
-	
+
 	dest.x = 305;
-	
+
 	if (sound_animation->impulse == NULL)
 	{
 		DCrText_SetShade(IMcShade_Red);
 	}
-	
+
 	DCrDraw_String(
 		inDrawItem->draw_context,
 		sound_animation->impulse_name,
@@ -7284,28 +7284,28 @@ OWiStA_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiStA_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiStA_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_DrawItem:
 			OWiStA_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -7315,7 +7315,7 @@ OWrSoundToAnim_Display(
 	void)
 {
 	UUtError					error;
-	
+
 	// display the sound to animation dialog
 	error =
 		WMrDialog_ModalBegin(
@@ -7325,7 +7325,7 @@ OWrSoundToAnim_Display(
 			0,
 			NULL);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -7342,13 +7342,13 @@ OWiCD_GetDirectoryRef(
 	UUtError					error;
 	BFtFileRef					*out_ref;
 	OWtCreateDialogue			*cd;
-	
+
 	cd = (OWtCreateDialogue*)WMrDialog_GetUserData(inDialog);
 	if (cd->dir_ref == NULL) { return NULL; }
-	
+
 	error = BFrFileRef_Duplicate(cd->dir_ref, &out_ref);
 	if (error != UUcError_None) { return NULL; }
-	
+
 	return out_ref;
 }
 
@@ -7362,12 +7362,12 @@ OWiCD_SetDirectoryRef(
 	BFtFileRef					*old_ref;
 	BFtFileRef					*copy_ref;
 	OWtCreateDialogue			*cd;
-	
+
 	// get the create data
 	cd = (OWtCreateDialogue*)WMrDialog_GetUserData(inDialog);
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	// delete the old ref
 	old_ref = cd->dir_ref;
 	if (old_ref != NULL)
@@ -7375,7 +7375,7 @@ OWiCD_SetDirectoryRef(
 		BFrFileRef_Dispose(old_ref);
 		old_ref = NULL;
 	}
-	
+
 	if (inDirRef != NULL)
 	{
 		error = BFrFileRef_Duplicate(inDirRef, &copy_ref);
@@ -7385,12 +7385,12 @@ OWiCD_SetDirectoryRef(
 	{
 		copy_ref = NULL;
 	}
-	
+
 	// set the new ref
 	cd->dir_ref = copy_ref;
-	
+
 	error = OWiSetPopup(WMrDialog_GetItemByID(inDialog, OWcCD_PM_Category), copy_ref);
-	
+
 	UUrMemory_Block_VerifyList();
 }
 
@@ -7409,17 +7409,17 @@ OWiCD_New(
 	UUtUns32					index;
 	UUtUns32					message;
 	WMtWindow					*listbox;
-	
+
 	group = NULL;
 	ambient = NULL;
 	dir_ref = NULL;
-	
+
 	// get the create data
 	cd = (OWtCreateDialogue*)WMrDialog_GetUserData(inDialog);
-		
+
 	UUrMemory_Clear(&ws, sizeof(OWtWS));
 	ws.allow_categories = UUcFalse;
-	
+
 	// select the wav file to use
 	error =
 		WMrDialog_ModalBegin(
@@ -7429,75 +7429,75 @@ OWiCD_New(
 			(UUtUns32)&ws,
 			&message);
 	if ((error != UUcError_None) || (message == OWcWS_Btn_Cancel)) { return; }
-	
+
 	// get the name of the sound data
 	UUrString_Copy(name, SSrSoundData_GetName(ws.selected_sound_data), SScMaxNameLength);
 	UUrString_StripExtension(name);
-	
+
 	// create the sound group
 	error = OSrGroup_New(name, &group);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	error = SSrGroup_Permutation_New(group, ws.selected_sound_data, &index);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// create the ambient sound
 	error = OSrAmbient_New(name, &ambient);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// set the base track 1
 	ambient->base_track1 = group;
 	UUrString_Copy(ambient->base_track1_name, name, SScMaxNameLength);
-	
+
 	// set the flags
 	ambient->flags |= (SScAmbientFlag_PlayOnce | SScAmbientFlag_InterruptOnStop);
-	
+
 	// set the priority to highest
 	ambient->priority = SScPriority2_Highest;
-	
+
 	// get the dir ref
 	dir_ref = OWiCD_GetDirectoryRef(inDialog);
 	if (dir_ref == NULL) { goto cleanup; }
-	
+
 	// save the sound group
 	error = OSrGroup_Save(group, dir_ref);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// save the ambient sound
 	error = OSrAmbient_Save(ambient, dir_ref);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// fill in the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcCD_LB_Items),
 	OWiListDirectory(listbox, dir_ref, OScAmbientSuffix);
-	
+
 	// select the item that was just selected
 	WMrListBox_SelectString(listbox, name);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return;
-	
+
 cleanup:
 	if (group != NULL)
 	{
 		OSrGroup_Delete(name);
 		group = NULL;
 	}
-	
+
 	if (ambient != NULL)
 	{
 		OSrAmbient_Delete(name);
 		ambient = NULL;
 	}
-	
+
 	if (dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	WMrDialog_MessageBox(
 		inDialog,
 		"Error",
@@ -7515,35 +7515,35 @@ OWiCD_Category_Open(
 	BFtFileRef					*parent_dir_ref;
 	BFtFileRef					*open_dir_ref;
 	char						name[BFcMaxFileNameLength];
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	parent_dir_ref = NULL;
 	open_dir_ref = NULL;
 	name[0] = '\0';
-	
+
 	// get the parent dir ref
 	parent_dir_ref = OWiCD_GetDirectoryRef(inDialog);
 	if (parent_dir_ref == NULL) { return; }
-	
+
 	// make a dir ref for the directory being opened
 	WMrListBox_GetText(inListBox, name, (UUtUns32)(-1));
 	error = BFrFileRef_DuplicateAndAppendName(parent_dir_ref, name, &open_dir_ref);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// fill in the listbox
 	error = OWiListDirectory(inListBox, open_dir_ref, OScAmbientSuffix);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	OWiCD_SetDirectoryRef(inDialog, open_dir_ref);
-	
+
 cleanup:
 	if (parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(parent_dir_ref);
 		parent_dir_ref = NULL;
 	}
-	
+
 	if (open_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(open_dir_ref);
@@ -7562,13 +7562,13 @@ OWiCD_InitDialog(
 	OWtCreateDialogue			*cd;
 	BFtFileRef					*dir_ref;
 	WMtWindow					*listbox;
-	
+
 	SSrSoundData_GetByName_StartCache();
 
 	// get the create data
 	cd = (OWtCreateDialogue*)WMrDialog_GetUserData(inDialog);
 	if (cd == NULL) { goto cleanup; }
-	
+
 	// get the directory ref
 	if (OWgCD_DirRef == NULL)
 	{
@@ -7580,30 +7580,30 @@ OWiCD_InitDialog(
 		error = BFrFileRef_Duplicate(OWgCD_DirRef, &dir_ref);
 		if (error != UUcError_None) { goto cleanup; }
 	}
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcCD_LB_Items);
 	if (listbox == NULL) { goto cleanup; }
-	
+
 	// fill in the listbox
 	error = OWiListDirectory(listbox, dir_ref, OScAmbientSuffix);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// save the directory ref
 	OWiCD_SetDirectoryRef(inDialog, dir_ref);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return;
-	
+
 cleanup:
 	if (dir_ref)
 	{
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	WMrDialog_ModalEnd(inDialog, 0);
 }
 
@@ -7617,19 +7617,19 @@ OWiCD_HandleCommand(
 	UUtUns16					control_id;
 	UUtUns16					command_type;
 	OWtCreateDialogue			*cd;
-	
+
 	cd = (OWtCreateDialogue*)WMrDialog_GetUserData(inDialog);
-	
+
 	control_id = UUmLowWord(inParam);
 	command_type = UUmHighWord(inParam);
-	
+
 	switch (control_id)
 	{
 		case OWcCD_LB_Items:
 			if (command_type == WMcNotify_DoubleClick)
 			{
 				UUtUns32					item_data;
-				
+
 				item_data = WMrListBox_GetItemData(inControl, (UUtUns32)(-1));
 				if (item_data != 0)
 				{
@@ -7637,12 +7637,12 @@ OWiCD_HandleCommand(
 				}
 			}
 		break;
-		
+
 		case OWcCD_Btn_New:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiCD_New(inDialog);
 		break;
-		
+
 		case WMcDialogItem_Cancel:
 			if (command_type != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, 0);
@@ -7656,7 +7656,7 @@ OWiCD_HandleDestroy(
 	WMtDialog					*inDialog)
 {
 	OWtCreateDialogue			*cd;
-	
+
 	cd = (OWtCreateDialogue*)WMrDialog_GetUserData(inDialog);
 	if (cd)
 	{
@@ -7667,7 +7667,7 @@ OWiCD_HandleDestroy(
 				BFrFileRef_Dispose(OWgCD_DirRef);
 				OWgCD_DirRef = NULL;
 			}
-			
+
 			OWgCD_DirRef = cd->dir_ref;
 			cd->dir_ref = NULL;
 		}
@@ -7686,35 +7686,35 @@ OWiCD_HandleMenuCommand(
 	UUtUns32					i;
 	BFtFileRef					*dir_ref;
 	UUtError					error;
-	
+
 	// if inItemID == 0 then the popup menu is still on the same item
 	// so no updating needs to be done
 	if (inItemID == 0) { return; }
-	
+
 	// get the dir ref of the current item in the popup menu
 	dir_ref = OWiCD_GetDirectoryRef(inDialog);
 	if (dir_ref == NULL) { return; }
-	
+
 	// go up the hierarchy of directories until the desired directory is found
 	for (i = 0; i < (UUtUns32)inItemID; i++)
 	{
 		BFtFileRef					*parent_ref;
-		
+
 		error = BFrFileRef_GetParentDirectory(dir_ref, &parent_ref);
 		if (error != UUcError_None) { return; }
-		
+
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = parent_ref;
 	}
-	
+
 	// fill in the listbox
 	OWiListDirectory(
 		WMrDialog_GetItemByID(inDialog, OWcCD_LB_Items),
 		dir_ref,
 		OScAmbientSuffix);
-	
+
 	OWiCD_SetDirectoryRef(inDialog, dir_ref);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
 }
@@ -7728,23 +7728,23 @@ OWiCD_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiCD_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiCD_HandleDestroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiCD_HandleCommand(inDialog, (WMtWindow*)inParam2, inParam1);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiCD_HandleMenuCommand(inDialog, (WMtWindow*)inParam2, UUmLowWord(inParam1));
 		break;
@@ -7752,12 +7752,12 @@ OWiCD_Callback(
 		case WMcMessage_DrawItem:
 			OWiSM_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -7768,11 +7768,11 @@ OWrCreateDialogue_Display(
 {
 	UUtError					error;
 	OWtCreateDialogue			create_dialogue;
-	
+
 	UUrMemory_Clear(&create_dialogue, sizeof(OWtCreateDialogue));
-	
+
 	// display the create dialogue dialog
-	error = 
+	error =
 		WMrDialog_ModalBegin(
 			OWcDialog_Create_Dialogue,
 			NULL,
@@ -7797,13 +7797,13 @@ OWiCI_GetDirectoryRef(
 	UUtError					error;
 	BFtFileRef					*out_ref;
 	OWtCreateImpulse			*ci;
-	
+
 	ci = (OWtCreateImpulse *)WMrDialog_GetUserData(inDialog);
 	if (ci->dir_ref == NULL) { return NULL; }
-	
+
 	error = BFrFileRef_Duplicate(ci->dir_ref, &out_ref);
 	if (error != UUcError_None) { return NULL; }
-	
+
 	return out_ref;
 }
 
@@ -7817,12 +7817,12 @@ OWiCI_SetDirectoryRef(
 	BFtFileRef					*old_ref;
 	BFtFileRef					*copy_ref;
 	OWtCreateImpulse			*ci;
-	
+
 	// get the create data
 	ci = (OWtCreateImpulse *)WMrDialog_GetUserData(inDialog);
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	// delete the old ref
 	old_ref = ci->dir_ref;
 	if (old_ref != NULL)
@@ -7830,7 +7830,7 @@ OWiCI_SetDirectoryRef(
 		BFrFileRef_Dispose(old_ref);
 		old_ref = NULL;
 	}
-	
+
 	if (inDirRef != NULL)
 	{
 		error = BFrFileRef_Duplicate(inDirRef, &copy_ref);
@@ -7840,12 +7840,12 @@ OWiCI_SetDirectoryRef(
 	{
 		copy_ref = NULL;
 	}
-	
+
 	// set the new ref
 	ci->dir_ref = copy_ref;
-	
+
 	error = OWiSetPopup(WMrDialog_GetItemByID(inDialog, OWcCI_PM_Category), copy_ref);
-	
+
 	UUrMemory_Block_VerifyList();
 }
 
@@ -7864,14 +7864,14 @@ OWiCI_New(
 	UUtUns32					index;
 	UUtUns32					message;
 	WMtWindow					*listbox;
-	
+
 	group = NULL;
 	impulse = NULL;
 	dir_ref = NULL;
-	
+
 	// get the create data
 	ci = (OWtCreateImpulse*)WMrDialog_GetUserData(inDialog);
-		
+
 	UUrMemory_Clear(&ws, sizeof(OWtWS));
 	ws.allow_categories = UUcTrue;
 
@@ -7898,11 +7898,11 @@ OWiCI_New(
 		// nothing selected
 		goto cleanup;
 	}
-	
+
 	// create the sound group
 	error = OSrGroup_New(name, &group);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	if (ws.selected_sound_data != NULL) {
 		// add a permutation for the sound data to the group
 		error = SSrGroup_Permutation_New(group, ws.selected_sound_data, &index);
@@ -7925,7 +7925,7 @@ OWiCI_New(
 			BFtFileRef				ref;
 			char					file_name[SScMaxNameLength];
 			SStSoundData			*sound_data;
-			
+
 			// get the next ref
 			error = BFrDirectory_FileIterator_Next(file_iterator, &ref);
 			if (error != UUcError_None) { break; }
@@ -7939,7 +7939,7 @@ OWiCI_New(
 
 			// get the SStSoundData* corresponding to this file
 			sound_data = SSrSoundData_GetByName(file_name, UUcTrue);
-			
+
 			if (sound_data == NULL) {
 				// create a new sound data
 				error = SSrSoundData_New(&ref, &sound_data);
@@ -7951,7 +7951,7 @@ OWiCI_New(
 			// add the sound data to the group
 			error = SSrGroup_Permutation_New(group, sound_data, &index);
 		}
-	
+
 		// delete the file iterator
 		BFrDirectory_FileIterator_Delete(file_iterator);
 
@@ -7962,11 +7962,11 @@ OWiCI_New(
 	// create the impulse sound
 	error = OSrImpulse_New(name, &impulse);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// set the sound group
 	impulse->impulse_group = group;
 	UUrString_Copy(impulse->impulse_group_name, name, SScMaxNameLength);
-	
+
 	// set up defaults
 	impulse->min_volume_distance = 15.0f;
 	impulse->max_volume_distance = 80.0f;
@@ -7974,46 +7974,46 @@ OWiCI_New(
 	// get the dir ref
 	dir_ref = OWiCI_GetDirectoryRef(inDialog);
 	if (dir_ref == NULL) { goto cleanup; }
-	
+
 	// save the sound group
 	error = OSrGroup_Save(group, dir_ref);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// save the impulse sound
 	error = OSrImpulse_Save(impulse, dir_ref);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// fill in the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcCI_LB_Items),
 	OWiListDirectory(listbox, dir_ref, OScImpulseSuffix);
-	
+
 	// select the item that was just selected
 	WMrListBox_SelectString(listbox, name);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return;
-	
+
 cleanup:
 	if (group != NULL)
 	{
 		OSrGroup_Delete(name);
 		group = NULL;
 	}
-	
+
 	if (impulse != NULL)
 	{
 		OSrImpulse_Delete(name);
 		impulse = NULL;
 	}
-	
+
 	if (dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	WMrDialog_MessageBox(
 		inDialog,
 		"Error",
@@ -8031,35 +8031,35 @@ OWiCI_Category_Open(
 	BFtFileRef					*parent_dir_ref;
 	BFtFileRef					*open_dir_ref;
 	char						name[BFcMaxFileNameLength];
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	parent_dir_ref = NULL;
 	open_dir_ref = NULL;
 	name[0] = '\0';
-	
+
 	// get the parent dir ref
 	parent_dir_ref = OWiCI_GetDirectoryRef(inDialog);
 	if (parent_dir_ref == NULL) { return; }
-	
+
 	// make a dir ref for the directory being opened
 	WMrListBox_GetText(inListBox, name, (UUtUns32)(-1));
 	error = BFrFileRef_DuplicateAndAppendName(parent_dir_ref, name, &open_dir_ref);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// fill in the listbox
 	error = OWiListDirectory(inListBox, open_dir_ref, OScImpulseSuffix);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	OWiCI_SetDirectoryRef(inDialog, open_dir_ref);
-	
+
 cleanup:
 	if (parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(parent_dir_ref);
 		parent_dir_ref = NULL;
 	}
-	
+
 	if (open_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(open_dir_ref);
@@ -8078,13 +8078,13 @@ OWiCI_InitDialog(
 	OWtCreateImpulse			*ci;
 	BFtFileRef					*dir_ref;
 	WMtWindow					*listbox;
-	
+
 	SSrSoundData_GetByName_StartCache();
 
 	// get the create data
 	ci = (OWtCreateImpulse *)WMrDialog_GetUserData(inDialog);
 	if (ci == NULL) { goto cleanup; }
-	
+
 	// get the directory ref
 	if (OWgCI_DirRef == NULL)
 	{
@@ -8096,23 +8096,23 @@ OWiCI_InitDialog(
 		error = BFrFileRef_Duplicate(OWgCI_DirRef, &dir_ref);
 		if (error != UUcError_None) { goto cleanup; }
 	}
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcCI_LB_Items);
 	if (listbox == NULL) { goto cleanup; }
-	
+
 	// fill in the listbox
 	error = OWiListDirectory(listbox, dir_ref, OScImpulseSuffix);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// save the directory ref
 	OWiCI_SetDirectoryRef(inDialog, dir_ref);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return;
-	
+
 cleanup:
 
 	if (dir_ref)
@@ -8120,7 +8120,7 @@ cleanup:
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	WMrDialog_ModalEnd(inDialog, 0);
 }
 
@@ -8134,19 +8134,19 @@ OWiCI_HandleCommand(
 	UUtUns16					control_id;
 	UUtUns16					command_type;
 	OWtCreateImpulse			*ci;
-	
+
 	ci = (OWtCreateImpulse *)WMrDialog_GetUserData(inDialog);
-	
+
 	control_id = UUmLowWord(inParam);
 	command_type = UUmHighWord(inParam);
-	
+
 	switch (control_id)
 	{
 		case OWcCI_LB_Items:
 			if (command_type == WMcNotify_DoubleClick)
 			{
 				UUtUns32					item_data;
-				
+
 				item_data = WMrListBox_GetItemData(inControl, (UUtUns32)(-1));
 				if (item_data != 0)
 				{
@@ -8154,12 +8154,12 @@ OWiCI_HandleCommand(
 				}
 			}
 		break;
-		
+
 		case OWcCI_Btn_New:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiCI_New(inDialog);
 		break;
-		
+
 		case WMcDialogItem_Cancel:
 			if (command_type != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, 0);
@@ -8173,7 +8173,7 @@ OWiCI_HandleDestroy(
 	WMtDialog					*inDialog)
 {
 	OWtCreateImpulse			*ci;
-	
+
 	ci = (OWtCreateImpulse *)WMrDialog_GetUserData(inDialog);
 	if (ci)
 	{
@@ -8184,7 +8184,7 @@ OWiCI_HandleDestroy(
 				BFrFileRef_Dispose(OWgCI_DirRef);
 				OWgCI_DirRef = NULL;
 			}
-			
+
 			OWgCI_DirRef = ci->dir_ref;
 			ci->dir_ref = NULL;
 		}
@@ -8203,35 +8203,35 @@ OWiCI_HandleMenuCommand(
 	UUtUns32					i;
 	BFtFileRef					*dir_ref;
 	UUtError					error;
-	
+
 	// if inItemID == 0 then the popup menu is still on the same item
 	// so no updating needs to be done
 	if (inItemID == 0) { return; }
-	
+
 	// get the dir ref of the current item in the popup menu
 	dir_ref = OWiCI_GetDirectoryRef(inDialog);
 	if (dir_ref == NULL) { return; }
-	
+
 	// go up the hierarchy of directories until the desired directory is found
 	for (i = 0; i < (UUtUns32)inItemID; i++)
 	{
 		BFtFileRef					*parent_ref;
-		
+
 		error = BFrFileRef_GetParentDirectory(dir_ref, &parent_ref);
 		if (error != UUcError_None) { return; }
-		
+
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = parent_ref;
 	}
-	
+
 	// fill in the listbox
 	OWiListDirectory(
 		WMrDialog_GetItemByID(inDialog, OWcCI_LB_Items),
 		dir_ref,
 		OScImpulseSuffix);
-	
+
 	OWiCI_SetDirectoryRef(inDialog, dir_ref);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
 }
@@ -8245,23 +8245,23 @@ OWiCI_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiCI_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiCI_HandleDestroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiCI_HandleCommand(inDialog, (WMtWindow*)inParam2, inParam1);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiCI_HandleMenuCommand(inDialog, (WMtWindow*)inParam2, UUmLowWord(inParam1));
 		break;
@@ -8269,12 +8269,12 @@ OWiCI_Callback(
 		case WMcMessage_DrawItem:
 			OWiSM_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -8285,11 +8285,11 @@ OWrCreateImpulse_Display(
 {
 	UUtError					error;
 	OWtCreateImpulse			create_impulse;
-	
+
 	UUrMemory_Clear(&create_impulse, sizeof(OWtCreateImpulse));
-	
+
 	// display the create dialogue dialog
-	error = 
+	error =
 		WMrDialog_ModalBegin(
 			OWcDialog_Create_Impulse,
 			NULL,
@@ -8314,13 +8314,13 @@ OWiCG_GetDirectoryRef(
 	UUtError					error;
 	BFtFileRef					*out_ref;
 	OWtCreateGroup				*cg;
-	
+
 	cg = (OWtCreateGroup *)WMrDialog_GetUserData(inDialog);
 	if (cg->dir_ref == NULL) { return NULL; }
-	
+
 	error = BFrFileRef_Duplicate(cg->dir_ref, &out_ref);
 	if (error != UUcError_None) { return NULL; }
-	
+
 	return out_ref;
 }
 
@@ -8334,12 +8334,12 @@ OWiCG_SetDirectoryRef(
 	BFtFileRef					*old_ref;
 	BFtFileRef					*copy_ref;
 	OWtCreateGroup				*cg;
-	
+
 	// get the create data
 	cg = (OWtCreateGroup *)WMrDialog_GetUserData(inDialog);
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	// delete the old ref
 	old_ref = cg->dir_ref;
 	if (old_ref != NULL)
@@ -8347,7 +8347,7 @@ OWiCG_SetDirectoryRef(
 		BFrFileRef_Dispose(old_ref);
 		old_ref = NULL;
 	}
-	
+
 	if (inDirRef != NULL)
 	{
 		error = BFrFileRef_Duplicate(inDirRef, &copy_ref);
@@ -8357,12 +8357,12 @@ OWiCG_SetDirectoryRef(
 	{
 		copy_ref = NULL;
 	}
-	
+
 	// set the new ref
 	cg->dir_ref = copy_ref;
-	
+
 	error = OWiSetPopup(WMrDialog_GetItemByID(inDialog, OWcCG_PM_Category), copy_ref);
-	
+
 	UUrMemory_Block_VerifyList();
 }
 
@@ -8380,13 +8380,13 @@ OWiCG_New(
 	UUtUns32					index;
 	UUtUns32					message;
 	WMtWindow					*listbox;
-	
+
 	group = NULL;
 	dir_ref = NULL;
-	
+
 	// get the create data
 	cg = (OWtCreateGroup *) WMrDialog_GetUserData(inDialog);
-		
+
 	UUrMemory_Clear(&ws, sizeof(OWtWS));
 	ws.allow_categories = UUcTrue;
 
@@ -8413,11 +8413,11 @@ OWiCG_New(
 		// nothing selected
 		goto cleanup;
 	}
-	
+
 	// create the sound group
 	error = OSrGroup_New(name, &group);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	if (ws.selected_sound_data != NULL) {
 		// add a permutation for the sound data to the group
 		error = SSrGroup_Permutation_New(group, ws.selected_sound_data, &index);
@@ -8440,7 +8440,7 @@ OWiCG_New(
 			BFtFileRef				ref;
 			char					file_name[SScMaxNameLength];
 			SStSoundData			*sound_data;
-			
+
 			// get the next ref
 			error = BFrDirectory_FileIterator_Next(file_iterator, &ref);
 			if (error != UUcError_None) { break; }
@@ -8454,7 +8454,7 @@ OWiCG_New(
 
 			// get the SStSoundData* corresponding to this file
 			sound_data = SSrSoundData_GetByName(file_name, UUcTrue);
-			
+
 			if (sound_data == NULL) {
 				// create a new sound data
 				error = SSrSoundData_New(&ref, &sound_data);
@@ -8466,7 +8466,7 @@ OWiCG_New(
 			// add the sound data to the group
 			error = SSrGroup_Permutation_New(group, sound_data, &index);
 		}
-	
+
 		// delete the file iterator
 		BFrDirectory_FileIterator_Delete(file_iterator);
 
@@ -8477,36 +8477,36 @@ OWiCG_New(
 	// get the dir ref
 	dir_ref = OWiCG_GetDirectoryRef(inDialog);
 	if (dir_ref == NULL) { goto cleanup; }
-	
+
 	// save the sound group
 	error = OSrGroup_Save(group, dir_ref);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// fill in the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcCG_LB_Items),
 	OWiListDirectory(listbox, dir_ref, OScImpulseSuffix);
-	
+
 	// select the item that was just selected
 	WMrListBox_SelectString(listbox, name);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return;
-	
+
 cleanup:
 	if (group != NULL)
 	{
 		OSrGroup_Delete(name);
 		group = NULL;
 	}
-	
+
 	if (dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	WMrDialog_MessageBox(
 		inDialog,
 		"Error",
@@ -8524,35 +8524,35 @@ OWiCG_Category_Open(
 	BFtFileRef					*parent_dir_ref;
 	BFtFileRef					*open_dir_ref;
 	char						name[BFcMaxFileNameLength];
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	parent_dir_ref = NULL;
 	open_dir_ref = NULL;
 	name[0] = '\0';
-	
+
 	// get the parent dir ref
 	parent_dir_ref = OWiCG_GetDirectoryRef(inDialog);
 	if (parent_dir_ref == NULL) { return; }
-	
+
 	// make a dir ref for the directory being opened
 	WMrListBox_GetText(inListBox, name, (UUtUns32)(-1));
 	error = BFrFileRef_DuplicateAndAppendName(parent_dir_ref, name, &open_dir_ref);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// fill in the listbox
 	error = OWiListDirectory(inListBox, open_dir_ref, OScImpulseSuffix);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	OWiCG_SetDirectoryRef(inDialog, open_dir_ref);
-	
+
 cleanup:
 	if (parent_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(parent_dir_ref);
 		parent_dir_ref = NULL;
 	}
-	
+
 	if (open_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(open_dir_ref);
@@ -8571,13 +8571,13 @@ OWiCG_InitDialog(
 	OWtCreateGroup				*cg;
 	BFtFileRef					*dir_ref;
 	WMtWindow					*listbox;
-	
+
 	SSrSoundData_GetByName_StartCache();
 
 	// get the create data
 	cg = (OWtCreateGroup *)WMrDialog_GetUserData(inDialog);
 	if (cg == NULL) { goto cleanup; }
-	
+
 	// get the directory ref
 	if (OWgCG_DirRef == NULL)
 	{
@@ -8589,23 +8589,23 @@ OWiCG_InitDialog(
 		error = BFrFileRef_Duplicate(OWgCG_DirRef, &dir_ref);
 		if (error != UUcError_None) { goto cleanup; }
 	}
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcCG_LB_Items);
 	if (listbox == NULL) { goto cleanup; }
-	
+
 	// fill in the listbox
 	error = OWiListDirectory(listbox, dir_ref, OScImpulseSuffix);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// save the directory ref
 	OWiCG_SetDirectoryRef(inDialog, dir_ref);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return;
-	
+
 cleanup:
 
 	if (dir_ref)
@@ -8613,7 +8613,7 @@ cleanup:
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = NULL;
 	}
-	
+
 	WMrDialog_ModalEnd(inDialog, 0);
 }
 
@@ -8627,19 +8627,19 @@ OWiCG_HandleCommand(
 	UUtUns16					control_id;
 	UUtUns16					command_type;
 	OWtCreateGroup				*cg;
-	
+
 	cg = (OWtCreateGroup *)WMrDialog_GetUserData(inDialog);
-	
+
 	control_id = UUmLowWord(inParam);
 	command_type = UUmHighWord(inParam);
-	
+
 	switch (control_id)
 	{
 		case OWcCG_LB_Items:
 			if (command_type == WMcNotify_DoubleClick)
 			{
 				UUtUns32					item_data;
-				
+
 				item_data = WMrListBox_GetItemData(inControl, (UUtUns32)(-1));
 				if (item_data != 0)
 				{
@@ -8647,12 +8647,12 @@ OWiCG_HandleCommand(
 				}
 			}
 		break;
-		
+
 		case OWcCG_Btn_New:
 			if (command_type != WMcNotify_Click) { break; }
 			OWiCG_New(inDialog);
 		break;
-		
+
 		case WMcDialogItem_Cancel:
 			if (command_type != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, 0);
@@ -8666,7 +8666,7 @@ OWiCG_HandleDestroy(
 	WMtDialog					*inDialog)
 {
 	OWtCreateGroup				*cg;
-	
+
 	cg = (OWtCreateGroup *)WMrDialog_GetUserData(inDialog);
 	if (cg)
 	{
@@ -8677,7 +8677,7 @@ OWiCG_HandleDestroy(
 				BFrFileRef_Dispose(OWgCG_DirRef);
 				OWgCG_DirRef = NULL;
 			}
-			
+
 			OWgCG_DirRef = cg->dir_ref;
 			cg->dir_ref = NULL;
 		}
@@ -8696,35 +8696,35 @@ OWiCG_HandleMenuCommand(
 	UUtUns32					i;
 	BFtFileRef					*dir_ref;
 	UUtError					error;
-	
+
 	// if inItemID == 0 then the popup menu is still on the same item
 	// so no updating needs to be done
 	if (inItemID == 0) { return; }
-	
+
 	// get the dir ref of the current item in the popup menu
 	dir_ref = OWiCG_GetDirectoryRef(inDialog);
 	if (dir_ref == NULL) { return; }
-	
+
 	// go up the hierarchy of directories until the desired directory is found
 	for (i = 0; i < (UUtUns32)inItemID; i++)
 	{
 		BFtFileRef					*parent_ref;
-		
+
 		error = BFrFileRef_GetParentDirectory(dir_ref, &parent_ref);
 		if (error != UUcError_None) { return; }
-		
+
 		BFrFileRef_Dispose(dir_ref);
 		dir_ref = parent_ref;
 	}
-	
+
 	// fill in the listbox
 	OWiListDirectory(
 		WMrDialog_GetItemByID(inDialog, OWcCG_LB_Items),
 		dir_ref,
 		OScImpulseSuffix);
-	
+
 	OWiCG_SetDirectoryRef(inDialog, dir_ref);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
 }
@@ -8738,23 +8738,23 @@ OWiCG_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiCG_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiCG_HandleDestroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiCG_HandleCommand(inDialog, (WMtWindow*)inParam2, inParam1);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiCG_HandleMenuCommand(inDialog, (WMtWindow*)inParam2, UUmLowWord(inParam1));
 		break;
@@ -8762,12 +8762,12 @@ OWiCG_Callback(
 		case WMcMessage_DrawItem:
 			OWiSM_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -8778,11 +8778,11 @@ OWrCreateGroup_Display(
 {
 	UUtError					error;
 	OWtCreateGroup				create_group;
-	
+
 	UUrMemory_Clear(&create_group, sizeof(OWtCreateGroup));
-	
+
 	// display the create dialogue dialog
-	error = 
+	error =
 		WMrDialog_ModalBegin(
 			OWcDialog_Create_Group,
 			NULL,
@@ -8807,7 +8807,7 @@ OWiMinMax_Fixer(
 {
 	UUtError					error;
 	BFtFileIterator				*file_iterator;
-	
+
 	// go through all of the ambient sounds and fix the ones whose
 	// max volume distance is less than the min volume distance
 	error =
@@ -8817,17 +8817,17 @@ OWiMinMax_Fixer(
 			NULL,
 			&file_iterator);
 	UUmError_ReturnOnError(error);
-	
+
 	while (1)
 	{
 		BFtFileRef					ref;
 		float						temp_distance;
 		char						name[BFcMaxFileNameLength];
 		char						out_string[1024];
-		
+
 		error = BFrDirectory_FileIterator_Next(file_iterator, &ref);
 		if (error != UUcError_None) { break; }
-		
+
 		if (BFrFileRef_IsDirectory(&ref))
 		{
 			OWiMinMax_Fixer(&ref, inFile);
@@ -8835,11 +8835,11 @@ OWiMinMax_Fixer(
 		else if (UUrString_Compare_NoCase(OScAmbientSuffix, BFrFileRef_GetSuffixName(&ref)) == 0)
 		{
 			SStAmbient					*ambient;
-			
+
 			UUrString_Copy(name, BFrFileRef_GetLeafName(&ref), BFcMaxFileNameLength);
 			UUrString_StripExtension(name);
 			UUrString_MakeLowerCase(name, BFcMaxFileNameLength);
-			
+
 			ambient = OSrAmbient_GetByName(name);
 			if ((ambient != NULL) &&
 				(ambient->min_volume_distance < ambient->max_volume_distance))
@@ -8850,13 +8850,13 @@ OWiMinMax_Fixer(
 						out_string,
 						"Ambient sound file %s needs to be modified, but the file is locked." UUmNL,
 						BFrFileRef_GetLeafName(&ref));
-					
+
 					WMrDialog_MessageBox(
 						NULL,
 						"Error",
 						out_string,
 						WMcMessageBoxStyle_OK);
-					
+
 					sprintf(out_string, "File is locked, %s" UUmNL, BFrFileRef_GetLeafName(&ref));
 					BFrFile_Write(inFile, strlen(out_string), out_string);
 				}
@@ -8865,9 +8865,9 @@ OWiMinMax_Fixer(
 					temp_distance = ambient->min_volume_distance;
 					ambient->min_volume_distance = ambient->max_volume_distance;
 					ambient->max_volume_distance = temp_distance;
-					
+
 					OSrAmbient_Save(ambient, inDirectoryRef);
-					
+
 					sprintf(out_string, "%s" UUmNL, BFrFileRef_GetLeafName(&ref));
 					BFrFile_Write(inFile, strlen(out_string), out_string);
 				}
@@ -8876,11 +8876,11 @@ OWiMinMax_Fixer(
 		else if (UUrString_Compare_NoCase(OScImpulseSuffix, BFrFileRef_GetSuffixName(&ref)) == 0)
 		{
 			SStImpulse					*impulse;
-			
+
 			UUrString_Copy(name, BFrFileRef_GetLeafName(&ref), BFcMaxFileNameLength);
 			UUrString_StripExtension(name);
 			UUrString_MakeLowerCase(name, BFcMaxFileNameLength);
-			
+
 			impulse = OSrImpulse_GetByName(name);
 			if ((impulse != NULL) &&
 				(impulse->min_volume_distance < impulse->max_volume_distance))
@@ -8891,13 +8891,13 @@ OWiMinMax_Fixer(
 						out_string,
 						"Impulse sound file %s needs to be modified, but the file is locked." UUmNL,
 						BFrFileRef_GetLeafName(&ref));
-					
+
 					WMrDialog_MessageBox(
 						NULL,
 						"Error",
 						out_string,
 						WMcMessageBoxStyle_OK);
-					
+
 					sprintf(out_string, "File is locked, %s" UUmNL, BFrFileRef_GetLeafName(&ref));
 					BFrFile_Write(inFile, strlen(out_string), out_string);
 				}
@@ -8906,7 +8906,7 @@ OWiMinMax_Fixer(
 					temp_distance = impulse->min_volume_distance;
 					impulse->min_volume_distance = impulse->max_volume_distance;
 					impulse->max_volume_distance = temp_distance;
-					
+
 					OSrImpulse_Save(impulse, inDirectoryRef);
 
 					sprintf(out_string, "%s" UUmNL, BFrFileRef_GetLeafName(&ref));
@@ -8915,7 +8915,7 @@ OWiMinMax_Fixer(
 			}
 		}
 	}
-	
+
 	if (file_iterator != NULL)
 	{
 		BFrDirectory_FileIterator_Delete(file_iterator);
@@ -8934,26 +8934,26 @@ OWrMinMax_Fixer(
 	BFtFileRef					*binary_dir_ref;
 	BFtFileRef					*file_ref;
 	BFtFile						*file;
-	
+
 	// get the binary director reference
 	error = OSrGetSoundBinaryDirectory(&binary_dir_ref);
 	if (error != UUcError_None) { goto handle_error; }
-	
+
 	// make file ref
 	error = BFrFileRef_MakeFromName("MinMaxDistFixes.txt", &file_ref);
 	if (error != UUcError_None) { goto handle_error; }
-	
+
 	// create file if it doesn't exist
 	if (BFrFileRef_FileExists(file_ref) == UUcFalse)
 	{
 		error = BFrFile_Create(file_ref);
 		if (error != UUcError_None) { goto handle_error; }
 	}
-	
+
 	// open the file
 	error = BFrFile_Open(file_ref, "rw", &file);
 	if (error != UUcError_None) { goto handle_error; }
-	
+
 	// set the position to 0
 	error = BFrFile_SetPos(file, 0);
 	if (error != UUcError_None) { goto handle_error; }
@@ -8961,23 +8961,23 @@ OWrMinMax_Fixer(
 	// process the binary files
 	error = OWiMinMax_Fixer(binary_dir_ref, file);
 	if (error != UUcError_None) { goto handle_error; }
-	
+
 	// close the file
 	BFrFile_Close(file);
 	file = NULL;
-	
+
 	// delete the file ref
 	BFrFileRef_Dispose(file_ref);
 	file_ref = NULL;
-	
+
 	WMrDialog_MessageBox(
 		NULL,
 		"Success",
 		"The Min/Max distance have been fixed",
 		WMcMessageBoxStyle_OK);
-	
+
 	goto exit;
-	
+
 handle_error:
 	if (error != UUcError_None)
 	{
@@ -8987,14 +8987,14 @@ handle_error:
 			"Unable to process the ambient and impulse files.",
 			WMcMessageBoxStyle_OK);
 	}
-	
+
 exit:
 	if (binary_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(binary_dir_ref);
 		binary_dir_ref = NULL;
 	}
-	
+
 	return error;
 }
 
@@ -9006,7 +9006,7 @@ OWiSpeech_Fixer(
 {
 	UUtError					error;
 	BFtFileIterator				*file_iterator;
-	
+
 	// go through all of the ambient sounds and fix the ones whose
 	// max volume distance is less than the min volume distance
 	error =
@@ -9016,16 +9016,16 @@ OWiSpeech_Fixer(
 			NULL,
 			&file_iterator);
 	UUmError_ReturnOnError(error);
-	
+
 	while (1)
 	{
 		BFtFileRef					ref;
 		char						name[BFcMaxFileNameLength];
 		char						out_string[1024];
-		
+
 		error = BFrDirectory_FileIterator_Next(file_iterator, &ref);
 		if (error != UUcError_None) { break; }
-		
+
 		if (BFrFileRef_IsDirectory(&ref))
 		{
 			OWiSpeech_Fixer(&ref, inFile);
@@ -9034,14 +9034,14 @@ OWiSpeech_Fixer(
 		{
 			SStAmbient					*ambient;
 			UUtUns32					flags;
-			
+
 			UUrString_Copy(name, BFrFileRef_GetLeafName(&ref), BFcMaxFileNameLength);
 			UUrString_StripExtension(name);
 			UUrString_MakeLowerCase(name, BFcMaxFileNameLength);
-			
+
 			ambient = OSrAmbient_GetByName(name);
 			if (ambient == NULL) { continue; }
-			
+
 			if ((ambient->min_volume_distance == 10.0f) && (ambient->max_volume_distance == 1.0f))
 			{
 				if (BFrFileRef_IsLocked(&ref) == UUcTrue)
@@ -9050,30 +9050,30 @@ OWiSpeech_Fixer(
 						out_string,
 						"Ambient sound file %s needs to be modified, but the file is locked." UUmNL,
 						BFrFileRef_GetLeafName(&ref));
-					
+
 					WMrDialog_MessageBox(
 						NULL,
 						"Error",
 						out_string,
 						WMcMessageBoxStyle_OK);
-					
+
 					sprintf(out_string, "File is locked, %s" UUmNL, BFrFileRef_GetLeafName(&ref));
 					BFrFile_Write(inFile, strlen(out_string), out_string);
-					
+
 					continue;
 				}
 				else
 				{
 					ambient->min_volume_distance = 50.0f;
 					ambient->max_volume_distance = 10.0f;
-					
+
 					OSrAmbient_Save(ambient, inDirectoryRef);
-					
+
 					sprintf(out_string, "%s" UUmNL, BFrFileRef_GetLeafName(&ref));
 					BFrFile_Write(inFile, strlen(out_string), out_string);
 				}
 			}
-			
+
 			flags = (SScAmbientFlag_InterruptOnStop | SScAmbientFlag_PlayOnce);
 			if (((ambient->flags & flags) == flags) && (ambient->priority != SScPriority2_Highest))
 			{
@@ -9083,31 +9083,31 @@ OWiSpeech_Fixer(
 						out_string,
 						"Ambient sound file %s needs to be modified, but the file is locked." UUmNL,
 						BFrFileRef_GetLeafName(&ref));
-					
+
 					WMrDialog_MessageBox(
 						NULL,
 						"Error",
 						out_string,
 						WMcMessageBoxStyle_OK);
-					
+
 					sprintf(out_string, "File is locked, %s" UUmNL, BFrFileRef_GetLeafName(&ref));
 					BFrFile_Write(inFile, strlen(out_string), out_string);
-					
+
 					continue;
 				}
 				else
 				{
 					ambient->priority = SScPriority2_Highest;
-					
+
 					OSrAmbient_Save(ambient, inDirectoryRef);
-					
+
 					sprintf(out_string, "%s" UUmNL, BFrFileRef_GetLeafName(&ref));
 					BFrFile_Write(inFile, strlen(out_string), out_string);
 				}
 			}
 		}
 	}
-	
+
 	if (file_iterator != NULL)
 	{
 		BFrDirectory_FileIterator_Delete(file_iterator);
@@ -9126,26 +9126,26 @@ OWrSpeech_Fixer(
 	BFtFileRef					*binary_dir_ref;
 	BFtFileRef					*file_ref;
 	BFtFile						*file;
-	
+
 	// get the binary director reference
 	error = OSrGetSoundBinaryDirectory(&binary_dir_ref);
 	if (error != UUcError_None) { goto handle_error; }
-	
+
 	// make file ref
 	error = BFrFileRef_MakeFromName("SpeechFixes.txt", &file_ref);
 	if (error != UUcError_None) { goto handle_error; }
-	
+
 	// create file if it doesn't exist
 	if (BFrFileRef_FileExists(file_ref) == UUcFalse)
 	{
 		error = BFrFile_Create(file_ref);
 		if (error != UUcError_None) { goto handle_error; }
 	}
-	
+
 	// open the file
 	error = BFrFile_Open(file_ref, "rw", &file);
 	if (error != UUcError_None) { goto handle_error; }
-	
+
 	// set the position to 0
 	error = BFrFile_SetPos(file, 0);
 	if (error != UUcError_None) { goto handle_error; }
@@ -9153,23 +9153,23 @@ OWrSpeech_Fixer(
 	// process the binary files
 	error = OWiSpeech_Fixer(binary_dir_ref, file);
 	if (error != UUcError_None) { goto handle_error; }
-	
+
 	// close the file
 	BFrFile_Close(file);
 	file = NULL;
-	
+
 	// delete the file ref
 	BFrFileRef_Dispose(file_ref);
 	file_ref = NULL;
-	
+
 	WMrDialog_MessageBox(
 		NULL,
 		"Success",
 		"The speech ambients have been fixed",
 		WMcMessageBoxStyle_OK);
-	
+
 	goto exit;
-	
+
 handle_error:
 	if (error != UUcError_None)
 	{
@@ -9179,14 +9179,14 @@ handle_error:
 			"Unable to process the speech ambient files.",
 			WMcMessageBoxStyle_OK);
 	}
-	
+
 exit:
 	if (binary_dir_ref != NULL)
 	{
 		BFrFileRef_Dispose(binary_dir_ref);
 		binary_dir_ref = NULL;
 	}
-	
+
 	return error;
 }
 

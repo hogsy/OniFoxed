@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_Win_AI_Melee.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: May 20, 2000
-	
+
 	PURPOSE: AI Melee Profile Editor
-	
+
 	Copyright (c) Bungie Software 2000
 
 */

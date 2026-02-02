@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_GC_Method_Geometry.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -34,7 +34,7 @@
 
 	extern UUtBool		gClipForce4D;
 	extern UUtBool		gNo4DClip;
-	
+
 #endif
 
 #include "Motoko_Manager.h"
@@ -51,26 +51,26 @@ MSrGeomContext_Method_Geometry_BoundingBox_Draw(
 	M3tPoint4D				*frustumPoints;
 	M3tQuad					quadIndices;
 	UUtUns32				itr, boxShades[4 + M3cExtraCoords];
-	
+
 	MSrTransform_UpdateMatrices();
-	
+
 	clipCodes = MSgGeomContextPrivate->objectVertexData.clipCodes;
 	frustumPoints = MSgGeomContextPrivate->objectVertexData.frustumPoints;
 	screenPoints = MSgGeomContextPrivate->objectVertexData.screenPoints;
-	
-	clipStatus = 
+
+	clipStatus =
 		MSgGeomContextPrivate->activeFunctions->transformBoundingBoxToFrustumScreen(
 			inGeometryObject,
 			frustumPoints,
 			screenPoints,
 			clipCodes);
-	
+
 	M3rDraw_State_Push();
-	
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_ScreenPointArray,
 		screenPoints);
-		
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Appearence,
 		M3cDrawState_Appearence_Gouraud);
@@ -86,13 +86,13 @@ MSrGeomContext_Method_Geometry_BoundingBox_Draw(
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_NumRealVertices,
 		8);
-		
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_ConstantColor,
 		inShade);
 
 	M3rDraw_State_Commit();
-		
+
 	for (itr = 0; itr < 8; itr++) {
 		boxShades[itr] = inShade;
 	}
@@ -105,7 +105,7 @@ MSrGeomContext_Method_Geometry_BoundingBox_Draw(
 	{
 		case MScClipStatus_TrivialReject:
 			break;
-		
+
 		case MScClipStatus_TrivialAccept:
 			// minZ side
 				quadIndices.indices[0] = 0;
@@ -113,35 +113,35 @@ MSrGeomContext_Method_Geometry_BoundingBox_Draw(
 				quadIndices.indices[2] = 3;
 				quadIndices.indices[3] = 2;
 				M3rDraw_Quad(&quadIndices);
-			
+
 			// maxZ side
 				quadIndices.indices[0] = 4;
 				quadIndices.indices[1] = 5;
 				quadIndices.indices[2] = 7;
 				quadIndices.indices[3] = 6;
 				M3rDraw_Quad(&quadIndices);
-			
+
 			// minY side
 				quadIndices.indices[0] = 0;
 				quadIndices.indices[1] = 1;
 				quadIndices.indices[2] = 5;
 				quadIndices.indices[3] = 4;
 				M3rDraw_Quad(&quadIndices);
-			
+
 			// maxY side
 				quadIndices.indices[0] = 2;
 				quadIndices.indices[1] = 3;
 				quadIndices.indices[2] = 7;
 				quadIndices.indices[3] = 6;
 				M3rDraw_Quad(&quadIndices);
-			
+
 			// minX side
 				quadIndices.indices[0] = 0;
 				quadIndices.indices[1] = 2;
 				quadIndices.indices[2] = 6;
 				quadIndices.indices[3] = 4;
 				M3rDraw_Quad(&quadIndices);
-				
+
 			// maxX side
 				quadIndices.indices[0] = 1;
 				quadIndices.indices[1] = 3;
@@ -149,10 +149,10 @@ MSrGeomContext_Method_Geometry_BoundingBox_Draw(
 				quadIndices.indices[3] = 5;
 				M3rDraw_Quad(&quadIndices);
 			break;
-			
+
 		case MScClipStatus_NeedsClipping:
 			MSgGeomContextPrivate->polyComputeVertexProc = MSrClip_ComputeVertex_GouraudFlat;
-			
+
 			// minZ
 				MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = 8;
 				if(clipCodes[0] | clipCodes[1] | clipCodes[3] | clipCodes[2])
@@ -167,7 +167,7 @@ MSrGeomContext_Method_Geometry_BoundingBox_Draw(
 					quadIndices.indices[3] = 2;
 					M3rDraw_Quad(&quadIndices);
 				}
-			
+
 			// maxZ
 				MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = 8;
 				if(clipCodes[4] | clipCodes[5] | clipCodes[7] | clipCodes[6])
@@ -182,7 +182,7 @@ MSrGeomContext_Method_Geometry_BoundingBox_Draw(
 					quadIndices.indices[3] = 6;
 					M3rDraw_Quad(&quadIndices);
 				}
-			
+
 			// minY
 				MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = 8;
 				if(clipCodes[0] | clipCodes[1] | clipCodes[5] | clipCodes[4])
@@ -197,7 +197,7 @@ MSrGeomContext_Method_Geometry_BoundingBox_Draw(
 					quadIndices.indices[3] = 4;
 					M3rDraw_Quad(&quadIndices);
 				}
-			
+
 			// maxY
 				MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = 8;
 				if(clipCodes[2] | clipCodes[3] | clipCodes[7] | clipCodes[6])
@@ -212,7 +212,7 @@ MSrGeomContext_Method_Geometry_BoundingBox_Draw(
 					quadIndices.indices[3] = 6;
 					M3rDraw_Quad(&quadIndices);
 				}
-			
+
 			// minX
 				MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = 8;
 				if(clipCodes[0] | clipCodes[2] | clipCodes[6] | clipCodes[4])
@@ -227,7 +227,7 @@ MSrGeomContext_Method_Geometry_BoundingBox_Draw(
 					quadIndices.indices[3] = 4;
 					M3rDraw_Quad(&quadIndices);
 				}
-			
+
 			// maxX
 				MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = 8;
 				if(clipCodes[1] | clipCodes[3] | clipCodes[7] | clipCodes[5])
@@ -246,7 +246,7 @@ MSrGeomContext_Method_Geometry_BoundingBox_Draw(
 	}
 
 	M3rDraw_State_Pop();
-	
+
 	return UUcError_None;
 }
 
@@ -267,20 +267,20 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeVertex(
 	UUtUns32						numPoints;
 	UUtUns32		numTris;
 	UUtUns32*		curIndexPtr;
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Interpolation,
 		M3cDrawState_Interpolation_Vertex);
-	
+
 	numPoints = inGeometryObject->pointArray->numPoints;
-	
+
 	worldPoints = MSgGeomContextPrivate->worldPoints;
 	worldVertexNormals = MSgGeomContextPrivate->worldVertexNormals;
 	screenVertexShades = (UUtUns32*)MSgGeomContextPrivate->shades_vertex;
 	screenPoints = MSgGeomContextPrivate->objectVertexData.screenPoints;
 	clipCodes = MSgGeomContextPrivate->objectVertexData.clipCodes;
 	frustumPoints = MSgGeomContextPrivate->objectVertexData.frustumPoints;
-	
+
 	/*
 	 * Transform all points to screen space
 	 */
@@ -297,7 +297,7 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeVertex(
 			inGeometryObject,
 			worldPoints,
 			worldVertexNormals);
-		
+
 	/*
 	 * Shade the vertices
 	 */
@@ -305,7 +305,7 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeVertex(
 			MSgGeomContextPrivate->stateInt[M3cGeomStateIntType_Fill] == M3cGeomState_Fill_Solid &&
 			(inGeometryObject->geometryFlags & M3cGeometryFlag_ComputeSpecular))
 		{
-		
+
 		}
 		else
 		{
@@ -315,21 +315,21 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeVertex(
 				worldVertexNormals,
 				screenVertexShades);
 		}
-					
+
 	//
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		NULL);
-	
+
 	M3rDraw_State_Commit();
-	
+
 	numTris = inGeometryObject->triNormalIndexArray->numIndices;
 	curIndexPtr = inGeometryObject->triStripArray->indices;
-	
+
 	for(i = 0; i < numTris; i++)
 	{
 		index2 = *curIndexPtr++;
-		
+
 		if(index2 & 0x80000000)
 		{
 			index0 = (index2 & 0x7FFFFFFF);
@@ -340,7 +340,7 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeVertex(
 		}
 
 		clipCode2 = clipCodes[index2];
-				
+
 		if(clipCode0 & clipCode1 & clipCode2)
 		{
 			// Do nothing
@@ -360,21 +360,21 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeVertex(
 		else
 		{
 			M3tTri	curTri;
-			
+
 			curTri.indices[0] = index0;
 			curTri.indices[1] = index1;
 			curTri.indices[2] = index2;
-			
+
 			M3rDraw_Triangle(
 				&curTri);
 		}
-		
+
 		index0 = index1;
 		index1 = index2;
 		clipCode0 = clipCode1;
 		clipCode1 = clipCode2;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -394,25 +394,25 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeFace(
 	UUtUns32				numPoints;
 	UUtUns32				numTris;
 	UUtUns32*				curIndexPtr;
-	
+
 	M3rDraw_State_Push();
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Interpolation,
 		M3cDrawState_Interpolation_None);
-	
+
 	numPoints = inGeometryObject->pointArray->numPoints;
 	numTris = inGeometryObject->triNormalIndexArray->numIndices;
-	
+
 	worldPoints = MSgGeomContextPrivate->worldPoints;
 	worldTriNormals = MSgGeomContextPrivate->worldTriNormals;
 	screenTriShades = (UUtUns32*)MSgGeomContextPrivate->shades_tris;
 	screenPoints = MSgGeomContextPrivate->objectVertexData.screenPoints;
 	clipCodes = MSgGeomContextPrivate->objectVertexData.clipCodes;
 	frustumPoints = MSgGeomContextPrivate->objectVertexData.frustumPoints;
-	
+
 	MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = numPoints;
-	
+
 	MSgGeomContextPrivate->activeFunctions->transformPointListToFrustumScreen(
 		inGeometryObject,
 		frustumPoints,
@@ -425,7 +425,7 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeFace(
 		MSgGeomContextPrivate->activeFunctions->transformFaceNormalToWorld(
 			inGeometryObject,
 			worldTriNormals);
-		
+
 	/*
 	 * Shade the vertices
 	 */
@@ -433,7 +433,7 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeFace(
 			MSgGeomContextPrivate->stateInt[M3cGeomStateIntType_Fill] == M3cGeomState_Fill_Solid &&
 			(inGeometryObject->geometryFlags & M3cGeometryFlag_ComputeSpecular))
 		{
-		
+
 		}
 		else
 		{
@@ -444,18 +444,18 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeFace(
 				worldTriNormals,
 				screenTriShades);
 		}
-					
+
 	//
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		NULL);
-	
+
 	curIndexPtr = inGeometryObject->triStripArray->indices;
-	
+
 	for(i = 0; i < numTris; i++)
 	{
 		index2 = *curIndexPtr++;
-		
+
 		if(index2 & 0x80000000)
 		{
 			index0 = (index2 & 0x7FFFFFFF);
@@ -466,11 +466,11 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeFace(
 		}
 
 		clipCode2 = clipCodes[index2];
-		
+
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_ConstantColor,
 			*screenTriShades);
-		
+
 		M3rDraw_State_Commit();
 
 		if(clipCode0 & clipCode1 & clipCode2)
@@ -492,15 +492,15 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeFace(
 		else
 		{
 			M3tTri	curTri;
-			
+
 			curTri.indices[0] = index0;
 			curTri.indices[1] = index1;
 			curTri.indices[2] = index2;
-			
+
 			M3rDraw_Triangle(
 				&curTri);
 		}
-		
+
 		index0 = index1;
 		index1 = index2;
 		clipCode0 = clipCode1;
@@ -509,7 +509,7 @@ MSiGeometry_Draw_BackFaceKeep_Clip_ShadeFace(
 	}
 
 	M3rDraw_State_Pop();
-	
+
 	return UUcError_None;
 }
 
@@ -526,33 +526,33 @@ MSiGeometry_Draw_BackFaceKeep_ClipAccept_ShadeVertex(
 	UUtUns32*				curIndexPtr;
 	UUtUns32				index0, index1, index2;
 	UUtUns32				numTris;
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Interpolation,
 		M3cDrawState_Interpolation_Vertex);
-	
+
 	numPoints = inGeometryObject->pointArray->numPoints;
-	
+
 	worldPoints = MSgGeomContextPrivate->worldPoints;
 	worldVertexNormals = MSgGeomContextPrivate->worldVertexNormals;
 	screenVertexShades = (UUtUns32*)MSgGeomContextPrivate->shades_vertex;
 	screenPoints = MSgGeomContextPrivate->objectVertexData.screenPoints;
-	
+
 	/*
 	 * Transform all points to screen space
 	 */
 		MSgGeomContextPrivate->activeFunctions->transformPointListToScreen(
 			inGeometryObject,
 			screenPoints);
-		
+
 		if(0)
 		{
 			UUtUns32	itr;
-			
+
 			MSrTransform_Geom_PointListToScreen(
 				inGeometryObject,
 				MSgGeomContextPrivate->gqVertexData.screenPoints);
-			
+
 			for(itr = 0; itr < numPoints; itr++)
 			{
 				UUmAssert(UUmFloat_CompareEqu(screenPoints[itr].x, MSgGeomContextPrivate->gqVertexData.screenPoints[itr].x));
@@ -561,8 +561,8 @@ MSiGeometry_Draw_BackFaceKeep_ClipAccept_ShadeVertex(
 				UUmAssert(UUmFloat_CompareEqu(screenPoints[itr].invW, MSgGeomContextPrivate->gqVertexData.screenPoints[itr].invW));
 			}
 		}
-		
-		
+
+
 	/*
 	 * Transform all points and vertex normals to world space
 	 */
@@ -570,7 +570,7 @@ MSiGeometry_Draw_BackFaceKeep_ClipAccept_ShadeVertex(
 			inGeometryObject,
 			worldPoints,
 			worldVertexNormals);
-				
+
 	/*
 	 * Shade the vertices
 	 */
@@ -578,7 +578,7 @@ MSiGeometry_Draw_BackFaceKeep_ClipAccept_ShadeVertex(
 			MSgGeomContextPrivate->stateInt[M3cGeomStateIntType_Fill] == M3cGeomState_Fill_Solid &&
 			(inGeometryObject->geometryFlags & M3cGeometryFlag_ComputeSpecular))
 		{
-		
+
 		}
 		else
 		{
@@ -588,21 +588,21 @@ MSiGeometry_Draw_BackFaceKeep_ClipAccept_ShadeVertex(
 				worldVertexNormals,
 				screenVertexShades);
 		}
-					
+
 	//
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		NULL);
-	
+
 	M3rDraw_State_Commit();
-	
+
 	numTris = inGeometryObject->triNormalIndexArray->numIndices;
 	curIndexPtr = inGeometryObject->triStripArray->indices;
-	
+
 	for(i = 0; i < numTris; i++)
 	{
 		index2 = *curIndexPtr++;
-		
+
 		if(index2 & 0x80000000)
 		{
 			index0 = (index2 & 0x7FFFFFFF);
@@ -612,15 +612,15 @@ MSiGeometry_Draw_BackFaceKeep_ClipAccept_ShadeVertex(
 
 		{
 			M3tTri	curTri;
-			
+
 			curTri.indices[0] = index0;
 			curTri.indices[1] = index1;
 			curTri.indices[2] = index2;
-			
+
 			M3rDraw_Triangle(
 				&curTri);
 		}
-		
+
 		index0 = index1;
 		index1 = index2;
 	}
@@ -641,19 +641,19 @@ MSiGeometry_Draw_BackFaceKeep_ClipAccept_ShadeFace(
 	UUtUns32				numPoints;
 	UUtUns32*				curIndexPtr;
 	UUtUns32				index0, index1, index2;
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Interpolation,
 		M3cDrawState_Interpolation_None);
 
 	numPoints = inGeometryObject->pointArray->numPoints;
 	numTris = inGeometryObject->triNormalIndexArray->numIndices;
-	
+
 	worldPoints = MSgGeomContextPrivate->worldPoints;
 	worldTriNormals = MSgGeomContextPrivate->worldTriNormals;
 	screenTriShades = (UUtUns32*)MSgGeomContextPrivate->shades_tris;
 	screenPoints = MSgGeomContextPrivate->objectVertexData.screenPoints;
-	
+
 	/*
 	 * Transform all points to screen space
 	 */
@@ -667,7 +667,7 @@ MSiGeometry_Draw_BackFaceKeep_ClipAccept_ShadeFace(
 		MSgGeomContextPrivate->activeFunctions->transformFaceNormalToWorld(
 			inGeometryObject,
 			worldTriNormals);
-		
+
 	/*
 	 * Shade the vertices
 	 */
@@ -675,7 +675,7 @@ MSiGeometry_Draw_BackFaceKeep_ClipAccept_ShadeFace(
 		MSgGeomContextPrivate->stateInt[M3cGeomStateIntType_Fill] == M3cGeomState_Fill_Solid &&
 		(inGeometryObject->geometryFlags & M3cGeometryFlag_ComputeSpecular))
 	{
-	
+
 	}
 	else
 	{
@@ -686,43 +686,43 @@ MSiGeometry_Draw_BackFaceKeep_ClipAccept_ShadeFace(
 			worldTriNormals,
 			screenTriShades);
 	}
-	
+
 	//
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		NULL);
-	
+
 	numTris = inGeometryObject->triNormalIndexArray->numIndices;
 	curIndexPtr = inGeometryObject->triStripArray->indices;
-	
+
 	for(i = 0; i < numTris; i++)
 	{
 		index2 = *curIndexPtr++;
-		
+
 		if(index2 & 0x80000000)
 		{
 			index0 = (index2 & 0x7FFFFFFF);
 			index1 = *curIndexPtr++;
 			index2 = *curIndexPtr++;
 		}
-		
+
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_ConstantColor,
 			*screenTriShades);
-		
+
 		M3rDraw_State_Commit();
 
 		{
 			M3tTri	curTri;
-			
+
 			curTri.indices[0] = index0;
 			curTri.indices[1] = index1;
 			curTri.indices[2] = index2;
-			
+
 			M3rDraw_Triangle(
 				&curTri);
 		}
-		
+
 		index0 = index1;
 		index1 = index2;
 		screenTriShades++;
@@ -754,9 +754,9 @@ MSiGeometry_Draw_BackFaceRemove_Clip_ShadeVertex(
 
 	UUtUns32*				activeTrisBV;
 	UUtUns32*				activeVerticesBV;
-	
+
 	UUtUns32*				curIndexPtr;
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Interpolation,
 		M3cDrawState_Interpolation_Vertex);
@@ -771,7 +771,7 @@ MSiGeometry_Draw_BackFaceRemove_Clip_ShadeVertex(
 	screenVertexShades = MSgGeomContextPrivate->shades_vertex;
 	worldVertexNormals = MSgGeomContextPrivate->worldVertexNormals;
 
-	
+
 	// 0. init
 	//		- active face list
 	//		- active vertex list
@@ -779,25 +779,25 @@ MSiGeometry_Draw_BackFaceRemove_Clip_ShadeVertex(
 		MSgGeomContextPrivate->activeFunctions->transformFaceNormalToWorld(
 			inGeometryObject,
 			worldTriNormals);
-			
+
 		numTris = inGeometryObject->triNormalIndexArray->numIndices;
 		activeTrisBV = MSgGeomContextPrivate->activeTrisBV;
 		UUrBitVector_ClearBitAll(
 			activeTrisBV,
 			numTris);
-		
+
 		activeVerticesBV = MSgGeomContextPrivate->activeVerticesBV;
 		UUrBitVector_ClearBitAll(
 			activeVerticesBV,
 			numPoints);
-	
+
 	// 2. Transform all points to world for backface test
 		MSgGeomContextPrivate->activeFunctions->transformPointListAndVertexNormalToWorldComputeViewVector(
 			inGeometryObject,
 			worldPoints,
 			worldViewVectors,
 			worldVertexNormals);
-				
+
 	// 3. Do backface remove test
 	//		- mark all front facing faces as active
 	//		- mark all vertices belonging to front facing faces as active
@@ -808,7 +808,7 @@ MSiGeometry_Draw_BackFaceRemove_Clip_ShadeVertex(
 			worldTriNormals,
 			activeTrisBV,
 			activeVerticesBV);
-	
+
 	// 3. Transform all active vertices to frustum and screen space
 		MSgGeomContextPrivate->activeFunctions->transformPointListToFrustumScreenActive(
 			inGeometryObject,
@@ -816,31 +816,31 @@ MSiGeometry_Draw_BackFaceRemove_Clip_ShadeVertex(
 			frustumPoints,
 			screenPoints,
 			clipCodes);
-	
+
 		if(0)
 		{
 				UUtUns32	itr;
-				
+
 				MSrTransform_Geom_PointListToFrustumScreen(
 				inGeometryObject,
 //				activeVerticesBV,
 				MSgGeomContextPrivate->gqVertexData.frustumPoints,
 				MSgGeomContextPrivate->gqVertexData.screenPoints,
 				MSgGeomContextPrivate->gqVertexData.clipCodes);
-				
+
 				for(itr = 0; itr < numPoints; itr++)
 				{
 					//if(!UUrBitVector_TestBit(activeVerticesBV, itr)) continue;
-					
+
 					UUmAssert(clipCodes[itr] == MSgGeomContextPrivate->gqVertexData.clipCodes[itr]);
-					
+
 					UUmAssert(UUmFloat_CompareEqu(screenPoints[itr].x, MSgGeomContextPrivate->gqVertexData.screenPoints[itr].x));
 					UUmAssert(UUmFloat_CompareEqu(screenPoints[itr].y, MSgGeomContextPrivate->gqVertexData.screenPoints[itr].y));
 					UUmAssert(UUmFloat_CompareEqu(screenPoints[itr].z, MSgGeomContextPrivate->gqVertexData.screenPoints[itr].z));
 					UUmAssert(UUmFloat_CompareEqu(screenPoints[itr].invW, MSgGeomContextPrivate->gqVertexData.screenPoints[itr].invW));
 				}
 		}
-	
+
 	// 4. Shade all active vertices
 		MSgGeomContextPrivate->activeFunctions->shadeVerticesGouraudActive(
 			inGeometryObject,
@@ -848,21 +848,21 @@ MSiGeometry_Draw_BackFaceRemove_Clip_ShadeVertex(
 			worldVertexNormals,
 			screenVertexShades,
 			activeVerticesBV);
-	
+
 	//
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		activeVerticesBV);
-	
+
 	M3rDraw_State_Commit();
-	
+
 	// 5. Clip and draw all active faces
 		curIndexPtr = inGeometryObject->triStripArray->indices;
-		
+
 		UUmBitVector_Loop_Begin(i, numTris, activeTrisBV)
 		{
 			index2 = *curIndexPtr++;
-			
+
 			if(index2 & 0x80000000)
 			{
 				index0 = (index2 & 0x7FFFFFFF);
@@ -873,14 +873,14 @@ MSiGeometry_Draw_BackFaceRemove_Clip_ShadeVertex(
 			}
 
 			clipCode2 = clipCodes[index2];
-			
+
 			UUmBitVector_Loop_Test
 			{
-			
+
 				UUmAssert(UUrBitVector_TestBit(activeVerticesBV, index0));
 				UUmAssert(UUrBitVector_TestBit(activeVerticesBV, index1));
 				UUmAssert(UUrBitVector_TestBit(activeVerticesBV, index2));
-				
+
 				if(clipCode0 & clipCode1 & clipCode2)
 				{
 					// Do nothing
@@ -900,16 +900,16 @@ MSiGeometry_Draw_BackFaceRemove_Clip_ShadeVertex(
 				else
 				{
 					M3tTri	curTri;
-					
+
 					curTri.indices[0] = index0;
 					curTri.indices[1] = index1;
 					curTri.indices[2] = index2;
-					
+
 					M3rDraw_Triangle(
 						&curTri);
 				}
 			}
-			
+
 			index0 = index1;
 			index1 = index2;
 			clipCode0 = clipCode1;
@@ -962,7 +962,7 @@ MSiGeometry_Draw_BackFaceRemove_ClipAccept_ShadeVertex(
 	screenPoints = MSgGeomContextPrivate->objectVertexData.screenPoints;
 	screenVertexShades = MSgGeomContextPrivate->shades_vertex;
 	worldVertexNormals = MSgGeomContextPrivate->worldVertexNormals;
-	
+
 	// 0. init
 	//		- active face list
 	//		- active vertex list
@@ -988,7 +988,7 @@ MSiGeometry_Draw_BackFaceRemove_ClipAccept_ShadeVertex(
 			worldPoints,
 			worldViewVectors,
 			worldVertexNormals);
-				
+
 #if TOOL_VERSION
 		if(0)
 		{
@@ -1001,14 +1001,14 @@ MSiGeometry_Draw_BackFaceRemove_ClipAccept_ShadeVertex(
 			float*			nYYYY;
 			float*			nZZZZ;
 			M3tVector3D*	curViewVector = worldViewVectors;
-			
+
 			pXXXX = (float*)worldPoints;
 			pYYYY = (float*)worldPoints + 4;
 			pZZZZ = (float*)worldPoints + 8;
 			nXXXX = (float*)worldVertexNormals;
 			nYYYY = (float*)worldVertexNormals + 4;
 			nZZZZ = (float*)worldVertexNormals + 8;
-			
+
 			for(itr = 0; itr < (numPoints >> 2); itr++)
 			{
 				newEnvMap = MSgGeomContextPrivate->debugEnvMap + MSgGeomContextPrivate->numDebugEnvMap++;
@@ -1022,7 +1022,7 @@ MSiGeometry_Draw_BackFaceRemove_ClipAccept_ShadeVertex(
 				newEnvMap->view.y = newEnvMap->origin.y + curViewVector->y;
 				newEnvMap->view.z = newEnvMap->origin.z + curViewVector->z;
 				curViewVector++;
-				
+
 				newEnvMap = MSgGeomContextPrivate->debugEnvMap + MSgGeomContextPrivate->numDebugEnvMap++;
 				newEnvMap->origin.x = pXXXX[1];
 				newEnvMap->origin.y = pYYYY[1];
@@ -1034,7 +1034,7 @@ MSiGeometry_Draw_BackFaceRemove_ClipAccept_ShadeVertex(
 				newEnvMap->view.y = newEnvMap->origin.y + curViewVector->y;
 				newEnvMap->view.z = newEnvMap->origin.z + curViewVector->z;
 				curViewVector++;
-				
+
 				newEnvMap = MSgGeomContextPrivate->debugEnvMap + MSgGeomContextPrivate->numDebugEnvMap++;
 				newEnvMap->origin.x = pXXXX[2];
 				newEnvMap->origin.y = pYYYY[2];
@@ -1046,7 +1046,7 @@ MSiGeometry_Draw_BackFaceRemove_ClipAccept_ShadeVertex(
 				newEnvMap->view.y = newEnvMap->origin.y + curViewVector->y;
 				newEnvMap->view.z = newEnvMap->origin.z + curViewVector->z;
 				curViewVector++;
-				
+
 				newEnvMap = MSgGeomContextPrivate->debugEnvMap + MSgGeomContextPrivate->numDebugEnvMap++;
 				newEnvMap->origin.x = pXXXX[3];
 				newEnvMap->origin.y = pYYYY[3];
@@ -1093,7 +1093,7 @@ MSiGeometry_Draw_BackFaceRemove_ClipAccept_ShadeVertex(
 			worldVertexNormals,
 			screenVertexShades,
 			activeVerticesBV);
-		
+
 
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
@@ -1103,7 +1103,7 @@ MSiGeometry_Draw_BackFaceRemove_ClipAccept_ShadeVertex(
 
 	// 6. Clip and draw all active faces
         curIndexPtr = inGeometryObject->triStripArray->indices;
-        
+
 #if 1
         MSiGeometry_Draw_Triangles_In_BitVector(activeTrisBV, activeVerticesBV, numTris, curIndexPtr);
 #else
@@ -1116,18 +1116,18 @@ MSiGeometry_Draw_BackFaceRemove_ClipAccept_ShadeVertex(
                     unsigned int strips;
                     unsigned int calls;
                 } MSgCounters;
-                
+
                 MSgCounters.calls++;
                 MSgCounters.tris += numTris;
-                
+
 		UUmBitVector_Loop_Begin(i, numTris, activeTrisBV)
 		{
 			index2 = *curIndexPtr++;
-			
+
 			if(index2 & 0x80000000)
 			{
                                 MSgCounters.strips++;
-                                
+
 				index0 = (index2 & 0x7FFFFFFF);
 				index1 = *curIndexPtr++;
 				index2 = *curIndexPtr++;
@@ -1141,15 +1141,15 @@ MSiGeometry_Draw_BackFaceRemove_ClipAccept_ShadeVertex(
 
 				{
 					M3tTri	curTri;
-					
+
 					curTri.indices[0] = index0;
 					curTri.indices[1] = index1;
 					curTri.indices[2] = index2;
-					
+
 					M3rDraw_Triangle(&curTri);
 				}
 			}
-			
+
 			index0 = index1;
 			index1 = index2;
 		}
@@ -1164,13 +1164,13 @@ static void MSiGeometry_Draw_Triangles_In_BitVector(UUtUns32 *activeTrisBV, UUtU
 {
 	UUtUns32				index0, index1, index2, i;
 //        M3rDraw_Triangle_Func triFunc;
-        
+
 //        triFunc = M3rDraw_GetTriangleFunction();
-        
+
         UUmBitVector_Loop_Begin(i, numTris, activeTrisBV)
         {
                 index2 = *indicies++;
-                
+
                 if(index2 & 0x80000000)
                 {
                         index0 = (index2 & 0x7FFFFFFF);
@@ -1186,16 +1186,16 @@ static void MSiGeometry_Draw_Triangles_In_BitVector(UUtUns32 *activeTrisBV, UUtU
 
                         {
                                 M3tTri	curTri;
-                                
+
                                 curTri.indices[0] = index0;
                                 curTri.indices[1] = index1;
                                 curTri.indices[2] = index2;
-                                
+
 //                                triFunc(&curTri);
                                 M3rDraw_Triangle(&curTri);
                         }
                 }
-                
+
                 index0 = index1;
                 index1 = index2;
         }
@@ -1223,17 +1223,17 @@ MSrGeomContext_Method_Geometry_Draw(
 	UUtError						error;
 
 	MSgGeomContextPrivate->numDebugEnvMap = 0;
-			
+
 	UUmAssertReadPtr(MSgGeomContextPrivate, sizeof(MStGeomContextPrivate));
 	UUmAssertReadPtr(inGeometryObject, sizeof(M3tGeometry));
-	
+
 	clipCodes = MSgGeomContextPrivate->objectVertexData.clipCodes;
 	frustumPoints = MSgGeomContextPrivate->objectVertexData.frustumPoints;
 	screenPoints = MSgGeomContextPrivate->objectVertexData.screenPoints;
-	
+
 	UUmAssert(inGeometryObject->pointArray->numPoints < M3cMaxObjVertices);
 	UUmAssert((inGeometryObject->triNormalArray == NULL) || inGeometryObject->triNormalArray->numVectors < M3cMaxObjTris);
-	
+
 //	TMrInstance_PrepareForUse(inGeometryObject);
 
 	MSrTransform_UpdateMatrices();
@@ -1241,91 +1241,91 @@ MSrGeomContext_Method_Geometry_Draw(
 	clipStatus =
 		MSgGeomContextPrivate->activeFunctions->transformBoundingBoxClipStatus(
 			inGeometryObject);
-	
+
 	if(clipStatus == MScClipStatus_TrivialReject)
 	{
 		return UUcError_None;
 	}
-	
+
 	#if defined(DEBUGGING_CLIPPING) && DEBUGGING_CLIPPING
-		
+
 		if(gNo4DClip && clipStatus == MScClipStatus_Needs4DClipping)
 		{
 			return UUcError_None;
 		}
-		
+
 		if(clipStatus == MScClipStatus_Needs3DClipping && gClipForce4D)
 		{
 			clipStatus = MScClipStatus_Needs4DClipping;
 		}
-	
+
 	#endif
-	
+
 	M3rDraw_State_Push();
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_NumRealVertices,
 		inGeometryObject->pointArray->numPoints);
-		
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_ScreenPointArray,
 		screenPoints);
-		
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_ScreenShadeArray_DC,
 		MSgGeomContextPrivate->shades_vertex);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Clipping,
 		clipStatus != MScClipStatus_TrivialAccept);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_VertexFormat,
 		M3cDrawStateVertex_Unified);
-	
+
 	#if 0
 		*((UUtUns32*)&MSgGeomContextPrivate->stateInt[M3cGeomStateIntType_Appearance]) = M3cGeomState_Appearance_Gouraud;
 		*((UUtUns32*)&MSgGeomContextPrivate->stateInt[M3cGeomStateIntType_Shade]) = M3cGeomState_Shade_Face;
 	#endif
-	
+
 	// set up clip data
 		//MSgGeomContextPrivate->curClipData = &MSgGeomContextPrivate->objectVertexData;
 
 		MSgGeomContextPrivate->objectVertexData.newClipTextureIndex = 0x5555; // garbage
 		MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = 0x5555; // garbage - will be set later
-		MSgGeomContextPrivate->objectVertexData.maxClipVertices = 
+		MSgGeomContextPrivate->objectVertexData.maxClipVertices =
 			MSgGeomContextPrivate->objectVertexData.newClipVertexIndex + M3cExtraCoords;
 		MSgGeomContextPrivate->objectVertexData.maxClipTextureCords = 0;
-		
+
 	if(MSgGeomContextPrivate->stateInt[M3cGeomStateIntType_Appearance] == M3cGeomState_Appearance_Texture)
 	{
-		
+
 		UUmAssert(inGeometryObject->baseMap != NULL);
-	
-		
+
+
 		M3rDraw_State_SetPtr(
 			M3cDrawStatePtrType_TextureCoordArray,
 			inGeometryObject->texCoordArray->textureCoords);
-		
+
 		MSgGeomContextPrivate->objectVertexData.textureCoords = inGeometryObject->texCoordArray->textureCoords;
-		
+
 		UUmAssert(inGeometryObject->texCoordArray->numTextureCoords == inGeometryObject->pointArray->numPoints);
-		
+
 		M3rDraw_State_SetPtr(
 			M3cDrawStatePtrType_BaseTextureMap,
 			inGeometryObject->baseMap);
-			
+
 		if(inGeometryObject->baseMap->flags & M3cTextureFlags_ReceivesEnvMap)
 		{
 
 			M3rDraw_State_SetInt(
 				M3cDrawStateIntType_Appearence,
 				M3cDrawState_Appearence_Texture_Lit_EnvMap);
-				
+
 			M3rDraw_State_SetPtr(
 				M3cDrawStatePtrType_EnvTextureCoordArray,
 				MSgGeomContextPrivate->envMapCoords);
-				
+
 			if(inGeometryObject->baseMap->envMap != NULL)
 			{
 				M3rDraw_State_SetPtr(
@@ -1336,7 +1336,7 @@ MSrGeomContext_Method_Geometry_Draw(
 			{
 				UUmAssert(M3rDraw_State_GetPtr(M3cDrawStatePtrType_EnvTextureMap) != NULL);
 			}
-			MSgGeomContextPrivate->polyComputeVertexProc = 
+			MSgGeomContextPrivate->polyComputeVertexProc =
 				MSrClip_ComputeVertex_TextureEnvInterpolate;
 		}
 		else
@@ -1350,7 +1350,7 @@ MSrGeomContext_Method_Geometry_Draw(
 			M3rDraw_State_SetPtr(
 				M3cDrawStatePtrType_EnvTextureMap,
 				NULL);
-			MSgGeomContextPrivate->polyComputeVertexProc = 
+			MSgGeomContextPrivate->polyComputeVertexProc =
 				MSrClip_ComputeVertex_TextureInterpolate;
 		}
 	}
@@ -1362,15 +1362,15 @@ MSrGeomContext_Method_Geometry_Draw(
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_ConstantColor,
 			IMcShade_Red);
-		MSgGeomContextPrivate->polyComputeVertexProc = 
+		MSgGeomContextPrivate->polyComputeVertexProc =
 			MSrClip_ComputeVertex_GouraudInterpolate;
 	}
-	
+
 	//Backfacing: On/Off
 	//Clipping: Triv, 3D, 4D
 	//Shade: Vert, Face
 	error = UUcError_None;
-	
+
 	if(1 && (inGeometryObject->geometryFlags & M3cGeometryFlag_RemoveBackface))
 	{
 		if(clipStatus == MScClipStatus_TrivialAccept)
@@ -1431,37 +1431,37 @@ MSrGeomContext_Method_Geometry_Draw(
 	}
 
 	M3rDraw_State_Pop();
-	
+
 	#if 0 && TOOL_VERSION
 	{
 		UUtUns32	dItr;
-		
+
 		M3rMatrixStack_Push();
 		M3rMatrixStack_Identity();
-		
+
 		for(dItr = 0; dItr < MSgGeomContextPrivate->numDebugEnvMap; dItr++)
 		{
 			MSgGeomContextPrivate->submitPoints[0] = MSgGeomContextPrivate->debugEnvMap[dItr].origin;
 			MSgGeomContextPrivate->submitPoints[1] = MSgGeomContextPrivate->debugEnvMap[dItr].normal;
-			
+
 			MSrGeomContext_Method_Geometry_LineDraw(
 				2,
 				MSgGeomContextPrivate->submitPoints,
 				IMcShade_White);
-			
+
 			#if 0
 			MSgGeomContextPrivate->submitPoints[0] = MSgGeomContextPrivate->debugEnvMap[dItr].origin;
 			MSgGeomContextPrivate->submitPoints[1] = MSgGeomContextPrivate->debugEnvMap[dItr].reflection;
-			
+
 			MSrGeomContext_Method_Geometry_LineDraw(
 				2,
 				MSgGeomContextPrivate->submitPoints,
 				IMcShade_Red);
 			#endif
-				
+
 			MSgGeomContextPrivate->submitPoints[0] = MSgGeomContextPrivate->debugEnvMap[dItr].origin;
 			MSgGeomContextPrivate->submitPoints[1] = MSgGeomContextPrivate->debugEnvMap[dItr].view;
-			
+
 			MSrGeomContext_Method_Geometry_LineDraw(
 				2,
 				MSgGeomContextPrivate->submitPoints,
@@ -1474,7 +1474,7 @@ MSrGeomContext_Method_Geometry_Draw(
 
 	return error;
 }
-			
+
 UUtError
 MSrGeomContext_Method_Geometry_PolyDraw(
 	UUtUns32			inNumPoints,
@@ -1486,7 +1486,7 @@ MSrGeomContext_Method_Geometry_PolyDraw(
 	UUtUns8*						clipCodes;
 	UUtUns32						i;
 	M3tTri							newTri;
-	
+
 	frustumPoints = MSgGeomContextPrivate->objectVertexData.frustumPoints;
 	clipCodes = MSgGeomContextPrivate->objectVertexData.clipCodes;
 	screenPoints = MSgGeomContextPrivate->objectVertexData.screenPoints;
@@ -1527,13 +1527,13 @@ MSrGeomContext_Method_Geometry_PolyDraw(
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_NumRealVertices,
 		inNumPoints);
-	
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		NULL);
 
 	M3rDraw_State_Commit();
-	
+
 	for(i = 1; i < inNumPoints - 1; i++)
 	{
 		if(clipCodes[0] | clipCodes[i] | clipCodes[i+1])
@@ -1552,7 +1552,7 @@ MSrGeomContext_Method_Geometry_PolyDraw(
 			newTri.indices[0] = 0;
 			newTri.indices[1] = i;
 			newTri.indices[2] = (i+1);
-			
+
 			M3rDraw_Triangle(&newTri);
 		}
 	}
@@ -1561,7 +1561,7 @@ MSrGeomContext_Method_Geometry_PolyDraw(
 
 	return UUcError_None;
 }
-			
+
 UUtError
 MSrGeomContext_Method_Geometry_LineDraw(
 	UUtUns32			inNumPoints,
@@ -1592,7 +1592,7 @@ MSrGeomContext_Method_Geometry_LineDraw(
 		clipCodes);
 
 	MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = inNumPoints;
-	
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_ScreenPointArray,
 		screenPoints);
@@ -1600,7 +1600,7 @@ MSrGeomContext_Method_Geometry_LineDraw(
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_ConstantColor,
 		inShade);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Appearence,
 		M3cDrawState_Appearence_Gouraud);
@@ -1608,13 +1608,13 @@ MSrGeomContext_Method_Geometry_LineDraw(
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_NumRealVertices,
 		0);
-	
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		NULL);
 
 	M3rDraw_State_Commit();
-	
+
 	for(i = 0; i < inNumPoints - 1; i++)
 	{
 		if(clipCodes[i] | clipCodes[i+1])
@@ -1652,7 +1652,7 @@ MSrGeomContext_Method_Geometry_LineDraw2D(
 	w = (float)M3rDraw_GetWidth();
 	h = (float)M3rDraw_GetHeight();
 	MSrTransform_UpdateMatrices();
-		
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_ScreenPointArray,
 		inPoints);
@@ -1660,17 +1660,17 @@ MSrGeomContext_Method_Geometry_LineDraw2D(
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_ConstantColor,
 		inShade);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_NumRealVertices,
 		0);
-	
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		NULL);
 
 	M3rDraw_State_Commit();
-	
+
 	for(i = 0; i < inNumPoints - 1; i++)
 	{
 		// Do braindead clipping
@@ -1678,7 +1678,7 @@ MSrGeomContext_Method_Geometry_LineDraw2D(
 		else if (inPoints[i].x > w) inPoints[i].x = w;
 		if (inPoints[i].y < 0.0f) inPoints[i].y = 0.0f;
 		else if (inPoints[i].y > h) inPoints[i].y = h;
-		
+
 		M3rDraw_Line(i, (i+1));
 	}
 
@@ -1718,7 +1718,7 @@ MSrGeomContext_Method_Geometry_PointDraw(
 		clipCodes);
 
 	MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = inNumPoints;
-	
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_ScreenPointArray,
 		screenPoints);
@@ -1726,17 +1726,17 @@ MSrGeomContext_Method_Geometry_PointDraw(
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_ConstantColor,
 		inShade);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_NumRealVertices,
 		0);
-	
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		NULL);
 
 	M3rDraw_State_Commit();
-	
+
 	for(i = 0; i < inNumPoints; i++)
 	{
 		if(clipCodes[i])
@@ -1789,7 +1789,7 @@ MSiSprite_Draw_Unoriented(
 	float yScale = drawHeight * 1.041666667f; // S.S. (500.f / 480.f);
 
 	float preClipWidth, preClipHeight;
-	
+
 	UUmAssertReadPtr(inTextureMap, sizeof(*inTextureMap));
 	UUmAssertReadPtr(inPoint, sizeof(*inPoint));
 
@@ -1821,7 +1821,7 @@ MSiSprite_Draw_Unoriented(
 	if (inXOffset != 0.f) {
 		spriteScreenPoints[0].x = spriteScreenPoints[1].x = screenPoint->x + xd * inXOffset;
 	}
-		
+
 	spriteScreenPoints[0].x -= xd;	spriteScreenPoints[1].x += xd;
 	spriteScreenPoints[0].y -= yd;	spriteScreenPoints[1].y += yd;
 
@@ -1838,7 +1838,7 @@ MSiSprite_Draw_Unoriented(
 	if ((spriteScreenPoints[0].x >= drawWidth) ||
 		(spriteScreenPoints[0].y >= drawHeight) ||
 		(spriteScreenPoints[1].x <= 0) ||
-		(spriteScreenPoints[1].y <= 0) || 
+		(spriteScreenPoints[1].y <= 0) ||
 		(frustumPoint->z <= MSgGeomContextPrivate->activeCamera->zNear) ||
 		(frustumPoint->z >= MSgGeomContextPrivate->activeCamera->zFar))
 	{
@@ -1896,17 +1896,17 @@ MSiSprite_Draw_Unoriented(
 	spriteTextureFinal[2].v = spriteTextureCoords[1].v;
 	spriteTextureFinal[3].u = spriteTextureCoords[1].u;	// br
 	spriteTextureFinal[3].v = spriteTextureCoords[1].v;
-	
+
 	M3rDraw_State_Push();
-	
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_BaseTextureMap,
 		inTextureMap);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_NumRealVertices,
 		0);
-	
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		NULL);
@@ -1914,23 +1914,23 @@ MSiSprite_Draw_Unoriented(
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_ConstantColor,
 		inShade);
-		
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Alpha,
 		inAlpha);
-		
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Interpolation,
 		M3cDrawState_Interpolation_None);
-		
+
 	M3rDraw_State_Commit();
-	
+
 	M3rDraw_Sprite(
-		spriteScreenPoints, 
+		spriteScreenPoints,
 		spriteTextureFinal);
-	
+
 	M3rDraw_State_Pop();
-	
+
 	return UUcError_None;
 }
 
@@ -1962,7 +1962,7 @@ MSrGeomContext_Method_Sprite_Draw(
 
 	}
 	MSrTransform_UpdateMatrices();
-			
+
 	// get the active camera's position and orientation
 	cameraPos	= &MSgGeomContextPrivate->activeCamera->cameraLocation;
 	cameraFwd	= &MSgGeomContextPrivate->activeCamera->viewVector;
@@ -1986,14 +1986,14 @@ MSrGeomContext_Method_Sprite_Draw(
 	case M3cGeomState_SpriteMode_Rotated:
 		// CB: this is a rotated sprite that faces the screen. calculate the
 		// orientation of the sprite.
-		
-		if (inOrientation != NULL) {				
+
+		if (inOrientation != NULL) {
 			// oriented towards particle's +Y
 			MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 1, &particleDir);
 //			UUmAssert(MUmVector_IsNormalized(particleDir));
 			spriteorient_x = MUrVector_DotProduct(cameraRight, &particleDir);
 			spriteorient_y = MUrVector_DotProduct(cameraUp, &particleDir);
-				
+
 		} else if (inDirection != NULL) {
 			// oriented towards particle's direction
 			spriteorient_x = MUrVector_DotProduct(cameraRight, inDirection);
@@ -2003,7 +2003,7 @@ MSrGeomContext_Method_Sprite_Draw(
 			spriteorient_x = 1.0f;
 			spriteorient_y = 0.0f;
 		}
-				
+
 		d = UUmSQR(spriteorient_x) + UUmSQR(spriteorient_y);
 		if (d < 1e-08) {
 			spriteorient_x = 1.0f;
@@ -2014,7 +2014,7 @@ MSrGeomContext_Method_Sprite_Draw(
 			spriteorient_x /= d;
 			spriteorient_y /= d;
 		}
-		
+
 		// the sprite faces the camera
 		sprite_X.x = spriteorient_x * cameraRight->x + spriteorient_y * cameraUp->x;
 		sprite_X.y = spriteorient_x * cameraRight->y + spriteorient_y * cameraUp->y;
@@ -2027,8 +2027,8 @@ MSrGeomContext_Method_Sprite_Draw(
 
 	case M3cGeomState_SpriteMode_Billboard:
 		// CB: this sprite is oriented along its direction but perpendicular to the camera
-		if (inOrientation != NULL) {				
-			MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 1, &sprite_X);				
+		if (inOrientation != NULL) {
+			MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 1, &sprite_X);
 		} else if (inDirection != NULL) {
 			// oriented towards particle's direction
 			d = MUmVector_GetLengthSquared(*inDirection);
@@ -2044,7 +2044,7 @@ MSrGeomContext_Method_Sprite_Draw(
 		} else {
 			UUmAssert(!"oriented particle supplied no orientation or direction");
 		}
-				
+
 		MUmVector_Subtract(cameraDir, *inPoint, *cameraPos);
 		MUrVector_CrossProduct(&sprite_X, &cameraDir, &sprite_Y);
 		MUmVector_Normalize(sprite_Y);
@@ -2053,22 +2053,22 @@ MSrGeomContext_Method_Sprite_Draw(
 	case M3cGeomState_SpriteMode_Arrow:
 		// CB: this sprite is oriented along its direction and upvector
 		UUmAssert(inOrientation != NULL);
-		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 1, &sprite_X);				
-		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 2, &sprite_Y);				
+		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 1, &sprite_X);
+		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 2, &sprite_Y);
 		break;
 
 	case M3cGeomState_SpriteMode_Discus:
 		// CB: this sprite is oriented along its direction and rightvector
 		UUmAssert(inOrientation != NULL);
-		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 1, &sprite_X);				
-		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 0, &sprite_Y);				
+		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 1, &sprite_X);
+		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 0, &sprite_Y);
 		break;
 
 	case M3cGeomState_SpriteMode_Flat:
 		// CB: this sprite is oriented perpendicular to its direction
 		UUmAssert(inOrientation != NULL);
-		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 0, &sprite_X);				
-		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 2, &sprite_Y);				
+		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 0, &sprite_X);
+		MUrMatrix_GetCol((M3tMatrix4x3 *) inOrientation, 2, &sprite_Y);
 		break;
 
 	default:
@@ -2084,7 +2084,7 @@ MSrGeomContext_Method_Sprite_Draw(
 		UUtInt16 pi_multiples;
 		float theta, costheta, sintheta;
 		M3tVector3D temp_x;
-			
+
 		// convert theta into radians between 0 and 2pi
 		theta = inRotation * 0.01745329252f; // S.S. M3c2Pi / 360.0f;
 		pi_multiples = (UUtInt16)(theta * 0.1591549431f); // S.S. (theta / M3c2Pi);
@@ -2097,7 +2097,7 @@ MSrGeomContext_Method_Sprite_Draw(
 		sintheta = MUrSqrt(1.0f - UUmSQR(costheta));
 		if (theta > M3cPi)
 			sintheta = -sintheta;
-			
+
 		temp_x.x = sprite_X.x * costheta - sprite_Y.x * sintheta;
 		temp_x.y = sprite_X.y * costheta - sprite_Y.y * sintheta;
 		temp_x.z = sprite_X.z * costheta - sprite_Y.z * sintheta;
@@ -2122,15 +2122,15 @@ MSrGeomContext_Method_Sprite_Draw(
 
 		UUtUns8	clipCode[4];
 		MStClipStatus clipStatus;
-	
+
 		M3tQuad quadIndices;
 
 		UUmAssertReadPtr(inTextureMap, sizeof(*inTextureMap));
 		UUmAssertReadPtr(inPoint, sizeof(*inPoint));
-		
+
 		MSrTransform_UpdateMatrices();
-		
-		
+
+
 		MUmVector_Scale(sprite_X, inHorizSize);
 		MUmVector_Scale(sprite_Y, inVertSize);
 
@@ -2153,7 +2153,7 @@ MSrGeomContext_Method_Sprite_Draw(
 
 		x_0 = (1.0f - inXShorten) * (inXOffset - 1.0f);		u_0 = 0.0f - 0.5f * inXShorten * (inXOffset - 1.0f);
 		x_1 = (1.0f - inXShorten) * (inXOffset + 1.0f);		u_1 = 1.0f - 0.5f * inXShorten * (inXOffset + 1.0f);
-		
+
 		if (inXChop != 0.0f) {
 			// remove a certain amount from the front of the sprite
 			x_1 -= 2.0f * inXChop;
@@ -2167,25 +2167,25 @@ MSrGeomContext_Method_Sprite_Draw(
 		worldPoint[0].x = inPoint->x + x_0 * sprite_X.x - sprite_Y.x;
 		worldPoint[0].y = inPoint->y + x_0 * sprite_X.y - sprite_Y.y;
 		worldPoint[0].z = inPoint->z + x_0 * sprite_X.z - sprite_Y.z;
-		
+
 		worldPoint[1].x = inPoint->x + x_1 * sprite_X.x - sprite_Y.x;
 		worldPoint[1].y = inPoint->y + x_1 * sprite_X.y - sprite_Y.y;
 		worldPoint[1].z = inPoint->z + x_1 * sprite_X.z - sprite_Y.z;
-		
+
 		worldPoint[2].x = inPoint->x + x_0 * sprite_X.x + sprite_Y.x;
 		worldPoint[2].y = inPoint->y + x_0 * sprite_X.y + sprite_Y.y;
 		worldPoint[2].z = inPoint->z + x_0 * sprite_X.z + sprite_Y.z;
-		
+
 		worldPoint[3].x = inPoint->x + x_1 * sprite_X.x + sprite_Y.x;
 		worldPoint[3].y = inPoint->y + x_1 * sprite_X.y + sprite_Y.y;
 		worldPoint[3].z = inPoint->z + x_1 * sprite_X.z + sprite_Y.z;
-		
+
 		// transform these points into the global transformed object data arrays
 		clipStatus = MSrTransform_PointListToFrustumScreen(4, worldPoint, frustumPoint, screenPoint, clipCode);
-		
+
 		if (clipStatus == MScClipStatus_TrivialReject)
 			return UUcError_None;
-		
+
 		spriteTextureCoords[0].u = u_0;
 		spriteTextureCoords[0].v = 0.f;
 		spriteTextureCoords[1].u = u_1;
@@ -2194,17 +2194,17 @@ MSrGeomContext_Method_Sprite_Draw(
 		spriteTextureCoords[2].v = 1.f;
 		spriteTextureCoords[3].u = u_1;
 		spriteTextureCoords[3].v = 1.f;
-				
+
 		M3rDraw_State_Push();
-		
+
 		M3rDraw_State_SetPtr(
 			M3cDrawStatePtrType_ScreenPointArray,
 			screenPoint);
-		
+
 		M3rDraw_State_SetPtr(
 			M3cDrawStatePtrType_BaseTextureMap,
 			inTextureMap);
-		
+
 		M3rDraw_State_SetPtr(
 			M3cDrawStatePtrType_TextureCoordArray,
 			spriteTextureCoords);
@@ -2213,25 +2213,25 @@ MSrGeomContext_Method_Sprite_Draw(
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_NumRealVertices,
 			4);
-		
+
 		M3rDraw_State_SetPtr(
 			M3cDrawStatePtrType_VertexBitVector,
 			NULL);
-		
+
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_Interpolation,
 			M3cDrawState_Interpolation_None);
-		
+
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_ConstantColor,
 			inShade);
-		
+
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_Alpha,
 			inAlpha);
-		
+
 		M3rDraw_State_Commit();
-		
+
 		if (clipStatus == MScClipStatus_NeedsClipping) {
 			MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = 4;
 			MSgGeomContextPrivate->objectVertexData.maxClipTextureCords = 4 + M3cExtraCoords;
@@ -2247,7 +2247,7 @@ MSrGeomContext_Method_Sprite_Draw(
 			quadIndices.indices[3] = 2;
 			M3rDraw_Quad(&quadIndices);
 		}
-		
+
 		M3rDraw_State_Pop();
 
 		// we allocated contrailTextureCoords off the stack, so after our exit from here
@@ -2294,7 +2294,7 @@ MSrGeomContext_Method_SpriteArray_Draw(
 	float					xScale = drawWidth * 0.78125f; // S.S. (500.f / 640.f);
 	float					yScale = drawHeight * 1.04166667f; // S.S. (500.f / 480.f);
 	UUtUns32				i;
-	UUtBool					old_sorting; 
+	UUtBool					old_sorting;
 	float					preClipWidth, preClipHeight;
 	M3tSpriteInstance*		instance;
 
@@ -2311,7 +2311,7 @@ MSrGeomContext_Method_SpriteArray_Draw(
 	UUmAssert(UUmFloat_CompareEqu(MUrVector_DotProduct(cameraUp,  cameraFwd  ), 0));
 	UUmAssert(UUmFloat_CompareEqu(MUrVector_DotProduct(cameraUp,  cameraRight), 0));
 	UUmAssert(UUmFloat_CompareEqu(MUrVector_DotProduct(cameraFwd, cameraRight), 0));
-*/	
+*/
 	old_sorting						= M3gDraw_Sorting;
 
 	M3gDraw_Sorting					= UUcFalse;
@@ -2338,7 +2338,7 @@ MSrGeomContext_Method_SpriteArray_Draw(
 
 		M3gDraw_SpriteArray_ScreenPoints[j*2+1].x			= screenPoint->x + xd;
 		if( M3gDraw_SpriteArray_ScreenPoints[j*2+1].x <= 0 )						continue;
-		
+
 		M3gDraw_SpriteArray_ScreenPoints[j*2+1].y			= screenPoint->y + yd;
 		if( M3gDraw_SpriteArray_ScreenPoints[j*2+1].y <= 0 )						continue;
 
@@ -2381,7 +2381,7 @@ MSrGeomContext_Method_SpriteArray_Draw(
 			spriteTextureCoords[1].u	-= 1.f - (newAmount / oldAmount);
 		}
 
-		if( M3gDraw_SpriteArray_ScreenPoints[j*2+1].y >= drawHeight ) 
+		if( M3gDraw_SpriteArray_ScreenPoints[j*2+1].y >= drawHeight )
 		{
 			oldAmount					= preClipHeight;
 			newAmount					= preClipHeight - (M3gDraw_SpriteArray_ScreenPoints[j*2+1].y - drawHeight);
@@ -2402,24 +2402,24 @@ MSrGeomContext_Method_SpriteArray_Draw(
 
 		j++;
 	}
-		
+
 	//M3rDraw_State_Commit();
 	if( j )
 	{
 		M3rDraw_State_Push();
-		
+
 			M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap,inSpriteArray->texture_map);
-			
+
 			M3rDraw_State_SetInt(M3cDrawStateIntType_NumRealVertices,0);
-			
+
 			M3rDraw_State_SetPtr(M3cDrawStatePtrType_VertexBitVector,NULL);
-			
+
 			M3rDraw_State_SetInt(M3cDrawStateIntType_Alpha, M3cMaxAlpha);
-				
+
 			M3rDraw_State_SetInt(M3cDrawStateIntType_Interpolation,M3cDrawState_Interpolation_None);
 
 			M3rDraw_State_Commit();
-			
+
 			M3rDraw_SpriteArray( M3gDraw_SpriteArray_ScreenPoints, M3gDraw_SpriteArray_TextureCoords, M3gDraw_SpriteArray_Colors, j );
 
 		M3rDraw_State_Pop();
@@ -2445,20 +2445,20 @@ MSrGeomContext_Method_Contrail_Draw(
 	M3tTextureCoord contrailTextureCoords[4 + M3cExtraCoords];
 	UUtUns32 contrailShades[4 + M3cExtraCoords];
 	UUtUns8	clipCode[4];
-	MStClipStatus clipStatus;	
+	MStClipStatus clipStatus;
 	M3tQuad quadIndices;
-	
+
 	UUmAssertReadPtr(inTextureMap, sizeof(*inTextureMap));
 	UUmAssertReadPtr(inPoint0, sizeof(*inPoint0));
 	UUmAssertReadPtr(inPoint1, sizeof(*inPoint1));
-		
+
 	MSrTransform_UpdateMatrices();
-		
+
 	// make the contrail's world points and store in the global geomcontext's world point array
 	worldPoint[0].x = inPoint0->position.x + inPoint0->width.x;
 	worldPoint[0].y = inPoint0->position.y + inPoint0->width.y;
 	worldPoint[0].z = inPoint0->position.z + inPoint0->width.z;
-	
+
 	worldPoint[1].x = inPoint0->position.x - inPoint0->width.x;
 	worldPoint[1].y = inPoint0->position.y - inPoint0->width.y;
 	worldPoint[1].z = inPoint0->position.z - inPoint0->width.z;
@@ -2466,17 +2466,17 @@ MSrGeomContext_Method_Contrail_Draw(
 	worldPoint[2].x = inPoint1->position.x + inPoint1->width.x;
 	worldPoint[2].y = inPoint1->position.y + inPoint1->width.y;
 	worldPoint[2].z = inPoint1->position.z + inPoint1->width.z;
-	
+
 	worldPoint[3].x = inPoint1->position.x - inPoint1->width.x;
 	worldPoint[3].y = inPoint1->position.y - inPoint1->width.y;
 	worldPoint[3].z = inPoint1->position.z - inPoint1->width.z;
 
 	// transform these points into the global transformed object data arrays
 	clipStatus = MSrTransform_PointListToFrustumScreen(4, worldPoint, frustumPoint, screenPoint, clipCode);
-		
+
 	if (clipStatus == MScClipStatus_TrivialReject)
 		return UUcError_None;
-		
+
 	contrailTextureCoords[0].u = 0.f;
 	contrailTextureCoords[0].v = inV0;
 	contrailTextureCoords[1].u = 1.f;
@@ -2485,17 +2485,17 @@ MSrGeomContext_Method_Contrail_Draw(
 	contrailTextureCoords[2].v = inV1;
 	contrailTextureCoords[3].u = 1.f;
 	contrailTextureCoords[3].v = inV1;
-		
+
 	M3rDraw_State_Push();
-		
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_ScreenPointArray,
 		screenPoint);
-		
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_BaseTextureMap,
 		inTextureMap);
-		
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_TextureCoordArray,
 		contrailTextureCoords);
@@ -2504,11 +2504,11 @@ MSrGeomContext_Method_Contrail_Draw(
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_NumRealVertices,
 		4);
-		
+
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_VertexBitVector,
 		NULL);
-		
+
 	if (inPoint0->tint == inPoint1->tint) {
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_Interpolation,
@@ -2517,7 +2517,7 @@ MSrGeomContext_Method_Contrail_Draw(
 		M3rDraw_State_SetInt(
 			M3cDrawStateIntType_ConstantColor,
 			inPoint0->tint);
-		
+
 	} else {
 		contrailShades[0] = inPoint0->tint;
 		contrailShades[1] = inPoint0->tint;
@@ -2536,9 +2536,9 @@ MSrGeomContext_Method_Contrail_Draw(
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Alpha,
 		inPoint0->alpha);
-		
+
 	M3rDraw_State_Commit();
-		
+
 	if (clipStatus == MScClipStatus_NeedsClipping) {
 		MSgGeomContextPrivate->objectVertexData.newClipVertexIndex = 4;
 		MSgGeomContextPrivate->objectVertexData.maxClipTextureCords = 4 + M3cExtraCoords;
@@ -2553,7 +2553,7 @@ MSrGeomContext_Method_Contrail_Draw(
 		quadIndices.indices[2] = 3;
 		quadIndices.indices[3] = 2;
 		M3rDraw_Quad(&quadIndices);
-	}	
+	}
 
 	// we allocated contrailTextureCoords off the stack, so after our exit from here
 	// it will be invalid. nothing should be using MSgGeomContextPrivate->objectVertexData.textureCoords
@@ -2624,7 +2624,7 @@ MSrGeomContext_Method_PointTestVisible(
 		} else {
 			float test_distance;
 			M3tVector3D unit_vector;
-			
+
 			test_distance = MUmVector_GetLength(vector_to_pt);
 			if (test_distance < 1e-03f) {
 				// the points are coincident, we can see clearly
@@ -2647,7 +2647,7 @@ MSrGeomContext_Method_PointTestVisible(
 
 float
 MSrGeomContext_Method_PointTestVisibleScale(
-		M3tPoint3D*			inPoint, 
+		M3tPoint3D*			inPoint,
 		M3tPoint2D*			inTestOffsets,
 		UUtUns32			inTestOffsetsCount )
 {
@@ -2667,7 +2667,7 @@ MSrGeomContext_Method_PointTestVisibleScale(
 
 	UUmAssert( inTestOffsetsCount && inPoint && inTestOffsets );
 
-	if (screenPoint == NULL) 
+	if (screenPoint == NULL)
 	{
 		// set up the memory-aligned pointers
 		screenPoint		= UUrAlignMemory(screenBuf);
@@ -2682,9 +2682,9 @@ MSrGeomContext_Method_PointTestVisibleScale(
 	MUmVector_ScaleIncrement(*worldPoint, 0, MSgGeomContextPrivate->activeCamera->viewVector);
 
 	MSrTransform_UpdateMatrices();
-	
+
 	visible_count = 0;
-	
+
 	for( i = 0; i < inTestOffsetsCount; i++ )
 	{
 		clip_status		= MSrTransform_PointListToFrustumScreen(1, worldPoint, frustumPoint, screenPoint, &clip_code);
@@ -2700,7 +2700,7 @@ MSrGeomContext_Method_PointTestVisibleScale(
 #define		MScMinUV		(0.0f)
 #define		MScMaxUV		(1.0f)
 
-UUtError MSrGeomContext_Method_Skybox_Create( 
+UUtError MSrGeomContext_Method_Skybox_Create(
 			M3tSkyboxData		*inSkybox,
 			M3tTextureMap**		inTextures )
 {
@@ -2719,7 +2719,7 @@ UUtError MSrGeomContext_Method_Skybox_Create(
 	{
 		sky->textures[i] = inTextures[i];
 	}
-	
+
 	sky->cube_points[0].x	= -sky_distance;
 	sky->cube_points[0].y	=  sky_distance;
 	sky->cube_points[0].z	= -sky_distance;
@@ -2789,7 +2789,7 @@ UUtError MSrGeomContext_Method_Skybox_Create(
 	return UUcError_None;
 }
 
-UUtError MSrGeomContext_Method_Skybox_Destroy( 
+UUtError MSrGeomContext_Method_Skybox_Destroy(
 			M3tSkyboxData		*inSkybox )
 {
 	return UUcError_None;
@@ -2816,7 +2816,7 @@ UUtError MSrGeomContext_Method_Skybox_Draw( M3tSkyboxData		*inSkybox )
 
 	// setup matricies and camera
 	MSrTransform_UpdateMatrices();
-	
+
 	// grab buffers
 	aligned_points					= UUrAlignMemory(point_buf);
 	clip_codes						= MSgGeomContextPrivate->objectVertexData.clipCodes;
@@ -2853,15 +2853,15 @@ UUtError MSrGeomContext_Method_Skybox_Draw( M3tSkyboxData		*inSkybox )
 				clip_status = MSrTransform_PointListToFrustumScreen( 4, aligned_points, frustum_points, screen_points, clip_codes );
 
 				if( clip_status == MScClipStatus_TrivialReject )		continue;
-				else if (clip_status == MScClipStatus_NeedsClipping) 
+				else if (clip_status == MScClipStatus_NeedsClipping)
 				{
 					MSgGeomContextPrivate->objectVertexData.newClipVertexIndex		= 4;
 					MSgGeomContextPrivate->objectVertexData.maxClipTextureCords		= M3cMaxSkyboxVerts;
 					MSgGeomContextPrivate->objectVertexData.maxClipVertices			= M3cMaxSkyboxVerts;
 					MSgGeomContextPrivate->polyComputeVertexProc					= MSrClip_ComputeVertex_TextureFlat;
 					MSrClip_Quad(0, 1, 2, 3, clip_codes[0], clip_codes[1], clip_codes[2], clip_codes[3], 0);
-				} 		
-				else 
+				}
+				else
 				{
 					M3rDraw_Quad(&quad);
 				}
@@ -2900,7 +2900,7 @@ MSrGeomContext_Method_Decal_Draw(
 	UUtUns8					point_buf[sizeof(M3tPoint3D) * M3cMaxSkyboxVerts + UUcProcessor_CacheLineSize];
 	UUtUns32				*shades;
 	UUtUns32				alpha;
-	
+
 	MSrTransform_UpdateMatrices();
 
 	UUmAssertReadPtr(MSgGeomContextPrivate, sizeof(MSgGeomContextPrivate));
@@ -2909,7 +2909,7 @@ MSrGeomContext_Method_Decal_Draw(
 	clip_codes				= MSgGeomContextPrivate->objectVertexData.clipCodes;
 	frustum_points			= MSgGeomContextPrivate->objectVertexData.frustumPoints;
 	screen_points			= MSgGeomContextPrivate->objectVertexData.screenPoints;
-	
+
 //	if(MSgGeomContextPrivate->environment->lightMapArray != NULL)
 //		lightMapArray		= MSgGeomContextPrivate->environment->lightMapArray->maps;
 //	else
@@ -2959,16 +2959,16 @@ MSrGeomContext_Method_Decal_Draw(
 
 		M3rDraw_State_Commit();
 
-		for( i = 0; i < tri_count; i++ )		
+		for( i = 0; i < tri_count; i++ )
 		{
 			UUtUns32		index0	= indices[i*3+0];
 			UUtUns32		index1	= indices[i*3+1];
 			UUtUns32		index2	= indices[i*3+2];
-			
+
 			aligned_points[0]	= points[index0];
 			aligned_points[1]	= points[index1];
 			aligned_points[2]	= points[index2];
-			
+
 			texture_coords[0]	= coords[index0];
 			texture_coords[1]	= coords[index1];
 			texture_coords[2]	= coords[index2];
@@ -2976,7 +2976,7 @@ MSrGeomContext_Method_Decal_Draw(
 			clip_status			= MSrTransform_PointListToFrustumScreen( 3, aligned_points, frustum_points, screen_points, clip_codes );
 
 			if( clip_status == MScClipStatus_TrivialReject ) continue;
-			if( clip_codes[0] || clip_codes[1] || clip_codes[2] ) 
+			if( clip_codes[0] || clip_codes[1] || clip_codes[2] )
 			{
 				MSgGeomContextPrivate->gqVertexData.newClipTextureIndex = 4;
 				MSgGeomContextPrivate->gqVertexData.newClipVertexIndex = 4;

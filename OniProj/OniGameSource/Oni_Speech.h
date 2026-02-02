@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_Speech.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 15, 2000
-	
+
 	PURPOSE: Speech handling for Oni Characters
-	
+
 	Copyright (c) 2000
 
 */
@@ -59,7 +59,7 @@ typedef struct ONtCharacterSpeech {
 
 	SStPlayID playing_sound_id;
 	UUtUns32 playing_sound_endtime;
-	
+
 	ONtSpeech current;
 	ONtSpeech next;
 

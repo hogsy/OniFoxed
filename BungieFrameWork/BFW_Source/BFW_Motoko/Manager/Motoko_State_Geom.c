@@ -1,12 +1,12 @@
 /*
 	FILE:	Motoko_State_Geom.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: July 28, 1999
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997-1999
 
 */
@@ -33,27 +33,27 @@ M3rGeom_State_Initialize(
 	M3gGeomStateTOS = 0;
 	M3gGeomState_IntFlags = 0xFFFF;
 	M3gGeomStateInt = M3gGeomStateIntStack[M3gGeomStateTOS];
-	
+
 	if(M3gGeomEngineList[M3gActiveGeomEngine].methods.privateStateSize != 0)
 	{
 		M3gGeomStatePrivateStack =
 			UUrMemory_Block_New(
-				M3gGeomEngineList[M3gActiveGeomEngine].methods.privateStateSize * 
+				M3gGeomEngineList[M3gActiveGeomEngine].methods.privateStateSize *
 					M3cStateStack_MaxDepth);
 		UUmError_ReturnOnNull(M3gGeomStatePrivateStack);
 
 		for(stateItr = 0; stateItr < M3cStateStack_MaxDepth; stateItr++)
 		{
 			M3gGeomEngineList[M3gActiveGeomEngine].methods.privateStateNew(
-				(void*)((char*)M3gGeomStatePrivateStack + 
+				(void*)((char*)M3gGeomStatePrivateStack +
 					M3gGeomEngineList[M3gActiveGeomEngine].methods.privateStateSize * stateItr));
 		}
 	}
-	
+
 	UUrMemory_Clear(M3gGeomStateInt, sizeof(UUtUns32) * M3cGeomStateIntType_NumTypes);
-	
+
 	return UUcError_None;
-	
+
 }
 
 void
@@ -61,13 +61,13 @@ M3rGeom_State_Terminate(
 	void)
 {
 	UUtUns16	stateItr;
-	
+
 	if(M3gGeomStatePrivateStack != NULL)
 	{
 		for(stateItr = 0; stateItr < M3cStateStack_MaxDepth; stateItr++)
 		{
 			M3gGeomEngineList[M3gActiveGeomEngine].methods.privateStateDelete(
-				(void*)((char*)M3gGeomStatePrivateStack + 
+				(void*)((char*)M3gGeomStatePrivateStack +
 					M3gGeomEngineList[M3gActiveGeomEngine].methods.privateStateSize * stateItr));
 		}
 	}
@@ -79,7 +79,7 @@ M3rGeom_State_Set(
 		UUtInt32				inState)
 {
 	if(M3gGeomStateInt[inGeomStateIntType] == inState) return;
-	
+
 	M3gGeomStateInt[inGeomStateIntType] = inState;
 	M3gGeomState_IntFlags |= (1 << (UUtUns16)inGeomStateIntType);
 }
@@ -96,21 +96,21 @@ M3rGeom_State_Push(
 		void)
 {
 	M3gGeomStateTOS++;
-	
+
 	if(M3gGeomStateTOS >= M3cStateStack_MaxDepth)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Stack too deep");
 	}
-	
+
 	UUrMemory_MoveFast(
 		M3gGeomStateInt,
 		M3gGeomStateIntStack[M3gGeomStateTOS],
 		sizeof(UUtUns32) * M3cGeomStateIntType_NumTypes);
-	
+
 	M3gGeomStateInt = M3gGeomStateIntStack[M3gGeomStateTOS];
-	
+
 	M3rDraw_State_Push();
-	
+
 	return UUcError_None;
 }
 
@@ -122,14 +122,14 @@ M3rGeom_State_Pop(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Stack underflow");
 	}
-	
+
 	M3rDraw_State_Pop();
-	
+
 	M3gGeomStateTOS--;
 	M3gGeomState_IntFlags = 0xFFFF;
-	
+
 	M3gGeomStateInt = M3gGeomStateIntStack[M3gGeomStateTOS];
-	
+
 	return UUcError_None;
 }
 
@@ -160,25 +160,25 @@ M3rGeom_State_Commit(
 			case M3cGeomState_Fill_Point:
 				UUmAssert(0);
 				break;
-			
+
 			case M3cGeomState_Fill_Line:
 				M3rDraw_State_SetInt(
 					M3cDrawStateIntType_Fill,
 					M3cDrawState_Fill_Line);
 				break;
-			
+
 			case M3cGeomState_Fill_Solid:
 				M3rDraw_State_SetInt(
 					M3cDrawStateIntType_Fill,
 					M3cDrawState_Fill_Solid);
 				break;
-			
+
 			default:
 				UUmAssert(0);
 				break;
 		}
 	}
-	
+
 	if(M3gGeomState_IntFlags & (1 << M3cGeomStateIntType_Appearance))
 	{
 		switch(M3gGeomStateInt[M3cGeomStateIntType_Appearance])
@@ -188,13 +188,13 @@ M3rGeom_State_Commit(
 					M3cDrawStateIntType_Appearence,
 					M3cDrawState_Appearence_Gouraud);
 				break;
-			
+
 			case M3cGeomState_Appearance_Texture:
 				M3rDraw_State_SetInt(
 					M3cDrawStateIntType_Appearence,
 					M3cDrawState_Appearence_Texture_Lit);
 				break;
-			
+
 			default:
 				UUmAssert(0);
 				break;
@@ -216,13 +216,13 @@ M3rGeom_State_Commit(
 					M3cDrawStateIntType_Interpolation,
 					M3cDrawState_Interpolation_None);
 				break;
-			
+
 			default:
 				UUmAssert(0);
 				break;
 		}
 	}
-	error = 
+	error =
 		M3gGeomEngineList[M3gActiveGeomEngine].methods.privateStateUpdate(
 			(char*)M3gGeomStatePrivateStack + M3gGeomStateTOS * M3gGeomEngineList[M3gActiveGeomEngine].methods.privateStateSize,
 			M3gGeomState_IntFlags,
@@ -230,8 +230,8 @@ M3rGeom_State_Commit(
 	UUmError_ReturnOnError(error);
 
 	M3gGeomState_IntFlags = 0;
-	
+
 	M3rDraw_State_Commit();
-	
+
 	return UUcError_None;
 }

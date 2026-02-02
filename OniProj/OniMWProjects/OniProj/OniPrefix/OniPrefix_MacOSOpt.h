@@ -15,16 +15,16 @@
 	#define UUmDebuggerSymFileName	"Oni.xSYM"
 
 	#define UUmPasswordProtect	0
-	
+
 	#if !defined(UUmPlatform) && !defined(UUmPlatform_Mac)
 		#define UUmPlatform_Mac			2
 		#define UUmPlatform				UUmPlatform_Mac
-	
+
 		#include "gl_code_version.h"
-	
+
 		#undef UUmPlatform
 		#undef UUmPlatform_Mac
-	
+
 	#else
 		#include "gl_code_version.h"
 
@@ -44,4 +44,4 @@
 	#define TOOL_VERSION 1
 	#endif
 
-	
+

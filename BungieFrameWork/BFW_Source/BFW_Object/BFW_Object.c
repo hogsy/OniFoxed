@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Object.c
-	
+
 	AUTHOR:	Quinn Dunki, Michael Evans
-	
+
 	CREATED: 4/8/98
-	
+
 	PURPOSE: Object engine
-	
+
 	Copyright (c) Bungie Software 1998,2000
 
 */
@@ -186,8 +186,8 @@ static UUtBool OBiIsVisible(OBtObject *inObject)
 		M3rCamera_GetStaticData(ONgVisibilityCamera, &fov, NULL, NULL, &farP);
 		M3rCamera_GetViewData(ONgVisibilityCamera, &camera_location, &view_vector, NULL);
 
-		distance_squared = MUrPoint_Distance_Squared(&center, &camera_location);	
-		
+		distance_squared = MUrPoint_Distance_Squared(&center, &camera_location);
+
 		MUmVector_Subtract(toObj, center, camera_location);
 		MUrNormalize(&toObj);
 
@@ -213,7 +213,7 @@ static UUtBool OBiIsVisible(OBtObject *inObject)
 				AKrEnvironment_NodeList_Get(&bbox, OBcObjectNodeCount, inObject->oct_tree_node_index, 0);
 				inObject->last_position= center;
 			}
-	
+
 			object_is_visible= AKrEnvironment_NodeList_Visible(inObject->oct_tree_node_index);
 		}
 	}
@@ -250,7 +250,7 @@ void OBrShow(OBtObject *inObject, UUtBool inShow)
 	}
 	else {
 		inObject->flags |= OBcFlags_Invisible;
-		
+
 		if (NULL != inObject->physics) {
 			inObject->physics->flags |= PHcFlags_Physics_NoCollision;
 		}
@@ -276,11 +276,11 @@ static void OBiCallback_PostCollision(
 	PHtCollider *collider;
 	ONtCharacter *victim;
 	PHtPhysicsContext *otherContext;
-	
+
 	for (i=0; i<*ioColliderCount; i++)
 	{
 		collider = ioColliderArray + i;
-		
+
 		// Character effects
 		if (collider->type == PHcCollider_Phy)
 		{
@@ -298,7 +298,7 @@ static void OBiUpdate(OBtObject *ioObject)
 	/******************
 	* Updates an object for this frame
 	*/
-	
+
 
 	// Track physics
 	UUmAssert(ioObject->physics->sphereTree);
@@ -313,31 +313,31 @@ static void OBiUpdate(OBtObject *ioObject)
 }
 
 static void OBiDraw(OBtObject *inObject)
-{			
+{
 	UUtBool draw_object_bounding_boxes = UUcFalse;
 
 	if (inObject->flags & OBcFlags_Invisible) {
 		return;
 	}
-		
+
 	if (OBgObjectsShowDebug)
-	{		
+	{
 		UUtUns32 index = inObject->physics - PHgPhysicsContextArray->contexts;
 
 		M3rGeom_State_Push();
-		
+
 		// Draw bounding spheres and boxes
 		M3rGeom_State_Set(M3cGeomStateIntType_Fill, M3cGeomState_Fill_Line);
 		M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor,IMcShade_White);
 		M3rGeom_State_Set(M3cGeomStateIntType_Appearance, M3cGeomState_Appearance_Gouraud);
-		
+
 		if (inObject->physics->sphereTree) PHrSphereTree_Draw(inObject->physics->sphereTree);
 
 		if (NULL != inObject->physics->worldAlignedBounds)
 		{
 			M3rBVolume_Draw_Line(inObject->physics->worldAlignedBounds, IMcShade_Green);
 		}
-		
+
 		M3rGeom_State_Pop();
 	}
 
@@ -346,8 +346,8 @@ static void OBiDraw(OBtObject *inObject)
 		M3tMatrix4x3 *matrix = &inObject->physics->matrix;
 
 		M3rMatrixStack_Push();
-			M3rMatrixStack_Multiply(matrix);	
-			
+			M3rMatrixStack_Multiply(matrix);
+
 			if (inObject->flags & OBcFlags_JelloObjects) {
 				M3rGeom_State_Set(M3cGeomStateIntType_Alpha, 31);
 				inObject->flags &= ~OBcFlags_JelloObjects;
@@ -356,8 +356,8 @@ static void OBiDraw(OBtObject *inObject)
 				M3rGeom_State_Set(M3cGeomStateIntType_Alpha, M3cMaxAlpha);
 			}
 
-			if (inObject->flags & OBcFlags_FlatLighting) {		
-				const static float shade_scale = 1.f / 255.f; // S.S. 
+			if (inObject->flags & OBcFlags_FlatLighting) {
+				const static float shade_scale = 1.f / 255.f; // S.S.
 				float r = shade_scale * ((inObject->flat_lighting_shade & 0xFF0000) >> 16);
 				float g = shade_scale * ((inObject->flat_lighting_shade & 0xFF00) >> 8);
 				float b = shade_scale * ((inObject->flat_lighting_shade & 0xFF) >> 0);
@@ -368,7 +368,7 @@ static void OBiDraw(OBtObject *inObject)
 			M3rGeom_State_Commit();
 
 			for( i = 0; i < inObject->geometry_count; i++ )
-			{	
+			{
 				M3rGeometry_Draw(inObject->geometry_list[i]);
 			}
 
@@ -415,7 +415,7 @@ void OBrList_Delete(OBtObjectList *inList)
 
 	if (!inList) return;
 
-	for (i=0; i<inList->numObjects; i++) 
+	for (i=0; i<inList->numObjects; i++)
 	{
 		if (inList->object_list[i].flags & OBcFlags_InUse) {
 			OBrDelete(inList->object_list + i);
@@ -432,11 +432,11 @@ void OBrList_Update(
 {
 	UUtUns16 itr;
 	OBtObject *object;
-	
+
 	UUmAssertReadPtr(ioObjectList, sizeof(OBtObjectList));
-		
+
 	if (!ioObjectList->numObjects) return;
-		
+
 	// Update all the objects
 	for(itr=0; itr < ioObjectList->numObjects; itr++)
 	{
@@ -467,7 +467,7 @@ void OBrList_Draw(OBtObjectList *inObjectList)
 	}
 
 	M3rGeom_State_Pop();
-	
+
 	return;
 }
 
@@ -478,7 +478,7 @@ OBtObject *OBrList_Add(OBtObjectList *inObjectList)
 
 	UUmAssertReadPtr(inObjectList, sizeof(OBtObjectList));
 
-	for(itr = 0; itr < inObjectList->numObjects; itr++) 
+	for(itr = 0; itr < inObjectList->numObjects; itr++)
 	{
 		if (inObjectList->object_list[itr].flags & OBcFlags_InUse) {
 			continue;
@@ -486,7 +486,7 @@ OBtObject *OBrList_Add(OBtObjectList *inObjectList)
 
 		object = inObjectList->object_list + itr;
 	}
-	
+
 	if (NULL == object) {
 		if (inObjectList->numObjects < inObjectList->maxObjects) {
 			object = inObjectList->object_list + inObjectList->numObjects;
@@ -530,7 +530,7 @@ void OBrAnim_Stop(
 	if (ioAnimContext->animationFrame >= ioAnimContext->animation->numFrames) {
 		ioAnimContext->animationFrame = ioAnimContext->animation->numFrames-1;
 	}
-	
+
 	if (ioAnimContext->animationFrame < 0) {
 		ioAnimContext->animationFrame = 0;
 	}
@@ -555,9 +555,9 @@ void OBrAnim_Matrix(
 	M3tMatrix4x3 *outMatrix)
 {
 	OBrAnimation_GetMatrix(
-		ioAnimContext->animation, 
-		ioAnimContext->animationFrame, 
-		ioAnimContext->animContextFlags, 
+		ioAnimContext->animation,
+		ioAnimContext->animationFrame,
+		ioAnimContext->animContextFlags,
 		outMatrix);
 
 	return;
@@ -581,7 +581,7 @@ void OBrAnimation_GetMatrix(
 
 	M3tQuaternion quat;
 	M3tPoint3D translation;
-	
+
 	M3tMatrix4x3 rotateTM, translateTM, finalTM;
 
 	UUmAssertReadPtr(inAnimation, sizeof(*inAnimation));
@@ -647,11 +647,11 @@ void OBrAnimation_GetMatrix(
 	if (inAnimation->animFlags & OBcAnimFlags_Localized)
 		MUrMatrix_FromMax(outMatrix);
 
-//	if (inAnimContextFlags & OBcAnimContextFlags_RotateY180) 
+//	if (inAnimContextFlags & OBcAnimContextFlags_RotateY180)
 //		MUrMatrixStack_RotateY( outMatrix, M3cPi );
 
 /*
-	if (inAnimContextFlags & OBcAnimContextFlags_RotateY180) 
+	if (inAnimContextFlags & OBcAnimContextFlags_RotateY180)
 	{
 		M3tMatrix4x3		m1;
 		MUrMatrix_Identity(&m1);
@@ -717,7 +717,7 @@ void OBrDelete(
 
 	PHrPhysicsContext_Remove(ioObject->physics);
 	ioObject->physics = NULL;
-	
+
 	return;
 }
 
@@ -758,7 +758,7 @@ static PHtSphereTree *OBiMakeSphereTree(
 
 UUtError OBrInit(
 	OBtObject *ioObject,
-	OBtObjectSetup *inSetup)	
+	OBtObjectSetup *inSetup)
 {
 	/**********
 	* Allocates an object
@@ -778,7 +778,7 @@ UUtError OBrInit(
 		bounding_volume_memory = &ioObject->bounding_volume_memory;
 	}
 
-	
+
 	ioObject->ignoreCharacterIndex = 0xffff;		// note make this a constant, in oni character ?
 	ioObject->flat_lighting_shade = IMcShade_White;
 
@@ -789,7 +789,7 @@ UUtError OBrInit(
 	physics = ioObject->physics;
 	PHrPhysics_Init(physics);
 	OBrAnim_Reset(&physics->animContext);
-	
+
 	// Set up basic physics goo
 	UUrMemory_Clear(&callback, sizeof(callback));
 	callback.type= PHcCallback_Object;
@@ -806,7 +806,7 @@ UUtError OBrInit(
 	physics->callback = &callback;
 	physics->staticFriction = PHcDefaultStaticFriction;
 	physics->dynamicFriction = PHcDefaultDynamicFriction;
-	
+
 	// Perform Setup setup
 	if (inSetup)
 	{
@@ -816,14 +816,14 @@ UUtError OBrInit(
 
 		ioObject->flags = (UUtUns16)inSetup->flags;
 		ioObject->setup = inSetup;
-		
-		UUmAssert(inSetup->geometry_array->numGeometries <= OBcMaxGeometries);	
+
+		UUmAssert(inSetup->geometry_array->numGeometries <= OBcMaxGeometries);
 		ioObject->geometry_count = UUmMin(inSetup->geometry_array->numGeometries, OBcMaxGeometries);
-		
+
 		for( i = 0; i < ioObject->geometry_count; i++ )
-		{			
+		{
 			ioObject->geometry_list[i] = inSetup->geometry_array->geometries[i];
-		
+
 			if( i == 0 )
 			{
 				limits = ioObject->geometry_list[i]->pointArray->minmax_boundingBox;
@@ -838,14 +838,14 @@ UUtError OBrInit(
 				limits.maxPoint.y = UUmMax( ioObject->geometry_list[i]->pointArray->minmax_boundingBox.maxPoint.y, limits.maxPoint.y );
 				limits.maxPoint.z = UUmMax( ioObject->geometry_list[i]->pointArray->minmax_boundingBox.maxPoint.z, limits.maxPoint.z );
 			}
-		
+
 			if (ioObject->geometry_list[i]->triNormalArray->numVectors == 1)
 			{
 				M3tPlaneEquation	plane;
 				M3tPoint3D			*point;
 				M3tVector3D			*normal;
 				const float			growAmt = 5.f;
-	
+
 				UUmAssert(ioObject->geometry_list[i]->pointArray != NULL);
 
 				point	= ioObject->geometry_list[i]->pointArray->points;
@@ -858,8 +858,8 @@ UUtError OBrInit(
 
 				M3rBBox_GrowFromPlane(&ioObject->physics->axisBox, &plane, growAmt);
 			}
-		}	
-			
+		}
+
 		M3rMinMaxBBox_To_BBox(&limits, &physics->axisBox);
 		// Set up the bounding volumes
 		tree = OBiMakeSphereTree(ioObject,inSetup);
@@ -891,7 +891,7 @@ UUtError OBrInit(
 		if (ioObject->flags & OBcFlags_NoGravity) {
 			ioObject->physics->flags |= PHcFlags_Physics_NoGravity;
 		}
-		
+
 		physics->origin			= inSetup->debugOrigMatrix;
 		physics->sphereTree		= tree;
 		physics->orientation	= inSetup->orientation;
@@ -908,7 +908,7 @@ UUtError OBrInit(
 		else {
 			physics->level		= (PHtPhysicsLevel)inSetup->physicsLevel;
 		}
-				
+
 		// Set up attached particles
 		ioObject->particleArray = inSetup->particleArray;
 		error = OBrSetParticles(ioObject, UUcTrue);
@@ -1058,8 +1058,8 @@ void OBrNotifyPhysicsCollision(OBtObject *inObject, const PHtPhysicsContext *inC
 					gNumObjectCollisionPoints = UUmMax(gNumObjectCollisionPoints, gNextObjectCollisionPoint);
 
 					// compare this direction with the normal vector of the collision
-					dot_product = collider->plane.a * direction_of_motion.x + 
-									collider->plane.b * direction_of_motion.y + 
+					dot_product = collider->plane.a * direction_of_motion.x +
+									collider->plane.b * direction_of_motion.y +
 									collider->plane.c * direction_of_motion.z;
 					if (dot_product < 0.5f) {
 						// our direction of movement is away from the plane of the collision, we can continue moving

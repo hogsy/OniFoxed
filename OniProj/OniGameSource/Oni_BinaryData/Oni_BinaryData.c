@@ -39,7 +39,7 @@ typedef struct OBDtClassPath
 {
 	BDtClassType		class_type;
 	char				*path;
-	
+
 } OBDtClassPath;
 
 // ======================================================================
@@ -83,12 +83,12 @@ OBDiGetDirectoryRef(
 	GRtGroup*			prefGroup;
 	char				*binaryDirName;
 	char				binaryDirNameStr[256];
-	
+
 	*outFileRef = NULL;
 
 #if STAND_ALONE_ONLY
 	return UUcError_Generic;
-#endif 
+#endif
 
 	if (OBDgBinaryDataFolder == NULL) {
 		// CB: if we've already tried to find the binary data folder,
@@ -109,31 +109,31 @@ OBDiGetDirectoryRef(
 
 		error = GRrGroup_Context_NewFromFileRef(&prefFileRef, NULL, NULL,
 												&prefGroupContext, &prefGroup);
-				
+
 		if (error != UUcError_None)
 			return error;
-		
+
 		// look for the BinDir in the preferences.txt
 		error = GRrGroup_GetString(prefGroup, "BinFileDir", &binaryDirName);
 		if (error != UUcError_None)
 		{
 			char *				dataFileDir;
-			
+
 			// if it wasn't found get teh DataFileDir
 			error = GRrGroup_GetString(prefGroup, "DataFileDir", &dataFileDir);
 			if (error != UUcError_None) { return error; }
-			
+
 			// and append the binary data path to the data file dir name
 			sprintf(binaryDirNameStr, "%s\\%s", dataFileDir, OBDgBinaryPath);
 			binaryDirName = binaryDirNameStr;
 		}
-		
+
 		// make a file ref for the binary data folder
 		error = BFrFileRef_MakeFromName(binaryDirName, &OBDgBinaryDataFolder);
 		if (error != UUcError_None) { return error; }
-		
+
 		GRrGroup_Context_Delete(prefGroupContext);
-		
+
 		// CB: check that the binary directory exists
 		if (BFrFileRef_FileExists(OBDgBinaryDataFolder) == UUcFalse)
 		{
@@ -182,16 +182,16 @@ OBDiGetDirectoryRef(
 			break;
 		}
 	}
-	
+
 	// CB: must not be unknown class type.
 	UUmAssert(class_path->path != NULL);
 
 	// CB: build directory for this class
 	error = BFrFileRef_DuplicateAndAppendName(&subdirFileRef,
 											class_path->path,
-											outFileRef);			
+											outFileRef);
 	UUmError_ReturnOnErrorMsg(error, "Could not form binarydata class-folder");
-	
+
 	// CB: check that the directory exists
 	if (BFrFileRef_FileExists(*outFileRef) == UUcFalse)
 	{
@@ -232,18 +232,18 @@ OBDrBinaryData_Load(
 		UUtUns32		data_size;
 		char			identifier[BFcMaxFileNameLength];
 		UUtBool			locked;
-		
+
 		// load the file into memory
 		error = BFrFileRef_LoadIntoMemory(inFileRef, &data_size, &data);
 		UUmError_ReturnOnError(error);
-		
+
 		// get the identifier
 		UUrString_Copy(identifier, BFrFileRef_GetLeafName(inFileRef), BFcMaxFileNameLength);
 		UUrString_StripExtension(identifier);
-		
+
 		// get the locked status of the file
 		locked = BFrFileRef_IsLocked(inFileRef);
-		
+
 		// process the file
 		error =
 			BDrBinaryLoader(
@@ -254,7 +254,7 @@ OBDrBinaryData_Load(
 				UUcTrue);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -275,16 +275,16 @@ OBDrBinaryData_Save(
 	char				file_name[BFcMaxFileNameLength];
 
 	UUrMemory_Block_VerifyList();
-	
+
 	// create the diretory ref
 	error = OBDiGetDirectoryRef(inClassType, inLevelNumber, UUcTrue, &dir_ref);
 	if (error != UUcError_None) { return error; }
 	if (dir_ref == NULL) { return UUcError_Generic; }
-	
+
 	// make the identifier into a file name
 	UUrString_Copy(file_name, inIdentifier, BFcMaxFileNameLength);
 	UUrString_Cat(file_name, (inAutosave) ? ".sav" : ".bin", BFcMaxFileNameLength);
-	
+
 	// create the file ref
 	error =
 		BFrFileRef_DuplicateAndAppendName(
@@ -292,17 +292,17 @@ OBDrBinaryData_Save(
 			file_name,
 			&file_ref);
 	UUmError_ReturnOnError(error);
-	
+
 	// dispose of the directory ref
 	UUrMemory_Block_Delete(dir_ref);
-	
+
 	// create the file if it doesn't exist
 	if (BFrFileRef_FileExists(file_ref) == UUcFalse)
 	{
 		error = BFrFile_Create(file_ref);
 		UUmError_ReturnOnErrorMsg(error, "Could not create the file.");
 	}
-	
+
 	// open the file for writing
 	error =
 		BFrFile_Open(
@@ -314,7 +314,7 @@ OBDrBinaryData_Save(
 							inIdentifier, inLevelNumber);
 		return UUcError_None;
 	}
-	
+
 	// write to the file
 	error =
 		BDrBinaryData_Write(
@@ -323,14 +323,14 @@ OBDrBinaryData_Save(
 			inBufferSize,
 			file);
 	UUmError_ReturnOnErrorMsg(error, "Unable to write to file.");
-	
+
 	// set the EOF
 	BFrFile_SetEOF(file);
-	
+
 	// close the file
 	BFrFile_Close(file);
 	UUrMemory_Block_Delete(file_ref);
-		
+
 	return error;
 }
 
@@ -345,8 +345,8 @@ OBDrLevel_Load(
 	UUtUns16				inLevelNumber)
 {
 	UUtError				error;
-	OBDtClassPath			*class_path;	
-	
+	OBDtClassPath			*class_path;
+
 	// load the binary data files
 	for (class_path = OBDgClassPaths;
 		 class_path->path != NULL;
@@ -354,7 +354,7 @@ OBDrLevel_Load(
 	{
 		BFtFileRef			*dir_ref;
 		BFtFileIterator		*file_iterator;
-		
+
 		// create a directory ref for the class path
 		error = OBDiGetDirectoryRef(class_path->class_type, inLevelNumber, UUcFalse, &dir_ref);
 		if (error != UUcError_None)
@@ -367,7 +367,7 @@ OBDrLevel_Load(
 		{
 			continue;
 		}
-		
+
 		// see if it exists
 		if (BFrFileRef_FileExists(dir_ref))
 		{
@@ -379,17 +379,17 @@ OBDrLevel_Load(
 					NULL,
 					&file_iterator);
 			if (error != UUcError_None) { continue; }
-			
+
 			// iterate over the files
 			while (1)
 			{
 				BFtFileRef		file_ref;
 				const char		*file_ext;
-				
+
 				// get the file ref
 				error = BFrDirectory_FileIterator_Next(file_iterator, &file_ref);
 				if (error != UUcError_None) { break; }
-				
+
 				file_ext = BFrFileRef_GetSuffixName(&file_ref);
 				if ((file_ext != NULL) && (UUrString_Compare_NoCase(file_ext, "bin") == 0)) {
 					// load the file
@@ -397,14 +397,14 @@ OBDrLevel_Load(
 					if (error != UUcError_None) { continue; }
 				}
 			}
-			
+
 			// dispose of the directory file iterator
 			BFrDirectory_FileIterator_Delete(file_iterator);
 		}
 		// dispose of the directory ref
 		UUrMemory_Block_Delete(dir_ref);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -457,7 +457,7 @@ OBDrInitialize(
 	// initialize globals
 	OBDgBinaryDataFolder = NULL;
 	OBDgLookedForBinaryData = UUcFalse;
-	
+
 	return UUcError_None;
 }
 

@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Alarm.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: September 2, 2000
-	
+
 	PURPOSE: Alarm AI for Oni
-	
+
 	Copyright (c) 2000 Bungie Software
 
 */
@@ -137,7 +137,7 @@ void AI2rAlarm_Update(ONtCharacter *ioCharacter)
 		// attack this character
 		AI2iAlarm_Finish(ioCharacter, alarm_state, entry);
 	}
-	
+
 	if (!ioCharacter->pathState.at_finalpoint) {
 		// keep running to alarm!
 
@@ -279,7 +279,7 @@ UUtBool AI2rAlarm_Setup(ONtCharacter *ioCharacter, ONtActionMarker *inActionMark
 void AI2rAlarm_Stop(ONtCharacter *ioCharacter, UUtBool inSuccess)
 {
 	UUmAssert(ioCharacter->charType == ONcChar_AI2);
-	
+
 #if DEBUG_VERBOSE_ALARM
 	COrConsole_Printf("alarm: stop");
 #endif

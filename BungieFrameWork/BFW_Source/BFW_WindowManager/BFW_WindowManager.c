@@ -84,19 +84,19 @@ typedef struct WMtMouseEventMap
 {
 	LItInputEventType			event_type;
 	WMtMessage					window_message;
-	
+
 } WMtMouseEventMap;
 
 typedef struct WMtEventData
 {
 	WMtWindow					*prev_mouse_over_window;
-	
+
 	// for tracking double clicks
 	WMtWindow					*prev_mouse_click_window;
 	IMtPoint2D					prev_mouse_click_location;
 	WMtMessage					prev_mouse_click_message;
 	UUtUns32					prev_mouse_click_time;
-	
+
 } WMtEventData;
 
 // ----------------------------------------------------------------------
@@ -106,7 +106,7 @@ typedef struct WMtTimer
 	UUtUns32				timer_id;
 	UUtUns32				timer_frequency;
 	UUtUns32				timer_next_firing;
-	
+
 } WMtTimer;
 
 // ----------------------------------------------------------------------
@@ -114,7 +114,7 @@ typedef struct WMtWindowArray
 {
 	UUtUns32				flags;
 	WMtWindow				*window;
-	
+
 } WMtWindowArray;
 
 // ======================================================================
@@ -184,11 +184,11 @@ static FILE					*WMgMessagesFile;
 static void
 WMiCaret_Draw(
 	WMtWindow				*inWindow);
-	
+
 static void
 WMiTimer_WindowDestroyed(
 	WMtWindow				*inWindow);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
@@ -200,7 +200,7 @@ WMiWA_Add(
 {
 	UUmAssert(inIndex != WMcWA_Error);
 	if (inWindow == NULL) { return; }
-	
+
 	WMgWindowArray[inIndex].flags |= WMcWindowArrayFlag_InUse;
 	WMgWindowArray[inIndex].window = inWindow;
 	inWindow->index = inIndex;
@@ -212,7 +212,7 @@ WMiWA_Free(
 	WMtWindow				*inWindow)
 {
 	if (inWindow == NULL) { return; }
-	
+
 	WMgWindowArray[inWindow->index].flags &= ~WMcWindowArrayFlag_InUse;
 }
 
@@ -222,12 +222,12 @@ WMiWA_FreeUnused(
 	void)
 {
 	UUtUns32				i;
-	
+
 	for (i = 0; i < WMcMaxWindows; i++)
 	{
 		// don't dispose of windows that are in use
 		if (WMgWindowArray[i].flags & WMcWindowArrayFlag_InUse) { continue; }
-		
+
 		// free the unused memory
 		if (WMgWindowArray[i].window)
 		{
@@ -243,15 +243,15 @@ WMiWA_Initialize(
 	void)
 {
 	UUtUns32				i;
-	
+
 	WMgWAIndex = 0;
-	
+
 	for (i = 0; i < WMcMaxWindows; i++)
 	{
 		WMgWindowArray[i].flags = WMcWindowArrayFlag_None;
 		WMgWindowArray[i].window = NULL;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -261,7 +261,7 @@ WMiWA_New(
 	void)
 {
 	UUtUns32				i;
-	
+
 	// search through the array from WMgWAIndex until the end
 	for (i = (WMgWAIndex + 1); i < WMcMaxWindows; i++)
 	{
@@ -270,7 +270,7 @@ WMiWA_New(
 			break;
 		}
 	}
-	
+
 	// if no available index was found, search from the beginning until WMgWAIndex
 	if (i == WMcMaxWindows)
 	{
@@ -282,18 +282,18 @@ WMiWA_New(
 			}
 		}
 	}
-	
+
 	// if no available index was found, return an error
 	if (i == WMgWAIndex) { return WMcWA_Error; }
-	
+
 	WMgWAIndex = i;
-	
+
 	// delete old window memory
 	if (WMgWindowArray[i].window)
 	{
 		UUrMemory_Block_Delete(WMgWindowArray[i].window);
 	}
-	
+
 	// return the available index
 	return i;
 }
@@ -304,14 +304,14 @@ WMiWA_Terminate(
 	void)
 {
 	UUtUns32				i;
-	
+
 	for (i = 0; i < WMcMaxWindows; i++)
 	{
 		if (WMgWindowArray[i].window)
 		{
 			UUrMemory_Block_Delete(WMgWindowArray[i].window);
 		}
-		
+
 		WMgWindowArray[i].flags = WMcWindowArrayFlag_None;
 		WMgWindowArray[i].window = NULL;
 	}
@@ -325,7 +325,7 @@ WMiWA_Valid(
 	if (inWindow == NULL) {	return UUcFalse; }
 	if (inWindow->index < 0) { return UUcFalse; }
 	if (inWindow->index >= WMcMaxWindows) { return UUcFalse; }
-	
+
 	return ((WMgWindowArray[inWindow->index].flags & WMcWindowArrayFlag_InUse) != 0);
 }
 
@@ -340,15 +340,15 @@ WMiWindow_AddToList(
 	WMtWindow				*inWindow)
 {
 	WMtWindow				*list_owner;
-	
+
 	UUmAssert(inWindow);
-	
+
 	// check the window's type
 	if (inWindow->window_class->type == WMcWindowType_Desktop)
 	{
 		return UUcError_None;
 	}
-	
+
 	// get the window which owns the list the window will be placed into
 	if (inWindow->flags & WMcWindowFlag_Child)
 	{
@@ -358,21 +358,21 @@ WMiWindow_AddToList(
 	{
 		list_owner = WMgDesktop;
 	}
-	
+
 	if (list_owner == NULL) { return UUcError_Generic; }
-	
+
 	// add inWindow as the last child
 	if (list_owner->child)
 	{
 		WMtWindow			*child;
-		
+
 		// find the last child in the list
 		child = list_owner->child;
 		while (child->next)
 		{
 			child = child->next;
 		}
-		
+
 		// put in list after child
 		child->next = inWindow;
 		inWindow->prev = child;
@@ -385,7 +385,7 @@ WMiWindow_AddToList(
 		inWindow->prev = NULL;
 		inWindow->next = NULL;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -395,15 +395,15 @@ WMiWindow_RemoveFromList(
 	WMtWindow				*inWindow)
 {
 	WMtWindow				*list_owner;
-	
+
 	UUmAssert(inWindow);
-	
+
 	// check the window's type
 	if (inWindow->window_class->type == WMcWindowType_Desktop)
 	{
 		return;
 	}
-	
+
 	// get the window which owns the list the window will be placed into
 	if (inWindow->flags & WMcWindowFlag_Child)
 	{
@@ -413,27 +413,27 @@ WMiWindow_RemoveFromList(
 	{
 		list_owner = WMgDesktop;
 	}
-	
+
 	if (list_owner == NULL) { return; }
-	
+
 	// remove inWindow from the parent if it is the first item in the list
 	if (list_owner->child == inWindow)
 	{
 		list_owner->child = inWindow->next;
 	}
-	
+
 	// make the previous window in the list point to the next window
 	if (inWindow->prev)
 	{
 		inWindow->prev->next = inWindow->next;
 	}
-	
+
 	// make the next window in the list point to the prev window
 	if (inWindow->next)
 	{
 		inWindow->next->prev = inWindow->prev;
 	}
-	
+
 	// the window is alone in the world
 	inWindow->prev = NULL;
 	inWindow->next = NULL;
@@ -446,15 +446,15 @@ WMiWindow_InsertAfterChild(
 	WMtWindow				*inChild)
 {
 	WMtWindow				*list_owner;
-	
+
 	UUmAssert(inWindow);
-	
+
 	// check the window's type
 	if (inWindow->window_class->type == WMcWindowType_Desktop)
 	{
 		return;
 	}
-	
+
 	// get the window which owns the list the window will be placed into
 	if (inWindow->flags & WMcWindowFlag_Child)
 	{
@@ -464,23 +464,23 @@ WMiWindow_InsertAfterChild(
 	{
 		list_owner = WMgDesktop;
 	}
-	
+
 	if (list_owner == NULL) { return; }
 
 	// remove inWindow from the list it is in
 	WMiWindow_RemoveFromList(inWindow);
-	
+
 	if (inChild)
 	{
 		// put in list after child
 		inWindow->prev = inChild;
 		inWindow->next = inChild->next;
-		
+
 		if (inChild->next)
 		{
 			inChild->next->prev = inWindow;
 		}
-		
+
 		inChild->next = inWindow;
 	}
 	else
@@ -515,14 +515,14 @@ WMiWindow_DeleteOwned(
 	UUtUns32				inUserData)
 {
 	WMtWindow				*owner;
-	
+
 	// delete the window if inWindow->owner is equal to owner
 	owner = (WMtWindow*)inUserData;
 	if (inWindow->owner == owner)
 	{
 		WMrWindow_Delete(inWindow);
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -532,13 +532,13 @@ WMiWindow_Draw(
 	WMtWindow				*inWindow)
 {
 	WMtWindow				*child;
-	
+
 	// don't draw the window if it isn't visible
 	if ((inWindow->flags & WMcWindowFlag_Visible) == 0)
 	{
 		return;
 	}
-	
+
 	// send the draw message to the window
 	WMrMessage_Send(
 		inWindow,
@@ -552,13 +552,13 @@ WMiWindow_Draw(
 		WMcMessage_Paint,
 		0,
 		0);
-	
+
 	// draw the caret
 	if (WMgCaret.owner == inWindow)
 	{
 		WMiCaret_Draw(inWindow);
 	}
-	
+
 	// draw the child windows
 	if (inWindow->child)
 	{
@@ -568,7 +568,7 @@ WMiWindow_Draw(
 		{
 			child = child->next;
 		}
-		
+
 		// draw the child windows back to front
 		while (child)
 		{
@@ -588,33 +588,33 @@ WMiWindow_GetWindowUnderPoint(
 	WMtWindow				*window_under_point;
 	UUtRect					window_rect;
 	UUtRect					client_rect;
-	
+
 	// check the window flags
 	if ((inWindow->flags & inFlags) != inFlags)
 	{
 		return NULL;
 	}
-	
+
 	// see if the point is even within this window
 	WMrWindow_GetRect(inWindow, &window_rect);
 	if (IMrRect_PointIn(&window_rect, inPoint) == UUcFalse) { return NULL; }
-	
+
 	// inWindow is under the point
 	window_under_point = inWindow;
-	
+
 	// check to see if the point is within the client rect of the window
 	client_rect = inWindow->client_rect;
 	IMrRect_Offset(&client_rect, window_rect.left, window_rect.top);
 	if (IMrRect_PointIn(&client_rect, inPoint))
 	{
 		WMtWindow			*child;
-		
+
 		// check the child windows to see if any of them are under the point
 		child = inWindow->child;
 		while (child)
 		{
 			WMtWindow			*child_under_point;
-			
+
 			child_under_point = WMiWindow_GetWindowUnderPoint(child, inPoint, inFlags);
 			if (child_under_point)
 			{
@@ -624,7 +624,7 @@ WMiWindow_GetWindowUnderPoint(
 			child = child->next;
 		}
 	}
-	
+
 	// check the undesirable flags
 	if (window_under_point == inWindow)
 	{
@@ -636,7 +636,7 @@ WMiWindow_GetWindowUnderPoint(
 			window_under_point = NULL;
 		}
 	}
-	
+
 	return window_under_point;
 }
 
@@ -651,11 +651,11 @@ WMrWindow_Activate(
 	WMtWindow				*inWindow)
 {
 	WMtWindow				*old_active;
-	
+
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return NULL; }
-	
+
 	// if this is a child window don't do anything
 	if (inWindow->flags & WMcWindowFlag_Child)
 	{
@@ -668,10 +668,10 @@ WMrWindow_Activate(
 	{
 		return WMgActiveWindow;
 	}
-	
+
 	// save the currently active window
 	old_active = WMgActiveWindow;
-	
+
 	// deactivate the currently active window
 	if (WMgActiveWindow)
 	{
@@ -680,35 +680,35 @@ WMrWindow_Activate(
 			WMcMessage_Activate,
 			(UUtUns32)UUcFalse,
 			0);
-		
+
 		WMrMessage_Send(
 			WMgActiveWindow,
 			WMcMessage_NC_Activate,
 			(UUtUns32)UUcFalse,
 			0);
 	}
-	
+
 	// whichever window has the mouse capture, loses it
 	WMrWindow_CaptureMouse(NULL);
-	
+
 	WMgActiveWindow = inWindow;
 
 	// bring the window to the front
 	WMrWindow_BringToFront(inWindow);
-		
+
 	// tell the window it was activated
 	WMrMessage_Send(
 		inWindow,
 		WMcMessage_NC_Activate,
 		(UUtUns32)UUcTrue,
 		0);
-		
+
 	WMrMessage_Send(
 		inWindow,
 		WMcMessage_Activate,
 		(UUtUns32)UUcTrue,
 		0);
-	
+
 	return old_active;
 }
 
@@ -719,13 +719,13 @@ WMrWindow_BringToFront(
 {
 	WMtWindow				*list_owner;
 	WMtWindow				*insert_after;
-	
+
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	if (inWindow->window_class->type == WMcWindowType_Desktop) { return UUcTrue; }
-	
+
 	// bring the parent forward
 	if (inWindow->parent)
 	{
@@ -741,7 +741,7 @@ WMrWindow_BringToFront(
 	{
 		list_owner = WMgDesktop;
 	}
-	
+
 	// find the window to place inWindow after
 	if (inWindow->flags & WMcWindowFlag_PopUp)
 	{
@@ -773,13 +773,13 @@ WMrWindow_BringToFront(
 			insert_after = insert_after->next;
 		}
 	}
-	
+
 	// check to see if the window is already sorted
 	if (insert_after == inWindow)
 	{
 		return UUcTrue;
 	}
-		
+
 	// set the position of the window
 	WMrWindow_SetPosition(
 		inWindow,
@@ -789,7 +789,7 @@ WMrWindow_BringToFront(
 		inWindow->width,
 		inWindow->height,
 		WMcPosChangeFlag_NoMove | WMcPosChangeFlag_NoSize);
-		
+
 	return UUcTrue;
 }
 
@@ -799,9 +799,9 @@ WMrWindow_CaptureMouse(
 	WMtWindow				*inWindow)
 {
 	WMtWindow				*old_focus;
-		
+
 	if (WMgMouseFocus == inWindow) { return UUcTrue; }
-	
+
 	old_focus = WMgMouseFocus;
 	WMgMouseFocus = inWindow;
 
@@ -813,7 +813,7 @@ WMrWindow_CaptureMouse(
 			(UUtUns32)inWindow,
 			0);
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -823,11 +823,11 @@ WMrWindow_Delete(
 	WMtWindow				*inWindow)
 {
 	WMtWindow				*child;
-	
+
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	// deactivate the window
 	if (WMgActiveWindow == inWindow)
 	{
@@ -855,24 +855,24 @@ WMrWindow_Delete(
 			}
 		}
 	}
-	
+
 	// turn off the mouse focus
 	if (WMgMouseFocus == inWindow)
 	{
 		WMrWindow_CaptureMouse(NULL);
 	}
-	
+
 	// turn off the keyboard focus
 	if (WMgKeyboardFocus == inWindow)
 	{
 		WMrWindow_SetFocus(NULL);
 	}
-	
+
 	// notify the parent
 	if (inWindow->parent)
 	{
 		WMtWindow			*parent;
-		
+
 		parent = inWindow->parent;
 
 		WMrMessage_Send(
@@ -881,13 +881,13 @@ WMrWindow_Delete(
 			WMcMessage_Destroy,
 			(UUtUns32)inWindow);
 	}
-	
+
 	// remove the window from the list
 	WMiWindow_RemoveFromList(inWindow);
-	
+
 	// stop any timers this window may have started
 	WMiTimer_WindowDestroyed(inWindow);
-	
+
 	// delete the window
 	WMrMessage_Send(inWindow, WMcMessage_Destroy, 0, 0);
 
@@ -896,20 +896,20 @@ WMrWindow_Delete(
 	while (child)
 	{
 		WMtWindow			*delete_me;
-		
+
 		delete_me = child;
 		child = child->next;
-		
+
 		WMrWindow_Delete(delete_me);
 	}
-	
+
 	// destroy the owned windows
 	WMrEnumWindows(WMiWindow_DeleteOwned, (UUtUns32)inWindow);
-	
+
 	WMrMessage_Send(inWindow, WMcMessage_NC_Destroy, 0, 0);
-	
+
 	WMiWA_Free(inWindow);
-	
+
 	return UUcTrue;
 }
 
@@ -920,13 +920,13 @@ WMrWindow_GetClientRect(
 	UUtRect					*outRect)
 {
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
 
 	// return the client rect with the upper left corner at (0, 0)
 	*outRect = inWindow->client_rect;
 	IMrRect_Offset(outRect, -outRect->left, -outRect->top);
-	
+
 	return UUcTrue;
 }
 
@@ -936,7 +936,7 @@ WMrWindow_GetEnabled(
 	WMtWindow				*inWindow)
 {
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	return ((inWindow->flags & WMcWindowFlag_Disabled) == 0);
 }
 
@@ -946,7 +946,7 @@ WMrWindow_GetFlags(
 	WMtWindow				*inWindow)
 {
 	if (!WMiWA_Valid(inWindow)) { return 0; }
-	
+
 	return inWindow->flags;
 }
 
@@ -966,11 +966,11 @@ WMrWindow_GetFontInfo(
 {
 	UUmAssert(inWindow);
 	UUmAssert(outFontInfo);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return 0; }
 
 	*outFontInfo = inWindow->font_info;
-	
+
 	return UUcTrue;
 }
 
@@ -980,9 +980,9 @@ WMrWindow_GetID(
 	WMtWindow				*inWindow)
 {
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return 0; }
-	
+
 	return inWindow->id;
 }
 
@@ -993,16 +993,16 @@ WMrWindow_GetLong(
 	UUtInt32				inOffset)
 {
 	UUtUns32				data;
-	
+
 	if (!WMiWA_Valid(inWindow)) { return 0; }
 
 	if ((inOffset < 0) || (inOffset > (UUtInt32)inWindow->window_class->private_data_size))
 	{
 		return 0;
 	}
-	
+
 	data = *((UUtUns32*)((UUtUns32)inWindow + sizeof(WMtWindow) + inOffset));
-	
+
 	return data;
 }
 
@@ -1012,9 +1012,9 @@ WMrWindow_GetOwner(
 	WMtWindow				*inWindow)
 {
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return NULL; }
-	
+
 	return inWindow->owner;
 }
 
@@ -1024,9 +1024,9 @@ WMrWindow_GetParent(
 	WMtWindow				*inWindow)
 {
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return NULL; }
-	
+
 	return inWindow->parent;
 }
 
@@ -1040,15 +1040,15 @@ WMrWindow_GetRect(
 	WMtWindow				*child;
 	UUtInt16				x;
 	UUtInt16				y;
-	
+
 	UUmAssert(inWindow);
 	UUmAssert(outRect);
 
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	x = inWindow->location.x;
 	y = inWindow->location.y;
-	
+
 	if (inWindow->flags & WMcWindowFlag_Child)
 	{
 		child = inWindow;
@@ -1060,17 +1060,17 @@ WMrWindow_GetRect(
 				x += parent->location.x + parent->client_rect.left;
 				y += parent->location.y + parent->client_rect.top;
 			}
-			
+
 			child = parent;
 			parent = parent->parent;
 		}
 	}
-	
+
 	outRect->left = x;
 	outRect->top = y;
 	outRect->right = outRect->left + inWindow->width;
 	outRect->bottom = outRect->top + inWindow->height;
-	
+
 	return UUcTrue;
 }
 
@@ -1082,19 +1082,19 @@ WMrWindow_GetSize(
 	UUtInt16				*outHeight)
 {
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	if (outWidth)
 	{
 		*outWidth = inWindow->width;
 	}
-	
+
 	if (outHeight)
 	{
 		*outHeight = inWindow->height;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -1106,7 +1106,7 @@ WMrWindow_GetStyle(
 	UUmAssert(inWindow);
 
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	return inWindow->style;
 }
 
@@ -1120,11 +1120,11 @@ WMrWindow_GetTitle(
 	UUmAssert(inWindow);
 	UUmAssert(outTitle);
 	UUmAssert(inMaxCharacters <= WMcMaxTitleLength);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
 
 	UUrString_Copy(outTitle, inWindow->title, inMaxCharacters);
-	
+
 	return UUcTrue;
 }
 
@@ -1134,9 +1134,9 @@ WMrWindow_GetTitlePtr(
 	WMtWindow				*inWindow)
 {
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	return inWindow->title;
 }
 
@@ -1146,9 +1146,9 @@ WMrWindow_GetClass(
 	WMtWindow				*inWindow)
 {
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return NULL; }
-	
+
 	return inWindow->window_class;
 }
 
@@ -1158,9 +1158,9 @@ WMrWindow_GetVisible(
 	WMtWindow				*inWindow)
 {
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	return ((inWindow->flags & WMcWindowFlag_Visible) == WMcWindowFlag_Visible);
 }
 
@@ -1172,18 +1172,18 @@ WMrWindow_GlobalToLocal(
 	IMtPoint2D				*outLocal)
 {
 	UUtRect					window_rect;
-	
+
 	UUmAssert(inWindow);
 	UUmAssert(inGlobal);
 	UUmAssert(outLocal);
 
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	WMrWindow_GetRect(inWindow, &window_rect);
-	
+
 	outLocal->x = inGlobal->x - inWindow->client_rect.left - window_rect.left;
 	outLocal->y = inGlobal->y - inWindow->client_rect.top - window_rect.top;
-	
+
 	return UUcTrue;
 }
 
@@ -1194,16 +1194,16 @@ WMrWindow_IsChild(
 	WMtWindow				*inParent)
 {
 	WMtWindow				*parent;
-	
+
 	if ((inChild == NULL) || (inParent == NULL)) { return UUcFalse; }
-	
+
 	parent = inChild->parent;
 	while (parent)
 	{
 		if (parent == inParent) { return UUcTrue; }
 		parent = parent->parent;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -1215,18 +1215,18 @@ WMrWindow_LocalToGlobal(
 	IMtPoint2D				*outGlobal)
 {
 	UUtRect					window_rect;
-	
+
 	UUmAssert(inWindow);
 	UUmAssert(inLocal);
 	UUmAssert(outGlobal);
 
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	WMrWindow_GetRect(inWindow, &window_rect);
-	
+
 	outGlobal->x = inLocal->x + inWindow->client_rect.left + window_rect.left;
 	outGlobal->y = inLocal->y + inWindow->client_rect.top + window_rect.top;
-	
+
 	return UUcTrue;
 }
 
@@ -1250,15 +1250,15 @@ WMrWindow_New(
 	UUtUns32				index;
 	WMtWindowClass			*window_class;
 	UUtUns32				mem_size;
-	
+
 	UUmAssert(WMgInitialized);
-		
+
 	// there can be only one desktop
 	if ((inWindowType == WMcWindowType_Desktop) && (WMgDesktop != NULL))
 	{
 		return NULL;
 	}
-	
+
 	// get the index of an open item in the window array
 	index = WMiWA_New();
 	if (index == WMcWA_Error)
@@ -1266,21 +1266,21 @@ WMrWindow_New(
 		UUmAssert(!"Out of windows");
 		return NULL;
 	}
-	
+
 	// allocate memory for the window
 	window_class = WMrWindowClass_GetClassByType(inWindowType);
 	if (window_class == NULL) { goto cleanup; }
-	
+
 	mem_size = sizeof(WMtWindow) + window_class->private_data_size;
-	
+
 	window = (WMtWindow*)UUrMemory_Block_NewClear(mem_size);
 	if (window)
 	{
 		UUtUns32				result;
 		UUtRect					bounds;
-		
+
 		WMiWA_Add(index, window);
-		
+
 		// initialize the window
 		window->prev				= NULL;
 		window->next				= NULL;
@@ -1301,27 +1301,27 @@ WMrWindow_New(
 		window->client_rect.right	= 0;
 		window->client_rect.bottom	= 0;
 		UUrString_Copy(window->title, inTitle, WMcMaxTitleLength);
-		
+
 		DCrText_GetStringRect(window->title, &bounds);
-		
+
 		window->title_width			= bounds.right - bounds.left;
 		window->title_height		= bounds.bottom - bounds.top;
 
 		window->had_focus			= window;
-				
+
 		error = TSrFontFamily_Get(TScFontFamily_Default, &window->font_info.font_family);
 		window->font_info.font_size = TScFontSize_Default;
 		window->font_info.font_style = TScFontStyle_Default;
 		window->font_info.font_shade = TScFontShade_Default;
-		
+
 		// set the parent and owner
 		if (window->flags & WMcWindowFlag_Child)
 		{
 			WMtWindow				*owner;
-			
+
 			UUmAssert(inParent);
 			window->parent = inParent;
-			
+
 			// only a top level window can be the owner of a child window
 			owner = inParent;
 			while (owner)
@@ -1339,11 +1339,11 @@ WMrWindow_New(
 			window->parent = NULL;
 			window->owner = inParent;
 		}
-		
+
 		// add the window to a list
 		error = WMiWindow_AddToList(window);
 		if (error != UUcError_None) { goto cleanup; }
-		
+
 		// send WMcMessage_NC_Create
 		result =
 			WMrMessage_Send(
@@ -1355,14 +1355,14 @@ WMrWindow_New(
 		{
 			goto cleanup;
 		}
-		
+
 		// calculate the client rect
 		WMrMessage_Send(
 			window,
 			WMcMessage_NC_CalcClientSize,
 			(UUtUns32)&window->client_rect,
 			0);
-		
+
 		// send WMcMessage_Create
 		result =
 			WMrMessage_Send(
@@ -1374,7 +1374,7 @@ WMrWindow_New(
 		{
 			goto cleanup;
 		}
-		
+
 		// tell parent that the child was created
 		if (window->parent)
 		{
@@ -1388,7 +1388,7 @@ WMrWindow_New(
 		// activate the new window
 		WMrWindow_Activate(window);
 	}
-	
+
 	UUrMemory_Block_VerifyList();
 
 	return window;
@@ -1397,12 +1397,12 @@ cleanup:
 	if (window)
 	{
 		WMiWindow_RemoveFromList(window);
-	
+
 		WMiWA_Free(window);
-		
+
 		UUrMemory_Block_Delete(window);
 	}
-	
+
 	return NULL;
 }
 
@@ -1413,9 +1413,9 @@ WMrWindow_PointInWindow(
 	IMtPoint2D				*inPoint)
 {
 	UUtRect					bounds;
-	
+
 	UUmAssert(inWindow);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
 
 	WMrWindow_GetRect(inWindow, &bounds);
@@ -1431,7 +1431,7 @@ WMrWindow_SetEnabled(
 	UUmAssert(inWindow);
 
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	if (inEnabled)
 	{
 		inWindow->flags &= ~WMcWindowFlag_Disabled;
@@ -1440,7 +1440,7 @@ WMrWindow_SetEnabled(
 	{
 		inWindow->flags |= WMcWindowFlag_Disabled;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -1459,20 +1459,20 @@ WMrWindow_SetFocus(
 	}
 
 	WMgKeyboardFocus = inWindow;
-	
+
 	if (inWindow)
 	{
 		WMtWindow			*window_losing_focus;
-		
+
 		window_losing_focus = WMgKeyboardFocus;
-		
+
 		WMrMessage_Send(
 			inWindow,
 			WMcMessage_SetFocus,
 			(UUtUns32)window_losing_focus,
 			0);
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -1486,22 +1486,22 @@ WMrWindow_SetFontInfo(
 	UUmAssert(inFontInfo);
 
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	inWindow->font_info = *inFontInfo;
 
 	if (inFontInfo->font_family == NULL)
 	{
 		UUtError				error;
-		
+
 		error =
 			TSrFontFamily_Get(
 				TScFontFamily_Default,
 				&inWindow->font_info.font_family);
 		if (error != UUcError_None) { return UUcFalse; }
 	}
-	
+
 	WMrMessage_Send(inWindow, WMcMessage_FontInfoChanged, 0, 0);
-	
+
 	return UUcTrue;
 }
 
@@ -1515,7 +1515,7 @@ WMrWindow_SetLocation(
 	UUmAssert(inWindow);
 
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	return
 		WMrWindow_SetPosition(
 			inWindow,
@@ -1535,18 +1535,18 @@ WMrWindow_SetLong(
 	UUtUns32				inData)
 {
 	UUtUns32				data;
-	
+
 	if (!WMiWA_Valid(inWindow)) { return 0; }
 
 	if ((inOffset < 0) || (inOffset > (UUtInt32)inWindow->window_class->private_data_size))
 	{
 		return 0;
 	}
-	
+
 	data = *((UUtUns32*)((UUtUns32)inWindow + sizeof(WMtWindow) + inOffset));
-	
+
 	*(UUtUns32*)((UUtUns32)inWindow + sizeof(WMtWindow) + inOffset) = inData;
-	
+
 	return data;
 }
 
@@ -1557,19 +1557,19 @@ WMrWindow_SetParent(
 	WMtWindow				*inNewParent)
 {
 	WMtWindow				*old_parent;
-	
+
 	UUmAssert(inWindow);
 	UUmAssert(inNewParent);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return NULL; }
-	
+
 	old_parent = inWindow->parent;
-	
+
 	if (old_parent)
 	{
 		WMiWindow_RemoveFromList(inWindow);
 	}
-	
+
 	if (inNewParent)
 	{
 		inWindow->parent = inNewParent;
@@ -1580,7 +1580,7 @@ WMrWindow_SetParent(
 		inWindow->parent = NULL;
 		WMiWindow_AddToList(inWindow);
 	}
-	
+
 	return old_parent;
 }
 
@@ -1596,11 +1596,11 @@ WMrWindow_SetPosition(
 	UUtUns16				inFlags)
 {
 	WMtPosChange			pos_change;
-	
+
 	UUmAssert(inWindow);
 
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	// init pos_change
 	pos_change.insert_after = inInsertAfter;
 	pos_change.x = inX;
@@ -1608,21 +1608,21 @@ WMrWindow_SetPosition(
 	pos_change.width = inWidth;
 	pos_change.height = inHeight;
 	pos_change.flags = inFlags;
-	
+
 	// tell the window that the position is about to change
 	WMrMessage_Send(
 		inWindow,
 		WMcMessage_PositionChanging,
 		(UUtUns32)&pos_change,
 		0);
-	
+
 	// change the location field
 	if ((pos_change.flags & WMcPosChangeFlag_NoMove) == 0)
 	{
 		inWindow->location.x = pos_change.x;
 		inWindow->location.y = pos_change.y;
 	}
-	
+
 	// change the width and height
 	if ((pos_change.flags & WMcPosChangeFlag_NoSize) == 0)
 	{
@@ -1632,28 +1632,28 @@ WMrWindow_SetPosition(
 		inWindow->width = pos_change.width;
 		inWindow->height = pos_change.height;
 	}
-	
+
 	// change the z order
 	if ((pos_change.flags & WMcPosChangeFlag_NoZOrder) == 0)
 	{
 		// insert the child
 		WMiWindow_InsertAfterChild(inWindow, pos_change.insert_after);
 	}
-	
+
 	// recalculate the client rect
 	WMrMessage_Send(
 		inWindow,
 		WMcMessage_NC_CalcClientSize,
 		(UUtUns32)&inWindow->client_rect,
 		0);
-	
+
 	// tell the window that the position changed
 	WMrMessage_Send(
 		inWindow,
 		WMcMessage_PositionChanged,
 		(UUtUns32)&pos_change,
 		0);
-	
+
 	return UUcTrue;
 }
 
@@ -1667,7 +1667,7 @@ WMrWindow_SetSize(
 	UUmAssert(inWindow);
 	UUmAssert(inWidth > 0);
 	UUmAssert(inHeight > 0);
-	
+
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
 
 	return
@@ -1689,20 +1689,20 @@ WMrWindow_SetTitle(
 	UUtUns16				inMaxCharacters)
 {
 	UUtRect					bounds;
-	
+
 	UUmAssert(inWindow);
 	UUmAssert(inTitle);
 	UUmAssert(inMaxCharacters <= WMcMaxTitleLength);
-		
+
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	UUrString_Copy(inWindow->title, inTitle, inMaxCharacters);
-	
+
 	DCrText_GetStringRect(inWindow->title, &bounds);
-	
+
 	inWindow->title_width = bounds.right - bounds.left;
 	inWindow->title_height = bounds.bottom - bounds.top;
-	
+
 	return UUcTrue;
 }
 
@@ -1715,7 +1715,7 @@ WMrWindow_SetVisible(
 	UUmAssert(inWindow);
 
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	if (inVisible)
 	{
 		inWindow->flags |= WMcWindowFlag_Visible;
@@ -1724,13 +1724,13 @@ WMrWindow_SetVisible(
 	{
 		inWindow->flags &= ~WMcWindowFlag_Visible;
 	}
-	
+
 	WMrMessage_Send(
 		inWindow,
 		WMcMessage_Visible,
 		(UUtUns32)inVisible,
 		0);
-	
+
 	return UUcTrue;
 }
 
@@ -1745,10 +1745,10 @@ WMrWindowClass_Register(
 	WMtWindowClass			*inWindowClass)
 {
 	UUtUns32				i;
-	
+
 	UUmAssert(inWindowClass);
 	UUmAssert(inWindowClass->callback);
-	
+
 	// look for a previously registered class of inType
 	for (i = 0; i < WMgNumWindowClasses; i++)
 	{
@@ -1757,11 +1757,11 @@ WMrWindowClass_Register(
 			return UUcError_Generic;
 		}
 	}
-	
+
 	// add to the class list
 	WMgWindowClassList[WMgNumWindowClasses] = *inWindowClass;
 	WMgNumWindowClasses++;
-	
+
 	return UUcError_None;
 }
 
@@ -1771,7 +1771,7 @@ WMrWindowClass_GetClassByType(
 	WMtWindowType			inType)
 {
 	UUtUns32				i;
-	
+
 	// find the class of type inType
 	for (i = 0; i < WMgNumWindowClasses; i++)
 	{
@@ -1780,7 +1780,7 @@ WMrWindowClass_GetClassByType(
 			return &WMgWindowClassList[i];
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -1797,7 +1797,7 @@ WMiCaret_Draw(
 	DCtDrawContext			*draw_context;
 	PStPartSpecUI			*partspec_ui;
 	UUtUns32				time;
-	
+
 	// make sure the caret can be drawn
 	if ((WMgCaret.owner == NULL) ||
 		(WMgCaret.owner != inWindow) ||
@@ -1805,7 +1805,7 @@ WMiCaret_Draw(
 	{
 		return;
 	}
-	
+
 	// do the blinking
 	time = UUrMachineTime_Sixtieths();
 	if (WMgCaret.blink_time < time)
@@ -1822,15 +1822,15 @@ WMiCaret_Draw(
 			WMgCaret.blink_time = time + WMcCaret_BlinkOnTime;
 		}
 	}
-	
+
 	if (WMgCaret.blink_visible == UUcFalse) { return; }
-	
+
 	// get the active partspec ui
 	partspec_ui = PSrPartSpecUI_GetActive();
 	if (partspec_ui == NULL) { return; }
-	
+
 	draw_context = DCrDraw_Begin(inWindow);
-	
+
 	// draw the caret
 	DCrDraw_PartSpec(
 		draw_context,
@@ -1840,7 +1840,7 @@ WMiCaret_Draw(
 		WMgCaret.width,
 		WMgCaret.height,
 		M3cMaxAlpha);
-	
+
 	DCrDraw_End(draw_context, inWindow);
 }
 
@@ -1852,7 +1852,7 @@ WMrCaret_Create(
 	UUtInt16				inHeight)
 {
 	if (!WMiWA_Valid(inWindow)) { return UUcFalse; }
-	
+
 	// initialize the caret
 	WMgCaret.owner = inWindow;
 	WMgCaret.position.x = 0;
@@ -1862,7 +1862,7 @@ WMrCaret_Create(
 	WMgCaret.visible = UUcFalse;
 	WMgCaret.blink_visible = UUcTrue;
 	WMgCaret.blink_time = UUrMachineTime_Sixtieths();
-	
+
 	return UUcTrue;
 }
 
@@ -1918,7 +1918,7 @@ WMrTimer_Initialize(
 			0,
 			WMcTimer_InitialNumber);
 	UUmError_ReturnOnNull(WMgTimers);
-	
+
 	return UUcError_None;
 }
 
@@ -1934,12 +1934,12 @@ WMrTimer_Start(
 	WMtTimer				*timer_array;
 	UUtError				error;
 	UUtBool					mem_moved;
-	
+
 	UUmAssert(inWindow);
-	
+
 	num_timers = UUrMemory_Array_GetUsedElems(WMgTimers);
 	timer_array = (WMtTimer*)UUrMemory_Array_GetMemory(WMgTimers);
-	
+
 	// make sure there are no duplicates
 	for (i = 0; i < num_timers; i++)
 	{
@@ -1949,7 +1949,7 @@ WMrTimer_Start(
 			return UUcFalse;
 		}
 	}
-	
+
 	// add a timer
 	error = UUrMemory_Array_GetNewElement(WMgTimers, &i, &mem_moved);
 	if (error != UUcError_None) { return UUcFalse; }
@@ -1957,12 +1957,12 @@ WMrTimer_Start(
 	{
 		timer_array = (WMtTimer*)UUrMemory_Array_GetMemory(WMgTimers);
 	}
-	
+
 	timer_array[i].window = inWindow;
 	timer_array[i].timer_id = inTimerID;
 	timer_array[i].timer_frequency = inTimerFrequency;
 	timer_array[i].timer_next_firing = UUrMachineTime_Sixtieths() + inTimerFrequency;
-	
+
 	return UUcTrue;
 }
 
@@ -1974,9 +1974,9 @@ WMrTimer_Stop(
 {
 	UUtUns32				i;
 	WMtTimer				*timer_array;
-	
+
 	UUmAssert(inWindow);
-	
+
 	// find the timer in the list
 	timer_array = (WMtTimer*)UUrMemory_Array_GetMemory(WMgTimers);
 	for (i = 0; i < UUrMemory_Array_GetUsedElems(WMgTimers); i++)
@@ -2007,10 +2007,10 @@ WMiTimer_Update(
 	UUtUns32				time;
 	WMtTimer				*timer_array;
 	UUtUns32				num_timers;
-	
+
 	time = UUrMachineTime_Sixtieths();
 
-update:	
+update:
 	timer_array = (WMtTimer*)UUrMemory_Array_GetMemory(WMgTimers);
 	num_timers = UUrMemory_Array_GetUsedElems(WMgTimers);
 	for (i = 0; i < num_timers; i++)
@@ -2019,7 +2019,7 @@ update:
 		{
 			// calculate the next firing
 			timer_array[i].timer_next_firing = time + timer_array[i].timer_frequency;
-			
+
 			// send the timer message
 			WMrMessage_Send(
 				timer_array[i].window,
@@ -2028,7 +2028,7 @@ update:
 				0);
 			// don't do any more processing with this timer after the message is sent
 			// because the window may have destroyed it or itself during the message
-			
+
 			if (num_timers != UUrMemory_Array_GetUsedElems(WMgTimers))
 			{
 				// the timer and or window was delete start the update over
@@ -2045,7 +2045,7 @@ WMiTimer_WindowDestroyed(
 {
 	UUtUns32				i;
 	WMtTimer				*timer_array;
-	
+
 destroyer:
 	timer_array = (WMtTimer*)UUrMemory_Array_GetMemory(WMgTimers);
 	for (i = 0; i < UUrMemory_Array_GetUsedElems(WMgTimers); i++)
@@ -2069,7 +2069,7 @@ isarrow(
 	UUtInt16				inKey)
 {
 	UUtBool					result;
-	
+
 	switch (inKey)
 	{
 		case LIcKeyCode_UpArrow:
@@ -2078,12 +2078,12 @@ isarrow(
 		case LIcKeyCode_RightArrow:
 			result = UUcTrue;
 		break;
-		
+
 		default:
 			result = UUcFalse;
 		break;
 	}
-	
+
 	return result;
 }
 
@@ -2093,19 +2093,19 @@ isdelete(
 	UUtInt16				inKey)
 {
 	UUtBool					result;
-	
+
 	switch (inKey)
 	{
 		case LIcKeyCode_BackSpace:
 		case LIcKeyCode_Delete:
 			result = UUcTrue;
 		break;
-		
+
 		default:
 			result = UUcFalse;
 		break;
 	}
-	
+
 	return result;
 }
 
@@ -2115,7 +2115,7 @@ isnavigation(
 	UUtInt16				inKey)
 {
 	UUtBool					result;
-	
+
 	switch (inKey)
 	{
 		case LIcKeyCode_Home:
@@ -2124,12 +2124,12 @@ isnavigation(
 		case LIcKeyCode_PageDown:
 			result = UUcTrue;
 		break;
-		
+
 		default:
 			result = UUcFalse;
 		break;
 	}
-	
+
 	return result;
 }
 
@@ -2139,19 +2139,19 @@ WMiEvent_GetKeyCategory(
 	LItInputEvent			*inInputEvent)
 {
 	UUtUns32				result;
-	
+
 	result = WMcKeyCategory_None;
-	
+
 	if (isalpha(inInputEvent->key) != 0)		{ result |= WMcKeyCategory_Alpha; }
 	if (isdigit(inInputEvent->key) != 0)		{ result |= WMcKeyCategory_Digit; }
 	if (ispunct(inInputEvent->key) != 0)		{ result |= WMcKeyCategory_Punctuation; }
 	if (isarrow(inInputEvent->key) != 0)		{ result |= WMcKeyCategory_Arrow; }
 	if (isnavigation(inInputEvent->key) != 0)	{ result |= WMcKeyCategory_Navigation; }
-	
+
 	// don't let delete be part of control
 	if (isdelete(inInputEvent->key) != 0)		{ result |= WMcKeyCategory_Delete; }
 	else if (iscntrl(inInputEvent->key) != 0)	{ result |= WMcKeyCategory_Control; }
-	
+
 	return result;
 }
 
@@ -2164,10 +2164,10 @@ WMiEvent_IsDoubleClick(
 {
 	UUtBool					is_double_click;
 	WMtMessage				message;
-	
+
 	is_double_click = UUcFalse;
 	message = *ioMessage;
-	
+
 	switch (message)
 	{
 		case WMcMessage_NC_LMouseUp:
@@ -2179,13 +2179,13 @@ WMiEvent_IsDoubleClick(
 		{
 			UUtUns32			time;
 			float				distance;
-			
+
 			time = UUrMachineTime_Sixtieths();
 			distance =
 				IMrPoint2D_Distance(
 					&WMgEventData.prev_mouse_click_location,
 					&inInputEvent->where);
-			
+
 			if ((WMgEventData.prev_mouse_click_window == inWindow) &&
 				(WMgEventData.prev_mouse_click_message == message) &&
 				(time < (WMgEventData.prev_mouse_click_time + WMcDoubleClickDelta)) &&
@@ -2200,12 +2200,12 @@ WMiEvent_IsDoubleClick(
 					case WMcMessage_MMouseUp: message = WMcMessage_MMouseDblClck; break;
 					case WMcMessage_RMouseUp: message = WMcMessage_RMouseDblClck; break;
 				}
-					
+
 				// clear the info
 				WMgEventData.prev_mouse_click_window = NULL;
 				WMgEventData.prev_mouse_click_time = 0;
 				WMgEventData.prev_mouse_click_message = WMcMessage_None;
-				
+
 				is_double_click = UUcTrue;
 			}
 			else
@@ -2219,7 +2219,7 @@ WMiEvent_IsDoubleClick(
 		}
 		break;
 	}
-	
+
 	*ioMessage = message;
 	return is_double_click;
 }
@@ -2233,21 +2233,21 @@ WMiEvents_HandleMouseEvent(
 	WMtMessage				message;
 	UUtUns32				param1;
 	UUtUns32				param2;
-	
+
 	WMtMouseEventMap		*event_map;
-	
+
 	WMtWindowArea			part;
 	UUtBool					is_dbl_click;
-	
-		
+
+
 	// record the cursor position for the cursor drawing to happen later
 	WMgCursorPosition = inInputEvent->where;
-	
+
 	// get the window under the mouse
 	window = WMrGetWindowUnderPoint(&inInputEvent->where);
-	
+
 	// check the undesirable flags
-	if (NULL != window) 
+	if (NULL != window)
 	{
 		UUtUns32	undesirable_flags = WMcWindowFlag_Disabled | WMcWindowFlag_MouseTransparent;
 
@@ -2256,31 +2256,31 @@ WMiEvents_HandleMouseEvent(
 			window = NULL;
 		}
 	}
-	
+
 	// set the window to the Mouse Focus window
 	if (WMgMouseFocus)
 	{
 		window = WMgMouseFocus;
 	}
-	
+
 	// set param1
 	param1 = UUmMakeLong(inInputEvent->where.x, inInputEvent->where.y);
-	
+
 	// get the part of the window the mouse is over
 	if (window == NULL)
 	{
 		part = WMcWindowArea_Client;
 	}
 	else
-	{	
-		part = 
+	{
+		part =
 			(WMtWindowArea)WMrMessage_Send(
 				window,
 				WMcMessage_NC_HitTest,
 				param1,
 				0);
-	}		
-	
+	}
+
 	// set the message type based on the hittest
 	if (part == WMcWindowArea_Client)
 	{
@@ -2290,9 +2290,9 @@ WMiEvents_HandleMouseEvent(
 	else
 	{
 		event_map = WMgMouseNCEventMap;
-		param2 = (UUtUns32)part;	
+		param2 = (UUtUns32)part;
 	}
-		
+
 	for (;
 		 event_map->window_message != WMcMessage_None;
 		 event_map++)
@@ -2303,19 +2303,19 @@ WMiEvents_HandleMouseEvent(
 			break;
 		}
 	}
-	
+
 	// don't generate WMcMessage_NC_MouseMove messages when the mouse is captured
 	if ((WMgMouseFocus) && (message == WMcMessage_NC_MouseMove))
 	{
 		message = WMcMessage_MouseMove;
 	}
-	
+
 	// check for double clicks
 	is_dbl_click = WMiEvent_IsDoubleClick(inInputEvent, window, &message);
-	
+
 	// send a message to the window
 	WMrMessage_Post(window, message, param1, param2);
-	
+
 	// send a mouse up message if message is a double clicked message
 	if (is_dbl_click)
 	{
@@ -2328,7 +2328,7 @@ WMiEvents_HandleMouseEvent(
 			case WMcMessage_MMouseDblClck: message = WMcMessage_MMouseUp; break;
 			case WMcMessage_RMouseDblClck: message = WMcMessage_RMouseUp; break;
 		}
-		
+
 		WMrMessage_Post(window, message, param1, param2);
 	}
 }
@@ -2342,13 +2342,13 @@ WMiEvents_HandleKeyEvent(
 	UUtUns32					param1;
 	UUtUns32					param2;
 	WMtWindow					*window;
-	
+
 	if (WMgKeyboardFocus == NULL) return;
 
 	// set param1 and param2
 	param1 = (UUtUns32)inInputEvent->key;
 	param2 = (UUtUns32)inInputEvent->modifiers;
-	
+
 	// set the message
 	switch (inInputEvent->type)
 	{
@@ -2356,25 +2356,25 @@ WMiEvents_HandleKeyEvent(
 		case LIcInputEvent_KeyRepeat:
 			message = WMcMessage_KeyDown;
 		break;
-		
+
 		case LIcInputEvent_KeyUp:
 			message = WMcMessage_KeyUp;
 		break;
 	}
-	
+
 	// if the keyboard focus is the child window of a dialog then determine
 	// if the child or the dialog should get the keyboard event
 	window = WMgKeyboardFocus;
 	if (window->flags & WMcWindowFlag_Child)
 	{
 		WMtWindow				*parent;
-		
+
 		parent = WMrWindow_GetParent(window);
 		if ((parent) && (parent->window_class->type == WMcWindowType_Dialog))
 		{
 			UUtUns32			result;
 			UUtUns32			key_category;
-			
+
 			key_category = WMiEvent_GetKeyCategory(inInputEvent);
 			result = WMrMessage_Send(window, WMcMessage_GetDialogCode, 0, 0);
 			switch (key_category)
@@ -2382,23 +2382,23 @@ WMiEvents_HandleKeyEvent(
 				case WMcKeyCategory_Alpha:
 					if ((result & WMcDialogCode_WantAlphas) == 0) { window = parent; }
 				break;
-				
+
 				case WMcKeyCategory_Digit:
 					if ((result & WMcDialogCode_WantDigits) == 0) { window = parent; }
 				break;
-				
+
 				case WMcKeyCategory_Punctuation:
 					if ((result & WMcDialogCode_WantPunctuation) == 0) { window = parent; }
 				break;
-				
+
 				case WMcKeyCategory_Control:
 					window = parent;
 				break;
-				
+
 				case WMcKeyCategory_Navigation:
 					if ((result & WMcDialogCode_WantNavigation) == 0) { window = parent; }
 				break;
-				
+
 				case WMcKeyCategory_Arrow:
 					if ((result & WMcDialogCode_WantArrows) == 0) { window = parent; }
 				break;
@@ -2409,7 +2409,7 @@ WMiEvents_HandleKeyEvent(
 			}
 		}
 	}
-	
+
 	// send a message to the focused view
 	WMrMessage_Post(window, message, param1, param2);
 }
@@ -2420,9 +2420,9 @@ WMiEvents_Process(
 	void)
 {
 	UUtUns32					i;
-	
+
 	if (LIrMode_Get() == LIcMode_Game) return;
-	
+
 	// get the events and send them to the dialog
 	for (i = 0; i < WMcMaxEventsPerUpdate; i++)
 	{
@@ -2442,7 +2442,7 @@ WMiEvents_Process(
 				if (input_event.where.y > WMgDesktop->height)
 					{ input_event.where.y = WMgDesktop->height; }
 			}
-			
+
 			// handle the input event
 			switch (input_event.type)
 			{
@@ -2455,7 +2455,7 @@ WMiEvents_Process(
 				case LIcInputEvent_RMouseUp:
 					WMiEvents_HandleMouseEvent(&input_event);
 				break;
-				
+
 				case LIcInputEvent_KeyDown:
 		 		case LIcInputEvent_KeyRepeat:
 		 			WMiEvents_HandleKeyEvent(&input_event);
@@ -2481,7 +2481,7 @@ WMiCursor_Load(
 	{
 		return UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2501,14 +2501,14 @@ WMiDesktop_Paint(
 	IMtPoint2D				dest;
 	UUtInt16				desktop_width;
 	UUtInt16				desktop_height;
-	
+
 	// start drawing
 	draw_context = DCrDraw_Begin(inDesktop);
-	
+
 	// get the background
 	background = (void*)WMrWindow_GetLong(inDesktop, 0);
 	if (background == 0) { return; }
-	
+
 	// get the size of the desktop
 	WMrWindow_GetSize(inDesktop, &desktop_width, &desktop_height);
 
@@ -2520,7 +2520,7 @@ WMiDesktop_Paint(
 			// set the dest
 			dest.x = 0;
 			dest.y = 0;
-			
+
 			// draw the partspec
 			DCrDraw_PartSpec(
 				draw_context,
@@ -2531,7 +2531,7 @@ WMiDesktop_Paint(
 				desktop_height,
 				M3cMaxAlpha);
 		break;
-		
+
 		case M3cTemplate_TextureMap:
 		case M3cTemplate_TextureMap_Big:
 		{
@@ -2540,11 +2540,11 @@ WMiDesktop_Paint(
 
 			// get the size of the texture
 			M3rTextureRef_GetSize(background, &width, &height);
-			
+
 			// set the dest
 			dest.x = (desktop_width - (UUtInt16)width) >> 1;
 			dest.y = (desktop_height - (UUtInt16)height) >> 1;
-			
+
 			DCrDraw_TextureRef(
 				draw_context,
 				background,
@@ -2556,7 +2556,7 @@ WMiDesktop_Paint(
 		}
 		break;
 	}
-	
+
 	// stop drawing
 	DCrDraw_End(draw_context, inDesktop);
 }
@@ -2574,27 +2574,27 @@ WMiDesktop_Callback(
 		case WMcMessage_Create:
 			WMrWindow_SetLong(inDesktop, 0, 0);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Destroy:
 			WMrWindow_SetLong(inDesktop, 0, 0);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Paint:
 			WMiDesktop_Paint(inDesktop);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_ResolutionChanged:
 			WMrWindow_SetSize(
 				inDesktop,
 				(UUtInt16)UUmHighWord(inParam1),
 				(UUtInt16)UUmLowWord(inParam1));
 		break;
-		
+
 		case DTcMessage_SetBackground:
 			WMrWindow_SetLong(inDesktop, 0, inParam1);
 		return WMcResult_Handled;
 	}
-	
+
 	return WMrWindow_DefaultCallback(inDesktop, inMessage, inParam1, inParam2);
 }
 
@@ -2605,18 +2605,18 @@ WMiDesktop_Create(
 {
 	WMtWindowClass			window_class;
 	UUtError				error;
-	
+
 	UUmAssert(WMgDesktop == NULL);
-	
+
 	// register the window class
 	UUrMemory_Clear(&window_class, sizeof(WMtWindowClass));
 	window_class.type = WMcWindowType_Desktop;
 	window_class.callback = WMiDesktop_Callback;
 	window_class.private_data_size = sizeof(UUtUns32);
-	
+
 	error = WMrWindowClass_Register(&window_class);
 	UUmError_ReturnOnError(error);
-	
+
 	// create the oni window
 	WMgDesktop =
 		WMrWindow_New(
@@ -2632,7 +2632,7 @@ WMiDesktop_Create(
 			NULL,
 			0);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -2647,12 +2647,12 @@ WMrMessage_Dispatch(
 	WMtEvent				*inEvent)
 {
 	UUtUns32				result;
-	
+
 	if (inEvent->window)
 	{
 		WMtWindow		*mouse_over;
 		IMtPoint2D		point;
-		
+
 		// get the window the mouse was actually clicked on
 		mouse_over = NULL;
 		switch (inEvent->message)
@@ -2668,12 +2668,12 @@ WMrMessage_Dispatch(
 				point.y = UUmLowWord(inEvent->param1);
 				mouse_over = WMrGetWindowUnderPoint(&point);
 				if (mouse_over == inEvent->window) { mouse_over = NULL; }
-				
+
 				// activate the window the user clicked on
 				WMrWindow_Activate(inEvent->window);
 			break;
 		}
-		
+
 		// send the message to the window
 		result =
 			WMrMessage_Send(
@@ -2681,7 +2681,7 @@ WMrMessage_Dispatch(
 				inEvent->message,
 				inEvent->param1,
 				inEvent->param2);
-		
+
 		// activate the window the mouse was actually clicked on
 		if (mouse_over) { WMrWindow_Activate(mouse_over); }
 	}
@@ -2689,7 +2689,7 @@ WMrMessage_Dispatch(
 	{
 		result = WMcResult_NoWindow;
 	}
-			
+
 	return result;
 }
 
@@ -2697,20 +2697,20 @@ WMrMessage_Dispatch(
 UUtBool
 WMrMessage_Get(
 	WMtEvent				*outEvent)
-{	
+{
 	// if the event pointed to by the head has a message of none,
 	// there are no messages
 	if (WMgEvents[WMgEventHead].message == WMcMessage_None)
 	{
 		return UUcFalse;
 	}
-	
+
 	// set the output
 	*outEvent = WMgEvents[WMgEventHead];
-	
+
 	// clear the message
 	WMgEvents[WMgEventHead].message = WMcMessage_None;
-	
+
 	// advance the message head to the next message, but don't pass the tail
 	if (WMgEventHead != WMgEventTail)
 	{
@@ -2720,7 +2720,7 @@ WMrMessage_Get(
 			WMgEventHead = 0;
 		}
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -2730,7 +2730,7 @@ WMiMessage_Initialize(
 	void)
 {
 	UUtUns32				i;
-	
+
 	// initialize the events
 	for (i = 0; i < WMcMaxNumEvents; i++)
 	{
@@ -2739,11 +2739,11 @@ WMiMessage_Initialize(
 		WMgEvents[i].param1 = 0;
 		WMgEvents[i].param2 = 0;
 	}
-	
+
 	// initialize the queue indices
 	WMgEventHead = 0;
 	WMgEventTail = 0;
-	
+
 	return UUcError_None;
 }
 
@@ -2754,25 +2754,25 @@ WMrMessage_Post(
 	WMtMessage				inMessage,
 	UUtUns32				inParam1,
 	UUtUns32				inParam2)
-{	
+{
 	// store the event at the tail
 	WMgEvents[WMgEventTail].window = inWindow;
 	WMgEvents[WMgEventTail].message = inMessage;
 	WMgEvents[WMgEventTail].param1 = inParam1;
 	WMgEvents[WMgEventTail].param2 = inParam2;
-	
+
 	// update the tail
 	WMgEventTail++;
 	if (WMgEventTail >= WMcMaxNumEvents)
 	{
 		WMgEventTail = 0;
 	}
-	
+
 	if (WMgEventTail == WMgEventHead)
 	{
 		UUmAssert(!"went all the way araound");
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -2785,7 +2785,7 @@ WMrMessage_Send(
 	UUtUns32				inParam2)
 {
 	if (inWindow == NULL) { return 0; }
-	
+
 	if (!WMiWA_Valid(inWindow)) { return 0; }
 
 	return inWindow->window_class->callback(inWindow, inMessage, inParam1, inParam2);
@@ -2799,14 +2799,14 @@ WMrMessage_TranslateKeyCommand(
 	WMtWindow				*inDestWindow)
 {
 	UUtUns32				i;
-	
+
 	UUmAssert(inEvent);
 	UUmAssert(inKeyboardCommands);
-	
+
 	// only key downs get changed into commands
 	if (inEvent->message != WMcMessage_KeyDown) { return UUcFalse; }
 	if (inEvent->param2 != LIcKeyState_CommandDown) { return UUcFalse; }
-	
+
 	// look for the key in the inKeyboardCommands table
 	for (i = 0; i < inKeyboardCommands->num_commands; i++)
 	{
@@ -2816,12 +2816,12 @@ WMrMessage_TranslateKeyCommand(
 			inEvent->window = inDestWindow;
 			inEvent->message = WMcMessage_KeyCommand;
 			inEvent->param2 = 0;
-			
+
 			// exit
 			return UUcTrue;
 		}
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -2836,10 +2836,10 @@ WMrActivate(
 	void)
 {
 	LItInputEvent			event;
-	
+
 	WMgActive = UUcTrue;
 	WMrCursor_SetVisible(UUcTrue);
-	
+
 	// get the current mouse position
 	LIrInputEvent_GetMouse(&event);
 	WMgCursorPosition = event.where;
@@ -2855,19 +2855,19 @@ WMrDisplay(
 	M3rDraw_State_SetInt(M3cDrawStateIntType_SubmitMode, M3cDrawState_SubmitMode_Normal);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_ZWrite, M3cDrawState_ZWrite_Off);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_ZCompare, M3cDrawState_ZCompare_Off);
-	
+
 	// draw the windows
 	if (WMgDesktop)
 	{
 		WMiWindow_Draw(WMgDesktop);
 	}
-	
+
 	// draw the cursor
 	if (WMgCursor)
 	{
 		WMrCursor_Draw(WMgCursor, &WMgCursorPosition);
 	}
-	
+
 	// set the draw state
 	M3rDraw_State_Pop();
 }
@@ -2888,18 +2888,18 @@ WMrEnumWindows(
 	UUtUns32				inUserData)
 {
 	WMtWindow				*child;
-	
+
 	UUmAssert(inEnumCallback);
-	
+
 	child = WMgDesktop->child;
 	while (child)
 	{
 		UUtBool				result;
 		WMtWindow			*enum_window;
-		
+
 		enum_window = child;
 		child = child->next;
-		
+
 		result = inEnumCallback(enum_window, inUserData);
 		if (result == UUcFalse) { break; }
 	}
@@ -2927,7 +2927,7 @@ WMrInitialize(
 	void)
 {
 	UUtError				error;
-	
+
 	// initialize globals
 	WMgEventOverride	= UUcFalse;
 	WMgDesktop			= NULL;
@@ -2935,70 +2935,70 @@ WMrInitialize(
 	WMgActiveWindow		= NULL;
 	WMgMouseFocus		= NULL;
 	WMgKeyboardFocus	= NULL;
-	
+
 	// initialize the sub-systems
 	error = WMiWA_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMiMessage_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = PSrInitialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrTimer_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// clear the window class list
 	WMgNumWindowClasses = 0;
 	UUrMemory_Clear(WMgWindowClassList, sizeof(WMgWindowClassList));
-		
+
 	// initialize the standard windows
 	error = WMrBox_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrButton_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrCheckBox_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrDialog_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrEditField_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrListBox_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrMenu_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrMenuBar_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrPicture_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrPopupMenu_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrProgressBar_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrRadioButton_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrScrollbar_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrSlider_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrText_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	WMgInitialized = UUcTrue;
 
 	return UUcError_None;
@@ -3018,22 +3018,22 @@ WMrRegisterTemplates(
 	void)
 {
 	UUtError				error;
-	
+
 	error = PSrRegisterTemplates();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrDialog_RegisterTemplates();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrCursor_RegisterTemplates();
 	UUmError_ReturnOnError(error);
-	
+
 	error = WMrMenu_RegisterTemplates();
 	UUmError_ReturnOnError(error);
-		
+
 	error = WMrMenuBar_RegisterTemplates();
 	UUmError_ReturnOnError(error);
-		
+
 	return UUcError_None;
 }
 
@@ -3074,22 +3074,22 @@ WMrStartup(
 	void)
 {
 	UUtError				error;
-	
+
 	// initialize the draw context text
 	error = DCrText_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// create the desktop
 	error = WMiDesktop_Create();
 	UUmError_ReturnOnError(error);
-	
+
 	// load the cursor
 	error = WMiCursor_Load();
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
-	
+
 // ----------------------------------------------------------------------
 void
 WMrTerminate(
@@ -3100,18 +3100,18 @@ WMrTerminate(
 	{
 		WMrWindow_Delete(WMgDesktop);
 	}
-	
+
 	// delete the window classes
 	WMgNumWindowClasses = 0;
 	UUrMemory_Clear(WMgWindowClassList, sizeof(WMgWindowClassList));
-		
+
 	// terminate the sub-systems
 	DCrText_Terminate();
 	WMiWA_Terminate();
 	WMiTimer_Terminate();
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	WMgInitialized = UUcFalse;
 }
 
@@ -3121,12 +3121,12 @@ WMrUpdate(
 	void)
 {
 	if (WMgActive == UUcFalse) return;
-	
+
 	// ------------------------------
 	// update the timers
 	// ------------------------------
 	WMiTimer_Update();
-	
+
 	// ------------------------------
 	// process events
 	// ------------------------------

@@ -27,7 +27,7 @@ Imp_AddHelpPage(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 UUtError
 Imp_AddItemPage(
 	BFtFileRef*			inSourceFile,
@@ -56,7 +56,7 @@ Imp_AddEnemyScannerUI(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 Imp_AddKeyIcons(
@@ -64,7 +64,7 @@ Imp_AddKeyIcons(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 Imp_AddTextConsole(
@@ -72,7 +72,7 @@ Imp_AddTextConsole(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 Imp_AddHUDHelp(

@@ -1,12 +1,12 @@
 /*
 	FILE:	OGL_DrawGeom_Common.h
-	
+
 	AUTHOR:	Brent Pease, Kevin Armstrong, Michael Evans
-	
+
 	CREATED: January 5, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1998
 
 */
@@ -29,7 +29,7 @@ typedef enum OGLtCameraMode
 {
 	OGLcCameraMode_2D,
 	OGLcCameraMode_3D
-	
+
 } OGLtCameraMode;
 
 // Extra GL header stuff
@@ -126,7 +126,7 @@ typedef union gl_color_4ub { // S.S.
 	#elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
 		UUtUns8 a, r, g, b;
 	#else
-		#error "struct not setup for this platform" 
+		#error "struct not setup for this platform"
 	#endif
 	};
 	UUtUns32 argb;
@@ -154,9 +154,9 @@ typedef struct OGLtCommon
 	const char* renderer;
 	const char*	version;
 	const char*	extensions;
-	
+
 	// only optional extension are here
-	
+
 	UUtBool		ext_arb_multitexture;
 	UUtBool		ext_vertex_array;
 	UUtBool		ext_compiled_vertex_array;
@@ -176,15 +176,15 @@ typedef struct OGLtCommon
 	GLtClientActiveTextureARB	pglClientActiveTextureARB;
 	GLtMultiTexCoord4fARB		pglMultiTexCoord4fARB;
 	GLtMultiTexCoord2fvARB		pglMultiTexCoord2fvARB;
-	
+
 	OGLtCameraMode				cameraMode;
-	
+
 	UUtBool						update3DCamera_ViewData;
 	UUtBool						update3DCamera_StaticData;
-	
+
 	UUtUns16					width;
 	UUtUns16					height;
-	
+
 	TMtPrivateData*				texturePrivateData;
 	void*						convertedDataBuffer;
 

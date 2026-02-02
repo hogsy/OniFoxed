@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_DC_CreateVertex.h
-	
+
 	AUTHOR:	Brent Pease
-	
+
 	CREATED: July 31, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1999
 
 */

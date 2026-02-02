@@ -570,35 +570,35 @@ OWrParticle_Edit_Callback(
 	WMtMessage				inMessage,
 	UUtUns32				inParam1,
 	UUtUns32				inParam2);
-	
+
 UUtBool
 OWrParticle_Class_Callback(
 	WMtDialog				*inDialog,
 	WMtMessage				inMessage,
 	UUtUns32				inParam1,
 	UUtUns32				inParam2);
-	
+
 UUtBool
 OWrParticle_Variables_Callback(
 	WMtDialog				*inDialog,
 	WMtMessage				inMessage,
 	UUtUns32				inParam1,
 	UUtUns32				inParam2);
-	
+
 UUtBool
 OWrParticle_Appearance_Callback(
 	WMtDialog				*inDialog,
 	WMtMessage				inMessage,
 	UUtUns32				inParam1,
 	UUtUns32				inParam2);
-	
+
 UUtBool
 OWrParticle_Attractor_Callback(
 	WMtDialog				*inDialog,
 	WMtMessage				inMessage,
 	UUtUns32				inParam1,
 	UUtUns32				inParam2);
-	
+
 UUtBool
 OWrParticle_Value_Int_Callback(
 	WMtDialog				*inDialog,
@@ -647,7 +647,7 @@ OWrParticle_RenameVar_Callback(
 	WMtMessage				inMessage,
 	UUtUns32				inParam1,
 	UUtUns32				inParam2);
-	
+
 UUtBool
 OWrParticle_Actions_Callback(
 	WMtDialog				*inDialog,

@@ -196,7 +196,7 @@ static void Trigger_BuildVolume(OBJtObject *inObject)
 		M3tPoint3D *point;
 
 		normal = volume->normals[itr];
-	
+
 		point = volume->worldPoints + volume->faces[itr].indices[0];
 		plane = volume->curPlanes + itr;
 
@@ -205,7 +205,7 @@ static void Trigger_BuildVolume(OBJtObject *inObject)
 		plane->c = normal.z;
 		plane->d = -(normal.x*point->x + normal.y*point->y + normal.z*point->z);
 
-		volume->curProjections[itr] = (UUtUns16) 
+		volume->curProjections[itr] = (UUtUns16)
 			CLrQuad_FindProjection(volume->worldPoints,	volume->faces + itr);
 
 		// degenerate quads should be culled at import time
@@ -309,10 +309,10 @@ OBJiTriggerVolume_Enumerate(
 	UUtUns32						inUserData)
 {
 	char							name[OBJcMaxNameLength + 1];
-	
+
 	OBJrObject_GetName(inObject, name, OBJcMaxNameLength);
 	inEnumCallback(name, inUserData);
-	
+
 	return UUcError_None;
 }
 
@@ -341,9 +341,9 @@ OBJiTriggerVolume_OSDGetName(
 
 	// get a pointer to the object osd
 	trigger_osd = &inOSD->osd.trigger_volume_osd;
-	
+
 	UUrString_Copy(outName, trigger_osd->name, inNameLength);
-	
+
 	return;
 }
 
@@ -356,7 +356,7 @@ OBJiTriggerVolume_OSDSetName(
 
 	// get a pointer to the object osd
 	trigger_osd = &inOSD->osd.trigger_volume_osd;
-	
+
 	UUrString_Copy(trigger_osd->name, outName, sizeof(trigger_osd->name));
 
 	return;
@@ -372,7 +372,7 @@ OBJiTriggerVolume_GetOSD(
 
 	// get a pointer to the object osd
 	trigger_osd = (OBJtOSD_TriggerVolume *)inObject->object_data;
-	
+
 	outOSD->osd.trigger_volume_osd = *trigger_osd;
 
 	return;
@@ -524,7 +524,7 @@ OBJiTriggerVolume_New(
 {
 	OBJtOSD_All				osd_all;
 	UUtError				error;
-	
+
 	if (NULL == inOSD) {
 		error = OBJiTriggerVolume_SetDefaults(&osd_all);
 		UUmError_ReturnOnError(error);
@@ -533,11 +533,11 @@ OBJiTriggerVolume_New(
 	{
 		OBJiTriggerVolume_DuplicateOSD(inOSD, &osd_all);
 	}
-	
+
 	// set the object specific data and position
 	error = OBJrObject_SetObjectSpecificData(inObject, &osd_all);
 	UUmError_ReturnOnError(error);
-	
+
 	OBJrObject_UpdatePosition(inObject);
 
 	return UUcError_None;
@@ -562,7 +562,7 @@ OBJrTriggerVolume_Reset(
 	UUrString_Copy(trig_osd->cur_exit_script, trig_osd->exit_script, sizeof(trig_osd->cur_exit_script));
 
 	Trigger_BuildVolume(inObject);
-		
+
 	return UUcError_None;
 }
 
@@ -600,7 +600,7 @@ OBJiTriggerVolume_Read(
 
 	// bring the object up to date
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return bytes_read;
 }
 
@@ -611,7 +611,7 @@ OBJiTriggerVolume_SetOSD(
 	const OBJtOSD_All		*inOSD)
 {
 	OBJtOSD_TriggerVolume	*dst_osd = (OBJtOSD_TriggerVolume *) inObject->object_data;
-	
+
 	UUmAssert(inOSD);
 
 	UUrMemory_MoveFast(inOSD, dst_osd, sizeof(*dst_osd));
@@ -729,10 +729,10 @@ OBJiTriggerVolume_Search(
 {
 	OBJtOSD_TriggerVolume		*trigger_osd;
 	UUtBool				found;
-	
+
 	// get a pointer to the object osd
 	trigger_osd = (OBJtOSD_TriggerVolume *)inObject->object_data;
-	
+
 	// perform the check
 	switch (inSearchType)
 	{
@@ -748,7 +748,7 @@ OBJiTriggerVolume_Search(
 			found = UUcFalse;
 		break;
 	}
-	
+
 	return found;
 }
 
@@ -765,10 +765,10 @@ OBJrTriggerVolume_Initialize(
 	UUtError				error;
 	OBJtMethods				methods;
 	ONtMechanicsMethods		mechanics_methods;
-	
+
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew				= OBJiTriggerVolume_New;
 	methods.rSetDefaults		= OBJiTriggerVolume_SetDefaults;
@@ -789,7 +789,7 @@ OBJrTriggerVolume_Initialize(
 	methods.rSearch				= OBJiTriggerVolume_Search;
 	methods.rSetClassVisible	= OBJiTriggerVolume_SetVisible;
 	methods.rGetUniqueOSD		= OBJiTriggerVolume_GetUniqueOSD;
-	
+
 	// set up the mechanics methods
 	UUrMemory_Clear(&mechanics_methods, sizeof(ONtMechanicsMethods));
 	mechanics_methods.rInitialize		= NULL;
@@ -807,7 +807,7 @@ OBJrTriggerVolume_Initialize(
 	error = ONrMechanics_Register(OBJcType_TriggerVolume, OBJcTypeIndex_TriggerVolume, "Trigger Volume", sizeof(OBJtOSD_TriggerVolume),
 									&methods, OBJcObjectGroupFlag_CanSetName, &mechanics_methods );
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 

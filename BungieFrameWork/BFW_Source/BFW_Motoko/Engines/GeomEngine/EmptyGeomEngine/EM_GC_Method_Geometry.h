@@ -1,12 +1,12 @@
 /*
 	FILE:	EM_GC_Method_Geometry.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -27,18 +27,18 @@ EGrGeomContext_Method_Sprite_Draw(
 	UUtUns16			inAlpha,
 	float				inRotation,
 	M3tVector3D*		inDirection,
-	M3tMatrix3x3*		inOrientation);	
+	M3tMatrix3x3*		inOrientation);
 
 UUtError
 EGrGeomContext_Method_Geometry_Draw(
 	M3tGeometry*		inGeometryObject);
-			
+
 UUtError
 EGrGeomContext_Method_Geometry_PolyDraw(
 	UUtUns16			inNumPoints,
 	M3tPoint3D*			inPoints,
 	UUtUns16			inShade);
-			
+
 UUtError
 EGrGeomContext_Method_Geometry_LineDraw(
 	UUtUns16			inNumPoints,
@@ -50,7 +50,7 @@ EGrGeomContext_Method_Geometry_LineDraw2D(
 	UUtUns16			inNumPoints,
 	M3tPointScreen*		inPoints,
 	UUtUns16			inShade);
-				
+
 UUtError
 EGrGeomContext_Method_Geometry_PointDraw(
 	UUtUns16			inNumPoints,

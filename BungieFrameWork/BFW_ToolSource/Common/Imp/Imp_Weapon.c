@@ -1,12 +1,12 @@
 /*
 	FILE:	Imp_Weapon.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: 3/18/1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998 Bungie Software
 
 */
@@ -29,7 +29,7 @@
 #define IMPcBarrelLineLen 6
 
 
-AUtFlagElement	IMPgWeaponClassFlags[] = 
+AUtFlagElement	IMPgWeaponClassFlags[] =
 {
 	{
 		"big",
@@ -80,11 +80,11 @@ AUtFlagElement	IMPgWeaponClassFlags[] =
 		WPcWeaponClassFlag_HasLaser
 	},
 	{
-		"no_cursor_scale", 
+		"no_cursor_scale",
 		WPcWeaponClassFlag_NoScale
 	},
 	{
-		"half_cursor_scale", 
+		"half_cursor_scale",
 		WPcWeaponClassFlag_HalfScale
 	},
 	{
@@ -121,7 +121,7 @@ AUtFlagElement	IMPgWeaponClassFlags[] =
 	}
 };
 
-AUtFlagElement	IMPgWeaponTargetingFlags[] = 
+AUtFlagElement	IMPgWeaponTargetingFlags[] =
 {
 	{
 		"no-wild-shots",
@@ -198,7 +198,7 @@ Imp_AddWeapon(
 	UUtBool			twoHanded = UUcFalse;
 	UUtInt32		tempint;
 	float			tempfloat;
-	
+
 	if (TMrConstruction_Instance_CheckExists(WPcTemplate_WeaponClass, inInstanceName))	{
 		return UUcError_None;
 	}
@@ -278,7 +278,7 @@ Imp_AddWeapon(
 		static M3tVector3D		weapon_orient_dir = {1, 0, 0};
 		M3tQuaternion			ai_shooter_inverse_quat;
 		AI2tWeaponParameters	*parameters;
-		
+
 		// set up defaults
 		weapon->attachment_count = 0;
 		weapon->shooter_count = 0;
@@ -290,10 +290,10 @@ Imp_AddWeapon(
 			{
 				UUmError_ReturnOnErrorMsg(UUcError_Generic, "attachments must be an array");
 			}
-			
+
 			weapon->attachment_count = (UUtUns16) GRrGroup_Array_GetLength(attachmentArray);
 			found_shooters = 0;
-			
+
 			for(itr = 0, attachment = weapon->attachment; itr < weapon->attachment_count; itr++, attachment++)
 			{
 				error = GRrGroup_Array_GetElement(attachmentArray, itr,
@@ -302,17 +302,17 @@ Imp_AddWeapon(
 					sprintf(errmsg, "could not get attachment #%d from group", itr);
 					UUmError_ReturnOnErrorMsg(error, errmsg);
 				}
-				
+
 				if(elementType != GRcElementType_Group)
 				{
 					UUmError_ReturnOnErrorMsg(UUcError_Generic, "every element of 'attachments' array must be a group");
 				}
-				
+
 				// find the marker on the weapon that this is attached to
 				error = GRrGroup_GetString(attachmentGroup, "marker", &tempstring);
 				UUmError_ReturnOnErrorMsg(error, "every attachment entry must have a 'marker'");
 
-				marker = Imp_EnvFile_GetMarker(header->nodes + 0, tempstring);				
+				marker = Imp_EnvFile_GetMarker(header->nodes + 0, tempstring);
 				if (marker) {
 					// it's important that the attachment matrix should be a rigid body transformation matrix
 					// i.e. no scale or shear. so we do this orthonormal basis construction thang.
@@ -335,12 +335,12 @@ Imp_AddWeapon(
 					sprintf(errmsg, "couldn't find marker %s on the weapon geometry", tempstring);
 					UUmError_ReturnOnErrorMsg(UUcError_Generic, errmsg);
 				}
-				
+
 
 				// find the particle class
 				error = GRrGroup_GetString(attachmentGroup, "particle_class", &tempstring);
 				UUmError_ReturnOnErrorMsg(error, "every attachment entry must have a 'particle_class'");
-				
+
 				if ((strlen(tempstring) < 1) || (strlen(tempstring) > P3cParticleClassNameLength)) {
 					sprintf(errmsg, "particle class name '%s' is not within range 1-%d chars", tempstring, P3cParticleClassNameLength);
 					UUmError_ReturnOnErrorMsg(UUcError_Generic, errmsg);
@@ -430,7 +430,7 @@ Imp_AddWeapon(
 				}
 			}
 
-			if (found_shooters < 0) 
+			if (found_shooters < 0)
 			{
 				MUrMatrix_Identity(&weapon->ai_parameters_alt.shooter_inversematrix);
 				MUmVector_Set(weapon->ai_parameters.shooterdir_gunspace, 1, 0, 0);
@@ -446,14 +446,14 @@ Imp_AddWeapon(
 	if (UUcError_None == error)
 	{
 		char	mungedTextureName[BFcMaxFileNameLength];
-		
+
 		UUrString_Copy(mungedTextureName, textureName, BFcMaxFileNameLength);
 		UUrString_StripExtension(mungedTextureName);
 
 		weapon->geometry->baseMap = M3rTextureMap_GetPlaceholder(mungedTextureName);
 	}
 
-	// maximum sight distance	
+	// maximum sight distance
 	error = GRrGroup_GetFloat(inGroup, "maximum_sight_distance", &weapon->maximum_sight_distance);
 	if (UUcError_None != error) {
 		weapon->maximum_sight_distance = 5000.f;
@@ -549,7 +549,7 @@ Imp_AddWeapon(
 	// free time
 	error = GRrGroup_GetUns16(inGroup, "freeTime", &(weapon->freeTime));
 	if (error != UUcError_None) weapon->freeTime = 0;
-	
+
 	// name
 	UUrString_Copy(weapon->name,inInstanceName,WPcMaxWeaponName);
 
@@ -598,7 +598,7 @@ Imp_AddWeapon(
 			weapon->flags |= WPcWeaponClassFlag_RecoilDirect;
 		}
 	}
-	
+
 	// okay if icon is NULL
 	error = GRrGroup_GetString(inGroup, "icon", &icon_name);
 	if (error == UUcError_None)
@@ -729,7 +729,7 @@ UUtError Imp_Weapon_ReadAIParameters(
 	void		*element;
 	GRtElementType element_type;
 
-	
+
 	// NB: ai_parameters.shooterdir_gunspace and shooter_inversematrix must be set up separately to this
 	// call!
 

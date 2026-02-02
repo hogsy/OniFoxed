@@ -17,9 +17,9 @@
 typedef tm_template('V', 'M', 'B', 'X', "VM View Box")
 VMtView_Box
 {
-	
+
 	VMtPartSpec			*box;
-	
+
 } VMtView_Box;
 
 // ======================================================================

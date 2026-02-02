@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_GC_Method_Matrix.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -61,30 +61,30 @@ MSrGeomContext_Method_MatrixStack_Multiply(
 	const M3tMatrix4x3*	inMatrix);
 
 void MSrGeomContext_Method_MatrixToQuat(
-	const M3tMatrix4x3 *inMatrix, 
+	const M3tMatrix4x3 *inMatrix,
 	M3tQuaternion *outQuat);
 
 void
 MSrGeomContext_Method_QuatToMatrix(
-	const M3tQuaternion *inQuat, 
+	const M3tQuaternion *inQuat,
 	M3tMatrix4x3 *outMatrix);
 
-void 
+void
 MSrGeomContext_Method_Matrix_GetTranslation(
-	const M3tMatrix4x3 *inMatrix, 
+	const M3tMatrix4x3 *inMatrix,
 	M3tPoint3D *outTranslation);
 
 void
 MSrGeomContext_Method_Matrix_Multiply (
-	const M3tMatrix4x3	*inMatrixA, 
-	const M3tMatrix4x3	*inMatrixB, 
+	const M3tMatrix4x3	*inMatrixA,
+	const M3tMatrix4x3	*inMatrixB,
 	M3tMatrix4x3			*outResult);
 
 void
 MSrGeomContext_Method_Matrix_MultiplyPoints (
-	const M3tMatrix4x3	 *inMatrix, 
+	const M3tMatrix4x3	 *inMatrix,
 	const UUtUns16		  inNumPoints,
-	const M3tPoint3D	 *inPoint, 
+	const M3tPoint3D	 *inPoint,
 	M3tPoint3D			 *outPoint);
 
 void MSrGeomContext_Method_Matrix_Alignment(

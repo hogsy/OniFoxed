@@ -1,13 +1,13 @@
 
 /*
 	FILE:	Imp_Particle.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Dec 10, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -24,7 +24,7 @@ UUtError Imp_AddParticleClass(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-				
+
 UUtError Imp_AddStreamClass(
 	BFtFileRef*			inSourceFile,
 	UUtUns32			inSourceFileModDate,
@@ -36,5 +36,5 @@ UUtError Imp_AddLocalPhysicsClass(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 #endif /* IMP_PARTICLE_H */

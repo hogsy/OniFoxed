@@ -25,7 +25,7 @@ typedef enum OWtSMType
 	OWcSMType_Ambient,
 	OWcSMType_Group,
 	OWcSMType_Impulse
-	
+
 } OWtSMType;
 
 typedef enum OWtSelectResult
@@ -33,7 +33,7 @@ typedef enum OWtSelectResult
 	OWcSelectResult_Cancel,
 	OWcSelectResult_Select,
 	OWcSelectResult_None
-	
+
 } OWtSelectResult;
 
 // ======================================================================
@@ -42,13 +42,13 @@ typedef enum OWtSelectResult
 void
 OWrSound2_Terminate(
 	void);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OWrImpulseProperties_Display(
 	WMtDialog					*inParentDialog,
 	SStImpulse					*inImpulse);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OWrSM_Display(
@@ -58,30 +58,30 @@ OWrSM_Display(
 OWtSelectResult
 OWrSelect_AmbientSound(
 	SStAmbient					**outAmbient);
-	
+
 OWtSelectResult
 OWrSelect_SoundGroup(
 	SStGroup					**outGroup);
-	
+
 OWtSelectResult
 OWrSelect_ImpulseSound(
 	SStImpulse					**outImpulse);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OWrAmbientProperties_Display(
 	WMtDialog					*inParentDialog,
 	SStAmbient					*inAmbient);
-	
+
 UUtError
 OWrSoundToAnim_Display(
 	void);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OWrCreateDialogue_Display(
 	void);
-	
+
 UUtError
 OWrCreateImpulse_Display(
 	void);
@@ -102,6 +102,6 @@ OWrMinMax_Fixer(
 UUtError
 OWrSpeech_Fixer(
 	void);
-	
+
 // ======================================================================
 #endif /* ONI_WIN_SOUND2_H */

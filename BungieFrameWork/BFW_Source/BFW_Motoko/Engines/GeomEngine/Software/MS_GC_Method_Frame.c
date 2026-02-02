@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_GC_Method_Frame.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -25,17 +25,17 @@ MSrGeomContext_Method_Frame_Start(
 {
 	UUtUns32 is_fast_mode = M3rGeom_State_Get(M3cGeomStateIntType_FastMode);
 	M3rMatrixStack_Clear();
-	
+
 	if (!is_fast_mode) {
 		M3rDraw_Frame_Start(inGameTicksElapsed);
-		
+
 		if (MSgGeomContextPrivate->environment)
 		{
 			// clear env bit vectors here
 			UUrBitVector_ClearBitAll(
 				MSgGeomContextPrivate->gqVertexData.bitVector,
 				MSgGeomContextPrivate->environment->pointArray->numPoints);
-			
+
 			#if 0
 			UUrBitVector_ClearBitAll(
 				MSgGeomContextPrivate->otVertexData.bitVector,
@@ -43,7 +43,7 @@ MSrGeomContext_Method_Frame_Start(
 			#endif
 		}
 	}
-	
+
 	return UUcError_None;
 }
 

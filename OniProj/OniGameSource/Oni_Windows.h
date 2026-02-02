@@ -22,9 +22,9 @@
 enum
 {
 	OWcMessages				= WMcMessage_User,
-	
+
 	OWcMessage_RunGame,
-		
+
 	OWcMessage_MPHost,
 	OWcMessage_MPJoin,
 
@@ -89,7 +89,7 @@ enum
 // Performance Menu
 // ------------------------------
 enum
-{	
+{
 	OWcMenu_Perf_Overall	= 100,
 	OWcMenu_Perf_GSD		= 101,
 	OWcMenu_Perf_GSU		= 102,
@@ -100,7 +100,7 @@ enum
 // Test Menu
 // ------------------------------
 enum
-{	
+{
 	OWcMenu_Test_TestDialog	= 100
 };
 
@@ -131,14 +131,14 @@ enum
 	OWcMenu_Obj_ShowWeapons		= 119,
 	OWcMenu_Obj_ShowTriggerVolumes = 120,
 	OWcMenu_Obj_ShowSounds		= 121
-	
+
 };
 
 // ------------------------------
 // Particle Menu
 // ------------------------------
 enum
-{	
+{
 	OWcMenu_Particle_Edit		= 100,
 	OWcMenu_Particle_Save		= 200,
 	OWcMenu_Particle_Discard	= 300
@@ -199,19 +199,19 @@ enum
 
 	OWcDialog_StringList			= 102,
 	OWcDialog_GetMask				= 103,
-	
+
 	OWcDialog_MPHost				= 128,
 	OWcDialog_MPJoin				= 129,
 	OWcDialog_LevelLoadProgress		= 130,
 	OWcDialog_SetupPlayer			= 132,
 	OWcDialog_LevelLoad				= 133,
-	
+
 /*	see Oni_OutGameUI.c for number 150 - ? */
 	OWcDialog_OGU_LevelLoadProgress = 155,
-	
+
 	OWcDialog_ObjNew				= 200,
 	OWcDialog_EditObjectPos			= 201,
-	
+
 	OWcDialog_Prop_Generic			= 210,
 	OWcDialog_Prop_Char				= 211,
 	OWcDialog_Prop_TriggerVolume	= 212,
@@ -226,7 +226,7 @@ enum
 	OWcDialog_Prop_Door				= 221,
 	OWcDialog_Prop_Event			= 222,
 	OWcDialog_Prop_Furniture		= 223,
-	
+
 	OWcDialog_Particle_Edit			= 250,
 	OWcDialog_Particle_Class		= 251,
 	OWcDialog_Particle_Variables	= 252,
@@ -241,7 +241,7 @@ enum
 	OWcDialog_Particle_Value_String	= 262,
 	OWcDialog_Particle_Value_Shade	= 263,
 	OWcDialog_Particle_Value_Enum	= 264,
-	
+
 	OWcDialog_Particle_NewVar		= 270,
 	OWcDialog_Particle_RenameVar	= 271,
 	OWcDialog_Particle_NewAction	= 272,
@@ -252,7 +252,7 @@ enum
 	OWcDialog_Particle_EmitterChoice= 277,
 	OWcDialog_Particle_ClassName	= 278,
 	OWcDialog_Particle_Number		= 279,
-	
+
 	OWcDialog_Particle_DecalTextures= 280,
 
 	OWcDialog_AI_EditPaths			= 300,
@@ -265,7 +265,7 @@ enum
 	OWcDialog_AI_ChooseCombat		= 307,
 	OWcDialog_AI_EditMelee			= 308,
 	OWcDialog_AI_EditNeutral		= 309,
-	
+
 	OWcDialog_Sound_Group_Manager	= 600,
 	OWcDialog_Sound_Group_Prop		= 601,
 	OWcDialog_Sound_Perm_Prop		= 602,
@@ -284,7 +284,7 @@ enum
 	OWcDialog_Create_Impulse		= 615,
 	OWcDialog_Create_Group			= 616,
 	OWcDialog_View_Animation		= 620,
-	
+
 	OWcDialog_Impact_Effect			= 700,
 	OWcDialog_Impact_Effect_Prop	= 701
 };
@@ -371,7 +371,7 @@ UUtBool OWrWindow_Resize(int new_width, int new_height);
 void
 OWrTerminate(
 	void);
-	
+
 void
 OWrUpdate(
 	void);
@@ -383,20 +383,20 @@ OWrLevelBegin(
 void
 OWrLevelEnd(
 	void);
-	
+
 // ----------------------------------------------------------------------
 void
 OWrConsole_Toggle(
 	void);
-	
+
 void
 OWrSplashScreen_Display(
 	void);
-	
+
 void
 OWrOniWindow_Startup(
 	void);
-	
+
 UUtBool
 OWrOniWindow_Visible(
 	void);
@@ -410,7 +410,7 @@ void
 OWrLevelList_Initialize(
 	WMtDialog				*inDialog,
 	UUtUns16				inItemID);
-	
+
 UUtUns16
 OWrLevelList_GetLevelNumber(
 	WMtDialog				*inDialog,
@@ -419,7 +419,7 @@ OWrLevelList_GetLevelNumber(
 void
 OWrLevelLoad_StartLevel(
 	UUtUns16				inLevel);
-	
+
 // ----------------------------------------------------------------------
 UUtBool
 OWrSettings_Player_Callback(
@@ -431,17 +431,17 @@ OWrSettings_Player_Callback(
 char*
 OWrSettings_GetCharacterClass(
 	void);
-	
+
 char*
 OWrSettings_GetPlayerName(
 	void);
-	
+
 UUtError
 OWrSettings_Initialize(
 	void);
 
 UUtUns32 OWrGetMask(UUtUns32 inMask, const char **inFlagList);
 void OWrMaskToString(UUtUns32 inMask, const char **inFlagList, UUtUns32 inStringLength, char *outString);
-	
+
 // ======================================================================
 #endif /* ONI_WINDOWS_H */

@@ -1,13 +1,13 @@
 
 /*
 	FILE:	BFW_FileManager_MacOS.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 28, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -44,7 +44,7 @@ typedef struct BFtParamBlock
 	UUtBool				used;
 	BFtCompletion_Func	completionProc;
 	void*				refCon;
-	
+
 } BFtParamBlock;
 
 
@@ -58,17 +58,17 @@ BFiConvertWin2Mac(
 	const char*	src;
 	char*		dst;
 	char*		colonPtr;
-	
+
 	src = inOrigName;
 	dst = outMungedName;
-	
+
 	colonPtr = strchr(inOrigName, ':');
-	
+
 	if(colonPtr == NULL && src[0] != '\\')
 	{
 		*dst++ = ':';
 	}
-	
+
 	while(*src != 0)
 	{
 		if(src[0] == '.' && src[1] == '.' && src[2] == '\\')
@@ -79,17 +79,17 @@ BFiConvertWin2Mac(
 		else if(*src == '\\' || src[0] == ':' || src[0] == '/')
 		{
 			*dst++ = ':';
-			
+
 			src++;
 		}
 		else
 		{
 			*dst++ = *src;
-			
+
 			src++;
 		}
 	}
-	
+
 	*dst = 0;
 }
 
@@ -98,19 +98,19 @@ BFiCheckFileName(
 	const char		*inFileName)
 {
 	const char		*name;
-	
+
 	name = inFileName;
-	
+
 	while (*name)
 	{
 //		if (name[0] == '\/') - This barfs on MrC
 		if (name[0] == '/')
 		{
 			char	illegal_char[2];
-			
+
 			illegal_char[0] = name[0];
 			illegal_char[1] = '\0';
-			
+
 			UUmError_ReturnOnErrorMsgP(
 				UUcError_Generic,
 				"Illegal character %s in file name.",
@@ -118,10 +118,10 @@ BFiCheckFileName(
 				0,
 				0);
 		}
-		
+
 		name++;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -134,17 +134,17 @@ BFrFileRef_SetFromFSSpec(
 	UUtUns16	i;
 	Boolean		isAlias;
 	Boolean		isAliasFolder;
-		
+
 	for(i = 0; i < inFSSpec->name[0]; i++)
 	{
 		outFileRef->leafName[i] = inFSSpec->name[i+1];
 	}
 	outFileRef->leafName[inFSSpec->name[0]] = 0;
 	outFileRef->fsSpec = *inFSSpec;
-	
+
 	// resolve alias if needed
 	ResolveAliasFile(&outFileRef->fsSpec, true, &isAliasFolder, &isAlias);
-	
+
 	return;
 }
 
@@ -157,9 +157,9 @@ BFrFileRef_MakeFromFSSpec(
 //	UUtUns16	i;
 //	Boolean		isAlias;
 //	Boolean		isAliasFolder;
-	
+
 	newFileRef = (BFtFileRef *) UUrMemory_Block_New(sizeof(BFtFileRef));
-	
+
 	if(newFileRef == NULL)
 	{
 		UUrError_Report( UUcError_OutOfMemory, "Could not allocate new file ref");
@@ -167,9 +167,9 @@ BFrFileRef_MakeFromFSSpec(
 	}
 
 	BFrFileRef_SetFromFSSpec(inFSSpec, newFileRef);
-		
+
 	*outFileRef = newFileRef;
-	
+
 	return UUcError_None;
 }
 
@@ -184,10 +184,10 @@ BFrFileRef_Set(
 	char			mungedName[BFcMaxPathLength + 30];
 	const char*		slashPtr;
 	UUtUns16		pathLength;
-	
+
 	error = BFiCheckFileName(inFileName);
 	UUmError_ReturnOnError(error);
-	
+
 	pathLength = strlen(inFileName);
 	if(pathLength > BFcMaxPathLength)
 	{
@@ -196,7 +196,7 @@ BFrFileRef_Set(
 			"Filename \"%s\" too long, max path length is %d",
 			(UUtUns32)mungedName, BFcMaxPathLength-1, 0);
 	}
-	
+
 	BFiConvertWin2Mac(inFileName, mungedName + 1);
 
 	slashPtr = strrchr(mungedName + 1, ':');
@@ -204,7 +204,7 @@ BFrFileRef_Set(
 	{
 		slashPtr = inFileName;
 	}
-	
+
 	if(strlen(slashPtr) >= BFcMaxFileNameLength)
 	{
 		UUmError_ReturnOnErrorMsgP(
@@ -212,18 +212,18 @@ BFrFileRef_Set(
 			"Filename \"%s\" too long, max leaf name length is %d",
 			(UUtUns32)slashPtr, BFcMaxFileNameLength-1, 0);
 	}
-	
+
 	mungedName[0] = strlen(mungedName + 1);
-	
+
 	osError = FSMakeFSSpec(0, 0, (unsigned char *)mungedName, &fsSpec);
-	
+
 	BFrFileRef_SetFromFSSpec(&fsSpec, inFileRef);
 
 	if(osError != noErr && osError != fnfErr)
 	{
 		return BFcError_FileNotFound;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -232,7 +232,7 @@ BFrFileRef_Dispose(
 	BFtFileRef	*inFileRef)
 {
 	UUmAssert(inFileRef != NULL);
-	
+
 	UUrMemory_Block_Delete(inFileRef);
 
 }
@@ -243,14 +243,14 @@ BFrFileRef_Duplicate(
 	BFtFileRef	**outNewFileRef)
 {
 	UUtError error;
-	
+
 	error =
 		BFrFileRef_MakeFromFSSpec(
 			&inOrigFileRef->fsSpec,
 			outNewFileRef);
 
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -267,25 +267,25 @@ BFrFileRef_IsDirectory(
 {
 	OSErr			osError;
 	DirInfo			dirInfo;
-	
+
 	UUmAssert(inFileRef);
-	
+
 #if defined(DEBUGGING) && DEBUGGING
 	UUrMemory_Clear(&dirInfo, sizeof(DirInfo));
 #endif
-	
+
 	dirInfo.ioCompletion	= NULL;
 	dirInfo.ioNamePtr		= inFileRef->fsSpec.name;
 	dirInfo.ioVRefNum		= inFileRef->fsSpec.vRefNum;
 	dirInfo.ioFDirIndex		= 0;
 	dirInfo.ioDrDirID		= inFileRef->fsSpec.parID;
-	
+
 	osError = PBGetCatInfo((CInfoPBPtr)&dirInfo, 0);
 	if(osError != noErr)
 	{
 		return UUcFalse;
 	}
-	
+
 	return ((dirInfo.ioFlAttrib & (1 << 4)) != 0);
 }
 
@@ -295,11 +295,11 @@ BFrFileRef_IsEqual(
 	const BFtFileRef	*inFileRef2)
 {
 	UUtBool				equal;
-	
+
 	equal = (inFileRef1->fsSpec.vRefNum == inFileRef2->fsSpec.vRefNum) &&
 			(inFileRef1->fsSpec.parID == inFileRef2->fsSpec.parID) &&
 			(UUrString_Compare_NoCase(inFileRef1->leafName, inFileRef2->leafName) == 0);
-	
+
 	return equal;
 }
 
@@ -309,9 +309,9 @@ BFrFileRef_IsLocked(
 {
 	OSErr			osError;
 	HFileInfo		fileInfo;
-	
+
 	UUmAssert(inFileRef);
-	
+
 #if defined(DEBUGGING) && DEBUGGING
 	UUrMemory_Clear(&fileInfo, sizeof(fileInfo));
 #endif
@@ -321,13 +321,13 @@ BFrFileRef_IsLocked(
 	fileInfo.ioVRefNum		= inFileRef->fsSpec.vRefNum;
 	fileInfo.ioFDirIndex	= 0;
 	fileInfo.ioDirID		= inFileRef->fsSpec.parID;
-	
+
 	osError = PBGetCatInfo((CInfoPBPtr)&fileInfo, 0);
 	if(osError != noErr)
 	{
 		return UUcFalse;
 	}
-	
+
 	return ((fileInfo.ioFlAttrib & (1 << 0)) != 0);
 }
 
@@ -338,10 +338,10 @@ BFrFileRef_GetParentDirectory(
 {
 	OSErr			osError;
 	FSSpec			parent_FSSpec;
-	
+
 	// initialize
 	*outParentDirectory = NULL;
-	
+
 	// get the parent directory
 	osError =
 		FSMakeFSSpec(
@@ -353,7 +353,7 @@ BFrFileRef_GetParentDirectory(
 	{
 		return UUcError_Generic;
 	}
-	
+
 	return BFrFileRef_MakeFromFSSpec(&parent_FSSpec, outParentDirectory);
 }
 
@@ -369,10 +369,10 @@ BFrFileRef_SetName(
 	const char*	slashPtr;
 	UUtBool		isDirectory = UUcFalse;
 	UUtBool		absolute_path = BFrPath_IsAbsolute(inName);
-	
+
 	error = BFiCheckFileName(inName);
 	UUmError_ReturnOnError(error);
-	
+
 	slashPtr = strrchr(inName, '\\');
 	if(slashPtr == NULL)
 	{
@@ -383,7 +383,7 @@ BFrFileRef_SetName(
 		if(*slashPtr == '\\') slashPtr++;
 		if(*slashPtr == 0) isDirectory = UUcTrue;
 	}
-	
+
 	if(strlen(slashPtr) >= BFcMaxFileNameLength)
 	{
 		UUmError_ReturnOnErrorMsgP(
@@ -391,9 +391,9 @@ BFrFileRef_SetName(
 			"Filename \"%s\" too long, max length is %d",
 			(UUtUns32)slashPtr, BFcMaxFileNameLength-1, 0);
 	}
-	
+
 	UUmAssert(strlen(inName) < 128);
-	
+
 	BFiConvertWin2Mac(inName, mungedName + 1);
 	mungedName[0] = strlen(mungedName + 1);
 
@@ -403,19 +403,19 @@ BFrFileRef_SetName(
 			absolute_path ? 0 : inFileRef->fsSpec.parID,
 			(unsigned char *)mungedName,
 			&inFileRef->fsSpec);
-	
+
 	if(osError != noErr && osError != fnfErr)
 	{
 		return BFcError_FileNotFound;
 	}
-	
+
 	// Reset the leaf name
 	for(i = 0; i < inFileRef->fsSpec.name[0]; i++)
 	{
 		inFileRef->leafName[i] = inFileRef->fsSpec.name[i+1];
 	}
 	inFileRef->leafName[inFileRef->fsSpec.name[0]] = 0;
-	
+
 	return UUcError_None;
 }
 
@@ -424,7 +424,7 @@ BFrFileRef_GetFullPath(
 	const BFtFileRef*		inFileRef)
 {
 	UUmAssert(!"Implement Me");
-	
+
 	return NULL;
 }
 
@@ -434,19 +434,19 @@ BFrFileRef_FileExists(
 {
 	OSErr			error;
 	FSSpec			fsSpec;
-	
-	error = 
+
+	error =
 		FSMakeFSSpec(
 			inFileRef->fsSpec.vRefNum,
 			inFileRef->fsSpec.parID,
 			inFileRef->fsSpec.name,
 			&fsSpec);
-			
+
 	if(error != noErr)
 	{
 		return UUcFalse;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -457,22 +457,22 @@ BFrFileRef_GetModTime(
 {
 	OSErr			osError;
 	HFileParam	fileParamBlock;
-	
+
 	fileParamBlock.ioCompletion = NULL;
 	fileParamBlock.ioNamePtr = inFileRef->fsSpec.name;
 	fileParamBlock.ioVRefNum = inFileRef->fsSpec.vRefNum;
 	fileParamBlock.ioFDirIndex = 0;
 	fileParamBlock.ioDirID = inFileRef->fsSpec.parID;
-	
+
 	osError = PBHGetFInfo((HParmBlkPtr)&fileParamBlock, 0);
-	
+
 	if(osError != noErr)
 	{
 		return BFcError_FileNotFound;
 	}
-	
+
 	*outSecsSince1900 = fileParamBlock.ioFlMdDat + UUc1904_To_1900_era_offset;
-	
+
 	return UUcError_None;
 }
 
@@ -491,7 +491,7 @@ BFrFile_Create(
 	OSType filetype= 'INST';
 	char filename[64]= {0};
 	UUtError error= UUcError_None;
-	
+
 	// make any adjustments necessary to filetype info
 	p2cstrcpy(filename, inFileRef->fsSpec.name);
 	if (strstr(filename, ".bmp") || strstr(filename, ".BMP"))
@@ -519,7 +519,7 @@ BFrFile_Create(
 	}
 
 	error= FSpCreate(&inFileRef->fsSpec, creator, filetype,0);
-	
+
 	return error;
 }
 
@@ -529,16 +529,16 @@ BFrFile_Delete(
 {
 	OSErr			error;
 
-	error = 
+	error =
 		FSpDelete(
 			&inFileRef->fsSpec);
-	
+
 	if(error != noErr)
 	{
-		
+
 		return BFcError_FileNotFound;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -552,7 +552,7 @@ BFrFile_Open(
 	short			refNum;
 	char			permission;
 	UUtBool			create = UUcFalse;
-	
+
 	if(!strcmp("r", inMode))
 	{
 		permission = fsRdPerm;
@@ -572,33 +572,33 @@ BFrFile_Open(
 		UUrError_Report(UUcError_Generic, "Illegal file mode");
 		return UUcError_Generic;
 	}
-	
-	error = 
+
+	error =
 		FSpOpenDF(
 			&inFileRef->fsSpec,
 			permission,
 			&refNum);
-			
+
 	// if file does not exist attempt to create the file like fopen
 	if ((fnfErr == error) && create)
 	{
 		error = BFrFile_Create(inFileRef);
 		if (error != UUcError_None) return error;
-		
-		error = 
+
+		error =
 			FSpOpenDF(
 				&inFileRef->fsSpec,
 				permission,
 				&refNum);
 	}
-	
+
 	if(error != noErr)
 	{
 		return BFcError_FileNotFound;
 	}
-	
+
 	*outFile = (BFtFile *)refNum;
-	
+
 	return UUcError_None;
 }
 
@@ -611,15 +611,15 @@ BFrFile_Flush(
 
 	paramBlock.ioCompletion = NULL;
 	paramBlock.ioRefNum = (short)inFile;
-	
+
 	osError = PBFlushFileSync((ParmBlkPtr)&paramBlock);
-	
+
 	if(osError != noErr)
 	{
 		UUrError_Report(UUcError_Generic, "could not flush file");
 		return UUcError_Generic;
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -630,7 +630,7 @@ BFrFile_Close(
 	OSErr	osError;
 
 	osError = FSClose((short)inFile);
-	
+
 	if(osError != noErr)
 	{
 		UUrError_Report(UUcError_Generic, "could not close file");
@@ -644,11 +644,11 @@ BFrFile_GetLength(
 {
 	OSErr			error;
 	short			refNum;
-	
+
 	refNum = (short)inFile;
-	
+
 	error = GetEOF(refNum, (long*)outLength);
-	
+
 	if(error != noErr)
 	{
 		UUrError_Report(UUcError_Generic, "could not get length");
@@ -683,7 +683,7 @@ BFrFile_SetEOF(
 {
 	OSErr			osErr;
 	UUtInt32		filePos;
-	
+
 	// get the current read/write position of the file
 	osErr = GetFPos((short)inFile, &filePos);
 	if (osErr != noErr) { return UUcError_Generic; }
@@ -691,7 +691,7 @@ BFrFile_SetEOF(
 	// set the End Of File (EOF) to the current position
 	osErr = SetEOF((short)inFile, filePos);
 	if (osErr != noErr) { return UUcError_Generic; }
-	
+
 	return UUcError_None;
 }
 
@@ -701,14 +701,14 @@ BFrFile_SetPos(
 	UUtUns32		inPos)
 {
 	OSErr osErr;
-	
+
 	UUmAssert(inFile != NULL);
 
 	osErr = SetFPos((short) inFile, fsFromStart, (long) inPos);
-	
+
 	if (eofErr == osErr) {
 		osErr = SetEOF((short) inFile, (long) inPos);
-		
+
 		if (noErr != osErr) {
 			return UUcError_Generic;
 		}
@@ -719,7 +719,7 @@ BFrFile_SetPos(
 	if (noErr != osErr) {
 		return UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -734,30 +734,30 @@ BFrFile_Read(
 	UUtUns32			num_reads;
 	char				*buffer;
 	const UUtInt32		max_bytes = (1 << 23);	// 1 << 23 = 8,388,608
-	
+
 	// read the data in a maximum of max_bytes at a time
 	num_reads = (inLength / max_bytes) + 1;
 	buffer = (char*)inData;
 	length = (UUtInt32)inLength;
-	
+
 	while (num_reads--)
 	{
 		UUtInt32		bytes_to_read;
-		
+
 		bytes_to_read = UUmMin(length, max_bytes);
-		
+
 		osError = FSRead((short)inFile, &bytes_to_read, buffer);
 		if(osError != noErr)
 		{
 //			UUrError_Report(UUcError_Generic, "could not read file");
 			return UUcError_Generic;
 		}
-		
+
 		// prepare for next read
 		length -= bytes_to_read;
 		buffer += bytes_to_read;
 	}
-	
+
 #if 0
 	const UUtUns32		max_bytes	= (1 << 23);	// 1 << 23 = 8388608
 	if (inLength < max_bytes)
@@ -767,20 +767,20 @@ BFrFile_Read(
 	{
 		UUtUns32			num_reads;
 		char				*buffer;
-		
+
 		// read the data in a maximum of max_bytes at a time
 		num_reads	= (inLength / max_bytes) + 1;
 		buffer		= (char*)inData;
-		
+
 		while (num_reads--)
 		{
 			UUtUns32		bytes_to_read;
-			
+
 			// calculate the number of bytes to read
 			length = UUmMin(length, max_bytes);
-			
+
 			length = bytes_to_read;
-			
+
 			// read the data from the file
 			osError = FSRead((short)inFile, &length, buffer);
 			if(osError != noErr)
@@ -789,14 +789,14 @@ BFrFile_Read(
 				return UUcError_Generic;
 			}
 			UUmAssert(length == bytes_to_read);
-			
+
 			// prepare for next read
 			length -= bytes_to_read;
 			buffer += bytes_to_read;
 		}
 	}
 #endif
-	
+
 	return UUcError_None;
 }
 
@@ -808,15 +808,15 @@ BFrFile_Write(
 {
 	OSErr			osError;
 	UUtInt32		length = inLength;
-	
+
 	osError = FSWrite((short)inFile, &length, inData);
-	
+
 	if(osError != noErr)
 	{
 		UUrError_Report(UUcError_Generic, "could not read file");
 		return UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -842,19 +842,19 @@ BFrFile_Async_Read(
 	BFtParamBlock*	bfParamBlock;
 	OSErr			osError;
 	UUtUns16		itr;
-	
+
 	for(itr = 0, bfParamBlock = BFgParamBlocks;
 		itr < BFcMaxParamBlocks;
 		itr++, bfParamBlock++)
 	{
 		if(bfParamBlock->used == UUcFalse) break;
 	}
-	
+
 	if(itr == BFcMaxParamBlocks) return UUcError_Generic;
-	
+
 	bfParamBlock->completionProc = inCompletionFunc;
 	bfParamBlock->refCon = inRefCon;
-	
+
 	bfParamBlock->paramBlock.ioCompletion = (IOCompletionUPP)BFiFile_Async_CompletionFunc;
 	bfParamBlock->paramBlock.ioVRefNum = 0;
 	bfParamBlock->paramBlock.ioRefNum = (short)inFile;
@@ -862,18 +862,18 @@ BFrFile_Async_Read(
 	bfParamBlock->paramBlock.ioReqCount = inLength;
 	bfParamBlock->paramBlock.ioPosMode = fsFromMark;
 	bfParamBlock->paramBlock.ioPosOffset = 0;
-	
+
 	osError = PBReadAsync((ParmBlkPtr)&bfParamBlock);
-	
+
 	if(osError != noErr)
 	{
 		UUrError_Report(UUcError_Generic, "could not read file");
 		return UUcError_Generic;
 	}
 	return UUcError_None;
-#endif	
+#endif
 }
-	
+
 UUtError
 BFrFile_Async_Write(
 	BFtFile*			inFile,
@@ -888,19 +888,19 @@ BFrFile_Async_Write(
 	BFtParamBlock*	bfParamBlock;
 	OSErr			osError;
 	UUtUns16		itr;
-	
+
 	for(itr = 0, bfParamBlock = BFgParamBlocks;
 		itr < BFcMaxParamBlocks;
 		itr++, bfParamBlock++)
 	{
 		if(bfParamBlock->used == UUcFalse) break;
 	}
-	
+
 	if(itr == BFcMaxParamBlocks) return UUcError_Generic;
-	
+
 	bfParamBlock->completionProc = inCompletionFunc;
 	bfParamBlock->refCon = inRefCon;
-	
+
 	bfParamBlock->paramBlock.ioCompletion = (IOCompletionUPP)BFiFile_Async_CompletionFunc;
 	bfParamBlock->paramBlock.ioVRefNum = 0;
 	bfParamBlock->paramBlock.ioRefNum = (short)inFile;
@@ -908,15 +908,15 @@ BFrFile_Async_Write(
 	bfParamBlock->paramBlock.ioReqCount = inLength;
 	bfParamBlock->paramBlock.ioPosMode = fsFromMark;
 	bfParamBlock->paramBlock.ioPosOffset = 0;
-	
+
 	osError = PBWriteAsync((ParmBlkPtr)&bfParamBlock);
-	
+
 	if(osError != noErr)
 	{
 		UUrError_Report(UUcError_Generic, "could not read file");
 		return UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 #endif
 }
@@ -929,9 +929,9 @@ BFiCheckCPBValid(
 {
 	char*			targetName;
 	char			buffer[512];
-	
+
 	UUrString_PStr2CStr(cpbPtr->hFileInfo.ioNamePtr, buffer, 512);
-	
+
 	targetName = buffer;
 
 	if(inPrefix != NULL)
@@ -941,9 +941,9 @@ BFiCheckCPBValid(
 		{
 			return UUcFalse;
 		}
-		
+
 	}
-	
+
 	if(inSuffix != NULL)
 	{
 		// Check for suffix match
@@ -952,7 +952,7 @@ BFiCheckCPBValid(
 			return UUcFalse;
 		}
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -961,12 +961,12 @@ typedef struct tContentsData
 	UUtUns16		maxNumFiles;
 	UUtUns16		curFileIndex;
 	//BFtFileRef**	fileRefArray;
-	
+
 	AUtSharedStringArray*	stringArray;
-	
+
 	char*			prefix;
 	char*			suffix;
-	
+
 } tContentsData;
 
 static pascal void
@@ -983,23 +983,23 @@ BFiDirectory_ContentsIterator(
 	char			cstr[128];
 	UUtUns16		itr;
 	UUtUns32		newIndex;
-	
+
 	*outQuitFlag = false;
-	
+
 	//if(!(cpbPtr->hFileInfo.ioFlAttrib & ioDirMask))
-	
+
 	if(contentsData->curFileIndex >= contentsData->maxNumFiles)
 	{
 		*outQuitFlag = true;
 		return;
 	}
-	
+
 	if(BFiCheckCPBValid(cpbPtr, contentsData->prefix, contentsData->suffix) == UUcFalse)
 	{
 		return;
 	}
-	
-	osErr =	
+
+	osErr =
 		FSMakeFSSpec(
 			cpbPtr->hFileInfo.ioVRefNum,
 			cpbPtr->hFileInfo.ioFlParID,
@@ -1010,8 +1010,8 @@ BFiDirectory_ContentsIterator(
 		*outQuitFlag = true;
 		return;
 	}
-	
-	error = 
+
+	error =
 		BFrFileRef_MakeFromFSSpec(
 			&fsSpec,
 			&newFileRef);
@@ -1021,14 +1021,14 @@ BFiDirectory_ContentsIterator(
 		*outQuitFlag = true;
 		return;
 	}
-	
+
 	for(itr = 0; itr < *cpbPtr->hFileInfo.ioNamePtr; itr++)
 	{
 		cstr[itr] = cpbPtr->hFileInfo.ioNamePtr[itr+1];
 	}
 	cstr[itr] = 0;
-	
-	error = 
+
+	error =
 		AUrSharedStringArray_AddString(
 			contentsData->stringArray,
 			cstr,
@@ -1039,7 +1039,7 @@ BFiDirectory_ContentsIterator(
 		*outQuitFlag = true;
 		return;
 	}
-	
+
 	contentsData->curFileIndex++;
 }
 
@@ -1059,26 +1059,26 @@ BFrDirectory_GetFileList(
 	UUtUns32*				sortedIndexList;
 	AUtSharedString*		strings;
 	UUtUns16				itr;
-	
+
 	*outNumFiles = 0;
 
 	stringArray = AUrSharedStringArray_New();
 	UUmError_ReturnOnNull(stringArray);
-	
+
 	contentsData.maxNumFiles = inMaxFiles;
 	contentsData.curFileIndex = 0;
 	//contentsData.fileRefArray = outFileRefArray;
 	contentsData.prefix = inPrefix;
 	contentsData.suffix = inSuffix;
 	contentsData.stringArray = stringArray;
-	
-	osErr = 
+
+	osErr =
 		FSpIterateDirectory(
 			&inDirectoryRef->fsSpec,
 			1,
 			BFiDirectory_ContentsIterator,
 			(void*)&contentsData);
-	
+
 	if (fnfErr == osErr) {
 		goto exit;
 	}
@@ -1086,20 +1086,20 @@ BFrDirectory_GetFileList(
 		AUrSharedStringArray_Delete(stringArray);
 		return UUcError_Generic;
 	}
-	
+
 	*outNumFiles = contentsData.curFileIndex;
-	
+
 	num = AUrSharedStringArray_GetNum(stringArray);
 	UUmAssert(contentsData.curFileIndex == num);
-	
+
 	strings = AUrSharedStringArray_GetList(stringArray);
 	sortedIndexList = AUrSharedStringArray_GetSortedIndexList(stringArray);
-	
+
 	for(itr = 0; itr < num; itr++)
 	{
 		outFileRefArray[itr] = (BFtFileRef*)strings[sortedIndexList[itr]].data;
 	}
-	
+
 exit:
 	AUrSharedStringArray_Delete(stringArray);
 	return UUcError_None;
@@ -1109,10 +1109,10 @@ struct BFtFileIterator
 {
 	CInfoPBRec		cPB;			/* the parameter block used for PBGetCatInfo calls */
 	Str63			itemName;		/* the name of the current item */
-	
+
 	UUtUns16		index;
 	UUtInt32		dirID;
-	
+
 	char*			prefix;
 	char*			suffix;
 
@@ -1130,13 +1130,13 @@ BFrDirectory_FileIterator_New(
 	Boolean				isDirectory;
 	UUtInt16			theVRefNum;
 	UUtInt32			theDirID;
-	
+
 	newFileIterator = UUrMemory_Block_New(sizeof(BFtFileIterator));
 	if(newFileIterator == NULL)
 	{
 		return UUcError_OutOfMemory;
 	}
-	
+
 	/* Get the real directory ID and make sure it is a directory */
 	osErr =
 		GetDirectoryID(
@@ -1149,12 +1149,12 @@ BFrDirectory_FileIterator_New(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "GetDirectoryID return an error");
 	}
-	
+
 	if(isDirectory == false)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "inDirectoryRef must be a directory");
 	}
-	
+
 	/* Get the real vRefNum */
 	osErr = DetermineVRefNum(inDirectoryRef->fsSpec.name, inDirectoryRef->fsSpec.vRefNum, &theVRefNum);
 	if(osErr != noErr)
@@ -1169,9 +1169,9 @@ BFrDirectory_FileIterator_New(
 	newFileIterator->index = 1;
 	newFileIterator->prefix = inPrefix;
 	newFileIterator->suffix = inSuffix;
-	
+
 	*outFileIterator = newFileIterator;
-	
+
 	return UUcError_None;
 }
 
@@ -1183,21 +1183,21 @@ BFrDirectory_FileIterator_Next(
 	OSErr		osErr;
 //	UUtError	error;
 	FSSpec		fsSpec;
-	
+
 	do
 	{
 		inFileIterator->cPB.dirInfo.ioFDirIndex = inFileIterator->index++;
 		inFileIterator->cPB.dirInfo.ioDrDirID = inFileIterator->dirID;
-		
+
 		osErr = PBGetCatInfoSync((CInfoPBPtr)&inFileIterator->cPB);
 		if(osErr != noErr)
 		{
 			return UUcError_Generic;
 		}
-		
+
 	} while(BFiCheckCPBValid(&inFileIterator->cPB, inFileIterator->prefix, inFileIterator->suffix) == UUcFalse);
 
-	osErr =	
+	osErr =
 		FSMakeFSSpec(
 			inFileIterator->cPB.hFileInfo.ioVRefNum,
 			inFileIterator->cPB.hFileInfo.ioFlParID,
@@ -1207,10 +1207,10 @@ BFrDirectory_FileIterator_Next(
 	{
 		return UUcError_Generic;
 	}
-	
+
 
 	BFrFileRef_SetFromFSSpec(&fsSpec, outFileRef);
-	
+
 	return UUcError_None;
 }
 
@@ -1226,18 +1226,18 @@ BFrDirectory_DeleteContentsOnly(
 	BFtFileRef*	inDirectoryRef)
 {
 	OSErr	err;
-	
+
 	err =
 		DeleteDirectoryContents(
 			inDirectoryRef->fsSpec.vRefNum,
 			inDirectoryRef->fsSpec.parID,
 			inDirectoryRef->fsSpec.name);
-	
+
 	if(err != noErr)
 	{
 		return UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1246,18 +1246,18 @@ BFrDirectory_DeleteDirectoryAndContents(
 	BFtFileRef*	inDirectoryRef)
 {
 	OSErr	err;
-	
+
 	err =
 		DeleteDirectory(
 			inDirectoryRef->fsSpec.vRefNum,
 			inDirectoryRef->fsSpec.parID,
 			inDirectoryRef->fsSpec.name);
-	
+
 	if(err != noErr)
 	{
 		return UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1269,7 +1269,7 @@ BFrDirectory_Create(
 	OSErr		err;
 	char		mungedName[BFcMaxPathLength];
 	UUtInt32	newDirID;
-	
+
 	if(inDirName == NULL)
 	{
 		err =
@@ -1282,14 +1282,14 @@ BFrDirectory_Create(
 	else
 	{
 		BFiConvertWin2Mac(inDirName, mungedName + 1);
-		
+
 		if(strlen(mungedName + 1) > 255)
 		{
 			return UUcError_Generic;
 		}
-		
+
 		mungedName[0] = strlen(mungedName + 1);
-		
+
 		err =
 			DirCreate(
 				inParentDirRef->fsSpec.vRefNum,
@@ -1297,12 +1297,12 @@ BFrDirectory_Create(
 				(unsigned char *)mungedName,
 				&newDirID);
 	}
-	
+
 	if(err != noErr)
 	{
 		return UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1321,8 +1321,8 @@ BFrFile_Map(
 	BFtFileMapping *mapping;
 
 	mapping = UUrMemory_Block_New(sizeof(BFtFileMapping));
-	if (NULL == mapping) { 
-		error = UUcError_OutOfMemory; 
+	if (NULL == mapping) {
+		error = UUcError_OutOfMemory;
 		goto fail;
 	}
 

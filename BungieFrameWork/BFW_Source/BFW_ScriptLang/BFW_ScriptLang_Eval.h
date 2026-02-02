@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_ScriptLang_Eval.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -56,7 +56,7 @@ void
 SLrStatement_Level_Push(
 	SLtContext*	inContext,
 	UUtBool		inEval);
-	
+
 void
 SLrStatement_Level_Pop(
 	SLtContext*	inContext);
@@ -64,7 +64,7 @@ SLrStatement_Level_Pop(
 void
 SLrStatement_Level_Invert(
 	SLtContext*	inContext);
-	
+
 UUtError
 SLrExprListToParamList(
 	SLtContext*			inContext,
@@ -91,6 +91,6 @@ UUtInt32
 SLrExpr_ValAndType_To_Int(
 	SLtType		inType,
 	SLtValue	inVal);
-	
+
 
 #endif /* BFW_SCRIPTLANG_EVAL */

@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_ScriptLang_Expr.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -25,16 +25,16 @@ SLiExpr_OpStack_Pop(
 	SLtContext*			inContext)
 {
 	SLtExpr_OpStack*	opStack;
-	
+
 	UUmAssertReadPtr(inContext->curFuncState->curParenStack, sizeof(SLtExpr_OpStack));
-	
+
 	opStack = inContext->curFuncState->curParenStack;
-	
+
 	if(opStack->tos > 0)
 	{
 		return opStack->stack[--opStack->tos];
 	}
-	
+
 	return NULL;
 }
 
@@ -45,19 +45,19 @@ SLiExpr_OpStack_Push(
 	SLtToken*			inToken)
 {
 	SLtExpr_OpStack*	opStack;
-	
+
 	UUmAssertReadPtr(inContext->curFuncState->curParenStack, sizeof(SLtExpr_OpStack));
-	
+
 	opStack = inContext->curFuncState->curParenStack;
-	
+
 	if(opStack->tos >= SLcExprOpStack_MaxDepth)
 	{
 		SLrScript_Error_Semantic(inErrorContext, "expression too complex");
 		return UUcError_Generic;
 	}
-	
+
 	opStack->stack[opStack->tos++] = inToken;
-	
+
 	return UUcError_None;
 }
 
@@ -66,16 +66,16 @@ SLiExpr_OpStack_TOS(
 	SLtContext*			inContext)
 {
 	SLtExpr_OpStack*	opStack;
-	
+
 	UUmAssertReadPtr(inContext->curFuncState->curParenStack, sizeof(SLtExpr_OpStack));
-	
+
 	opStack = inContext->curFuncState->curParenStack;
-		
+
 	if(opStack->tos > 0)
 	{
 		return opStack->stack[opStack->tos - 1];
 	}
-	
+
 	return NULL;
 }
 
@@ -84,7 +84,7 @@ SLiExpr_UnaryOp_TypeCheck(
 	SLtToken*		inToken,
 	SLtType	inType)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -94,7 +94,7 @@ SLiExpr_BinaryOp_TypeCheck(
 	SLtType	inLeftType,
 	SLtType	inRightType)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -121,18 +121,18 @@ SLiExpr_Evaluate(
 
 		rightSide = SLrExpr_Pop(inContext);
 		leftSide = SLrExpr_Pop(inContext);
-		
+
 		inErrorContext->line = inToken->line;
 		error = SLrExpr_Eval(inContext, inErrorContext, rightSide, &rightType, &rightVal);
 		if(error != UUcError_None) return error;
-		
+
 		inErrorContext->line = inToken->line;
 		error = SLrExpr_Eval(inContext, inErrorContext, leftSide, &leftType, &leftVal);
 		if(error != UUcError_None) return error;
-		
+
 		error = SLiExpr_BinaryOp_TypeCheck(inToken, leftType, rightType);
 		if(error != UUcError_None) return error;
-		
+
 		switch(inToken->token)
 		{
 			case SLcToken_Assign:
@@ -141,21 +141,21 @@ SLiExpr_Evaluate(
 					SLrScript_Error_Semantic(inErrorContext, "The left side of an assignment must be an identifier");
 					return UUcError_Generic;
 				}
-				
+
 				SLrExpr_ConvertValue(inErrorContext, rightType, leftType, &rightVal);
-				
-				error = 
+
+				error =
 					SLrScript_Database_Var_SetValue(
 						inErrorContext,
 						inContext,
 						leftSide->u.ident.name,
 						rightVal);
 				if(error != UUcError_None) return error;
-				
+
 				resultType = rightType;
 				resultVal = rightVal;
 				break;
-				
+
 			case SLcToken_Plus:
 				resultType = leftType;
 				if(leftType == SLcType_Int32)
@@ -167,7 +167,7 @@ SLiExpr_Evaluate(
 					resultVal.f = leftVal.f + rightVal.f;
 				}
 				break;
-				
+
 			case SLcToken_Minus:
 				resultType = leftType;
 				if(leftType == SLcType_Int32)
@@ -179,21 +179,21 @@ SLiExpr_Evaluate(
 					resultVal.f = leftVal.f - rightVal.f;
 				}
 				break;
-				
+
 			case SLcToken_LogicalAnd:
 				resultType = SLcType_Bool;
 				leftInt = SLrExpr_ValAndType_To_Int(leftType, leftVal);
 				rightInt = SLrExpr_ValAndType_To_Int(rightType, rightVal);
 				resultVal.b = leftInt && rightInt;
 				break;
-				
+
 			case SLcToken_LogicalOr:
 				resultType = SLcType_Bool;
 				leftInt = SLrExpr_ValAndType_To_Int(leftType, leftVal);
 				rightInt = SLrExpr_ValAndType_To_Int(rightType, rightVal);
 				resultVal.b = leftInt || rightInt;
 				break;
-				
+
 			case SLcToken_Cmp_EQ:
 				resultType = SLcType_Int32;
 				if(leftType == SLcType_Int32 || leftType == SLcType_Bool)
@@ -205,7 +205,7 @@ SLiExpr_Evaluate(
 					resultVal.i = leftVal.f == rightVal.f;
 				}
 				break;
-				
+
 			case SLcToken_Cmp_NE:
 				resultType = SLcType_Int32;
 				if(leftType == SLcType_Int32 || leftType == SLcType_Bool)
@@ -217,7 +217,7 @@ SLiExpr_Evaluate(
 					resultVal.i = leftVal.f != rightVal.f;
 				}
 				break;
-				
+
 			case SLcToken_Cmp_LT:
 				resultType = SLcType_Int32;
 				if(leftType == SLcType_Int32 || leftType == SLcType_Bool)
@@ -229,7 +229,7 @@ SLiExpr_Evaluate(
 					resultVal.i = leftVal.f < rightVal.f;
 				}
 				break;
-				
+
 			case SLcToken_Cmp_GT:
 				resultType = SLcType_Int32;
 				if(leftType == SLcType_Int32 || leftType == SLcType_Bool)
@@ -241,7 +241,7 @@ SLiExpr_Evaluate(
 					resultVal.i = leftVal.f > rightVal.f;
 				}
 				break;
-				
+
 			case SLcToken_Cmp_LE:
 				resultType = SLcType_Int32;
 				if(leftType == SLcType_Int32 || leftType == SLcType_Bool)
@@ -253,7 +253,7 @@ SLiExpr_Evaluate(
 					resultVal.i = leftVal.f <= rightVal.f;
 				}
 				break;
-				
+
 			case SLcToken_Cmp_GE:
 				resultType = SLcType_Int32;
 				if(leftType == SLcType_Int32 || leftType == SLcType_Bool)
@@ -265,7 +265,7 @@ SLiExpr_Evaluate(
 					resultVal.i = leftVal.f >= rightVal.f;
 				}
 				break;
-			
+
 			default:
 				UUmAssert(0);
 		}
@@ -275,16 +275,16 @@ SLiExpr_Evaluate(
 		SLtExpr*			expr;
 		SLtType		exprType;
 		SLtValue	exprVal;
-		
+
 		expr = SLrExpr_Pop(inContext);
-		
+
 		inErrorContext->line = inToken->line;
 		error = SLrExpr_Eval(inContext, inErrorContext, expr, &exprType, &exprVal);
 		if(error != UUcError_None) return error;
-		
+
 		error = SLiExpr_UnaryOp_TypeCheck(inToken, exprType);
 		if(error != UUcError_None) return error;
-		
+
 		switch(inToken->token)
 		{
 			case SLcToken_LogicalNot:
@@ -297,12 +297,12 @@ SLiExpr_Evaluate(
 					case SLcType_Bool:
 						resultVal.b = !exprVal.b;
 						break;
-					
+
 					default:
 						UUmAssert(0);
 				}
 				break;
-			
+
 			default:
 				UUmAssert(0);
 		}
@@ -313,11 +313,11 @@ SLiExpr_Evaluate(
 	}
 
 	SLrExpr_Push_Const(inContext, resultType, resultVal);
-	
+
 	return UUcError_None;
 }
 
-UUtUns8	SLgExpr_PrecedenceTable[SLcToken_NumOperators] = 
+UUtUns8	SLgExpr_PrecedenceTable[SLcToken_NumOperators] =
 {
 /* =	*/	0,
 /* +	*/	20,
@@ -347,22 +347,22 @@ SLrExpr_Parse_LeftParen(
 	SLtErrorContext*	inErrorContext)
 {
 	SLtContext_FuncState*	curFuncState;
-	
+
 	curFuncState = inContext->curFuncState;
-	
+
 	if(curFuncState->parenTOS >= SLcContext_ParenStack_MaxDepth)
 	{
 		SLrScript_Error_Semantic(inErrorContext, "expression too complex");
 		return UUcError_Generic;
 	}
-	
+
 	curFuncState->curParenStack = curFuncState->parenStack + curFuncState->parenTOS;
-	
+
 	curFuncState->parenTOS++;
-	
+
 	return UUcError_None;
 }
-	
+
 UUtError
 SLrExpr_Parse_RightParen(
 	SLtContext*			inContext,
@@ -370,7 +370,7 @@ SLrExpr_Parse_RightParen(
 {
 	SLtContext_FuncState*	curFuncState;
 	SLtToken*				op;
-	
+
 	curFuncState = inContext->curFuncState;
 
 	if(curFuncState->parenTOS == 0)
@@ -378,25 +378,25 @@ SLrExpr_Parse_RightParen(
 		SLrScript_Error_Semantic(inErrorContext, "Too many )'s");
 		return UUcError_Generic;
 	}
-	
+
 	while(1)
 	{
 		// pop the operator off the operator stack
 			op = SLiExpr_OpStack_Pop(inContext);
-			
+
 			if(op == NULL) break;
-			
+
 		// evaluate the operator and push the result on the stack
 			SLiExpr_Evaluate(inContext, inErrorContext, op);
 	}
-	
+
 	curFuncState->parenTOS--;
-	
+
 	curFuncState->curParenStack = curFuncState->parenStack + curFuncState->parenTOS - 1;
-	
+
 	return UUcError_None;
 }
-	
+
 UUtError
 SLrExpr_Parse_Op_Unary(
 	SLtContext*			inContext,
@@ -404,23 +404,23 @@ SLrExpr_Parse_Op_Unary(
 	SLtToken*			inToken)
 {
 	UUtError	error;
-	
+
 	error = SLiExpr_OpStack_Push(inContext, inErrorContext, inToken);
 	if(error != UUcError_None) return error;
-	
+
 	return UUcError_None;
 }
-	
+
 UUtError
 SLrExpr_Parse_Identifier(
 	SLtContext*	inContext,
 	SLtToken*	inToken)
 {
 	SLrExpr_Push_Ident(inContext, inToken->lexem);
-	
+
 	return UUcError_None;
 }
-	
+
 UUtError
 SLrExpr_Parse_Op_Constant(
 	SLtContext*	inContext,
@@ -429,12 +429,12 @@ SLrExpr_Parse_Op_Constant(
 	UUtError			error;
 	SLtType		type;
 	SLtValue	val;
-	
+
 	error = SLrParse_ConstTokenToTypeAndVal(inToken, &type, &val);
 	if(error != UUcError_None) return error;
-	
+
 	SLrExpr_Push_Const(inContext, type, val);
-	
+
 	return UUcError_None;
 }
 
@@ -446,21 +446,21 @@ SLrExpr_Parse_Op_Binary(
 {
 	UUtError	error;
 	SLtToken*	op;
-	
+
 	// check to see if there is a higher precedence operator on the stack
 		op = SLiExpr_OpStack_TOS(inContext);
-		
+
 	// if so evaluate it
 		if(op != NULL && SLiExpr_Op_Higher(op, inToken))
 		{
 			SLiExpr_OpStack_Pop(inContext);
 			SLiExpr_Evaluate(inContext, inErrorContext, op);
 		}
-		
+
 	// push this operator on the stack
 		error = SLiExpr_OpStack_Push(inContext, inErrorContext, inToken);
 		if(error != UUcError_None) return error;
-		
+
 	return UUcError_None;
 }
 
@@ -469,7 +469,7 @@ SLrExpr_Parse_Final(
 	SLtContext*			inContext,
 	SLtErrorContext*	inErrorContext)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -479,12 +479,12 @@ SLrExpr_Parse_FunctionCall_Ident(
 	SLtToken*	inToken)
 {
 	SLtContext_FuncState*	curFuncState;
-	
+
 	curFuncState = inContext->curFuncState;
-	
+
 	curFuncState->funcIdent = inToken->lexem;
 	curFuncState->numParams = 0;
-	
+
 	return UUcError_None;
 }
 
@@ -498,11 +498,11 @@ SLrExpr_Parse_Param(
 	curFuncState = inContext->curFuncState;
 
 	// pop it off the stack
-	
+
 	expr = SLrExpr_Pop(inContext);
-	
+
 	curFuncState->paramExprs[curFuncState->numParams++] = *expr;
-	
+
 	return UUcError_None;
 }
 
@@ -524,7 +524,7 @@ SLrExpr_Parse_Param_Old(
 		SLrExpr_MakeStringConstant(curFuncState->paramExprs + curFuncState->numParams, inToken->lexem);
 	}
 	curFuncState->numParams++;
-	
+
 	return UUcError_None;
 }
 
@@ -538,17 +538,17 @@ SLrExpr_Parse_FunctionCall_Make(
 	SLtParameter_Actual			paramList[SLcScript_MaxNumParams];
 
 	curFuncState = inContext->curFuncState;
-					
+
 	inContext->returnType = SLcType_Void;
 
-	error = 
+	error =
 		SLrExprListToParamList(
 			inContext,
 			inErrorContext,
 			paramList);
 	if(error != UUcError_None) return error;
 
-	error = 
+	error =
 		SLrParse_FuncStack_Push(
 			inContext,
 			inErrorContext,
@@ -556,7 +556,7 @@ SLrExpr_Parse_FunctionCall_Make(
 			paramList,
 			curFuncState->funcIdent);
 	if(error != UUcError_None) return error;
-	
+
 	return UUcError_None;
 }
 
@@ -568,7 +568,7 @@ SLrExpr_ConvertValue(
 	SLtValue	*ioValue)
 {
 	UUtBool	illegalConvertion = UUcFalse;
-	
+
 	switch(inFromType)
 	{
 		case SLcType_Int32:
@@ -576,69 +576,69 @@ SLrExpr_ConvertValue(
 			{
 				case SLcType_Int32:
 					break;
-					
+
 				case SLcType_Float:
 					ioValue->f = (float)ioValue->i;
 					break;
-					
+
 				case SLcType_Bool:
 					ioValue->b = (ioValue->i == 0) ? UUcFalse : UUcTrue;
 					break;
-				
+
 				default:
 					illegalConvertion = UUcTrue;
 			}
 			break;
-		
+
 		case SLcType_Float:
 			switch(inToType)
 			{
 				case SLcType_Int32:
 					ioValue->i = (UUtInt32)ioValue->f;
 					break;
-					
+
 				case SLcType_Float:
 					break;
-					
+
 				case SLcType_Bool:
 					ioValue->b = (UUtBool)ioValue->f;
 					break;
-				
+
 				default:
 					illegalConvertion = UUcTrue;
 			}
 			break;
-		
+
 		case SLcType_Bool:
 			switch(inToType)
 			{
 				case SLcType_Int32:
 					ioValue->i = (UUtUns32)ioValue->b;
 					break;
-					
+
 				case SLcType_Float:
 					ioValue->f = (float)ioValue->b;
 					break;
-					
+
 				case SLcType_Bool:
 					break;
-				
+
 				default:
 					illegalConvertion = UUcTrue;
 			}
 			break;
-		
+
 		case SLcType_String:
 			switch(inToType)
 			{
 				case SLcType_String:
 					break;
-				
+
 				default:
 					illegalConvertion = UUcTrue;
 			}
 			break;
-			
+
 		default:
 			illegalConvertion = UUcTrue;
 	}
@@ -648,6 +648,6 @@ SLrExpr_ConvertValue(
 		SLrScript_Error_Semantic(inErrorContext, "Illegal type convertion");
 		return UUcError_Generic;
 	}
-	
-	return UUcError_None;	
+
+	return UUcError_None;
 }

@@ -6,23 +6,23 @@ static char rcsid[] = "$Header$";
  * Copyright (c) 1988, 1989, 1990, 1991, 1992 Sam Leffler
  * Copyright (c) 1991, 1992 Silicon Graphics, Inc.
  *
- * Permission to use, copy, modify, distribute, and sell this software and 
+ * Permission to use, copy, modify, distribute, and sell this software and
  * its documentation for any purpose is hereby granted without fee, provided
  * that (i) the above copyright notices and this permission notice appear in
  * all copies of the software and related documentation, and (ii) the names of
  * Sam Leffler and Silicon Graphics may not be used in any advertising or
  * publicity relating to the software without the specific, prior written
  * permission of Sam Leffler and Silicon Graphics.
- * 
- * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
- * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
- * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
- * 
+ *
+ * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+ * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ *
  * IN NO EVENT SHALL SAM LEFFLER OR SILICON GRAPHICS BE LIABLE FOR
  * ANY SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
  * OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
- * WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF 
- * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 
+ * WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
+ * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
 
@@ -78,7 +78,7 @@ TIFFUnmapFileContents(base, size)
 #include <secdef.h>
 
 /*
- * Table for storing information on current open sections. 
+ * Table for storing information on current open sections.
  * (You may want to substitute a linked list...)
  */
 #define MAX_MAPPED 100
@@ -89,8 +89,8 @@ static struct {
 	unsigned channel;
 } map_table[MAX_MAPPED];
 
-/* 
- * This routine maps a file into a private section. Note that this 
+/*
+ * This routine maps a file into a private section. Note that this
  * method of accessing a file is by far the fastest under VMS.
  * The routine may fail (i.e. return 0) for several reasons, for
  * example:
@@ -114,7 +114,7 @@ TIFFMapFileContents(fd, pbase, psize)
 	void *inadr[2], *retadr[2];
 	unsigned long status;
 	long size;
-	
+
 	if (no_mapped >= MAX_MAPPED)
 		return(0);
 	/*
@@ -160,7 +160,7 @@ TIFFMapFileContents(fd, pbase, psize)
 }
 
 /*
- * This routine unmaps a section from the virtual address space of 
+ * This routine unmaps a section from the virtual address space of
  * the process, but only if the base was the one returned from a
  * call to TIFFMapFileContents.
  */
@@ -171,7 +171,7 @@ TIFFUnmapFileContents(base, size)
 {
 	void *inadr[2];
 	int i, j;
-	
+
 	/* Find the section in the table */
 	for (i = 0;i < no_mapped; i++) {
 		if (map_table[i].base == base) {
@@ -195,7 +195,7 @@ long
 TIFFGetFileSize(int fd)
 {
 	long pos, eof;
-	
+
 	pos = lseek(fd, 0, SEEK_CUR);
 	eof = lseek(fd, 0, SEEK_END);
 	lseek(fd, pos, SEEK_SET);
@@ -213,11 +213,11 @@ mpw_lseek(int fd, long offset, int whence)
 {
 	long filepos, filesize, newpos;
 	short macfd;
-	
+
 	if ((filepos = lseek(fd, 0, SEEK_CUR)) < 0 ||
 	    (filesize = lseek(fd, 0, SEEK_END)) < 0)
 		return (EOF);
-	newpos = offset + (whence == SEEK_SET ? 0 : 
+	newpos = offset + (whence == SEEK_SET ? 0 :
 			   whence == SEEK_CUR ? filepos :
 						filesize);
 	if (newpos > filesize)

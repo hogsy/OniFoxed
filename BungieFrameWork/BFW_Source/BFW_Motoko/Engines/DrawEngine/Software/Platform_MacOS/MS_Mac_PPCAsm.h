@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_Mac_PPCAsm.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: April 2, 1997
-	
+
 	PURPOSE: platform specific parts
-	
+
 	Copyright 1997
 
 */

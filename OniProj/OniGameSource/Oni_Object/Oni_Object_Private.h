@@ -52,9 +52,9 @@ enum
 	OBJcDrawFlag_RingX			= 0x0002,
 	OBJcDrawFlag_RingY			= 0x0004,
 	OBJcDrawFlag_RingZ			= 0x0008,
-	
+
 	OBJcDrawFlag_Locked			= 0x8000
-	
+
 };
 
 // ======================================================================
@@ -88,25 +88,25 @@ OBJrObjectGroup_Register(
 void
 OBJrObjectUtil_DrawAxes(
 	const float				inLength);
-	
+
 void
 OBJrObjectUtil_DrawRotationRings(
 	const OBJtObject		*inObject,
 	const M3tBoundingSphere	*inBoundingSphere,
 	UUtUns32				inDrawRings);
-	
+
 UUtError
 OBJrObjectUtil_EnumerateTemplate(
 	char							*inPrefix,
 	TMtTemplateTag					inTemplateTag,
 	OBJtEnumCallback_ObjectName		inEnumCallback,
 	UUtUns32						inUserData);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OBJrConsole_Initialize(
 	void);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OBJrDoor_Initialize(
@@ -143,7 +143,7 @@ void
 OBJrCharacter_DrawTerminate(
 	void);
 #endif
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OBJrParticle_Initialize(
@@ -159,7 +159,7 @@ void
 OBJrPatrolPath_DrawTerminate(
 	void);
 #endif
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OBJrSound_Initialize(
@@ -170,7 +170,7 @@ void
 OBJrSound_DrawTerminate(
 	void);
 #endif
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OBJrTrigger_Initialize(
@@ -182,12 +182,12 @@ OBJrTriggerVolume_Initialize(
 	void);
 
 // ----------------------------------------------------------------------
-UUtError 
+UUtError
 OBJrCombat_Initialize(
 	void);
 
 // ----------------------------------------------------------------------
-UUtError 
+UUtError
 OBJrMelee_Initialize(
 	void);
 
@@ -217,12 +217,12 @@ UUtError OBJrDoor_Initialize(void);
 UUtError
 OBJrPowerUp_Initialize(
 	void);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OBJrWeapon_Initialize(
 	void);
-	
+
 // ======================================================================
 
 #endif /* ONI_OBJECT_PRIVATE_H */

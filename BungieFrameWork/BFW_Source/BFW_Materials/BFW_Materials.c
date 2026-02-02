@@ -46,12 +46,12 @@ MArImpactType_GetByName(
 {
 	UUtError					error;
 	MAtImpact					*impact;
-	
+
 	UUmAssert(inImpactTypeName);
-	
+
 	error = TMrInstance_GetDataPtr(MAcTemplate_Impact, inImpactTypeName, &impact);
 	if (error != UUcError_None) { return MAcInvalidID; }
-	
+
 	return impact->id;
 }
 
@@ -101,7 +101,7 @@ MArImpactType_GetParent(
 	if (parent == NULL) {
 		return MAcInvalidID;
 	}
-	
+
 	UUmAssertReadPtr(parent, sizeof(MAtImpact));
 
 	UUmAssert((parent->id >= 0) && (parent->id < MAgNumImpacts));
@@ -139,12 +139,12 @@ MArMaterialType_GetByName(
 {
 	UUtError					error;
 	MAtMaterial					*material;
-	
+
 	UUmAssert(inMaterialTypeName);
-	
+
 	error = TMrInstance_GetDataPtr(MAcTemplate_Material, inMaterialTypeName, &material);
 	if (error != UUcError_None) { return MAcInvalidID; }
-	
+
 	return material->id;
 }
 
@@ -215,9 +215,9 @@ MAiImpacts_ProcHandler(
 	void					*inPrivateData)
 {
 	MAtImpact				*impact;
-	
+
 	impact = (MAtImpact*)inInstancePtr;
-	
+
 	switch (inMessage)
 	{
 		case TMcTemplateProcMessage_LoadPostProcess:
@@ -226,7 +226,7 @@ MAiImpacts_ProcHandler(
 		}
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -238,9 +238,9 @@ MAiMaterials_ProcHandler(
 	void					*inPrivateData)
 {
 	MAtMaterial				*material;
-	
+
 	material = (MAtMaterial*)inInstancePtr;
-	
+
 	switch (inMessage)
 	{
 		case TMcTemplateProcMessage_LoadPostProcess:
@@ -249,7 +249,7 @@ MAiMaterials_ProcHandler(
 		}
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -280,14 +280,14 @@ MArMaterials_Initialize(
 	void)
 {
 	UUtError					error;
-	
+
 	// initialize the globals
 	MAgNumImpacts = 0;
 	MAgImpactArray = NULL;
-	
+
 	MAgNumMaterials = 0;
 	MAgMaterialArray = NULL;
-	
+
 	error = MArMaterials_RegisterTemplates();
 	UUmError_ReturnOnError(error);
 
@@ -299,7 +299,7 @@ MArMaterials_Initialize(
 			MAiMaterials_ProcHandler,
 			&MAgMaterials_PrivateData);
 	UUmError_ReturnOnError(error);
-		
+
 	error =
 		TMrTemplate_PrivateData_New(
 			MAcTemplate_Impact,
@@ -317,13 +317,13 @@ MArMaterials_RegisterTemplates(
 	void)
 {
 	UUtError					error;
-	
+
 	error = TMrTemplate_Register(MAcTemplate_Material, sizeof(MAtMaterial), TMcFolding_Forbid);
 	UUmError_ReturnOnError(error);
-	
+
 	error = TMrTemplate_Register(MAcTemplate_Impact, sizeof(MAtImpact), TMcFolding_Forbid);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -416,7 +416,7 @@ MArImpacts_PreProcess(
 	for (itr = 0; itr < num_impacts; itr++) {
 		error = TMrInstance_GetDataPtr_ByNumber(MAcTemplate_Impact, itr, &impact);
 		UUmError_ReturnOnError(error);
-		
+
 		impact->id = MAcInvalidID;
 	}
 
@@ -451,7 +451,7 @@ MArImpacts_PreProcess(
 				}
 			} else {
 				UUmAssertReadPtr(parent, sizeof(MAtImpact));
-				
+
 				if (parent->id == MAcInvalidID) {
 					// we can't add the impact because its parent has not yet been added.
 					continue;
@@ -513,7 +513,7 @@ MArImpacts_PreProcess(
 		for (itr = 0; itr < num_impacts; itr++) {
 			error = TMrInstance_GetDataPtr_ByNumber(MAcTemplate_Impact, itr, &impact);
 			UUmError_ReturnOnError(error);
-			
+
 			if (impact->id == MAcInvalidID) {
 				UUrDebuggerMessage("  - %s (parent %s)\n", TMrInstance_GetInstanceName(impact),
 								(impact->parent == NULL) ? "None" : TMrInstance_GetInstanceName(impact->parent));
@@ -532,7 +532,7 @@ MArImpacts_PreProcess(
 	UUmAssert(traverse_id == MAgNumImpacts);
 
 	UUrMemory_Block_Delete(impact_array);
-	
+
 	return UUcError_None;
 }
 
@@ -615,7 +615,7 @@ MArMaterials_PreProcess(
 	for (itr = 0; itr < num_materials; itr++) {
 		error = TMrInstance_GetDataPtr_ByNumber(MAcTemplate_Material, itr, &material);
 		UUmError_ReturnOnError(error);
-		
+
 		material->id = MAcInvalidID;
 	}
 
@@ -650,7 +650,7 @@ MArMaterials_PreProcess(
 				}
 			} else {
 				UUmAssertReadPtr(parent, sizeof(MAtMaterial));
-				
+
 				if (parent->id == MAcInvalidID) {
 					// we can't add the material because its parent has not yet been added.
 					continue;
@@ -712,7 +712,7 @@ MArMaterials_PreProcess(
 		for (itr = 0; itr < num_materials; itr++) {
 			error = TMrInstance_GetDataPtr_ByNumber(MAcTemplate_Material, itr, &material);
 			UUmError_ReturnOnError(error);
-			
+
 			if (material->id == MAcInvalidID) {
 				UUrDebuggerMessage("  - %s (parent %s)\n", TMrInstance_GetInstanceName(material),
 								(material->parent == NULL) ? "None" : TMrInstance_GetInstanceName(material->parent));
@@ -732,7 +732,7 @@ MArMaterials_PreProcess(
 	UUmAssert(traverse_id == MAgNumMaterials);
 
 	UUrMemory_Block_Delete(material_array);
-	
+
 	return UUcError_None;
 }
 
@@ -749,7 +749,7 @@ UUtBool MArMaterial_IsDescendant(MAtMaterialType inDescendant, MAtMaterialType i
 
 	for(material_itr = inDescendant; material_itr != MAcInvalidID; material_itr = MArMaterialType_GetParent(material_itr))
 	{
-		if (material_itr == inMaterial) {			
+		if (material_itr == inMaterial) {
 			is_descendant = UUcTrue;
 			break;
 		}

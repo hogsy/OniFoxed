@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_GC_Method_Light.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -33,32 +33,32 @@ MSrGeomContext_Method_LightList_Directional(
 	UUtUns16	itr;
 	float		mag;
 	float		nx, ny, nz;
-	
+
 	if(inNumLights > MScDirectionalLight_Max) inNumLights = MScDirectionalLight_Max;
-	
+
 	MSgGeomContextPrivate->light_NumDirectionalLights = inNumLights;
-	
+
 	for(itr = 0; itr < inNumLights; itr++)
 	{
 		nx = inLightList[itr].direction.x;
 		ny = inLightList[itr].direction.y;
 		nz = inLightList[itr].direction.x;
-		
+
 		mag = MUrSqrt(nx * nx + ny * ny + nz * nz);
-		
-		MSgGeomContextPrivate->light_DirectionalList[itr].color.r = 
+
+		MSgGeomContextPrivate->light_DirectionalList[itr].color.r =
 			inLightList[itr].color.r * mag;
-		MSgGeomContextPrivate->light_DirectionalList[itr].color.g = 
+		MSgGeomContextPrivate->light_DirectionalList[itr].color.g =
 			inLightList[itr].color.g * mag;
-		MSgGeomContextPrivate->light_DirectionalList[itr].color.b = 
+		MSgGeomContextPrivate->light_DirectionalList[itr].color.b =
 			inLightList[itr].color.b * mag;
-		
+
 		mag = 1.0f / mag;
-		
+
 		MSgGeomContextPrivate->light_DirectionalList[itr].normalizedDirection.x = nx * mag;
 		MSgGeomContextPrivate->light_DirectionalList[itr].normalizedDirection.y = ny * mag;
 		MSgGeomContextPrivate->light_DirectionalList[itr].normalizedDirection.z = nz * mag;
-		
+
 	}
 
 }
@@ -69,9 +69,9 @@ MSrGeomContext_Method_LightList_Point(
 	M3tLight_Point*	inLightList)
 {
 	if(inNumLights > MScPointLight_Max) inNumLights = MScPointLight_Max;
-	
-	
-	
+
+
+
 }
 
 void

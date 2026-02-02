@@ -75,12 +75,12 @@ static const struct sdl_oni_key sdl_keyboard_translation_table[] =
 	{LIcKeyCode_Delete, SDLK_DELETE},
 	{LIcKeyCode_End, SDLK_END},
 	{LIcKeyCode_PageDown, SDLK_PAGEDOWN},
-	
+
 	{LIcKeyCode_UpArrow, SDLK_UP},
 	{LIcKeyCode_LeftArrow, SDLK_LEFT},
 	{LIcKeyCode_DownArrow, SDLK_DOWN},
 	{LIcKeyCode_RightArrow, SDLK_RIGHT},
-	
+
 	{LIcKeyCode_NumLock, SDLK_NUMLOCKCLEAR},
 	{LIcKeyCode_Divide, SDLK_KP_DIVIDE},
 	{LIcKeyCode_Multiply, SDLK_KP_MULTIPLY},
@@ -90,7 +90,7 @@ static const struct sdl_oni_key sdl_keyboard_translation_table[] =
 	{LIcKeyCode_NumPadEnter, SDLK_KP_ENTER},
 	{LIcKeyCode_NumPadComma, SDLK_KP_COMMA},
 	{LIcKeyCode_NumPadEquals, SDLK_KP_EQUALS},
-	
+
 	{LIcKeyCode_NumPad0, SDLK_KP_0},
 	{LIcKeyCode_NumPad1, SDLK_KP_1},
 	{LIcKeyCode_NumPad2, SDLK_KP_2},
@@ -151,7 +151,7 @@ static const unsigned num_sdl_keys = sizeof(sdl_keyboard_translation_table)/size
 static SDL_Keycode oni_to_sdl_keycode(LItKeyCode key)
 {
 	int i;
-	
+
 	if (key < 0x80)
 	{
 		// ascii range maps directly
@@ -165,10 +165,10 @@ static SDL_Keycode oni_to_sdl_keycode(LItKeyCode key)
 				// not available as key codes in SDL
 				return SDLK_UNKNOWN;
 		}
-		
+
 		return key;
 	}
-	
+
 	for (i = 0; i<num_sdl_keys; ++i)
 	{
 		const struct sdl_oni_key *map = &sdl_keyboard_translation_table[i];
@@ -177,20 +177,20 @@ static SDL_Keycode oni_to_sdl_keycode(LItKeyCode key)
 			return map->sdl_key;
 		}
 	}
-	
+
 	return SDLK_UNKNOWN;
 }
 
 static LItKeyCode sdl_to_oni_keycode(SDL_Keycode key)
 {
 	int i;
-	
+
 	if (key < 0x80)
 	{
 		// ascii range maps directly
 		return key;
 	}
-	
+
 	for (i = 0; i<num_sdl_keys; ++i)
 	{
 		const struct sdl_oni_key *map = &sdl_keyboard_translation_table[i];
@@ -199,7 +199,7 @@ static LItKeyCode sdl_to_oni_keycode(SDL_Keycode key)
 			return map->oni_key;
 		}
 	}
-	
+
 	return LIcKeyCode_None;
 }
 
@@ -214,10 +214,10 @@ LIiPlatform_Mouse_GetData(
 	LItAction				*outAction)
 {
 	LItDeviceInput			deviceInput;
-	
+
 	int x = 0, y = 0, i;
 	Uint32 buttonsstate = SDL_GetRelativeMouseState(&x, &y);
-	
+
 	for (i = 0; i < 4; ++i)
 	{
 		if (buttonsstate & SDL_BUTTON(i + 1))
@@ -227,7 +227,7 @@ LIiPlatform_Mouse_GetData(
 			LIrActionBuffer_Add(outAction, &deviceInput);
 		}
 	}
-	
+
 	deviceInput.input = LIcMouseCode_XAxis;
 	deviceInput.analogValue = (float)x * SDL_MOUSEMOVE_FACTOR;
 	LIrActionBuffer_Add(outAction, &deviceInput);
@@ -269,11 +269,11 @@ LIiPlatform_Keyboard_GetData(
 		if (keyState[i])
 		{
 			LItDeviceInput			deviceInput;
-			
+
 			deviceInput.input = sdl_to_oni_keycode(SDL_GetKeyFromScancode(i));
 			deviceInput.analogValue = 1.0f;
-			
-			if (deviceInput.input != LIcKeyCode_None) 
+
+			if (deviceInput.input != LIcKeyCode_None)
 			{
 				LIrActionBuffer_Add(outAction, &deviceInput);
 			}
@@ -304,7 +304,7 @@ LIiPlatform_Devices_GetData(
 	{
 		LIiPlatform_Mouse_GetData(outAction);
 	}
-	
+
 	// get the keyboard data
 	LIiPlatform_Keyboard_GetData(outAction);
 }
@@ -403,7 +403,7 @@ LIrPlatform_InputEvent_GetMouse(
 	if (inMode == LIcMode_Normal)
 	{
 		int x, y;
-		
+
 		Uint32 buttons = SDL_GetMouseState(&x, &y);
 		outInputEvent->where.x = (UUtInt16)x;
 		outInputEvent->where.y = (UUtInt16)y;
@@ -455,7 +455,7 @@ LIrPlatform_Initialize(
 {
 	//UUmAssert(inInstance);
 	UUmAssert(inWindow);
-	
+
 	// ------------------------------
 	// initialize the globals
 	// ------------------------------
@@ -478,12 +478,12 @@ LIrPlatform_PollInputForAction(
 	LItAction				*outAction)
 {
 	UUtUns16				i;
-	
+
 	// clear the action
 	outAction->buttonBits = 0;
 	for (i = 0; i < LIcNumAnalogValues; i++)
 		outAction->analogValues[i] = 0.0f;
-	
+
 	// get the action data
 	LIiPlatform_Devices_GetData(outAction);
 }
@@ -509,7 +509,7 @@ LIrPlatform_Update(
 	IMtPoint2D where = {0, 0};
 	static Uint32 current_mouse_buttons = 0;
 	static Uint32 current_modifiers = 0;
-	
+
 	//FIXME: Mac and Win32 only poll for a single event
 	//       however, input is laggy if that is done.
 	while (1)
@@ -517,20 +517,20 @@ LIrPlatform_Update(
 		if (!SDL_PollEvent(&event)) {
 			return UUcFalse;
 		}
-		
+
 		switch (event.type)
 		{
 			case SDL_KEYDOWN:
 			case SDL_KEYUP:
 				eventType = (event.key.state == SDL_PRESSED) ? LIcInputEvent_KeyDown : LIcInputEvent_KeyUp;
-				
+
 				current_modifiers |= sdl_to_kmod(event.key.keysym.sym);
 				if (current_modifiers != event.key.keysym.mod)
 				{
 					UUmAssert(UUcFalse);
 					current_modifiers = event.key.keysym.mod;
 				}
-				
+
 				LIrInputEvent_Add(
 					eventType,
 					NULL,
@@ -541,13 +541,13 @@ LIrPlatform_Update(
 			case SDL_MOUSEMOTION:
 				where.x = event.motion.x;
 				where.y = event.motion.y;
-				
+
 				if (current_mouse_buttons != event.motion.state)
 				{
 					UUmAssert(UUcFalse);
 					current_mouse_buttons = event.motion.state;
 				}
-				
+
 				LIrInputEvent_Add(
 					LIcInputEvent_MouseMove,
 					&where,
@@ -571,10 +571,10 @@ LIrPlatform_Update(
 					default:
 						return UUcTrue;
 				}
-				
+
 				where.x = event.button.x;
 				where.y = event.button.y;
-				
+
 				if (event.button.state == SDL_PRESSED)
 				{
 					current_mouse_buttons |= sdl_to_oni_mouse_modifiers(SDL_BUTTON(event.button.button));
@@ -583,7 +583,7 @@ LIrPlatform_Update(
 				{
 					current_mouse_buttons &= ~sdl_to_oni_mouse_modifiers(SDL_BUTTON(event.button.button));
 				}
-				
+
 				LIrInputEvent_Add(
 					eventType,
 					&where,
@@ -605,7 +605,7 @@ LIrPlatform_Update(
 			break;
 		}
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -617,7 +617,7 @@ LIrPlatform_TestKey(
 {
 	(void)inMode;
 	UUtBool keyDown = UUcFalse;
-	
+
 	int numkeys = 0;
 	//TODO: capture in LIrPlatform_Update()?
 	const Uint8 *keyState = SDL_GetKeyboardState(&numkeys);
@@ -625,6 +625,6 @@ LIrPlatform_TestKey(
 	if (scancode > 0 && scancode < numkeys) {
 		keyDown = keyState[scancode];
 	}
-	
+
 	return keyDown;
 }

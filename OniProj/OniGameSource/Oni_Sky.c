@@ -1,11 +1,11 @@
 /*	FILE:	Oni_Sky.c
-	
+
 	AUTHOR:	Jason Duncan
-	
+
 	CREATED: May, 2000
-	
+
 	PURPOSE: the sky
-	
+
 	Copyright 2000
 */
 
@@ -94,7 +94,7 @@ UUtError ONrSky_Initialize( )
 static void ONiSky_GetYIQ( float r, float g, float b, M3tVector3D *ioYIQ )
 {
 	M3tPoint3D		color;
-	static M3tMatrix3x3	m = 
+	static M3tMatrix3x3	m =
 	{ 0.30f,  0.60f,  0.21f, 0.59f, -0.28f, -0.52f, 0.11f, -0.32f, -0.31f };
 
 	color.x		= r;
@@ -120,7 +120,7 @@ static void ONiSky_TextureCoords( float inU, float inV, M3tTextureCoord *ioCoord
 {
 	inU = UUmPin( inU, -1000.0f, 1000.0f );
 	inV = UUmPin( inV, -1000.0f, 1000.0f );
-	
+
 	ioCoord->u	=  (( inU + 1000.0f ) / 2000.0f);
 	ioCoord->v	= -(( inV - 1000.0f ) / 2000.0f);
 }
@@ -133,29 +133,29 @@ UUtBool ONiSky_LinePlaneIntersection(
 {
 	float Xm,Ym,Zm,denom,t;
 	M3tPoint3D newPoint;
-	
+
 	Xm = (inLineB->x - inLineA->x);
 	Ym = (inLineB->y - inLineA->y);
 	Zm = (inLineB->z - inLineA->z);
-	
+
 	denom = inPlane->a * Xm +inPlane->b * Ym + inPlane->c * Zm;
-	
+
 	if (denom == 0.0f)
 	{
 		return UUcFalse;
 	}
-	
+
 	t = -(inPlane->a * inLineA->x + inPlane->b * inLineA->y + inPlane->c * inLineA->z + inPlane->d) / denom;
 
 	if (t < 0.0f || t > 1.0f)
 	{
 		return UUcFalse;
 	}
-	
+
 	newPoint.x = Xm * t + inLineA->x;
 	newPoint.y = Ym * t + inLineA->y;
 	newPoint.z = Zm * t + inLineA->z;
-	
+
 	if (outIntersection) *outIntersection = newPoint;
 	return UUcTrue;
 }
@@ -190,13 +190,13 @@ static void ONiSky_SkyboxIntercept( M3tPoint3D *inPoint, M3tPoint3D *inCenter, M
 	UUmTrig_Clip( theta_horiz );
 
 	quarter_pi				= M3cPi / 4.0f;
-	
+
 	point_to.x				= inPoint->x + ray.x * 10000.0f;
 	point_to.y				= inPoint->y + ray.y * 10000.0f;
 	point_to.z				= inPoint->z + ray.z * 10000.0f;
 
 	point_to					= *inPoint;
-	
+
 	side_plane.a				=  0;
 	side_plane.b				=  0;
 	side_plane.c				=  0;
@@ -243,7 +243,7 @@ static void ONiSky_SkyboxIntercept( M3tPoint3D *inPoint, M3tPoint3D *inCenter, M
 		if( dist_side > dist_top )
 		{
 			hit_point			= top_hit_point;
-			plane				= M3cSkyTop;	
+			plane				= M3cSkyTop;
 		}
 	}
 
@@ -254,14 +254,14 @@ static void ONiSky_SkyboxIntercept( M3tPoint3D *inPoint, M3tPoint3D *inCenter, M
 			break;
 		case M3cSkyRight:	// east
 			ONiSky_TextureCoords(  hit_point.z, hit_point.y, ioCoords );
-			break; 
+			break;
 		case M3cSkyFront:	// north
 			ONiSky_TextureCoords( -hit_point.x, hit_point.y, ioCoords );
 			break;
 		case M3cSkyBack:	// south
 			ONiSky_TextureCoords(  hit_point.x, hit_point.y, ioCoords );
 			break;
-		case M3cSkyTop:		// up 
+		case M3cSkyTop:		// up
 			ONiSky_TextureCoords(  hit_point.x, hit_point.z, ioCoords );
 			break;
 	}
@@ -327,7 +327,7 @@ UUtError ONrSky_LevelBegin( ONtSky *inSky, ONtSkyClass *inSkyClass )
 
 	// grab view distance
 	M3rCamera_GetStaticData( ONgActiveCamera, NULL, NULL, &view_distance_near, &view_distance_far);
-	
+
 	radius					= view_distance_far * 0.5f;
 //	inSky->skyClass->sunglow->baseMap->flags |= M3cTextureFlags_Blend_Additive;
 //	TMrInstance_GetDataPtr(M3cTemplate_TextureMap, "caution01", (void **) &inSky->skyClass->skydome->baseMap);
@@ -335,7 +335,7 @@ UUtError ONrSky_LevelBegin( ONtSky *inSky, ONtSkyClass *inSkyClass )
 	M3rDraw_CreateSkybox( &inSky->skybox, inSkyClass->skybox );
 
 	ONgSky_Height = ONgLevel->sky_height;
-	
+
 	if( inSkyClass->star_count )
 	{
 		if( inSkyClass->star_seed )
@@ -356,7 +356,7 @@ UUtError ONrSky_LevelBegin( ONtSky *inSky, ONtSkyClass *inSkyClass )
 			float				scale			= UUmRandomRangeFloat( 10.0f, 40.0f );
 
 			P3rGetRandomUnitVector3D(&position);
-			
+
 			if( position.y < 0.0f )
 				position.y = -position.y;
 
@@ -365,7 +365,7 @@ UUtError ONrSky_LevelBegin( ONtSky *inSky, ONtSkyClass *inSkyClass )
 			position.z		*= radius;
 
 			height			= ONgSky_Height * 1000.0f;
-			
+
 			//center.y		+= height;
 			//position.y		+= height;
 
@@ -403,12 +403,12 @@ UUtError ONrSky_LevelBegin( ONtSky *inSky, ONtSkyClass *inSkyClass )
 				star_sprites[star_sprite_count].alpha			= (UUtUns8)alpha;
 				star_sprite_count++;
 			}
-		}   
+		}
 
 		inSky->star_sprite_array				= (M3tSpriteArray*)UUrMemory_Block_New( sizeof(M3tSpriteArray) + sizeof(M3tSpriteInstance) * (star_sprite_count-1) );
 		inSky->star_sprite_array->texture_map	= inSkyClass->star_textures[0];
 		inSky->star_sprite_array->sprite_count	= star_sprite_count;
-		
+
 		for( i = 0; i < star_sprite_count; i++ )
 		{
 			inSky->star_sprite_array->sprites[i].position		= star_sprites[i].position;
@@ -419,14 +419,14 @@ UUtError ONrSky_LevelBegin( ONtSky *inSky, ONtSkyClass *inSkyClass )
 
 		UUrMemory_Block_Delete( star_sprites );
 
-		inSky->twinkle_count	= star_sprite_count;	
+		inSky->twinkle_count	= star_sprite_count;
 		inSky->twinkle_indices	= UUrMemory_Block_New( sizeof( UUtUns16 ) * inSky->twinkle_count );
 		for( i = 0; i < inSky->twinkle_count; i++ )
 		{
 			inSky->twinkle_indices[i] = UUmRandomRange( 0, (1024 * 16) - 1 );
 		}
 	}
-	
+
 	for (i = 0; i < inSkyClass->num_planets; i++) {
 		float		planet_distance;
 
@@ -441,7 +441,7 @@ UUtError ONrSky_LevelBegin( ONtSky *inSky, ONtSkyClass *inSkyClass )
 			offset_vector					= inSky->planet_position[i];
 
 			MUmVector_Normalize( offset_vector );
-	
+
 			inSky->flare.cutoff_angle				= 0.6f;
 			inSky->flare.falloff_angle				= 0.3f;
 			inSky->flare.cosine_cutoff_angle		= (float) cos( inSky->flare.cutoff_angle );
@@ -464,7 +464,7 @@ UUtError ONrSky_LevelBegin( ONtSky *inSky, ONtSkyClass *inSkyClass )
 
 			inSkyClass->lens_flare->flags			|= M3cTextureFlags_Blend_Additive;
 
-			// FIXME: find better points 
+			// FIXME: find better points
 			// build 2d visiblity test points
 			{
 				int			j;
@@ -548,8 +548,8 @@ void ONrSky_Draw( ONtSky *inSky )
 
 		inSky->star_sprite_array->sprites[i].alpha	= (UUtUns8) MUrUnsignedSmallFloat_To_Uns_Round( (max_alpha*0.25f) + (ONgSky_NoiseTable[noise_index] * (max_alpha*0.75f)));
 	}
-		
-	
+
+
 	inSky->skybox.height	= ONgSky_Height;
 	inSky->skybox.height	= 0.0f;
 
@@ -631,7 +631,7 @@ void ONrSky_DrawLensFlare( ONtSky* inSky )
 
 	MUmVector_Normalize( eye_to_light_vector );
 
-	direction_dot_radius	= MUrVector_DotProduct( &CAgCamera.viewData.viewVector, &eye_to_light_vector );	
+	direction_dot_radius	= MUrVector_DotProduct( &CAgCamera.viewData.viewVector, &eye_to_light_vector );
 
 	if (direction_dot_radius < inSky->flare.cosine_cutoff_angle) {
 		alpha = 0;
@@ -655,7 +655,7 @@ void ONrSky_DrawLensFlare( ONtSky* inSky )
 		float					delta;
 		float					delta_per_tick;
 		delta					= alpha - inSky->flare.alpha;
-		if( delta > 0 ) 
+		if( delta > 0 )
 		{
 			delta_per_tick	= 75.0f;
 			alpha			= UUmMin( alpha,	inSky->flare.alpha + delta_per_tick * ticks );

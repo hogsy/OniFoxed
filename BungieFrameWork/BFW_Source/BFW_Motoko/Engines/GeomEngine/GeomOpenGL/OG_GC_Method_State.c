@@ -1,12 +1,12 @@
 /*
 	FILE:	OG_GC_Method_State.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -37,7 +37,7 @@ UUtError
 OGrGeomContext_Method_State_Push(
 		void)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -45,7 +45,7 @@ UUtError
 OGrGeomContext_Method_State_Pop(
 		void)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -53,6 +53,6 @@ UUtError
 OGrGeomContext_Method_State_Commit(
 		void)
 {
-	
+
 	return UUcError_None;
 }

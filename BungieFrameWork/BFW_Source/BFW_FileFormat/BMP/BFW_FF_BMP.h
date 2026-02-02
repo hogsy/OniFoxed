@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_FF_BMP.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -25,7 +25,7 @@ FFrWrite_BMP(
 UUtBool
 FFrType_IsBMP(
 	BFtFileRef*		inFileRef);
-	
+
 UUtError
 FFrRead_BMP(
 	BFtFileRef*		inFileRef,

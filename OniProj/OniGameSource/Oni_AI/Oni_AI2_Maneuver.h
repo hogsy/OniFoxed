@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Maneuver.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: May 02, 2000
-	
+
 	PURPOSE: Maneuvering code for Oni AI system
-	
+
 	Copyright (c) 2000
 
 */
@@ -170,7 +170,7 @@ UUtBool AI2rManeuver_CheckBlockage(ONtCharacter *ioCharacter, M3tPoint3D *inTarg
 // determine whether there are any characters between us and some point
 UUtBool AI2rManeuver_CheckInterveningCharacters(ONtCharacter *ioCharacter, M3tPoint3D *inTargetPoint);
 
-// try colliding with a spheretree against the environment		
+// try colliding with a spheretree against the environment
 UUtBool AI2rManeuver_TrySphereTreeCollision(PHtSphereTree *inSphereTree, M3tVector3D *inMovementVector);
 
 // check to see if we can perform an escape move

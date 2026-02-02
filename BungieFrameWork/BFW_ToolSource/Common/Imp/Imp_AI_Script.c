@@ -1,8 +1,8 @@
 /*
 	Imp_AI_Script.c
-	
+
 	Script level AI stuff
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-	
+
 #include "BFW.h"
 #include "BFW_FileManager.h"
 #include "BFW_TemplateManager.h"
@@ -45,7 +45,7 @@ static UUtError AIiScript_LoadRemapTable(
 	UUtError error = UUcError_None;
 	BFtFileRef *fileRef;
 	BFtFile *outFile;
-	
+
 	// If there are no quads remapped in memory, look for them on disk
 	if (!IMPgAI_QuadRemapCount)
 	{
@@ -85,7 +85,7 @@ static void AIiScript_StatementProcess_QuadRefToIndex(
 	UUtUns32 ref,lowestIdx;
 	UUtUns16 i;
 	UUtError error;
-	
+
 	lowestIdx = inLowest ? 0xFFFFFFFF : 0;
 	error = AIiScript_LoadRemapTable();
 
@@ -101,7 +101,7 @@ static void AIiScript_StatementProcess_QuadRefToIndex(
 			}
 		}
 	}
-	
+
 	if ((inLowest && lowestIdx == 0xFFFFFFFF) ||
 		(!inLowest && lowestIdx == 0) ||
 		error != UUcError_None)
@@ -110,7 +110,7 @@ static void AIiScript_StatementProcess_QuadRefToIndex(
 			" exist or you need to import the environment again, or the remap quad file is missing",ref);
 		return;
 	}
-	
+
 	sprintf(inParm,"%d",lowestIdx);
 }
 
@@ -123,12 +123,12 @@ void IMPrScript_AddQuadRemap(
 
 	// Adds a quad remapping index
 	if (IMPgAI_QuadRemapCount >= IMPcMaxQuadRemaps) return;
-	
+
 	UUmAssert(inQuadIndex < UUcMaxUns16);
 	IMPgAI_QuadRefRemap[0][IMPgAI_QuadRemapCount] = (UUtUns16)inQuadIndex;
 	IMPgAI_QuadRefRemap[1][IMPgAI_QuadRemapCount] = (UUtUns16)inRefNumber;
 	IMPgAI_QuadRemapCount++;
-	
+
 	// Note the location of the texture
 	GRrGroup_GetString(inEnvGroup,"textureDirectory",&string);
 	UUrString_Copy(IMPgAI_EnvTextureDirectory,string,128);
@@ -193,7 +193,7 @@ static UUtError Imp_Parse_SuperTable(
 	char *curLine,*string;
 	UUtBool skipDoors = UUcFalse;
 	UUtBool	haveID0 = UUcFalse;
-	
+
 	UUmAssertReadPtr(inTableFileRef, 1);
 	UUmAssertWritePtr(outCharacterSetup, sizeof(*outCharacterSetup));
 
@@ -205,7 +205,7 @@ static UUtError Imp_Parse_SuperTable(
 	error = BFrTextFile_OpenForRead(inTableFileRef, &textFile);
 	UUmError_ReturnOnError(error);
 
-	
+
 	// 1. arbitray white lines
 	// 2. line the contains 'characters'
 	// 3
@@ -264,9 +264,9 @@ static UUtError Imp_Parse_SuperTable(
 		// default script id
 		curField = UUrTableGetNextEntry(curLine,  &internal);
 		error = UUrString_To_Uns16(curField, &curSetup->defaultScriptID);
-		
+
 		if(curSetup->defaultScriptID == 0) haveID0 = UUcTrue;
-		
+
 		// default flag id
 		curField = UUrTableGetNextEntry(NULL,  &internal);
 		error = UUrString_To_Int16(curField, &curSetup->defaultFlagID);
@@ -275,8 +275,8 @@ static UUtError Imp_Parse_SuperTable(
 		curField = UUrTableGetNextEntry(NULL,  &internal);
 		if (0 == UUrString_Compare_NoCase_NoSpace(curField, "")) { }
 		else if (0 == UUrString_Compare_NoCase_NoSpace(curField, "n")) { }
-		else if (0 == UUrString_Compare_NoCase_NoSpace(curField, "y")) { 
-			curSetup->flags |= AIcSetup_Flag_AutoFreeze; 
+		else if (0 == UUrString_Compare_NoCase_NoSpace(curField, "y")) {
+			curSetup->flags |= AIcSetup_Flag_AutoFreeze;
 		}
 		else {
 			Imp_PrintWarning("looking for y/n got %s.  I will asssume n.", curField);
@@ -314,19 +314,19 @@ static UUtError Imp_Parse_SuperTable(
 		curField = UUrTableGetNextEntry(NULL,  &internal);
 		{
 			char *subInternal = NULL;
-			
+
 			string = UUrString_Tokenize(curField,"/",&subInternal);
 			error = UUrString_To_Uns16(string, &curSetup->ammo);
 			if (error!=UUcError_None) curSetup->ammo = 0;
-			
+
 			string = UUrString_Tokenize(NULL,"/",&subInternal);
 			error = UUrString_To_Uns16(string, &curSetup->leaveAmmo);
 			if (error!=UUcError_None) curSetup->leaveAmmo = UUcMaxUns16;
-			
+
 			string = UUrString_Tokenize(NULL,"/",&subInternal);
 			error = UUrString_To_Uns16(string, &curSetup->leaveClips);
 			if (error!=UUcError_None) curSetup->leaveClips = 0;
-			
+
 			string = UUrString_Tokenize(NULL,"/",&subInternal);
 			error = UUrString_To_Uns16(string, &curSetup->leaveCells);
 			if (error!=UUcError_None) curSetup->leaveCells = 0;
@@ -335,11 +335,11 @@ static UUtError Imp_Parse_SuperTable(
 			error = UUrString_To_Uns16(string, &curSetup->leaveHypos);
 			if (error!=UUcError_None) curSetup->leaveHypos = 0;
 		}
-		
+
 		/*
 		 * ADD THESE BACK IN AS THEY ARE NEEDED
 		 */
-		
+
 		// idle
 		curField = UUrTableGetNextEntry(NULL,  &internal);
 		if (!UUrString_IsSpace(curField)) {
@@ -412,13 +412,13 @@ static UUtError Imp_Parse_SuperTable(
 			//UUmError_ReturnOnError(error);
 		}
 	}
-	
+
 	// CB: this is not an error any more, it is handled by the AI2 system in the engine
 /*	if(haveID0 == UUcFalse)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Did not find character with ID 0");
 	}*/
-	
+
 	spawnArray = UUrMemory_Block_New(sizeof(*spawnArray));
 	if (NULL == spawnArray) {
 		goto failure;
@@ -434,9 +434,9 @@ static UUtError Imp_Parse_SuperTable(
 		if (UUrString_IsSpace(curLine)) { continue; }
 		if (UUrString_HasPrefix(curLine, "triggers")) break;
 
-		for(curField = UUrString_Tokenize(curLine, " \t", &strtokPrivate); 
-			curField != NULL; 
-			curField = UUrString_Tokenize(NULL, " \t", &strtokPrivate)) 
+		for(curField = UUrString_Tokenize(curLine, " \t", &strtokPrivate);
+			curField != NULL;
+			curField = UUrString_Tokenize(NULL, " \t", &strtokPrivate))
 		{
 			if (UUrString_IsSpace(curLine)) { continue; }
 
@@ -454,7 +454,7 @@ static UUtError Imp_Parse_SuperTable(
 				UUmError_ReturnOnError(error);
 			}
 
-			spawnArray->spawnFlagIDs[spawnArray->numSpawnFlagIDs++] = thisSpawnPoint;			
+			spawnArray->spawnFlagIDs[spawnArray->numSpawnFlagIDs++] = thisSpawnPoint;
 		}
 	}
 
@@ -469,7 +469,7 @@ static UUtError Imp_Parse_SuperTable(
 		AItScriptTriggerClass curTrigger;
 		char *curField;
 		char *internal;
-		
+
 		if (UUrString_IsSpace(curLine)) { continue; }
 		if (UUrString_HasPrefix(curLine, "doors")) break;
 		if (UUrString_HasPrefix(curLine, "scripts"))
@@ -528,7 +528,7 @@ static UUtError Imp_Parse_SuperTable(
 		}
 
 		// ADD TRIGGER SCRIPTS BACK IN WHEN NEW TOOL IS READY - BHP
-		
+
 		// offscript
 		curField = UUrTableGetNextEntry(NULL,  &internal);
 
@@ -569,7 +569,7 @@ static UUtError Imp_Parse_SuperTable(
 		else {
 			error = UUrString_To_Uns16(curField, &curTrigger.team);
 
-			if (error) { 
+			if (error) {
 				Imp_PrintWarning("trigger had an invalid team %s", curField);
 			}
 		}
@@ -583,13 +583,13 @@ static UUtError Imp_Parse_SuperTable(
 		else {
 			error = UUrString_To_Uns16(curField, &curTrigger.refRestrict);
 
-			if (error) { 
+			if (error) {
 				Imp_PrintWarning("trigger had an invalid character %s", curField);
 			}
 		}
 
 		scriptTriggerArray = UUrMemory_Block_Realloc(scriptTriggerArray, sizeof(AItScriptTriggerClassArray) + sizeof(AItScriptTriggerClass) * scriptTriggerArray->numTriggers);
-		scriptTriggerArray->triggers[scriptTriggerArray->numTriggers++] = curTrigger;			
+		scriptTriggerArray->triggers[scriptTriggerArray->numTriggers++] = curTrigger;
 	}
 
 	// Parse doors
@@ -610,34 +610,34 @@ static UUtError Imp_Parse_SuperTable(
 			if (UUrString_HasPrefix(curLine, "#")) { continue; }
 			if (UUrString_IsSpace(curLine)) { continue; }
 			if (UUrString_HasPrefix(curLine, "scripts")) break;
-			
+
 			UUrMemory_Clear(&curDoor, sizeof(curDoor));
-			
+
 			// id	open type	open anim	open key	close type	close key	radius	open snd	close snd	invis teams	flags	link
-			
-			
+
+
 			// id
 			curField = UUrTableGetNextEntry(curLine,  &internal);
 			error = UUrString_To_Uns16(curField, &curDoor.id);
 			if (UUcError_None != error || curDoor.id == 0) {
 				Imp_PrintWarning("door had invalid id");
 			}
-			
+
 			// open type
 			curField = UUrTableGetNextEntry(NULL,  &internal);
 			if (UUmString_IsEqual_NoCase_NoSpace(curField, "manual"))
 			{
 				curDoor.flags |= OBcDoorClassFlag_OpenManual;
 			}
-			
+
 			// open anim
 			curField = UUrTableGetNextEntry(NULL,  &internal);
 			error = TMrConstruction_Instance_GetPlaceHolder(OBcTemplate_Animation,curField,(TMtPlaceHolder *)&curDoor.openCloseAnim);
 			if (UUcError_None != error) {
 				Imp_PrintWarning("door had invalid open animation");
-				
+
 			}
-			
+
 			// open key
 			curField = UUrTableGetNextEntry(NULL,  &internal);
 			error = UUrString_To_Uns16(curField, &curDoor.openKey);
@@ -650,7 +650,7 @@ static UUtError Imp_Parse_SuperTable(
 			{
 				curDoor.flags |= OBcDoorClassFlag_CloseManual;
 			}
-		
+
 #if 0
 			// close anim
 			curField = UUrTableGetNextEntry(NULL,  &internal);
@@ -659,7 +659,7 @@ static UUtError Imp_Parse_SuperTable(
 				Imp_PrintWarning("door had invalid close animation");
 			}
 #endif
-			
+
 			// close key
 			curField = UUrTableGetNextEntry(NULL,  &internal);
 			error = UUrString_To_Uns16(curField, &curDoor.closeKey);
@@ -671,13 +671,13 @@ static UUtError Imp_Parse_SuperTable(
 			error = UUrString_To_Float(curField, &curDoor.activationRadiusSquared);
 			if (error!=UUcError_None) Imp_PrintWarning("Door had invalid activation radius");
 			curDoor.activationRadiusSquared *= curDoor.activationRadiusSquared;
-						
+
 			// invisible teams
 			curField = UUrTableGetNextEntry(NULL,  &internal);
 			UUrString_StripDoubleQuotes(curField,strlen(curField)+1);
 			error = AUrParseNumericalRangeString(curField,&curDoor.invisibility,AIcMaxTeams);
 			if (UUcError_None != error) curDoor.invisibility = 0;
-			
+
 			// flags
 			curField = UUrTableGetNextEntry(NULL,  &internal);
 			error = UUrString_To_Uns16(curField, &flags);
@@ -688,10 +688,10 @@ static UUtError Imp_Parse_SuperTable(
 			curField = UUrTableGetNextEntry(NULL,  &internal);
 			error = UUrString_To_Uns16(curField, &curDoor.linkID);
 			if (error!=UUcError_None) curDoor.linkID = 0;
-			
+
 			// Create the instance
 			doorArray = UUrMemory_Block_Realloc(doorArray, sizeof(OBtDoorClassArray) + sizeof(OBtDoorClass) * doorArray->numDoors);
-			doorArray->doors[doorArray->numDoors++] = curDoor;			
+			doorArray->doors[doorArray->numDoors++] = curDoor;
 		}
 	}
 
@@ -747,7 +747,7 @@ UUtError Imp_AddAIScriptTable(
 	// 2. parse file
 	// 3. create instance
 
-	error = 
+	error =
 		Imp_Common_BuildInstance(
 			inSourceFile,
 			inSourceFileModDate,
@@ -765,7 +765,7 @@ UUtError Imp_AddAIScriptTable(
 		return UUcError_None;
 	}
 
-	error = 
+	error =
 		Imp_Parse_SuperTable(
 			tableFileRef,
 			&srcCharacterSetup,
@@ -773,9 +773,9 @@ UUtError Imp_AddAIScriptTable(
 			&srcTriggerArray,
 			&srcDoorArray);
 	UUmError_ReturnOnError(error);
-	
+
 	BFrFileRef_Dispose(tableFileRef);
-	
+
 	// character setup
 	error = TMrConstruction_Instance_Renew(
 				AIcTemplate_CharacterSetupArray,
@@ -785,9 +785,9 @@ UUtError Imp_AddAIScriptTable(
 	UUmError_ReturnOnError(error);
 
 	UUrMemory_MoveFast(
-		srcCharacterSetup, 
-		dstCharacterSetup, 
-		sizeof(AItCharacterSetupArray) + 
+		srcCharacterSetup,
+		dstCharacterSetup,
+		sizeof(AItCharacterSetupArray) +
 		sizeof(AItCharacterSetup) * (srcCharacterSetup->numCharacterSetups - 1));
 
 	// spawn points
@@ -799,9 +799,9 @@ UUtError Imp_AddAIScriptTable(
 	UUmError_ReturnOnError(error);
 
 	UUrMemory_MoveFast(
-		srcSpawnArray, 
-		dstSpawnArray, 
-		sizeof(ONtSpawnArray) + 
+		srcSpawnArray,
+		dstSpawnArray,
+		sizeof(ONtSpawnArray) +
 		sizeof(UUtInt16) * (srcSpawnArray->numSpawnFlagIDs - 1));
 
 	// triggers
@@ -813,9 +813,9 @@ UUtError Imp_AddAIScriptTable(
 	UUmError_ReturnOnError(error);
 
 	UUrMemory_MoveFast(
-		srcTriggerArray, 
-		dstTriggerArray, 
-		sizeof(AItScriptTriggerClassArray) + 
+		srcTriggerArray,
+		dstTriggerArray,
+		sizeof(AItScriptTriggerClassArray) +
 		sizeof(AItScriptTriggerClass) * (srcTriggerArray->numTriggers - 1));
 
 	// doors
@@ -827,9 +827,9 @@ UUtError Imp_AddAIScriptTable(
 	UUmError_ReturnOnError(error);
 
 	UUrMemory_MoveFast(
-		srcDoorArray, 
-		dstDoorArray, 
-		sizeof(OBtDoorClassArray) + 
+		srcDoorArray,
+		dstDoorArray,
+		sizeof(OBtDoorClassArray) +
 		sizeof(OBtDoorClass) * (srcDoorArray->numDoors - 1));
 
 // free up memory

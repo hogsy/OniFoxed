@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_LSPreperation.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Nov 20, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -45,7 +45,7 @@ private:
     void calcTotalArea();
 
     LtTParameterWizard	params;	    // Parameter wizard
-	
+
 	const char*			gqFileName;
 	IMPtEnv_BuildData*	buildData;
 

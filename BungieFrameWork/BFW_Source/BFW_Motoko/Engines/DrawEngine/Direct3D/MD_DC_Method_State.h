@@ -1,12 +1,12 @@
 /*
 	FILE:	MD_DC_Method_State.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */

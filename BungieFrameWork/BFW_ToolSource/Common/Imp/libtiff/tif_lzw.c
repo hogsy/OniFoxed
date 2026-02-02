@@ -6,23 +6,23 @@ static char rcsid[] = "$Header$";
  * Copyright (c) 1988, 1989, 1990, 1991, 1992 Sam Leffler
  * Copyright (c) 1991, 1992 Silicon Graphics, Inc.
  *
- * Permission to use, copy, modify, distribute, and sell this software and 
+ * Permission to use, copy, modify, distribute, and sell this software and
  * its documentation for any purpose is hereby granted without fee, provided
  * that (i) the above copyright notices and this permission notice appear in
  * all copies of the software and related documentation, and (ii) the names of
  * Sam Leffler and Silicon Graphics may not be used in any advertising or
  * publicity relating to the software without the specific, prior written
  * permission of Sam Leffler and Silicon Graphics.
- * 
- * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
- * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
- * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
- * 
+ *
+ * THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+ * WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+ *
  * IN NO EVENT SHALL SAM LEFFLER OR SILICON GRAPHICS BE LIABLE FOR
  * ANY SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
  * OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
- * WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF 
- * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 
+ * WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF
+ * LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
  * OF THIS SOFTWARE.
  */
 
@@ -446,7 +446,7 @@ LZWDecode(tif, op0, occ0, s)
 					sp->lzw_nbits = BITS_MAX;
 				SetMaxCode(sp, MAXCODE(sp->lzw_nbits));
 			}
-		} 
+		}
 		oldcode = incode;
 	}
 	sp->dec_stackp = stackp;
@@ -646,16 +646,16 @@ LZWPreEncode(tif)
 /*
  * Encode a scanline of pixels.
  *
- * Uses an open addressing double hashing (no chaining) on the 
+ * Uses an open addressing double hashing (no chaining) on the
  * prefix code/next character combination.  We do a variant of
  * Knuth's algorithm D (vol. 3, sec. 6.4) along with G. Knott's
  * relatively-prime secondary probe.  Here, the modular division
- * first probe is gives way to a faster exclusive-or manipulation. 
+ * first probe is gives way to a faster exclusive-or manipulation.
  * Also do block compression with an adaptive reset, whereby the
  * code table is cleared when the compression ratio decreases,
  * but after the table fills.  The variable-length output codes
  * are re-sized at this point, and a CODE_CLEAR is generated
- * for the decoder. 
+ * for the decoder.
  */
 static
 LZWEncode(tif, bp, cc, s)
@@ -846,7 +846,7 @@ PutNextCode(tif, c)
 	 * be updated for the mainline write code in TIFFWriteScanline()
 	 * so that data is flushed when the end of a strip is reached.
 	 * Note that the latter is rounded up to ensure that a non-zero
-	 * byte count is present. 
+	 * byte count is present.
 	 */
 	sp->enc_outcount += sp->lzw_nbits;
 	sp->lzw_bitoff += sp->lzw_nbits;

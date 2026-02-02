@@ -60,10 +60,10 @@ OBJiNeutral_Enumerate(
 	UUtUns32						inUserData)
 {
 	char							name[OBJcMaxNameLength + 1];
-	
+
 	OBJrObject_GetName(inObject, name, OBJcMaxNameLength);
 	inEnumCallback(name, inUserData);
-	
+
 	return UUcError_None;
 }
 
@@ -92,9 +92,9 @@ OBJiNeutral_OSDGetName(
 
 	// get a pointer to the object osd
 	neutral_osd = &inOSD->osd.neutral_osd;
-	
+
 	UUrString_Copy(outName, neutral_osd->name, inNameLength);
-	
+
 	return;
 }
 
@@ -107,7 +107,7 @@ OBJiNeutral_OSDSetName(
 
 	// get a pointer to the object osd
 	neutral_osd = &inOSD->osd.neutral_osd;
-	
+
 	UUrString_Copy(neutral_osd->name, outName, sizeof(neutral_osd->name));
 
 	return;
@@ -125,7 +125,7 @@ OBJiNeutral_GetOSD(
 
 	// get a pointer to the object osd
 	neutral_osd = (OBJtOSD_Neutral *) inObject->object_data;
-	
+
 	outOSD->osd.neutral_osd = *neutral_osd;
 
 	return;
@@ -295,7 +295,7 @@ OBJiNeutral_New(
 {
 	OBJtOSD_All				osd_all;
 	UUtError				error;
-	
+
 	if (NULL == inOSD) {
 		error = OBJiNeutral_SetDefaults(&osd_all);
 		UUmError_ReturnOnError(error);
@@ -304,11 +304,11 @@ OBJiNeutral_New(
 	{
 		OBJiNeutral_DuplicateOSD(inOSD, &osd_all);
 	}
-	
+
 	// set the object specific data and position
 	error = OBJrObject_SetObjectSpecificData(inObject, &osd_all);
 	UUmError_ReturnOnError(error);
-	
+
 	OBJrObject_UpdatePosition(inObject);
 
 	return UUcError_None;
@@ -365,7 +365,7 @@ OBJiNeutral_Read(
 
 	// bring the object up to date
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return bytes_read;
 }
 
@@ -377,12 +377,12 @@ OBJiNeutral_SetOSD(
 {
 	OBJtOSD_Neutral			*neutral_osd;
 	UUtUns32				itr;
-	
+
 	UUmAssert(inOSD);
-	
+
 	// get a pointer to the object osd
 	neutral_osd = (OBJtOSD_Neutral *) inObject->object_data;
-	
+
 	// copy the data from inOSD to char_osd
 	UUrString_Copy(neutral_osd->name, inOSD->osd.neutral_osd.name, sizeof(inOSD->osd.neutral_osd.name));
 
@@ -433,7 +433,7 @@ OBJiNeutral_Write(
 {
 	OBJtOSD_Neutral		*neutral_osd;
 	UUtUns32			itr, bytes_available;
-	
+
 	neutral_osd = (OBJtOSD_Neutral *) inObject->object_data;
 	bytes_available = *ioBufferSize;
 
@@ -468,7 +468,7 @@ OBJiNeutral_Write(
 
 	// set ioBufferSize to the number of bytes written to the buffer
 	*ioBufferSize = *ioBufferSize - bytes_available;
-	
+
 	return UUcError_None;
 }
 
@@ -503,10 +503,10 @@ OBJiNeutral_Search(
 {
 	OBJtOSD_Neutral		*neutral_osd;
 	UUtBool				found;
-	
+
 	// get a pointer to the object osd
 	neutral_osd = (OBJtOSD_Neutral *) inObject->object_data;
-	
+
 	// perform the check
 	switch (inSearchType)
 	{
@@ -522,7 +522,7 @@ OBJiNeutral_Search(
 			found = UUcFalse;
 		break;
 	}
-	
+
 	return found;
 }
 
@@ -538,10 +538,10 @@ OBJrNeutral_Initialize(
 {
 	UUtError				error;
 	OBJtMethods				methods;
-	
+
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew				= OBJiNeutral_New;
 	methods.rSetDefaults		= OBJiNeutral_SetDefaults;
@@ -562,7 +562,7 @@ OBJrNeutral_Initialize(
 	methods.rSearch				= OBJiNeutral_Search;
 	methods.rSetClassVisible	= OBJiNeutral_SetVisible;
 	methods.rGetUniqueOSD		= OBJiNeutral_GetUniqueOSD;
-	
+
 	// register the neutral behavior methods
 	error =
 		OBJrObjectGroup_Register(
@@ -573,7 +573,7 @@ OBJrNeutral_Initialize(
 			&methods,
 			OBJcObjectGroupFlag_CanSetName);
 	UUmError_ReturnOnError(error);
-		
+
 	return UUcError_None;
 }
 

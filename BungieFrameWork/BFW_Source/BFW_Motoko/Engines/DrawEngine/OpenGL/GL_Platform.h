@@ -1,12 +1,12 @@
 /*
 	FILE:	GL_Platform_H
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: August 10, 1999
-	
+
 	PURPOSE: OpenGL Draw Engine
-	
+
 	Copyright 1999
 
 */

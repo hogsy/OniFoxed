@@ -5,8 +5,8 @@
 
 	CREATED: Sept 18, 1997
 
-	PURPOSE: 
-	
+	PURPOSE:
+
 	Copyright 1997
 
 */

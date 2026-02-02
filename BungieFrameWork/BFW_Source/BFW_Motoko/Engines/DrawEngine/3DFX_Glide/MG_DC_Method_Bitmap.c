@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_DC_Method_Bitmap.c
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: Nov 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997, 1998
 
 */
@@ -30,7 +30,7 @@
 #include "rasterizer_3dfx.h"
 
 // this table converts from Motoko alpha to glide vertex alpha
-float MGg5BitsTo0_255FloatTable[32] = 
+float MGg5BitsTo0_255FloatTable[32] =
 {
 	( 0.f * (MGc255Float / ((float) MGcMax5Bits))), ( 1.f * (MGc255Float / ((float) MGcMax5Bits))), ( 2.f * (MGc255Float / ((float) MGcMax5Bits))), ( 3.f * (MGc255Float / ((float) MGcMax5Bits))),
 	( 4.f * (MGc255Float / ((float) MGcMax5Bits))), ( 5.f * (MGc255Float / ((float) MGcMax5Bits))), ( 6.f * (MGc255Float / ((float) MGcMax5Bits))), ( 7.f * (MGc255Float / ((float) MGcMax5Bits))),
@@ -76,10 +76,10 @@ MGrDrawContext_Method_TriSprite(
 	float ooz2 = 65535.f / inPoints[2].z;
 	float oow2 = inPoints[2].invW;
 
-	GrVertex glide_vertices[3];	
-	
+	GrVertex glide_vertices[3];
+
 	UUmAssert(textureMapPrivate != NULL);
-	
+
 	glide_vertices[0].x= x0;
 	glide_vertices[0].y= y0;
 	glide_vertices[0].ooz= ooz0;
@@ -102,7 +102,7 @@ MGrDrawContext_Method_TriSprite(
 	glide_vertices[2].tmuvtx[0].tow= textureMapPrivate->v_scale*inTextureCoords[2].v*oow2;
 
 	grDrawPlanarPolygonVertexList(3, glide_vertices);
-	
+
 	return;
 }
 
@@ -125,10 +125,10 @@ MGrDrawContext_Method_Sprite(
 	float y1 = SNAP_COORD(inPoints[1].y);
 	float x1 = SNAP_COORD(inPoints[1].x);
 
-	GrVertex glide_vertices[4];	
-	
+	GrVertex glide_vertices[4];
+
 	UUmAssert(textureMapPrivate != NULL);
-	
+
 	// upper left
 	glide_vertices[1].x= x0;
 	glide_vertices[1].y= y0;
@@ -162,7 +162,7 @@ MGrDrawContext_Method_Sprite(
 	glide_vertices[3].tmuvtx[0].tow= textureMapPrivate->v_scale*inTextureCoords[3].v*oow;
 
 	grDrawPlanarPolygonVertexList(4, glide_vertices);
-	
+
 	return;
 }
 
@@ -198,7 +198,7 @@ MGrDrawContext_Method_ScreenCapture(
 	return UUcError_None;
 }
 
-UUtBool 
+UUtBool
 MGrDrawContext_Method_PointVisible(
 	const M3tPointScreen	*inPoint,
 	float					inTolerance)

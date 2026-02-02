@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_Geom_Shade.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 21, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */
@@ -34,7 +34,7 @@ iComputeShade_Face(
 	float					inBaseR,
 	float					inBaseG,
 	float					inBaseB);
-	
+
 
 void
 MSrShade_Vertices_Gouraud(
@@ -44,27 +44,27 @@ MSrShade_Vertices_Gouraud(
 	UUtUns32*				inResultScreenShades)
 {
 	UUtUns16				i;
-	
+
 	M3tPoint3D*				curPoint = inWorldPoints;
 	M3tVector3D*			curNormal = inWorldVertexNormals;
 	UUtUns32*				curScreenShade = inResultScreenShades;
 	UUtBool					environmentMapping;
 	M3tTextureCoord*		curEnvMapCoord = NULL;
 	M3tPoint3D*				cameraLocation;
-	
+
 	cameraLocation = &MSgGeomContextPrivate->visCamera->cameraLocation;
-	
+
 	environmentMapping = (inGeometry->baseMap->flags & M3cTextureFlags_ReceivesEnvMap) != 0;
-	
+
 	MSgGeomContextPrivate->numDebugEnvMap = 0;
 
 	UUmAssert(NULL != curPoint);
-	
+
 	if(0 || environmentMapping)
 	{
 		curEnvMapCoord = MSgGeomContextPrivate->envMapCoords;
 	}
-	
+
 	if ((inGeometry->geometryFlags & M3cGeometryFlag_SelfIlluminent) || (inGeometry->baseMap->flags & M3cTextureFlags_SelfIlluminent))
 	{
 		for(i = 0; i < inGeometry->pointArray->numPoints; i++)
@@ -72,12 +72,12 @@ MSrShade_Vertices_Gouraud(
 			*curScreenShade++ = 0xFFFFFFF;
 		}
 	}
-	else 
-	{		
+	else
+	{
 		for(i = 0; i < inGeometry->pointArray->numPoints; i++)
 		{
 			*curScreenShade = iComputeShade(curPoint, curNormal, cameraLocation, curEnvMapCoord);
-			
+
 			curPoint++;
 			curNormal++;
 			curScreenShade++;
@@ -95,29 +95,29 @@ MSrShade_Vertices_GouraudActive(
 	UUtUns32*				inActiveVerticesBV)
 {
 	UUtUns32				i;
-	
+
 	M3tPoint3D*				curPoint = inWorldPoints;
 	M3tVector3D*			curNormal = inWorldVertexNormals;
 	UUtUns32*				curScreenShade = inResultScreenShades;
 	UUtBool					environmentMapping;
 	M3tTextureCoord*		curEnvMapCoord = NULL;
 	M3tPoint3D*				cameraLocation;
-        
+
 	UUmAssertReadPtr(MSgGeomContextPrivate->visCamera, sizeof(*MSgGeomContextPrivate->visCamera));
 	UUmAssertReadPtr(MSgGeomContextPrivate, sizeof(*MSgGeomContextPrivate));
 
 	cameraLocation = &MSgGeomContextPrivate->visCamera->cameraLocation;
-	
-	
+
+
 	environmentMapping = (inGeometry->baseMap->flags & M3cTextureFlags_ReceivesEnvMap) != 0;
-	
+
 	if(0 || environmentMapping)
 	{
 		curEnvMapCoord = MSgGeomContextPrivate->envMapCoords;
 	}
-	
+
 	UUmAssert(NULL != curPoint);
-	
+
 	if ((inGeometry->geometryFlags & M3cGeometryFlag_SelfIlluminent) || (inGeometry->baseMap->flags & M3cTextureFlags_SelfIlluminent))
 	{
 		for(i = 0; i < inGeometry->pointArray->numPoints; i++)
@@ -231,7 +231,7 @@ MSrShade_Vertices_GouraudActive(
 			}
 		}
 	}
-	else 
+	else
 	{
 		UUtUns32 numPoints = inGeometry->pointArray->numPoints;
 
@@ -241,7 +241,7 @@ MSrShade_Vertices_GouraudActive(
 			{
 				*curScreenShade = iComputeShade(curPoint, curNormal, cameraLocation, curEnvMapCoord);
 			}
-			
+
 			curPoint++;
 			curNormal++;
 			curScreenShade++;
@@ -369,12 +369,12 @@ MSrShade_Faces_Gouraud(
 	UUtUns32*				inResultFaceScreenShades)
 {
 	UUtUns32				i;
-	
+
 	M3tVector3D*			curFaceNormal;
-	UUtUns32*				curFaceScreenShade;	
+	UUtUns32*				curFaceScreenShade;
 	UUtUns16	count = 0;
 	UUtUns16	stripIndexCount = 2;
-	
+
 	curFaceNormal = inWorldFaceNormals;
 	curFaceScreenShade = inResultFaceScreenShades;
 
@@ -385,8 +385,8 @@ MSrShade_Faces_Gouraud(
 			*curFaceScreenShade++ = 0xFFFFFFF;
 		}
 	}
-	else 
-	{		
+	else
+	{
 		for(i = 0; i < inNumFaces; i++)
 		{
 			if(inGeometry->triStripArray->indices[stripIndexCount++] & 0x80000000)
@@ -395,14 +395,14 @@ MSrShade_Faces_Gouraud(
 				if(count >= 32) count = 0;
 				stripIndexCount += 2;
 			}
-		
+
 			*curFaceScreenShade =
 				iComputeShade_Face(
 					curFaceNormal,
 					gRTable[count],
 					gGTable[count],
 					gBTable[count]);
-			
+
 			curFaceNormal++;
 			curFaceScreenShade++;
 		}
@@ -521,18 +521,18 @@ iComputeShade(
 	//float					inverseDistance, distanceSquared;
 	MStLight_Directional*	curDirectionalLight;
 	//M3tLight_Point*		curPointLight;
-	
+
 	UUtUns32				outShade;
 		float normalX, normalY, normalZ;
-	
+
 	normalX = inNormal->x;
 	normalY = inNormal->y;
 	normalZ = inNormal->z;
-	
+
 	curR = MSgGeomContextPrivate->light_Ambient.color.r;
 	curG = MSgGeomContextPrivate->light_Ambient.color.g;
 	curB = MSgGeomContextPrivate->light_Ambient.color.b;
-	
+
 	// compute reflection vector if needed
 	if(inEnvMapCoord != NULL)
 	{
@@ -541,7 +541,7 @@ iComputeShade(
 
 		float one_over_magnitude;
 
-		// incident = world_points - view->position 
+		// incident = world_points - view->position
 		MUmVector_Subtract(incident, *inPoint, *inCameraLocation);
 		reflect_vector3d(&incident, inNormal, &reflection);
 
@@ -549,7 +549,7 @@ iComputeShade(
 		inEnvMapCoord->u= 0.5f + reflection.x*one_over_magnitude;
 		inEnvMapCoord->v= 0.5f + reflection.y*one_over_magnitude;
 	}
-	
+
 	// directional
 	for(itr = 0, curDirectionalLight = MSgGeomContextPrivate->light_DirectionalList;
 		itr < MSgGeomContextPrivate->light_NumDirectionalLights;
@@ -564,7 +564,7 @@ iComputeShade(
 		lightZ = -curDirectionalLight->normalizedDirection.z;
 
 		dotProduct = normalX * lightX + normalY * lightY + normalZ * lightZ;
-		
+
 		if (dotProduct > 0.0f)
 		{
 			curR += dotProduct * curDirectionalLight->color.r;
@@ -572,7 +572,7 @@ iComputeShade(
 			curB += dotProduct * curDirectionalLight->color.b;
 		}
 	}
-	
+
 	// turn color into a shade
 	UUmAssert(curR >= 0.f);
 	UUmAssert(curG >= 0.f);
@@ -608,19 +608,19 @@ iComputeShade_Face(
 	//float					inverseDistance, distanceSquared;
 	MStLight_Directional*	curDirectionalLight;
 	//M3tLight_Point*		curPointLight;
-	
+
 	UUtUns32				outShade;
 	float					normalX, normalY, normalZ;
-	
+
 	normalX = inNormal->x;
 	normalY = inNormal->y;
 	normalZ = inNormal->z;
-	
+
 	curR = MSgGeomContextPrivate->light_Ambient.color.r;
 	curG = MSgGeomContextPrivate->light_Ambient.color.g;
 	curB = MSgGeomContextPrivate->light_Ambient.color.b;
-	
-	
+
+
 	// directional
 	for(itr = 0, curDirectionalLight = MSgGeomContextPrivate->light_DirectionalList;
 		itr < MSgGeomContextPrivate->light_NumDirectionalLights;
@@ -635,7 +635,7 @@ iComputeShade_Face(
 		lightZ = -curDirectionalLight->normalizedDirection.z;
 
 		dotProduct = normalX * lightX + normalY * lightY + normalZ * lightZ;
-		
+
 		if (dotProduct > 0.0f)
 		{
 			curR += dotProduct * curDirectionalLight->color.r;
@@ -657,24 +657,24 @@ iComputeShade_Face(
 		lightX = curPointLight->location.x - pointX;
 		lightY = curPointLight->location.y - pointY;
 		lightZ = curPointLight->location.z - pointZ;
-		
+
 		distanceSquared = UUmSQR(lightX) + UUmSQR(lightY) + UUmSQR(lightZ);
 		if (0 == distanceSquared) continue;
 
 		inverseDistance = MUrOneOverSqrt(distanceSquared);
-		
+
 		lightX *= inverseDistance;
 		lightY *= inverseDistance;
 		lightZ *= inverseDistance;
-		
+
 		dotProduct = normalX * lightX + normalY * lightY + normalZ * lightZ;
 
-		if (dotProduct > 0.0f) 
+		if (dotProduct > 0.0f)
 		{
 			attenuation = curPointLight->a * inverseDistance * inverseDistance;
 			attenuation += curPointLight->b * inverseDistance;
 			attenuation += curPointLight->c;
-			
+
 			dotProduct *= attenuation;
 			curR += dotProduct * curPointLight->color.r;
 			curG += dotProduct * curPointLight->color.g;
@@ -682,16 +682,16 @@ iComputeShade_Face(
 		}
 	}
 	#endif
-	
+
 	// turn color into a shade
 	UUmAssert(curR >= 0.f);
 	UUmAssert(curG >= 0.f);
 	UUmAssert(curB >= 0.f);
-	
+
 	curR = inBaseR;
 	curG = inBaseG;
 	curB = inBaseB;
-	
+
 	intR = (UUtUns8) MUrUnsignedSmallFloat_To_Uns_Round(UUmMin(curR * 255.0f, 255.0f));
 	intG = (UUtUns8) MUrUnsignedSmallFloat_To_Uns_Round(UUmMin(curG * 255.0f, 255.0f));
 	intB = (UUtUns8) MUrUnsignedSmallFloat_To_Uns_Round(UUmMin(curB * 255.0f, 255.0f));

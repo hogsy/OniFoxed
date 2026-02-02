@@ -36,20 +36,20 @@ Imp_AddMaterial(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the material needs to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(MAcTemplate_Material, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		char					*parent_name;
 		MAtMaterial				*material;
-		
+
 		// get the name of the parent
 		error = GRrGroup_GetString(inGroup, "parent", &parent_name);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get parent name");
-		
+
 		// build an instance of the material
 		error =
 			TMrConstruction_Instance_Renew(
@@ -58,7 +58,7 @@ Imp_AddMaterial(
 				0,
 				&material);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create material instance");
-		
+
 		// the real id will be set at runtime
 		material->id = MAcInvalidID;
 
@@ -89,7 +89,7 @@ Imp_AddMaterial(
 			}
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -104,20 +104,20 @@ Imp_AddImpact(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the impact needs to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(MAcTemplate_Impact, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		char					*parent_name;
 		MAtImpact				*impact;
-		
+
 		// get the name of the parent
 		error = GRrGroup_GetString(inGroup, "parent", &parent_name);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get parent name");
-		
+
 		// build an instance of the impact
 		error =
 			TMrConstruction_Instance_Renew(
@@ -126,7 +126,7 @@ Imp_AddImpact(
 				0,
 				&impact);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create impact instance");
-		
+
 		// the real id will be set at runtime
 		impact->id = MAcInvalidID;
 
@@ -157,7 +157,7 @@ Imp_AddImpact(
 			}
 		}
 	}
-	
+
 	return UUcError_None;
 }
 

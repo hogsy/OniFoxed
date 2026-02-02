@@ -30,7 +30,7 @@ VMiView_RadioGroup_Create(
 {
 	UUtUns16			i;
 	IMtPoint2D			dest;
-	
+
 	// ------------------------------
 	// set the location and state of the child views
 	// ------------------------------
@@ -44,23 +44,23 @@ VMiView_RadioGroup_Create(
 		dest.x = 0;
 		dest.y = 0;
 	}
-	
+
 	for (i = 0; i < inView->num_child_views; i++)
 	{
 		VMtView			*child;
-		
+
 		child = (VMtView*)inView->child_views[i].view_ref;
-		
+
 		VMrView_SetValue(child, VMcRadioButton_Off);
 		VMrView_SetLocation(child, &dest);
-		
+
 		dest.y += child->height + 4;
 	}
-	
+
 	// turn the first child in the group on
 	inPrivateData->current_radiobutton = (VMtView*)inView->child_views[0].view_ref;
 	VMrView_SetValue(inPrivateData->current_radiobutton, VMcRadioButton_On);
-	
+
 	return UUcError_None;
 }
 
@@ -78,7 +78,7 @@ VMiView_RadioGroup_Command(
 	{
 		// turn off the current radio button
 		VMrView_SetValue(inPrivateData->current_radiobutton, VMcRadioButton_Off);
-		
+
 		// set the new current radiobutton
 		inPrivateData->current_radiobutton = inRadioButton;
 	}
@@ -93,7 +93,7 @@ VMiView_RadioGroup_Paint(
 	M3tPointScreen					*inDestination)
 {
 	UUtUns16						alpha;
-	
+
 	// set the alpha
 	if (inView->flags & VMcViewFlag_Enabled)
 		alpha = VUcAlpha_Enabled;
@@ -128,18 +128,18 @@ VMrView_RadioGroup_Callback(
 {
 	VMtView_RadioGroup				*radiogroup;
 	VMtView_RadioGroup_PrivateData	*private_data;
-	
+
 	radiogroup = (VMtView_RadioGroup*)inView->view_data;
 	private_data =
 		(VMtView_RadioGroup_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_RadioGroup_PrivateData, radiogroup);
 	UUmAssert(private_data);
-	
+
 	switch (inMessage)
 	{
 		case VMcMessage_Create:
 			VMiView_RadioGroup_Create(inView, radiogroup, private_data);
 		return 0;
-		
+
 		case VMcMessage_Command:
 			VMiView_RadioGroup_Command(
 				inView,
@@ -148,7 +148,7 @@ VMrView_RadioGroup_Callback(
 				(UUtUns16)UUmHighWord(inParam1),
 				(VMtView*)inParam2);
 		return 0;
-		
+
 		case VMcMessage_Paint:
 			// draw the button
 			VMiView_RadioGroup_Paint(
@@ -158,7 +158,7 @@ VMrView_RadioGroup_Callback(
 				(M3tPointScreen*)inParam2);
 		break;	// break to paint the child views
 	}
-	
+
 	return VMrView_DefaultCallback(inView, inMessage, inParam1, inParam2);
 }
 
@@ -171,7 +171,7 @@ VMrView_RadioGroup_ProcHandler(
 {
 	VMtView_RadioGroup				*radiobutton;
 	VMtView_RadioGroup_PrivateData	*private_data;
-	
+
 	// get pointers to the data
 	radiobutton = (VMtView_RadioGroup*)inInstancePtr;
 	private_data = (VMtView_RadioGroup_PrivateData*)inPrivateData;
@@ -184,17 +184,17 @@ VMrView_RadioGroup_ProcHandler(
 			// initalize the private data
 			private_data->current_radiobutton = NULL;
 		break;
-		
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 		break;
-		
+
 		case TMcTemplateProcMessage_Update:
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
 	}
-	
+
 	return UUcError_None;
 }

@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_GameSettings.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: September 25, 2000
-	
+
 	PURPOSE: Global game settings for Oni
-	
+
 	Copyright Bungie Software, 2000
 
 */
@@ -39,7 +39,7 @@ ONtGameSettingsRuntime ONgGameSettingsRuntime;
 UUtError ONrGameSettings_Initialize(void)
 {
 	UUtError					error;
-	
+
 	UUrMemory_Clear(&ONgGameSettingsRuntime, sizeof(ONgGameSettingsRuntime));
 
 	error = TMrInstance_GetDataPtr( ONcTemplate_GameSettings, "game_settings", &ONgGameSettings );

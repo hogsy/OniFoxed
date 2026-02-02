@@ -1,8 +1,8 @@
 /*
 	Oni_Aiming.c
-	
+
 	This file contains all aiming related code
-	
+
 	Author: Quinn Dunki, Michael Evans
 	c1998 Bungie
 */
@@ -37,7 +37,7 @@ void AMrInitialize(void)
 	/*********************
 	* One time initialization
 	*/
-	
+
 	UUtError error;
 
 	error;
@@ -66,7 +66,7 @@ static void AMiDrawAxes(
 	M3tGeometry *axes = NULL;
 	UUtBool axesExists;
 	M3tPoint3D x={50.0f,0,0}, y={0,50.0f,0}, z={0,0,50.0f};
-	
+
 	UUmAssertReadPtr(inLocation, sizeof(*inLocation));
 
 	error = TMrInstance_GetDataPtr(M3cTemplate_Geometry, "axes", (void **) &axes);
@@ -90,7 +90,7 @@ static void AMiDrawAxes(
 		M3rMatrixStack_UniformScale(inScale);
 		M3rGeometry_Draw(axes);
 	M3rMatrixStack_Pop();
-	
+
 	MUmVector_Increment(x,*inLocation);
 	MUmVector_Increment(y,*inLocation);
 	MUmVector_Increment(z,*inLocation);
@@ -147,7 +147,7 @@ void AMrRayToEverything(
 	* ray (which is pretty unlikely) the outResult->resultType
 	* will be AMcRayResult_None.
 	*/
-		
+
 	M3tPoint3D 			rayp = *inRayOrigin;
 	M3tVector3D 		rayv = *inRayDir;
 	ONtCharacter 		*hitCharacter;
@@ -179,7 +179,7 @@ void AMrRayToEverything(
 	// Check for character collision
 	if( inIgnoreCharacterIndex != (UUtUns16) -2 )
 		AMrRayToCharacter(inIgnoreCharacterIndex, &rayp,&rayv,UUcFalse,&hitCharacter,&hitPartIndex,&charPoint);
-	
+
 	// Check for object collision
 	AMrRayToObject(&rayp,&rayv,AMcPickLimit,&hitObject,&objPoint);
 
@@ -224,7 +224,7 @@ void AMrRayToEverything(
 			returnWhat = AMcRayResult_Environment;
 		}
 	}
-	
+
 #if TOOL_VERSION
 	if (character_laser_sight) {
 		if (AMgShow_Closest && collision) {
@@ -232,10 +232,10 @@ void AMrRayToEverything(
 			AKtGQ_Render*		gq = env->gqRenderArray->gqRender + AKgCollisionList[0].gqIndex;
 			AKtGQ_Collision*	gqCol = env->gqCollisionArray->gqCollision + AKgCollisionList[0].gqIndex;
 			M3tTextureMap*		textureMap = env->textureMapArray->maps[gq->textureMapIndex];
-			
+
 			COrConsole_Printf("%d, %s, %x", AKgCollisionList[0].gqIndex, textureMap->debugName, gqCol->planeEquIndex);
 		}
-		
+
 		if (AMgShow_Filenames) {
 			{
 				UUtUns32 clear_itr;
@@ -288,12 +288,12 @@ void AMrRayToEverything(
 				}
 
 				sprintf(ONgAimingLine[1].text, "Gunk [%d]", AKgCollisionList[0].gqIndex);
-				sprintf(ONgAimingLine[2].text, "%s in file %s", 
-						(gqDebug == NULL) ? "UNKNOWN" : gqDebug->object_name, 
+				sprintf(ONgAimingLine[2].text, "%s in file %s",
+						(gqDebug == NULL) ? "UNKNOWN" : gqDebug->object_name,
 						(gqDebug == NULL) ? "UNKNOWN" : gqDebug->file_name);
 				sprintf(ONgAimingLine[3].text, "%s %s %s", texture_name, type_string, mip_map_string);
 				sprintf(ONgAimingLine[4].text, "gq flags = %x", gq_general->flags);
-				sprintf(ONgAimingLine[5].text, "2sd %d !c %d !oc %d !cc %d !ocl %d", 
+				sprintf(ONgAimingLine[5].text, "2sd %d !c %d !oc %d !cc %d !ocl %d",
 					(gq_general->flags & AKcGQ_Flag_DrawBothSides) ? 1 : 0,
 					(gq_general->flags & AKcGQ_Flag_No_Collision) ? 1 : 0,
 					(gq_general->flags & AKcGQ_Flag_No_Object_Collision) ? 1 : 0,
@@ -311,28 +311,28 @@ void AMrRayToEverything(
 				sprintf(ONgAimingLine[9].text, "%2.2f %2.2f %2.2f", this_environment_point->x, this_environment_point->y, this_environment_point->z);
 
 				this_environment_point = environment_points + gq_general->m3Quad.vertexIndices.indices[3];
-				sprintf(ONgAimingLine[10].text, "%2.2f %2.2f %2.2f", this_environment_point->x, this_environment_point->y, this_environment_point->z);				
+				sprintf(ONgAimingLine[10].text, "%2.2f %2.2f %2.2f", this_environment_point->x, this_environment_point->y, this_environment_point->z);
 			}
 		}
 	}
 #endif // TOOL_VERSION
-	
+
 	switch(returnWhat)
 	{
-		case AMcRayResult_Character:	
+		case AMcRayResult_Character:
 			outResult->resultType = AMcRayResult_Character;
 			outResult->resultData.rayToCharacter.hitPartIndex = hitPartIndex;
 			outResult->resultData.rayToCharacter.hitCharacter = hitCharacter;
 			outResult->intersection = charPoint;
 			break;
 
-		case AMcRayResult_Object:	
+		case AMcRayResult_Object:
 			outResult->resultType = AMcRayResult_Object;
 			outResult->resultData.rayToObject.hitObject = hitObject;
 			outResult->intersection = objPoint;
 			break;
 
-		case AMcRayResult_Environment:	
+		case AMcRayResult_Environment:
 			outResult->resultType = AMcRayResult_Environment;
 			outResult->resultData.rayToEnvironment.hitGQIndex = AKgCollisionList[0].gqIndex;
 			outResult->intersection = AKgCollisionList[0].collisionPoint;
@@ -343,18 +343,18 @@ void AMrRayToEverything(
 			MUmVector_Add(outResult->intersection, rayv, rayp);
 			break;
 
-		default: 
+		default:
 			UUmAssert(!"unhandled case");
 	}
 }
 
 UUtBool AMrRayToCharacter(
 	UUtUns16 inIgnoreCharacterIndex,
-	const M3tPoint3D *inRayOrigin, 
+	const M3tPoint3D *inRayOrigin,
 	const M3tVector3D *inRayDir,
 	UUtBool inStopAtOneT,
-	ONtCharacter **outCharacter, 
-	UUtUns16 *outPartIndex, 
+	ONtCharacter **outCharacter,
+	UUtUns16 *outPartIndex,
 	M3tPoint3D *outIntersection)
 {
 	/************************
@@ -368,7 +368,7 @@ UUtBool AMrRayToCharacter(
 	* Also returns UUcTrue if there was a collision, UUcFalse otherwise.
 	*
 	*/
-	
+
 
 	ONtCharacter *closestCharacter = NULL;
 	float current_distance_squared;
@@ -395,14 +395,14 @@ UUtBool AMrRayToCharacter(
 	active_character_count = ONrGameState_ActiveCharacterList_Count();
 
 	stop_at_first_intersection = ((outCharacter == NULL) && (outPartIndex == NULL) && (outIntersection == NULL));
-	
+
 	for(itr = 0; itr < active_character_count; itr++)
 	{
 		ONtCharacter *curCharacter = active_character_list[itr];
 		ONtActiveCharacter *active_character = ONrGetActiveCharacter(curCharacter);
 		TRtBody *curBody = ONrCharacter_GetBody(curCharacter, TRcBody_SuperHigh);
 		UUtBool intersection;
-		
+
 		if (curCharacter->index == inIgnoreCharacterIndex) {
 			continue;
 		}
@@ -432,7 +432,7 @@ UUtBool AMrRayToCharacter(
 			closestIntersection	= curIntersection;
 		}
 	}
-	
+
 	if (closestCharacter != NULL)
 	{
 		if (outCharacter != NULL) {
@@ -466,10 +466,10 @@ UUtBool PHrCollision_Point(const PHtPhysicsContext *inContext, M3tPoint3D *inFro
 }
 
 UUtBool AMrRayToObject(
-	const M3tPoint3D *inRayOrigin, 
+	const M3tPoint3D *inRayOrigin,
 	const M3tVector3D *inRayDir,
 	float inMaxDistance,
-	OBtObject **outObject, 
+	OBtObject **outObject,
 	M3tPoint3D *outIntersection)
 {
 	/************************
@@ -482,7 +482,7 @@ UUtBool AMrRayToObject(
 	* Also returns UUcTrue if there was a collision, UUcFalse otherwise.
 	*
 	*/
-	
+
 
 	OBtObject *closestObject = NULL;
 	float current_distance_squared;
@@ -508,7 +508,7 @@ UUtBool AMrRayToObject(
 	for (objectIndex = 0; objectIndex < ONgGameState->objects->numObjects; objectIndex++)
 	{
 		OBtObject *curObject = ONgGameState->objects->object_list + objectIndex;
-		
+
 		if (0 == (curObject->flags & OBcFlags_InUse)) {
 			continue;
 		}
@@ -528,7 +528,7 @@ UUtBool AMrRayToObject(
 
 			intersection = AMrRaySphereIntersection(&curObject->physics->sphereTree->sphere, inRayOrigin, inRayDir, &curIntersection);
 		}
-		
+
 		if (intersection) {
 			// CB: I do not understand why this was a good idea, surely we want the closest intersection rather than the intersection with
 			// the closest object?
@@ -552,7 +552,7 @@ UUtBool AMrRayToObject(
 			}
 		}
 	}
-	
+
 	if (closestObject != NULL) {
 		if (outObject != NULL) {
 			*outObject = closestObject;
@@ -574,7 +574,7 @@ UUtBool AMrRaySphereIntersection(const M3tBoundingSphere *inSphere, const M3tPoi
 	*
 	* outIntersection is optional
 	*/
-	
+
 
 	UUtBool intersection;
 	float v,disc,d, EO_sq, r_sq;
@@ -584,7 +584,7 @@ UUtBool AMrRaySphereIntersection(const M3tBoundingSphere *inSphere, const M3tPoi
 	UUmAssertReadPtr(inRayDir, sizeof(*inRayDir));
 	UUmAssert(MUmVector_IsNormalized(*inRayDir));
 	UUmAssert(UUmFloat_CompareEquSloppy(MUmVector_GetLength(*inRayDir), 1.f));
-	
+
 	MUmVector_Subtract(EO,inSphere->center,(*inRayOrigin));
 	EO_sq = MUrVector_DotProduct(&EO,&EO);
 	r_sq = UUmSQR(inSphere->radius);
@@ -595,7 +595,7 @@ UUtBool AMrRaySphereIntersection(const M3tBoundingSphere *inSphere, const M3tPoi
 
 	v = MUrVector_DotProduct(&EO,inRayDir);
 	disc = r_sq - ((EO_sq - v*v));
-	
+
 	if (disc < 0) {
 		intersection = UUcFalse;
 	}
@@ -603,7 +603,7 @@ UUtBool AMrRaySphereIntersection(const M3tBoundingSphere *inSphere, const M3tPoi
 		M3tVector3D rayToIntersection;
 		M3tPoint3D intersectionPoint;
 		float dot;
-		
+
 		d = MUrSqrt(disc);
 		rayDir = *inRayDir;
 		MUmVector_Scale(rayDir,v-d);

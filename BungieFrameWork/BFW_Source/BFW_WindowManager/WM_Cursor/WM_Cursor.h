@@ -18,7 +18,7 @@
 typedef enum WMtCursorType
 {
 	WMcCursorType_None,
-	WMcCursorType_Arrow			
+	WMcCursorType_Arrow
 
 } WMtCursorType;
 
@@ -29,7 +29,7 @@ typedef tm_struct WMtCursor
 {
 	UUtInt32					cursor_type;
 	tm_templateref				cursor_partspec;
-	
+
 } WMtCursor;
 
 #define WMcTemplate_CursorList				UUm4CharToUns32('W', 'M', 'C', 'L')
@@ -37,10 +37,10 @@ typedef tm_template('W', 'M', 'C', 'L', "WM Cursor List")
 WMtCursorList
 {
 	tm_pad							pad[20];
-	
+
 	tm_varindex UUtUns32			num_cursors;
 	tm_vararray WMtCursor			cursors[1];
-	
+
 } WMtCursorList;
 
 // ======================================================================
@@ -50,7 +50,7 @@ void
 WMrCursor_Draw(
 	WMtCursor				*inCursor,
 	IMtPoint2D				*inDestination);
-	
+
 WMtCursor*
 WMrCursor_Get(
 	WMtCursorType			inCursorType);
@@ -58,7 +58,7 @@ WMrCursor_Get(
 void
 WMrCursor_SetVisible(
 	UUtBool					inIsVisible);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 WMrCursor_RegisterTemplates(

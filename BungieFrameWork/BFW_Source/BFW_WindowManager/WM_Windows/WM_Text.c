@@ -24,15 +24,15 @@ WMiText_Paint(
 	IMtPoint2D				dest;
 	UUtUns32				style;
 	TStFormat				format;
-	
+
 	draw_context = DCrDraw_Begin(inText);
-		
+
 	// get the style flags
 	style = WMrWindow_GetStyle(inText);
 	if (style & WMcTextStyle_OwnerDraw)
 	{
 		WMtDrawItem					draw_item;
-		
+
 		// set up the owner draw struct
 		draw_item.draw_context		= draw_context;
 		draw_item.window			= inText;
@@ -42,7 +42,7 @@ WMiText_Paint(
 		WMrWindow_GetClientRect(inText, &draw_item.rect);
 		draw_item.string			= WMrWindow_GetTitlePtr(inText);
 		draw_item.data				= 0;
-		
+
 		WMrMessage_Send(
 			WMrWindow_GetOwner(inText),
 			WMcMessage_DrawItem,
@@ -52,7 +52,7 @@ WMiText_Paint(
 	else
 	{
 		TStFontInfo				font_info;
-		
+
 		// set the format
 		format = TSc_HLeft;
 		if (style & WMcTextStyle_HCenter)
@@ -63,25 +63,25 @@ WMiText_Paint(
 		{
 			format = TSc_HRight;
 		}
-		
+
 		if (style & WMcTextStyle_VCenter)
 		{
 			format |= TSc_VCenter;
 		}
-		
+
 		// set dest
 		dest.x = 0;
 		dest.y = DCrText_GetAscendingHeight();
-		
+
 		WMrWindow_GetFontInfo(inText, &font_info);
 		DCrText_SetFontInfo(&font_info);
-		
+
 		WMrWindow_GetClientRect(inText, &bounds);
 		DCrText_SetShade(WMrWindow_GetEnabled(inText) ? font_info.font_shade : IMcShade_Gray50);
 		DCrText_SetFormat(format);
 		DCrDraw_String(draw_context, WMrWindow_GetTitlePtr(inText), &bounds, &dest);
 	}
-		
+
 	DCrDraw_End(draw_context, inText);
 }
 
@@ -104,7 +104,7 @@ WMiText_Callback(
 			WMiText_Paint(inText);
 		return WMcResult_Handled;
 	}
-	
+
 	return WMrWindow_DefaultCallback(inText, inMessage, inParam1, inParam2);
 }
 
@@ -120,16 +120,16 @@ WMrText_Initialize(
 {
 	UUtError				error;
 	WMtWindowClass			window_class;
-	
+
 	// register the window class
 	UUrMemory_Clear(&window_class, sizeof(WMtWindowClass));
 	window_class.type = WMcWindowType_Text;
 	window_class.callback = WMiText_Callback;
 	window_class.private_data_size = 0;
-	
+
 	error = WMrWindowClass_Register(&window_class);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -141,14 +141,14 @@ WMrText_SetShade(
 {
 	UUtBool					result;
 	TStFontInfo				font_info;
-	
+
 	result = WMrWindow_GetFontInfo(inWindow, &font_info);
 	if (result != UUcTrue) { return result; }
-	
+
 	font_info.font_shade = inShade;
-	
+
 	result = WMrWindow_SetFontInfo(inWindow, &font_info);
 	if (result != UUcTrue) { return result; }
-	
+
 	return UUcTrue;
 }

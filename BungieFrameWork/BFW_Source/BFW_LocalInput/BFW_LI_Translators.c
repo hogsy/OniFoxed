@@ -21,7 +21,7 @@ typedef struct LItInputNames
 {
 	char				name[LIcMaxInputNameLength];
 	UUtUns32			keyCode;
-	
+
 } LItInputNames;
 
 // ======================================================================
@@ -106,7 +106,7 @@ LItInputNames				LIgInputNames[] =
 	{ "fkey13",				LIcKeyCode_F13			},
 	{ "fkey14",				LIcKeyCode_F14			},
 	{ "fkey15",				LIcKeyCode_F15			},
-	
+
 	{ "backspace",			LIcKeyCode_BackSpace	},
 	{ "tab",				LIcKeyCode_Tab			},
 	{ "capslock",			LIcKeyCode_CapsLock		},
@@ -133,12 +133,12 @@ LItInputNames				LIgInputNames[] =
 	{ "delete",				LIcKeyCode_Delete		},
 	{ "end",				LIcKeyCode_End			},
 	{ "pagedown",			LIcKeyCode_PageDown		},
-	
+
 	{ "uparrow",			LIcKeyCode_UpArrow		},
 	{ "leftarrow",			LIcKeyCode_LeftArrow	},
 	{ "downarrow",			LIcKeyCode_DownArrow	},
 	{ "rightarrow",			LIcKeyCode_RightArrow	},
-	
+
 	{ "numlock",			LIcKeyCode_NumLock		},
 	{ "divide",				LIcKeyCode_Divide		},
 	{ "multiply",			LIcKeyCode_Multiply		},
@@ -166,7 +166,7 @@ LItInputNames				LIgInputNames[] =
 	{ "leftbracket",		LIcKeyCode_LeftBracket	},
 	{ "rightbracket",		LIcKeyCode_RightBracket	},
 	{ "comma",				LIcKeyCode_Comma		},
-	
+
 	{ "mousebutton1",		LIcMouseCode_Button1	},
 	{ "mousebutton2",		LIcMouseCode_Button2	},
 	{ "mousebutton3",		LIcMouseCode_Button3	},
@@ -174,7 +174,7 @@ LItInputNames				LIgInputNames[] =
 	{ "mousexaxis",			LIcMouseCode_XAxis		},
 	{ "mouseyaxis",			LIcMouseCode_YAxis		},
 	{ "mousezaxis",			LIcMouseCode_ZAxis		},
-	
+
 	{ "",					LIcKeyCode_None			}
 };
 
@@ -189,10 +189,10 @@ LIrTranslate_InputCode(
 {
 	LItInputNames		*name;
 	UUtBool				found;
-	
+
 	// initialize outInputName
 	UUrString_Copy(outInputName, "", LIcMaxInputNameLength);
-	
+
 	// find the input name whose keycode that matches inKeyCode
 	found = UUcFalse;
 	for (name = LIgInputNames;
@@ -206,7 +206,7 @@ LIrTranslate_InputCode(
 			break;
 		}
 	}
-	
+
 	if (found == UUcFalse)
 	{
 		// it wasn't a complex name
@@ -222,13 +222,13 @@ LIrTranslate_InputName(
 	UUtUns32			name_length;
 	UUtUns32			out_keycode;
 	char				*src;
-	
+
 	// init the vars
 	out_keycode = LIcKeyCode_None;
 
 	// get the length of the string
 	name_length = strlen(inInputName);
-	
+
 	// make the input name all lower case
 	src = inInputName;
 	while (*src)
@@ -236,7 +236,7 @@ LIrTranslate_InputName(
 		*src = tolower(*src);
 		src++;
 	}
-	
+
 	if (name_length == 1)
 	{
 		// it is a letter or number or symbol and can easily be
@@ -246,7 +246,7 @@ LIrTranslate_InputName(
 	else
 	{
 		LItInputNames	*name;
-		
+
 		// go through the input names list and translate
 		// the name into the key
 		for (name = LIgInputNames;
@@ -260,6 +260,6 @@ LIrTranslate_InputName(
 			}
 		}
 	}
-	
+
 	return out_keycode;
 }

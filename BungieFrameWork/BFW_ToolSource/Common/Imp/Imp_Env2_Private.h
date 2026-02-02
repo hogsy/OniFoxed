@@ -5,8 +5,8 @@
 
 	CREATED: Sept 3, 1997
 
-	PURPOSE: 
-	
+	PURPOSE:
+
 	Copyright 1997-1999
 
 */
@@ -132,7 +132,7 @@ enum
 	IMPcGQ_LM_None		= 0,
 	IMPcGQ_LM_ForceOn	= (1 << 0),
 	IMPcGQ_LM_ForceOff	= (1 << 1)
-	
+
 };
 
 /*
@@ -143,36 +143,36 @@ enum
 		IMPcAbsSide_Postive,
 		IMPcAbsSide_Negative,
 		IMPcAbsSide_BothPosNeg
-		
+
 	} IMPtEnv_BSP_AbsoluteSideFlag;
 
 	typedef struct IMPtEnv_BSP_Quad
 	{
 		UUtUns32	ref;		// user field
 		UUtUns32	bspQuadIndex;
-		
+
 	} IMPtEnv_BSP_Quad;
-	
+
 	#define IMPcEnv_MaxQuadsPerPlane	(2048)
 
 	typedef struct IMPtEnv_BSP_Plane
 	{
 		UUtUns32			planeEquIndex;
 		UUtUns32			ref;			// user field
-		
+
 		UUtUns32			numQuads;
 		IMPtEnv_BSP_Quad	quads[IMPcEnv_MaxQuadsPerPlane];
-		
+
 	} IMPtEnv_BSP_Plane;
 
 	typedef struct IMPtEnv_BSP_Node
 	{
 		IMPtEnv_BSP_Plane*	splittingPlane;			// user data
 		IMPtEnv_BSP_Quad	splittingQuad;
-		
+
 		UUtUns32			posNodeIndex;
 		UUtUns32			negNodeIndex;
-		
+
 	} IMPtEnv_BSP_Node;
 
 /*
@@ -183,31 +183,31 @@ enum
 		IMPcLS_LightType_Point,
 		IMPcLS_LightType_Linear,
 		IMPcLS_LightType_Area
-		
+
 	} IMPtLS_LightType;
-	
+
 	typedef enum IMPtLS_LightParam
 	{
 		IMPcLS_LightParam_None			= 0,
 		IMPcLS_LightParam_NotOccluding	= (1 << 0),
 		IMPcLS_LightParam_Window		= (1 << 1),
 		IMPcLS_LightParam_NotReflecting	= (1 << 2)
-		
+
 	} IMPtLS_LightParam;
-	
+
 	typedef enum IMPtLS_Distribution
 	{
 		IMPcLS_Distribution_Diffuse	= 0,
 		IMPcLS_Distribution_Spot	= 1
-		
+
 	} IMPtLS_Distribution;
-	
+
 /*
  * GQ related structs
  */
 	typedef struct IMPtEnv_GQ
 	{
-		M3tPoint3D			*hi1;	// \ 
+		M3tPoint3D			*hi1;	// \
 		M3tPoint3D			*hi2;	//  | - Don't move these. VTuned
 		M3tPoint3D			*lo1;	//  |
 		M3tPoint3D			*lo2;	// /
@@ -220,32 +220,32 @@ enum
 		char				gqMaterialName[IMPcEnv_MaxNameLength];
 
 		UUtUns32			fileRelativeGQIndex;
-		
+
 		UUtUns32			scriptID;
 
 		M3tQuad		visibleQuad;
 		M3tQuad		baseMapIndices;		// Indices into the uv array for the base map
-		
+
 		M3tQuad		edgeIndices;
 //		UUtUns32			adjGQIndices[4];
-		
+
 		UUtUns32			flags;
 		UUtUns32			lmFlags;
-		
+
 		UUtUns32			planeEquIndex;
-		
+
 		CLtQuadProjection	projection;
-		
+
 		UUtUns16			textureMapIndex;
-		
+
 		UUtUns32			stairBNVIndex;		// CB: only valid for SAT quads
-				
+
 		UUtBool				used;
 		UUtBool				ghostUsed;
-				
+
 		//UUtUns32			myPatchIndex;
 		//UUtUns32			myPlaneIndex;
-		
+
 		UUtBool				isLuminaire;
 		float				filterColor[3];
 		IMPtLS_LightType	lightType;
@@ -253,13 +253,13 @@ enum
 		IMPtLS_Distribution	distribution;
 		float				beamAngle;
 		float				fieldAngle;
-		
+
 		UUtUns32			lightParams;
-		
+
 		float				patchArea;
-		
+
 		M3tBoundingBox_MinMax	bBox;
-		
+
 		UUtUns32			object_tag;
 	} IMPtEnv_GQ;
 
@@ -267,18 +267,18 @@ enum
  * BNV related structs
  */
 	typedef struct IMPtEnv_BNV_Side
-	{	
+	{
 		UUtUns32	planeEquIndex;
 
 		UUtUns32	numBNVQuads;
 		UUtUns32	bnvQuadList[IMPcEnv_MaxQuadsPerSide];
-		
+
 		UUtUns32	numGQGhostIndices;
 		UUtUns32	gqGhostIndices[IMPcEnv_MaxQuadsPerSide];
-		
+
 		UUtUns32	numAdjacencies;
 		AKtAdjacency adjacencyList[IMPcEnv_MaxAdjacencies];
-				
+
 	}  IMPtEnv_BNV_Side;
 
 	typedef struct IMPtEnv_BNV
@@ -297,42 +297,42 @@ enum
 
 		char				fileName[IMPcEnv_MaxNameLength];
 		char				objName[IMPcEnv_MaxNameLength];
-		
+
 		UUtUns32			parent;
 		UUtUns32			level;
-		
+
 		UUtUns32			child;
 		UUtUns32			next;
-		
+
 		UUtBool				isLeaf;
 		UUtUns32			flags;
-		
+
 		float				volume;
-		
+
 		UUtUns32			numSides;
 		IMPtEnv_BNV_Side	sides[IMPcEnv_MaxBNVSides];
-		
+
 		UUtUns32			numNodes;
 		AKtBNV_BSPNode		bspNodes[IMPcEnv_MaxNumBNVBSPNodes];
-		
+
 		UUtUns32			numGQs;
 		UUtUns32			gqList[IMPcEnv_MaxGQsPerBNV];
-		
+
 		M3tPoint3D			origin;			// Bounding box
 		M3tPoint3D			antiOrigin;
 		M3tPlaneEquation	stairPlane;
 		float				stairHeight;
-				
+
 		UUtBool				error;
-		
+
 	} IMPtEnv_BNV;
-	
+
 	enum
 	{
 		IMPcEnv_TexturePageFlags_None		= 0
 	};
-	
-	
+
+
 /*
  * lightscape stuff
  */
@@ -341,7 +341,7 @@ enum
 	{
 		char			fileName[32];
 		struct LStData*	lsData;
-		
+
 	} IMPtEnv_LSData;
 
 /*
@@ -353,10 +353,10 @@ enum
 		UUtUns32				geometry_count;
 
 		struct OBtAnimation		*animation;
-				
+
 		UUtUns32				numParticles;
 		EPtEnvParticle			particles[IMPcEnv_MaxObjectParticles];
-		
+
 		UUtUns32				lifeSpan;
 		UUtUns32				bounces;
 		UUtUns32				flags;
@@ -368,15 +368,15 @@ enum
 		UUtUns32				door_gq;
 
 		char					defPiecesPrefix[IMPcEnv_MaxPrefixLength][IMPcEnv_MaxPiecesLists];
-		
+
 		char					defTexturePrefix[IMPcEnv_MaxPrefixLength];
 		AUtSharedString			defTextureList[IMPcEnv_MaxDefTextures];
 		UUtUns32				numDefTextures;
-		
+
 		char					defGeomPrefix[IMPcEnv_MaxPrefixLength];
 		M3tGeometry				*defGeomList[IMPcEnv_MaxDefGeometry];
 		UUtUns32				numDefGeometry;
-		
+
 		M3tPoint3D				position;
 		M3tQuaternion			orientation;
 		float					scale;
@@ -390,13 +390,13 @@ enum
 /*
  * character setup stuff
  */
- 	
+
 	typedef struct IMPtEnv_Flag
 	{
 		UUtInt32		idNumber;
 		M3tMatrix4x3		matrix;
 	} IMPtEnv_Flag;
-	
+
 /*
  * general build data
  */
@@ -406,136 +406,136 @@ enum
 		UUtUns32	parent;
 		UUtUns32	myOctant;
 		UUtUns32	adjacent[6];	// Direct adjacent node - if no adjacent its 0xFFFFFFFF
-		
+
 		UUtInt16	minXIndex;
 		UUtInt16	minYIndex;
 		UUtInt16	minZIndex;
 		UUtInt16	maxXIndex;
 		UUtInt16	maxYIndex;
 		UUtInt16	maxZIndex;
-		
+
 		UUtUns32	dimIndex;
-		
+
 	} IMPtEnv_OTExtraNodeInfo;
-	
+
 	typedef struct IMPtEnv_OTData
 	{
 		UUtUns32				maxDepth;
 		UUtUns32				gqsPerNodeDist[IMPcEnv_OT_MaxGQsPerNode];
 		UUtUns32				bnvsPerNodeDist[IMPcEnv_OT_MaxBNVsPerNode];
 		UUtUns32				leafNodeSizeDist[IMPcEnv_OT_NumLeafNodeDims];
-		
+
 		UUtUns32				nextLeafNodeIndex;
 		UUtUns32				nextInteriorNodeIndex;
 		UUtUns32				nextQTNodeIndex;
-		
+
 		UUtUns32				nextGQIndex;
 		UUtUns32				gqIndexArray[IMPcEnv_MaxGQIndexArray];
-		
+
 		AKtOctTree_LeafNode		leafNodes[IMPcEnv_MaxLeafNodes];
 		IMPtEnv_OTExtraNodeInfo	leafNodeExtras[IMPcEnv_MaxLeafNodes];
 		AKtOctTree_InteriorNode	interiorNodes[IMPcEnv_MaxInteriorNodes];
 		IMPtEnv_OTExtraNodeInfo	interiorNodeExtras[IMPcEnv_MaxInteriorNodes];
-		
+
 		AKtQuadTree_Node		qtNodes[IMPcEnv_MaxQTNodes];
-		
+
 		UUtUns32				nextBNVIndex;
 		UUtUns32				bnv_index_array[IMPcEnv_MaxBNVIndexArray];
-		
+
 	} IMPtEnv_OTData;
-		
+
 	typedef struct IMPtEnv_GQPatch
 	{
 		UUtUns32	gqStartIndirectIndex;	// This is an index into the gunk quad index list
 		UUtUns32	gqEndIndirectIndex;
-		
+
 		//UUtUns32				numPlanes;
 		//IMPtEnv_TexturePlane*	texturePlanes;
-		
+
 	} IMPtEnv_GQPatch;
-	
+
 	typedef struct IMPtEnv_Texture
 	{
 		tTextureFlags	flags;
 		M3tTextureMap*	texture;
-		
+
 	} IMPtEnv_Texture;
 
 #define IMPcFixedOctTreeNode_Count 16
 #define IMPcFixedOctTreeNode_ChunkSize 32
-	
+
 	typedef struct IMPtEnv_BuildData
 	{
 		UUtUns32					maxGQs;
-		
+
 		UUtUns32					numGQs;
 		IMPtEnv_GQ*					gqList;
-				
+
 		UUtUns32					maxBNVs;
 		UUtUns32					numBNVs;
 		IMPtEnv_BNV*				bnvList;
-		
+
 		AUtSharedStringArray*		textureMapArray;
 		IMPtEnv_Texture				envTextureList[IMPcEnv_MaxTextures];
-				
+
 		UUtUns16					numFlags;
 		IMPtEnv_Flag				flagList[IMPcEnv_MaxFlags];
-		
+
 		UUtUns32					numMarkers;
 		MXtMarker					markerList[IMPcEnv_MaxMarkerNodes];
 
 		UUtUns32					numObjects;
 		IMPtEnv_Object				objectList[IMPcEnv_MaxObjects];	// Must be cache-aligned
-		
+
 		AUtSharedPointArray*		sharedPointArray;		// shared points
 		AUtSharedPlaneEquArray*		sharedPlaneEquArray;	// shared plane equations
 		AUtSharedQuadArray*			sharedBNVQuadArray;		// shared quads
 		AUtSharedTexCoordArray*		sharedTextureCoordArray;	//
-		
+
 		AUtSharedPointArray*		bspPointArray;			// shared points for bsp construction
 		AUtSharedQuadArray*			bspQuadArray;			// shared quads for bsp construction
-		
+
 		IMPtEnv_OTData				otData;
-		
+
 		UUtMemory_Pool*				tempMemoryPool;
-		
+
 		GRtGroup*					environmentGroup;
-		
+
 		// gq patch data
 		UUtUns32					numPatches;
 		IMPtEnv_GQPatch				patches[IMPcEnv_MaxPatches];
-		
+
 		UUtUns32					numPatchIndIndices;
 		UUtUns32					patchIndIndices[IMPcEnv_MaxGQIndexArray];
-		
+
 		AUtSharedEdgeArray*			edgeArray;
-		
+
 		// lightmap data
 		UUtUns32					numGQFiles;
 		char						gqFileNames[IMPcEnv_MaxFilesInDir][BFcMaxFileNameLength];
-			
+
 		UUtUns32*					gqTakenBV; // generally useful
-		
+
 		UUtBool						reflectivity_specified;
 		M3tColorRGB					reflectivity_color;
-		
+
 		// initial particle data
 		UUtUns32					numEnvParticles;
 		EPtEnvParticle				envParticles[IMPcEnv_MaxEnvParticles];
 
 		AItCharacterSetupArray		*characterSetup;
-		
+
 		float						totalGQArea;
 
 		AUtHashTable				*debugStringTable;
 		UUtUns32					debugStringBytes;
-		
+
 		UUtUns32					numAlphaQuads;
 		UUtUns32					alphaQuads[IMPcEnv_MaxAlphaQuads];
-		
+
 		UUtUns32					numBSPNodes;
 		IMPtEnv_BSP_Node			bspNodes[IMPcEnv_MaxNumBSPNodes];
-		
+
 		UUtUns32					numAlphaBSPNodes;
 		AKtAlphaBSPTree_Node		alphaBSPNodes[IMPcEnv_MaxNumBSPNodes];
 
@@ -551,7 +551,7 @@ enum
 		// gunked objects tag list
 		UUtMemory_Array				*object_tags;
 		UUtMemory_Array				*object_quads;
-		
+
 		UUtUns16					door_frame_texture;
 		UUtUns32					door_count;
 		UUtUns32					door_gq_indexes[IMPcEnv_MaxNumDoors];
@@ -564,7 +564,7 @@ enum
 	extern UUtMemory_Pool*	IMPgEnv_MemoryPool;
 	extern FILE*			IMPgEnv_StatsFile;
 	extern float			IMPgEnv_InchesPerPixel;
-	
+
 /*
  * some prototypes
  */
@@ -589,13 +589,13 @@ UUtError
 IMPrEnv_Process(
 	IMPtEnv_BuildData*	inBuildData,
 	BFtFileRef*			inSourceFileRef);
-	
+
 UUtError
 IMPrEnv_CreateInstance(
 	char*				inInstanceName,
 	BFtFileRef*			inSourceFileRef,
 	IMPtEnv_BuildData*	inBuildData);
-	
+
 UUtError
 IMPrEnv_CreateInstance_Debug(
 	char*				inInstanceName,
@@ -612,14 +612,14 @@ IMPrEnv_Process_BNV_ContainsStairBNV(
 	IMPtEnv_BuildData*	inBuildData,
 	IMPtEnv_BNV*		inParentBNV,
 	IMPtEnv_BNV*		inChildBNV);
-	
+
 UUtBool
 IMPiEnv_Process_BSP_PointInBSP(
 	IMPtEnv_BuildData*	inBuildData,
 	IMPtEnv_BNV*		inBNV,
 	M3tPoint3D*			inPoint,
 	float				inTolerance);
-	
+
 UUtError
 IMPrEnv_Process_BNV_ComputeProperties(
 	IMPtEnv_BuildData*	inBuildData);
@@ -631,14 +631,14 @@ void IMPiCalculateNodeOrigins(
 	M3tPoint3D *outAntiOrigin);
 
 void Imp_Env_AddAdjacency(
-	IMPtEnv_BNV_Side *inSrcSide, 
-	IMPtEnv_BNV *inSrcBNV, 
-	IMPtEnv_BNV_Side *inDestSide, 
+	IMPtEnv_BNV_Side *inSrcSide,
+	IMPtEnv_BNV *inSrcBNV,
+	IMPtEnv_BNV_Side *inDestSide,
 	UUtUns32 inDestBNVIndex,
 	UUtUns32 inConnectingGQIndex,
 	UUtUns16 inFlags,
 	IMPtEnv_BuildData *inBuildData);
-	
+
 void Imp_Env_DoStairAdjacency(UUtUns32 ioCurNodeIndex, IMPtEnv_BuildData *inBuildData);
 UUtUns32 Imp_Env_ConnectStairsToLanding(IMPtEnv_GQ *inSAT, IMPtEnv_BuildData *inBuildData);
 UUtBool Imp_Env_PointInNode(M3tPoint3D* inPoint,IMPtEnv_BuildData* inBuildData,	IMPtEnv_BNV* inNode);
@@ -651,7 +651,7 @@ UUtError
 IMPrEnv_Process_LightMap(
 	IMPtEnv_BuildData*	inBuildData,
 	BFtFileRef*			inSourceFileRef);
-	
+
 UUtError
 IMPrEnv_Process_OctTrees(
 	IMPtEnv_BuildData*	inBuildData);
@@ -664,7 +664,7 @@ UUtBool
 IMPrLM_DontProcessGQ(
 	IMPtEnv_GQ*	inGQ);
 
-UUtUns32 
+UUtUns32
 IMPrEnv_GetNodeFlags(
 	MXtNode *inNode);
 
@@ -677,17 +677,17 @@ IMPrEnv_GetLSData(
 	UUtUns32				*outIntensity,
 	float					*outBeamAngle,
 	float					*outFieldAngle);
-	
+
 void IMPrFixedOctTree_Create(IMPtEnv_BuildData*	inBuildData);
 void IMPrFixedOctTree_Delete(IMPtEnv_BuildData*	inBuildData);
 
 void IMPrFixedOctTree_Test(
-	IMPtEnv_BuildData *inBuildData, 
-	float minx, 
-	float maxx, 
-	float miny, 
-	float maxy, 
-	float minz, 
+	IMPtEnv_BuildData *inBuildData,
+	float minx,
+	float maxx,
+	float miny,
+	float maxy,
+	float minz,
 	float maxz);
 
 void PHrCreateRoomData(IMPtEnv_BuildData *inBuildData, IMPtEnv_BNV *inBNV, AKtBNVNode *node, AKtEnvironment *env);

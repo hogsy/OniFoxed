@@ -5,8 +5,8 @@
 
 	CREATED: Sept 3, 1997
 
-	PURPOSE: 
-	
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -72,7 +72,7 @@ static void FixedTree_Loop(float min, float max, float fixed_min, float fixed_ma
 	*out_max = result_max;
 
 	return;
-}							
+}
 
 void IMPrFixedOctTree_Delete(IMPtEnv_BuildData*	inBuildData)
 {
@@ -177,12 +177,12 @@ void IMPrFixedOctTree_Create(IMPtEnv_BuildData*	inBuildData)
 					}
 
 					list[count++] = itr;
-					
+
 					inBuildData->fixed_oct_tree_node_count[itr_x][itr_y][itr_z] = count;
 					inBuildData->fixed_oct_tree_node[itr_x][itr_y][itr_z] = list;
 				}
 			}
-		}		
+		}
 	}
 
 	for(itr_x = 0; itr_x < IMPcFixedOctTreeNode_Count; itr_x++)
@@ -260,12 +260,12 @@ void IMPrFixedOctTree_Test(IMPtEnv_BuildData *inBuildData, float minx, float max
 				for(itr = 0; itr < count; itr++)
 				{
 					AUrDict_TestAndAdd(inBuildData->fixed_oct_tree_temp_list, list[itr]);
-				}				
+				}
 			}
 		}
 	}
 
-	return;	
+	return;
 }
 
 
@@ -275,7 +275,7 @@ IMPrEnv_CreateInstance_EnvParticles(
 	UUtUns32		inNumEnvParticles,
 	EPtEnvParticle*	inEnvParticles,
 	EPtEnvParticleArray*	*outTemplate);
-	
+
 UUtError
 IMPrEnv_CreateInstance_EnvParticles(
 	UUtUns32		inNumEnvParticles,
@@ -283,25 +283,25 @@ IMPrEnv_CreateInstance_EnvParticles(
 	EPtEnvParticleArray*	*outTemplate)
 {
 	UUtError	error;
-	
+
 	if(inNumEnvParticles == 0)
 	{
 		*outTemplate = NULL;
 		return UUcError_None;
 	}
-	
+
 	error =
 		TMrConstruction_Instance_NewUnique(
 			EPcTemplate_EnvParticleArray,
 			inNumEnvParticles,
 			outTemplate);
 	UUmError_ReturnOnError(error);
-	
+
 	UUrMemory_MoveFast(
 		inEnvParticles,
 		(*outTemplate)->particle,
 		inNumEnvParticles * sizeof(EPtEnvParticle));
-	
+
 	return UUcError_None;
 }
 
@@ -320,9 +320,9 @@ IMPiEnv_Verify_Pathfinding(
 	for (curIndex=0; curIndex<inBuildData->numGQs; curIndex++)
 	{
 		curGQ = &inBuildData->gqList[curIndex];
-		
+
 		if (!(curGQ->flags & AKcGQ_Flag_Ghost)) continue;
-		
+
 		if (!curGQ->ghostUsed) {
 			M3tPoint3D *pointArray = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
 			M3tPoint3D midpoint;
@@ -346,17 +346,17 @@ IMPiEnv_Verify_Pathfinding(
 		if (!(bnv->flags & AKcBNV_Flag_Room)) {
 			IMPrEnv_LogError("Warning: BNV %s in file %s is not a room",bnv->objName,bnv->fileName);
 		}
-		
+
 		for (curSideIndex=0; curSideIndex<bnv->numSides; curSideIndex++)
-		{	
+		{
 			adj += bnv->sides[curSideIndex].numAdjacencies;
 		}
-		
+
 		if (!adj && !(bnv->flags & AKcBNV_Flag_NonAI)) {
 			IMPrEnv_LogError("Warning: BNV %s in file %s has no ghost GQs",bnv->objName,bnv->fileName);
 		}
 	}
-	
+
 	if (IMPgBNVDebug)
 	{
 		out = fopen("bnvdebug.txt","wb+");
@@ -380,7 +380,7 @@ IMPiEnv_CreateInstance_CombatProfiles(IMPtEnv_BuildData *inBuildData, AKtEnviron
 
 static UUtError IMPiEnv_CreateInstance_TacticalProfiles(IMPtEnv_BuildData *inBuildData, AKtEnvironment *environment)
 {
-	// Create the tactical profiles in Akira (obsolete)	
+	// Create the tactical profiles in Akira (obsolete)
 	return UUcError_None;
 }
 
@@ -392,7 +392,7 @@ IMPiEnv_CreateInstance_Markers(IMPtEnv_BuildData *inBuildData, ONtLevel *level)
 	MXtMarker *marker;
 	ONtMarker *gameMarker;
 	UUtError error;
-	
+
 	// Create marker array
 	error = TMrConstruction_Instance_NewUnique(
 		ONcTemplate_MarkerArray,
@@ -420,7 +420,7 @@ IMPiEnv_CreateInstance_Markers(IMPtEnv_BuildData *inBuildData, ONtLevel *level)
 		MUmVector_Decrement(gameMarker->direction,gameMarker->position);
 		MUrNormalize(&gameMarker->direction);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -432,18 +432,18 @@ IMPiEnv_CreateInstance_Objects(IMPtEnv_BuildData *inBuildData, ONtLevel *level)
 	OBtObjectSetup		*curAkiraObject;
 	UUtError			error;
 	AKtEnvironment		*environment = level->environment;
-	
+
 	// Create the starting object array in Akira
 	error =  TMrConstruction_Instance_NewUnique( OBcTemplate_ObjectArray, inBuildData->numObjects + IMPcDynamicSetups, &level->objectSetupArray);
 	UUmError_ReturnOnError(error);
-			
+
 	for (curIndex=0; curIndex < level->objectSetupArray->numObjects; curIndex++)
 	{
 		curObject				= &inBuildData->objectList[curIndex];
 		curAkiraObject			= &level->objectSetupArray->objects[curIndex];
 
 		UUrMemory_Clear(curAkiraObject,sizeof(OBtObjectSetup));
-		
+
 		if (curIndex >= inBuildData->numObjects) continue;	// Dynamic obj setups are just cleared
 
 		// Copy over the basics
@@ -458,22 +458,22 @@ IMPiEnv_CreateInstance_Objects(IMPtEnv_BuildData *inBuildData, ONtLevel *level)
 		curAkiraObject->doorGhostIndex	= curObject->door_gq;
 
 		UUrMemory_MoveFast(&curObject->debugOrigMatrix,&curAkiraObject->debugOrigMatrix,sizeof(M3tMatrix4x3));
-		
+
 		// Store debugging names
 		UUrString_Copy(curAkiraObject->fileName,	curObject->fileName,	OBcMaxObjectName);
 		UUrString_Copy(curAkiraObject->objName,		curObject->objName,		OBcMaxObjectName);
-		
+
 		// Create the array of geometry
 		error = TMrConstruction_Instance_NewUnique( M3cTemplate_GeometryArray, curObject->geometry_count, &curAkiraObject->geometry_array );
-		UUmError_ReturnOnError(error);		
+		UUmError_ReturnOnError(error);
 		for (i = 0; i < curObject->geometry_count; i++)
 		{
 			curAkiraObject->geometry_array->geometries[i] = curObject->geometry_list[i];
 		}
-						
+
 		// Create the initial environmental particle array
 		IMPrEnv_CreateInstance_EnvParticles(curObject->numParticles, curObject->particles, &curAkiraObject->particleArray);
-	}	
+	}
 	return UUcError_None;
 }
 
@@ -509,7 +509,7 @@ static void iParseFlagFileFlags(BFtFileRef *inFileRef, ONtFlag **outFlags, UUtUn
 
 	if (error != UUcError_None) {
 		Imp_PrintWarning("failed to open %s", BFrFileRef_GetLeafName(inFileRef));
-		
+
 		goto exit;
 	}
 
@@ -525,39 +525,39 @@ static void iParseFlagFileFlags(BFtFileRef *inFileRef, ONtFlag **outFlags, UUtUn
 	flagCount = BFrTextFile_GetUUtUns16(textFile);
 	flagList = UUrMemory_Block_NewClear(sizeof(ONtFlag) * flagCount);
 
-	if (NULL == flagList) { 
+	if (NULL == flagList) {
 		Imp_PrintWarning("out of memory");
 		goto exit;
 	}
 
-	for(itr = 0; itr < flagCount; itr++) { 
+	for(itr = 0; itr < flagCount; itr++) {
 		ONtFlag *curFlag = flagList + itr;
 
 		// matrix
 		curLine = BFrTextFile_GetNextStr(textFile);
-		sscanf(curLine, "%f %f %f %f", 
-			&curFlag->matrix.m[0][0], 
-			&curFlag->matrix.m[1][0], 
+		sscanf(curLine, "%f %f %f %f",
+			&curFlag->matrix.m[0][0],
+			&curFlag->matrix.m[1][0],
 			&curFlag->matrix.m[2][0],
 			&curFlag->matrix.m[3][0]);
 
 		curLine = BFrTextFile_GetNextStr(textFile);
-		sscanf(curLine, "%f %f %f %f", 
-			&curFlag->matrix.m[0][1], 
-			&curFlag->matrix.m[1][1], 
+		sscanf(curLine, "%f %f %f %f",
+			&curFlag->matrix.m[0][1],
+			&curFlag->matrix.m[1][1],
 			&curFlag->matrix.m[2][1],
 			&curFlag->matrix.m[3][1]);
 
 		curLine = BFrTextFile_GetNextStr(textFile);
-		sscanf(curLine, "%f %f %f %f", 
-			&curFlag->matrix.m[0][2], 
-			&curFlag->matrix.m[1][2], 
+		sscanf(curLine, "%f %f %f %f",
+			&curFlag->matrix.m[0][2],
+			&curFlag->matrix.m[1][2],
 			&curFlag->matrix.m[2][2],
 			&curFlag->matrix.m[3][2]);
 
 		// translation
 		curLine = BFrTextFile_GetNextStr(textFile);
-		sscanf(curLine, "%f %f %f", 
+		sscanf(curLine, "%f %f %f",
 			&curFlag->location.x,
 			&curFlag->location.y,
 			&curFlag->location.z);
@@ -595,8 +595,8 @@ IMPiEnv_CreateInstance_Flags(BFtFileRef* inSourceFileRef,
 	UUmAssert(NULL == level->flagArray);
 
 	error = BFrFileRef_DuplicateAndReplaceName(
-		inSourceFileRef, 
-		"flag_file.txt", 
+		inSourceFileRef,
+		"flag_file.txt",
 		&flagFileRef);
 
 	if (UUcError_None != error) {
@@ -613,7 +613,7 @@ IMPiEnv_CreateInstance_Flags(BFtFileRef* inSourceFileRef,
 		maxFlags += flagFileCount;
 
 	}
-	
+
 	BFrFileRef_Dispose(flagFileRef);
 
 	error = TMrConstruction_Instance_NewUnique(
@@ -642,7 +642,7 @@ IMPiEnv_CreateInstance_Flags(BFtFileRef* inSourceFileRef,
 		dstFlag->idNumber = (UUtInt16) srcFlag->idNumber;
 		dstFlag->deleted = UUcFalse;
 		dstFlag->maxFlag = UUcTrue;
-		
+
 		// rotation
 		{
 			M3tPoint3D rotPoint;
@@ -666,7 +666,7 @@ IMPiEnv_CreateInstance_Flags(BFtFileRef* inSourceFileRef,
 	UUrMemory_MoveFast(flagFileFlags, level->flagArray->flags + inBuildData->numFlags, sizeof(ONtFlag) * flagFileCount);
 
 	if (NULL != flagFileFlags) { UUrMemory_Block_Delete(flagFileFlags); }
-	
+
 	return UUcError_None;
 }
 
@@ -686,8 +686,8 @@ IMPiEnv_CreateInstance_Triggers(BFtFileRef* inSourceFileRef,
 	UUmAssert(NULL == level->triggerArray);
 
 	error = BFrFileRef_DuplicateAndReplaceName(
-		inSourceFileRef, 
-		"trigger_file.txt", 
+		inSourceFileRef,
+		"trigger_file.txt",
 		&triggerFileRef);
 
 	if (UUcError_None != error) {
@@ -704,7 +704,7 @@ IMPiEnv_CreateInstance_Triggers(BFtFileRef* inSourceFileRef,
 		//maxFlags += triggerFileCount;
 
 	}
-	
+
 	BFrFileRef_Dispose(triggerFileRef);
 
 	error = TMrConstruction_Instance_NewUnique(
@@ -722,7 +722,7 @@ IMPiEnv_CreateInstance_Triggers(BFtFileRef* inSourceFileRef,
 	UUrMemory_MoveFast(triggerFileTriggers, level->triggerArray->triggers, sizeof(ONtFlag) * triggerFileCount);
 
 	if (NULL != triggerFileTriggers) { UUrMemory_Block_Delete(triggerFileTriggers); }
-	
+
 	return UUcError_None;
 }
 
@@ -734,76 +734,76 @@ IMPiEnv_CreateInstance_OctTree(
 {
 	UUtError		error;
 	AKtOctTree*		octTree;
-	
-	error = 
+
+	error =
 		TMrConstruction_Instance_NewUnique(
 			AKcTemplate_OctTree,
 			0,
 			&octTree);
 	UUmError_ReturnOnError(error);
-	
+
 	*outOctTree = octTree;
-	
-	error = 
+
+	error =
 		TMrConstruction_Instance_NewUnique(
 			AKcTemplate_OctTree_InteriorNodeArray,
 			inOTData->nextInteriorNodeIndex,
 			&octTree->interiorNodeArray);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		TMrConstruction_Instance_NewUnique(
 			AKcTemplate_OctTree_LeafNodeArray,
 			inOTData->nextLeafNodeIndex,
 			&octTree->leafNodeArray);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		TMrConstruction_Instance_NewUnique(
 			AKcTemplate_QuadTree_NodeArray,
 			inOTData->nextQTNodeIndex,
 			&octTree->qtNodeArray);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		TMrConstruction_Instance_NewUnique(
 			TMcTemplate_IndexArray,
 			inOTData->nextGQIndex,
 			&octTree->gqIndices);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		TMrConstruction_Instance_NewUnique(
 			TMcTemplate_IndexArray,
 			inOTData->nextBNVIndex,
 			&octTree->bnvIndices);
 	UUmError_ReturnOnError(error);
-	
+
 	UUrMemory_MoveFast(
 		inOTData->interiorNodes,
 		octTree->interiorNodeArray->nodes,
 		inOTData->nextInteriorNodeIndex * sizeof(AKtOctTree_InteriorNode));
-	
+
 	UUrMemory_MoveFast(
 		inOTData->leafNodes,
 		octTree->leafNodeArray->nodes,
 		inOTData->nextLeafNodeIndex * sizeof(AKtOctTree_LeafNode));
-	
+
 	UUrMemory_MoveFast(
 		inOTData->qtNodes,
 		octTree->qtNodeArray->nodes,
 		inOTData->nextQTNodeIndex * sizeof(AKtQuadTree_Node));
-	
+
 	UUrMemory_MoveFast(
 		inOTData->gqIndexArray,
 		octTree->gqIndices->indices,
 		inOTData->nextGQIndex * sizeof(UUtUns32));
-	
+
 	UUrMemory_MoveFast(
 		inOTData->bnv_index_array,
 		octTree->bnvIndices->indices,
 		inOTData->nextBNVIndex * sizeof(UUtUns32));
-	
+
 	return UUcError_None;
 }
 
@@ -828,21 +828,21 @@ IMPiEnv_CreateInstance_GQArray(
 	UUtUns32			numTransparent;
 	UUtUns32			numLightVolume;
 
-   error = 
+   error =
 		TMrConstruction_Instance_NewUnique(
 			AKcTemplate_GQ_General,
 			inBuildData->numGQs,
 			&environment->gqGeneralArray);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create general gunk quad array");
-	
-   error = 
+
+   error =
 		TMrConstruction_Instance_NewUnique(
 			AKcTemplate_GQ_Render,
 			inBuildData->numGQs,
 			&environment->gqRenderArray);
 	IMPmError_ReturnOnErrorMsg(error, "Could not create render gunk quad array");
-	
-   error = 
+
+   error =
 		TMrConstruction_Instance_NewUnique(
 			AKcTemplate_GQ_Collision,
 			inBuildData->numGQs,
@@ -850,7 +850,7 @@ IMPiEnv_CreateInstance_GQArray(
 	IMPmError_ReturnOnErrorMsg(error, "Could not create collision gunk quad array");
 
 	if (IMPgEnvironmentDebug) {
-		error = 
+		error =
 			TMrConstruction_Instance_NewUnique(
 				AKcTemplate_GQ_Debug,
 				inBuildData->numGQs,
@@ -859,18 +859,18 @@ IMPiEnv_CreateInstance_GQArray(
 	} else {
 		environment->gqDebugArray = NULL;
 	}
-	
+
 	fprintf(IMPgEnv_StatsFile, "num gqs: %d"UUmNL, inBuildData->numGQs);
-	
+
 	UUmAssertReadPtr(environment->gqGeneralArray->gqGeneral, sizeof(AKtGQ_General) * inBuildData->numGQs);
 	UUmAssertReadPtr(environment->gqRenderArray->gqRender, sizeof(AKtGQ_Render) * inBuildData->numGQs);
 	UUmAssertReadPtr(environment->gqCollisionArray->gqCollision, sizeof(AKtGQ_Collision) * inBuildData->numGQs);
 	if (IMPgEnvironmentDebug) {
 		UUmAssertReadPtr(environment->gqDebugArray->gqDebug, sizeof(AKtGQ_Debug) * inBuildData->numGQs);
 	}
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	// copy the GQs and generate statistics
 	numTris = 0;
 	numVisIgnored = 0;
@@ -891,7 +891,7 @@ IMPiEnv_CreateInstance_GQArray(
 	for(curGQIndex = 0; curGQIndex < inBuildData->numGQs; curGQIndex++)
 	{
 		if((curGQIndex % 500) == 0) Imp_PrintMessage(IMPcMsg_Important, ".");
-	
+
 		curAkiraGQGeneral->m3Quad.vertexIndices.indices[0] = curGQ->visibleQuad.indices[0];
 		curAkiraGQGeneral->m3Quad.vertexIndices.indices[1] = curGQ->visibleQuad.indices[1];
 		curAkiraGQGeneral->m3Quad.vertexIndices.indices[2] = curGQ->visibleQuad.indices[2];
@@ -901,7 +901,7 @@ IMPiEnv_CreateInstance_GQArray(
 		curAkiraGQGeneral->m3Quad.baseUVIndices.indices[1] = curGQ->baseMapIndices.indices[1];
 		curAkiraGQGeneral->m3Quad.baseUVIndices.indices[2] = curGQ->baseMapIndices.indices[2];
 		curAkiraGQGeneral->m3Quad.baseUVIndices.indices[3] = curGQ->baseMapIndices.indices[3];
-		
+
 
 		if (IMPrLM_DontProcessGQ(curGQ) || (!IMPgLightmaps)) {
 			UUtUns32 default_vertex_lighting = (IMPgGreen) ? IMPcEnv_DefaultVertexLighting_Green : IMPcEnv_DefaultVertexLighting_Normal;
@@ -917,26 +917,26 @@ IMPiEnv_CreateInstance_GQArray(
 			curAkiraGQGeneral->m3Quad.shades[2] = curGQ->shade[2];
 			curAkiraGQGeneral->m3Quad.shades[3] = curGQ->shade[3];
 		}
-		
+
 /*		curAkiraGQRender->adjGQIndices[0] = curGQ->adjGQIndices[0];
 		curAkiraGQRender->adjGQIndices[1] = curGQ->adjGQIndices[1];
 		curAkiraGQRender->adjGQIndices[2] = curGQ->adjGQIndices[2];
 		curAkiraGQRender->adjGQIndices[3] = curGQ->adjGQIndices[3];*/
 
-		curAkiraGQCollision->bBox			= curGQ->bBox;		
+		curAkiraGQCollision->bBox			= curGQ->bBox;
 		curAkiraGQGeneral->flags			= curGQ->flags;
 		curAkiraGQGeneral->object_tag		= curGQ->object_tag;
 		curAkiraGQCollision->planeEquIndex	= curGQ->planeEquIndex;
 		curAkiraGQRender->textureMapIndex	= curGQ->textureMapIndex;
 		curAkiraGQGeneral->flags			|= (curGQ->projection << AKcGQ_Flag_Projection_Shift);
 		//curAkiraGQ->patchArea = curGQ->patchArea;
-		
+
 		if (IMPgEnvironmentDebug) {
 			// Debugging goo
 			curAkiraGQDebug->object_name		= Imp_AddDebugString(inBuildData, curGQ->objName);
 			curAkiraGQDebug->file_name			= Imp_AddDebugString(inBuildData, curGQ->fileName);
 		}
-		
+
 		if( curGQ->object_tag != 0xFFFFFFFF )
 		{
 			IMPrEnv_Add_ObjectTag( inBuildData, curGQ->object_tag, curGQIndex );
@@ -950,25 +950,25 @@ IMPiEnv_CreateInstance_GQArray(
 		{
 			numTransparent++;
 		}
-		
+
 		if(curAkiraGQGeneral->flags & AKcGQ_Flag_No_Occlusion)
 		{
 			numVisIgnored++;
 		}
-		
+
 		if(curAkiraGQGeneral->flags & AKcGQ_Flag_2Sided)
 		{
 			num2Sided++;
 		}
-		
+
 		if(curAkiraGQGeneral->flags & AKcGQ_Flag_Ghost)
 		{
 			numGhost++;
 		}
-		
+
 		if(curAkiraGQGeneral->flags & AKcGQ_Flag_Door)
 		{
-			numDoor++;		
+			numDoor++;
 		}
 
 		curGQ++;
@@ -1012,7 +1012,7 @@ static UUtError IMPiEnv_CreateObjectTagArray(
 	UUtUns32*			gq_array;
 
 	UUmAssert( inBuildData && inBuildData->object_tags );
-	
+
 	new_array = UUrMemory_Array_New( sizeof(UUtUns32),  sizeof(UUtUns32) * 16, 0, 0 );
 	new_tags = (UUtUns32*) UUrMemory_Array_GetMemory( new_array );
 	unique_tags = 0;
@@ -1023,7 +1023,7 @@ static UUtError IMPiEnv_CreateObjectTagArray(
 
 	if( !tag_count )
 		return UUcError_None;
-	
+
 	tag_array = (UUtUns32*) UUrMemory_Array_GetMemory( inBuildData->object_tags );
 	gq_array = (UUtUns32*) UUrMemory_Array_GetMemory( inBuildData->object_quads );
 
@@ -1042,7 +1042,7 @@ static UUtError IMPiEnv_CreateObjectTagArray(
 		if( !found )
 		{
 			error = UUrMemory_Array_GetNewElement( new_array, &new_index, NULL );
-			
+
 			UUmAssert( error == UUcError_None );
 
 			new_tags = (UUtUns32*) UUrMemory_Array_GetMemory( new_array );
@@ -1052,7 +1052,7 @@ static UUtError IMPiEnv_CreateObjectTagArray(
 			unique_tags++;
 		}
 	}
-	
+
 	if( !unique_tags )
 		return UUcError_None;
 
@@ -1071,7 +1071,7 @@ static UUtError IMPiEnv_CreateObjectTagArray(
 		object_gunk				= &object_array->objects[i];
 		object_gunk->object_tag	= object_tag;
 		gq_count				= 0;
-		
+
 		for( j = 0; j <tag_count; j++ )
 		{
 			if( tag_array[j] == object_tag )
@@ -1079,8 +1079,8 @@ static UUtError IMPiEnv_CreateObjectTagArray(
 				if( gq_array[j] != 0xffffffff )
 					gq_count++;
 			}
-		}				
-		
+		}
+
 		if( gq_count )
 		{
 			error =  TMrConstruction_Instance_NewUnique( TMcTemplate_IndexArray, gq_count, &quad_array );
@@ -1094,7 +1094,7 @@ static UUtError IMPiEnv_CreateObjectTagArray(
 					if( gq_array[j] != 0xffffffff )
 						quad_array->indices[k++]	= gq_array[j];
 				}
-			}						
+			}
 			object_gunk->gq_array	= quad_array;
 		}
 		else
@@ -1134,7 +1134,7 @@ static UUtError IMPiEnv_CreateTheDoors( ONtLevel* inLevel, IMPtEnv_BuildData* in
 	M3tPoint3D				center_point;
 	float					width;
 	float					height;
-	M3tBoundingBox_MinMax	bBox;	
+	M3tBoundingBox_MinMax	bBox;
 	float					delta_x;
 	float					delta_z;
 
@@ -1163,7 +1163,7 @@ static UUtError IMPiEnv_CreateTheDoors( ONtLevel* inLevel, IMPtEnv_BuildData* in
 		rend = &env->gqRenderArray->gqRender[ gq_index ];
 		collision = &env->gqCollisionArray->gqCollision[ gq_index ];
 
-		// make sure we have a door quad 
+		// make sure we have a door quad
 		UUmAssert( gq->flags & AKcGQ_Flag_Door );
 
 		// add some flags
@@ -1188,11 +1188,11 @@ static UUtError IMPiEnv_CreateTheDoors( ONtLevel* inLevel, IMPtEnv_BuildData* in
 		points[1] = env->pointArray->points[v2];
 		points[2] = env->pointArray->points[v3];
 		points[3] = env->pointArray->points[v4];
-		
+
 		center_point.x = points[0].x + points[1].x + points[2].x + points[3].x;
 		center_point.y = points[0].y + points[1].y + points[2].y + points[3].y;
 		center_point.z = points[0].z + points[1].z + points[2].z + points[3].z;
-		
+
 		center_point.x /= 4;
 		center_point.y /= 4;
 		center_point.z /= 4;
@@ -1208,7 +1208,7 @@ static UUtError IMPiEnv_CreateTheDoors( ONtLevel* inLevel, IMPtEnv_BuildData* in
 		door_frame->width		= width;
 		door_frame->height		= height;
 	}
-	
+
 	env->door_frames = door_frame_array;
 
 	return UUcError_None;
@@ -1236,16 +1236,16 @@ IMPrEnv_CreateCorpses(
 	error = TMrConstruction_Instance_NewUnique(ONcTemplate_CorpseArray, IMPcMaxCorpses, &corpse_array);
 	corpse_array->max_corpses = IMPcMaxCorpses;
 	corpse_array->static_corpses = 0;
-	
+
 	for(itr = 0; itr < corpse_array->max_corpses; itr++)
 	{
 		ONtCorpse *corpse = corpse_array->corpses + itr;
 		UUrMemory_Clear(corpse , sizeof(*corpse));
 
-		if (itr < num_corpse_files) 
+		if (itr < num_corpse_files)
 		{
 			BFtFile *stream = NULL;
-			
+
 			BFrFile_Open(corpse_files[itr], "r", &stream);
 
 			if (NULL != stream) {
@@ -1253,38 +1253,38 @@ IMPrEnv_CreateCorpses(
 				UUtUns16 i;
 
 				UUrString_Copy(corpse->corpse_name, BFrFileRef_GetLeafName(corpse_files[itr]), sizeof(corpse->corpse_name));
-				
+
 				BFrFile_Read(stream, 128, &character_class_name);
 				BFrFile_Read(stream, sizeof(corpse->corpse_data), &corpse->corpse_data);
-				
+
 				for (i = 0; i < ONcNumCharacterParts; i++)
 				{
 					UUtUns16			j;
 					M3tMatrix4x3		*matrix;
-					
+
 					matrix = &corpse->corpse_data.matricies[i];
-					
+
 					for (j = 0; j < 4; j++)
 					{
 						UUtUns16		k;
-						
+
 						for (k = 0; k < 3; k++)
 						{
 							UUmSwapLittle_4Byte(&matrix->m[j][k]);
 						}
 					}
 				}
-				
+
 				UUmSwapLittle_4Byte(&corpse->corpse_data.corpse_bbox.minPoint.x);
 				UUmSwapLittle_4Byte(&corpse->corpse_data.corpse_bbox.minPoint.y);
 				UUmSwapLittle_4Byte(&corpse->corpse_data.corpse_bbox.minPoint.z);
-				
+
 				UUmSwapLittle_4Byte(&corpse->corpse_data.corpse_bbox.maxPoint.x);
 				UUmSwapLittle_4Byte(&corpse->corpse_data.corpse_bbox.maxPoint.y);
 				UUmSwapLittle_4Byte(&corpse->corpse_data.corpse_bbox.maxPoint.z);
-				
+
 				TMrConstruction_Instance_GetPlaceHolder(TRcTemplate_CharacterClass, character_class_name, (UUtUns32 *) &corpse->corpse_data.characterClass);
-				
+
 				BFrFile_Close(stream);
 			}
 
@@ -1308,54 +1308,54 @@ IMPrEnv_CreateInstance(
 	UUtError			error;
 	AKtEnvironment*		environment;
 	ONtLevel*			level;
-	
+
 	AKtBNVNodeArray*	bnvNodeArray;
-	
+
 	UUtUns32			curBNVIndex;
 	IMPtEnv_BNV*		curBNV;
-	
+
 	UUtUns32			curSideIndex;
 	IMPtEnv_BNV_Side*	curSide;
-	
-	
+
+
 	AKtBNVNode*			curAkiraNode;
 	AKtBNV_BSPNode*		curBSPNode;
-		
+
 	UUtUns32			numVisibleQuads = 0;
 	UUtUns32			numBSPNodes = 0;
 	UUtUns32			numBNVQuadIndices = 0;
 	UUtUns32			numPartitionIndices = 0;
-	
+
 	UUtUns32			posNodeIndex;
 	UUtUns32			negNodeIndex;
-	
+
 	UUtUns32			numGQIndIndices = 0;
-	
+
 	UUtUns32			numSides = 0;
 	AKtBNVNode_Side*	curAkiraSide;
-	
+
 	UUtUns32			curBSPIndex;
-	
+
 	UUtUns32			curIndex;
-	
+
 	UUtUns32			numAdjacencies;
 	AKtAdjacency*		curAkiraAdjacency;
-	
+
 	UUtUns16			curTextureIndex;
 	AUtSharedString*	curEnvTextureMap;
 	AUtSharedString*	textureList;
 	UUtUns16			numTextures;
 	char*				string;
 	UUtInt64			time;
-		
+
 	fprintf(IMPgEnv_StatsFile, "** environment data"UUmNL);
-	
+
 	time = UUrMachineTime_High();
 	Imp_PrintMessage(IMPcMsg_Important, "building instance...");
 
 	// Create level
-	
-	error = 
+
+	error =
 		TMrConstruction_Instance_Renew(
 			ONcTemplate_Level,
 			inInstanceName,
@@ -1367,10 +1367,10 @@ IMPrEnv_CreateInstance(
 
 
 	IMPrEnv_CreateCorpses(level, inSourceFileRef);
-	
+
 	// Create environment
-	
-	error = 
+
+	error =
 		TMrConstruction_Instance_Renew(
 			AKcTemplate_Environment,
 			inInstanceName,
@@ -1378,11 +1378,11 @@ IMPrEnv_CreateInstance(
 			&level->environment);
 	IMPmError_ReturnOnErrorMsg(error, "Could not renew environment");
 	environment = level->environment;
-	
+
 	level->environment->inchesPerPixel = IMPgEnv_InchesPerPixel;
 
 	// Create the point array
-		error = 
+		error =
 			AUrSharedPointArray_CreateTemplate(
 				inBuildData->sharedPointArray,
 				NULL,
@@ -1390,9 +1390,9 @@ IMPrEnv_CreateInstance(
 		IMPmError_ReturnOnErrorMsg(error, "Could not create shared point array");
 		Imp_PrintMessage(IMPcMsg_Cosmetic, "num points: %d"UUmNL, environment->pointArray->numPoints);
 		fprintf(IMPgEnv_StatsFile, "num points: %d"UUmNL, environment->pointArray->numPoints);
-	
+
 	// Create the planeArray
-		error = 
+		error =
 			AUrSharedPlaneEquArray_CreateTemplate(
 				inBuildData->sharedPlaneEquArray,
 				NULL,
@@ -1400,9 +1400,9 @@ IMPrEnv_CreateInstance(
 		IMPmError_ReturnOnErrorMsg(error, "Could not create shared plane array");
 		Imp_PrintMessage(IMPcMsg_Cosmetic, "num planes: %d"UUmNL, environment->planeArray->numPlanes);
 		fprintf(IMPgEnv_StatsFile, "num planes: %d"UUmNL, environment->planeArray->numPlanes);
-	
+
 	// Create the texture coord array
-		error = 
+		error =
 			AUrSharedTexCoordArray_CreateTemplate(
 				inBuildData->sharedTextureCoordArray,
 				NULL,
@@ -1410,32 +1410,32 @@ IMPrEnv_CreateInstance(
 		IMPmError_ReturnOnErrorMsg(error, "Could not create shared texture coord array");
 		Imp_PrintMessage(IMPcMsg_Cosmetic, "num texture coords: %d"UUmNL, environment->textureCoordArray->numTextureCoords);
 		fprintf(IMPgEnv_StatsFile, "num texture coords: %d"UUmNL, environment->textureCoordArray->numTextureCoords);
-	
+
 	// Create the oct tree
-		error = 
+		error =
 			IMPiEnv_CreateInstance_OctTree(
 				inBuildData,
 				&inBuildData->otData,
 				&environment->octTree);
 		UUmError_ReturnOnError(error);
-		
+
 	// Create the gunk quad array
 		error = IMPiEnv_CreateInstance_GQArray(inBuildData, environment);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create the GQ array");
-				
+
 	// Create the texture map array
 		textureList = AUrSharedStringArray_GetList(inBuildData->textureMapArray);
 		numTextures = (UUtUns16)AUrSharedStringArray_GetNum(inBuildData->textureMapArray);
-		
+
 		fprintf(IMPgEnv_StatsFile, "num texture maps: %d"UUmNL, numTextures);
 
-		error = 
+		error =
 			TMrConstruction_Instance_NewUnique(
 				M3cTemplate_TextureMapArray,
 				numTextures,
 				&environment->textureMapArray);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create texturemap array");
-	
+
 		for(curTextureIndex = 0, curEnvTextureMap = textureList;
 			curTextureIndex < numTextures;
 			curTextureIndex++, curEnvTextureMap++)
@@ -1448,66 +1448,66 @@ IMPrEnv_CreateInstance(
 			environment->textureMapArray->maps[curTextureIndex] = inBuildData->envTextureList[curTextureIndex].texture;
 		}
 		fprintf(IMPgEnv_StatsFile, "num texture maps: %d"UUmNL, numTextures);
-		
-			
+
+
 	// Create the node array
-		error = 
+		error =
 			TMrConstruction_Instance_NewUnique(
 				AKcTemplate_BNVNodeArray,
 				inBuildData->numBNVs,
 				&environment->bnvNodeArray);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create node array");
 		fprintf(IMPgEnv_StatsFile, "num BNVs: %d"UUmNL, inBuildData->numBNVs);
-		
+
 		bnvNodeArray = environment->bnvNodeArray;
-		
+
 		for(curBNVIndex = 0, curBNV = inBuildData->bnvList;
 			curBNVIndex < inBuildData->numBNVs;
 			curBNVIndex++, curBNV++)
 		{
 			curAkiraNode = bnvNodeArray->nodes + curBNVIndex;
 			curAkiraNode->index = (UUtUns32)curBNVIndex;
-			
+
 			// Assign child and next nodes
 				curAkiraNode->childIndex = curBNV->child;
-				curAkiraNode->nextIndex = curBNV->next;	
-			
+				curAkiraNode->nextIndex = curBNV->next;
+
 			// Assign root bsp node
 				curAkiraNode->bspRootNode = numBSPNodes;
 				numBSPNodes += curBNV->numNodes;
-			
+
 			// Assign the side indices
 				curAkiraNode->sideStartIndex = numSides;
 				numSides += curBNV->numSides;
 				curAkiraNode->sideEndIndex = numSides;
-			
+
 			// Assign gunk quad nodes
 				//curAkiraNode->gunkQuadStartIndex = numGunkQuads;
 				//numGunkQuads += curBNV->numGQs;
 				//curAkiraNode->gunkQuadEndIndex = numGunkQuads;
-			
+
 			// Set type flags
 				curAkiraNode->flags = curBNV->flags;
-				
+
 			// Store plane and height of stairs
 				curAkiraNode->stairPlane = curBNV->stairPlane;
 				curAkiraNode->stairHeight = curBNV->stairHeight;
-			
+
 			// Pathfinding node will be set at runtime
 				curAkiraNode->pathnodeIndex = (UUtUns32) -1;
 		}
-	
+
 	// Create the side array
-		error = 
+		error =
 			TMrConstruction_Instance_NewUnique(
 				AKcTemplate_BNVNodeSideArray,
 				numSides,
 				&environment->bnvSideArray);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create node array");
-		
+
 		curAkiraSide = environment->bnvSideArray->sides;
 		numAdjacencies = 0;
-		
+
 		for(curBNVIndex = 0, curBNV = inBuildData->bnvList;
 			curBNVIndex < inBuildData->numBNVs;
 			curBNVIndex++, curBNV++)
@@ -1516,37 +1516,37 @@ IMPrEnv_CreateInstance(
 				curSideIndex < curBNV->numSides;
 				curSideIndex++, curSide++)
 			{
-				
+
 				curAkiraSide->planeEquIndex = curSide->planeEquIndex;
-				
+
 				// Init adjacency indices
 					curAkiraSide->adjacencyStartIndex = numAdjacencies;
 					UUmAssert(curSide->numAdjacencies>=0 && curSide->numAdjacencies<IMPcEnv_MaxAdjacencies);
 					numAdjacencies += curSide->numAdjacencies;
 					curAkiraSide->adjacencyEndIndex = numAdjacencies;
-				
+
 				// Init ghost quad indices
 					curAkiraSide->ghostGQStartIndIndex = numGQIndIndices;
 					numGQIndIndices += curSide->numGQGhostIndices;
 					curAkiraSide->ghostGQEndIndIndex = numGQIndIndices;
-					
+
 				// Assign solid quad and partition index
 					curAkiraSide->bnvQuadStartIndIndex = numBNVQuadIndices;
 					numBNVQuadIndices += curSide->numBNVQuads;
 					curAkiraSide->bnvQuadEndIndIndex = numBNVQuadIndices;
-					
+
 				curAkiraSide++;
 			}
 		}
 
 	// Create the BSP node array
-		error = 
+		error =
 			TMrConstruction_Instance_NewUnique(
 				AKcTemplate_BSPNodeArray,
 				numBSPNodes,
 				&environment->bspNodeArray);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create node array");
-		
+
 		for(curBNVIndex = 0, curBNV = inBuildData->bnvList, curAkiraNode = bnvNodeArray->nodes;
 			curBNVIndex < inBuildData->numBNVs;
 			curBNVIndex++, curBNV++, curAkiraNode++)
@@ -1556,10 +1556,10 @@ IMPrEnv_CreateInstance(
 				curBSPIndex++, curBSPNode++)
 			{
 				curBSPNode->planeEquIndex = curBNV->bspNodes[curBSPIndex].planeEquIndex;
-				
+
 				posNodeIndex = curBNV->bspNodes[curBSPIndex].posNodeIndex;
 				negNodeIndex = curBNV->bspNodes[curBSPIndex].negNodeIndex;
-				
+
 				if(posNodeIndex == 0xFFFFFFFF)
 				{
 					curBSPNode->posNodeIndex = 0xFFFFFFFF;
@@ -1568,7 +1568,7 @@ IMPrEnv_CreateInstance(
 				{
 					curBSPNode->posNodeIndex = curBNV->bspNodes[curBSPIndex].posNodeIndex + curAkiraNode->bspRootNode;
 				}
-				
+
 				if(negNodeIndex == 0xFFFFFFFF)
 				{
 					curBSPNode->negNodeIndex = 0xFFFFFFFF;
@@ -1579,43 +1579,43 @@ IMPrEnv_CreateInstance(
 				}
 			}
 		}
-	
+
 	// create the alpha bsp node array
 	#if 1
-		error = 
+		error =
 			TMrConstruction_Instance_NewUnique(
 				AKcTemplate_AlphaBSPTree_NodeArray,
 				inBuildData->numAlphaBSPNodes,
 				&environment->alphaBSPNodeArray);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create node array");
-		
+
 		UUrMemory_MoveFast(
 			inBuildData->alphaBSPNodes,
 			environment->alphaBSPNodeArray->nodes,
 			inBuildData->numAlphaBSPNodes * sizeof(AKtAlphaBSPTree_Node));
 	#else
-	
+
 		environment->alphaBSPNodeArray = NULL;
-		
+
 	#endif
 	// Create the adjacency data
-		
+
 		UUmAssert(numAdjacencies == IMPgEnv_VerifyAdjCount);
-		error = 
+		error =
 			TMrConstruction_Instance_NewUnique(
 				AKcTemplate_AdjacencyArray,
 				numAdjacencies,
 				&environment->adjacencyArray);
-		
+
 		curAkiraAdjacency = environment->adjacencyArray->adjacencies;
-		
-		numSides = 0;	
+
+		numSides = 0;
 		for(curBNVIndex = 0, curBNV = inBuildData->bnvList;
 			curBNVIndex < inBuildData->numBNVs;
 			curBNVIndex++, curBNV++)
 		{
 			if (!(curBNV->flags & AKcBNV_Flag_Room)) continue;
-			
+
 			for(curSideIndex = 0, curSide = curBNV->sides;
 				curSideIndex < curBNV->numSides;
 				curSideIndex++, curSide++)
@@ -1629,7 +1629,7 @@ IMPrEnv_CreateInstance(
 				}
 			}
 		}
-	
+
 	// Create the quad remap array
 	{
 		UUtUns16 remapCount;
@@ -1673,7 +1673,7 @@ IMPrEnv_CreateInstance(
 
 		PHrCreateRoomData(inBuildData,&inBuildData->bnvList[curBNVIndex],curAkiraNode,environment);
 	}
-	
+
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, UUmNL "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
 
@@ -1681,33 +1681,33 @@ IMPrEnv_CreateInstance(
 		extern UUtUns32 PHgOriginalMemoryUsage;
 		extern UUtUns32 PHgCompressedMemoryUsage;
 
-		Imp_PrintMessage(IMPcMsg_Important, UUmNL "pathfinding memory usage %2.2fk (old was %2.2fk)" UUmNL, 
+		Imp_PrintMessage(IMPcMsg_Important, UUmNL "pathfinding memory usage %2.2fk (old was %2.2fk)" UUmNL,
 			PHgCompressedMemoryUsage / (1024.f),
 			PHgOriginalMemoryUsage / (1024.f));
-	} 
-		
+	}
+
 	// Set up objects
 	IMPiEnv_CreateInstance_Objects(inBuildData,level);
-	
+
 	// Set up marker nodes
 	IMPiEnv_CreateInstance_Markers(inBuildData,level);
-		
+
 	// Set up flags
 	IMPiEnv_CreateInstance_Flags(inSourceFileRef, inBuildData, level);
 
 	// Set up triggers
 	IMPiEnv_CreateInstance_Triggers(inSourceFileRef, inBuildData, level);
-			
+
 	// Create the environmental particles
 	IMPrEnv_CreateInstance_EnvParticles(
 		inBuildData->numEnvParticles,
 		inBuildData->envParticles,
 		&level->envParticleArray);
-		
+
 	// Set up combat profiles
 	IMPiEnv_CreateInstance_CombatProfiles(inBuildData,environment);
-	IMPiEnv_CreateInstance_TacticalProfiles(inBuildData,environment);	
-		
+	IMPiEnv_CreateInstance_TacticalProfiles(inBuildData,environment);
+
 	// Character setup array
 	error = GRrGroup_GetString(inBuildData->environmentGroup,"scripts",&string);
 	if (UUcError_None != error) {
@@ -1737,7 +1737,7 @@ IMPrEnv_CreateInstance(
 
 	// sky
 	error = GRrGroup_GetString(inBuildData->environmentGroup,"sky",&string);
-	if (UUcError_None != error) 
+	if (UUcError_None != error)
 	{
 		//Imp_PrintWarning("Environment was missing sky name");
 		level->sky_class = NULL;
@@ -1760,7 +1760,7 @@ IMPrEnv_CreateInstance(
 	Imp_PrintMessage(IMPcMsg_Important,"Verifying pathfinding..."UUmNL);
 	IMPiEnv_Verify_Pathfinding(inBuildData);
 
-	// build the extents 
+	// build the extents
 	level->environment->bbox.minPoint.x = inBuildData->minX;
 	level->environment->bbox.minPoint.y = inBuildData->minY;
 	level->environment->bbox.minPoint.z = inBuildData->minZ;
@@ -1768,7 +1768,7 @@ IMPrEnv_CreateInstance(
 	level->environment->bbox.maxPoint.x = inBuildData->maxX;
 	level->environment->bbox.maxPoint.y = inBuildData->maxY;
 	level->environment->bbox.maxPoint.z = inBuildData->maxZ;
-	
+
 
 	return UUcError_None;
 }

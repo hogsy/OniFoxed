@@ -26,11 +26,11 @@ ONrOutGameUI_MainMenu_Display(
 UUtUns32
 ONrOutGameUI_NewGame_Display(
 	void);
-	
+
 UUtUns32
 ONrOutGameUI_LoadGame_Display(
 	void);
-	
+
 UUtUns32
 ONrOutGameUI_Options_Display(
 	void);
@@ -38,6 +38,6 @@ ONrOutGameUI_Options_Display(
 UUtUns32
 ONrOutGameUI_QuitYesNo_Display(
 	void);
-	
+
 // ======================================================================
 #endif /* ONI_OUTGAMEUI_H */

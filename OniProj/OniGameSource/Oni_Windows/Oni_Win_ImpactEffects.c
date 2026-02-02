@@ -35,7 +35,7 @@ typedef struct OWtIEprop
 {
 	UUtUns32					entry_index;
 	UUtUns32					selected_particle;
-	
+
 } OWtIEprop;
 
 typedef struct OWtIEdata
@@ -48,7 +48,7 @@ typedef struct OWtIEdata
 	UUtUns32					entry_baseindex;
 
 	UUtUns32					found_entries[ONcIEComponent_Max];
-	
+
 	UUtBool						clipboard_full;
 } OWtIEdata;
 
@@ -72,7 +72,7 @@ OWiIEprop_EmptySound(
 		return UUcFalse;*/
 	if (inSound->sound_name[0] != '\0')
 		return UUcFalse;
-	
+
 	if (inSound->flags & ONcIESoundFlag_AICanHear)
 		return UUcFalse;
 
@@ -182,7 +182,7 @@ OWiIEprop_SetupParticleControls(
 				// all decals created from impact effects are dynamic and have random rotation and default size
 				sel_particle->effect_spec.location_data.decal.static_decal = UUcFalse;
 				sel_particle->effect_spec.location_data.decal.random_rotation = UUcTrue;
-				for (itr = 0; itr < 5; itr++) 
+				for (itr = 0; itr < 5; itr++)
 				{
 					WMrWindow_SetVisible(ef_params[itr], UUcFalse);
 					WMrWindow_SetVisible(txt_params[itr], UUcFalse);
@@ -271,13 +271,13 @@ OWiIEprop_DisplaySound(
 	if (sound == NULL) {
 		WMrCheckBox_SetCheck(ai_canhear, UUcFalse);
 		WMrWindow_SetEnabled(ai_radius, UUcFalse);
-		WMrWindow_SetEnabled(ai_type, UUcFalse);		
+		WMrWindow_SetEnabled(ai_type, UUcFalse);
 	} else {
 		// set the AI parameters
 		if (sound->flags & ONcIESoundFlag_AICanHear) {
 			WMrCheckBox_SetCheck(ai_canhear, UUcTrue);
 			WMrWindow_SetEnabled(ai_radius, UUcTrue);
-			WMrWindow_SetEnabled(ai_type, UUcTrue);		
+			WMrWindow_SetEnabled(ai_type, UUcTrue);
 
 			WMrEditField_SetFloat(ai_radius, sound->ai_soundradius);
 			if ((sound->ai_soundtype >= AI2cContactType_Sound_Ignore) && (sound->ai_soundtype <= AI2cContactType_Sound_Gunshot)) {
@@ -288,7 +288,7 @@ OWiIEprop_DisplaySound(
 		} else {
 			WMrCheckBox_SetCheck(ai_canhear, UUcFalse);
 			WMrWindow_SetEnabled(ai_radius, UUcFalse);
-			WMrWindow_SetEnabled(ai_type, UUcFalse);		
+			WMrWindow_SetEnabled(ai_type, UUcFalse);
 		}
 	}
 
@@ -371,7 +371,7 @@ OWiIEprop_InitDialog(
 	// set up the popup menus
 	mod_popup = WMrDialog_GetItemByID(inDialog, OWcIEprop_PM_ModType);
 	WMrPopupMenu_SetSelection(mod_popup, entry->modifier);
-	
+
 	com_popup = WMrDialog_GetItemByID(inDialog, OWcIEprop_PM_Component);
 	WMrPopupMenu_SetSelection(com_popup, entry->component);
 
@@ -436,7 +436,7 @@ OWiIEprop_HandleCommand(
 	UUtBool						checked;
 
 	properties = (OWtIEprop*)WMrDialog_GetUserData(inDialog);
-	
+
 	switch (UUmLowWord(inParam1))
 	{
 		case OWcIEprop_Btn_OK:
@@ -454,7 +454,7 @@ OWiIEprop_HandleCommand(
 		{
 			SStImpulse			*impulse;
 			OWtSelectResult		result;
-			
+
 			sound = ONrImpactEffect_GetSound(properties->entry_index);
 			if (sound == NULL) {
 				error = OWiIEprop_NewSound(properties, &sound);
@@ -468,9 +468,9 @@ OWiIEprop_HandleCommand(
 
 			result = OWrSelect_ImpulseSound(&impulse);
 			if (result == OWcSelectResult_Cancel) { break; }
-			
+
 			sound->impulse_ptr = impulse;
-			
+
 			if (sound->impulse_ptr == NULL) {
 				UUrString_Copy(sound->sound_name, "", SScMaxNameLength);
 			} else {
@@ -479,7 +479,7 @@ OWiIEprop_HandleCommand(
 					sound->impulse_ptr->impulse_name,
 					SScMaxNameLength);
 			}
-			
+
 			if (OWiIEprop_EmptySound(sound)) {
 				// delete this empty sound entry
 				entry = ONrImpactEffect_GetEntry(properties->entry_index);
@@ -510,7 +510,7 @@ OWiIEprop_HandleCommand(
 			if (sound == NULL) {
 				break;
 			}
-			
+
 			if (sound->impulse_ptr == NULL)
 			{
 				sound->impulse_ptr = OSrImpulse_GetByName(sound->sound_name);
@@ -525,7 +525,7 @@ OWiIEprop_HandleCommand(
 					break;
 				}
 			}
-			
+
 			// edit this sound
 			OWrImpulseProperties_Display(inDialog, sound->impulse_ptr);
 
@@ -574,7 +574,7 @@ OWiIEprop_HandleCommand(
 			// we could set up proper defaults here if desired
 			UUrMemory_Clear(&particle->effect_spec, sizeof(P3tEffectSpecification));
 			UUrString_Copy(particle->particle_class_name, "new_particle", P3cParticleClassNameLength + 1);
-			
+
 			// select the new particle
 			ONrImpactEffect_GetParticles(properties->entry_index, &num_particles);
 			properties->selected_particle = num_particles - 1;
@@ -601,7 +601,7 @@ OWiIEprop_HandleCommand(
 			if (properties->selected_particle == (UUtUns32) -1) {
 				break;
 			}
-		
+
 			WMrEditField_GetText((WMtEditField *) inControl, new_classname, P3cParticleClassNameLength + 1);
 
 			particle = ONrImpactEffect_GetParticles(properties->entry_index, &num_particles);
@@ -630,7 +630,7 @@ OWiIEprop_HandleCommand(
 			if (properties->selected_particle == (UUtUns32) -1) {
 				break;
 			}
-		
+
 			particle = ONrImpactEffect_GetParticles(properties->entry_index, &num_particles);
 			UUmAssert((properties->selected_particle >= 0) && (properties->selected_particle < num_particles));
 			sel_particle = particle + properties->selected_particle;
@@ -656,7 +656,7 @@ OWiIEprop_HandleCommand(
 							WMrEditField_GetFloat((WMtEditField *) inControl);
 					}
 				break;
-				
+
 				default:
 					UUmAssert(!"OWiIEprop_HandleCommand: selected particle has unknown location type");
 				break;
@@ -678,7 +678,7 @@ OWiIEprop_HandleCommand(
 			if (properties->selected_particle == (UUtUns32) -1) {
 				break;
 			}
-		
+
 			particle = ONrImpactEffect_GetParticles(properties->entry_index, &num_particles);
 			UUmAssert((properties->selected_particle >= 0) && (properties->selected_particle < num_particles));
 			sel_particle = particle + properties->selected_particle;
@@ -700,7 +700,7 @@ OWiIEprop_HandleCommand(
 							WMrCheckBox_GetCheck((WMtCheckBox *) inControl);
 					}
 				break;
-				
+
 				default:
 					UUmAssert(!"OWiIEprop_HandleCommand: selected particle has unknown location type");
 				break;
@@ -760,7 +760,7 @@ OWiIEprop_HandleCommand(
 				}
 			}
 		break;
-	
+
 		case OWcIEprop_EF_AISoundRadius:
 			sound = ONrImpactEffect_GetSound(properties->entry_index);
 
@@ -790,9 +790,9 @@ OWiIEprop_HandleMenuCommand(
 	ONtIESound					*sound;
 	UUtUns32					num_particles;
 	UUtError					error;
-	
+
 	properties = (OWtIEprop*)WMrDialog_GetUserData(inDialog);
-	
+
 	switch (WMrWindow_GetID(inPopupMenu))
 	{
 		case OWcIEprop_PM_ModType:
@@ -825,7 +825,7 @@ OWiIEprop_HandleMenuCommand(
 			if (properties->selected_particle == (UUtUns32) -1) {
 				break;
 			}
-		
+
 			particle = ONrImpactEffect_GetParticles(properties->entry_index, &num_particles);
 			UUmAssert((properties->selected_particle >= 0) && (properties->selected_particle < num_particles));
 			sel_particle = particle + properties->selected_particle;
@@ -845,7 +845,7 @@ OWiIEprop_HandleMenuCommand(
 			if (properties->selected_particle == (UUtUns32) -1) {
 				break;
 			}
-		
+
 			particle = ONrImpactEffect_GetParticles(properties->entry_index, &num_particles);
 			UUmAssert((properties->selected_particle >= 0) && (properties->selected_particle < num_particles));
 			sel_particle = particle + properties->selected_particle;
@@ -876,7 +876,7 @@ OWiIEprop_HandleMenuCommand(
 					break;
 				}
 			}
-		break;	
+		break;
 	}
 }
 
@@ -889,28 +889,28 @@ OWiIEprop_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiIEprop_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiIEprop_HandleCommand(inDialog, inParam1, (WMtWindow*)inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiIEprop_HandleMenuCommand(inDialog, (WMtWindow*)inParam2, UUmLowWord(inParam1));
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -930,7 +930,7 @@ OWrIE_FillImpactListBox(
 	UUtUns16					i;
 	const char *				item_name;
 	char						tempstring[64];
-	
+
 	WMrMessage_Send(inListBox, LBcMessage_Reset, 0, 0);
 	num_types = MArImpacts_GetNumTypes();
 
@@ -960,7 +960,7 @@ OWrIE_FillMaterialListBox(
 	UUtUns16					i;
 	const char *				item_name;
 	char						tempstring[64];
-	
+
 	WMrMessage_Send(inListBox, LBcMessage_Reset, 0, 0);
 	num_types = MArMaterials_GetNumTypes();
 
@@ -994,10 +994,10 @@ OWiIE_FillEntryListBoxes(
 	char						textbuf[256];
 	MAtMaterialType				material_type, parent_material_type;
 	MAtMaterialType				new_material_type;
-	
+
 	data = (OWtIEdata*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(data);
-	
+
 	// fill the attached entry list
 	listbox = WMrDialog_GetItemByID(inDialog, OWcIE_LB_AttachedEntries);
 	WMrMessage_Send(listbox, LBcMessage_Reset, 0, 0);
@@ -1047,10 +1047,10 @@ OWiIE_FillEntryListBoxes(
 
 			WMrMessage_Send(listbox, LBcMessage_AddString, index, 0);
 		}
-		
+
 		material_type = new_material_type + 1;
 	} while (material_type < MArMaterials_GetNumTypes());
-	
+
 	// perform an impact lookup on the currently viewed node
 	ONrImpactEffect_Lookup(data->cur_impact_type, data->cur_material_type, data->cur_mod_type, data->found_entries);
 
@@ -1097,7 +1097,7 @@ OWiIE_HandleDelete(
 
 	listbox = WMrDialog_GetItemByID(inDialog, OWcIE_LB_AttachedEntries);
 
-	result = 
+	result =
 		WMrDialog_MessageBox(
 			inDialog,
 			"Confirm Delete",
@@ -1106,7 +1106,7 @@ OWiIE_HandleDelete(
 	if (result == WMcDialogItem_No) {
 		return;
 	}
-	
+
 	selected = WMrMessage_Send(listbox, LBcMessage_GetSelection, 0, 0);
 	if (selected == (UUtUns32) -1) {
 		// nothing to delete!
@@ -1145,13 +1145,13 @@ OWiIE_HandleEdit(
 	UUtError					error;
 	UUtUns32					message;
 	UUtBool						doesnt_belong;
-	
+
 	data = (OWtIEdata*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(data);
 
 	listbox = WMrDialog_GetItemByID(inDialog, OWcIE_LB_AttachedEntries);
 	index = WMrMessage_Send(listbox, LBcMessage_GetItemData, 0, (UUtUns32)-1);
-	
+
 	if (index == (UUtUns32) -1) {
 		// nothing selected
 		return UUcError_None;
@@ -1167,9 +1167,9 @@ OWiIE_HandleEdit(
 		WMrListBox_SetSelection(listbox, UUcTrue, entry->material_type);
 	} else {
 		properties.entry_index = index;
-			
+
 		// edit the properties
-		error = 
+		error =
 			WMrDialog_ModalBegin(
 				OWcDialog_Impact_Effect_Prop,
 				inDialog,
@@ -1177,7 +1177,7 @@ OWiIE_HandleEdit(
 				(UUtUns32)&properties,
 				&message);
 		UUmError_ReturnOnError(error);
-		
+
 		// update the listboxes
 		OWiIE_FillEntryListBoxes(inDialog);
 	}
@@ -1204,7 +1204,7 @@ OWiIE_HandleNew(
 							WMcMessageBoxStyle_OK);
 		return UUcError_None;
 	}
-	
+
 	error = ONrImpactEffect_CreateImpactEntry(data->cur_impact_type, data->cur_material_type, &entry_index);
 	if (error == UUcError_OutOfMemory) {
 		errmsg = "Could not add new entry; out of memory!";
@@ -1219,7 +1219,7 @@ OWiIE_HandleNew(
 
 	// re-fill the listboxes
 	OWiIE_FillEntryListBoxes(inDialog);
-	
+
 	return UUcError_None;
 }
 
@@ -1249,7 +1249,7 @@ OWiIE_InitDialog(
 	listbox = WMrDialog_GetItemByID(inDialog, OWcIE_LB_Impact);
 	OWrIE_FillImpactListBox(inDialog, listbox);
 	WMrListBox_SetSelection(listbox, UUcFalse, MAcImpact_Base);
-	
+
 	listbox = WMrDialog_GetItemByID(inDialog, OWcIE_LB_Material);
 	OWrIE_FillMaterialListBox(inDialog, listbox);
 	WMrListBox_SetSelection(listbox, UUcFalse, MAcMaterial_Base);
@@ -1280,7 +1280,7 @@ OWiIE_HandleCopy(
 
 	listbox = WMrDialog_GetItemByID(inDialog, OWcIE_LB_AttachedEntries);
 	index = WMrMessage_Send(listbox, LBcMessage_GetItemData, 0, (UUtUns32)-1);
-	
+
 	if (index == (UUtUns32) -1) {
 		// nothing selected
 		return;
@@ -1337,9 +1337,9 @@ OWiIE_HandlePaste(
 		WMrDialog_MessageBox(inDialog, "Error", errmsg, WMcMessageBoxStyle_OK);
 		return;
 	}
-	
+
 	// fill the entry listboxes
-	OWiIE_FillEntryListBoxes(inDialog);	
+	OWiIE_FillEntryListBoxes(inDialog);
 }
 
 // ----------------------------------------------------------------------
@@ -1348,12 +1348,12 @@ OWiIE_Destroy(
 	WMtDialog					*inDialog)
 {
 	OWtIEdata					*data;
-	
+
 	data = (OWtIEdata *) WMrDialog_GetUserData(inDialog);
 	if (data != NULL) {
 		UUrMemory_Block_Delete(data);
 	}
-	
+
 	// stop the timer and save the data
 	WMrTimer_Stop(0, inDialog);
 	ONrImpactEffects_Save(UUcFalse);
@@ -1399,7 +1399,7 @@ OWiIE_HandleCommand(
 		case WMcDialogItem_Cancel:
 			WMrDialog_ModalEnd(inDialog, 0);
 		break;
-		
+
 		case OWcIE_LB_Impact:
 			data->cur_impact_type = (MAtImpactType) WMrListBox_GetSelection((WMtListBox *) inControl);
 			OWiIE_FillEntryListBoxes(inDialog);
@@ -1416,14 +1416,14 @@ OWiIE_HandleCommand(
 			}
 
 			selected_item = WMrMessage_Send(inControl, LBcMessage_GetSelection, 0, 0);
-			
+
 			// disable delete and copy buttons if nothing is selected
 			button = WMrDialog_GetItemByID(inDialog, OWcIE_Btn_Delete);
 			WMrWindow_SetEnabled(button, (selected_item != (UUtUns32) -1));
 			button = WMrDialog_GetItemByID(inDialog, OWcIE_Btn_Copy);
 			WMrWindow_SetEnabled(button, (selected_item != (UUtUns32) -1));
 		break;
-		
+
 		case OWcIE_LB_FoundEntries:
 			WMrMessage_Send(inControl, LBcMessage_SetSelection, UUcFalse, (UUtUns32) -1);
 		break;
@@ -1431,19 +1431,19 @@ OWiIE_HandleCommand(
 		case OWcIE_Btn_Delete:
 			OWiIE_HandleDelete(inDialog);
 		break;
-		
+
 		case OWcIE_Btn_Copy:
 			OWiIE_HandleCopy(inDialog);
 		break;
-		
+
 		case OWcIE_Btn_Paste:
 			OWiIE_HandlePaste(inDialog);
 		break;
-		
+
 		case OWcIE_Btn_Edit:
 			OWiIE_HandleEdit(inDialog);
 		break;
-		
+
 		case OWcIE_Btn_New:
 			OWiIE_HandleNew(inDialog);
 		break;
@@ -1472,15 +1472,15 @@ OWiIE_HandleDrawItem(
 	// get a pointer to the partspec_ui
 	partspec_ui = PSrPartSpecUI_GetActive();
 	UUmAssert(partspec_ui);
-	
+
 	// set the dest
 	dest.x = inDrawItem->rect.left;
 	dest.y = inDrawItem->rect.top;
-	
+
 	// calc the width and height of the line
 	line_width = inDrawItem->rect.right - inDrawItem->rect.left;
 	line_height = inDrawItem->rect.bottom - inDrawItem->rect.top;
-	
+
 	if (inDrawItem->rect.top > 5)
 	{
 		// draw a divider
@@ -1493,23 +1493,23 @@ OWiIE_HandleDrawItem(
 			2,
 			M3cMaxAlpha);
 	}
-	
+
 	// draw the Text
 	DCrText_SetFormat(TSc_HLeft | TSc_VCenter);
 	DCrText_SetStyle(TScStyle_Plain);
 	DCrText_SetShade(doesnt_belong ? IMcShade_Gray50 : IMcShade_Black);
-	
+
 	dest.x = 5;
 	dest.y += 1;
 
 	// get the impact entry
 	entry = ONrImpactEffect_GetEntry(index);
-	
+
 	// draw the impact type name
 	name = MArImpactType_GetName(entry->impact_type);
 	DCrDraw_String(inDrawItem->draw_context, name, &inDrawItem->rect, &dest);
 	dest.x += 100;
-		
+
 	// draw the material type name
 	name = MArMaterialType_GetName(entry->material_type);
 	DCrDraw_String(inDrawItem->draw_context, name, &inDrawItem->rect, &dest);
@@ -1519,15 +1519,15 @@ OWiIE_HandleDrawItem(
 	name = ONrIEComponent_GetName(entry->component);
 	DCrDraw_String(inDrawItem->draw_context, name, &inDrawItem->rect, &dest);
 	dest.x += 60;
-	
+
 	// draw the modifier name
 	name = ONrIEModType_GetName(entry->modifier);
-	DCrDraw_String(inDrawItem->draw_context, name, &inDrawItem->rect, &dest);	
+	DCrDraw_String(inDrawItem->draw_context, name, &inDrawItem->rect, &dest);
 	dest.x += 60;
-	
+
 	// get a description of the entry
 	ONrImpactEffect_GetDescription(index, description);
-	DCrDraw_String(inDrawItem->draw_context, description, &inDrawItem->rect, &dest);	
+	DCrDraw_String(inDrawItem->draw_context, description, &inDrawItem->rect, &dest);
 }
 
 // ----------------------------------------------------------------------
@@ -1539,9 +1539,9 @@ OWiIE_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	UUrMemory_Block_VerifyList();
 	ONrImpactEffect_VerifyStructure(UUcTrue);
 
@@ -1550,32 +1550,32 @@ OWiIE_Callback(
 		case WMcMessage_InitDialog:
 			OWiIE_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiIE_Destroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiIE_HandleCommand(inDialog, inParam1, (WMtWindow*)inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiIE_HandleMenuCommand(inDialog, (WMtWindow*)inParam2, UUmLowWord(inParam1));
 		break;
-		
+
 		case WMcMessage_Timer:
 			ONrImpactEffects_Save(UUcTrue);
 		break;
-		
+
 		case WMcMessage_DrawItem:
 			OWiIE_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	UUrMemory_Block_VerifyList();
 	ONrImpactEffect_VerifyStructure(UUcTrue);
 
@@ -1588,7 +1588,7 @@ OWrImpactEffect_Display(
 	void)
 {
 	UUtError					error;
-	
+
 	error =
 		WMrDialog_ModalBegin(
 			OWcDialog_Impact_Effect,
@@ -1597,7 +1597,7 @@ OWrImpactEffect_Display(
 			0,
 			NULL);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 #endif

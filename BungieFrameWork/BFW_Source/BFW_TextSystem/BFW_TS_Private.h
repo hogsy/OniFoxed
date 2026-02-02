@@ -32,7 +32,7 @@ struct TStTextContext
 
 	UUtUns16		font_size;					// desired font size
 	TStFontStyle	font_style;					// desired font style
-	
+
 	UUtBool			use_formatting_commands;
 };
 

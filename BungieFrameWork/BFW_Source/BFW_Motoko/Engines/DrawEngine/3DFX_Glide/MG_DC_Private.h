@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_DrawContext_Private.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 17, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -33,9 +33,9 @@ typedef enum MGtDrawState_TMU
 {
 	MGcDrawState_TMU_1,
 	MGcDrawState_TMU_2,
-	
+
 	MGcDrawState_TMU_Num
-	
+
 } MGtDrawState_TMU;
 
 // 3dfx tells you to do this; check manual for details (don't take it out)
@@ -77,7 +77,7 @@ extern float MGg5BitsTo0_255FloatTable[32];
 	(glide_vertex)->y= SNAP_COORD((m_vertex)->y);	\
 	(glide_vertex)->ooz= 65535.f / (m_vertex)->z;	\
 	(glide_vertex)->oow= (m_vertex)->invW;			\
-	UUmBlankFunction 
+	UUmBlankFunction
 
 #else
 
@@ -85,7 +85,7 @@ extern float MGg5BitsTo0_255FloatTable[32];
 	(glide_vertex)->x= SNAP_COORD((m_vertex)->x);	\
 	(glide_vertex)->y= SNAP_COORD((m_vertex)->y);	\
 	(glide_vertex)->oow= (m_vertex)->invW;			\
-	UUmBlankFunction 
+	UUmBlankFunction
 
 #endif
 
@@ -95,46 +95,46 @@ extern float MGg5BitsTo0_255FloatTable[32];
 	(glide_vertex)->r = UUmPin((255.f / ((float) 0x1f) * (((m_color) & (0x1f << 10)) >> 10)), 0.f, 255.f); \
 	(glide_vertex)->g = UUmPin((255.f / ((float) 0x1f) * (((m_color) & (0x1f <<  5)) >>  5)), 0.f, 255.f); \
 	(glide_vertex)->b = UUmPin((255.f / ((float) 0x1f) * (((m_color) & (0x1f <<  0)) >>  0)), 0.f, 255.f); \
-	UUmBlankFunction 
+	UUmBlankFunction
 #else
 #define MGmConvertVertex_RGB(m_color, glide_vertex)	\
 	(glide_vertex)->a = 0.0f; \
 	(glide_vertex)->r = (float)(((m_color) >> 16) & 0xFF); \
 	(glide_vertex)->g = (float)(((m_color) >> 8) & 0xFF); \
 	(glide_vertex)->b = (float)(((m_color) >> 0) & 0xFF); \
-	UUmBlankFunction 
+	UUmBlankFunction
 #endif
 
 #define MGmConvertVertex_UV(u_scale, v_scale, glide_tmu, m_texture_coord, glide_vertex)	\
 	(glide_vertex)->tmuvtx[glide_tmu].sow= (u_scale*(m_texture_coord)->u)*(glide_vertex)->oow;	\
 	(glide_vertex)->tmuvtx[glide_tmu].tow= (v_scale*(m_texture_coord)->v)*(glide_vertex)->oow;	\
-	UUmBlankFunction 
+	UUmBlankFunction
 
 #define MGmConvertVertex_UV_LM(u_scale_base, v_scale_base, u_scale_light, v_scale_light, m_base_texture_coord, m_light_texture_coord, glide_vertex)	\
 	MGmConvertVertex_UV(u_scale_base, v_scale_base, 0, m_base_texture_coord, glide_vertex); \
 	MGmConvertVertex_UV(u_scale_light, v_scale_light, 1, m_light_texture_coord, glide_vertex); \
-	
-	
+
+
 #define MGmConvertVertex_XYZUV(m_vertex, u_scale_base, v_scale_base, m_texture_coord, glide_vertex)	\
 	MGmConvertVertex_XYZ(m_vertex, glide_vertex); \
 	MGmConvertVertex_UV(u_scale_base, v_scale_base, 0, m_texture_coord, glide_vertex);	\
-	UUmBlankFunction 
+	UUmBlankFunction
 
 #define MGmConvertVertex_XYZUVRGB(m_vertex, u_scale_base, v_scale_base, m_texture_coord, m_color, glide_vertex)	\
 	MGmConvertVertex_XYZUV(m_vertex, u_scale_base, v_scale_base, m_texture_coord, glide_vertex); \
 	MGmConvertVertex_RGB(m_color, glide_vertex); \
-	UUmBlankFunction 
+	UUmBlankFunction
 
 #define MGmConvertVertex_XYZUVRGBEnvMap(m_vertex, u_scale_base, v_scale_base, m_texture_coord, u_scale_env, v_scale_env, m_env_texture_coord, m_color, glide_vertex)	\
 	MGmConvertVertex_XYZUV(m_vertex, u_scale_base, v_scale_base, m_texture_coord, glide_vertex); \
 	MGmConvertVertex_UV(u_scale_env, v_scale_env, 1, m_env_texture_coord, glide_vertex);	\
 	MGmConvertVertex_RGB(m_color, glide_vertex); \
-	UUmBlankFunction 
+	UUmBlankFunction
 
 #define MGmConvertVertex_XYZRGB(m_vertex, m_color, glide_vertex) \
 	MGmConvertVertex_XYZ(m_vertex, glide_vertex); \
 	MGmConvertVertex_RGB(m_color, glide_vertex); \
-	UUmBlankFunction 
+	UUmBlankFunction
 
 #define	MGmSplatVertex_XYZ(index) \
 	if(index >= numRealVertices)	\
@@ -144,7 +144,7 @@ extern float MGg5BitsTo0_255FloatTable[32];
 			vertexList + index);											\
 	}																		\
 	UUmBlankFunction
-			
+
 #define	MGmSplatVertex_XYZRGB(index) \
 	if(index >= numRealVertices)	\
 	{																		\
@@ -154,7 +154,7 @@ extern float MGg5BitsTo0_255FloatTable[32];
 			vertexList + index);											\
 	}																		\
 	UUmBlankFunction
-			
+
 #define	MGmSplatVertex_XYZUV(index) \
 	if(index >= numRealVertices)	\
 	{																		\
@@ -179,7 +179,7 @@ extern float MGg5BitsTo0_255FloatTable[32];
 			vertexList + index);											\
 	}																		\
 	UUmBlankFunction
-			
+
 #define	MGmSplatVertex_XYZUVRGBEnvMap(index) 								\
 	if(index >= numRealVertices)											\
 	{																		\
@@ -195,7 +195,7 @@ extern float MGg5BitsTo0_255FloatTable[32];
 			vertexList + index);											\
 	}																		\
 	UUmBlankFunction
-			
+
 
 
 #define MGmGetScreenPoints(MGgDrawContextPrivate) ((M3tPointScreen*) ((MGgDrawContextPrivate)->statePtr[M3cDrawStatePtrType_ScreenPointArray]))
@@ -253,25 +253,25 @@ typedef struct MGtStatePrivate
 {
 	GrVertex*	vertexList;
 	UUtUns32*	vertexListBV;
-	
+
 } MGtStatePrivate;
 
 struct MGtDrawContextPrivate
 {
 	long						width;
 	long						height;
-	
+
 	M3tDrawContextType			contextType;
-	
+
 	GrVertex*					vertexList;
 	//UUtUns32*					vertexListBV;
-	
+
 	const MGtTextureMapPrivate*		curBaseTexture;
 	const UUtInt32*					stateInt;
 	const void**					statePtr;
-	
+
 	UUtBool							clipping;
-	
+
 	//MGtTextureMapPrivate*		lastTexture;
 };
 

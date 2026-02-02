@@ -24,21 +24,21 @@ BDtBinaryData
 {
 	UUtUns32				data_size;
 	tm_separate				data_index;
-	
+
 } BDtBinaryData;
 
 typedef struct BDtHeader
 {
 	BDtClassType			class_type;
 	UUtUns32				data_size;
-	
+
 } BDtHeader;
 
 typedef struct BDtData
 {
 	BDtHeader				header;
 	UUtUns8					data[1];
-	
+
 } BDtData;
 
 // ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ typedef UUtError
 typedef struct BDtMethods
 {
 	BDtMethod_Load			rLoad;
-	
+
 } BDtMethods;
 
 // ======================================================================
@@ -84,7 +84,7 @@ typedef struct BDtMethods
 #define BDmSkip4BytesFromBuffer(src)								\
 			4; do {													\
 			*(UUtUns8**)&(src) += 4;								\
-			} while(0)	
+			} while(0)
 
 #define BDmGet4BytesFromBuffer(src,dst,type,swap_it)				\
 			4;														\
@@ -108,7 +108,7 @@ typedef struct BDtMethods
 #define	BDmSkip2BytesFromBuffer(src)								\
 			2; do {													\
 			*(UUtUns8**)&(src) += 2;								\
-			} while(0)	
+			} while(0)
 
 #define BDmGet2BytesFromBuffer(src,dst,type,swap_it)				\
 			2;														\
@@ -154,7 +154,7 @@ typedef struct BDtMethods
 #define BDmGetStringFromBuffer(src,dst,len,swap_it)					\
 			(len); do {												\
 			UUrString_Copy((dst), (char *) (src), (len));			\
-			*(UUtUns8**)&(src) += (len);	} while(0)			
+			*(UUtUns8**)&(src) += (len);	} while(0)
 
 #define BDmWriteStringToBuffer(buf,val,len,num_bytes, write_big)	\
 			(len); do {												\

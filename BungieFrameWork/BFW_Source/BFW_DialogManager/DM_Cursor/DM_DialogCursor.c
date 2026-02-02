@@ -21,13 +21,13 @@ DCrCursor_Animate(
 	UUtUns32				inTime)
 {
 	DCtCursor_PrivateData	*private_data;
-	
+
 	UUmAssert(inCursor);
-	
+
 	// get a pointer to the private data
 	private_data = (DCtCursor_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Cursor_PrivateData, inCursor);
 	if (private_data == NULL) return;
-	
+
 	// make sure it is time to animate
 	if (private_data->next_animation > inTime) return;
 
@@ -37,7 +37,7 @@ DCrCursor_Animate(
 	// go to next cursor in the list
 	private_data->current_cursor++;
 	if (private_data->current_cursor >= inCursor->num_cursors)
-		private_data->current_cursor = 0;	
+		private_data->current_cursor = 0;
 }
 
 // ----------------------------------------------------------------------
@@ -49,11 +49,11 @@ DCrCursor_Draw(
 {
 	DCtCursor_PrivateData	*private_data;
 	M3tPointScreen			destination;
-	
+
 	// get a pointer to the private data
 	private_data = (DCtCursor_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Cursor_PrivateData, inCursor);
 	if (private_data == NULL) return;
-	
+
 	// update the destination
 	destination.x		= (float)inDestination->x - DCcCursorCenter_X;
 	destination.y		= (float)inDestination->y - DCcCursorCenter_Y;
@@ -80,12 +80,12 @@ DCrCursor_Load(
 	DCtCursor				*cursor;
 	UUtUns16				i;
 	DCtCursor_PrivateData	*private_data;
-	
+
 	UUmAssert(outCursor);
-	
+
 	// clear the outCursor
 	*outCursor = NULL;
-	
+
 	// get a pointer to the cursor type list
 	error =
 		TMrInstance_GetDataPtr(
@@ -93,7 +93,7 @@ DCrCursor_Load(
 			"cursor_type_list",
 			&cursor_type_list);
 	UUmError_ReturnOnError(error);
-	
+
 	// find the cursor in the cursor type list
 	for (i = 0; i < cursor_type_list->num_cursor_type_pairs; i++)
 	{
@@ -106,20 +106,20 @@ DCrCursor_Load(
 					cursor_type_list->cursor_type_pair[i].cursor_name,
 					&cursor);
 			UUmError_ReturnOnError(error);
-			
+
 			// get a pointer to the private data
 			private_data = (DCtCursor_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Cursor_PrivateData, cursor);
 			if (private_data == NULL) return UUcError_Generic;
-			
+
 			private_data->current_cursor = 0;
-			
+
 			// return the cursor
 			*outCursor = cursor;
-			
+
 			return UUcError_None;
 		}
 	}
-	
+
 	return UUcError_Generic;
 }
 
@@ -132,10 +132,10 @@ DCrCursor_ProcHandler(
 {
 	DCtCursor				*cursor;
 	DCtCursor_PrivateData	*private_data;
-	
+
 	// get a pointer to the dialog data
 	cursor = (DCtCursor*)inInstancePtr;
-	
+
 	// get a pointer to the private data
 	private_data = (DCtCursor_PrivateData*)inPrivateData;
 	if (private_data == NULL) return UUcError_Generic;
@@ -148,13 +148,13 @@ DCrCursor_ProcHandler(
 			private_data->current_cursor = 0;
 			private_data->next_animation = 0;
 		break;
-		
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 		break;
-		
+
 		case TMcTemplateProcMessage_Update:
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
@@ -174,16 +174,16 @@ DCrInitialize(
 	void)
 {
 	UUtError				error;
-	
+
 	// install the private data and/or procs for cursors
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			DCcTemplate_Cursor,
 			sizeof(DCtCursor_PrivateData),
 			DCrCursor_ProcHandler,
 			&DMgTemplate_Cursor_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install dialog proc handler");
-	
+
 	return UUcError_None;
 }
 

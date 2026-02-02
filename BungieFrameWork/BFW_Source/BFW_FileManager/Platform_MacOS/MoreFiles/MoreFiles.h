@@ -51,14 +51,14 @@ pascal	OSErr	HGetVolParms(ConstStr255Param volName,
 					output:	Atributes information.
 	infoSize		input:	Size of buffer pointed to by volParmsInfo.
 					output: Size of data actually returned.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
 		paramErr			-50		Volume doesn't support this function
-	
+
 	__________
-	
+
 	Also see the macros for checking attribute bits in MoreFilesExtras.h
 */
 
@@ -72,11 +72,11 @@ pascal	OSErr	HCreateMinimum(short vRefNum,
 	the creator and file type of the new file.  This function is needed to
 	create a file in an AppleShare "drop box" where the user can make
 	changes, but cannot see folder or files.
-	
+
 	vRefNum		input:	Volume specification.
 	dirID		input:	Directory ID.
 	fileName	input:	The name of the new file.
-	
+
 	Result Codes
 		noErr				0		No error
 		dirFulErr			-33		File directory full
@@ -91,9 +91,9 @@ pascal	OSErr	HCreateMinimum(short vRefNum,
 		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname
 		afpAccessDenied		-5000	User does not have the correct access
 		afpObjectTypeErr	-5025	A directory exists with that name
-	
+
 	__________
-	
+
 	Also see:	FSpCreateMinimum
 */
 
@@ -101,13 +101,13 @@ pascal	OSErr	HCreateMinimum(short vRefNum,
 
 pascal	OSErr	FSpCreateMinimum(const FSSpec *spec);
 /*	¶ Create a new file with no creator or file type.
-	The FSpCreateMinimum function creates a new file without attempting to set 
+	The FSpCreateMinimum function creates a new file without attempting to set
 	the the creator and file type of the new file.  This function is needed to
 	create a file in an AppleShare "dropbox" where the user can make
-	changes, but cannot see folder or files. 
-	
+	changes, but cannot see folder or files.
+
 	spec		input:	An FSSpec record specifying the file to create.
-	
+
 	Result Codes
 		noErr				0		No error
 		dirFulErr			-33		File directory full
@@ -122,9 +122,9 @@ pascal	OSErr	FSpCreateMinimum(const FSSpec *spec);
 		dirNFErrdirNFErr	-120	Directory not found or incomplete pathname
 		afpAccessDenied		-5000	User does not have the correct access
 		afpObjectTypeErr	-5025	A directory exists with that name
-	
+
 	__________
-	
+
 	Also see:	HCreateMinimum
 */
 
@@ -145,7 +145,7 @@ pascal	OSErr	ExchangeFiles(short vRefNum,
 	srcName		input:	Source file name.
 	dstDirID	input:	Destination directory ID.
 	dstName		input:	Destination file name.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
@@ -162,7 +162,7 @@ pascal	OSErr	ExchangeFiles(short vRefNum,
 		afpSameObjectErr	-5038	Source and destination are the same
 
 	__________
-	
+
 	Also see:	FSpExchangeFilesCompat
 */
 
@@ -176,7 +176,7 @@ pascal	OSErr	ResolveFileIDRef(ConstStr255Param volName,
 /*	¶ Retrieve the location of the file with the specified file ID reference.
 	The ResolveFileIDRef function returns the filename and parent directory ID
 	of the file with the specified file ID reference.
-	
+
 	volName	input:	A pointer to the name of a mounted volume
 					or nil.
 	vRefNum	input:	Volume specification.
@@ -185,7 +185,7 @@ pascal	OSErr	ResolveFileIDRef(ConstStr255Param volName,
 	name	input:	Points to a buffer (minimum Str63) where the filename
 					is to be returned or must be nil.
 			output:	The filename.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
@@ -202,9 +202,9 @@ pascal	OSErr	ResolveFileIDRef(ConstStr255Param volName,
 		afpObjectTypeErr	-5025	Specified file is a directory
 		afpIDNotFound		-5034	File ID reference not found
 		afpBadIDErr			-5039	File ID reference not found
-	
+
 	__________
-	
+
 	Also see:	FSpResolveFileIDRef, CreateFileIDRef, FSpCreateFileIDRef,
 				DeleteFileIDRef
 */
@@ -218,7 +218,7 @@ pascal	OSErr	FSpResolveFileIDRef(ConstStr255Param volName,
 /*	¶ Retrieve the location of the file with the specified file ID reference.
 	The FSpResolveFileIDRef function fills in an FSSpec with the location
 	of the file with the specified file ID reference.
-	
+
 	volName	input:	A pointer to the name of a mounted volume
 					or nil.
 	vRefNum	input:	Volume specification.
@@ -226,7 +226,7 @@ pascal	OSErr	FSpResolveFileIDRef(ConstStr255Param volName,
 	spec	input:	A pointer to a FSSpec record.
 			output:	A file system specification to be filled in by
 					FSpResolveFileIDRef.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
@@ -244,9 +244,9 @@ pascal	OSErr	FSpResolveFileIDRef(ConstStr255Param volName,
 		afpObjectTypeErr	-5025	Specified file is a directory
 		afpIDNotFound		-5034	File ID reference not found
 		afpBadIDErr			-5039	File ID reference not found
-	
+
 	__________
-	
+
 	Also see:	ResolveFileIDRef, CreateFileIDRef, FSpCreateFileIDRef,
 				DeleteFileIDRef
 */
@@ -267,7 +267,7 @@ pascal	OSErr	CreateFileIDRef(short vRefNum,
 	fileName	input:	The name of the file.
 	fileID		output:	The file ID reference (if result is noErr,
 						fidExists, or afpIDExists).
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
@@ -285,9 +285,9 @@ pascal	OSErr	CreateFileIDRef(short vRefNum,
 		afpAccessDenied		-5000	User does not have the correct access
 		afpObjectTypeErr	-5025	Specified file is a directory
 		afpIDExists			-5035	File ID reference already exists
-	
+
 	__________
-	
+
 	Also see:	FSpResolveFileIDRef, ResolveFileIDRef, FSpCreateFileIDRef,
 				DeleteFileIDRef
 */
@@ -304,7 +304,7 @@ pascal	OSErr	FSpCreateFileIDRef(const FSSpec *spec,
 	spec		input:	An FSSpec record specifying the file.
 	fileID		output:	The file ID reference (if result is noErr,
 						fidExists, or afpIDExists).
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
@@ -322,9 +322,9 @@ pascal	OSErr	FSpCreateFileIDRef(const FSSpec *spec,
 		afpAccessDenied		-5000	User does not have the correct access
 		afpObjectTypeErr	-5025	Specified file is a directory
 		afpIDExists			-5035	File ID reference already exists
-	
+
 	__________
-	
+
 	Also see:	FSpResolveFileIDRef, ResolveFileIDRef, CreateFileIDRef,
 				DeleteFileIDRef
 */
@@ -341,7 +341,7 @@ pascal	OSErr	DeleteFileIDRef(ConstStr255Param volName,
 					or nil.
 	vRefNum	input:	Volume specification.
 	fileID	input:	The file ID reference.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
@@ -358,9 +358,9 @@ pascal	OSErr	DeleteFileIDRef(ConstStr255Param volName,
 		afpAccessDenied		-5000	User does not have the correct access
 		afpObjectTypeErr	-5025	Specified file is a directory
 		afpIDNotFound		-5034	File ID reference not found
-	
+
 	__________
-	
+
 	Also see:	FSpResolveFileIDRef, ResolveFileIDRef, CreateFileIDRef,
 				FSpCreateFileIDRef
 */
@@ -375,7 +375,7 @@ pascal	OSErr	FlushFile(short refNum);
 	is called.
 
 	refNum	input:	The file reference number of an open file.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
@@ -399,7 +399,7 @@ pascal	OSErr	LockRange(short refNum,
 	refNum		input:	The file reference number of an open file.
 	rangeLength	input:	The number of bytes in the range.
 	rangeStart	input:	The starting byte in the range to lock.
-	
+
 	Result Codes
 		noErr				0		No error
 		ioErr				-36		I/O error
@@ -415,7 +415,7 @@ pascal	OSErr	LockRange(short refNum,
 		afpRangeOverlap		-5021	Part of range is already locked
 
 	__________
-	
+
 	Also see:	UnlockRange
 */
 
@@ -431,7 +431,7 @@ pascal	OSErr	UnlockRange(short refNum,
 	refNum		input:	The file reference number of an open file.
 	rangeLength	input:	The number of bytes in the range.
 	rangeStart	input:	The starting byte in the range to unlock.
-	
+
 	Result Codes
 		noErr				0		No error
 		ioErr				-36		I/O error
@@ -445,7 +445,7 @@ pascal	OSErr	UnlockRange(short refNum,
 		afpRangeNotLocked	-5020	Specified range was not locked
 
 	__________
-	
+
 	Also see:	LockRange
 */
 
@@ -464,7 +464,7 @@ pascal	OSErr	GetForeignPrivs(short vRefNum,
 	The GetForeignPrivs function retrieves the native access-control
 	information for a file or directory stored on a volume managed by
 	a foreign file system.
-	
+
 	vRefNum				input:	Volume specification.
 	dirID				input:	Directory ID.
 	name				input:	Pointer to object name, or nil when dirID
@@ -479,16 +479,16 @@ pascal	OSErr	GetForeignPrivs(short vRefNum,
 	foreignPrivInfo2	output:	Information specific to privilege model.
 	foreignPrivInfo3	output:	Information specific to privilege model.
 	foreignPrivInfo4	output:	Information specific to privilege model.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
 		paramErr			-50		Volume is HFS or MFS (that is, it has
 									no foreign privilege model), or foreign
 									volume does not support these calls
-	
+
 	__________
-	
+
 	Also see:	FSpGetForeignPrivs, SetForeignPrivs, FSpSetForeignPrivs
 */
 
@@ -505,7 +505,7 @@ pascal	OSErr	FSpGetForeignPrivs(const FSSpec *spec,
 	The FSpGetForeignPrivs function retrieves the native access-control
 	information for a file or directory stored on a volume managed by
 	a foreign file system.
-	
+
 	spec				input:	An FSSpec record specifying the object.
 	foreignPrivBuffer	input:	Pointer to buffer where the privilege
 								information is returned.
@@ -517,16 +517,16 @@ pascal	OSErr	FSpGetForeignPrivs(const FSSpec *spec,
 	foreignPrivInfo2	output:	Information specific to privilege model.
 	foreignPrivInfo3	output:	Information specific to privilege model.
 	foreignPrivInfo4	output:	Information specific to privilege model.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
 		paramErr			-50		Volume is HFS or MFS (that is, it has
 									no foreign privilege model), or foreign
 									volume does not support these calls
-	
+
 	__________
-	
+
 	Also see:	GetForeignPrivs, SetForeignPrivs, FSpSetForeignPrivs
 */
 
@@ -545,7 +545,7 @@ pascal	OSErr	SetForeignPrivs(short vRefNum,
 	The SetForeignPrivs function changes the native access-control
 	information for a file or directory stored on a volume managed by
 	a foreign file system.
-	
+
 	vRefNum				input:	Volume specification.
 	dirID				input:	Directory ID.
 	name				input:	Pointer to object name, or nil when dirID
@@ -558,16 +558,16 @@ pascal	OSErr	SetForeignPrivs(short vRefNum,
 	foreignPrivInfo2	input:	Information specific to privilege model.
 	foreignPrivInfo3	input:	Information specific to privilege model.
 	foreignPrivInfo4	input:	Information specific to privilege model.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
 		paramErr			-50		Volume is HFS or MFS (that is, it has
 									no foreign privilege model), or foreign
 									volume does not support these calls
-	
+
 	__________
-	
+
 	Also see:	GetForeignPrivs, FSpGetForeignPrivs, FSpSetForeignPrivs
 */
 
@@ -584,7 +584,7 @@ pascal	OSErr	FSpSetForeignPrivs(const FSSpec *spec,
 	The FSpSetForeignPrivs function changes the native access-control
 	information for a file or directory stored on a volume managed by
 	a foreign file system.
-	
+
 	spec				input:	An FSSpec record specifying the object.
 	foreignPrivBuffer	input:	Pointer to privilege information buffer.
 	foreignPrivSize		input:	Size of buffer pointed to by
@@ -594,16 +594,16 @@ pascal	OSErr	FSpSetForeignPrivs(const FSSpec *spec,
 	foreignPrivInfo2	input:	Information specific to privilege model.
 	foreignPrivInfo3	input:	Information specific to privilege model.
 	foreignPrivInfo4	input:	Information specific to privilege model.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
 		paramErr			-50		Volume is HFS or MFS (that is, it has
 									no foreign privilege model), or foreign
 									volume does not support these calls
-	
+
 	__________
-	
+
 	Also see:	GetForeignPrivs, FSpGetForeignPrivs, SetForeignPrivs
 */
 
@@ -616,7 +616,7 @@ pascal	OSErr	HGetLogInInfo(ConstStr255Param volName,
 /*	¶ Get the login method and user name used to log on to a shared volume.
 	The HGetLogInInfo function retrieves the login method and user name
 	used to log on to a particular shared volume.
-	
+
 	volName		input:	A pointer to the name of a mounted volume
 						or nil.
 	vRefNum		input:	The volume reference number.
@@ -626,14 +626,14 @@ pascal	OSErr	HGetLogInInfo(ConstStr255Param volName,
 	userName	input:	Points to a buffer (minimum Str31) where the user
 						name is to be returned or must be nil.
 				output:	The user name.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Specified volume doesn’t exist
 		paramErr			-50		Function not supported by volume
-	
+
 	__________
-	
+
 	Also see:	HGetDirAccess, FSpGetDirAccess, HSetDirAccess,
 				FSpSetDirAccess, HMapName, HMapID
 */
@@ -649,7 +649,7 @@ pascal	OSErr	HGetDirAccess(short vRefNum,
 /*	¶ Get a directory's access control information on a shared volume.
 	The HGetDirAccess function retrieves the directory access control
 	information for a directory on a shared volume.
-	
+
 	vRefNum			input:	Volume specification.
 	dirID			input:	Directory ID.
 	name			input:	Pointer to directory name, or nil if dirID
@@ -658,16 +658,16 @@ pascal	OSErr	HGetDirAccess(short vRefNum,
 	groupID			output:	The directory's group ID or
 							0 if no group affiliation.
 	accessRights	output:	The directory's access rights.
-	
+
 	Result Codes
 		noErr				0		No error
 		fnfErr				-43		Directory not found
 		paramErr			-50		Function not supported by volume
 		afpAccessDenied		-5000	User does not have the correct access
 									to the directory
-	
+
 	__________
-	
+
 	Also see:	HGetLogInInfo, FSpGetDirAccess, HSetDirAccess,
 				FSpSetDirAccess, HMapName, HMapID
 */
@@ -681,22 +681,22 @@ pascal	OSErr	FSpGetDirAccess(const FSSpec *spec,
 /*	¶ Get a directory's access control information on a shared volume.
 	The FSpGetDirAccess function retrieves the directory access control
 	information for a directory on a shared volume.
-	
+
 	spec			input:	An FSSpec record specifying the directory.
 	ownerID			output:	The directory's owner ID.
 	groupID			output:	The directory's group ID or
 							0 if no group affiliation.
 	accessRights	output:	The directory's access rights.
-	
+
 	Result Codes
 		noErr				0		No error
 		fnfErr				-43		Directory not found
 		paramErr			-50		Function not supported by volume
 		afpAccessDenied		-5000	User does not have the correct access
 									to the directory
-	
+
 	__________
-	
+
 	Also see:	HGetLogInInfo, HGetDirAccess, HSetDirAccess,
 				FSpSetDirAccess, HMapName, HMapID
 */
@@ -713,7 +713,7 @@ pascal	OSErr	HSetDirAccess(short vRefNum,
 	The HSetDirAccess function changes the directory access control
 	information for a directory on a shared volume. You must own a directory
 	to change its access control information.
-	
+
 	vRefNum			input:	Volume specification.
 	dirID			input:	Directory ID.
 	name			input:	Pointer to directory name, or nil if dirID
@@ -722,7 +722,7 @@ pascal	OSErr	HSetDirAccess(short vRefNum,
 	groupID			input:	The directory's group ID or
 							0 if no group affiliation.
 	accessRights	input:	The directory's access rights.
-	
+
 	Result Codes
 		noErr				0		No error
 		fnfErr				-43		Directory not found
@@ -731,9 +731,9 @@ pascal	OSErr	HSetDirAccess(short vRefNum,
 		afpAccessDenied		-5000	User does not have the correct access
 									to the directory
 		afpObjectTypeErr	-5025	Object is a file, not a directory
-	
+
 	__________
-	
+
 	Also see:	HGetLogInInfo, HGetDirAccess, FSpGetDirAccess,
 				FSpSetDirAccess, HMapName, HMapID
 */
@@ -748,13 +748,13 @@ pascal	OSErr	FSpSetDirAccess(const FSSpec *spec,
 	The FSpSetDirAccess function changes the directory access control
 	information for a directory on a shared volume. You must own a directory
 	to change its access control information.
-	
+
 	spec			input:	An FSSpec record specifying the directory.
 	ownerID			input:	The directory's owner ID.
 	groupID			input:	The directory's group ID or
 							0 if no group affiliation.
 	accessRights	input:	The directory's access rights.
-	
+
 	Result Codes
 		noErr				0		No error
 		fnfErr				-43		Directory not found
@@ -763,9 +763,9 @@ pascal	OSErr	FSpSetDirAccess(const FSSpec *spec,
 		afpAccessDenied		-5000	User does not have the correct access
 									to the directory
 		afpObjectTypeErr	-5025	Object is a file, not a directory
-	
+
 	__________
-	
+
 	Also see:	HGetLogInInfo, HGetDirAccess, FSpGetDirAccess, HSetDirAccess,
 				HMapName, HMapID
 */
@@ -780,7 +780,7 @@ pascal	OSErr	HMapID(ConstStr255Param volName,
 /*	¶ Map a user or group ID to a user or group name.
 	The HMapID function determines the name of a user or group if you know
 	the user or group ID.
-	
+
 	volName		input:	A pointer to the name of a mounted volume
 						or nil.
 	vRefNum		input:	Volume specification.
@@ -790,14 +790,14 @@ pascal	OSErr	HMapID(ConstStr255Param volName,
 	name		input:	Points to a buffer (minimum Str31) where the user
 						or group name is to be returned or must be nil.
 				output:	The user or group name.
-	
+
 	Result Codes
 		noErr				0		No error
 		fnfErr				-43		Unrecognizable owner or group name
 		paramErr			-50		Function not supported by volume
-	
+
 	__________
-	
+
 	Also see:	HGetLogInInfo, HGetDirAccess, FSpGetDirAccess, HSetDirAccess,
 				FSpSetDirAccess, HMapName
 */
@@ -812,7 +812,7 @@ pascal	OSErr	HMapName(ConstStr255Param volName,
 /*	¶ Map a user or group name to a user or group ID.
 	The HMapName function determines the user or group ID if you know the
 	user or group name.
-	
+
 	volName		input:	A pointer to the name of a mounted volume
 						or nil.
 	vRefNum		input:	Volume specification.
@@ -826,9 +826,9 @@ pascal	OSErr	HMapName(ConstStr255Param volName,
 		noErr				0		No error
 		fnfErr				-43		Unrecognizable owner or group name
 		paramErr			-50		Function not supported by volume
-	
+
 	__________
-	
+
 	Also see:	HGetLogInInfo, HGetDirAccess, FSpGetDirAccess, HSetDirAccess,
 				FSpSetDirAccess, HMapID
 */
@@ -846,7 +846,7 @@ pascal	OSErr	HCopyFile(short srcVRefNum,
 	The HCopyFile function duplicates a file and optionally to renames it.
 	The source and destination volumes must be on the same file server.
 	This function instructs the server to copy the file.
-	
+
 	srcVRefNum	input:	Source volume specification.
 	srcDirID	input:	Source directory ID.
 	srcName		input:	Source file name.
@@ -856,7 +856,7 @@ pascal	OSErr	HCopyFile(short srcVRefNum,
 						nil when dstDirID specifies a directory.
 	copyName	input:	Points to the new file name if the file is to be
 						renamed or nil if the file isn't to be renamed.
-	
+
 	Result Codes
 		noErr				0		No error
 		dskFulErr			-34		Destination volume is full
@@ -876,9 +876,9 @@ pascal	OSErr	HCopyFile(short srcVRefNum,
 									not be opened with the correct access
 									modes
 		afpObjectTypeErr	-5025	Source is a directory
-	
+
 	__________
-	
+
 	Also see:	FSpCopyFile, FileCopy, FSpFileCopy
 */
 
@@ -891,13 +891,13 @@ pascal	OSErr	FSpCopyFile(const FSSpec *srcSpec,
 	The FSpCopyFile function duplicates a file and optionally to renames it.
 	The source and destination volumes must be on the same file server.
 	This function instructs the server to copy the file.
-	
+
 	srcSpec		input:	An FSSpec record specifying the source file.
 	dstSpec		input:	An FSSpec record specifying the destination
 						directory.
 	copyName	input:	Points to the new file name if the file is to be
 						renamed or nil if the file isn't to be renamed.
-	
+
 	Result Codes
 		noErr				0		No error
 		dskFulErr			-34		Destination volume is full
@@ -917,9 +917,9 @@ pascal	OSErr	FSpCopyFile(const FSSpec *srcSpec,
 									not be opened with the correct access
 									modes
 		afpObjectTypeErr	-5025	Source is a directory
-	
+
 	__________
-	
+
 	Also see:	HCopyFile, FileCopy, FSpFileCopy
 */
 
@@ -935,7 +935,7 @@ pascal	OSErr	HMoveRename(short vRefNum,
 	The HMoveRename function moves a file or directory and optionally
 	renames it. The source and destination locations must be on the same
 	shared volume.
-	
+
 	vRefNum		input:	Volume specification.
 	srcDirID	input:	Source directory ID.
 	srcName		input:	The source object name.
@@ -944,7 +944,7 @@ pascal	OSErr	HMoveRename(short vRefNum,
 						nil when dstDirID specifies a directory.
 	copyName	input:	Points to the new name if the object is to be
 						renamed or nil if the object isn't to be renamed.
-	
+
 	Result Codes
 		noErr				0		No error
 		fnfErr				-43		Source file or directory not found
@@ -956,9 +956,9 @@ pascal	OSErr	HMoveRename(short vRefNum,
 									offspring
 		afpAccessDenied		-5000	The user does not have the right to
 									move the file  or directory
-	
+
 	__________
-	
+
 	Also see:	FSpMoveRename, HMoveRenameCompat, FSpMoveRenameCompat
 */
 
@@ -971,13 +971,13 @@ pascal	OSErr	FSpMoveRename(const FSSpec *srcSpec,
 	The FSpMoveRename function moves a file or directory and optionally
 	renames it. The source and destination locations must be on the same
 	shared volume.
-	
+
 	srcSpec		input:	An FSSpec record specifying the source object.
 	dstSpec		input:	An FSSpec record specifying the destination
 						directory.
 	copyName	input:	Points to the new name if the object is to be
 						renamed or nil if the object isn't to be renamed.
-	
+
 	Result Codes
 		noErr				0		No error
 		fnfErr				-43		Source file or directory not found
@@ -989,9 +989,9 @@ pascal	OSErr	FSpMoveRename(const FSSpec *srcSpec,
 									offspring
 		afpAccessDenied		-5000	The user does not have the right to
 									move the file  or directory
-	
+
 	__________
-	
+
 	Also see:	HMoveRename, HMoveRenameCompat, FSpMoveRenameCompat
 */
 
@@ -1003,13 +1003,13 @@ pascal	OSErr	GetVolMountInfoSize(ConstStr255Param volName,
 /*	¶ Get the size of a volume mounting information record.
 	The GetVolMountInfoSize function determines the how much space the
 	program needs to allocate for a volume mounting information record.
-	
+
 	volName		input:	A pointer to the name of a mounted volume
 						or nil.
 	vRefNum		input:	Volume specification.
 	size		output:	The space needed (in bytes) of the volume mounting
 						information record.
-	
+
 	Result Codes
 		noErr				0		No error
 		nsvErr				-35		Volume not found
@@ -1018,7 +1018,7 @@ pascal	OSErr	GetVolMountInfoSize(ConstStr255Param volName,
 									system claimed this call.
 
 	__________
-	
+
 	Also see:	GetVolMountInfo, VolumeMount BuildAFPVolMountInfo,
 				RetrieveAFPVolMountInfo
 */
@@ -1032,23 +1032,23 @@ pascal	OSErr	GetVolMountInfo(ConstStr255Param volName,
 	The GetVolMountInfo function retrieves a volume mounting information
 	record containing all the information needed to mount the volume,
 	except for passwords.
-	
+
 	volName			input:	A pointer to the name of a mounted volume
 							or nil.
 	vRefNum			input:	Volume specification.
 	volMountInfo	output:	Points to a volume mounting information
 							record where the mounting information is to
 							be returned.
-	
+
 	Result Codes
-		noErr				0		No error	
-		nsvErr				-35		Volume not found	
-		paramErr			-50		Parameter error	
+		noErr				0		No error
+		nsvErr				-35		Volume not found
+		paramErr			-50		Parameter error
 		extFSErr			-58		External file system error - no file
 									system claimed this call.
 
 	__________
-	
+
 	Also see:	GetVolMountInfoSize, VolumeMount, BuildAFPVolMountInfo,
 				RetrieveAFPVolMountInfo
 */
@@ -1060,10 +1060,10 @@ pascal	OSErr	VolumeMount(const void *volMountInfo,
 /*	¶ Mount a volume using a volume mounting information record.
 	The VolumeMount function mounts a volume using a volume mounting
 	information record.
-	
+
 	volMountInfo	input:	Points to a volume mounting information record.
 	vRefNum			output:	A volume reference number.
-	
+
 	Result Codes
 		noErr				0		No error
 		notOpenErr			-28		AppleTalk is not open
@@ -1091,7 +1091,7 @@ pascal	OSErr	VolumeMount(const void *volMountInfo,
 									on the same machine
 
 	__________
-	
+
 	Also see:	GetVolMountInfoSize, GetVolMountInfo, BuildAFPVolMountInfo,
 				RetrieveAFPVolMountInfo
 */
@@ -1109,21 +1109,21 @@ pascal	OSErr	Share(short vRefNum,
 	dirID			input:	Directory ID.
 	name			input:	Pointer to directory name, or nil if dirID
 							specifies the directory.
-	
+
 	Result Codes
-		noErr				0		No error	
-		tmfoErr				-42		Too many share points	
-		fnfErr				-43		File not found	
-		dupFNErr			-48		Already a share point with this name	
-		paramErr			-50		Function not supported by volume	
-		dirNFErrdirNFErr	-120	Directory not found	
-		afpAccessDenied		-5000	This directory cannot be shared	
-		afpObjectTypeErr	-5025	Object was a file, not a directory	
-		afpContainsSharedErr -5033	The directory contains a share point	
-		afpInsideSharedErr	-5043	The directory is inside a shared directory	
+		noErr				0		No error
+		tmfoErr				-42		Too many share points
+		fnfErr				-43		File not found
+		dupFNErr			-48		Already a share point with this name
+		paramErr			-50		Function not supported by volume
+		dirNFErrdirNFErr	-120	Directory not found
+		afpAccessDenied		-5000	This directory cannot be shared
+		afpObjectTypeErr	-5025	Object was a file, not a directory
+		afpContainsSharedErr -5033	The directory contains a share point
+		afpInsideSharedErr	-5043	The directory is inside a shared directory
 
 	__________
-	
+
 	Also see:	FSpShare, Unshare, FSpUnshare
 */
 
@@ -1135,21 +1135,21 @@ pascal	OSErr	FSpShare(const FSSpec *spec);
 	share point.
 
 	spec	input:	An FSSpec record specifying the share point.
-	
+
 	Result Codes
-		noErr				0		No error	
-		tmfoErr				-42		Too many share points	
-		fnfErr				-43		File not found	
-		dupFNErr			-48		Already a share point with this name	
-		paramErr			-50		Function not supported by volume	
-		dirNFErrdirNFErr	-120	Directory not found	
-		afpAccessDenied		-5000	This directory cannot be shared	
-		afpObjectTypeErr	-5025	Object was a file, not a directory	
-		afpContainsSharedErr -5033	The directory contains a share point	
-		afpInsideSharedErr	-5043	The directory is inside a shared directory	
+		noErr				0		No error
+		tmfoErr				-42		Too many share points
+		fnfErr				-43		File not found
+		dupFNErr			-48		Already a share point with this name
+		paramErr			-50		Function not supported by volume
+		dirNFErrdirNFErr	-120	Directory not found
+		afpAccessDenied		-5000	This directory cannot be shared
+		afpObjectTypeErr	-5025	Object was a file, not a directory
+		afpContainsSharedErr -5033	The directory contains a share point
+		afpInsideSharedErr	-5043	The directory is inside a shared directory
 
 	__________
-	
+
 	Also see:	Share, Unshare, FSpUnshare
 */
 
@@ -1165,17 +1165,17 @@ pascal	OSErr	Unshare(short vRefNum,
 	dirID			input:	Directory ID.
 	name			input:	Pointer to directory name, or nil if dirID
 							specifies the directory.
-	
+
 	Result Codes
-		noErr				0		No error	
-		fnfErr				-43		File not found	
-		paramErr			-50		Function not supported by volume	
-		dirNFErrdirNFErr	-120	Directory not found	
+		noErr				0		No error
+		fnfErr				-43		File not found
+		paramErr			-50		Function not supported by volume
+		dirNFErrdirNFErr	-120	Directory not found
 		afpObjectTypeErr	-5025	Object was a file, not a directory; or,
-									this directory is not a share point	
+									this directory is not a share point
 
 	__________
-	
+
 	Also see:	Share, FSpShare, FSpUnshare
 */
 
@@ -1186,17 +1186,17 @@ pascal	OSErr	FSpUnshare(const FSSpec *spec);
 	The FSpUnshare function removes a share point.
 
 	spec	input:	An FSSpec record specifying the share point.
-	
+
 	Result Codes
-		noErr				0		No error	
-		fnfErr				-43		File not found	
-		paramErr			-50		Function not supported by volume	
-		dirNFErrdirNFErr	-120	Directory not found	
+		noErr				0		No error
+		fnfErr				-43		File not found
+		paramErr			-50		Function not supported by volume
+		dirNFErrdirNFErr	-120	Directory not found
 		afpObjectTypeErr	-5025	Object was a file, not a directory; or,
-									this directory is not a share point	
+									this directory is not a share point
 
 	__________
-	
+
 	Also see:	Share, FSpShare, Unshare
 */
 
@@ -1218,15 +1218,15 @@ pascal	OSErr	GetUGEntry(short objType,
 						group whose alphabetically next in the list of entries
 						is returned.
 				output:	The user or group ID.
-	
+
 	Result Codes
-		noErr				0		No error	
-		fnfErr				-43		No more users or groups	
+		noErr				0		No error
+		fnfErr				-43		No more users or groups
 		paramErr			-50		Function not supported; or, ioObjID is
-									negative	
+									negative
 
 	__________
-	
+
 	Also see:	GetUGEntries
 */
 
