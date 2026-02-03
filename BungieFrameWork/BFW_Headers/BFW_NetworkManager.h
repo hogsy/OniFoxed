@@ -70,9 +70,9 @@ typedef enum NMtServiceType
 	NMcTCP,
 	NMcNetSprocket,
 	NMcDirectPlay,
-	
+
 	NMcNumServiceTypes
-	
+
 } NMtServiceType;
 
 // ----------------------------------------------------------------------
@@ -80,7 +80,7 @@ typedef enum NMtFlags
 {
 	NMcFlag_None,
 	NMcFlag_Broadcast
-	
+
 } NMtFlags;
 
 // ----------------------------------------------------------------------
@@ -104,11 +104,11 @@ typedef UUtError
 	UUtUns16						inPortNumber,
 	UUtUns8							*inDataBuffer,
 	UUtUns16						inNumBytes);
-	
+
 typedef UUtError
 (*NMtNetContextMethod_CloseProtocol)(
 	NMtNetContext					*inNetContext);
-	
+
 typedef UUtBool
 (*NMtNetContextMethod_CompareAddresses)(
 	NMtNetContext					*inNetContext,
@@ -149,12 +149,12 @@ typedef UUtError
 	UUtUns8							*inDataBuffer,
 	UUtUns16						inNumBytes,
 	UUtUns16						inFlags);
-	
+
 // ======================================================================
 typedef struct NMtNetServiceCaps
 {
 	NMtServiceType					type;
-	
+
 } NMtNetServiceCaps;
 
 // ----------------------------------------------------------------------
@@ -181,12 +181,12 @@ struct NMtNetContext
 	UUtUns16						port_number;
 	NMtNetContextPrivate			*private_data;
 	NMtNetContextMethods			methods;
-	
+
 	UUtUns16						num_incoming_buffers;
 	UUtUns16						num_outgoing_buffers;
 	UUtBool							out_of_incoming_buffers;
-	UUtBool							out_of_outgoing_buffers;						
-	
+	UUtBool							out_of_outgoing_buffers;
+
 };
 
 // ----------------------------------------------------------------------
@@ -194,7 +194,7 @@ typedef struct NMtNetServices
 {
 	NMtNetServiceCaps				service;
 	NMtNetContextMethods			methods;
-	
+
 } NMtNetServices;
 
 // ----------------------------------------------------------------------
@@ -202,7 +202,7 @@ typedef struct NMtPacketHeader
 {
 	UUtUns32						packet_flags;
 	UUtUns32						packet_data_size;
-	
+
 } NMtPacketHeader;
 
 #define NMcPacketDataSize			(NMcMaxNetPacketSize - sizeof(NMtPacketHeader))
@@ -211,7 +211,7 @@ typedef struct NMtPacket
 {
 	NMtPacketHeader					packet_header;
 	UUtUns8							packet_data[NMcPacketDataSize];
-	
+
 } NMtPacket;
 
 #define NMcPacketSize				sizeof(NMtPacket)
@@ -222,7 +222,7 @@ typedef struct NMtUDPData
 	UUtUns32						address_length;
 	UUtUns16						buffer_length;
 	UUtUns8							buffer[NMcPacketSize];
-	
+
 } NMtUDPData;
 
 // ======================================================================
@@ -231,11 +231,11 @@ typedef struct NMtUDPData
 char*
 NMrAddressToString(
 	const NMtNetAddress		*inNetAddress);
-	
+
 UUtError
 NMrInitialize(
 	void);
-	
+
 void
 NMrTerminate(
 	void);
@@ -252,7 +252,7 @@ NMrNetContext_New(
 	UUtUns16				inPortNumber,
 	NMtFlags				inFlags,
 	NMtNetContext			**outNetContext);
-	
+
 UUtError
 NMrNetContext_Delete(
 	NMtNetContext			**inNetContext);

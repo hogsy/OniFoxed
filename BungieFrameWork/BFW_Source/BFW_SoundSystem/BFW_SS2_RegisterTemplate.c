@@ -19,7 +19,7 @@ SS2rRegisterTemplates(
 	void)
 {
 	UUtError	error;
-	
+
 	error =
 		TMrTemplate_Register(
 			SScTemplate_Subtitle,
@@ -33,6 +33,6 @@ SS2rRegisterTemplates(
 			sizeof(SStSoundData),
 			TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }

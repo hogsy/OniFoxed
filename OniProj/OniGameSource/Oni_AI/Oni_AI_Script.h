@@ -1,8 +1,8 @@
 /*
 	Oni_AI_Script.h
-	
+
 	Script level AI stuff
-	
+
 	Author: Quinn Dunki, Michael Evans
 
 	Copyright (c) 1998-2000 Bungie Software
@@ -84,7 +84,7 @@ typedef enum AItScriptTriggerType
 	AIcTriggerType_Character,
 	AIcTriggerType_Laser
 } AItScriptTriggerType;
-	
+
 typedef tm_struct AItScriptTriggerClass
 {
 	UUtInt16 id;
@@ -94,10 +94,10 @@ typedef tm_struct AItScriptTriggerClass
 	UUtUns16 flags;		// AItTriggerClassFlags
 	UUtUns16 team;
 	UUtUns16 refRestrict;
-	
+
 	float radius_h;
 	float radius_v;
-	
+
 
 	char refName[64];		// Must match AIcMaxRefName above
 } AItScriptTriggerClass;
@@ -107,7 +107,7 @@ typedef tm_template('A','I','T','R',"AI script trigger array")
 AItScriptTriggerClassArray
 {
 	tm_pad								pad0[22];
-	
+
 	tm_varindex UUtUns16				numTriggers;
 	tm_vararray AItScriptTriggerClass	triggers[1];
 } AItScriptTriggerClassArray;
@@ -148,13 +148,13 @@ typedef struct AItScriptTriggerList
 	UUtUns16 numTriggers;
 	AItScriptTrigger *triggers;
 } AItScriptTriggerList;
-		
+
 UUtError AIrScript_Initialize(
 	void);
 
 void AIrScript_Terminate(
 	void);
-		
+
 void AIrScript_Render(
 	void);
 
@@ -163,7 +163,7 @@ UUtError AIrScript_LevelBegin_Triggers(
 
 void AIrScript_LevelEnd_Triggers(
 	void);
-	
+
 ONtCharacter*
 AIrUtility_New_GetCharacterFromID(
 	UUtUns16	inID,

@@ -49,11 +49,11 @@ static boolean set_display_settings(
 	desired_display_mode.h= height;
 	desired_display_mode.refresh_rate= 0;
 	desired_display_mode.driverdata= 0;
-	
+
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24); //FIXME
 	SDL_SetWindowSize(ONgPlatformData.gameWindow, width, height);
 	success = UUcTrue;
-	
+
 	if(success)
 	{
 		Uint32 fullscreenFlags;
@@ -91,7 +91,7 @@ void make_pixel_format_descriptor(
 	switch (bit_depth)
 	{
 		case 16:
-			pfd->cColorBits= 16; 
+			pfd->cColorBits= 16;
 			pfd->cDepthBits= 16;
 			break;
 		case 32:
@@ -145,7 +145,7 @@ boolean gl_create_render_context(
 {
 	/*
 	boolean success= FALSE;
-	
+
 				success= gl_pixel_format_is_accelerated(&pfd);
 				if (success)
 				{
@@ -292,10 +292,10 @@ void gl_platform_dispose(
 
 	UUmAssert(gl->context);
 	SDL_GL_DeleteContext(gl->context);
-	
+
 	UUmAssert(ONgPlatformData.gameWindow);
 
-	return;	
+	return;
 }
 
 

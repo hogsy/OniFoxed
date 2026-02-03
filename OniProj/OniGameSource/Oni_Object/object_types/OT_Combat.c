@@ -60,10 +60,10 @@ OBJiCombat_Enumerate(
 	UUtUns32						inUserData)
 {
 	char							name[OBJcMaxNameLength + 1];
-	
+
 	OBJrObject_GetName(inObject, name, OBJcMaxNameLength);
 	inEnumCallback(name, inUserData);
-	
+
 	return UUcError_None;
 }
 
@@ -92,9 +92,9 @@ OBJiCombat_OSDGetName(
 
 	// get a pointer to the object osd
 	com_osd = &inOSD->osd.combat_osd;
-	
+
 	UUrString_Copy(outName, com_osd->name, inNameLength);
-	
+
 	return;
 }
 
@@ -107,7 +107,7 @@ OBJiCombat_OSDSetName(
 
 	// get a pointer to the object osd
 	com_osd = &inOSD->osd.combat_osd;
-	
+
 	UUrString_Copy(com_osd->name, outName, sizeof(com_osd->name));
 
 	return;
@@ -125,7 +125,7 @@ OBJiCombat_GetOSD(
 
 	// get a pointer to the object osd
 	com_osd = (OBJtOSD_Combat *)inObject->object_data;
-	
+
 	outOSD->osd.combat_osd = *com_osd;
 
 	return;
@@ -140,7 +140,7 @@ OBJiCombat_GetOSDWriteSize(
 	OBJtOSD_All osd;
 
 	osd;
-	
+
 	combat_size = 0;
 	combat_size += sizeof(osd.osd.combat_osd.name);
 	combat_size += sizeof(osd.osd.combat_osd.id);
@@ -250,7 +250,7 @@ OBJiCombat_SetDefaults(
 	OBJtOSD_All			*outOSD)
 {
 	UUtUns32				itr;
-	
+
 	OBJiCombat_GetUniqueOSD(outOSD);
 
 	outOSD->osd.combat_osd.flags = 0;
@@ -285,7 +285,7 @@ OBJiCombat_New(
 {
 	OBJtOSD_All				osd_all;
 	UUtError				error;
-	
+
 	if (NULL == inOSD) {
 		error = OBJiCombat_SetDefaults(&osd_all);
 		UUmError_ReturnOnError(error);
@@ -294,11 +294,11 @@ OBJiCombat_New(
 	{
 		OBJiCombat_DuplicateOSD(inOSD, &osd_all);
 	}
-	
+
 	// set the object specific data and position
 	error = OBJrObject_SetObjectSpecificData(inObject, &osd_all);
 	UUmError_ReturnOnError(error);
-	
+
 	OBJrObject_UpdatePosition(inObject);
 
 	return UUcError_None;
@@ -315,7 +315,7 @@ OBJiCombat_Read(
 	OBJtOSD_Combat			*com_osd = (OBJtOSD_Combat *) inObject->object_data;
 	UUtUns32				itr;
 	UUtUns32				bytes_read = 0;
-	
+
 	bytes_read += OBJmGetStringFromBuffer(inBuffer, com_osd->name, sizeof(com_osd->name), inSwapIt);
 	bytes_read += OBJmGet2BytesFromBuffer(inBuffer, com_osd->id, UUtUns16, inSwapIt);
 
@@ -386,7 +386,7 @@ OBJiCombat_Read(
 
 	// bring the object up to date
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return bytes_read;
 }
 
@@ -398,12 +398,12 @@ OBJiCombat_SetOSD(
 {
 	OBJtOSD_Combat			*com_osd;
 	UUtUns32				itr;
-	
+
 	UUmAssert(inOSD);
-	
+
 	// get a pointer to the object osd
 	com_osd = (OBJtOSD_Combat *)inObject->object_data;
-	
+
 	// copy the data from inOSD to char_osd
 	UUrString_Copy(com_osd->name, inOSD->osd.combat_osd.name, sizeof(inOSD->osd.combat_osd.name));
 
@@ -421,7 +421,7 @@ OBJiCombat_SetOSD(
 
 	com_osd->short_range = inOSD->osd.combat_osd.short_range;
 	com_osd->pursuit_distance = inOSD->osd.combat_osd.pursuit_distance;
-	
+
 	com_osd->panic_melee = inOSD->osd.combat_osd.panic_melee;
 	com_osd->panic_gunfire = inOSD->osd.combat_osd.panic_gunfire;
 	com_osd->panic_sight = inOSD->osd.combat_osd.panic_sight;
@@ -453,7 +453,7 @@ OBJiCombat_Write(
 {
 	OBJtOSD_Combat		*com_osd;
 	UUtUns32			itr, bytes_available;
-	
+
 	com_osd = (OBJtOSD_Combat *) inObject->object_data;
 	bytes_available = *ioBufferSize;
 
@@ -482,7 +482,7 @@ OBJiCombat_Write(
 
 	// set ioBufferSize to the number of bytes written to the buffer
 	*ioBufferSize = *ioBufferSize - bytes_available;
-	
+
 	return UUcError_None;
 }
 
@@ -490,7 +490,7 @@ OBJiCombat_Write(
 static const char *OBJiCombat_IsInvalid(
 	OBJtObject *inObject)
 {
-	// construct the initial state of the listbox 
+	// construct the initial state of the listbox
 	UUtUns32 count;
 	UUtUns32 itr;
 
@@ -551,10 +551,10 @@ OBJiCombat_Search(
 {
 	OBJtOSD_Combat		*com_osd;
 	UUtBool				found;
-	
+
 	// get a pointer to the object osd
 	com_osd = (OBJtOSD_Combat *)inObject->object_data;
-	
+
 	// perform the check
 	switch (inSearchType)
 	{
@@ -570,7 +570,7 @@ OBJiCombat_Search(
 			found = UUcFalse;
 		break;
 	}
-	
+
 	return found;
 }
 
@@ -586,10 +586,10 @@ OBJrCombat_Initialize(
 {
 	UUtError				error;
 	OBJtMethods				methods;
-	
+
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew				= OBJiCombat_New;
 	methods.rSetDefaults		= OBJiCombat_SetDefaults;
@@ -610,7 +610,7 @@ OBJrCombat_Initialize(
 	methods.rSearch				= OBJiCombat_Search;
 	methods.rSetClassVisible	= OBJiCombat_SetVisible;
 	methods.rGetUniqueOSD		= OBJiCombat_GetUniqueOSD;
-	
+
 	// register the furniture methods
 	error =
 		OBJrObjectGroup_Register(
@@ -621,7 +621,7 @@ OBJrCombat_Initialize(
 			&methods,
 			OBJcObjectGroupFlag_CanSetName | OBJcObjectGroupFlag_CommonToAllLevels);
 	UUmError_ReturnOnError(error);
-		
+
 	return UUcError_None;
 }
 

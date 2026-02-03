@@ -17,15 +17,15 @@
 typedef tm_template('V', 'M', 'R', 'G', "VM View RadioGroup")
 VMtView_RadioGroup
 {
-	
+
 	VMtPartSpec				*outline;
-		
+
 } VMtView_RadioGroup;
 
 typedef struct VMtView_RadioGroup_PrivateData
 {
 	VMtView					*current_radiobutton;
-	
+
 } VMtView_RadioGroup_PrivateData;
 
 extern TMtPrivateData*	DMgTemplate_RadioGroup_PrivateData;

@@ -21,9 +21,9 @@ WMiPicture_Create(
 	UUtError				error;
 	UUtUns32				style;
 	void					*texture_ref;
-	
+
 	texture_ref = NULL;
-	
+
 	style = WMrWindow_GetStyle(inPicture);
 	if ((style & WMcPictureStyle_SetAtRuntime) == 0)
 	{
@@ -41,14 +41,14 @@ WMiPicture_Create(
 					WMrWindow_GetTitlePtr(inPicture),
 					&texture_ref);
 		}
-		
+
 		WMrWindow_SetLong(inPicture, 0, (UUtUns32)texture_ref);
 	}
 	else
 	{
 		WMrWindow_SetLong(inPicture, 0, (UUtUns32)texture_ref);
 	}
-	
+
 	return WMcResult_Handled;
 }
 
@@ -59,14 +59,14 @@ WMiPicture_HandleSetPartSpec(
 	UUtUns32				inParam1)
 {
 	TMtTemplateTag			template_tag;
-	
+
 	// get the template tag
 	template_tag = TMrInstance_GetTemplateTag((void*)inParam1);
 	if (template_tag != PScTemplate_PartSpecification)
 	{
 		return;
 	}
-	
+
 	WMrWindow_SetLong(inPicture, 0, inParam1);
 }
 
@@ -77,7 +77,7 @@ WMiPicture_HandleSetPicture(
 	UUtUns32				inParam1)
 {
 	TMtTemplateTag			template_tag;
-	
+
 	// get the template tag
 	template_tag = TMrInstance_GetTemplateTag((void*)inParam1);
 	if ((template_tag != M3cTemplate_TextureMap) &&
@@ -85,7 +85,7 @@ WMiPicture_HandleSetPicture(
 	{
 		return;
 	}
-	
+
 	WMrWindow_SetLong(inPicture, 0, inParam1);
 }
 
@@ -101,19 +101,19 @@ WMiPicture_Paint(
 	void					*template_ref;
 	TMtTemplateTag			template_tag;
 	UUtUns32				style;
-	
+
 	// get the template ref stored in the long
 	template_ref = (void*)WMrWindow_GetLong(inPicture, 0);
 	if (template_ref == NULL) { return; }
-	
+
 	draw_context = DCrDraw_Begin(inPicture);
-	
+
 	// get the width and height of the window
 	WMrWindow_GetSize(inPicture, &width, &height);
-	
+
 	dest.x = 0;
 	dest.y = 0;
-	
+
 	template_tag = TMrInstance_GetTemplateTag(template_ref);
 	switch (template_tag)
 	{
@@ -121,18 +121,18 @@ WMiPicture_Paint(
 		case M3cTemplate_TextureMap_Big:
 			// get the picture style
 			style = WMrWindow_GetStyle(inPicture);
-			
+
 			if ((style & WMcPictureStyle_Scale) == 0)
 			{
 				UUtUns16			texture_width;
 				UUtUns16			texture_height;
-				
+
 				M3rTextureRef_GetSize(template_ref, &texture_width, &texture_height);
-				
+
 				width = UUmMin(width, texture_width);
 				height = UUmMin(height, texture_height);
 			}
-			
+
 			// draw the texture ref
 			DCrDraw_TextureRef(
 				draw_context,
@@ -143,7 +143,7 @@ WMiPicture_Paint(
 				UUcFalse,
 				M3cMaxAlpha);
 		break;
-		
+
 		case PScTemplate_PartSpecification:
 			// draw the part spec
 			DCrDraw_PartSpec(
@@ -156,7 +156,7 @@ WMiPicture_Paint(
 				M3cMaxAlpha);
 		break;
 	}
-	
+
 	DCrDraw_End(draw_context, inPicture);
 }
 
@@ -174,26 +174,26 @@ WMiPicture_Callback(
 	UUtUns32				inParam2)
 {
 	UUtUns32				result;
-	
+
 	switch(inMessage)
 	{
 		case WMcMessage_Create:
 			result = WMiPicture_Create(inPicture);
 		return result;
-		
+
 		case WMcMessage_Paint:
 			WMiPicture_Paint(inPicture);
 		return WMcResult_Handled;
-		
+
 		case PTcMessage_SetPartSpec:
 			WMiPicture_HandleSetPartSpec(inPicture, inParam1);
 		return WMcResult_Handled;
-		
+
 		case PTcMessage_SetPicture:
 			WMiPicture_HandleSetPicture(inPicture, inParam1);
 		return WMcResult_Handled;
 	}
-	
+
 	return WMrWindow_DefaultCallback(inPicture, inMessage, inParam1, inParam2);
 }
 
@@ -209,16 +209,16 @@ WMrPicture_Initialize(
 {
 	UUtError				error;
 	WMtWindowClass			window_class;
-	
+
 	// register the window class
 	UUrMemory_Clear(&window_class, sizeof(WMtWindowClass));
 	window_class.type = WMcWindowType_Picture;
 	window_class.callback = WMiPicture_Callback;
 	window_class.private_data_size = sizeof(UUtUns32);
-	
+
 	error = WMrWindowClass_Register(&window_class);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -230,7 +230,7 @@ WMrPicture_SetPartSpec(
 {
 	UUmAssert(inPicture);
 	UUmAssert(inPartSpec);
-	
+
 	WMrMessage_Send(inPicture, PTcMessage_SetPartSpec, (UUtUns32)inPartSpec, 0);
 }
 
@@ -242,6 +242,6 @@ WMrPicture_SetPicture(
 {
 	UUmAssert(inPicture);
 	UUmAssert(inTexture);
-	
+
 	WMrMessage_Send(inPicture, PTcMessage_SetPicture, (UUtUns32)inTexture, 0);
 }

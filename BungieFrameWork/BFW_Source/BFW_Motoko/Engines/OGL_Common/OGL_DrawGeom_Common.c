@@ -1,12 +1,12 @@
 /*
 	FILE:	OGL_DrawGeom_Common.c
-	
+
 	AUTHOR:	Brent Pease, Kevin Armstrong, Michael Evans
-	
+
 	CREATED: January 5, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1998
 
 */
@@ -25,8 +25,8 @@
 
 #define GL_RGB_S3TC   (0x83A0)
 #define GL_RGB4_S3TC  (0x83A1)
-#define GL_RGBA_S3TC  (0x83A2) 
-#define GL_RGBA4_S3TC (0x83A3) 
+#define GL_RGBA_S3TC  (0x83A2)
+#define GL_RGBA4_S3TC (0x83A3)
 
 /*---------- S.S. */
 
@@ -38,14 +38,14 @@ typedef struct OGLtExtension_Function
 	char*	functionName;
 	void**	functionLocation;	// can never be NULL
 	UUtBool	required;
-	
+
 } OGLtExtension_Function;
 
 typedef struct OGLtExtension_Feature
 {
 	char*		featureName;
 	UUtBool*	featureFlag;	// if NULL the feature is required
-	
+
 } OGLtExtension_Feature;
 
 OGLtCommon	OGLgCommon;
@@ -57,7 +57,7 @@ typedef enum OGLtDownloadType
 	OGLcDownloadClassic,
 	OGLcDownloadGeneric,
 	OGLcDownloadInvalid
-	
+
 } OGLtDownloadType;
 
 
@@ -84,7 +84,7 @@ typedef void
 OGLtExtension_Feature	OGLgExtension_Features[] =
 {
 	// required
-	
+
 	// optional
 	{"GL_ARB_multitexture",				&OGLgCommon.ext_arb_multitexture},
 	{"GL_EXT_vertex_array",				&OGLgCommon.ext_vertex_array},
@@ -97,17 +97,17 @@ OGLtExtension_Feature	OGLgExtension_Features[] =
 	{"GL_EXT_point_parameters",			&OGLgCommon.ext_point_parameters},
 	{"GL_EXT_stencil_wrap",				&OGLgCommon.ext_stencil_wrap},
 	{"GL_EXT_texture_object",			&OGLgCommon.ext_texture_object},
-	{"GL_S3_s3tc",						&OGLgCommon.ext_s3tc}, 
-	
+	{"GL_S3_s3tc",						&OGLgCommon.ext_s3tc},
+
 	{NULL, NULL}
 
 };
 
 OGLtExtension_Function	OGLgExtension_Functions[] =
 {
-	
+
 	// required
-	
+
 	// optional
 	{"glActiveTextureARB",			(void**) &OGLgCommon.pglActiveTextureARB, 		UUcFalse},
 	{"glClientActiveTextureARB",	(void**) &OGLgCommon.pglClientActiveTextureARB,	UUcFalse},
@@ -115,11 +115,11 @@ OGLtExtension_Function	OGLgExtension_Functions[] =
 	{"glMultiTexCoord2fvARB",		(void**) &OGLgCommon.pglMultiTexCoord2fvARB,	UUcFalse},
 	{"glLockArraysEXT",				(void**) &OGLgCommon.pglLockArraysEXT,			UUcFalse},
 	{"glUnlockArraysEXT",			(void**) &OGLgCommon.pglUnlockArraysEXT,		UUcFalse},
-	
+
 	{NULL, NULL}
 };
 
-const OGLtTexelTypeInfo OGLgTexInfoTable[] = 
+const OGLtTexelTypeInfo OGLgTexInfoTable[] =
 {
 {	IMcPixelType_ARGB4444,		OGLcDownloadPacked,		UNSIGNED_SHORT_4_4_4_4,		GL_RGBA4 },
 {	IMcPixelType_RGB555,		OGLcDownloadPacked,		UNSIGNED_SHORT_5_5_5_1,		GL_RGB5 },
@@ -167,7 +167,7 @@ OGLiTextureMap_Download_Generic_NoAlpha(
 	}
 
 	error = IMrImage_ConvertPixelType(
-		IMcDitherMode_Off, 
+		IMcDitherMode_Off,
 		inWidth,
 		inHeight,
 		IMcNoMipMap,
@@ -199,7 +199,7 @@ OGLiTextureMap_Download_Generic_NoAlpha(
 		inHeight,							// height
 		0,									// border {?} (GLint)
 		format,								// format of the pixel data (GLenum)
-		GL_UNSIGNED_BYTE,					// packed format (GLenum) 
+		GL_UNSIGNED_BYTE,					// packed format (GLenum)
 		inBuffer);
 
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
@@ -222,7 +222,7 @@ OGLiTextureMap_Download_Generic(
 	GLenum			format;
 
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
-	
+
 	if (IMrPixelType_HasAlpha(inTextureMap->texelType))
 	{
 		newPixelType = IMcPixelType_RGBA_Bytes;
@@ -235,7 +235,7 @@ OGLiTextureMap_Download_Generic(
 	}
 
 	error = IMrImage_ConvertPixelType(
-		IMcDitherMode_Off, 
+		IMcDitherMode_Off,
 		inWidth,
 		inHeight,
 		IMcNoMipMap,
@@ -253,7 +253,7 @@ OGLiTextureMap_Download_Generic(
 		inHeight,							// height
 		0,									// border {?} (GLint)
 		format,								// format of the pixel data (GLenum)
-		GL_UNSIGNED_BYTE,					// packed format (GLenum) 
+		GL_UNSIGNED_BYTE,					// packed format (GLenum)
 		inBuffer);
 
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
@@ -277,13 +277,13 @@ OGLiTextureMap_Download_Classic(
 		GL_TEXTURE_2D,
 		inLevel,
 		inTextureInfo->glInternalFormat,
-		inWidth,				
-		inHeight,				
-		0,						
-		inTextureInfo->downloadInfo,	
-		GL_UNSIGNED_BYTE,		
+		inWidth,
+		inHeight,
+		0,
+		inTextureInfo->downloadInfo,
+		GL_UNSIGNED_BYTE,
 		inSrc);
-	
+
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
 
 	return;
@@ -332,9 +332,9 @@ OGLiTextureMap_Download_S3(
 		inHeight,							// height
 		0,									// border {?} (GLint)
 		GL_RGB4_S3TC,						// format of the pixel data (GLenum)
-		inTextureInfo->downloadInfo,		// packed format (GLenum) 
+		inTextureInfo->downloadInfo,		// packed format (GLenum)
 		inBuffer);
-	
+
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
 
 	return;
@@ -359,7 +359,7 @@ OGLiTextureMap_Download_PackedPixels(
 	pixelType = OGLiTextureMap_PackedTypeToPixelType(inTextureInfo->downloadInfo);
 
 	error = IMrImage_ConvertPixelType(
-		IMcDitherMode_Off, 
+		IMcDitherMode_Off,
 		inWidth,
 		inHeight,
 		IMcNoMipMap,
@@ -377,9 +377,9 @@ OGLiTextureMap_Download_PackedPixels(
 		inHeight,							// height
 		0,									// border {?} (GLint)
 		GL_RGBA,							// format of the pixel data (GLenum)
-		inTextureInfo->downloadInfo,		// packed format (GLenum) 
+		inTextureInfo->downloadInfo,		// packed format (GLenum)
 		inBuffer);
-	
+
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
 
 	return;
@@ -400,13 +400,13 @@ OGLiTextureMap_Create(
 
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
 	UUmAssert(inTextureMap->opengl_dirty == UUcTrue);
-	
+
 	inTextureMap->opengl_dirty = UUcFalse;
-	
+
 	downloadProc = OGLiTextureMap_Download_Generic;
-	
+
 	textureInfo = OGLgTexInfoTable + inTextureMap->texelType;
-		
+
 	switch(textureInfo->downloadType)
 	{
 		case OGLcDownloadS3:
@@ -434,19 +434,19 @@ OGLiTextureMap_Create(
 		default:
 			UUmAssert(!"blam");
 	}
-	
+
 	if(inTextureMap->flags & M3cTextureFlags_HasMipMap)
 	{
 		hasMipMap = UUcTrue;
 	}
-	
+
 	// generate opengl name
 	if(inTextureMap->opengl_texture_name == 0)
 	{
 		glGenTextures(1, (unsigned int*)&inTextureMap->opengl_texture_name);
 		if(inTextureMap->opengl_texture_name == 0) return UUcError_Generic;
 	}
-	
+
 	OGLrCommon_glBindTexture(GL_TEXTURE_2D, inTextureMap->opengl_texture_name);
 
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
@@ -472,7 +472,7 @@ OGLiTextureMap_Create(
 
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
-		
+
 	if (hasMipMap)
 	{
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
@@ -496,7 +496,7 @@ OGLiTextureMap_Create(
 		if (!hasMipMap) break;
 
 		lod++;
-		base = ((char *) base) + IMrImage_ComputeSize(inTextureMap->texelType, IMcNoMipMap, width, height); 
+		base = ((char *) base) + IMrImage_ComputeSize(inTextureMap->texelType, IMcNoMipMap, width, height);
 		width >>= 1;
 		height >>= 1;
 
@@ -506,7 +506,7 @@ OGLiTextureMap_Create(
 			height = UUmMax(height, 1);
 		}
 	}
-	
+
 	UUmAssert(glIsTexture(inTextureMap->opengl_texture_name) == GL_TRUE);
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
 
@@ -538,9 +538,9 @@ OGLiTextureMap_Delete(
 static UUtError
 OGLiTextureMap_Update(
 	M3tTextureMap*			inTextureMap)
-{	
+{
 	inTextureMap->opengl_dirty = UUcTrue;
-	
+
 	return UUcError_None;
 }
 
@@ -552,7 +552,7 @@ OGLiTextureMap_ProcHandler(
 {
 	UUtError				error;
 	M3tTextureMap*			inTextureMap = inInstancePtr;
-	
+
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
 
 	switch(inMessage)
@@ -567,20 +567,20 @@ OGLiTextureMap_ProcHandler(
 
 		case TMcTemplateProcMessage_LoadPostProcess:
 			M3rTextureMap_Prepare(inTextureMap);
-			
+
 			inTextureMap->opengl_texture_name = 0;
 			inTextureMap->opengl_dirty = UUcTrue;
 			break;
-			
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 			OGLiTextureMap_Delete(inTextureMap);
 			break;
-			
+
 		case TMcTemplateProcMessage_Update:
 			error = OGLiTextureMap_Update(inTextureMap);
 			UUmError_ReturnOnError(error);
 			break;
-			
+
 		case TMcTemplateProcMessage_PrepareForUse:
 			break;
 	}
@@ -602,7 +602,7 @@ OGLiTexture_EnsureLoaded(
 		OGLiTextureMap_Create(inTextureMap);
 		//COrConsole_Printf("made texture %d", inPrivateTextureData->texture_name);
 	}
-	
+
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
 
 	return;
@@ -628,15 +628,15 @@ OGLrCommon_Initialize_OneTime(
 	UUrStartupMessage("opengl renderer = %s", OGLgCommon.renderer);
 	UUrStartupMessage("opengl version = %s", OGLgCommon.version);
 	UUrStartupMessage("opengl extensions = %s", OGLgCommon.extensions);
-	
+
 	// get the feature extensions
 	{
 		OGLtExtension_Feature*	curFeature = OGLgExtension_Features;
-		
+
 		while(curFeature->featureName != NULL)
 		{
 			present = strstr(OGLgCommon.extensions, curFeature->featureName) ? UUcTrue : UUcFalse;
-			
+
 			if(curFeature->featureFlag == NULL)
 			{
 				if(present == UUcFalse)
@@ -648,7 +648,7 @@ OGLrCommon_Initialize_OneTime(
 			{
 				*curFeature->featureFlag = present;
 			}
-			
+
 			curFeature++;
 		}
 	}
@@ -657,11 +657,11 @@ OGLrCommon_Initialize_OneTime(
 	{
 		OGLtExtension_Function*	curFunction = OGLgExtension_Functions;
 		void*					functionAddress;
-		
+
 		while(curFunction->functionName != NULL)
 		{
 			functionAddress = (void*)OGLrCommon_Platform_GetFunction(curFunction->functionName);
-			
+
 			if(curFunction->required == UUcTrue)
 			{
 				if(functionAddress == NULL)
@@ -671,21 +671,21 @@ OGLrCommon_Initialize_OneTime(
 			}
 
 			*curFunction->functionLocation = functionAddress;
-			
+
 			curFunction++;
 		}
 	}
-	
+
 	if(OGLgCommon.ext_compiled_vertex_array == UUcTrue)
 	{
 		OGLgCommon.ext_vertex_array = UUcTrue;
 	}
-	
+
 /* S.S.	if(OGLgCommon.ext_vertex_array == UUcFalse)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "opengl is missing extension vertex arrays");
 	}*/
-	
+
 	// verify compiled vertex arrays
 	if ((NULL == OGLgCommon.pglLockArraysEXT) || (NULL == OGLgCommon.pglUnlockArraysEXT))
 	{
@@ -711,17 +711,17 @@ OGLrCommon_State_Initialize(
 
 	OGLgCommon.width = inWidth;
 	OGLgCommon.height = inHeight;
-	
+
 	OGLrCommon_glEnableClientState(GL_VERTEX_ARRAY);
 //	OGLrCommon_glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 //	OGLrCommon_glEnableClientState(GL_NORMAL_ARRAY);
-	
+
 	OGLrCommon_glDisableClientState(GL_COLOR_ARRAY);
 	OGLrCommon_glDisableClientState(GL_INDEX_ARRAY);
 	OGLrCommon_glDisableClientState(GL_EDGE_FLAG_ARRAY);
 
 	//glDepthRange(0,1);
-	
+
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	glLoadIdentity();
@@ -730,23 +730,23 @@ OGLrCommon_State_Initialize(
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
 	glViewport(0, 0, OGLgCommon.width, OGLgCommon.height);
-	
-	OGLgCommon.convertedDataBuffer = UUrMemory_Block_New(256 * 256 * 4);	
+
+	OGLgCommon.convertedDataBuffer = UUrMemory_Block_New(256 * 256 * 4);
 	UUmError_ReturnOnNull(OGLgCommon.convertedDataBuffer);
 
 	// force update of the camera
 		OGLgCommon.cameraMode = OGLcCameraMode_3D;
 		OGLrCommon_Camera_Update(OGLcCameraMode_2D);
-	
+
 	// create the texture private array
-		error = 
+		error =
 			TMrTemplate_PrivateData_New(
 				M3cTemplate_TextureMap,
 				0,
 				OGLiTextureMap_ProcHandler,
 				&OGLgCommon.texturePrivateData);
 		UUmError_ReturnOnError(error);
-	
+
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
 
 	return UUcError_None;
@@ -765,30 +765,30 @@ OGLrCommon_Camera_Update(
 	OGLtCameraMode	inCameraMode)
 {
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
-	
+
 	if(inCameraMode == OGLcCameraMode_2D && OGLgCommon.cameraMode == OGLcCameraMode_2D) return;
-	
+
 	if(inCameraMode == OGLcCameraMode_3D)
 	{
 		M3tManager_GeomCamera*	activeCamera;
-		
+
 		M3rCamera_GetActive((M3tGeomCamera**)&activeCamera);
-		
+
 		M3rManager_Camera_UpdateMatrices(activeCamera);
-		
+
 		if(OGLgCommon.cameraMode != OGLcCameraMode_3D)
 		{
 			OGLgCommon.cameraMode = inCameraMode;
 			OGLgCommon.update3DCamera_ViewData = UUcTrue;
 			OGLgCommon.update3DCamera_StaticData = UUcTrue;
 		}
-		
+
 		if(OGLgCommon.update3DCamera_ViewData)
 		{
 			OGLgCommon.update3DCamera_ViewData = UUcFalse;
-			
+
 			glLoadIdentity();
-			
+
 			#if 0
 				gluLookAt(
 					activeCamera->cameraLocation.x,
@@ -803,25 +803,25 @@ OGLrCommon_Camera_Update(
 			#else
 			{
 				float	m[16];
-				
+
 				OGLrCommon_Matrix4x4_OniToGL(
 					&activeCamera->matrix_worldToView,
 					m);
-				
+
 				glMultMatrixf(m);
-				
+
 			}
 			#endif
 		}
-		
+
 		if(OGLgCommon.update3DCamera_StaticData)
 		{
 			OGLgCommon.update3DCamera_StaticData = UUcFalse;
-		
+
 			glMatrixMode(GL_PROJECTION);
-			
+
 			glLoadIdentity();
-			
+
 			#if 0
 			gluPerspective(
 				activeCamera->fovy * 180.0f / M3cPi,
@@ -831,16 +831,16 @@ OGLrCommon_Camera_Update(
 			#else
 			{
 				float	m[16];
-				
+
 				OGLrCommon_Matrix4x4_OniToGL(
 					&activeCamera->matrix_viewToFrustum,
 					m);
-				
+
 				glMultMatrixf(m);
-				
+
 			}
 			#endif
-			
+
 			glMatrixMode(GL_MODELVIEW);
 		}
 	}
@@ -848,7 +848,7 @@ OGLrCommon_Camera_Update(
 	{
 		// set the ogl camera to 2d mode
 		OGLgCommon.cameraMode = OGLcCameraMode_2D;
-		
+
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(
@@ -857,7 +857,7 @@ OGLrCommon_Camera_Update(
 			0.f, -1.f);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		
+
 	}
 
 	UUmAssert((gl_error= glGetError()) == GL_NO_ERROR);
@@ -871,27 +871,27 @@ OGLrCommon_Matrix4x3_OniToGL(
 	float			*outGLMatrix)
 {
 	float*	m = outGLMatrix;
-	
+
 	*m++ = inMatrix->m[0][0];
 	*m++ = inMatrix->m[0][1];
 	*m++ = inMatrix->m[0][2];
 	*m++ = 0.0f;
-	
+
 	*m++ = inMatrix->m[1][0];
 	*m++ = inMatrix->m[1][1];
 	*m++ = inMatrix->m[1][2];
 	*m++ = 0.0f;
-	
+
 	*m++ = inMatrix->m[2][0];
 	*m++ = inMatrix->m[2][1];
 	*m++ = inMatrix->m[2][2];
 	*m++ = 0.0f;
-	
+
 	*m++ = inMatrix->m[3][0];
 	*m++ = inMatrix->m[3][1];
 	*m++ = inMatrix->m[3][2];
 	*m++ = 1.0f;
-	
+
 	return;
 }
 
@@ -901,27 +901,27 @@ OGLrCommon_Matrix4x4_OniToGL(
 	float			*outGLMatrix)
 {
 	float*	m = outGLMatrix;
-	
+
 	*m++ = inMatrix->m[0][0];
 	*m++ = inMatrix->m[0][1];
 	*m++ = inMatrix->m[0][2];
 	*m++ = inMatrix->m[0][3];
-	
+
 	*m++ = inMatrix->m[1][0];
 	*m++ = inMatrix->m[1][1];
 	*m++ = inMatrix->m[1][2];
 	*m++ = inMatrix->m[1][3];
-	
+
 	*m++ = inMatrix->m[2][0];
 	*m++ = inMatrix->m[2][1];
 	*m++ = inMatrix->m[2][2];
 	*m++ = inMatrix->m[2][3];
-	
+
 	*m++ = inMatrix->m[3][0];
 	*m++ = inMatrix->m[3][1];
 	*m++ = inMatrix->m[3][2];
 	*m++ = inMatrix->m[3][3];
-	
+
 	return;
 }
 
@@ -946,7 +946,7 @@ OGLrCommon_TextureMap_Select(
 	{
 		OGLrCommon_glBindTexture(GL_TEXTURE_2D, 0);
 		OGLrCommon_glDisable(GL_TEXTURE_2D);
-		
+
 		return;
 	}
 
@@ -961,15 +961,15 @@ OGLrCommon_TextureMap_Select(
 			OGLrCommon_glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 	}
-		
+
 	OGLiTexture_EnsureLoaded(inTextureMap);
-	
+
 	glEnable(GL_TEXTURE_2D);
-	
+
 	UUmAssert(glIsTexture(inTextureMap->opengl_texture_name) == GL_TRUE);
-		
+
 	OGLrCommon_glBindTexture(GL_TEXTURE_2D, inTextureMap->opengl_texture_name);
-	
+
 	#if 0
 	if (GL_TEXTURE1_ARB == inTMU)
 	{
@@ -1021,7 +1021,7 @@ OGLrCommon_DepthMode_Set(
 
 	//inRead = UUcTrue;
 	//inWrite = UUcTrue;
-	
+
 	if (inRead || inWrite)
 	{
 		if (!depth_enabled)
@@ -1031,7 +1031,7 @@ OGLrCommon_DepthMode_Set(
 			depth_read = !inRead;
 			depth_write = !inWrite;
 		}
-		
+
 		if ((inRead && !depth_read) ||
 			(!inRead && depth_read))
 		{
@@ -1039,7 +1039,7 @@ OGLrCommon_DepthMode_Set(
 			glDepthFunc(inRead ? GL_LEQUAL : GL_ALWAYS);
 			depth_read = inRead;
 		}
-		
+
 		if ((inWrite && !depth_write) ||
 			(!inWrite && depth_write))
 		{
@@ -1088,9 +1088,9 @@ void OGLrCommon_glFogEnable(
 		OGLgCommon.fog_color[3]= 1.f;
 		OGLgCommon.fog_density= 0.5f;
 		OGLgCommon.fog_mode= GL_EXP2;
-	
+
 //		OGLrCommon_glEnable(GL_FOG);
-	
+
 		glFogi(GL_FOG_MODE, OGLgCommon.fog_mode);
 //		glHint(GL_FOG_HINT, GL_DONT_CARE);
 
@@ -1120,7 +1120,7 @@ void OGLrCommon_glFogEnable(
 
 	glClearColor(OGLgCommon.fog_color[0], OGLgCommon.fog_color[1],
 		OGLgCommon.fog_color[2], OGLgCommon.fog_color[3]);
-	
+
 	return;
 }
 

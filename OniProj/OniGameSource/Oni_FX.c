@@ -55,12 +55,12 @@ void FXrDrawLaserDot(M3tPoint3D *inPoint)
 	error = TMrInstance_GetDataPtr(M3cTemplate_TextureMap, "dot", (void **) &dotTexture);
 	UUmAssert(UUcError_None == error);
 
-	if (error) 
+	if (error)
 		return;
 
 	cam_sphere_dist = MUmVector_GetDistance( cameraLocation, (*inPoint));
 
-	if (cam_sphere_dist > .001f) 
+	if (cam_sphere_dist > .001f)
 	{
 		scale *= cam_sphere_dist;
 		M3rSimpleSprite_Draw(dotTexture, inPoint, scale, scale, IMcShade_Red, M3cMaxAlpha);
@@ -79,11 +79,11 @@ void FXrDrawLaser( M3tPoint3D *inFrom, M3tPoint3D *inTo, UUtUns32 inColor )
 	M3tGeomCamera			*activeCamera;
 	float					width;
 	float					scale;
-	UUtUns32				color;	
-	UUtUns16				alpha;	
+	UUtUns32				color;
+	UUtUns16				alpha;
 	M3tMatrix4x3*			stack_matrix;
 	M3tMatrix4x3			matrix;
-	
+
 	M3rGeom_State_Push();
 	M3rDraw_State_SetInt(M3cDrawStateIntType_ZWrite, M3cDrawState_ZWrite_Off);
 
@@ -98,7 +98,7 @@ void FXrDrawLaser( M3tPoint3D *inFrom, M3tPoint3D *inTo, UUtUns32 inColor )
 
 	MUrMatrix_MultiplyPoint(&cameraPos, &matrix, &cameraPos);
 
-	MUmVector_Subtract(cameraDir,	laser_from, cameraPos);	
+	MUmVector_Subtract(cameraDir,	laser_from, cameraPos);
 	MUmVector_Subtract(contrailDir, laser_to,	laser_from);
 
 	// the contrail is still oriented from one point towards the other, but rotates to face the camera (i.e. perpendicular to cameraDir)
@@ -159,10 +159,10 @@ void FXrDrawCursorTunnel(M3tPoint3D *inFrom, M3tPoint3D *inTo, UUtUns32 inColor,
 	MUrMatrix3x3_Identity(&matrix);
 
 	MUmVector_Subtract( sight_vector, *inTo, *inFrom );
-	
+
 	max_distance = MUrPoint_Length( &sight_vector );
 
-	MUmVector_Normalize( sight_vector );	
+	MUmVector_Normalize( sight_vector );
 
 	up.x	= 0;
 	up.y	= 1;
@@ -171,8 +171,8 @@ void FXrDrawCursorTunnel(M3tPoint3D *inFrom, M3tPoint3D *inTo, UUtUns32 inColor,
 	MUrVector_CrossProduct( &sight_vector, &up,		&right );
 	MUrVector_CrossProduct( &sight_vector, &right,	&up );
 
-	MUmVector_Normalize(right);	
-	MUmVector_Normalize(up);	
+	MUmVector_Normalize(right);
+	MUmVector_Normalize(up);
 
 	matrix.m[0][0]	= right.x;
 	matrix.m[0][1]	= right.y;
@@ -196,21 +196,21 @@ void FXrDrawCursorTunnel(M3tPoint3D *inFrom, M3tPoint3D *inTo, UUtUns32 inColor,
 			float	temp;
 			next_distance	+= UUmFeetToUnits( 12 );
 
-			position.x		= inFrom->x + sight_vector.x * dist;		
-			position.y		= inFrom->y + sight_vector.y * dist;		
+			position.x		= inFrom->x + sight_vector.x * dist;
+			position.y		= inFrom->y + sight_vector.y * dist;
 			position.z		= inFrom->z + sight_vector.z * dist;
 
 			if (next_distance >= max_distance) {
 				break;
 			}
-			
+
 			M3rSimpleSprite_Draw(inTexture, &position, scale, scale, IMcShade_Red, (UUtUns16) alpha);
 			alpha = MUrUnsignedSmallFloat_To_Uns_Round(alpha * 0.85f);
 
 			if (alpha < (M3cMaxAlpha * 0.1f)) {
 				break;
 			}
-			
+
 			temp			= dist;
 			dist			= next_distance;
 			next_distance	= temp;

@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_Mac_Keys.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: April 2, 1997
-	
+
 	PURPOSE: Macintosh specific code
-	
+
 	Copyright 1997
 
 */

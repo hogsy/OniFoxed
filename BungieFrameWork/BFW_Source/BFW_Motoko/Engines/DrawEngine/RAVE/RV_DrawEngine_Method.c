@@ -1,12 +1,12 @@
 /*
 	FILE:	RV_DrawEngine_Method.c
-	
+
 	AUTHOR:	Kevin Armstrong, Michael Evans
-	
+
 	CREATED: January 5, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1998
 
 */
@@ -47,16 +47,16 @@
 typedef struct RVtDisplayDevice
 {
 	TQADevice	raveDevice;
-	
+
 } RVtDisplayDevice;
 
 typedef struct RVtEngine
 {
 	TQAEngine*			raveEngine;
-	
+
 	UUtUns16			numDisplayDevices;
 	RVtDisplayDevice	displayDevices[RVcMaxDisplayDevices];
-	
+
 } RVtEngine;
 
 UUtUns16			RVgEngine_Num = 0;
@@ -85,7 +85,7 @@ RViDrawEngine_AddDisplayDevice(
 	UUtUns16			engineItr;
 	RVtEngine*			targetEngine = NULL;
 	RVtDisplayDevice*	targetDisplayDevice;
-	
+
 	for(engineItr = 0; engineItr < RVgEngine_Num; engineItr++)
 	{
 		if(RVgEngine_List[engineItr].raveEngine == inRaveEngine)
@@ -94,16 +94,16 @@ RViDrawEngine_AddDisplayDevice(
 			break;
 		}
 	}
-	
+
 	if(targetEngine == NULL)
 	{
 		targetEngine = RVgEngine_List + RVgEngine_Num++;
 		targetEngine->numDisplayDevices = 0;
 		targetEngine->raveEngine = inRaveEngine;
 	}
-	
+
 	targetDisplayDevice = targetEngine->displayDevices + targetEngine->numDisplayDevices++;
-	
+
 	targetDisplayDevice->raveDevice = *inRaveDevice;
 }
 
@@ -114,26 +114,26 @@ RViDrawEngine_DisplayDeviceList_Build(
 	GDHandle	curDevice;
 	TQADevice	raveDevice;
 	TQAEngine*	curRaveEngine;
-	
+
 	curDevice = GetDeviceList();
-	
+
 	while(curDevice != NULL)
 	{
 		raveDevice.deviceType = kQADeviceGDevice;
 		raveDevice.device.gDevice = curDevice;
-		
+
 		// loop through all the engines that support this display device
 		curRaveEngine = QADeviceGetFirstEngine(&raveDevice);
-		
+
 		while(curRaveEngine != NULL)
 		{
 			RViDrawEngine_AddDisplayDevice(
 				&raveDevice,
 				curRaveEngine);
-			
+
 			curRaveEngine = QADeviceGetNextEngine(&raveDevice, curRaveEngine);
 		}
-		
+
 		curDevice = GetNextDevice(curDevice);
 	}
 }
@@ -162,34 +162,34 @@ RVrDrawEngine_Method_ContextPrivateNew(
 	UUtUns32			targetEngineIndex;
 	TQARect				raveRect;
 	UUtUns16			itr;
-	
+
 	UUmAssert(RVgDrawContextPrivate.activeRaveContext == NULL);
 	UUmAssert(inDrawContextDescriptor->type == M3cDrawContextType_OnScreen);
-	
+
 	*outAPI = M3cDrawAPI_RAVE;
 
 	// find the right engine
 		targetEngineCaps = M3rDrawEngine_GetCaps(M3gActiveDrawEngine);
 		UUmAssertReadPtr(targetEngineCaps, sizeof(M3tDrawEngineCaps));
-		
+
 		targetEngineIndex = (UUtUns32)targetEngineCaps->enginePrivate;
 		targetRaveEngine = RVgEngine_List[targetEngineIndex].raveEngine;
-		
+
 		RVgEngine_ActiveIndex = targetEngineIndex;
 		RVgDrawContextPrivate.activeRaveEngine = targetRaveEngine;
-	
+
 	// Setup the context parameters
 		raveRect.top = inDrawContextDescriptor->drawContext.onScreen.rect.top;
 		raveRect.left = inDrawContextDescriptor->drawContext.onScreen.rect.left;
 		raveRect.bottom = inDrawContextDescriptor->drawContext.onScreen.rect.bottom;
 		raveRect.right = inDrawContextDescriptor->drawContext.onScreen.rect.right;
-	
+
 	// setup the width and height
 		RVgDrawContextPrivate.width = raveRect.right - raveRect.left;
 		RVgDrawContextPrivate.height = raveRect.bottom - raveRect.top;
-	
+
 	// create the context
-		raveError = 
+		raveError =
 			QADrawContextNew(
 				&RVgEngine_List[targetEngineIndex].displayDevices[M3gActiveDisplayDevice].raveDevice,
 				&raveRect,
@@ -201,7 +201,7 @@ RVrDrawEngine_Method_ContextPrivateNew(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not create RAVE context");
 		}
-	
+
 	// init the function parameters
 		RVgDrawContextMethods.frameStart = RVrDrawContext_Method_Frame_Start;
 		RVgDrawContextMethods.frameEnd = RVrDrawContext_Method_Frame_End;
@@ -214,22 +214,22 @@ RVrDrawEngine_Method_ContextPrivateNew(
 		RVgDrawContextMethods.sprite = RVrDrawContext_Method_Sprite;
 		RVgDrawContextMethods.screenCapture = RVrDrawContext_Method_ScreenCapture;
 		RVgDrawContextMethods.textureFormatAvailable = RVrDrawContext_TextureFormatAvailable;
-	
+
 	// initialize the state
 		RVgDrawContextPrivate.stateTOS = 0;
 		RVgDrawContextPrivate.statePtr = RVgDrawContextPrivate.statePtrStack[0];
 		RVgDrawContextPrivate.stateInt = RVgDrawContextPrivate.stateIntStack[0];
-	
+
 		for(itr = 0; itr < M3cDrawStateIntType_NumTypes; itr++)
 		{
 			RVgDrawContextPrivate.stateInt[itr] = 0;
 		}
-		
+
 		for(itr = 0; itr < M3cDrawStatePtrType_NumTypes; itr++)
 		{
 			RVgDrawContextPrivate.statePtr[itr] = NULL;
 		}
-		
+
 		RVgDrawContextPrivate.stateInt[M3cDrawStateIntType_Appearence] = M3cDrawState_Appearence_Gouraud;
 		RVgDrawContextPrivate.stateInt[M3cDrawStateIntType_Interpolation] = M3cDrawState_Interpolation_None;
 		RVgDrawContextPrivate.stateInt[M3cDrawStateIntType_Fill] = M3cDrawState_Fill_Solid;
@@ -237,8 +237,8 @@ RVrDrawEngine_Method_ContextPrivateNew(
 		//RVgDrawContextPrivate->vertexList = MGgDrawContextPrivate->vertexListStack[0];
 		//RVgDrawContextPrivate->vertexBitVector = MGgDrawContextPrivate->vertexBVStack[0];
 		RVgDrawContextPrivate.stateFlags = 0xFF;
-		
-	
+
+
 	return UUcError_None;
 }
 
@@ -247,10 +247,10 @@ RVrDrawEngine_Method_Texture_Init(
 	M3tTextureMap*				inTextureMap)
 {
 	//RVtTextureMapPrivate*	privateData	 = (RVtTextureMapPrivate*)M3rManager_Texture_GetEnginePrivate(inTextureMap);
-	
+
 	//privateData->convertedData = NULL;
 	//privateData->raveTexture = NULL;
-		
+
 	return UUcError_None;
 }
 
@@ -260,12 +260,12 @@ RVrDrawEngine_Method_Texture_Load(
 {
 	//TQAError				raveError;
 	//RVtTextureMapPrivate*	privateData = (RVtTextureMapPrivate*) (M3rManager_Texture_GetEnginePrivate(inTextureMap));
-	
+
 	//UUmAssert(privateData->raveTexture == NULL);
 	//UUmAssert(RVgDrawContextPrivate.activeRaveEngine != NULL);
-	
+
 	#if 0
-	raveError = 
+	raveError =
 		QATextureNew(
 			RVgDrawContextPrivate.activeRaveEngine,
 			privateData->raveFlags,
@@ -277,7 +277,7 @@ RVrDrawEngine_Method_Texture_Load(
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not create rave texture");
 	}
 	#endif
-	
+
 	return UUcError_None;
 }
 
@@ -291,7 +291,7 @@ RVrDrawEngine_Method_Texture_Unload(
 	UUmAssert(privateData->raveTexture != NULL);
 
 	QATextureDelete(RVgDrawContextPrivate.activeRaveEngine, privateData->raveTexture);
-	
+
 	privateData->raveTexture = NULL;
 #endif
 
@@ -306,9 +306,9 @@ RVrDrawEngine_Method_Texture_Update(
 	UUtError				error;
 	RVtTextureMapPrivate*	privateData = (RVtTextureMapPrivate*) (M3rManager_Texture_GetEnginePrivate(inTextureMap));
 	IMtPixel				emptyPixel = {0};
-	
+
 	// XXX - need to handle I8 case
-	
+
 	switch(inTextureMap->texelType)
 	{
 		case IMcPixelType_ARGB4444:
@@ -316,28 +316,28 @@ RVrDrawEngine_Method_Texture_Update(
 			privateData->image[0].rowBytes = sizeof(UUtUns16) * inTextureMap->width;
 			privateData->image[0].pixmap = inTextureMap->data;
 			break;
-			
+
 		case IMcPixelType_RGB555:
 			privateData->pixelType = kQAPixel_RGB16;
 			privateData->image[0].rowBytes = sizeof(UUtUns16) * inTextureMap->width;
 			privateData->image[0].pixmap = inTextureMap->data;
 			break;
-			
+
 		case IMcPixelType_ARGB1555:
 			privateData->pixelType = kQAPixel_ARGB16;
 			privateData->image[0].rowBytes = sizeof(UUtUns16) * inTextureMap->width;
 			privateData->image[0].pixmap = inTextureMap->data;
 			break;
-			
+
 		case IMcPixelType_I8:
 			// need to convert to RGB16 - perhaps this is supported through ATI RAVE
 			// XXX - Assert this is not mipmapped
-			
+
 			privateData->convertedData =
 				UUrMemory_Block_New(inTextureMap->width * inTextureMap->height * sizeof(UUtUns16));
 			UUmError_ReturnOnNull(privateData->convertedData);
-			
-			error = 
+
+			error =
 				IMrImage_ConvertPixelType(
 					IMcDitherMode_On,
 					inTextureMap->width,
@@ -348,53 +348,53 @@ RVrDrawEngine_Method_Texture_Update(
 					IMcPixelType_RGB555,
 					privateData->convertedData);
 			UUmError_ReturnOnError(error);
-			
+
 			privateData->pixelType = kQAPixel_RGB16;
 			privateData->image[0].rowBytes = sizeof(UUtUns16) * inTextureMap->width;
 			privateData->image[0].pixmap = privateData->convertedData;
 			break;
-			
+
 		case IMcPixelType_I1:
 			UUmAssert(0);
 			break;
-			
+
 		case IMcPixelType_A8:
 			UUmAssert(0);
 			break;
-			
+
 		case IMcPixelType_A4I4:
 			UUmAssert(0);
 			break;
-			
+
 		case IMcPixelType_ARGB8888:
 			privateData->pixelType = kQAPixel_ARGB32;
 			privateData->image[0].rowBytes = sizeof(UUtUns32) * inTextureMap->width;
 			privateData->image[0].pixmap = inTextureMap->data;
 			break;
-			
+
 		case IMcPixelType_RGB888:
 			privateData->pixelType = kQAPixel_RGB32;
 			privateData->image[0].rowBytes = sizeof(UUtUns32) * inTextureMap->width;
 			privateData->image[0].pixmap = inTextureMap->data;
 			break;
-		
+
 		default:
 			UUmAssert(!"Illegal pixel type");
 	}
-	
+
 	// create TQAImage
 	privateData->image[0].width = inTextureMap->width;
 	privateData->image[0].height = inTextureMap->width;
-	
+
 	// compute the rave texture flags
 	privateData->raveFlags = kQATexture_NoCompression;
-	
+
 	if(inTextureMap->flags & M3cTextureFlags_HasMipMap)
 	{
 		// privateData->raveFlags |= kQATexture_Mipmap;
 		// eventually build mipmaps
 	}
-	
+
 	if(privateData->raveTexture != NULL)
 	{
 		if(RVgDrawContextPrivate.atiExtFuncs != NULL)
@@ -408,7 +408,7 @@ RVrDrawEngine_Method_Texture_Update(
 			RVrDrawEngine_Method_Texture_Load(inTextureMap);
 		}
 	}
-#endif	
+#endif
 	return UUcError_None;
 }
 
@@ -418,13 +418,13 @@ RVrDrawEngine_Method_Texture_Delete(
 {
 #if 0
 	RVtTextureMapPrivate *privateData = (RVtTextureMapPrivate*) (M3rManager_Texture_GetEnginePrivate(inTextureMap));
-	
+
 	if(privateData->convertedData != NULL)
 	{
 		UUrMemory_Block_Delete(privateData->convertedData);
 		privateData->convertedData = NULL;
 	}
-	
+
 	if(privateData->raveTexture != NULL)
 	{
 		QATextureDelete(RVgDrawContextPrivate.activeRaveEngine, privateData->raveTexture);
@@ -440,30 +440,30 @@ RVrDrawEngine_Initialize(
 	void)
 {
 	UUtError error;
-	
+
 	M3tDrawEngineCaps		drawEngineCaps;
 	M3tDrawEngineMethods	drawEngineMethods;
-	
+
 	UUtUns16				engineItr;
 	char					buffer[1024];
 	UUtUns32				nameLength;
 	TQAError				raveError;
-	
+
 	RViDrawEngine_DisplayDeviceList_Build();
-	
+
 	if(RVgEngine_Num == 0) return;
-	
+
 	drawEngineMethods.contextPrivateNew = RVrDrawEngine_Method_ContextPrivateNew;
 	drawEngineMethods.contextPrivateDelete = RVrDrawEngine_Method_ContextPrivateDelete;
-	
+
 	for(engineItr = 0; engineItr < RVgEngine_Num; engineItr++)
 	{
 		drawEngineCaps.engineFlags = M3cDrawEngineFlag_None;
 		drawEngineCaps.enginePrivate = (void*)engineItr;
-		
+
 		UUrString_Copy(drawEngineCaps.engineName, M3cDrawEngine_RAVE, M3cMaxNameLen);
-		
-		raveError = 
+
+		raveError =
 			QAEngineGestalt(
 				RVgEngine_List[engineItr].raveEngine,
 				kQAGestalt_ASCIINameLength,
@@ -473,14 +473,14 @@ RVrDrawEngine_Initialize(
 			UUrError_Report(UUcError_Generic, "could not get name length");
 			return;
 		}
-		
+
 		if(nameLength >= 1024)
 		{
 			UUrError_Report(UUcError_Generic, "name length too long");
 			return;
 		}
-		
-		raveError = 
+
+		raveError =
 			QAEngineGestalt(
 				RVgEngine_List[engineItr].raveEngine,
 				kQAGestalt_ASCIIName,
@@ -490,18 +490,18 @@ RVrDrawEngine_Initialize(
 			UUrError_Report(UUcError_Generic, "Could get name length");
 			return;
 		}
-		
+
 		UUrString_Copy(drawEngineCaps.engineDriver, buffer, M3cMaxNameLen);
-		
+
 		drawEngineCaps.engineVersion = RVcVersion;
-		
+
 		// XXX - Someday make this more real
 		drawEngineCaps.numDisplayDevices = 1;
 		drawEngineCaps.displayDevices[0].numDisplayModes = 1;
 		drawEngineCaps.displayDevices[0].displayModes[0].width = 640;
 		drawEngineCaps.displayDevices[0].displayModes[0].height = 480;
 		drawEngineCaps.displayDevices[0].displayModes[0].bitDepth = 16;
-		
+
 		error =
 			M3rManager_Register_DrawEngine(
 				&drawEngineCaps,
@@ -536,14 +536,14 @@ RVrDrawContext_Method_Frame_Start(
 
 	return UUcError_None;
 }
-	
+
 // ----------------------------------------------------------------------
 UUtError
 RVrDrawContext_Method_Frame_End(
 	UUtUns32	*outTextureBytesDownloaded)
 {
 	QARenderEnd(RVgActiveRaveContext, NULL);
-	
+
 	return UUcError_None;
 }
 

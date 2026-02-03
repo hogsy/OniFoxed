@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_FF_BMP_Priv.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -45,13 +45,13 @@
 
 /*
  * origin of coordinate space
- */   
+ */
 	#define FFcBMP_Origin_LOWER_LEFT		(0)
 	#define FFcBMP_Origin_LAST				(0)
 
 /*
  * halftoning algorithms
- */   
+ */
 	#define FFcBMP_Halftoning_NONE				(0)
 	#define FFcBMP_Halftoning_ERROR_DIFFUSION	(1)
 	#define FFcBMP_Halftoning_PANDA				(2)
@@ -87,7 +87,7 @@
 		UUtUns8		height[2];
 		UUtUns8		numBitPlanes[2];
 		UUtUns8		numBitsPerPlane[2];
-	    
+
 	} BMPtHeaderOld_Raw;
 
 	typedef struct BMPtHeaderNew_Raw
@@ -111,7 +111,7 @@
 		UUtUns8		halftoningParam2[4];
 		UUtUns8		colorEncoding[4];
 		UUtUns8		identifier[4];
-	    
+
 	} BMPtHeaderNew_Raw;
 
 	typedef struct BMPtHeader
@@ -135,7 +135,7 @@
 		UUtUns32		halftoningParam2;
 		UUtUns32		colorEncoding;
 		UUtUns32		identifier;
-	    
+
 	} BMPtHeader;
 
 /*
@@ -148,7 +148,7 @@
 		UUtUns8		xHotSpot[2];
 		UUtUns8		yHotSpot[2];
 		UUtUns8		offsetToBits[4];
-		
+
 	} BMPtFileHeader_Raw;
 
 /*
@@ -162,9 +162,9 @@
 		UUtUns8			next[2];
 		UUtUns8			screenWidth[2];
 		UUtUns8			screenHeight[2];
-		
+
 	} BMPtArrayHeader_Raw;
-	
+
 /*
  * BMPtRGB defines a single color palette entry.
  */
@@ -173,7 +173,7 @@
 		UUtUns8	blue;
 		UUtUns8	green;
 		UUtUns8	red;
-		
+
 	} BMPtRGB;
 
 #endif /* BFW_FF_PRIV_BMP_H */

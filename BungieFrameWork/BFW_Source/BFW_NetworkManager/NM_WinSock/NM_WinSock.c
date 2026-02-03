@@ -36,7 +36,7 @@ NMiWS_UDP_WriteData(
 	UUtUns8					*inDataBuffer,
 	UUtUns16				inNumBytes,
 	UUtUns16				inFlags);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
@@ -47,7 +47,7 @@ NMiWS_UDP_HandleRead(
 {
 	UUtUns32				return_val;
 	WSANETWORKEVENTS		events;
-	
+
 	// poll for read events
 	return_val =
 		WSAWaitForMultipleEvents(
@@ -60,7 +60,7 @@ NMiWS_UDP_HandleRead(
 	{
 		return;
 	}
-	
+
 	// handle the events
 	return_val =
 		WSAEnumNetworkEvents(
@@ -71,11 +71,11 @@ NMiWS_UDP_HandleRead(
 	{
 		return;
 	}
-	
+
 	if (events.lNetworkEvents & FD_READ)
 	{
 		NMtDataBuffer		*data_buffer;
-		
+
 		// continually read until recvfrom returns no data
 		while (1)
 		{
@@ -90,7 +90,7 @@ NMiWS_UDP_HandleRead(
 				inNetContext->out_of_incoming_buffers = UUcTrue;
 				break;
 			}
-			
+
 			data_buffer->data.address_length = NMcMaxAddressLength;
 
 			// read the data
@@ -105,26 +105,26 @@ NMiWS_UDP_HandleRead(
 			if ((return_val == SOCKET_ERROR) || (return_val == 0))
 			{
 				error_val = GetLastError();
-				
+
 				// put the data_buffer into the incoming empty queue
 				NMrQueue_EnqueueBuffer(
 					&inNetContext->private_data->queues,
 					NMcIncomingEmptyQueue,
 					data_buffer);
-				
+
 				break;
 			}
 			else
 			{
 				NMtPacket			*data_packet;
-				
+
 				// get a pointer to the data_packet
 				data_packet = (NMtPacket*)&data_buffer->data.buffer;
-				
+
 				// swap the data
 				UUrSwap_4Byte(&data_packet->packet_header.packet_flags);
 				UUrSwap_4Byte(&data_packet->packet_header.packet_data_size);
-				
+
 				// put the data into the incoming empty queue
 				NMrQueue_EnqueueBuffer(
 					&inNetContext->private_data->queues,
@@ -134,7 +134,7 @@ NMiWS_UDP_HandleRead(
 		}
 	}
 }
-	
+
 // ======================================================================
 #if 0
 #pragma mark -
@@ -151,16 +151,16 @@ NMiWS_UDP_CloseSocket(
 		WSACloseEvent(inNetContext->private_data->event);
 		inNetContext->private_data->event = WSA_INVALID_EVENT;
 	}
-	
+
 	// close the socket
 	if (inNetContext->private_data->socket != INVALID_SOCKET)
 	{
 		closesocket(inNetContext->private_data->socket);
 		inNetContext->private_data->socket = INVALID_SOCKET;
 	}
-	
+
 	// delete
-	
+
 	return UUcError_None;
 }
 
@@ -183,12 +183,12 @@ NMiWS_UDP_Broadcast(
 
 	// get a pointer to the address
 	address = (SOCKADDR_IN*)raw;
-	
+
 	// init address
 	address->sin_family			= AF_INET;
 	address->sin_port			= htons(inPortNumber);
 	address->sin_addr.s_addr	= INADDR_BROADCAST;
-	
+
 	// send the data to every machine on the local network
 	error =
 		NMiWS_UDP_WriteData(
@@ -198,7 +198,7 @@ NMiWS_UDP_Broadcast(
 			inNumBytes,
 			NMcPacketFlags_None);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -212,19 +212,19 @@ NMiWS_UDP_CloseProtocol(
 	// close the socket
 	error = NMiWS_UDP_CloseSocket(inNetContext);
 	UUmError_ReturnOnError(error);
-	
+
 	// terminate the queues
 	NMrQueue_Terminate(&inNetContext->private_data->queues);
-	
+
 	// free the private_data
 	if (inNetContext->private_data)
 	{
 		UUrMemory_Block_Delete(inNetContext->private_data);
 	}
-	
+
 	// shutdown winsock
 	WSACleanup();
-	
+
 	return UUcError_None;
 }
 
@@ -237,16 +237,16 @@ NMiWS_UDP_CompareAddresses(
 {
 	SOCKADDR_IN				*addr_1;
 	SOCKADDR_IN				*addr_2;
-	
+
 	// get a pointer to the two addresses
 	addr_1 = (SOCKADDR_IN*)inAddress1;
 	addr_2 = (SOCKADDR_IN*)inAddress2;
-	
+
 	if (addr_1->sin_addr.s_addr == addr_2->sin_addr.s_addr)
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -259,19 +259,19 @@ NMiWS_UDP_GetAddress(
 	UUtUns32				return_val;
 	HOSTENT					*host_ent;
 	IN_ADDR					address;
-	
+
 	return_val = gethostname(host_name, sizeof(host_name));
 	if (return_val == SOCKET_ERROR) return NULL;
-	
+
 	host_ent = gethostbyname(host_name);
 	if (host_ent == NULL) return NULL;
-	
+
 	if (host_ent->h_addr_list[0] != NULL)
 	{
 		UUrMemory_MoveFast(host_ent->h_addr_list[0], &address, sizeof(IN_ADDR));
 		return (UUtUns8*)inet_ntoa(address);
 	}
-	
+
 	return NULL;
 }
 
@@ -295,10 +295,10 @@ NMiWS_UDP_ReadData(
 	{
 		return UUcFalse;
 	}
-	
+
 	// get a pointer to the data_packet
 	data_packet = (NMtPacket*)&data_buffer->data.buffer;
-	
+
 	// set the outgoing data
 	UUrMemory_MoveFast(
 		&data_buffer->data.address,
@@ -306,13 +306,13 @@ NMiWS_UDP_ReadData(
 		sizeof(NMtNetAddress));
 	*outNumBytes = (UUtUns16)data_packet->packet_header.packet_data_size;
 	UUrMemory_MoveFast(&data_packet->packet_data, outDataBuffer, *outNumBytes);
-	
+
 	// put the buffer onto the incoming empty queue
 	NMrQueue_EnqueueBuffer(
 		&inNetContext->private_data->queues,
 		NMcIncomingEmptyQueue,
 		data_buffer);
-	
+
 	return UUcTrue;
 }
 
@@ -334,14 +334,14 @@ NMiWS_UDP_StartProtocol(
 		WSACleanup();
 		return UUcError_Generic;
 	}
-	
+
 	// check winsock version
 	if (wsaData.wVersion != NMcDesiredWinSockVersion)
 	{
 		WSACleanup();
 		return UUcError_Generic;
 	}
-	
+
 	// allocate memory for the private data
 	inNetContext->private_data =
 		(NMtNetContextPrivate*)UUrMemory_Block_New(
@@ -351,18 +351,18 @@ NMiWS_UDP_StartProtocol(
 		WSACleanup();
 		return UUcError_OutOfMemory;
 	}
-	
+
 	// clear the private_data
 	UUrMemory_Clear(
 		inNetContext->private_data,
 		sizeof(NMtNetContextPrivate));
-	
+
 	// set the socket and event to invalid values
 	inNetContext->private_data->socket = INVALID_SOCKET;
 	inNetContext->private_data->event = WSA_INVALID_EVENT;
-		
+
 	// create a socket
-	inNetContext->private_data->socket = 
+	inNetContext->private_data->socket =
 		socket(
 			AF_INET,
 			SOCK_DGRAM,
@@ -372,11 +372,11 @@ NMiWS_UDP_StartProtocol(
 		NMiWS_UDP_CloseProtocol(inNetContext);
 		return UUcError_Generic;
 	}
-	
+
 	if (inFlags & NMcFlag_Broadcast)
 	{
 		BOOL					option_val;
-	
+
 		// set the SO_BROADCAST option for the socket
 		option_val = UUcTrue;
 		return_val =
@@ -392,7 +392,7 @@ NMiWS_UDP_StartProtocol(
 			return UUcError_Generic;
 		}
 	}
-	
+
 	// initialize the queues
 	error =
 		NMrQueue_Initialize(
@@ -400,11 +400,11 @@ NMiWS_UDP_StartProtocol(
 			NMcWS_UDP_NumIncomingBuffers,
 			NMcWS_UDP_NumOutgoingBuffers);
 	UUmError_ReturnOnError(error);
-	
+
 	// set the number of buffers
 	inNetContext->num_incoming_buffers = NMcWS_UDP_NumIncomingBuffers;
 	inNetContext->num_outgoing_buffers = NMcWS_UDP_NumOutgoingBuffers;
-	
+
 	// create an event object
 	inNetContext->private_data->event = WSACreateEvent();
 	if (inNetContext->private_data->event == WSA_INVALID_EVENT)
@@ -412,7 +412,7 @@ NMiWS_UDP_StartProtocol(
 		NMiWS_UDP_CloseProtocol(inNetContext);
 		return UUcError_Generic;
 	}
-	
+
 	// make the socket nonblocking and tell it which events
 	// to respond to
 	return_val =
@@ -425,13 +425,13 @@ NMiWS_UDP_StartProtocol(
 		NMiWS_UDP_CloseProtocol(inNetContext);
 		return UUcError_Generic;
 	}
-		
+
 	// set the address
 	server_address.sin_family		= AF_INET;
 	server_address.sin_addr.s_addr	= INADDR_ANY;
 	server_address.sin_port			=
 		htons((UUtUns16)inNetContext->port_number);
-	
+
 	// bind the name to the socket
 	return_val =
 		bind(
@@ -443,7 +443,7 @@ NMiWS_UDP_StartProtocol(
 		NMiWS_UDP_CloseProtocol(inNetContext);
 		return UUcError_Generic;
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -456,24 +456,24 @@ NMiWS_UDP_StringToAddress(
 	NMtNetAddress			*outNetAddress)
 {
 	SOCKADDR_IN				temp_address;
-	
+
 	// fill in the temp_address
 	temp_address.sin_family			= AF_INET;
 	temp_address.sin_port			= htons(inPortNumber);
 	temp_address.sin_addr.s_addr	= inet_addr((const char*)inString);
-	
+
 	// make sure the address is legitimate
 	if (temp_address.sin_addr.s_addr == INADDR_NONE)
 	{
 		return UUcError_Generic;
 	}
-	
+
 	// copy the temp address into the outNetAddress
 	UUrMemory_MoveFast(
 		&temp_address,
 		outNetAddress,
 		sizeof(NMtNetAddress));
-	
+
 	return UUcError_None;
 }
 
@@ -483,7 +483,7 @@ NMiWS_UDP_Update(
 	NMtNetContext			*inNetContext)
 {
 	UUtError				error;
-	
+
 	if (inNetContext->out_of_incoming_buffers)
 	{
 		error =
@@ -528,7 +528,7 @@ NMiWS_UDP_Update(
 
 	// read incoming packets and put them into the incoming queue
 	NMiWS_UDP_HandleRead(inNetContext);
-	
+
 	return UUcError_None;
 }
 
@@ -545,27 +545,27 @@ NMiWS_UDP_WriteData(
 	NMtPacket				raw;
 	NMtPacket				*data_packet;
 	UUtUns16				packet_length;
-	
+
 	// calculate the packet length
 	packet_length = sizeof(NMtPacketHeader) + inNumBytes;
-	
+
 	// get a pointer to the data_packet
-	data_packet = &raw;	
+	data_packet = &raw;
 
 	// initialize the packet
 	data_packet->packet_header.packet_flags			= inFlags;
 	data_packet->packet_header.packet_data_size		= inNumBytes;
-	
+
 	// swap the data
 	UUrSwap_4Byte(&data_packet->packet_header.packet_flags);
 	UUrSwap_4Byte(&data_packet->packet_header.packet_data_size);
-	
+
 	// copy the data into the packet
 	UUrMemory_MoveFast(
 		inDataBuffer,
 		data_packet->packet_data,
 		inNumBytes);
-	
+
 	// send the data
 	return_val =
 		sendto(
@@ -594,9 +594,9 @@ NMrWS_AddressToString(
 	const NMtNetAddress			*inNetAddress)
 {
 	SOCKADDR_IN					*address;
-	
+
 	address = (SOCKADDR_IN*)inNetAddress;
-	
+
 	return (char*)inet_ntoa(address->sin_addr);
 }
 
@@ -618,23 +618,23 @@ NMrWS_UDP_Initialize(
 		WSACleanup();
 		return UUcError_Generic;
 	}
-	
+
 	// check winsock version
 	if (wsaData.wVersion < NMcDesiredWinSockVersion)
 	{
 		WSACleanup();
 		return UUcError_Generic;
 	}
-	
+
 	// close Winsock
 	WSACleanup();
-	
+
 	// clear the methods struct
 	UUrMemory_Clear(&methods, sizeof(NMtNetContextMethods));
-	
+
 	// set the caps
 	caps.type					= NMcUDP;
-	
+
 	// set the function pointers in the methods struct
 	methods.broadcast			= NMiWS_UDP_Broadcast;
 	methods.close_protocol		= NMiWS_UDP_CloseProtocol;
@@ -645,11 +645,11 @@ NMrWS_UDP_Initialize(
 	methods.string_to_address	= NMiWS_UDP_StringToAddress;
 	methods.update				= NMiWS_UDP_Update;
 	methods.write_data			= NMiWS_UDP_WriteData;
-	
+
 	// register the methods with the net manager
 	error = NMrRegisterService(&caps, &methods);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 

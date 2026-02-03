@@ -2,13 +2,13 @@
 
 /*
 	FILE:	Oni_GameSettings.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: September 25, 2000
-	
+
 	PURPOSE: Global game settings for Oni
-	
+
 	Copyright Bungie Software, 2000
 
 */

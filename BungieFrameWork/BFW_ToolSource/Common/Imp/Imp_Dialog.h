@@ -22,33 +22,33 @@ Imp_ProcessDialogFlags(
 	GRtGroup			*inGroup,
 	AUtFlagElement		*inFlagList,
 	UUtUns16			*outFlags);
-	
+
 UUtError
 Imp_ProcessTextures(
 	BFtFileRef*			inSourceFile,
 	GRtGroup			*inGroup,
 	VMtTextureList		**inTextureList,
 	char				*inTextureListName);
-	
+
 UUtError
 Imp_ProcessLocation(
 	GRtGroup			*inGroup,
 	IMtPoint2D			*outLocation);
-	
+
 UUtError
 Imp_AddView(
 	BFtFileRef*			inSourceFile,
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 UUtError
 Imp_AddDialogData(
 	BFtFileRef*			inSourceFile,
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 UUtError
 Imp_AddDialog(
 	BFtFileRef*			inSourceFile,
@@ -62,7 +62,7 @@ Imp_AddDialogTypeList(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 Imp_AddControl_Button(
@@ -77,7 +77,7 @@ Imp_AddControl_EditField(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 UUtError
 Imp_AddControl_Picture(
 	BFtFileRef*			inSourceFile,
@@ -91,7 +91,7 @@ Imp_AddControl_Tab(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 UUtError
 Imp_AddControl_Text(
 	BFtFileRef*			inSourceFile,
@@ -106,7 +106,7 @@ Imp_AddCursor(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 UUtError
 Imp_AddCursorTypeList(
 	BFtFileRef*			inSourceFile,

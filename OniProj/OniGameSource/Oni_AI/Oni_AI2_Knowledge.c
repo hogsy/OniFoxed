@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Knowledge.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: April 18, 2000
-	
+
 	PURPOSE: Knowledge base for Oni AI
-	
+
 	Copyright (c) 2000
 
 */
@@ -123,11 +123,11 @@ const IMtShade AI2gKnowledge_DebugSoundShade[AI2cContactType_Max] = {IMcShade_Bl
 static void AI2iKnowledge_AddPending(void);
 static void AI2iKnowledge_PostContact(ONtCharacter *inCharacter, AI2tContactType inType,
 									 AI2tContactStrength inStrength, M3tPoint3D *inLocation,
-									 ONtCharacter *inTarget, UUtUns32 inAIUserData, 
+									 ONtCharacter *inTarget, UUtUns32 inAIUserData,
 									 UUtBool inDisableNotify, UUtBool inForceTarget);
 static void AI2iKnowledge_AddContact(ONtCharacter *inCharacter, AI2tContactType inType,
 									 AI2tContactStrength inStrength, M3tPoint3D *inLocation,
-									 ONtCharacter *inTarget, UUtUns32 inAIUserData, 
+									 ONtCharacter *inTarget, UUtUns32 inAIUserData,
 									 UUtBool inDisableNotify, UUtBool inForceTarget);
 static void	AI2iKnowledge_CheckVisible(ONtCharacter *inCharacter, ONtActiveCharacter *inActiveCharacter,
 									   UUtUns32 inCheckCount, ONtCharacter **inCheckList);
@@ -215,7 +215,7 @@ void AI2rKnowledge_Update(void)
 		for (itr = 0, entry = AI2gKnowledgeBase; itr < AI2gKnowledge_ClearSpaceIndex; itr++, entry++) {
 			if (entry->owner == NULL)	// skip unused entries
 				continue;
-				
+
 			if (entry->strength <= AI2cContactStrength_Forgotten)
 				continue;
 
@@ -230,7 +230,7 @@ void AI2rKnowledge_Update(void)
 
 			degrade_hostility = degrade_forget = degrade_dead = UUcFalse;
 
-			if ((entry->enemy != NULL) && 
+			if ((entry->enemy != NULL) &&
 				(((entry->enemy->flags & ONcCharacterFlag_InUse) == 0) ||
 				(entry->enemy->flags & ONcCharacterFlag_Dead))) {
 				// target has died
@@ -273,7 +273,7 @@ void AI2rKnowledge_Update(void)
 
 			// sort this entry to where it belongs in the contact list
 			AI2iKnowledge_MoveContactDown(entry->owner, knowledge_state, entry);
-	
+
 			if (knowledge_state->callback != NULL) {
 				(knowledge_state->callback)(entry->owner, entry, UUcTrue);
 			}
@@ -288,17 +288,17 @@ void AI2rKnowledge_Update(void)
 		// loop over all AIs
 		character_list = ONrGameState_LivingCharacterList_Get();
 		character_list_count = ONrGameState_LivingCharacterList_Count();
-		
+
 		// only check roughly every second
 		check_index = current_time % AI2cKnowledge_VisibilityFrames;
-		
+
 		for (itr = 0; itr < character_list_count; itr++) {
 			looking_character = character_list[itr];
 			if (((looking_character->flags & ONcCharacterFlag_InUse) == 0) ||
 				(looking_character->flags & ONcCharacterFlag_Dead) ||
 				(looking_character->charType != ONcChar_AI2))
 				continue;
-			
+
 			if ((looking_character->ai2State.flags & AI2cFlag_Passive) ||
 				(looking_character->ai2State.flags & AI2cFlag_Blind))
 				continue;
@@ -307,7 +307,7 @@ void AI2rKnowledge_Update(void)
 
 			// FIXME: would it be more efficient to maintain character lists for
 			// each team and loop over only the relevant ones?
-			
+
 			run_vision = UUcFalse;
 
 			// respect the delay timer (used so that AIs which are looking towards the source of a sound
@@ -376,7 +376,7 @@ void AI2rKnowledge_Update(void)
 		// every so often
 		character_list = ONrGameState_LivingCharacterList_Get();
 		character_list_count = ONrGameState_LivingCharacterList_Count();
-		
+
 		for (itr = 0; itr < character_list_count; itr++) {
 			update_character = character_list[itr];
 			if (((looking_character->flags & ONcCharacterFlag_InUse) == 0) ||
@@ -450,7 +450,7 @@ void AI2rKnowledge_CharacterDeath(ONtCharacter *inDeadCharacter)
 	for (itr = 0, entry = AI2gKnowledgeBase; itr < AI2gKnowledge_ClearSpaceIndex; itr++, entry++) {
 		if (entry->owner == NULL)	// skip unused entries
 			continue;
-				
+
 		if (entry->enemy != inDeadCharacter)
 			continue;
 
@@ -477,7 +477,7 @@ void AI2rKnowledge_CharacterDeath(ONtCharacter *inDeadCharacter)
 
 		// sort this entry to where it belongs in the contact list
 		AI2iKnowledge_MoveContactDown(entry->owner, knowledge_state, entry);
-	
+
 		if (knowledge_state->callback != NULL) {
 			(knowledge_state->callback)(entry->owner, entry, UUcTrue);
 		}
@@ -546,7 +546,7 @@ void AI2rKnowledge_Sound(AI2tContactType inImportance, M3tPoint3D *inLocation, f
 	if (AI2gShowSounds && (AI2gKnowledge_DebugNumSounds < AI2cKnowledge_DebugMaxNumSounds)) {
 		// add this sound to the global sound debugging buffer
 		AI2tKnowledgeDebugSound *sound = &AI2gKnowledge_DebugSounds[AI2gKnowledge_DebugNumSounds++];
-		
+
 		sound->location = *inLocation;
 		sound->radius = inVolume;
 		sound->time = ONrGameState_GetGameTime();
@@ -928,7 +928,7 @@ static void	AI2iKnowledge_CheckVisible(ONtCharacter *inCharacter, ONtActiveChara
 				contact_strength = AI2cContactStrength_Definite;
 			}
 		} else {
-		
+
 			// what viewing distance and centrality does this translate to?
 			if (aimrel_along < periph_max) {
 				// not visible
@@ -1050,7 +1050,7 @@ static void	AI2iKnowledge_CheckVisible(ONtCharacter *inCharacter, ONtActiveChara
 // new knowledge has been received
 static void AI2iKnowledge_PostContact(ONtCharacter *inCharacter, AI2tContactType inType,
 									 AI2tContactStrength inStrength, M3tPoint3D *inLocation,
-									 ONtCharacter *inTarget, UUtUns32 inAIUserData, 
+									 ONtCharacter *inTarget, UUtUns32 inAIUserData,
 									 UUtBool inDisableNotify, UUtBool inForceTarget)
 {
 	AI2tKnowledgePending *pending;
@@ -1150,10 +1150,10 @@ static void AI2iKnowledge_AddContact(ONtCharacter *inCharacter, AI2tContactType 
 			// we can't respond to this
 			return;
 		}
-		
+
 		entry->owner = inCharacter;
 		entry->enemy = inTarget;
-		
+
 		// by default all contacts are just interesting information, not a threat
 		entry->priority = AI2cContactPriority_Friendly;
 		if (entry->enemy != NULL) {
@@ -1164,7 +1164,7 @@ static void AI2iKnowledge_AddContact(ONtCharacter *inCharacter, AI2tContactType 
 				entry->priority = AI2cContactPriority_Hostile_NoThreat;
 			}
 		}
-		
+
 		entry->first_time = current_time;
 		entry->highest_strength = AI2cContactStrength_Forgotten;
 		entry->has_hurt_me = UUcFalse;
@@ -1178,7 +1178,7 @@ static void AI2iKnowledge_AddContact(ONtCharacter *inCharacter, AI2tContactType 
 		entry->last_type = AI2cContactType_Sound_Ignore;
 		entry->last_strength = AI2cContactStrength_Forgotten;
 	}
-	
+
 	if (inForceTarget) {
 		entry->priority = AI2cContactPriority_ForceTarget;
 	}
@@ -1202,7 +1202,7 @@ static void AI2iKnowledge_AddContact(ONtCharacter *inCharacter, AI2tContactType 
 	entry->last_location = *inLocation;
 	entry->last_type = inType;
 	entry->last_user_data = inAIUserData;
-	
+
 	// update the strength of our contact with this character
 	if (inStrength > entry->highest_strength) {
 		entry->highest_strength = inStrength;
@@ -1210,12 +1210,12 @@ static void AI2iKnowledge_AddContact(ONtCharacter *inCharacter, AI2tContactType 
 	} else {
 		entry->first_sighting = UUcFalse;
 	}
-	
+
 	if (inStrength >= entry->strength) {
 		entry->strength = inStrength;
 		entry->degrade_time = current_time + AI2iKnowledge_GetDegradeTime(entry->owner, entry->strength, entry->highest_strength);
 	}
-	
+
 	if ((inType == AI2cContactType_Hit_Weapon) || (inType == AI2cContactType_Hit_Melee)) {
 		// user data for hurt events is the amount of damage taken
 		entry->has_hurt_me = UUcTrue;
@@ -1258,12 +1258,12 @@ static void AI2iKnowledge_AddContact(ONtCharacter *inCharacter, AI2tContactType 
 	} else if ((inType == AI2cContactType_Sound_Melee) || (inType == AI2cContactType_Sound_Gunshot)) {
 		// determine whether someone is attacking or shooting a friend of ours
 		ONtCharacter *target_character = (ONtCharacter *) inAIUserData;
-		
+
 		if ((entry->enemy != NULL) && (target_character != NULL)) {
 			UUtUns32 enemy_status = AI2rTeam_FriendOrFoe(inCharacter->teamNumber, entry->enemy->teamNumber);
 			UUtUns32 target_status = AI2rTeam_FriendOrFoe(inCharacter->teamNumber, target_character->teamNumber);
 
-			if ((entry->priority == AI2cContactPriority_Friendly) && (entry->strength == AI2cContactStrength_Definite) && 
+			if ((entry->priority == AI2cContactPriority_Friendly) && (entry->strength == AI2cContactStrength_Definite) &&
 				(enemy_status == AI2cTeam_Neutral) && (target_status == AI2cTeam_Friend)) {
 				// a character that we are neutral towards is attacking a friend of ours, and we saw it. if our friend considers
 				// this a hostile attack, so will we.
@@ -1297,7 +1297,7 @@ static void AI2iKnowledge_AddContact(ONtCharacter *inCharacter, AI2tContactType 
 
 	// sort this entry to where it belongs in the contact list
 	AI2iKnowledge_MoveContactUp(inCharacter, knowledge_state, entry);
-	
+
 	entry->last_notify_time = current_time;
 	if (!inDisableNotify && (knowledge_state->callback != NULL)) {
 		(knowledge_state->callback)(inCharacter, entry, UUcFalse);
@@ -1360,7 +1360,7 @@ static AI2tKnowledgeEntry *AI2iKnowledge_NewEntry(ONtCharacter *inOwner, AI2tKno
 	}
 
 	entry = AI2gKnowledge_NextFreeEntry;
-	
+
 #if defined(DEBUGGING) && DEBUGGING
 	UUmAssertReadPtr(entry, sizeof(AI2tKnowledgeEntry));
 	UUmAssert(entry >= AI2gKnowledgeBase);
@@ -1400,7 +1400,7 @@ static void AI2iKnowledge_RemoveEntry(AI2tKnowledgeEntry *ioEntry, UUtBool inRem
 
 	UUmAssertReadPtr(ioEntry, sizeof(AI2tKnowledgeEntry));
 	UUmAssert(ioEntry->owner != NULL);
-	
+
 	if ((ioEntry->owner->flags & ONcCharacterFlag_InUse) &&
 		(ioEntry->owner->charType == ONcChar_AI2)) {
 
@@ -1543,7 +1543,7 @@ UUtInt32 AI2rKnowledge_CompareFunc(AI2tKnowledgeEntry *inEntry1, AI2tKnowledgeEn
 		return -1;
 	else if (inEntry1->priority < inEntry2->priority)
 		return +1;
-		
+
 	if (inHostileCheck != NULL) {
 		// potentially hostile takes precedence over not potentially hostile
 		hostile1 = (inEntry1->enemy != NULL) && AI2rCharacter_PotentiallyHostile(inEntry1->enemy, inHostileCheck, UUcTrue);
@@ -1651,7 +1651,7 @@ static UUtUns32 AI2iKnowledge_GetDegradeTime(ONtCharacter *inCharacter, AI2tCont
 	const ONtMemoryConstants *memory = &inCharacter->characterClass->memory;
 	UUtUns32 degrade_time;
 
-	switch(inStrength) 
+	switch(inStrength)
 	{
 		case AI2cContactStrength_Dead:
 		case AI2cContactStrength_Forgotten:
@@ -1683,7 +1683,7 @@ static UUtBool AI2iIgnoreEvents(ONtCharacter *inUpdatingCharacter, ONtCharacter 
 {
 	if (AI2gEveryonePassive || (inUpdatingCharacter->ai2State.flags & AI2cFlag_Passive))
 		return UUcTrue;
-	
+
 	if (inUpdatingCharacter == inCause)
 		return UUcTrue;
 
@@ -1823,7 +1823,7 @@ void AI2iKnowledge_UpdateDodgeProjectile(AI2tDodgeProjectile *ioProjectile)
 {
 	M3tVector3D *velocity;
 
-	UUmAssert((ioProjectile >= &AI2gKnowledge_DodgeProjectile[0]) && 
+	UUmAssert((ioProjectile >= &AI2gKnowledge_DodgeProjectile[0]) &&
 			  (ioProjectile < &AI2gKnowledge_DodgeProjectile[AI2gKnowledge_NumDodgeProjectiles]));
 	UUmAssert(ioProjectile->flags & AI2cDodgeProjectileFlag_InUse);
 
@@ -1912,7 +1912,7 @@ void AI2rKnowledge_FindNearbyProjectiles(ONtCharacter *ioCharacter, AI2tManeuver
 			// next AI2cProjectile_DodgeTrajectoryFrames
 			MUmVector_Subtract(projectile_start, projectile->position, pelvis_pt);
 			MUmVector_ScaleCopy(projectile_vel, ((float) AI2cProjectile_DodgeTrajectoryFrames) / UUcFramesPerSecond, projectile->velocity);
-			
+
 			r = active_character->boundingSphere.radius + projectile->dodge_radius;
 			a = MUmVector_GetLengthSquared(projectile_vel);
 			b = 2 * MUrVector_DotProduct(&projectile_start, &projectile_vel);
@@ -2048,7 +2048,7 @@ static void AI2iKnowledge_UpdateDodgeFiringSpread(AI2tDodgeFiringSpread *ioSprea
 	WPtWeaponClass *weapon_class;
 	M3tMatrix4x3 *matrix;
 
-	UUmAssert((ioSpread >= &AI2gKnowledge_DodgeFiringSpread[0]) && 
+	UUmAssert((ioSpread >= &AI2gKnowledge_DodgeFiringSpread[0]) &&
 			  (ioSpread < &AI2gKnowledge_DodgeFiringSpread[AI2gKnowledge_NumDodgeFiringSpreads]));
 	UUmAssert(ioSpread->flags & AI2cDodgeFiringSpreadFlag_InUse);
 
@@ -2173,14 +2173,14 @@ static void AI2iKnowledge_UpdateProjectileAlertness(void)
 		// this projectile alerts nearby AIs... precalculate constants for its motion this frame
 		MUmVector_Subtract(projectile_vel, projectile->position, projectile->prev_position);
 		a = MUmVector_GetLengthSquared(projectile_vel);
-		
+
 		for (itr2 = 0; itr2 < character_list_count; itr2++) {
 			character = character_list[itr2];
 			if (((character->flags & ONcCharacterFlag_InUse) == 0) ||
 				(character->flags & ONcCharacterFlag_Dead) ||
 				(character->charType != ONcChar_AI2))
 				continue;
-			
+
 			if (character->ai2State.flags & (AI2cFlag_Passive | AI2cFlag_Deaf))
 				continue;
 
@@ -2192,7 +2192,7 @@ static void AI2iKnowledge_UpdateProjectileAlertness(void)
 			// calculate the projectile's location relative to us and the remaining terms of
 			// the quadratic equation for the intersection of its alertness sphere with our location
 			ONrCharacter_GetPelvisPosition(character, &pelvis_pt);
-			MUmVector_Subtract(projectile_start, projectile->prev_position, pelvis_pt);			
+			MUmVector_Subtract(projectile_start, projectile->prev_position, pelvis_pt);
 			b = 2 * MUrVector_DotProduct(&projectile_start, &projectile_vel);
 			c = MUmVector_GetLengthSquared(projectile_start) - UUmSQR(projectile->alert_radius);
 
@@ -2360,7 +2360,7 @@ void AI2rKnowledgeState_Report(ONtCharacter *ioCharacter, AI2tKnowledgeState *io
 	if (inVerbose) {
 		inFunction(longbuf);
 	}
-	
+
 	entry = ioKnowledgeState->contacts;
 	while (entry != NULL) {
 		UUmAssert(entry->owner == ioCharacter);
@@ -2388,7 +2388,7 @@ void AI2rKnowledgeState_Report(ONtCharacter *ioCharacter, AI2tKnowledgeState *io
 				} else {
 					strcat(reportbuf, AI2cContactStrengthName[entry->highest_strength]);
 				}
-				
+
 				strcat(reportbuf, ")");
 			}
 

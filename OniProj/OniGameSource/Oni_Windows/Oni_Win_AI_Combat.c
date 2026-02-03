@@ -1,13 +1,13 @@
 #if TOOL_VERSION
 /*
 	FILE:	Oni_Win_Combat.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: May 5, 2000
-	
+
 	PURPOSE: AI Combat Windows
-	
+
 	Copyright (c) Bungie Software 2000
 
 */
@@ -73,7 +73,7 @@ OWrEditCombat_Callback(
 	WMtCheckBox *alarmknockdown_cb		= WMrDialog_GetItemByID(inDialog, cEditCombat_AlarmKnockdown);
 	WMtEditField *alarmattackdmg_edit	= WMrDialog_GetItemByID(inDialog, cEditCombat_AlarmAttackDmg);
 	WMtEditField *alarmfighttimer_edit	= WMrDialog_GetItemByID(inDialog, cEditCombat_AlarmFightTimer);
-	
+
 	UUtBool				checked, handled = UUcTrue, dirty = UUcFalse;
 
 	OBJtObject			*object = (OBJtObject *) WMrDialog_GetUserData(inDialog);
@@ -107,7 +107,7 @@ OWrEditCombat_Callback(
 			{
 				UUtUns32 init_itr;
 
-				for(init_itr = 0; init_itr < AI2cCombatRange_NumStoredRanges; init_itr++) 
+				for(init_itr = 0; init_itr < AI2cCombatRange_NumStoredRanges; init_itr++)
 				{
 					WMrPopupMenu_AppendStringList(behavior_menu[init_itr], AI2cBehavior_Max, AI2cBehaviorName);
 					WMrPopupMenu_SetSelection(behavior_menu[init_itr], (UUtUns16) combat_osd->behavior[init_itr]);
@@ -166,7 +166,7 @@ OWrEditCombat_Callback(
 		case WMcMessage_Command:
 			dirty = UUcTrue;
 
-			switch(UUmLowWord(inParam1)) 
+			switch(UUmLowWord(inParam1))
 			{
 				case cEditCombat_ID:
 					combat_osd->id = (UUtUns16) WMrEditField_GetInt32(id_edit);
@@ -260,7 +260,7 @@ UUtUns16 OWrChooseCombat(UUtUns16 inBehaviorID)
 
 	object_specific_data.osd.combat_osd.id = inBehaviorID;
 	object = OBJrObjectType_Search(OBJcType_Combat, OBJcSearch_CombatID, &object_specific_data);
-	
+
 	object = OWrSelectObject(OBJcType_Combat, object, UUcTrue, UUcFalse);
 
 	if (NULL != object) {

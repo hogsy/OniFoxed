@@ -1,12 +1,12 @@
 /*
 	FILE:	RV_DrawEngine_Platform.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -21,5 +21,5 @@ RVrDrawEngine_Platform_SetupDrawContextPrivate(
 void
 RVrDrawEngine_Platform_DestroyDrawContextPrivate(
 	RVtDrawContextPrivate*		inDrawContextPrivate);
-	
+
 #endif /* RV_DRAWENGINE_PLATFORM_H */

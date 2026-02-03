@@ -81,12 +81,12 @@ static void OBJrTrigger_OnTrigger( OBJtObject* inObject, ONtCharacter *inCharact
 	UUtError				error;
 
 	trigger_osd = (OBJtOSD_Trigger*)inObject->object_data;
-	
+
 	if( trigger_osd->flags & OBJcTriggerFlag_Triggered )
 		return;
 
 	trigger_osd->flags |= OBJcTriggerFlag_Triggered;
-	
+
 	COrConsole_Printf("Trigger Triggered (%d)", trigger_osd->id );
 
 	if ((trigger_osd->trigger_class != NULL) && (trigger_osd->trigger_class->trigger_sound != NULL)) {
@@ -110,15 +110,15 @@ static void OBJiTrigger_Delete( OBJtObject *inObject )
 	OBJtOSD_Trigger *trigger_osd;
 
 	trigger_osd= (OBJtOSD_Trigger*) inObject->object_data;
-	
+
 	OBJiTrigger_StopActiveSound(inObject, trigger_osd);
-	
+
 	if (trigger_osd->flags & OBJcTriggerFlag_Initialized)
 	{
 		UUmAssert(trigger_osd->anim_points);
 
 		UUrMemory_Block_Delete(trigger_osd->anim_points);
-				
+
 		trigger_osd->anim_points= NULL;
 		trigger_osd->flags&= ~OBJcTriggerFlag_Initialized;
 	}
@@ -150,8 +150,8 @@ static void OBJiTrigger_DrawLaserDot(M3tPoint3D *inPoint)
 	M3rCamera_GetViewData(ONgActiveCamera, &cameraLocation, NULL, NULL);
 
 	error = TMrInstance_GetDataPtr(
-		M3cTemplate_TextureMap, 
-		"dot", 
+		M3cTemplate_TextureMap,
+		"dot",
 		(void **) &dotTexture);
 	UUmAssert(UUcError_None == error);
 
@@ -305,7 +305,7 @@ static void OBJrTrigger_GetWorldPoint(OBJtOSD_Trigger *trigger_osd, M3tPoint3D *
 	// expensive collision test against the environment once
 	{
 		OBJtTriggerEmitterInstance *instance= &trigger_osd->emitters[i];
-		
+
 		if (instance)
 		{
 			UUtUns16 current_frame_index= (UUtInt16)instance->anim_frame;
@@ -356,17 +356,17 @@ static void OBJiTrigger_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 
 	M3tMatrix4x3			matrix_stack[2];
 
-	
+
 	if (OBJgTrigger_DrawTriggers == UUcFalse) { return; }
 	// don't draw when the non-occluding geometry is hidden
 	if (AKgDraw_Occl == UUcTrue) { return; }
-	
+
 	trigger_osd = (OBJtOSD_Trigger*)inObject->object_data;
 
 	UUmAssert( trigger_osd->trigger_class && trigger_osd->trigger_class->emitter && trigger_osd->trigger_class->base_geometry );
 
 	emitter = trigger_osd->trigger_class->emitter;
-	
+
 
 	MUrMatrix_BuildTranslate(inObject->position.x, inObject->position.y, inObject->position.z, matrix_stack + 0);
 	MUrMatrixStack_Matrix(matrix_stack + 0, &trigger_osd->rotation_matrix);
@@ -390,33 +390,33 @@ static void OBJiTrigger_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 
 			{
 				MUrMatrixStack_Matrix(matrix_stack + 1, &trigger_osd->emitters[i].matrix);
-		
+
 				AKrEnvironment_DrawIfVisible_Point(trigger_osd->trigger_class->emitter->geometry, matrix_stack + 1);
 
 				// draw the laser if active
 				if ((trigger_osd->flags & OBJcTriggerFlag_Active) && trigger_osd->laser_on)
 				{
 					M3tVector3D world_dir;
-					
+
 					// shoot ray to find endpoint
-					{	
+					{
 						UUtBool hit_player_character = UUcFalse;
 						M3tVector3D laserVector;
-						
+
 						laserFrom	= emitter->emit_position;
 						laserVector = emitter->emit_vector;
 
 						MUmVector_Normalize(laserVector);
 
 						MUmVector_Add( world_points[1], laserFrom, laserVector);
-						
+
 						world_points[0] = laserFrom;
 
 						MUrMatrix_MultiplyPoints(2, matrix_stack + 1, world_points, world_points);
 
 						// velocity and position
 						MUmVector_Subtract(world_dir, world_points[1], world_points[0]);
-						
+
 						// do the collision
 						{
 							M3tPoint3D environment_end_point;
@@ -462,7 +462,7 @@ static void OBJiTrigger_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 								uAmt = UUmPin(uAmt, 0.f, 1.f);
 								uAmt = 1.f - uAmt;
 							}
-							
+
 							MUrLineSegment_ComputePoint(&world_points[0], &world_points[1], uAmt, &world_points[1]);
 
 							MUmVector_Scale( laserVector, distance * uAmt );
@@ -483,7 +483,7 @@ static void OBJiTrigger_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 							//if (AKrEnvironment_IsBoundingBoxMinMaxVisible(&laser_bbox))
 							{
 								UUtUns32 color= trigger_osd->color;
-							
+
 							#if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
 								color= ((color&0xFF000000)>>24)|((color& 0x00FF0000)>>8)|((color&0x0000FF00)<<8)|((color&0x000000FF)<<24);
 							#endif
@@ -509,7 +509,7 @@ static void OBJiTrigger_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 		if( trigger_osd->flags & OBJcTriggerFlag_Active && trigger_osd->flags & OBJcTriggerFlag_Initialized )
 		{
 			M3rGeometry_LineDraw((UUtUns16) trigger_osd->trigger_class->animation->numFrames, trigger_osd->anim_points, IMcShade_Blue);
-			M3rMinMaxBBox_To_BBox( &trigger_osd->bounding_box, &bBox);	
+			M3rMinMaxBBox_To_BBox( &trigger_osd->bounding_box, &bBox);
 			M3rBBox_Draw_Line(&bBox, IMcShade_Yellow );
 		}
 
@@ -518,7 +518,7 @@ static void OBJiTrigger_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 		M3rMatrixStack_Multiply(&trigger_osd->rotation_matrix);
 
 		// Draw the base boxes
-		M3rMinMaxBBox_To_BBox( &trigger_osd->trigger_class->base_geometry->pointArray->minmax_boundingBox, &bBox);			
+		M3rMinMaxBBox_To_BBox( &trigger_osd->trigger_class->base_geometry->pointArray->minmax_boundingBox, &bBox);
 		M3rBBox_Draw_Line(&bBox, IMcShade_White);
 
 		// draw the rings
@@ -527,11 +527,11 @@ static void OBJiTrigger_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 		// draw the animation points
 		if( trigger_osd->trigger_class->animation )
 		{
-			if (trigger_osd->trigger_class->animation->numFrames > 0) 
+			if (trigger_osd->trigger_class->animation->numFrames > 0)
 			{
 				M3tPoint3D		*anim_points = NULL;
 				anim_points = UUrMemory_Block_New( sizeof(M3tPoint3D) * trigger_osd->trigger_class->animation->numFrames);
-				for(i = 0; i < trigger_osd->trigger_class->animation->numFrames; i++) 
+				for(i = 0; i < trigger_osd->trigger_class->animation->numFrames; i++)
 				{
 					M3tMatrix4x3	anim_matrix;
 					OBrAnimation_GetMatrix(trigger_osd->trigger_class->animation, i, 0, &anim_matrix);
@@ -545,7 +545,7 @@ static void OBJiTrigger_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 		// draw emitter boxes
 		for( i = 0; i < trigger_osd->emitter_count; i++ )
 		{
-			M3rMatrixStack_Push();			
+			M3rMatrixStack_Push();
 			M3rMatrixStack_Multiply(&trigger_osd->emitters[i].matrix);
 			M3rMinMaxBBox_To_BBox( &trigger_osd->trigger_class->emitter->geometry->pointArray->minmax_boundingBox, &bBox);
 			M3rBBox_Draw_Line(&bBox, IMcShade_White);
@@ -568,7 +568,7 @@ OBJiTrigger_Enumerate( OBJtObject *inObject, OBJtEnumCallback_ObjectName inEnumC
 static void OBJiTrigger_GetBoundingSphere( const OBJtObject *inObject, M3tBoundingSphere *outBoundingSphere)
 {
 	OBJtOSD_Trigger		*trigger_osd;
-	
+
 	trigger_osd = (OBJtOSD_Trigger*)inObject->object_data;
 
 	*outBoundingSphere = trigger_osd->bounding_sphere;
@@ -578,7 +578,7 @@ static void OBJiTrigger_GetBoundingSphere( const OBJtObject *inObject, M3tBoundi
 static void OBJiTrigger_OSDGetName( const OBJtOSD_All *inObject, char *outName, UUtUns32 inNameLength)
 {
 	const OBJtOSD_Trigger *trigger_osd = &inObject->osd.trigger_osd;
-	
+
 	sprintf(outName, "%s_%d", trigger_osd->trigger_class_name, trigger_osd->id);
 
 	return;
@@ -589,9 +589,9 @@ static void OBJiTrigger_GetOSD( const OBJtObject *inObject, OBJtOSD_All *outOSD)
 	OBJtOSD_Trigger			*trigger_osd;
 
 	trigger_osd		= (OBJtOSD_Trigger*)inObject->object_data;
-	
+
 	UUrMemory_MoveFast( trigger_osd, &outOSD->osd.trigger_osd, sizeof(OBJtOSD_Trigger) );
-	
+
 	ONrEventList_Copy( &trigger_osd->event_list, &outOSD->osd.trigger_osd.event_list );
 }
 
@@ -605,35 +605,35 @@ OBJiTrigger_IntersectsLine(
 	M3tBoundingSphere		sphere;
 
 	UUrMemory_Clear(&sphere, sizeof(M3tBoundingSphere));
-	
+
 	// get the bounding sphere
 	OBJiTrigger_GetBoundingSphere(inObject, &sphere);
-	
+
 	sphere.center.x += inObject->position.x;
 	sphere.center.y += inObject->position.y;
 	sphere.center.z += inObject->position.z;
-	
+
 	return CLrSphere_Line(inStartPoint, inEndPoint, &sphere);
 }
 
 // ----------------------------------------------------------------------
 static UUtError OBJiTrigger_SetDefaults(OBJtOSD_All *outOSD)
 {
-	UUtError				error;	
+	UUtError				error;
 	void					*instances[OBJcMaxInstances];
 	UUtUns32				num_instances;
 	char					*instance_name;
 
 	// clear the osd
 	UUrMemory_Clear(&outOSD->osd.trigger_osd, sizeof(OBJtOSD_Trigger));
-	
+
 	// get a list of instances of the class
 	error = TMrInstance_GetDataPtr_List( OBJcTemplate_TriggerClass, OBJcMaxInstances, &num_instances, instances);
 	UUmError_ReturnOnError(error);
 
-	// copy the name of the first trigger instance into the osd_all.			
+	// copy the name of the first trigger instance into the osd_all.
 	instance_name = TMrInstance_GetInstanceName(instances[0]);
-			
+
 	UUrString_Copy(outOSD->osd.trigger_osd.trigger_class_name,instance_name,OBJcMaxNameLength);
 
 	// default initial data
@@ -659,7 +659,7 @@ static UUtError OBJiTrigger_New( OBJtObject *inObject, const OBJtOSD_All *inOSD 
 {
 	OBJtOSD_All				osd_all;
 	UUtError				error;
-	
+
 	if (inOSD == NULL)
 	{
 		error = OBJiTrigger_SetDefaults(&osd_all);
@@ -675,7 +675,7 @@ static UUtError OBJiTrigger_New( OBJtObject *inObject, const OBJtOSD_All *inOSD 
 	// set the object specific data and position
 	error = OBJiTrigger_SetOSD(inObject, &osd_all);
 	UUmError_ReturnOnError(error);
-	
+
 	OBJiTrigger_UpdatePosition(inObject);
 
 	UUrMemory_Block_VerifyList();
@@ -707,12 +707,12 @@ OBJiTrigger_Read(
 	OBJmGet2BytesFromBuffer(inBuffer, osd_all.osd.trigger_osd.time_on,				UUtUns16,	inSwapIt);
 	OBJmGet2BytesFromBuffer(inBuffer, osd_all.osd.trigger_osd.time_off,				UUtUns16,	inSwapIt);
 
-	num_bytes = 
-		OBJcMaxNameLength + 
+	num_bytes =
+		OBJcMaxNameLength +
 		sizeof(UUtUns16) +
-		sizeof(UUtUns16) + 
-		sizeof(UUtUns32) + 
-		sizeof(float) + 
+		sizeof(UUtUns16) +
+		sizeof(UUtUns32) +
+		sizeof(float) +
 		sizeof(float) +
 		sizeof(UUtUns16) +
 		sizeof(UUtUns16) +
@@ -724,9 +724,9 @@ OBJiTrigger_Read(
 
 	// bring the object up to date
 	OBJiTrigger_SetOSD(inObject, &osd_all);
-	
+
 	ONrEventList_Destroy(&osd_all.osd.trigger_osd.event_list);
-	
+
 	OBJiTrigger_UpdatePosition(inObject);
 
 	return num_bytes;
@@ -738,16 +738,16 @@ OBJiTrigger_Write(
 	UUtUns8					*ioBuffer,
 	UUtUns32				*ioBufferSize)
 {
-	
+
 	OBJtOSD_Trigger			*trigger_osd;
 	UUtUns32				bytes_available;
 
 	// get a pointer to the object osd
 	trigger_osd = (OBJtOSD_Trigger*)inObject->object_data;
-	
+
 	// set the number of bytes available
 	bytes_available = *ioBufferSize;
-	
+
 	// put the trigger name, shade, id, and note
 	OBJmWriteStringToBuffer(ioBuffer, trigger_osd->trigger_class_name,	OBJcMaxNameLength, bytes_available, OBJcWrite_Little);
 	OBJmWrite2BytesToBuffer(ioBuffer, trigger_osd->id,					UUtInt16,	bytes_available, OBJcWrite_Little);
@@ -758,11 +758,11 @@ OBJiTrigger_Write(
 	OBJmWrite2BytesToBuffer(ioBuffer, trigger_osd->emitter_count,		UUtInt16,	bytes_available, OBJcWrite_Little);
 	OBJmWrite2BytesToBuffer(ioBuffer, trigger_osd->time_on,				UUtInt16,	bytes_available, OBJcWrite_Little);
 	OBJmWrite2BytesToBuffer(ioBuffer, trigger_osd->time_off,			UUtInt16,	bytes_available, OBJcWrite_Little);
-	
+
 	ONrEventList_Write( &trigger_osd->event_list, ioBuffer, &bytes_available );
 
 	*ioBufferSize -= bytes_available;
-	
+
 	return UUcError_None;
 }
 
@@ -773,13 +773,13 @@ static UUtUns32 OBJiTrigger_GetOSDWriteSize( const OBJtObject *inObject )
 	OBJtOSD_Trigger			*trigger_osd;
 
 	trigger_osd = (OBJtOSD_Trigger*) inObject->object_data;
-	
-	size = 
+
+	size =
 		OBJcMaxNameLength +
 		sizeof(UUtUns16) +
-		sizeof(UUtUns16) + 
-		sizeof(UUtUns32) + 
-		sizeof(float) + 
+		sizeof(UUtUns16) +
+		sizeof(UUtUns32) +
+		sizeof(float) +
 		sizeof(float) +
 		sizeof(UUtUns16) +
 		sizeof(UUtUns16) +
@@ -800,7 +800,7 @@ static void OBJiTrigger_StartActiveSound(OBJtObject *inObject, OBJtOSD_Trigger *
 		} else {
 			ioTriggerOSD->playing_sound = SScInvalidID;
 		}
-		
+
 		ioTriggerOSD->flags |= OBJcTriggerFlag_PlayingSound;
 	}
 }
@@ -831,7 +831,7 @@ static UUtError OBJiTrigger_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inO
 
 	// get a pointer to the object osd
 	trigger_osd = (OBJtOSD_Trigger*)inObject->object_data;
-	
+
 	OBJiTrigger_StopActiveSound(inObject, trigger_osd);
 
 	// copy persistant data
@@ -860,7 +860,7 @@ static UUtError OBJiTrigger_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inO
 	trigger_osd->emitters = UUrMemory_Block_Realloc( trigger_osd->emitters, sizeof(OBJtTriggerEmitterInstance) * trigger_osd->emitter_count );
 
 	// grab the template
-	error = TMrInstance_GetDataPtr( OBJcTemplate_TriggerClass, trigger_osd->trigger_class_name, &trigger_class );	
+	error = TMrInstance_GetDataPtr( OBJcTemplate_TriggerClass, trigger_osd->trigger_class_name, &trigger_class );
 	if( error != UUcError_None )
 	{
 		UUrDebuggerMessage("failed to find trigger class %s", trigger_osd->trigger_class_name);
@@ -869,7 +869,7 @@ static UUtError OBJiTrigger_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inO
 
 		UUmError_ReturnOnErrorMsg(error, "failed to find any trigger class");
 
-		inObject->flags				|= OBJcObjectFlag_Temporary;		
+		inObject->flags				|= OBJcObjectFlag_Temporary;
 		trigger_osd->trigger_class	= NULL;
 	}
 
@@ -880,7 +880,7 @@ static UUtError OBJiTrigger_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inO
 
 	// build the position matrix
 	OBJiTrigger_UpdatePosition(inObject);
-	
+
 	// create the bounding sphere
 	OBJiTrigger_CreateBoundingSphere(inObject, trigger_osd);
 
@@ -907,21 +907,21 @@ static UUtError OBJiTrigger_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inO
 // ----------------------------------------------------------------------
 static void OBJiTrigger_UpdatePosition(OBJtObject *inObject)
 {
-	
+
 	OBJtOSD_Trigger			*trigger_osd;
 	float					rot_x;
 	float					rot_y;
 	float					rot_z;
 	MUtEuler				euler;
-	
+
 	// get a pointer to the object osd
 	trigger_osd = (OBJtOSD_Trigger*)inObject->object_data;
-	
+
 	// convert the rotation to radians
 	rot_x = inObject->rotation.x * M3cDegToRad;
 	rot_y = inObject->rotation.y * M3cDegToRad;
 	rot_z = inObject->rotation.z * M3cDegToRad;
-	
+
 	// update the rotation matrix
 	euler.order = MUcEulerOrderXYZs;
 	euler.x = rot_x;
@@ -949,13 +949,13 @@ static UUtBool OBJiTrigger_GetVisible(void)
 // ----------------------------------------------------------------------
 static UUtBool OBJiTrigger_Search( const OBJtObject *inObject, const UUtUns32 inSearchType, const OBJtOSD_All *inSearchParams)
 {
-	
+
 	OBJtOSD_Trigger			*trigger_osd;
 	UUtBool					found;
-	
+
 	// get a pointer to the object osd
 	trigger_osd = (OBJtOSD_Trigger*)inObject->object_data;
-	
+
 	// perform the check
 	found = UUcFalse;
 	switch (inSearchType)
@@ -985,7 +985,7 @@ static UUtError OBJrTrigger_Activate( OBJtObject *inObject )
 	UUmAssert( inObject->object_type == OBJcType_Trigger );
 
 	trigger_osd = (OBJtOSD_Trigger*) inObject->object_data;
-	
+
 	trigger_osd->flags		|= OBJcTriggerFlag_Active;
 	trigger_osd->laser_on	= UUcTrue;
 
@@ -1008,7 +1008,7 @@ static UUtError OBJrTrigger_Deactivate( OBJtObject *inObject )
 	UUmAssert( inObject->object_type == OBJcType_Trigger );
 
 	trigger_osd = (OBJtOSD_Trigger*) inObject->object_data;
-	
+
 	trigger_osd->flags &= ~OBJcTriggerFlag_Active;
 
 	return UUcError_None;
@@ -1021,7 +1021,7 @@ static UUtBool OBJrTrigger_Activate_Enum(OBJtObject *inObject, UUtUns32 inUserDa
 	UUmAssert( inObject->object_type == OBJcType_Trigger );
 
 	trigger_osd = (OBJtOSD_Trigger*) inObject->object_data;
-	
+
 	if( trigger_osd->id == inUserData )
 	{
 		OBJrTrigger_Activate( (OBJtObject*) inObject );
@@ -1057,7 +1057,7 @@ UUtError OBJrTrigger_Reset(OBJtObject* inObject)
 	trigger_osd = (OBJtOSD_Trigger*) inObject->object_data;
 
 	// setup time
-	trigger_osd->laser_on = UUcTrue;		
+	trigger_osd->laser_on = UUcTrue;
 
 	if( trigger_osd->time_on || trigger_osd->time_off )
 		trigger_osd->change_time = trigger_osd->time_on;
@@ -1071,7 +1071,7 @@ UUtError OBJrTrigger_Reset(OBJtObject* inObject)
 		space = (float)trigger_osd->trigger_class->animation->numFrames / (float)trigger_osd->emitter_count;
 		for( i = 0; i < trigger_osd->emitter_count; i++ )
 		{
-			instance								= &trigger_osd->emitters[i];			
+			instance								= &trigger_osd->emitters[i];
 			instance->anim_context.animation		= trigger_osd->trigger_class->animation;
 			instance->anim_context.animationFrame	= 0;
 			instance->anim_context.animationStep	= 1;
@@ -1080,7 +1080,7 @@ UUtError OBJrTrigger_Reset(OBJtObject* inObject)
 			instance->anim_context.frameStartTime	= 0;
 			OBrAnim_Start(&instance->anim_context);
 
-			//instance->anim_frame					= (float) fmod( ( (float) (space * i) + ( trigger_osd->start_offset * trigger_osd->trigger_class->animation->numFrames )), trigger_osd->trigger_class->animation->numFrames );	
+			//instance->anim_frame					= (float) fmod( ( (float) (space * i) + ( trigger_osd->start_offset * trigger_osd->trigger_class->animation->numFrames )), trigger_osd->trigger_class->animation->numFrames );
 			if( trigger_osd->start_offset == 1.0f ) {
 				instance->anim_frame					= trigger_osd->trigger_class->animation->numFrames - 1.f;
 			}
@@ -1225,7 +1225,7 @@ void OBJrTrigger_Activate_ID( UUtUns16 inID )
 		inID = OBJcTriggerSelectAll;
 	}
 
-	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_Activate_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_Activate_Enum, (UUtUns32) inID );
 
 	return;
 }
@@ -1236,7 +1236,7 @@ void OBJrTrigger_Deactivate_ID( UUtUns16 inID )
 		inID = OBJcTriggerSelectAll;
 	}
 
-	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_Deactivate_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_Deactivate_Enum, (UUtUns32) inID );
 
 	return;
 }
@@ -1244,10 +1244,10 @@ void OBJrTrigger_Deactivate_ID( UUtUns16 inID )
 void OBJrTrigger_Reset_ID( UUtUns16 inID )
 {
 	if (inID == (UUtUns16) -1) {
-		inID = OBJcTriggerSelectAll; 
+		inID = OBJcTriggerSelectAll;
 	}
 
-	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_Reset_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_Reset_Enum, (UUtUns32) inID );
 
 	return;
 }
@@ -1258,7 +1258,7 @@ void OBJrTrigger_Hide_ID(UUtUns16 inID)
 		inID = OBJcTriggerSelectAll;
 	}
 
-	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_Hide_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_Hide_Enum, (UUtUns32) inID );
 
 	return;
 }
@@ -1269,7 +1269,7 @@ void OBJrTrigger_Show_ID(UUtUns16 inID)
 		inID = OBJcTriggerSelectAll;
 	}
 
-	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_Show_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_Show_Enum, (UUtUns32) inID );
 
 	return;
 }
@@ -1282,7 +1282,7 @@ void OBJrTrigger_SetSpeed_ID(UUtUns16 inID, float inSpeed)
 
 	OBJgTrigger_SetSpeedValue = inSpeed;
 
-	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_SetSpeed_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Trigger, OBJrTrigger_SetSpeed_Enum, (UUtUns32) inID );
 
 	return;
 }
@@ -1291,14 +1291,14 @@ void OBJrTrigger_SetSpeed_ID(UUtUns16 inID, float inSpeed)
 // ----------------------------------------------------------------------
 
 void OBJrTrigger_AddEvent( OBJtOSD_Trigger *inTrigger_osd, ONtEvent *inEvent )
-{	
+{
 	ONrEventList_AddEvent( &inTrigger_osd->event_list, inEvent );
 
 	return;
 }
 
 void OBJrTrigger_DeleteEvent( OBJtOSD_Trigger *inTrigger_osd, UUtUns32 inIndex )
-{	
+{
 	ONrEventList_DeleteEvent( &inTrigger_osd->event_list, inIndex );
 
 	return;
@@ -1316,17 +1316,17 @@ extern UUtBool		FXgLaser_UseAlpha;
 // ----------------------------------------------------------------------
 UUtError OBJrTrigger_Initialize(void)
 {
-	
+
 	UUtError					error;
 	OBJtMethods					methods;
 	ONtMechanicsMethods			mechanics_methods;
-	
+
 	// intialize the globals
 	OBJgTrigger_DrawTriggers			= UUcTrue;
-	
+
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew						= OBJiTrigger_New;
 	methods.rSetDefaults				= OBJiTrigger_SetDefaults;
@@ -1342,12 +1342,12 @@ UUtError OBJrTrigger_Initialize(void)
 	methods.rSetOSD						= OBJiTrigger_SetOSD;
 	methods.rRead						= OBJiTrigger_Read;
 	methods.rWrite						= OBJiTrigger_Write;
-	
+
 	// set up the type methods
 	methods.rGetClassVisible			= OBJiTrigger_GetVisible;
 	methods.rSearch						= OBJiTrigger_Search;
 	methods.rSetClassVisible			= OBJiTrigger_SetVisible;
-	
+
 	// set up the mechanics methods
 	mechanics_methods.rInitialize		= NULL;
 	mechanics_methods.rTerminate		= NULL;
@@ -1359,7 +1359,7 @@ UUtError OBJrTrigger_Initialize(void)
 	mechanics_methods.rClassLevelEnd 	= NULL;
 	mechanics_methods.rClassReset		= NULL;
 	mechanics_methods.rClassUpdate		= NULL;
-	
+
 	// register the trigger methods
 	error = ONrMechanics_Register( OBJcType_Trigger, OBJcTypeIndex_Trigger, "Trigger", sizeof(OBJtOSD_Trigger), &methods, 0, &mechanics_methods );
 	UUmError_ReturnOnError(error);

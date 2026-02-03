@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_Character.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: April 2, 1997
-	
+
 	PURPOSE: control of characters in ONI
-	
+
 	Copyright 1997-2000
 
 */
@@ -204,10 +204,10 @@ ONiTempDebug_AttackExtent(
 #endif
 
 static void ONrCharacter_Stitch(
-	ONtCharacter *ioCharacter, 
-	ONtActiveCharacter *ioActiveCharacter, 
-	TRtAnimState fromState, 
-	const TRtAnimation *inNewAnim, 
+	ONtCharacter *ioCharacter,
+	ONtActiveCharacter *ioActiveCharacter,
+	TRtAnimState fromState,
+	const TRtAnimation *inNewAnim,
 	UUtInt32 inStitchCount);
 const ONtAirConstants *ONrCharacter_GetAirConstants(const ONtCharacter *inCharacter);
 static const TRtAnimation *ONiAnimation_FindBlock(const ONtCharacter *inCharacter, ONtActiveCharacter *ioActiveCharacter);
@@ -215,7 +215,7 @@ static const TRtAnimation *ONiAnimation_FindBlock(const ONtCharacter *inCharacte
 static UUtBool ONrCharacter_Collide_With_GQ(
 	UUtUns16			inGQIndex,
 	const M3tPoint3D *inIntersection,
-	const ONtCharacter *inCharacter, 
+	const ONtCharacter *inCharacter,
 	const M3tVector3D *inVector);
 
 // hit control stuff
@@ -256,7 +256,7 @@ static void ONrCharacter_Callback_ReceiveForce(
 	const M3tVector3D *inForce);
 
 static ONtCharacter *ONiCharacter_FindNearestOpponent(
-			ONtCharacter *inCharacter, 
+			ONtCharacter *inCharacter,
 			float inFacingOffset,
 			float inMaxDistance,
 			float inMaxAngle,
@@ -299,7 +299,7 @@ static UUtBool ONgAnimStateToStringTableSorted = UUcFalse;
 static UUtUns32 ONgAnimTypeToStringTableLength;
 static UUtUns32 ONgAnimStateToStringTableLength;
 
-static ONtAnimTypeToStringTable ONcAnimTypeToStringTable[] = 
+static ONtAnimTypeToStringTable ONcAnimTypeToStringTable[] =
 {
 	{ ONcAnimType_None,								"None" },						// 0
 	{ ONcAnimType_Anything,							"Anything" },
@@ -308,7 +308,7 @@ static ONtAnimTypeToStringTable ONcAnimTypeToStringTable[] =
 	{ ONcAnimType_Slide,							"Slide" },
 
 	{ ONcAnimType_Jump,								"Jump" },						// 5
-	{ ONcAnimType_Stand,							"Stand" },						
+	{ ONcAnimType_Stand,							"Stand" },
 	{ ONcAnimType_Standing_Turn_Left,				"Standing_Turn_Left" },
 	{ ONcAnimType_Standing_Turn_Right,				"Standing_Turn_Right" },
 	{ ONcAnimType_Run_Backwards,					"Run_Backwards" },
@@ -324,13 +324,13 @@ static ONtAnimTypeToStringTable ONcAnimTypeToStringTable[] =
 	{ ONcAnimType_Crouch,							"Crouch" },
 	{ ONcAnimType_Jump_Forward,						"Jump_Forward" },
 	{ ONcAnimType_Jump_Backward,					"Jump_Backward" },
-	
+
 	{ ONcAnimType_Jump_Left,						"Jump_Left" },					// 20
 	{ ONcAnimType_Jump_Right,						"Jump_Right" },
 	{ ONcAnimType_Punch,							"Punch" },
 	{ ONcAnimType_Block,							"Block" },
 	{ ONcAnimType_Land,								"Land" },
-	
+
 	{ ONcAnimType_Fly,								"Fly" },						// 25
 	{ ONcAnimType_Kick_Forward,						"Kick_Forward" },
 	{ ONcAnimType_Kick_Left,						"Kick_Left" },
@@ -371,10 +371,10 @@ static ONtAnimTypeToStringTable ONcAnimTypeToStringTable[] =
 	{ ONcAnimType_Punch_Forward_Heavy,				"Punch_Forward_Heavy" },
 	{ ONcAnimType_Kick_Forward_Heavy,				"Kick_Forward_Heavy" },			// 55
 
-	{ ONcAnimType_Aiming_Overlay,					"Aiming_Overlay" },				
-	{ ONcAnimType_Hit_Overlay,						"Hit_Overlay" },				
+	{ ONcAnimType_Aiming_Overlay,					"Aiming_Overlay" },
+	{ ONcAnimType_Hit_Overlay,						"Hit_Overlay" },
 
-	{ ONcAnimType_Crouch_Run,						"Crouch_Run" },				
+	{ ONcAnimType_Crouch_Run,						"Crouch_Run" },
 	{ ONcAnimType_Crouch_Walk,						"Crouch_Walk" },
 
 	{ ONcAnimType_Crouch_Run_Backwards,				"Crouch_Run_Backwards" },		// 60
@@ -388,7 +388,7 @@ static ONtAnimTypeToStringTable ONcAnimTypeToStringTable[] =
 
 	{ ONcAnimType_Run_Kick,							"Run_Kick" },
 	{ ONcAnimType_Run_Punch,						"Run_Punch" },
-	
+
 	{ ONcAnimType_Run_Back_Punch,					"Run_Back_Punch" },
 	{ ONcAnimType_Run_Back_Kick,					"Run_Back_Kick" },
 
@@ -529,10 +529,10 @@ static ONtAnimTypeToStringTable ONcAnimTypeToStringTable[] =
 
 	{ ONcAnimType_PL_PL,							"PL_PL" },
 	{ ONcAnimType_PL_PL_PL,							"PL_PL_PL" },
-	
+
 	{ ONcAnimType_PR_PR,							"PR_PR" },
 	{ ONcAnimType_PR_PR_PR,							"PR_PR_PR" },
-	
+
 	{ ONcAnimType_PB_PB,							"PB_PB" },
 	{ ONcAnimType_PB_PB_PB,							"PB_PB_PB" },
 
@@ -544,10 +544,10 @@ static ONtAnimTypeToStringTable ONcAnimTypeToStringTable[] =
 
 	{ ONcAnimType_KL_KL,							"KL_KL" },
 	{ ONcAnimType_KL_KL_KL,							"KL_KL_KL" },
-	
+
 	{ ONcAnimType_KR_KR,							"KR_KR" },
 	{ ONcAnimType_KR_KR_KR,							"KR_KR_KR" },
-	
+
 	{ ONcAnimType_KB_KB,							"KB_KB" },
 	{ ONcAnimType_KB_KB_KB,							"KB_KB_KB" },
 
@@ -558,10 +558,10 @@ static ONtAnimTypeToStringTable ONcAnimTypeToStringTable[] =
 	{ ONcAnimType_Startle_Right,					"Startle_Right" },
 	{ ONcAnimType_Startle_Back,						"Startle_Back" },
 	{ ONcAnimType_Startle_Forward,					"Startle_Forward" },
-	
+
 	{ ONcAnimType_Console,							"Console" },
 	{ ONcAnimType_Console_Walk,						"Console_Walk" },
-	
+
 	{ ONcAnimType_Stagger,							"Stagger" },
 
 	{ ONcAnimType_Watch,							"Watch" },
@@ -614,7 +614,7 @@ static ONtAnimTypeToStringTable ONcAnimTypeToStringTable[] =
 	{ 0, NULL }
 };
 
-static ONtAnimStateToStringTable ONcAnimStateToStringTable[] = 
+static ONtAnimStateToStringTable ONcAnimStateToStringTable[] =
 {
 	{ONcAnimState_None,								"None"},							// 0
 	{ONcAnimState_Anything,							"Anything"},
@@ -791,7 +791,7 @@ typedef struct StringNumLookup
 {
 	UUtUns16 num;
 	char *string;
-} StringNumLookup;    
+} StringNumLookup;
 
 // more debugging code
 UUtInt32			gDebugCharacterMovement = 0;
@@ -839,7 +839,7 @@ void ONrCharacter_ApplyOverlay(ONtCharacter *ioCharacter, ONtActiveCharacter *io
 {
 	if (inOverlay->animation != NULL) {
 		TRrOverlay_Apply(
-			inOverlay->animation, 
+			inOverlay->animation,
 			inOverlay->frame,
 			ioActiveCharacter->curOrientations,
 			ioActiveCharacter->curOrientations,
@@ -999,7 +999,7 @@ static void ONrCharacter_ResetAnimation(ONtCharacter *ioCharacter, ONtActiveChar
 				}
 			break;
 		}
-		
+
 		switch(mode) {
 			case AI2cMovementMode_NoAim_Walk:
 			case AI2cMovementMode_NoAim_Run:
@@ -1031,7 +1031,7 @@ static void ONrCharacter_ResetAnimation(ONtCharacter *ioCharacter, ONtActiveChar
 	UUmAssert(ioCharacter->characterClass->animations != NULL);
 	newAnimation = TRrCollection_Lookup(ioCharacter->characterClass->animations, newType, ioActiveCharacter->nextAnimState, ioActiveCharacter->animVarient);
 	UUmAssertReadPtr(newAnimation, sizeof(*newAnimation));
-	
+
 	if (NULL != newAnimation) {
 		ONrCharacter_SetAnimationInternal(ioCharacter, ioActiveCharacter, ioActiveCharacter->nextAnimState, ONcAnimType_None, newAnimation);
 	}
@@ -1158,7 +1158,7 @@ iSetCharacterWeapon(
 	if (0 == (character->flags & ONcCharacterFlag_InUse)) {
 		return UUcError_None;
 	}
-	
+
 	if(inParameterList[1].type == SLcType_String)
 	{
 		error = ONrCharacter_ArmByName(character, inParameterList[1].val.str);
@@ -1170,7 +1170,7 @@ iSetCharacterWeapon(
 	else
 	{
 		UUtUns32 weaponNum;
-		
+
 		weaponNum = inParameterList[1].val.i;
 
 		error = ONrCharacter_ArmByNumber(character, weaponNum);
@@ -1245,7 +1245,7 @@ ONrCharacter_ArmByNumber(
 	if (UUcError_None == error) {
 		ONrCharacter_UseNewWeapon(inCharacter, weapon);
 	}
-	
+
 	return error;
 }
 
@@ -1328,7 +1328,7 @@ iDiplayCharacterCombatStats(
 	ONtCharacter		*character_list;
 	ONtCharacter		*character;
 	UUtUns32			character_index;
-	
+
 	// get the character index
 	character_index = inParameterList[0].val.i;
 
@@ -1337,27 +1337,27 @@ iDiplayCharacterCombatStats(
 		COrConsole_Printf("Character Number out of range");
 		return UUcError_Generic;
 	}
-	
+
 	// get a pointer to the character list
 	character_list = ONrGameState_GetCharacterList();
-	
+
 	// get a pointer to the character
 	character = &character_list[character_index];
-	
+
 	// make sure the character is in use
 	if (!(character->flags & ONcCharacterFlag_InUse))
 	{
 		COrConsole_Printf("Invalid Character Number");
 		return UUcError_Generic;
 	}
-	
+
 	// display the character stats
 	COrConsole_Printf(
 		"Character %d: Damage Inflicted %d, Number of Kills %d",
 		character_index,
 		character->damageInflicted,
 		character->numKills);
-	
+
 	return UUcError_None;
 }
 
@@ -1395,9 +1395,9 @@ iSetMainCharacterClass(
 		error = TMrInstance_GetDataPtr_ByNumber(TRcTemplate_CharacterClass, characterNum, &characterClass);
 
 		if (UUcError_None == error)
-		{					
+		{
 			ONrCharacter_SetCharacterClass(character, characterClass);
-			
+
 			COrConsole_Printf("changed to %s (%d / %d)", TMrInstance_GetInstanceName(character->characterClass), characterNum, TMrInstance_GetTagCount(TRcTemplate_CharacterClass));
 			changed = UUcTrue;
 		}
@@ -1422,13 +1422,13 @@ iSetCharacterClass(
 	UUtError			error;
 	ONtCharacter		*character_list;
 	UUtUns32			character_index;
-	
+
 	// get a pointer to the character_list
 	character_list = ONrGameState_GetCharacterList();
-	
+
 	// get the character index
 	character_index = inParameterList[0].val.i;
-	
+
 	if (character_index > ONgGameState->numCharacters) {
 		COrConsole_Printf("character index out of range");
 		return UUcError_Generic;
@@ -1437,7 +1437,7 @@ iSetCharacterClass(
 	if (inParameterListLength == 2)
 	{
 		ONtCharacterClass	*character_class;
-	
+
 		if (SLcType_String == inParameterList[1].type)
 		{
 		// get the character class the user wants to set all the character to
@@ -1458,10 +1458,10 @@ iSetCharacterClass(
 		{
 			// user entered a class number
 			UUtUns32		character_class_number;
-			
+
 			// get the character class number
 			character_class_number = inParameterList[1].val.i;
-			
+
 			// get the instance of the character class
 			error =
 				TMrInstance_GetDataPtr_ByNumber(
@@ -1473,7 +1473,7 @@ iSetCharacterClass(
 				COrConsole_Printf("character class was not changed");
 				return UUcError_None;
 			}
-			
+
 			// set the character class
 			ONrCharacter_SetCharacterClass(&character_list[character_index], character_class);
 			COrConsole_Printf(
@@ -1485,14 +1485,14 @@ iSetCharacterClass(
 		}
 	}
 	else if (inParameterListLength == 1)
-	{	
+	{
 		// print the current character class name of the character
 		COrConsole_Printf(
 			"character %d class name is %s",
 			character_index,
 			TMrInstance_GetInstanceName(character_list[character_index].characterClass));
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1513,7 +1513,7 @@ static void ONrFall(ONtCharacter *inCharacter, TRtAnimState inState)
 		ONrCharacter_FightMode(inCharacter);
 		active_character->lastAttack = ONcAnimType_None;
 		active_character->lastAttackTime = 0;
-		active_character->animationLockFrames = 0;	// stop looping an anim 
+		active_character->animationLockFrames = 0;	// stop looping an anim
 
 		newAnimType = ONcAnimType_Stand;
 		animation = TRrCollection_Lookup(collection, ONcAnimType_Stand, inState, active_character->animVarient);
@@ -1778,7 +1778,7 @@ void ONrCharacter_SetCharacterClass(
 
 	prev_class = ioCharacter->characterClass;
 	ioCharacter->characterClass = inClass;
-	
+
 	if (active_character != NULL) {
 		if (ioCharacter->characterClass->leftHanded) {
 			ONrCharacter_SetHand(active_character->extraBody, ONcCharacterIsLeftHanded);
@@ -1803,7 +1803,7 @@ static float iMoveTowardsZero(float inNumber, float inAmtTowardsZero)
 {
 	float result;
 
-	if (inNumber > inAmtTowardsZero) { 
+	if (inNumber > inAmtTowardsZero) {
 		result = inNumber - inAmtTowardsZero;
 	}
 	else if (inNumber < -inAmtTowardsZero) {
@@ -1953,13 +1953,13 @@ static void ONiCharacter_DoAiming_Vector(ONtCharacter *ioCharacter, ONtActiveCha
 
 	ioActiveCharacter->aimingVectorLR = angleLR;
 	ioActiveCharacter->aimingVectorUD = angleUD;
-}	
+}
 
 void ONrCharacter_DoAiming(ONtCharacter *ioCharacter, ONtActiveCharacter *ioActiveCharacter)
 {
 	if (ONrCharacter_IsAI(ioCharacter) && !ONrCharacter_IsPlayingFilm(ioCharacter)) {
 		ONiCharacter_DoAiming_Location(ioCharacter, ioActiveCharacter);
-	} else {		
+	} else {
 		ONiCharacter_DoAiming_Vector(ioCharacter, ioActiveCharacter);
 	}
 }
@@ -1994,7 +1994,7 @@ iDrawDot(
 				ONgDrawDot = UUcFalse;
 			}
 		}
-			
+
 		ONgDot.x = buffer[0];
 		ONgDot.y = buffer[1];
 		ONgDot.z = buffer[2];
@@ -2013,7 +2013,7 @@ iCharacterLocation(
 
 	if (inDestination != NULL) {
 		ONrCharacter_Teleport(ioCharacter, inDestination, UUcTrue);
-		
+
 		COrConsole_Printf("%s new %3.1f %3.1f %3.1f", ioCharacter->player_name,
 							ioCharacter->location.x, ioCharacter->location.y, ioCharacter->location.z);
 	}
@@ -2042,21 +2042,21 @@ iSetAnyCharacterLocation(
 	if ((ONgGameState->characters[whichCharacter].flags & ONcCharacterFlag_InUse) == 0) {
 		goto errorExit;
 	}
-	
+
 	if (settingLocation)
 	{
 		newLocation.x = inParameterList[1].val.f;
 		newLocation.y = inParameterList[2].val.f;
 		newLocation.z = inParameterList[3].val.f;
 	}
-	
+
 	iCharacterLocation(&ONgGameState->characters[whichCharacter], (settingLocation) ? &newLocation : NULL);
 
 	return UUcError_None;
 
 errorExit:
 	COrConsole_Printf("bad parameters on chr_location");
-	
+
 	return UUcError_None;
 }
 
@@ -2099,7 +2099,7 @@ iSetAnyCharacterHealth(
 	UUtBool settingHealth = 2 == inParameterListLength;
 	UUtBool readingHealth = 1 == inParameterListLength;
 	ONtCharacter *targetCharacter = NULL;
-	
+
 	if (!settingHealth && !readingHealth) {
 		goto errorExit;
 	}
@@ -2113,7 +2113,7 @@ iSetAnyCharacterHealth(
 			goto errorExit;
 		}
 	}
-	
+
 	if ((whichCharacter < 0) || (whichCharacter > ONgGameState->numCharacters)) {
 		goto errorExit;
 	}
@@ -2132,10 +2132,10 @@ iSetAnyCharacterHealth(
 
 	if (settingHealth) {
 		ONrCharacter_SetHitPoints(targetCharacter, newHP);
-		
+
 		COrConsole_Printf("char %d new health %u", whichCharacter, targetCharacter->hitPoints);
 	}
-	
+
 	return UUcError_None;
 
 errorExit:
@@ -2154,7 +2154,7 @@ SetMainCharacter(
 	SLtParameter_Actual		*ioReturnValue)
 {
 	int which_character_index;
-	
+
 	which_character_index = inParameterList[0].val.i;
 
 	if (which_character_index < ONgGameState->numCharacters) {
@@ -2180,9 +2180,9 @@ iSetAnyCharacterWeapon(
 	ONtCharacter **present_character_list = ONrGameState_PresentCharacterList_Get();
 	UUtUns32 present_character_count = ONrGameState_PresentCharacterList_Count();
 	UUtUns32 itr;
-	
+
 	whichCharacter = inParameterList[0].val.i;
-	
+
 	if ((whichCharacter < -1) || (whichCharacter > ONgGameState->numCharacters)) {
 		return UUcError_Generic;
 	}
@@ -2195,7 +2195,7 @@ iSetAnyCharacterWeapon(
 			ONrCharacter_DropWeapon(character,UUcFalse,WPcPrimarySlot,UUcFalse);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2212,9 +2212,9 @@ iCharacterLocation_SetFromCamera(
 	M3tPoint3D		cameraLocation;
 
 	M3rCamera_GetViewData(ONgActiveCamera, &cameraLocation, NULL, NULL);
-	
+
 	whichCharacter = inParameterList[0].val.i;
-	
+
 	if ((whichCharacter < 0) || (whichCharacter > ONgGameState->numCharacters))
 	{
 		return UUcError_None;
@@ -2230,7 +2230,7 @@ iCharacterLocation_SetFromCamera(
 }
 
 static UUtError ONrBuildParticleClasses(void)
-{	
+{
 	return UUcError_None;
 }
 
@@ -2261,12 +2261,12 @@ UUtError ONrCharacter_LevelBegin(void)
 
 	// for safety's sake clear the characters
 	UUrMemory_Clear(
-		ONgGameState->characters, 
-		sizeof(ONtCharacter) * ONcMaxCharacters);	
+		ONgGameState->characters,
+		sizeof(ONtCharacter) * ONcMaxCharacters);
 
 	UUrMemory_Clear(
-		ONgGameState->activeCharacterStorage, 
-		sizeof(ONtActiveCharacter) * ONcMaxActiveCharacters);	
+		ONgGameState->activeCharacterStorage,
+		sizeof(ONtActiveCharacter) * ONcMaxActiveCharacters);
 
 	// reset character salt
 	ONgGameState->nextCharacterSalt = 1;
@@ -2286,11 +2286,11 @@ UUtError ONrCharacter_LevelBegin(void)
 				&num_classes,
 				character_class_list);
 		UUmAssert(error == UUcError_None);
-		
+
 		for (i = 0; i < num_classes; i++)
 		{
 			const char				*name;
-			
+
 			name = TMrInstance_GetInstanceName(character_class_list[i]);
 			if (character_class_list[i]->variant == NULL) {
 				UUrDebuggerMessage("ERROR: character class %s has no variant!\n", name);
@@ -2317,7 +2317,7 @@ UUtError ONrCharacter_LevelEnd(void)
 UUtError
 ONrGameState_InstallConsoleVariables(void)
 {
-	SLtRegisterBoolTable bool_table[] = 
+	SLtRegisterBoolTable bool_table[] =
 	{
 #if CONSOLE_DEBUGGING_COMMANDS
 		{ "spatial_footsteps", "spatial footsteps", &ONgSpatialFootsteps },
@@ -2367,7 +2367,7 @@ ONrGameState_InstallConsoleVariables(void)
 		{ NULL, NULL, NULL }
 	};
 
-	SLtRegisterInt32Table int32_table[] = 
+	SLtRegisterInt32Table int32_table[] =
 	{
 #if CONSOLE_DEBUGGING_COMMANDS
 		{ "saved_film_character_offset", "saved_film_character_offset", &saved_film_character_offset },
@@ -2380,7 +2380,7 @@ ONrGameState_InstallConsoleVariables(void)
 		{ NULL, NULL, NULL }
 	};
 
-	SLtRegisterFloatTable float_table[] = 
+	SLtRegisterFloatTable float_table[] =
 	{
 #if CONSOLE_DEBUGGING_COMMANDS
 		{ "cm_lookspring_percent", "at what percent of lookspring fight mode turns off", &ONgLookspringFightModePercent },
@@ -2397,7 +2397,7 @@ ONrGameState_InstallConsoleVariables(void)
 		{ NULL, NULL, NULL }
 	};
 
-	SLtRegisterVoidFunctionTable scripting_function_table[] = 
+	SLtRegisterVoidFunctionTable scripting_function_table[] =
 	{
 #if CONSOLE_DEBUGGING_COMMANDS
 		{ "chr_focus", "Selects what character to control", "chr_index:int", SetMainCharacter },
@@ -2424,14 +2424,14 @@ ONrGameState_InstallConsoleVariables(void)
 #endif
 		{ NULL, NULL, NULL, NULL }
 	};
-	
+
 	TRrInstallConsoleVariables();
 
 	SLrGlobalVariable_Register_Bool_Table(bool_table);
 	SLrGlobalVariable_Register_Int32_Table(int32_table);
 	SLrGlobalVariable_Register_Float_Table(float_table);
 	SLrScript_CommandTable_Register_Void(scripting_function_table);
-	
+
 #if CONSOLE_DEBUGGING_COMMANDS
 	SLrGlobalVariable_Register_Bool("chr_show_bnv", "shows the bnv of the main character", &gShowBNV);
 	SLrGlobalVariable_Register_Bool("chr_show_lod", "shows the current lod of the main character", &gShowLOD);
@@ -2529,7 +2529,7 @@ ONiGameState_GetFreeCharacter(
 	void)
 {
 	UUtUns16				i;
-	
+
 	for (i = 0; i < ONcMaxCharacters; i++)
 	{
 		if ((ONgGameState->characters[i].flags & ONcCharacterFlag_InUse) == 0)
@@ -2537,7 +2537,7 @@ ONiGameState_GetFreeCharacter(
 			return i;
 		}
 	}
-	
+
 	return ONcMaxCharacters;
 }
 
@@ -2546,13 +2546,13 @@ ONiGameState_GetFreeActiveCharacter(
 	void)
 {
 	UUtUns16				i;
-	
+
 	for (i = 0; i < ONcMaxActiveCharacters; i++) {
 		if (ONgGameState->activeCharacterStorage[i].index == ONcCharacterIndex_None) {
 			return i;
 		}
 	}
-	
+
 	return ONcMaxActiveCharacters;
 }
 
@@ -2580,7 +2580,7 @@ ONrGameState_NewCharacter(
 	const char				*desired_variant;
 
 	UUmAssert(inStartPosition || inSetup);
-	
+
 	/****** memory allocation */
 
 	// set the character's index
@@ -2589,7 +2589,7 @@ ONrGameState_NewCharacter(
 	{
 		return UUcError_Generic;
 	}
-	
+
 	// set the number of characters in the gamestate
 	if (index >= ONgGameState->numCharacters)
 	{
@@ -2603,7 +2603,7 @@ ONrGameState_NewCharacter(
 	// get a pointer to the character
 	thisCharacter = ONgGameState->characters + index;
 	UUrMemory_Clear(thisCharacter, sizeof(*thisCharacter));
-	
+
 	/****** initialize constant variables */
 
 	// calculate the pseudo-unique character index
@@ -2663,7 +2663,7 @@ ONrGameState_NewCharacter(
 				// either look for random people of our variant, or the next harder variant
 				desired_variant = thisCharacter->characterClass->variant->name;
 
-				if ((char_osd->flags & OBJcCharFlags_UpgradeDifficulty) && 
+				if ((char_osd->flags & OBJcCharFlags_UpgradeDifficulty) &&
 					(ONrPersist_GetDifficulty() >= ONcDifficultyLevel_Hard) &&
 					(thisCharacter->characterClass->variant->upgrade_name[0] != '\0')) {
 					desired_variant = thisCharacter->characterClass->variant->upgrade_name;
@@ -2713,7 +2713,7 @@ ONrGameState_NewCharacter(
 			UUmAssert(thisCharacter->inventory.weapons[0] != NULL);
 			WPrSetAmmoPercentage(thisCharacter->inventory.weapons[0], (UUtUns16) char_osd->ammo_percentage);
 		}
-		
+
 		// set the character's position
 		thisCharacter->location = inStartPosition->position;
 		thisCharacter->actual_position = thisCharacter->location;
@@ -2731,7 +2731,7 @@ ONrGameState_NewCharacter(
 		thisCharacter->inventory.ammo = char_osd->inventory[OBJcCharInv_AmmoBallistic][OBJcCharSlot_Use];
 		thisCharacter->inventory.cell = char_osd->inventory[OBJcCharInv_AmmoEnergy][OBJcCharSlot_Use];
 		thisCharacter->inventory.hypo = char_osd->inventory[OBJcCharInv_Hypo][OBJcCharSlot_Use];
-		
+
 		thisCharacter->inventory.drop_ammo = char_osd->inventory[OBJcCharInv_AmmoBallistic][OBJcCharSlot_Drop];
 		thisCharacter->inventory.drop_cell = char_osd->inventory[OBJcCharInv_AmmoEnergy][OBJcCharSlot_Drop];
 		thisCharacter->inventory.drop_hypo = char_osd->inventory[OBJcCharInv_Hypo][OBJcCharSlot_Drop];
@@ -2753,7 +2753,7 @@ ONrGameState_NewCharacter(
 		thisCharacter->inventory.numInvisibleFrames = (thisCharacter->inventory.invisibilityRemaining > 0) ? 600 : 0;
 
 		thisCharacter->inventory.has_lsi = (char_osd->flags & OBJcCharFlags_HasLSI) > 0;
-		
+
 		// FIXME: handle LSIs
 	} else if (inSetup != NULL) {
 		/*
@@ -2787,7 +2787,7 @@ ONrGameState_NewCharacter(
 				ONcMaxPlayerNameLength);
 		}
 		else
-		{	
+		{
 			// Create default name
 			sprintf(thisCharacter->player_name, "ai_%d", index);
 		}
@@ -2803,7 +2803,7 @@ ONrGameState_NewCharacter(
 		thisCharacter->actual_position = thisCharacter->location;
 		thisCharacter->actual_position.y += PHcWorldCoord_YOffset;
 		thisCharacter->facing = flag.rotation;
-	
+
 		// Weapons
 		WPrInventory_Reset(thisCharacter->characterClass, &thisCharacter->inventory);
 		ONrCharacter_UseNewWeapon(thisCharacter, inSetup->weapon);
@@ -2811,12 +2811,12 @@ ONrGameState_NewCharacter(
 		{
 			WPrSetAmmo(thisCharacter->inventory.weapons[0], inSetup->ammo);
 		}
-	
+
 	} else {
 		UUrDebuggerMessage("ONrGameState_NewCharacter: neither starting position or character setup specified!");
 		return UUcError_Generic;
 	}
-		
+
 	/****** AI setup */
 	// set up this character to be controlled by the AI2 system
 	AI2rInitializeCharacter(thisCharacter, char_osd, inSetup, &flag, default_melee_profile);
@@ -2851,7 +2851,7 @@ ONrGameState_NewCharacter(
 	// character control
 	thisCharacter->prev_location = thisCharacter->location;
 	thisCharacter->desiredFacing = thisCharacter->facing;
-	
+
 	// Camera
 	ONrCharacter_GetFacingVector(thisCharacter,&thisCharacter->facingVector);
 	ONrCharacter_FindOurNode(thisCharacter);
@@ -2872,7 +2872,7 @@ ONrGameState_NewCharacter(
 
 	ONrGameState_PresentCharacterList_Add(thisCharacter);
 	ONrGameState_LivingCharacterList_Add(thisCharacter);
-	
+
 	/**** done */
 
 	if (outCharacterIndex != NULL) {
@@ -2910,7 +2910,7 @@ ONrGameState_NewCharacter(
 	if (ONcChar_AI2 == thisCharacter->charType) {
 		UUmAssert(AI2cFlag_InUse & thisCharacter->ai2State.flags);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2939,7 +2939,7 @@ ONrGameState_NewActiveCharacter(
 	{
 		return UUcError_Generic;
 	}
-	
+
 #if DEBUG_CHARACTER_CREATION
 	UUrDebuggerMessage("activate character %d -> activecharacter %d\n", ONrCharacter_GetIndex(ioCharacter), index);
 #endif
@@ -3009,7 +3009,7 @@ ONrGameState_NewActiveCharacter(
 	for(overlay_index = 0; overlay_index < ONcOverlayIndex_Count; overlay_index++) {
 		ONrOverlay_Initialize(activeCharacter->overlay + overlay_index);
 	}
-	
+
 	// clear pose
 	for(itr = 0; itr < ONcNumCharacterParts; itr++) {
 		activeCharacter->curOrientations[itr] = MUgZeroQuat;
@@ -3030,7 +3030,7 @@ ONrGameState_NewActiveCharacter(
 	UUmAssert(0 == activeCharacter->blockStun);
 	UUmAssert(0 == activeCharacter->dizzyStun);
 	UUmAssert(0 == activeCharacter->staggerStun);
-	
+
 	// clear attacks
 	activeCharacter->lastAttack = ONcAnimType_None;
 	UUmAssert(0 == activeCharacter->lastAttackTime);
@@ -3126,7 +3126,7 @@ ONrGameState_NewActiveCharacter(
 	activeCharacter->trigger_points[1] = ioCharacter->location;
 	activeCharacter->trigger_points[1].y += 12.f;
 	ONiCharacter_BuildTriggerSphere(activeCharacter);
-		
+
 	/****** done */
 
 	ONrGameState_ActiveCharacterList_Add(ioCharacter);
@@ -3143,7 +3143,7 @@ ONrCharacter_ArmByName(
 {
 	WPtWeaponClass *weapon;
 	UUtError error;
-	
+
 	if (NULL == weaponName) {
 		weaponName = "StrMP10HC";
 	}
@@ -3191,7 +3191,7 @@ float ONrCharacter_GetLeafSphereRadius(ONtCharacter *ioCharacter)
 
 	if (ONrCharacter_IsAI(ioCharacter)) {
 		leaf_sphere_radius = 3.0f;
-	} 
+	}
 	else {
 		leaf_sphere_radius = 4.0f;
 	}
@@ -3209,7 +3209,7 @@ void ONrCharacter_RecalculateIdleDelay(ONtCharacter *ioCharacter)
 static void ONrCharacter_UpdateSphereTree(
 	ONtCharacter *ioCharacter,
 	ONtActiveCharacter *activeCharacter)
-{ 
+{
 	float sub_radius = ONrCharacter_GetLeafSphereRadius(ioCharacter);
 	float increment;
 	float height;
@@ -3356,7 +3356,7 @@ ONrGameState_DeleteCharacter(
 	AI2rFight_StopFight(inCharacter);
 
 	WPrSlots_DeleteAll(&inCharacter->inventory);
-	
+
 	if ((ONrCharacter_GetIndex(inCharacter) + 1) == ONgGameState->numCharacters) {
 		// find the index of the highest character still in use
 		while ((ONgGameState->numCharacters > 0) &&
@@ -3364,7 +3364,7 @@ ONrGameState_DeleteCharacter(
 			ONgGameState->numCharacters -= 1;
 		}
 	}
-	
+
 	UUrMemory_Clear(inCharacter, sizeof(*inCharacter));
 
 	// tell the AI knowledgebase that this character was deleted
@@ -3462,7 +3462,7 @@ ONrGameState_DeleteActiveCharacter(
 			ONgGameState->usedActiveCharacters -= 1;
 		}
 	}
-	
+
 	UUrMemory_Clear(ioActiveCharacter, sizeof(*ioActiveCharacter));
 
 	return;
@@ -3531,7 +3531,7 @@ static void ONiCharacter_StartJumping(ONtCharacter *ioCharacter, ONtActiveCharac
 	}
 	else if (ioActiveCharacter->inputState.buttonIsDown & LIc_BitMask_StepLeft)
 	{
-		speed.x = UUmMax(speed.x, boost);		
+		speed.x = UUmMax(speed.x, boost);
 	}
 	else if (ioActiveCharacter->inputState.buttonIsDown & LIc_BitMask_StepRight)
 	{
@@ -3637,9 +3637,9 @@ static void ONiCharacter_SuperParticle_Create(ONtCharacter *ioCharacter, ONtActi
 					// we don't have an animation to tell us the part index, we can't attach this particle
 					continue;
 				}
-				
+
 				particle->bodypart_index = particle_def->override_partindex;
-				particle->particle = ONiCharacter_AttachParticle(ioCharacter, ioActiveCharacter, 
+				particle->particle = ONiCharacter_AttachParticle(ioCharacter, ioActiveCharacter,
 																particle_def->particle_class, particle->bodypart_index);
 				if (particle->particle == NULL) {
 					// could not create and attach the particle
@@ -3749,7 +3749,7 @@ static void ONrCharacter_DebugKeys(ONtCharacter *ioCharacter, ONtActiveCharacter
 	 * debugging keys
 	 */
 
-	if (ONrDebugKey_WentDown(ONcDebugKey_Test_One)) { 
+	if (ONrDebugKey_WentDown(ONcDebugKey_Test_One)) {
 		P3rRemoveDangerousProjectiles();
 	}
 
@@ -3773,12 +3773,12 @@ static void ONrCharacter_DebugKeys(ONtCharacter *ioCharacter, ONtActiveCharacter
 		ONrCharacter_FightMode(ioCharacter);
 
 		startle = TRrCollection_Lookup(
-				ioCharacter->characterClass->animations, 
+				ioCharacter->characterClass->animations,
 				ONcAnimType_Startle_Back,
-				ioActiveCharacter->nextAnimState, 
+				ioActiveCharacter->nextAnimState,
 				ioActiveCharacter->animVarient);
 
-		
+
 		if (NULL != startle) {
 			ONrCharacter_SetAnimation_External(ioCharacter, ioActiveCharacter->nextAnimState, startle, 6);
 		}
@@ -3786,12 +3786,12 @@ static void ONrCharacter_DebugKeys(ONtCharacter *ioCharacter, ONtActiveCharacter
 			COrConsole_Printf("no startle to be found");
 		}
 	}
-	
+
 	if (ONrDebugKey_WentDown(ONcDebugKey_KillParticles)) {
 		// kill all particles
 		ONrParticle3_KillAll(UUcFalse);
 	}
-	
+
 	if (ONrDebugKey_WentDown(ONcDebugKey_ResetParticles)) {
 		// kill all particles and then recreate from definitions
 		ONrParticle3_KillAll(UUcTrue);
@@ -3825,7 +3825,7 @@ static void ONrGameState_DoCharacterFrame(
 	ONrSpeech_Update(ioCharacter);
 
 	ONrCharacter_Pickup(ioCharacter);
-	WPrInventory_Update(ioCharacter);	
+	WPrInventory_Update(ioCharacter);
 
 	if (active_character == NULL) {
 		// build an approximate bounding box since we aren't actually running animations
@@ -3833,7 +3833,7 @@ static void ONrGameState_DoCharacterFrame(
 
 	} else {
 		/***************** PRELIMINARY INPUT */
-	
+
 		if (ONcChar_Player == ioCharacter->charType) {
 			ONrCharacter_VerifyExtraBody(ioCharacter, active_character);
 		}
@@ -3841,7 +3841,7 @@ static void ONrGameState_DoCharacterFrame(
 		if (ONcChar_Player == ioCharacter->charType) {
 			ONrCharacter_DebugKeys(ioCharacter, active_character);
 		}
-		
+
 		/*
 		 * keyboard input
 		 */
@@ -3870,7 +3870,7 @@ static void ONrGameState_DoCharacterFrame(
 		if (ioCharacter->charType == ONcChar_Player) {
 			if (0xFFFFFFFF == active_character->last_forward_tap) {
 				ONrCharacter_SetSprintVarient(ioCharacter, UUcTrue);
-				
+
 				if (active_character->inputState.buttonIsUp & LIc_BitMask_Forward) {
 					active_character->last_forward_tap = 0;
 				}
@@ -3880,17 +3880,17 @@ static void ONrGameState_DoCharacterFrame(
 
 				if (active_character->inputState.buttonWentDown & LIc_BitMask_Forward) {
 					UUtUns32 how_long_ago_did_we_forward_tap = ONgGameState->gameTime - active_character->last_forward_tap;
-					
+
 					if (how_long_ago_did_we_forward_tap < 15) {
 						active_character->last_forward_tap = 0xFFFFFFFF;
 					}
 					else {
-						active_character->last_forward_tap = ONgGameState->gameTime;		
+						active_character->last_forward_tap = ONgGameState->gameTime;
 					}
 				}
 			}
 		}
-			
+
 		/*
 		 * player aiming control
 		 */
@@ -3973,7 +3973,7 @@ static void ONrGameState_DoCharacterFrame(
 					auto_aiming_distance_percent /= zero_auto_aiming - max_auto_aiming;
 					auto_aiming_distance_percent = UUmPin(auto_aiming_distance_percent, 0.f, 1.f);
 					auto_aiming_distance_percent = 1.f - auto_aiming_distance_percent;
-					
+
 					active_character->autoAimAdjustmentLR *= auto_aiming_distance_percent;
 					active_character->autoAimAdjustmentUD *= auto_aiming_distance_percent;
 				}
@@ -3998,7 +3998,7 @@ static void ONrGameState_DoCharacterFrame(
 		if (active_character->softPauseFrames > 0) {
 			active_character->softPauseFrames -= 1;
 		}
- 
+
 		if (active_character->hardPauseFrames > 0) {
 			active_character->hardPauseFrames -= 1;
 		}
@@ -4045,7 +4045,7 @@ static void ONrGameState_DoCharacterFrame(
 			UUmAssert(active_character->stitch.count > 0);
 			height = (active_character->stitch.height * fromAmt) + (height * toAmt);
 		}
-		UUmAssert((height > -128.f) && (height < 128.f));	
+		UUmAssert((height > -128.f) && (height < 128.f));
 		ioCharacter->heightThisFrame = height;
 
 
@@ -4064,7 +4064,7 @@ static void ONrGameState_DoCharacterFrame(
 		}
 
 		if ((active_character->physics != NULL) && (active_character->physics->animContext.animation != NULL)) {
-			if (active_character->physics->animContext.animationFrame >= 
+			if (active_character->physics->animContext.animationFrame >=
 					(active_character->physics->animContext.animation->numFrames - 1)) {
 
 				active_character->physics->animContext.animation = NULL;
@@ -4100,18 +4100,18 @@ static void ONrGameState_DoCharacterFrame(
 
 					{
 						UUtBool on_the_ground = (0 == active_character->offGroundFrames) && (0 == active_character->inAirControl.numFramesInAir);
-						
+
 						if (on_the_ground) {
 							active_character->death_velocity.x *= 0.5f;
 							active_character->death_velocity.z *= 0.5f;
 
-							active_character->death_velocity.y = -0.5f;					
+							active_character->death_velocity.y = -0.5f;
 						}
 						else {
 							active_character->death_velocity.x *= 0.8f;
 							active_character->death_velocity.z *= 0.8f;
 
-							active_character->death_velocity.y -= 0.5f;					
+							active_character->death_velocity.y -= 0.5f;
 							active_character->death_velocity.y = UUmPin(active_character->death_velocity.y, -10.f, 2.f);
 						}
 					}
@@ -4236,7 +4236,7 @@ static void ONrGameState_DoCharacterFrame(
 				// dead people obey slightly different rules
 				active_character->inAirControl.velocity.y -= airConstants->jumpGravity;
 				active_character->inAirControl.velocity.y = UUmMax(active_character->inAirControl.velocity.y, airConstants->maxVelocity);
-			} 
+			}
 			else if (active_character->stitch.stitching) {
 				float toAmt = ((float) active_character->stitch.itr) / ((float) active_character->stitch.count);
 				float fromAmt = 1 - toAmt;
@@ -4248,7 +4248,7 @@ static void ONrGameState_DoCharacterFrame(
 
 				moved.y -= ONrGameState_CalculateGravity(ioCharacter, active_character);
 
-			} 
+			}
 			else {
 				TRrAnimation_GetPosition(active_character->animation, active_character->animFrame, &moved);
 				moved.y -= ONrGameState_CalculateGravity(ioCharacter, active_character);
@@ -4262,8 +4262,8 @@ static void ONrGameState_DoCharacterFrame(
 				gSmoothedMovement = (M3tPoint3D *) UUrMemory_Block_Realloc(gSmoothedMovement, sizeof(M3tPoint3D) * gDebugCharacterMovement);
 				gDebugCharacterMovement_Old = gDebugCharacterMovement;
 			}
-			
-			if (NULL != gSmoothedMovement) 
+
+			if (NULL != gSmoothedMovement)
 			{
 				M3tPoint3D smooth = MUgZeroPoint;
 				UUtInt32 smooth_itr;
@@ -4275,14 +4275,14 @@ static void ONrGameState_DoCharacterFrame(
 					{
 						MUmVector_Add(smooth, smooth, gSmoothedMovement[smooth_itr]);
 					}
-		
+
 					MUmVector_Scale(smooth, 1.f/((float) gDebugCharacterMovement));
-		
+
 					COrConsole_Printf("movement = %4.4f,%4.4f", smooth.x, smooth.z);
 				}
 			}
 		}
-		
+
 		MUmAssertVector(moved, 1000.f);
 
 		MUrPoint_RotateYAxis(&moved, ioCharacter->facing, &moved);
@@ -4366,11 +4366,11 @@ static void ONrGameState_DoCharacterFrame(
 		}
 
 		/***************** POST-MOVEMENT ANIMATION */
-	
+
 		// determine if this is a sound frame
 		is_sound_frame = TRrAnimation_IsSoundFrame(active_character->animation, active_character->animFrame);
 		new_sound_name = TRrAnimation_GetNewSoundForFrame(active_character->animation, active_character->animFrame);
-		
+
 		if (active_character->animFrame == active_character->animation->actionFrame) {
 			// if we are throwing then the animation action frame is swap weapon
 			if (active_character->throwTarget != NULL) {
@@ -4454,7 +4454,7 @@ static void ONrGameState_DoCharacterFrame(
 							impact_type = MArImpactType_GetByName("Self_Damage_Killed");
 							if (impact_type == MAcImpact_Base) {
 								continue;
-							}						
+							}
 							ONrCharacter_GetPartLocation(ioCharacter, active_character, (UUtUns16) particle->bodypart_index, &part_location);
 
 							// set up effect data and play the appropriate impact effect
@@ -4544,7 +4544,7 @@ static void ONrGameState_DoCharacterFrame(
 				}
 
 				if (active_character->overlay[overlay_index].frame == active_character->overlay[overlay_index].animation->actionFrame) {
-					switch(overlay_index) 
+					switch(overlay_index)
 					{
 						case ONcOverlayIndex_Recoil:
 						break;
@@ -4605,7 +4605,7 @@ static void ONrGameState_DoCharacterFrame(
 				overlay_finished = ONrOverlay_DoFrame(ioCharacter, active_character->overlay + overlay_index);
 
 				if (overlay_finished) {
-					switch(overlay_index) 
+					switch(overlay_index)
 					{
 						case ONcOverlayIndex_Recoil:
 						break;
@@ -4626,7 +4626,7 @@ static void ONrGameState_DoCharacterFrame(
 				NULL,
 				NULL);
 		}
-		
+
 		if (new_sound_name != NULL)
 		{
 			OSrImpulse_PlayByName(
@@ -4673,7 +4673,7 @@ static void ONrGameState_DoCharacterFrame(
 
 				if (ONgDebugFootstepFlash) {
 					active_character->flash_count = 5;
-					switch(footstep) 
+					switch(footstep)
 					{
 						case TRcFootstep_Left:
 							active_character->flash_parts = (1 << ONcLFoot_Index);
@@ -4753,7 +4753,7 @@ static void ONrGameState_DoCharacterFrame(
 		if ((ioCharacter->flags & ONcCharacterFlag_HastyAnim) && (!TRrAnimation_IsAtomic(active_character->animation, active_character->animFrame))) {
 			ONrCharacter_NextAnimation(ioCharacter, active_character);
 		}
-		
+
 		// pose update
 		ONrCharacter_DoAiming(ioCharacter, active_character);
 		ONrCharacter_BuildQuaternions(ioCharacter, active_character);
@@ -4823,7 +4823,7 @@ static void ONrGameState_DoCharacterFrame(
 			ONiCharacter_StopFiring(ioCharacter, active_character);
 			active_character->pleaseReleaseAlternateTrigger = UUcFalse;
 		}
-		
+
 		/***************** NEXT FRAME PREPARATION */
 
 		// zero collision counters for the next frame
@@ -4884,7 +4884,7 @@ static void ONrGameState_DoCharacterDebugFrame(
 	UUtUns64 keys_low;
 	UUtUns32 death_level;
 	UUtInt32 itr;
-	
+
 	atomicString = (active_character == NULL) ? "INACTIVE" :
 					(TRrAnimation_IsAtomic(active_character->animation, active_character->animFrame)) ? "ATOMIC" : "NOTATOMIC";
 
@@ -4915,7 +4915,7 @@ static void ONrGameState_DoCharacterDebugFrame(
 	{
 		death_level = 1;
 	}
-	else 
+	else
 	{
 		death_level = 0;
 	}
@@ -5146,7 +5146,7 @@ static UUtBool ONrGameState_UpdateTrigger(OBJtObject *inObject, UUtUns32 inUserD
 		parent_search_osd.osd.trigger_volume_osd.id = trigger_osd->parent_id;
 
 		parent_trigger_object = OBJrObjectType_Search(OBJcType_TriggerVolume, OBJcSearch_TriggerVolumeID, &parent_search_osd);
-		
+
 		if (NULL == parent_trigger_object) {
 			COrConsole_Printf("trigger %d failed to locate parent trigger %d", trigger_osd->id, trigger_osd->parent_id);
 		}
@@ -5286,7 +5286,7 @@ void ONrGameState_UpdateCharacters(void)
 			ONrCharacter_BuildMatriciesAll(ONgGameState->local.playerCharacter, ONgGameState->local.playerActiveCharacter);
 		}
 	}
-	
+
 	if (!gPauseCharacters) return;
 
 	present_character_list = ONrGameState_PresentCharacterList_Get();
@@ -5295,7 +5295,7 @@ void ONrGameState_UpdateCharacters(void)
 	for(itr = 0; itr < present_character_count; itr++) {
 		character = present_character_list[itr];
 		active_character = ONrGetActiveCharacter(character);
-		
+
 		if (ONgCharactersAllActive && (active_character == NULL)) {
 			// debugging - force all characters to be active
 			ONrCharacter_MakeActive(character, UUcTrue);
@@ -5303,7 +5303,7 @@ void ONrGameState_UpdateCharacters(void)
 
 		if (character->death_delete_timer) {
 			character->death_delete_timer--;
-			
+
 			if (character->death_delete_timer == 0) {
 				// timer has run out, delete the character
 				if (character->charType != ONcChar_Player) {
@@ -5314,7 +5314,7 @@ void ONrGameState_UpdateCharacters(void)
 		}
 
 		if (character->flags & ONcCharacterFlag_Dead_3_Cosmetic) {
-			if ((active_character != NULL) && 
+			if ((active_character != NULL) &&
 				((active_character->shield_active) || (active_character->invis_active) || (character->flags & ONcCharacterFlag_Teleporting))) {
 				ONrCharacter_Shield_Update(character, active_character);
 				ONrCharacter_Invis_Update(character, active_character);
@@ -5346,7 +5346,7 @@ void ONrGameState_UpdateCharacters(void)
 
 					if (ready_for_ground_death) {
 						active_character->death_still_timer++;
-	
+
 						ready_for_ground_death = active_character->death_still_timer > 120;
 					}
 					else {
@@ -5354,7 +5354,7 @@ void ONrGameState_UpdateCharacters(void)
 					}
 
 					active_character->death_moving_timer++;
-					
+
 					if (active_character->death_moving_timer > (60 * 15)) {
 						COrConsole_Printf("dieing for to long, aborting");
 
@@ -5386,10 +5386,10 @@ void ONrGameState_UpdateCharacters(void)
 		if (character->flags & ONcCharacterFlag_Dead_2_Moving) {
 			continue;
 		}
-		
+
 		ONrCharacter_HandleHeartbeatInput(character, active_character);
 	}
-	
+
 	if (must_unlock) {
 		ONrCharacter_Unlock_Scripts();
 		ONrCharacter_Commit_Scripts();
@@ -5402,7 +5402,7 @@ void ONrGameState_UpdateCharacters(void)
 
 	for(itr = 0; itr < present_character_count; itr++) {
 		character = present_character_list[itr];
-		
+
 		if (character->flags & ONcCharacterFlag_InUse) {
 			ONtCharacterIndexType index = ONrCharacter_GetIndex(character);
 
@@ -5433,9 +5433,9 @@ void ONrGameState_UpdateCharacters(void)
 			ONtActiveCharacter *active_target = ONrGetActiveCharacter(active_character->throwTarget);
 			UUmAssertReadPtr(active_target, sizeof(*active_target));
 
-			if ((!(active_character->throwTarget->flags & ONcCharacterFlag_Dead_1_Animating)) && 
+			if ((!(active_character->throwTarget->flags & ONcCharacterFlag_Dead_1_Animating)) &&
 				(active_character->throwTarget->flags & ONcCharacterFlag_InUse))
-			{	
+			{
 				ONiCharacter_ThrowPhysics(character, active_character, active_character->throwTarget, active_target);
 			}
 		}
@@ -5535,7 +5535,7 @@ void ONrGameState_UpdateCharacters(void)
 			}
 
 			if (character->flags & ONcCharacterFlag_Dead) {
-				// do not make dead characters inactive, they need to 
+				// do not make dead characters inactive, they need to
 				// fall, land and get made into corpses
 				continue;
 			}
@@ -5609,7 +5609,7 @@ void ONrDrawSphere(
 		M3rMatrixStack_UniformScale(inScale);
 		M3rGeometry_Draw(sphere);
 	M3rMatrixStack_Pop();
-	
+
 	return;
 }
 
@@ -5706,7 +5706,7 @@ ONiTempDebug_AttackExtent(
 		COrConsole_Printf("### no player character");
 		return UUcError_Generic;
 	}
-		
+
 	UUmAssert(inParameterListLength >= 1);
 	error = TMrInstance_GetDataPtr(TRcTemplate_Animation, inParameterList[0].val.str, (void **) &animation);
 	if ((error != UUcError_None) || (animation == NULL)) {
@@ -5777,8 +5777,8 @@ static void ONiCharacter_TempDebug_DrawAttackExtent(ONtCharacter *inCharacter)
 					+ ONgTempDebug_AttackExtent_SinTheta * ONgTempDebug_AttackExtent_CurDelta[1];
 	cur_location.z += - ONgTempDebug_AttackExtent_SinTheta * ONgTempDebug_AttackExtent_CurDelta[0]
 					+ ONgTempDebug_AttackExtent_CosTheta * ONgTempDebug_AttackExtent_CurDelta[1];
-	
-	
+
+
 	cur_position = ONgTempDebug_AttackExtent_Animation->positionPoints + ONgTempDebug_AttackExtent_Frame;
 
 	// draw a little X on the floor under the character (for depth cueing)
@@ -5789,7 +5789,7 @@ static void ONiCharacter_TempDebug_DrawAttackExtent(ONtCharacter *inCharacter)
 	points[1].x += 2.0f * ONgTempDebug_AttackExtent_CosTheta;
 	points[1].z -= 2.0f * ONgTempDebug_AttackExtent_SinTheta;
 	M3rGeom_Line_Light(&points[0], &points[1], IMcShade_White);
-	
+
 	points[0] = cur_location;
 	points[1] = cur_location;
 	points[0].x -= 2.0f * ONgTempDebug_AttackExtent_SinTheta;
@@ -5879,7 +5879,7 @@ static void ONiCharacter_TempDebug_DrawAttackExtent(ONtCharacter *inCharacter)
 			points[0].z += radius * MUrCos(theta);
 			points[0].y += extent_info->attack_ring.min_height;
 
-			theta = ONgTempDebug_AttackExtent_Facing + 
+			theta = ONgTempDebug_AttackExtent_Facing +
 				((itr2 + 1) % TRcExtentRingSamples) * M3c2Pi / TRcExtentRingSamples;
 			UUmTrig_ClipHigh(theta);
 			radius = extent_info->attack_ring.distance[((itr2 + 1) % TRcExtentRingSamples)];
@@ -5916,7 +5916,7 @@ static void ONiCharacter_TempDebug_DrawAttackExtent(ONtCharacter *inCharacter)
 		}
 
 		extent_index += (UUtUns16) (ONgTempDebug_AttackExtent_Frame - attacks[itr].firstDamageFrame);
-		
+
 		UUmAssert((extent_index >= 0) && (extent_index < extent_info->numAttackExtents));
 		cur_extent = extent_info->attackExtents + extent_index;
 
@@ -5991,7 +5991,7 @@ static void ONiCharacter_Display_Body(
 	float distanceToCameraSquared;
 	TRtBodySelector resolution;
 	float alphaAmount = 1.f;
-        
+
 	UUmAssertReadPtr(inCharacter, sizeof(inCharacter));
 	UUmAssert(inActiveCharacter->curBody >= TRcBody_SuperLow);
 	UUmAssert(inActiveCharacter->curBody <= TRcBody_SuperHigh);
@@ -6002,7 +6002,7 @@ static void ONiCharacter_Display_Body(
 
 	UUmAssert(!(inCharacter->flags & ONcCharacterFlag_Dead_4_Gone));
 	UUmAssert(inCharacter->flags & ONcCharacterFlag_InUse);
-	
+
 	distanceToCameraSquared = MUrPoint_Distance_Squared(inCameraLocation, &(inCharacter->location));
 
 	if (alphaAmount < 1.f) {
@@ -6019,7 +6019,7 @@ static void ONiCharacter_Display_Body(
 	body = ONrCharacter_GetBody(inCharacter, resolution);
 
 	TRrBody_SetMaps(body, inCharacter->characterClass->textures);
-	
+
 	M3rGeom_State_Push();
 
 /*	// CB: I needed a character flag and removed ONcCharacterFlag_Holograph
@@ -6044,7 +6044,7 @@ static void ONiCharacter_Display_Body(
 
 			M3rMatrixStack_Translate(0.f, holograph_translate_up, 0.f);
 		}
-		
+
 		// setup lighting for the holograph
 		ONiHolograph_Lighting();
 	}*/
@@ -6055,7 +6055,7 @@ static void ONiCharacter_Display_Body(
 
 		M3rDraw_State_SetInt(M3cDrawStateIntType_FrameBufferBlendWithConstantAlpha, UUcTrue);
 		M3rDraw_State_SetInt(M3cDrawStateIntType_ZWrite, M3cDrawState_ZWrite_Off); // S.S.
-		
+
 		M3rGeom_State_Set(M3cGeomStateIntType_SubmitMode, M3cGeomState_SubmitMode_SortAlphaTris);
 		M3rGeom_State_Set(M3cGeomStateIntType_Alpha, alphaInt);
 		M3rGeom_State_Commit();
@@ -6085,7 +6085,7 @@ static void ONiCharacter_Display_Body(
 		M3tTextureMap *shield_texture = NULL;
 		TRtBody *magic_shield_body = ONrCharacter_GetBody(inCharacter, UUmMin(inActiveCharacter->curBody, TRcBody_Low));
 		const char *shield_name;
-		
+
 		if (inActiveCharacter->daodan_shield_effect) {
 			shield_name = "DAODAN_SHIELD";
 		}
@@ -6125,7 +6125,7 @@ static void ONiCharacter_Display_Body(
 	}
 
 	M3rGeom_State_Pop();
-	
+
 	// CB: I needed a character flag and removed ONcCharacterFlag_Holograph
 /*	if (inCharacter->flags & ONcCharacterFlag_Holograph)
 	{
@@ -6148,8 +6148,8 @@ static void ONrDrawLaserDot(M3tPoint3D *inPoint)
 	M3rCamera_GetViewData(ONgActiveCamera, &cameraLocation, NULL, NULL);
 
 	error = TMrInstance_GetDataPtr(
-		M3cTemplate_TextureMap, 
-		"dot", 
+		M3cTemplate_TextureMap,
+		"dot",
 		(void **) &dotTexture);
 	UUmAssert(UUcError_None == error);
 
@@ -6213,7 +6213,7 @@ void WPrDrawSprite(WPtSprite *inSprite, M3tPoint3D *inLocation, WPtScaleMode inS
 	if (NULL == inSprite->texture) {
 		goto exit;
 	}
-	
+
 	M3rCamera_GetViewData(ONgActiveCamera, &camera_location, NULL, NULL);
 	camera_distance = MUmVector_GetDistance(camera_location, *inLocation);
 
@@ -6342,22 +6342,22 @@ static void ONiDrawWeaponSight(ONtCharacter *inCharacter)
 
 		WPrGetMarker(inCharacter->inventory.weapons[0], laser_marker, &from, &sight_vector);
 
-		if (MUmVector_IsZero(laser_marker->vector)) 
+		if (MUmVector_IsZero(laser_marker->vector))
 			return;
 
 		MUmAssertVector(sight_vector, weapon_class->maximum_sight_distance);
 
-		
-		AMgCharacterLaserSight = UUcTrue;
-		AMrRayToEverything(index, &from, &sight_vector, &ray_results); 
 
-		if (ray_results.resultType != AMcRayResult_None) 
+		AMgCharacterLaserSight = UUcTrue;
+		AMrRayToEverything(index, &from, &sight_vector, &ray_results);
+
+		if (ray_results.resultType != AMcRayResult_None)
 		{
 			float distance;
 
-			if (gConsole_show_laser_env_collision) 
+			if (gConsole_show_laser_env_collision)
 			{
-				if (AMcRayResult_Environment == ray_results.resultType) 
+				if (AMcRayResult_Environment == ray_results.resultType)
 				{
 					AKtGQ_General *flash_gq;
 					flash_gq = ONgGameState->level->environment->gqGeneralArray->gqGeneral;
@@ -6378,7 +6378,7 @@ static void ONiDrawWeaponSight(ONtCharacter *inCharacter)
 				ray_results.resultType = AMcRayResult_None;
 
 			}
-			else if (distance > UUcEpsilon) 
+			else if (distance > UUcEpsilon)
 			{
 				float uAmt		= 1.f;
 				float offsetAmt = 2.f;
@@ -6390,9 +6390,9 @@ static void ONiDrawWeaponSight(ONtCharacter *inCharacter)
 				MUrLineSegment_ComputePoint(&from, &to, uAmt, &to);
 			}
 
-			
+
 		}
-		else 
+		else
 		{
 			MUmVector_Scale(sight_vector, weapon_class->maximum_sight_distance);
 			MUmVector_Add(to, from, sight_vector);
@@ -6477,7 +6477,7 @@ static void ONiCharacter_DeleteShadow(ONtActiveCharacter *ioActiveCharacter)
 		// we don't have a shadow
 		return;
 	}
-	
+
 	P3rDeleteDecal(&ioActiveCharacter->shadow_decal, P3cDecalFlag_Manual);
 
 	// set the shadow decal data back to an 'unused' state
@@ -6499,7 +6499,7 @@ static void ONiCharacter_Display(
 	float				character_alpha;
 	UUtBool				support_shadow;
 	UUtError			error;
-        
+
 	UUmAssertReadPtr(inCharacter, sizeof(*inCharacter));
 	UUmAssertReadPtr(inCameraLocation, sizeof(*inCameraLocation));
 	UUmAssert(inCharacter->flags & ONcCharacterFlag_InUse);
@@ -6527,7 +6527,7 @@ static void ONiCharacter_Display(
 	if (gShowBNV && isMainCharacter) {
 		sprintf(ONgBNVStatus[1].text, "%d", inCharacter->currentNode - ONgGameState->level->environment->bnvNodeArray->nodes);
 	}
-	
+
 	if (gDrawFacingVector) {
 		ONiDrawFacingVector(inCharacter);
 	}
@@ -6550,10 +6550,10 @@ static void ONiCharacter_Display(
 	support_shadow = support_shadow && ((inCharacter->flags & ONcCharacterFlag_Dead_3_Cosmetic) == 0);
 	support_shadow = support_shadow && (character_alpha > 0);
 	support_shadow = support_shadow && (!(inCharacter->flags & ONcCharacterFlag_NoShadow));
-	
+
 
 	if (support_shadow) {
-		M3tTextureMap *texture;	
+		M3tTextureMap *texture;
 		ONtShadowConstants *shadow_constants;
 #if defined(DEBUGGING) && DEBUGGING
 		P3tDecalData debug_orig_decaldata = inActiveCharacter->shadow_decal;
@@ -6570,7 +6570,7 @@ static void ONiCharacter_Display(
 		texture = shadow_constants->shadow_texture;
 		if (texture == NULL) {
 			TMrInstance_GetDataPtr(M3cTemplate_TextureMap, "notfoundtex", (void **) &texture);
-		}		
+		}
 
 		if ((inActiveCharacter->shadow_decal.decal_header != NULL) && (texture != NULL)) {
 			M3tVector3D	fwd_vec, up_vec, right_vec, position;
@@ -6642,7 +6642,7 @@ static void ONiCharacter_Display(
 			}
 
 			if (gq_index != (UUtUns32) -1) {
-				error = P3rCreateDecal(texture, gq_index, P3cDecalFlag_Manual | P3cDecalFlag_CullBackFacing | 
+				error = P3rCreateDecal(texture, gq_index, P3cDecalFlag_Manual | P3cDecalFlag_CullBackFacing |
 															P3cDecalFlag_IgnoreAdjacency | P3cDecalFlag_FullBright,
 									80.0f * M3cDegToRad, NULL, &position, &fwd_vec, &up_vec, &right_vec, size, size,
 									alpha, IMcShade_White, &inActiveCharacter->shadow_decal, ONcShadowDecalStaticBufferSize);
@@ -6681,10 +6681,10 @@ static UUtBool ONiCharacter_NeedsRendering(ONtCharacter *inCharacter, CAtCamera 
 	M3tPoint3D viewVector;
 
 	#define fovFudge (0.25f * M3cHalfPi)
-	
+
 	M3rCamera_GetStaticData(ONgVisibilityCamera,&fov,NULL,NULL,&farP);
 	M3rCamera_GetViewData(ONgVisibilityCamera, &cameraLocation, &viewVector, NULL);
-	
+
 	MUmVector_Subtract(toObj,inCharacter->location,cameraLocation);
 	MUrNormalize(&toObj);
 
@@ -6711,19 +6711,19 @@ static UUtBool ONiCharacter_NeedsRendering(ONtCharacter *inCharacter, CAtCamera 
 		inCharacter->num_frames_offscreen++;
 	}
 
-	// if our active character exists, we have only been offscreen for 
+	// if our active character exists, we have only been offscreen for
 	// a short while and our body is not !drawn then consider us visible
 
 	if ((!is_visible) && (inCharacter->num_frames_offscreen < 4)) {
 		ONtActiveCharacter *active_character = ONrGetActiveCharacter(inCharacter);
 
-		if (NULL != active_character) { 
+		if (NULL != active_character) {
 			if (active_character->curBody != TRcBody_NotDrawn) {
 				is_visible = UUcTrue;
 			}
 		}
 	}
-	
+
 	return is_visible;
 }
 
@@ -6777,7 +6777,7 @@ static UUtInt32 ONrCharacterList_GetPolygonCount(ONtCharacter **inCharacters, ON
 
 // 6. compute ideal LOD by distance & bias + 1
 // 7. count polygons
-// 8. if polygons > polygons_for_characters goto 
+// 8. if polygons > polygons_for_characters goto
 // 9. bias += 1
 // 10. goto 6
 
@@ -6785,7 +6785,7 @@ static UUtInt32 ONrCharacterList_GetPolygonCount(ONtCharacter **inCharacters, ON
 // 12. count polygons
 // 13. compute ideal LOD by distance & bias + 1
 // 14. count polygons
-// 13. if polygons < polygons_for_characters goto 
+// 13. if polygons < polygons_for_characters goto
 // 14. if bias = -4 goto done:
 // 15. goto 11
 
@@ -6866,7 +6866,7 @@ static void ONrGameState_ComputeCharacterVisibility(UUtUns32 *outNumVisible, ONt
 		if (active_character == NULL) {
 			continue;
 		}
-		
+
 		current_character->flags |= ONcCharacterFlag_Draw;
 		outVisibleChars[num_visible] = current_character;
 		outVisibleActiveChars[num_visible] = active_character;
@@ -6895,7 +6895,7 @@ static void ONrGameState_ComputeCharacterLOD(UUtUns32 inNumVisible, ONtCharacter
 			inVisibleActiveChars[itr]->desiredBodyFrames = 0;
 		}
 		return;
-	}	
+	}
 
 	// step 2: sort the visible chracacters by distance from camera
 	AUrQSort_32(inVisibleChars, inNumVisible, distance_from_camera_compare);
@@ -7021,7 +7021,7 @@ static void ONrGameState_ComputeCharacterLOD(UUtUns32 inNumVisible, ONtCharacter
 			active_character->curBody = UUmMax(active_character->curBody, TRcBody_Low);
 		}
 	}
-	
+
 	return;
 }
 
@@ -7051,13 +7051,13 @@ void ONrGameState_DisplayCharacters(void)
 	ONtCharacter *character;
 	ONtCharacter *vis_list[ONcMaxCharacters];
 	ONtActiveCharacter *vis_active_list[ONcMaxCharacters];
-        
+
 	M3rCamera_GetViewData(ONgVisibilityCamera, &cameraLocation, NULL, NULL);
 
 	if (ONgShow_Corpses) {
 		ONrCorpse_Display(&cameraLocation);
 	}
-	
+
 	ONrGameState_ComputeCharacterVisibility(&vis_count, vis_list, vis_active_list);
 	ONrGameState_ComputeCharacterLOD(vis_count, vis_list, vis_active_list);
 
@@ -7112,7 +7112,7 @@ void ONrGameState_DisplayCharacters(void)
 
 	// get rid of all of our old shadows
 	ONrCharacter_PurgeShadows();
-	
+
 	for(itr = 0; itr < vis_count; itr++) {
 		character = vis_list[itr];
 
@@ -7120,7 +7120,7 @@ void ONrGameState_DisplayCharacters(void)
 		if (0 == (character->flags & ONcCharacterFlag_Draw)) continue;
 
 		UUmAssert(!(character->flags & ONcCharacterFlag_Dead_4_Gone));
-		
+
 		ONiCharacter_Display(character, vis_active_list[itr], &cameraLocation);
 	}
 }
@@ -7134,9 +7134,9 @@ void ONrCharacter_SetAnimationInternal(ONtCharacter *ioCharacter, ONtActiveChara
 	UUtUns16 animType;
 
 	UUmAssert(NULL != inAnimation);
-	
+
 	animType = TRrAnimation_GetType(inAnimation);
-	
+
 	ioActiveCharacter->animation = inAnimation;
 	ioActiveCharacter->animFrame = 0;
 	ioActiveCharacter->curFromState = inFromState;
@@ -7147,10 +7147,10 @@ void ONrCharacter_SetAnimationInternal(ONtCharacter *ioCharacter, ONtActiveChara
 	UUmAssertTrigRange(ioCharacter->facing);
 
 	if (gDebugCharacters && (index == gDebugCharacterTarget)) {
-		COrConsole_Printf("anim %s state %s type %s length %d", 
-			TRrAnimation_GetName(inAnimation), 
-			ONrAnimStateToString(TRrAnimation_GetTo(inAnimation)),	
-			ONrAnimTypeToString(TRrAnimation_GetType(inAnimation)), 
+		COrConsole_Printf("anim %s state %s type %s length %d",
+			TRrAnimation_GetName(inAnimation),
+			ONrAnimStateToString(TRrAnimation_GetTo(inAnimation)),
+			ONrAnimTypeToString(TRrAnimation_GetType(inAnimation)),
 			TRrAnimation_GetDuration(inAnimation));
 	}
 
@@ -7308,7 +7308,7 @@ float ONrCharacter_GetDesiredFacingOffset(const ONtCharacter *inCharacter)
 
 	facing_to_desired_facing = inCharacter->desiredFacing - inCharacter->facing;
 
-	if ((forward_to_desired_angle > 0.f) && (facing_to_forward_angle > 0.f)) 
+	if ((forward_to_desired_angle > 0.f) && (facing_to_forward_angle > 0.f))
 	{
 		// always turn positive
 		if (facing_to_desired_facing < 0.f) {
@@ -7322,7 +7322,7 @@ float ONrCharacter_GetDesiredFacingOffset(const ONtCharacter *inCharacter)
 			facing_to_desired_facing -= M3c2Pi;
 		}
 	}
-	else 
+	else
 	{
 		facing_to_desired_facing = angle_to_relative_angle(facing_to_desired_facing);
 	}
@@ -7337,7 +7337,7 @@ static float iSignAngle(float angle)
 
 	UUmAssertTrigRange(angle);
 
-	if (angle >= M3cPi) { 
+	if (angle >= M3cPi) {
 		result = angle - M3c2Pi;
 	}
 
@@ -7419,13 +7419,13 @@ void ONrCharacter_GetFacingVector(const ONtCharacter *inCharacter, M3tVector3D *
 	* Returns a normalized vector corrosponding to the character's heading,
 	* and a damped version of the same thing.
 	*/
-	
+
 	const M3tPoint3D defFacing = {0,0,1};
 	float facing = ONrCharacter_GetCosmeticFacing(inCharacter);
 
 	UUmAssertReadPtr(inCharacter, sizeof(*inCharacter));
 	UUmAssertWritePtr(outVector, sizeof(*outVector));
-	
+
 	MUrPoint_RotateYAxis(&defFacing, facing, outVector);
 	MUrNormalize(outVector);
 
@@ -7438,7 +7438,7 @@ void ONrCharacter_GetAttackVector(const ONtCharacter *inCharacter, ONtActiveChar
 	TRtDirection direction = TRrAnimation_GetDirection(inActiveCharacter->animation, UUcFalse);
 
 	ONrCharacter_GetFacingVector(inCharacter, outVector);
-	
+
 	switch(direction) {
 		case TRcDirection_None:
 		case TRcDirection_360:
@@ -7489,9 +7489,9 @@ UUtBool ONrAnimType_IsVictimType(TRtAnimType inAnimType)
 	/******************
 	* Returns true if the character is running knockdown, throw, hit
 	*/
-	
+
 	UUtBool busy;
-	
+
 	switch(inAnimType)
 	{
 		case ONcAnimType_Land_Dead:
@@ -7552,7 +7552,7 @@ UUtBool ONrAnimType_IsVictimType(TRtAnimType inAnimType)
 			busy = UUcFalse;
 		break;
 	}
-	
+
 	return busy;
 }
 
@@ -7566,7 +7566,7 @@ UUtBool ONrCharacter_IsDefensive(const ONtCharacter *inCharacter)
 	/******************
 	* Returns true if the character is standing still
 	*/
-	
+
 	const TRtAnimation *animation;
 	TRtAnimType type;
 	TRtAnimState fromState, toState;
@@ -7593,14 +7593,14 @@ UUtBool ONrCharacter_IsDefensive(const ONtCharacter *inCharacter)
 		UUtBool fromIsCrouchOrStand, toIsCrouchOrStand;
 		UUtBool typeIsCrouchStandTurnOrBlock;
 
-		fromIsCrouchOrStand = 
-			(ONcAnimState_Crouch == fromState) || 
-			(ONcAnimState_Crouch_Start == fromState) || 
+		fromIsCrouchOrStand =
+			(ONcAnimState_Crouch == fromState) ||
+			(ONcAnimState_Crouch_Start == fromState) ||
 			(ONcAnimState_Standing == fromState);
 
-		toIsCrouchOrStand = 
-			(ONcAnimState_Crouch == fromState) || 
-			(ONcAnimState_Crouch_Start == fromState) || 
+		toIsCrouchOrStand =
+			(ONcAnimState_Crouch == fromState) ||
+			(ONcAnimState_Crouch_Start == fromState) ||
 			(ONcAnimState_Standing == fromState);
 
 		typeIsCrouchStandTurnOrBlock =
@@ -7638,7 +7638,7 @@ UUtBool ONrCharacter_IsIdle(const ONtCharacter *inCharacter)
 
 UUtBool ONrCharacter_IsMovingBack(const ONtCharacter *inCharacter)
 {
-	switch(ONrCharacter_GetAnimType(inCharacter)) 
+	switch(ONrCharacter_GetAnimType(inCharacter))
 	{
 		case ONcAnimType_Run_Backwards_Start:
 		case ONcAnimType_Walk_Backwards_Start:
@@ -7660,7 +7660,7 @@ UUtBool ONrCharacter_IsPoweringUp(const ONtCharacter *inCharacter)
 		return UUcFalse;
 	}
 
-	return ((active_character->curAnimType == ONcAnimType_Powerup) && 
+	return ((active_character->curAnimType == ONcAnimType_Powerup) &&
 			(TRrAnimation_GetFrom(active_character->animation) == ONcAnimState_Powerup));
 }
 
@@ -7692,7 +7692,7 @@ UUtBool ONrCharacter_IsInactiveUpright(const ONtCharacter *inCharacter)
 			return UUcFalse;
 	}
 
-	switch(active_character->curAnimType) 
+	switch(active_character->curAnimType)
 	{
 		case ONcAnimType_Stand:
 		case ONcAnimType_Idle:
@@ -7735,7 +7735,7 @@ UUtBool ONrCharacter_IsInactiveUpright(const ONtCharacter *inCharacter)
 
 UUtBool ONrCharacter_IsStandingRunning(const ONtCharacter *inCharacter)
 {
-	switch(ONrCharacter_GetAnimType(inCharacter)) 
+	switch(ONrCharacter_GetAnimType(inCharacter))
 	{
 		case ONcAnimType_Run_Start:
 		case ONcAnimType_Run_Backwards_Start:
@@ -7780,7 +7780,7 @@ UUtBool ONrCharacter_IsUnableToTurn(const ONtCharacter *inCharacter)
 						unable_to_turn = UUcFalse;
 					break;
 				}
-			} 
+			}
 			else {
 				// player characters can never turn in these animtypes
 				return UUcTrue;
@@ -7904,7 +7904,7 @@ UUtBool ONrCharacter_IsKeepingMoving(ONtCharacter *inCharacter)
 		return UUcFalse;
 	}
 
-	switch(TRrAnimation_GetTo(active_character->animation)) 
+	switch(TRrAnimation_GetTo(active_character->animation))
 	{
 		case ONcAnimState_Running_Left_Down:
 		case ONcAnimState_Running_Right_Down:
@@ -7960,7 +7960,7 @@ UUtBool ONrCharacter_IsStandingRunningForward(const ONtCharacter *inCharacter)
 	toState = TRrAnimation_GetTo(animation);
 	type = TRrAnimation_GetType(animation);
 
-	switch(type) 
+	switch(type)
 	{
 		case ONcAnimType_Run:
 		case ONcAnimType_Run_Start:
@@ -7997,14 +7997,14 @@ static void ONrCharacter_Stitch(ONtCharacter *ioCharacter, ONtActiveCharacter *i
 	ioActiveCharacter->stitch.stitching = UUcTrue;
 	ONrCharacter_GetVelocityEstimate(ioCharacter, ioActiveCharacter, &(ioActiveCharacter->stitch.velocity));
 	ioActiveCharacter->stitch.height = ioCharacter->heightThisFrame;
-	ioActiveCharacter->stitch.count = UUmMax(inStitchCount, ioActiveCharacter->stitch.count - ioActiveCharacter->stitch.itr);	
+	ioActiveCharacter->stitch.count = UUmMax(inStitchCount, ioActiveCharacter->stitch.count - ioActiveCharacter->stitch.itr);
 	ioActiveCharacter->stitch.itr = 0;
 	ioActiveCharacter->stitch.fromState = fromState;
 
 	if (ioActiveCharacter->stitch.stitching) {
-		ioActiveCharacter->stitch.count = UUmMax(inStitchCount, ioActiveCharacter->stitch.count - ioActiveCharacter->stitch.itr);	
+		ioActiveCharacter->stitch.count = UUmMax(inStitchCount, ioActiveCharacter->stitch.count - ioActiveCharacter->stitch.itr);
 	} else {
-		ioActiveCharacter->stitch.count = (UUtUns16) inStitchCount;	
+		ioActiveCharacter->stitch.count = (UUtUns16) inStitchCount;
 	}
 
 	ONrCharacter_SetAnimationInternal(ioCharacter, ioActiveCharacter, fromState, ONcAnimType_None, inNewAnim);
@@ -8045,27 +8045,27 @@ static ONtAnimPriority iCharacter_BuildPriority(ONtCharacter *inCharacter, ONtAc
 	atomic = TRrAnimation_IsAtomic(oldAnimation, ioActiveCharacter->animFrame);
 
 	if (type_is_equal && varient_is_equal && to_state_is_equal) {
-		result |= ONcAnimPriority_Queue; 
+		result |= ONcAnimPriority_Queue;
 	}
 	else if (ONrCharacter_IsVictimAnimation(inCharacter)) {
-		result |= ONcAnimPriority_Queue; 
+		result |= ONcAnimPriority_Queue;
 	}
 	else if (TRrAnimation_TestFlag(oldAnimation, ONcAnimFlag_ThrowTarget)) {
-		result |= ONcAnimPriority_Queue; 
+		result |= ONcAnimPriority_Queue;
 	}
 	else if (TRrAnimation_TestFlag(oldAnimation, ONcAnimFlag_ThrowSource)) {
-		result |= ONcAnimPriority_Queue; 
+		result |= ONcAnimPriority_Queue;
 	}
 	else if (ONrAnimType_IsKnockdown(oldAnimation->type)) {
-		result |= ONcAnimPriority_Queue; 
+		result |= ONcAnimPriority_Queue;
 	}
-	else if (!atomic) { 
-		result |= ONcAnimPriority_Force; 
+	else if (!atomic) {
+		result |= ONcAnimPriority_Force;
 	}
 	else if (isShortcut && TRrAnimation_TestShortcutFlag(inAnimation, oldToState, ONcShortcutFlag_Nuke)) {
 		result |= ONcAnimPriority_Force;
 	}
-	else { 
+	else {
 		result |= ONcAnimPriority_Queue;
 	}
 
@@ -8181,7 +8181,7 @@ const TRtAnimation *ONrCharacter_DoAnimation(ONtCharacter *ioCharacter, ONtActiv
 	// lookup animation
 	doStandingStillAnimation = (ONcAnimType_Stand == inAnimType) && (ONcAnimState_Standing == ioActiveCharacter->nextAnimState);
 	animation = TRrCollection_Lookup(collection, inAnimType, ioActiveCharacter->nextAnimState, ioActiveCharacter->animVarient);
-	
+
 	if ((NULL == animation) &&  (ioActiveCharacter->animFrame < cMaxBacklook ) && (inPriority & ONcAnimPriority_BackInTime)) {
 		animation = TRrCollection_Lookup(collection, inAnimType, ioActiveCharacter->curFromState, ioActiveCharacter->animVarient);
 
@@ -8196,7 +8196,7 @@ const TRtAnimation *ONrCharacter_DoAnimation(ONtCharacter *ioCharacter, ONtActiv
 		ioCharacter->flags &= ~ONcCharacterFlag_BeingThrown;
 //COrConsole_Printf("Character no longer being thrown");
 	}
-		
+
 	if (NULL == animation) { return NULL; }
 
 	// check for pausing
@@ -8204,11 +8204,11 @@ const TRtAnimation *ONrCharacter_DoAnimation(ONtCharacter *ioCharacter, ONtActiv
 		UUtBool softPause;
 		UUtBool hardPause;
 		UUtBool valid;
-		
-		softPause = 
-			ioActiveCharacter->hitStun || 
-			ioActiveCharacter->blockStun || 
-			ioActiveCharacter->softPauseFrames || 
+
+		softPause =
+			ioActiveCharacter->hitStun ||
+			ioActiveCharacter->blockStun ||
+			ioActiveCharacter->softPauseFrames ||
 			(TRrAnimation_GetSoftPause(ioActiveCharacter->animation, animation) > 0);
 		hardPause = ioActiveCharacter->hardPauseFrames || (TRrAnimation_GetHardPause(ioActiveCharacter->animation, animation) > 0);
 
@@ -8235,7 +8235,7 @@ const TRtAnimation *ONrCharacter_DoAnimation(ONtCharacter *ioCharacter, ONtActiv
 
 	ioCharacter->flags &= ~ONcCharacterFlag_HastyAnim;
 
-	if ((!ONrCharacter_InBadVarientState(ioCharacter, ioActiveCharacter) && ONrCharacter_DisallowStitch(ioActiveCharacter->curAnimType, inAnimType)) || 
+	if ((!ONrCharacter_InBadVarientState(ioCharacter, ioActiveCharacter) && ONrCharacter_DisallowStitch(ioActiveCharacter->curAnimType, inAnimType)) ||
 		(ONcAnimPriority_Queue & inPriority)) {
 		// queue up the animation
 		ioActiveCharacter->nextAnimType = inAnimType;
@@ -8248,7 +8248,7 @@ const TRtAnimation *ONrCharacter_DoAnimation(ONtCharacter *ioCharacter, ONtActiv
 	if (NULL != animation) {
 		UUtUns8 stitchAmt = UUmMax(ONcNumStitchingFrames, ioActiveCharacter->minStitchingFrames);
 		TRtAnimState fromState = ioActiveCharacter->nextAnimState;
-		
+
 		animation = RemapAnimationHook(ioCharacter, ioActiveCharacter, animation);
 
 		if (NULL != ioActiveCharacter->animation) {
@@ -8267,7 +8267,7 @@ const TRtAnimation *ONrCharacter_DoAnimation(ONtCharacter *ioCharacter, ONtActiv
 		else {
 			ONrCharacter_Stitch(ioCharacter, ioActiveCharacter, ioActiveCharacter->nextAnimState, animation, stitchAmt);
 		}
-		
+
 		ONrCharacter_NewAnimationHook(ioCharacter, ioActiveCharacter);
 	}
 
@@ -8307,7 +8307,7 @@ static void ONiCharacter_DropInventoryItems(ONtCharacter *ioCharacter)
 	if (ioCharacter->inventory.drop_invisibility) {
 		// drop a full-strength invisibility
 		WPrPowerup_Drop(WPcPowerup_Invisibility, WPcMaxInvisibility, ioCharacter, UUcFalse);
-	} 
+	}
 
 	if (((ioCharacter->flags & ONcCharacterFlag_NoAutoDrop) == 0) && (ioCharacter->charType != ONcChar_Player)) {
 		/*
@@ -8339,11 +8339,11 @@ void ONrCharacter_DropWeapon(ONtCharacter *ioCharacter, UUtBool inWantKnockAway,
 
 	UUmAssert(ioCharacter->flags & ONcCharacterFlag_InUse);
 
-	if (inSlotNum == WPcAllSlots) 
+	if (inSlotNum == WPcAllSlots)
 	{
 		WPrSlots_DropAll(&ioCharacter->inventory, inWantKnockAway, inStoreOnly);
 	}
-	else 
+	else
 	{
 		WPrSlot_Drop(&ioCharacter->inventory, inSlotNum, inWantKnockAway, inStoreOnly);
 	}
@@ -8355,7 +8355,7 @@ void ONrCharacter_DropWeapon(ONtCharacter *ioCharacter, UUtBool inWantKnockAway,
 		if (active_character->extraBody != NULL) {
 			active_character->extraBody->parts[0].geometry = NULL;
 		}
-		
+
 		active_character->pleaseFire = UUcFalse;
 		active_character->pleaseFireAlternate = UUcFalse;
 		active_character->pleaseAutoFire = UUcFalse;
@@ -8386,7 +8386,7 @@ ONrCharacter_UseWeapon(
 	ONtActiveCharacter *active_character;
 
 	UUmAssertWritePtr(ioCharacter, sizeof(*ioCharacter));
-	
+
 	if (NULL == inWeapon)
 	{
 		// no weapon was specified so store the current weapon
@@ -8396,20 +8396,20 @@ ONrCharacter_UseWeapon(
 	{
 		M3tGeometry *marker;
 		WPtWeaponClass *weapon_class;
-		
+
 		UUmAssert(inWeapon);
 		weapon_class = WPrGetClass(inWeapon);
-		
+
 		// don't arm dead characters
 		if (ioCharacter->flags & ONcCharacterFlag_Dead_1_Animating) return;
-		
+
 		marker = NULL;
-		
+
 		active_character = ONrGetActiveCharacter(ioCharacter);
 
 		// set the character's weapon
 		ioCharacter->inventory.weapons[WPcPrimarySlot] = inWeapon;
-		
+
 		if (active_character != NULL) {
 			active_character->extraBody->parts[0].geometry = WPrGetClass(inWeapon)->geometry;
 
@@ -8418,7 +8418,7 @@ ONrCharacter_UseWeapon(
 
 			active_character->matricies[ONcWeapon_Index] = MUgIdentityMatrix;
 		}
-				
+
 		// tell the weapon it's been picked up
 		WPrAssign(inWeapon,ioCharacter);
 
@@ -8430,7 +8430,7 @@ ONrCharacter_UseWeapon(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -8440,7 +8440,7 @@ static TRtAnimType AdjustForCrouch(TRtAnimType type)
 
 	switch(type)
 	{
-		case ONcAnimType_Hit_Head:	
+		case ONcAnimType_Hit_Head:
 		case ONcAnimType_Hit_Body:
 		case ONcAnimType_Hit_Foot:
 			result = ONcAnimType_Hit_Crouch;
@@ -8509,41 +8509,41 @@ static TRtAnimType AdjustForBehind(TRtAnimType inType)
 
 	switch(inType)
 	{
-		case ONcAnimType_Hit_Head: 
-			result = ONcAnimType_Hit_Head_Behind; 
+		case ONcAnimType_Hit_Head:
+			result = ONcAnimType_Hit_Head_Behind;
 		break;
 
-		case ONcAnimType_Hit_Body: 
-			result = ONcAnimType_Hit_Body_Behind; 
+		case ONcAnimType_Hit_Body:
+			result = ONcAnimType_Hit_Body_Behind;
 		break;
 
 		case ONcAnimType_Hit_Jewels:
 		case ONcAnimType_Hit_Foot_Ouch:
-		case ONcAnimType_Hit_Foot: 
-			result = ONcAnimType_Hit_Body_Behind; 
+		case ONcAnimType_Hit_Foot:
+			result = ONcAnimType_Hit_Body_Behind;
 		break;
 
-		case ONcAnimType_Knockdown_Head: 
-			result = ONcAnimType_Knockdown_Head_Behind; 
+		case ONcAnimType_Knockdown_Head:
+			result = ONcAnimType_Knockdown_Head_Behind;
 		break;
 
-		case ONcAnimType_Knockdown_Body: 
-			result = ONcAnimType_Knockdown_Body_Behind; 
+		case ONcAnimType_Knockdown_Body:
+			result = ONcAnimType_Knockdown_Body_Behind;
 		break;
 
-		case ONcAnimType_Knockdown_Foot: 
-			result = ONcAnimType_Knockdown_Foot_Behind; 
+		case ONcAnimType_Knockdown_Foot:
+			result = ONcAnimType_Knockdown_Foot_Behind;
 		break;
 
-		case ONcAnimType_Hit_Crouch: 
-			result = ONcAnimType_Hit_Crouch_Behind; 
+		case ONcAnimType_Hit_Crouch:
+			result = ONcAnimType_Hit_Crouch_Behind;
 		break;
 
-		case ONcAnimType_Knockdown_Crouch: 
-			result = ONcAnimType_Knockdown_Crouch_Behind; 
+		case ONcAnimType_Knockdown_Crouch:
+			result = ONcAnimType_Knockdown_Crouch_Behind;
 		break;
 
-		case ONcAnimType_Blownup: 
+		case ONcAnimType_Blownup:
 			result = ONcAnimType_Blownup_Behind;
 		break;
 
@@ -8726,7 +8726,7 @@ void ONrCharacter_Knockdown(ONtCharacter *attacker, ONtCharacter *defender, UUtU
 
 	defender_activechar->lastAttack = ONcAnimType_None;
 	defender_activechar->lastAttackTime = 0;
-	defender_activechar->animationLockFrames = 0;	// stop looping an anim 
+	defender_activechar->animationLockFrames = 0;	// stop looping an anim
 
 	newAnimType = ONrCharacter_CalculateAnimType(attacker, defender, defender_activechar, UUcFalse, inAnimType);
 
@@ -8774,8 +8774,8 @@ void ONrCharacter_Knockdown(ONtCharacter *attacker, ONtCharacter *defender, UUtU
 			case ONcAnimState_Falling_Right:
 			break;
 
-			
-			default: 
+
+			default:
 				try_falling = UUcFalse;
 		}
 
@@ -8817,9 +8817,9 @@ void ONrCharacter_Block(ONtCharacter *ioCharacter, ONtActiveCharacter *ioActiveC
 
 	ONrCharacter_FightMode(ioCharacter);
 
-	ioActiveCharacter->animationLockFrames = 0;	// stop looping an anim 
+	ioActiveCharacter->animationLockFrames = 0;	// stop looping an anim
 
-	if (ioActiveCharacter->curAnimType != ONcAnimType_Block) {		
+	if (ioActiveCharacter->curAnimType != ONcAnimType_Block) {
 		blockAnim = ONrCharacter_DoAnimation(ioCharacter, ioActiveCharacter, ONcAnimPriority_Force, ONcAnimType_Block);
 
 		if (NULL == blockAnim) {
@@ -8908,7 +8908,7 @@ static TRtAnimType ONrCharacter_NextScreenType(TRtAnimType inType)
 		case ONcAnimType_Crouch_Walk:
 			newType = ONcAnimType_Crouch;
 		break;
-		
+
 		case ONcAnimType_Anything:
 			newType = ONcAnimType_None;
 		break;
@@ -8952,7 +8952,7 @@ const TRtAimingScreen *ONrCharacter_GetAimingScreen(ONtCharacter *ioCharacter, O
 			else {
 				TRtAnimVarient old_varient = TRrAnimation_GetVarient(TRrAimingScreen_GetAnimation(result_aiming_screen));
 				TRtAnimVarient new_varient = TRrAnimation_GetVarient(TRrAimingScreen_GetAnimation(new_aiming_screen));
-				
+
 				if (new_varient > old_varient) {
 					result_aiming_screen = new_aiming_screen;
 				}
@@ -8960,7 +8960,7 @@ const TRtAimingScreen *ONrCharacter_GetAimingScreen(ONtCharacter *ioCharacter, O
 		}
 
 		type = ONrCharacter_NextScreenType(type);
-	} 
+	}
 
 exit:
 	return result_aiming_screen;
@@ -8991,8 +8991,8 @@ void ONrCharacter_BuildQuaternions(ONtCharacter *ioCharacter, ONtActiveCharacter
 	}
 
 	UUrMemory_MoveFast(
-		ioActiveCharacter->curAnimOrientations, 
-		ioActiveCharacter->curOrientations, 
+		ioActiveCharacter->curAnimOrientations,
+		ioActiveCharacter->curOrientations,
 		sizeof(M3tQuaternion) * numParts);
 
 	{
@@ -9014,7 +9014,7 @@ void ONrCharacter_BuildQuaternions(ONtCharacter *ioCharacter, ONtActiveCharacter
 
 	// do aiming if we have a screen to aim with
 	aimingScreen = NULL;
-	if (TRrAnimation_TestFlag(ioActiveCharacter->animation, ONcAnimFlag_DoAim) && !overlay_says_dont_aim) {	
+	if (TRrAnimation_TestFlag(ioActiveCharacter->animation, ONcAnimFlag_DoAim) && !overlay_says_dont_aim) {
 		if (ONcAnimType_Block != ioActiveCharacter->animation->type) {
 			if (!ONrAnimType_IsVictimType(ioActiveCharacter->animation->type)) {
 				aimingScreen = ONrCharacter_GetAimingScreen(ioCharacter, ioActiveCharacter);
@@ -9048,7 +9048,7 @@ void ONrCharacter_BuildQuaternions(ONtCharacter *ioCharacter, ONtActiveCharacter
 
 	aimLR += ioActiveCharacter->autoAimAdjustmentLR;
 	aimUD += ioActiveCharacter->autoAimAdjustmentUD;
- 
+
 	if ((aimLR != 0.f) || (aimUD != 0.f)) {
 		UUtUns32 num_interp_frames = 8;
 
@@ -9144,7 +9144,7 @@ static void ONrCharacter_DoExactAiming(ONtCharacter *ioCharacter, ONtActiveChara
 	pinned_ud += ioActiveCharacter->autoAimAdjustmentUD;
 
 	TRrAimingScreen_Clip(ioActiveCharacter->aimingScreen, &pinned_lr, &pinned_ud);
-	
+
 	pinned_lr += ioCharacter->facing;
 
 	UUmTrig_Clip(pinned_lr);
@@ -9156,7 +9156,7 @@ static void ONrCharacter_DoExactAiming(ONtCharacter *ioCharacter, ONtActiveChara
 
 	aimEuler = Euler_(
 		0,
-		pinned_lr, 
+		pinned_lr,
 		pinned_ud,
 		MUcEulerOrderZYXr);
 
@@ -9165,20 +9165,20 @@ static void ONrCharacter_DoExactAiming(ONtCharacter *ioCharacter, ONtActiveChara
 
 	goal_matrix = MUgIdentityMatrix;
 	MUrMatrixStack_Translate(&goal_matrix, &translation);
-	MUrMatrixStack_RotateX(&goal_matrix, M3c2Pi - M3cHalfPi);	
+	MUrMatrixStack_RotateX(&goal_matrix, M3c2Pi - M3cHalfPi);
 
 	{
 		float lr;
 		float ud;
 
-		
+
 		lr = pinned_lr - M3cHalfPi;
 		UUmTrig_Clip(lr);
 
 		ud = M3c2Pi - pinned_ud;
-	
-		MUrMatrixStack_RotateZ(&goal_matrix, lr); 
-		MUrMatrixStack_RotateY(&goal_matrix, ud); 
+
+		MUrMatrixStack_RotateZ(&goal_matrix, lr);
+		MUrMatrixStack_RotateY(&goal_matrix, ud);
 	}
 
 	if (1.f == amount_exact_aiming) {
@@ -9228,7 +9228,7 @@ void ONrCharacter_BuildMatricies(ONtCharacter *ioCharacter, ONtActiveCharacter *
 		MUrMatrixStack_Scale(&chrBaseMatrix, ioCharacter->scale);
 	}
 
-	if (!running_environment_animation) 
+	if (!running_environment_animation)
 	{
 		M3tPoint3D height;
 
@@ -9293,11 +9293,11 @@ void ONrCharacter_BuildMatricies(ONtCharacter *ioCharacter, ONtActiveCharacter *
 				hand_up.x = 0.f;
 				hand_up.y = 1.f;
 				hand_up.z = 0.f;
-		
+
 				inverse_kinematics_adjust_matrices(
-					&hand_location, 
-					&hand_forward, 
-					&hand_up, 
+					&hand_location,
+					&hand_forward,
+					&hand_up,
 					ioActiveCharacter->matricies + ONcLArm1_Index,
 					ioActiveCharacter->matricies + ONcLArm2_Index,
 					ioActiveCharacter->matricies + ONcLHand_Index);
@@ -9361,11 +9361,11 @@ void ONrCharacter_BuildBoundingVolumes(ONtCharacter *ioCharacter, ONtActiveChara
 	for(itr = 1; itr < ONcNumCharacterParts; itr++)
 	{
 		UUtBool skip;
-	
+
 		// get the body part's location in worldspace
 		curSphere = body->geometries[itr]->pointArray->boundingSphere;
 		MUrMatrix_MultiplyPoints(1, &ioActiveCharacter->matricies[itr], &curSphere.center, &curSphere.center);
-		
+
 		// expand the collision bounding sphere by this part
 		part_radius = MUmVector_GetDistance(ioActiveCharacter->boundingSphere.center, curSphere.center) + curSphere.radius;
 		ioActiveCharacter->boundingSphere.radius = UUmMax(ioActiveCharacter->boundingSphere.radius, part_radius);
@@ -9405,7 +9405,7 @@ void ONrCharacter_BuildBoundingVolumes(ONtCharacter *ioCharacter, ONtActiveChara
 		MUrMinMaxBBox_ExpandBySphere(NULL, &bottomSphere, &ioCharacter->boundingBox);
 	}
 
-	
+
 
 	// COrConsole_Printf("bot %2.2f/%2.2f top %2.2f", ioCharacter->boundingBox.minPoint.y, ioCharacter->location.y, ioCharacter->boundingBox.maxPoint.y);
 
@@ -9441,7 +9441,7 @@ static TRtAnimType ONiRemapAnimType_For_Direction(TRtAnimType anim_type, ONtChar
 	angle = angle - facing;
 	UUmTrig_ClipLow(angle);
 
-	// ok now the angle is the difference between the defenders facing 
+	// ok now the angle is the difference between the defenders facing
 	// and the angle from the defender to the attacker
 
 	if (angle > M3cPi) {
@@ -9466,13 +9466,13 @@ ONiCharacter_GetPrimaryPartFromBits(
 	UUtUns16 i;
 	TRtBody *body;
 	UUtUns16 part;
-	
+
 	if (inBodyPartBits == 0) { return ONcPelvis_Index; }
-	
+
 	part = ONcPelvis_Index;
 	body = ONrCharacter_GetBody(inCharacter, TRcBody_SuperHigh);
 	UUmAssert(body);
-	
+
 	for (i = body->numParts; i <= body->numParts; i--)
 	{
 		if (inBodyPartBits & (1 << i))
@@ -9481,7 +9481,7 @@ ONiCharacter_GetPrimaryPartFromBits(
 			break;
 		}
 	}
-	
+
 	return part;
 }
 
@@ -9505,7 +9505,7 @@ ONrCharacter_GetMaterialType(
 		}
 	}
 
-	if ((inPartIndex >= 0) && (inPartIndex < ONrCharacter_GetNumParts(inCharacter)) && 
+	if ((inPartIndex >= 0) && (inPartIndex < ONrCharacter_GetNumParts(inCharacter)) &&
 		(inCharacter->characterClass->bodyPartMaterials->materials[inPartIndex] != NULL)) {
 		type = inCharacter->characterClass->bodyPartMaterials->materials[inPartIndex]->id;
 	} else {
@@ -9523,7 +9523,7 @@ ONiCharacter_GetMaterialTypeFromMask(
 	UUtUns32 inBodyPartBits)
 {
 	UUtUns32 part;
-	
+
 	part = ONiCharacter_GetPrimaryPartFromBits(inCharacter, inBodyPartBits);
 
 	return ONrCharacter_GetMaterialType(inCharacter, part, UUcTrue);
@@ -9538,7 +9538,7 @@ ONiCharacter_GetSpecificImpactType(
 	UUtUns32 itr;
 	ONtCharacterImpactArray *impacts = inCharacter->characterClass->impacts;
 	const char *attack_name;
-	
+
 	attack_name = TRrAnimation_GetAttackName(inActiveCharacter->animation);
 	if (attack_name[0] == '\0') {
 		if (ONgDebugCharacterImpacts) {
@@ -9730,7 +9730,7 @@ UUtBool ONrCharacter_CouldBlock(ONtCharacter *inDefender, ONtCharacter *inAttack
 static float ONiCharacter_GetAttackPotency(ONtCharacter *ioCharacter, UUtBool *outOmnipotent)
 {
 	float overhealth, potency;
-		
+
 	if (outOmnipotent != NULL) {
 		*outOmnipotent = (ONgPlayerOmnipotent && (ioCharacter->charType == ONcChar_Player));
 	}
@@ -9764,11 +9764,11 @@ static void ONiCharacter_BecomeTemporarilyVisible(ONtCharacter *inAttacker, ONtA
 }
 
 static void	HandleAttackMask(
-	ONtCharacter *inAttacker, 
-	ONtCharacter *inDefender, 
+	ONtCharacter *inAttacker,
+	ONtCharacter *inDefender,
 	ONtActiveCharacter *inActiveAttacker,
 	ONtActiveCharacter *inActiveDefender,
-	const TRtAttack *inAttack, 
+	const TRtAttack *inAttack,
 	UUtUns32 inAttackIndex,
 	UUtUns32 inAttackerParts,
 	UUtUns32 inDefenderParts)
@@ -9881,7 +9881,7 @@ static void	HandleAttackMask(
 		COrConsole_Printf("hit defender part %d, material type %d (%s)",
 						defender_part, material_type, MArMaterialType_GetName(material_type));
 	}
-	
+
 	// get the attack's damage and knockback
 	attack_owner = WPrOwner_MakeMeleeDamageFromCharacter(inAttacker);
 	damage_multiplier = ONiCharacter_GetAttackPotency(inAttacker, &isOmnipotent);
@@ -9938,7 +9938,7 @@ static void	HandleAttackMask(
 			if (isUnstoppable) {
 				// CB: unstoppable characters can block without being blockstunned
 				inDefender->flags |= ONcCharacterFlag_PleaseBlock;
-			} 
+			}
 			else if (inAttack->stagger > 0) {
 				inActiveDefender->pendingDamageAnimType = ONcAnimType_Stagger;
 				inActiveDefender->staggerStun = inAttack->stagger;
@@ -9949,7 +9949,7 @@ static void	HandleAttackMask(
 			}
 		}
 	}
-	else { 
+	else {
 		// this is a valid hit!
 		attack_result = ONcAttack_Hit;
 
@@ -9972,7 +9972,7 @@ static void	HandleAttackMask(
 
 			if ((!isUnstoppable) && (damage_animation_type != ONcAnimType_None)) {
 				TRtAnimType new_anim_type = damage_animation_type;
-				float damage_animation_adjustment_angle;  
+				float damage_animation_adjustment_angle;
 
 				new_anim_type = ONrCharacter_CalculateAnimType(inAttacker, inDefender, inActiveDefender, UUcTrue, new_anim_type);
 				if (new_anim_type == ONcAnimType_None) {
@@ -10003,7 +10003,7 @@ static void	HandleAttackMask(
 					inActiveDefender->pendingDamageAnimType = new_anim_type;
 
 					// COrConsole_Printf("knockdown %d %s", new_anim_type, ONrAnimTypeToString(new_anim_type));
-					
+
 					if (DamageAnimTypeHasFacing(new_anim_type)) {
 						damage_animation_adjustment_angle = ONrCharacter_RelativeAngleToCharacter_Raw(inDefender, inAttacker);
 						inDefender->facing += damage_animation_adjustment_angle;
@@ -10034,7 +10034,7 @@ static void	HandleAttackMask(
 			else {
 				if (NULL != inActiveDefender) {
 					inActiveDefender->hitStun = hitstun_amount;
-				}			
+				}
 			}
 
 		}
@@ -10074,10 +10074,10 @@ static void	HandleAttackMask(
 				}
 
 				// tell this particle about the impact; disable the hitflash, because we are pulsing a particle
-				P3rSendEvent(particle->particle_def->particle_class, particle->particle, 
+				P3rSendEvent(particle->particle_def->particle_class, particle->particle,
 								P3cEvent_Pulse, current_time);
 			}
-		} 
+		}
 		else {
 			if (ONgDebugCharacterImpacts) {
 				COrConsole_Printf("attack has %d particles, but at current frame %d none are active",
@@ -10124,12 +10124,12 @@ static void	HandleAttackMask(
 	P3rSetGlobalTint(ONrCharacter_GetHealthShade(inDefender->hitPoints, inDefender->maxHitPoints));
 	ONrImpactEffect(impact_type, material_type, impact_modifier, &effect_data, ai_sound_volumemodifier, inAttacker, inDefender);
 	P3rClearGlobalTint();
-	
+
 	return;
 }
 
 static void HandleGenericMask(
-				ONtCharacter *inAttacker, 
+				ONtCharacter *inAttacker,
 				ONtCharacter *inDefender)
 {
 	ONtActiveCharacter *activeAttacker;
@@ -10200,7 +10200,7 @@ static UUtUns32 BuildAttackCollisionList(
 
 	*outAttackerParts = 0;
 	*outDefenderParts  = 0;
-	
+
 	UUmAssertReadPtr(attacker, sizeof(*attacker));
 	UUmAssertReadPtr(defender, sizeof(*defender));
 
@@ -10267,10 +10267,10 @@ static void iCollideTwoLikelyCharacters(
 		   const M3tGeometry*	inGeometryB = bodyB->geometries[itrB];
 		   UUtBool collide;
 
-		     collide = M3rIntersect_GeomGeom(				
-					inMatrixA,	
+		     collide = M3rIntersect_GeomGeom(
+					inMatrixA,
 					inGeometryA,
-					inMatrixB,	
+					inMatrixB,
 					inGeometryB);
 
 			 if (collide) {
@@ -10363,7 +10363,7 @@ static void iCollideTwoCharacters(
 	if (inCharA->flags & ONcCharacterFlag_Dead_2_Moving) {
 		goto exit;
 	}
-	
+
 	if (inCharB->flags & ONcCharacterFlag_Dead_2_Moving) {
 		goto exit;
 	}
@@ -10517,12 +10517,12 @@ void ONrCharacter_TakeDamage(
 		ONiCharacter_Defeated(ioCharacter);
 		return;
 	}
-	
+
 	if (active_character != NULL) {
 		// store damage direction and amount for use by weapon and powerup dropping
 		if (inDirection == NULL) {
 			MUmVector_Set(active_character->lastImpact, 0, 0, 0);
-		} 
+		}
 		else {
 			// don't generate tremendously huge or unnoticably small impacts
 			damage_scale = UUmPin(inDamage, 5, 15);
@@ -10553,7 +10553,7 @@ void ONrCharacter_TakeDamage(
 			}
 		}
 
-		if ((ioCharacter->flags & ONcCharacterFlag_Unkillable) && (ioCharacter->hitPoints <= inDamage)) 
+		if ((ioCharacter->flags & ONcCharacterFlag_Unkillable) && (ioCharacter->hitPoints <= inDamage))
 		{
 			if (WPcDamageOwner_ActOfGod == (inDamageOwner & WPcDamageOwner_TypeMask)) {
 				COrConsole_Printf("killing %s (act of god)", ioCharacter->player_name);
@@ -10644,18 +10644,18 @@ void ONrCharacter_TakeDamage(
 			ONiCharacter_RunDeathAnimation(ioCharacter, active_character, TRcAnimType_None);
 		}
 	}
-	
+
 	// record the damage done by the attacker
 	if (attacker)
 	{
 		attacker->damageInflicted += inDamage;
-		
+
 		if (ioCharacter->hitPoints <= 0)
 		{
 			attacker->numKills++;
 		}
 	}
-	
+
 	if (!unstoppable) {
 		// handle knockback of charcters from hit, blocked hit knockback ?
 		if ((active_character != NULL) && (inKnockback != 0.f) && (NULL != inDirection))
@@ -10668,7 +10668,7 @@ void ONrCharacter_TakeDamage(
 			MUmVector_Add(active_character->knockback, active_character->knockback, newKnockbackVector);
 		}
 	}
-	
+
 	ONrCharacter_DamageCompass(ioCharacter, inDirection);
 
 	ONrCharacter_Commit_Scripts();
@@ -10685,7 +10685,7 @@ void ONrCharacter_Die(ONtCharacter *ioCharacter)
 		ioCharacter->hitPoints = 0;
 		ONrCharacter_Die_1_Animating_Hook(ioCharacter, NULL);
 	}
-	
+
 	return;
 }
 
@@ -10745,7 +10745,7 @@ static void ONiGameState_DoCharacterCollision(void)
 			active_char->pendingDamageAnimType = ONcAnimType_None;
 		}
 		else if (curChar->flags & ONcCharacterFlag_PleaseBlock) {
-			ONrCharacter_Block(curChar, active_char);			
+			ONrCharacter_Block(curChar, active_char);
 		}
 
 		curChar->flags &= ~ONcCharacterFlag_PleaseBlock;
@@ -10871,13 +10871,13 @@ static void ONiCharacter_Fire(ONtCharacter *ioCharacter, ONtActiveCharacter *ioA
 
 	MUmVector_Verify(ioActiveCharacter->aimingVector);
 
-	if (ioCharacter->flags & ONcCharacterFlag_Dead) { 
+	if (ioCharacter->flags & ONcCharacterFlag_Dead) {
 		return;
 	}
 
 	// mark you as not idle
 	ONrCharacter_NotIdle(ioCharacter);
-	
+
 	// fire the gun
 	fired = WPrDepressTrigger(ioCharacter->inventory.weapons[0], UUcFalse, (inFireMode == ONcFireMode_Alternate), &out_of_ammo);
 	if (out_of_ammo) {
@@ -10886,11 +10886,11 @@ static void ONiCharacter_Fire(ONtCharacter *ioCharacter, ONtActiveCharacter *ioA
 
 		// try to reload
 		is_autofire = ((inFireMode == ONcFireMode_Autofire) || (inFireMode == ONcFireMode_Continuous));
-		
+
 		if (!is_autofire || is_ai) {
 			reloaded = WPrTryReload(ioCharacter, ioCharacter->inventory.weapons[0], NULL, &out_of_ammo);
 			play_click = out_of_ammo;
-		} 
+		}
 		else {
 			// we can't reload our weapon by just holding the trigger down
 			play_click = UUcTrue;
@@ -10953,7 +10953,7 @@ void ONrCharacter_Teleport(ONtCharacter *ioCharacter, M3tPoint3D *inPoint, UUtBo
 	ioCharacter->location = *inPoint;
 	ioCharacter->actual_position = *inPoint;
 	ioCharacter->actual_position.y += PHcWorldCoord_YOffset;
-	
+
 	if ((active_character != NULL) && (active_character->physics != NULL)) {
 		active_character->physics->position = *inPoint;
 		active_character->deferred_maximum_height = inPoint->y;
@@ -10979,7 +10979,7 @@ void ONrCharacter_Teleport_With_Collision(ONtCharacter *ioCharacter, M3tPoint3D 
 		M3tPoint3D movement_vector;
 
 		MUmVector_Subtract(movement_vector, *inPoint, active_character->physics->position);
-	
+
 		if (OBrPhysics_Update_Reflect(active_character->physics, &movement_vector)) {
 			OBrPhysics_Update_ReflectHalt(active_character->physics, &movement_vector);
 		}
@@ -10998,14 +10998,14 @@ UUtBool ONrCharacter_LineOfSight(ONtCharacter *inLooker, ONtCharacter *inLookee)
 	* Returns whether 'inLooker' can see 'inLookee'. Does not respect
 	* fields of view.
 	*/
-	
+
 	M3tPoint3D src,dest;
-	
+
 	src = inLooker->location;
 	dest = inLookee->location;
 	src.y += ONcCharacterHeight;
 	dest.y+= ONcCharacterHeight;
-	
+
 	return AKrLineOfSight(&src,&dest);
 }
 
@@ -11018,7 +11018,7 @@ float ONrCharacter_RelativeAngleToPoint_Raw(const ONtCharacter *inFromChar, cons
 	MUmVector_Subtract(toVector, *inPoint, inFromChar->location);
 	angle = (float) MUrATan2(toVector.x, toVector.z);
 	UUmTrig_ClipLow(angle);
-	
+
 	if (angle < 0.f) {
 		angle += M3c2Pi;
 	}
@@ -11093,7 +11093,7 @@ float ONrCharacter_RelativeAngleToCharacter(const ONtCharacter *inFromChar, cons
 	MUmVector_Subtract(toVector, inToChar->location, inFromChar->location);
 	angle = (float) MUrATan2(toVector.x, toVector.z);
 	UUmTrig_ClipLow(angle);
-	
+
 	if (angle < 0.f) {
 		angle += M3c2Pi;
 	}
@@ -11107,7 +11107,7 @@ float ONrCharacter_RelativeAngleToCharacter(const ONtCharacter *inFromChar, cons
 }
 
 static ONtCharacter *ONiCharacter_FindNearestOpponent(
-			ONtCharacter *inCharacter, 
+			ONtCharacter *inCharacter,
 			float inFacingOffset,
 			float inMaxDistance,
 			float inMaxAngle,
@@ -11140,8 +11140,8 @@ static ONtCharacter *ONiCharacter_FindNearestOpponent(
 			continue;
 		}
 
-		if (characterItr == inCharacter) { 
-			continue; 
+		if (characterItr == inCharacter) {
+			continue;
 		}
 
 		if (AI2rTeam_FriendOrFoe(characterItr->teamNumber, inCharacter->teamNumber) == AI2cTeam_Friend) {
@@ -11151,7 +11151,7 @@ static ONtCharacter *ONiCharacter_FindNearestOpponent(
 		if (inSkipInvulnerable) {
 			ONtActiveCharacter *active_character = ONrGetActiveCharacter(characterItr);
 
-			if (ONrCharacter_IsUnstoppable(characterItr) || (characterItr->flags & ONcCharacterFlag_Teleporting) || 
+			if (ONrCharacter_IsUnstoppable(characterItr) || (characterItr->flags & ONcCharacterFlag_Teleporting) ||
 				ONrCharacter_IsKnockdownResistant(characterItr) ||
 				((active_character != NULL) && TRrAnimation_TestFlag(active_character->animation, ONcAnimFlag_Invulnerable))) {
 				continue;
@@ -11170,8 +11170,8 @@ static ONtCharacter *ONiCharacter_FindNearestOpponent(
 		if (angle > M3cPi) {
 			angle -= M3c2Pi;
 		}
-	
-		if (distance > inMaxDistance) { 
+
+		if (distance > inMaxDistance) {
 			continue;
 		}
 
@@ -11228,7 +11228,7 @@ static void ONiCharacter_FaceOpponent(ONtCharacter *ioCharacter, ONtActiveCharac
 	}
 
 	target = ONiCharacter_FindNearestOpponent(
-		ioCharacter, 
+		ioCharacter,
 		attackFacing,
 		ONgAutoAim_Distance,
 		ONgAutoAim_Arc * M3cDegToRad,
@@ -11392,7 +11392,7 @@ static P3tParticle *ONiCharacter_AttachParticle(ONtCharacter *ioCharacter, ONtAc
 	bbox = &attach_geometry->pointArray->minmax_boundingBox;
 	MUmVector_Add(effect_data.position, bbox->minPoint, bbox->maxPoint);
 	MUmVector_Scale(effect_data.position, 0.5);
-				
+
 	// create the particle
 	particle = P3rCreateEffect(&effect_spec, &effect_data);
 	if (particle == NULL) {
@@ -11500,7 +11500,7 @@ void ONrCharacter_NewAnimationHook(ONtCharacter *ioCharacter, ONtActiveCharacter
 				UUmAssertReadPtr(active_target, sizeof(*active_target));
 
 				if ((!(target->flags & ONcCharacterFlag_Dead_1_Animating)) && (target->flags & ONcCharacterFlag_InUse))
-				{	
+				{
 					if (TRrAnimation_GetVarient(animation) & ONcAnimVarientMask_Fight) {
 						ONrCharacter_FightMode(target);
 					}
@@ -11516,11 +11516,11 @@ void ONrCharacter_NewAnimationHook(ONtCharacter *ioCharacter, ONtActiveCharacter
 					ONrCharacter_SetAnimation_External(target, active_target->nextAnimState, ioActiveCharacter->targetThrow, 6);
 
 					ONiCharacter_ThrowPhysics(ioCharacter, ioActiveCharacter, target, active_target);
-					
+
 					ioActiveCharacter->throwing = ONrCharacter_GetIndex(target);
 					target->facing = ioCharacter->facing + animation->throwInfo->relativeThrowFacing;
 					UUmTrig_ClipHigh(target->facing);
-					
+
 					target->flags |= ONcCharacterFlag_BeingThrown;
 				}
 			}
@@ -11542,10 +11542,10 @@ void ONrCharacter_NewAnimationHook(ONtCharacter *ioCharacter, ONtActiveCharacter
 	if ((ioCharacter->flags & ONcCharacterFlag_Dead_1_Animating) && (!ONrCharacter_IsVictimAnimation(ioCharacter))) {
 		ONrCharacter_Die_2_Moving_Hook(ioCharacter);
 	}
-	
+
 	if (ONrAnimation_IsFlying(ioActiveCharacter->animation)) {
 		ioActiveCharacter->pleaseJump = UUcTrue;
-		
+
 		if (ioActiveCharacter->inAirControl.numFramesInAir == 0) {
 			// COrConsole_Printf("jump_start mark flying %f", ioCharacter->physics->position.y);
 			ioActiveCharacter->inAirControl.jump_height = ioActiveCharacter->physics->position.y;
@@ -11610,7 +11610,7 @@ void ONrCharacter_NewAnimationHook(ONtCharacter *ioCharacter, ONtActiveCharacter
 
 				if (particle->particle_def->particle_class != NULL) {
 					// create the particle
-					particle->particle = ONiCharacter_AttachParticle(ioCharacter, ioActiveCharacter, 
+					particle->particle = ONiCharacter_AttachParticle(ioCharacter, ioActiveCharacter,
 															particle->particle_def->particle_class, particle->bodypart_index);
 				}
 
@@ -11647,11 +11647,11 @@ static void AttemptSpecificThrow(
 	UUtUns32 score;
 
 	if (UUmSQR(TRrAnimation_GetThrowDistance(inThrow)) >= inDistanceSquared) {
-		targetThrow = 
+		targetThrow =
 			TRrCollection_Lookup(
-			inSrcCharcter->characterClass->animations, 
-			inThrow->throwInfo->throwType, 
-			inDstActiveCharacter->nextAnimState, 
+			inSrcCharcter->characterClass->animations,
+			inThrow->throwInfo->throwType,
+			inDstActiveCharacter->nextAnimState,
 			inDstActiveCharacter->animVarient | ONcAnimVarientMask_Fight);
 
 		if (targetThrow != NULL) {
@@ -11755,7 +11755,7 @@ static const TRtAnimation *AttemptThrow(
 	}
 
 	distance_squared = MUrPoint_Distance_Squared(&ioCharacter->location, &target->location);
-	
+
 	{
 		TRtAnimVarient not_my_varients = ~(ioActiveCharacter->animVarient | ONcAnimVarientMask_Fight);
 		UUtInt32 itr;
@@ -11763,10 +11763,10 @@ static const TRtAnimation *AttemptThrow(
 		TRtAnimationCollectionPart *collection_entry;
 		TRtAnimationCollection *collection = ioCharacter->characterClass->animations;
 
-		for(collection = ioCharacter->characterClass->animations; collection != NULL; collection = TRrCollection_GetRecursive(collection)) 
+		for(collection = ioCharacter->characterClass->animations; collection != NULL; collection = TRrCollection_GetRecursive(collection))
 		{
 			TRrCollection_Lookup_Range(
-				collection, 
+				collection,
 				animType,
 				ioActiveCharacter->nextAnimState,
 				&collection_entry,
@@ -11777,7 +11777,7 @@ static const TRtAnimation *AttemptThrow(
 
 				if ((varient_mask & not_my_varients) != 0) {
 					// animation required varients that I do not posses
-					continue; 
+					continue;
 				}
 
 				AttemptSpecificThrow(ioCharacter, ioActiveCharacter, target, target_active, distance_squared, collection_entry->animation, &specificThrow);
@@ -11818,7 +11818,7 @@ static const TRtAnimation *RemapAnimationHook(ONtCharacter *ioCharacter, ONtActi
 			specific_throw.facingOffset = ONrCharacter_RelativeAngleToCharacter(ioCharacter, target);
 			if ((float)fabs(specific_throw.facingOffset) > M3cQuarterPi) {
 				COrConsole_Printf("### RemapAnimationHook: AI %s tried to throw %s but facing delta %f > 45 degrees",
-								ioCharacter->player_name, target->player_name, specific_throw.facingOffset * M3cRadToDeg);				
+								ioCharacter->player_name, target->player_name, specific_throw.facingOffset * M3cRadToDeg);
 
 			} else {
 				// attempt the throw
@@ -11836,7 +11836,7 @@ static const TRtAnimation *RemapAnimationHook(ONtCharacter *ioCharacter, ONtActi
 					return specific_throw.srcThrow;
 				} else {
 					COrConsole_Printf("### RemapAnimationHook: AI %s tried to throw %s (%s/%s) but was unable to",
-									ioCharacter->player_name, target->player_name, 
+									ioCharacter->player_name, target->player_name,
 									TMrInstance_GetInstanceName(throwanim), TMrInstance_GetInstanceName(specific_throw.dstThrow));
 				}
 			}
@@ -11919,14 +11919,14 @@ static void ONiCharacter_OldAnimationHook(ONtCharacter *ioCharacter, ONtActiveCh
 
 	if (ioCharacter->flags & ONcCharacterFlag_ChrAnimate) {
 		if (0 == ioActiveCharacter->animationLockFrames) {
-			ioCharacter->flags &= ~ONcCharacterFlag_ChrAnimate;	
+			ioCharacter->flags &= ~ONcCharacterFlag_ChrAnimate;
 		}
 	}
 
 //	UUmAssert((TRrAnimation_GetDuration(ioCharacter->animation) == ioCharacter->animFrame) || (!TRrAnimation_TestFlag(ioCharacter->animation, ONcAnimFlag_ThrowTarget)));
 
-	if ((ioActiveCharacter->curAnimType == ioActiveCharacter->lastAttack) && 
-		(ioActiveCharacter->lastAttackTime == ONcLastAttackTime_StillActive)) 
+	if ((ioActiveCharacter->curAnimType == ioActiveCharacter->lastAttack) &&
+		(ioActiveCharacter->lastAttackTime == ONcLastAttackTime_StillActive))
 	{
 		ioActiveCharacter->lastAttackTime = ONgGameState->gameTime;
 	}
@@ -12018,13 +12018,13 @@ void ONrCharacter_GetVelocityEstimate(const ONtCharacter *inCharacter, ONtActive
 		MUmVector_Add(runningTotal, runningTotal, curSample);
 		sampleSize++;
 
-		if (0 == animTime) { 
-			break; 
+		if (0 == animTime) {
+			break;
 		}
 
 		animTime--;
 	}
-	
+
 	MUmVector_Scale(runningTotal, 1.f / sampleSize);
 
 	*outVelocity = runningTotal;
@@ -12039,7 +12039,7 @@ void ONrCharacter_GetVelocityEstimate(const ONtCharacter *inCharacter, ONtActive
 void ONrCharacter_FightMode(ONtCharacter *ioCharacter)
 {
 	ONtActiveCharacter *active_character = ONrForceActiveCharacter(ioCharacter);
-	
+
 	if (active_character == NULL) {
 		return;
 	}
@@ -12055,7 +12055,7 @@ void ONrCharacter_FightMode(ONtCharacter *ioCharacter)
 void ONrCharacter_ExitFightMode(ONtCharacter *ioCharacter)
 {
 	ONtActiveCharacter *active_character = ONrForceActiveCharacter(ioCharacter);
-	
+
 	if (active_character == NULL) {
 		return;
 	}
@@ -12091,7 +12091,7 @@ void ONrCharacter_UpdateAnimationForVarient(ONtCharacter *ioCharacter, ONtActive
 	if (newAnimation) {
 		oldVarient = TRrAnimation_GetVarient(ioActiveCharacter->animation);
 		newVarient = TRrAnimation_GetVarient(newAnimation);
-	
+
 		if (newVarient > oldVarient) {
 			ONrCharacter_Stitch(ioCharacter, ioActiveCharacter, ioActiveCharacter->curFromState, newAnimation, 8);
 		}
@@ -12141,9 +12141,9 @@ ONrCharacter_SetHitPoints(
 	UUtUns32			inHitPoints)
 {
 	UUmAssert(ioCharacter);
-	
+
 	ioCharacter->hitPoints = inHitPoints;
-	
+
 	if ((inHitPoints > 0) && (ioCharacter->flags & ONcCharacterFlag_Dead_1_Animating))
 	{
 		ONrCharacter_Live_Hook(ioCharacter);
@@ -12209,9 +12209,9 @@ static UUtBool ONiCharacter_TestAndSetHit(ONtCharacter *ioCharacter, ONtActiveCh
 }
 
 void ONrCharacter_SetAnimation_External(
-	ONtCharacter *ioCharacter, 
-	TRtAnimState fromState, 
-	const TRtAnimation *inNewAnim, 
+	ONtCharacter *ioCharacter,
+	TRtAnimState fromState,
+	const TRtAnimation *inNewAnim,
 	UUtInt32 inStitchCount)
 {
 	ONtActiveCharacter *active_character = ONrForceActiveCharacter(ioCharacter);
@@ -12292,7 +12292,7 @@ static void ONrCharacter_Die_1_Animating_Hook(ONtCharacter *ioCharacter, ONtChar
 
 	// tell the AI2 system that a character is dying
 	AI2rNotify_Death(ioCharacter, inKiller);
-	
+
 	if (ioCharacter->charType == ONcChar_AI2) {
 		// delete this AI
 		AI2rDeleteState(ioCharacter);
@@ -12327,7 +12327,7 @@ static void ONrCharacter_Die_1_Animating_Hook(ONtCharacter *ioCharacter, ONtChar
 	ioCharacter->flags |= ONcCharacterFlag_Dead_1_Animating;
 	ioCharacter->time_of_death = ONgGameState->gameTime;
 	ioCharacter->death_delete_timer = ioCharacter->characterClass->death_deletedelay;
-	
+
 	// stop any super particle effects
 	ioCharacter->super_amount = 0.0f;
 
@@ -12356,7 +12356,7 @@ static void ONrCharacter_Die_1_Animating_Hook(ONtCharacter *ioCharacter, ONtChar
 
 static void ONrCharacter_Die_2_Moving_Hook(ONtCharacter *ioCharacter)
 {
-	ONtActiveCharacter *active_character = ONrGetActiveCharacter(ioCharacter); 
+	ONtActiveCharacter *active_character = ONrGetActiveCharacter(ioCharacter);
 
 	UUmAssert(0 == (ioCharacter->flags & ONcCharacterFlag_Dead_2_Moving));
 	UUmAssert(0 == (ioCharacter->flags & ONcCharacterFlag_Dead_3_Cosmetic));
@@ -12404,7 +12404,7 @@ static void ONrCharacter_Die_3_Cosmetic_Hook(ONtCharacter *ioCharacter)
 	ioCharacter->flags |= ONcCharacterFlag_Dead_3_Cosmetic;
 
 	ONrCharacter_DisablePhysics(ioCharacter);
-	
+
 	if (!ONrCharacter_IsActive(ioCharacter)) {
 		// delete this character immediately
 		ONrCharacter_Die_4_Gone_Hook(ioCharacter);
@@ -12477,10 +12477,10 @@ static UUtBool ONrCharacter_Collide_With_Part(UUtUns16 inPart)
 
 	switch(inPart)
 	{
-		case ONcLLeg_Index:	
+		case ONcLLeg_Index:
 		case ONcLLeg1_Index:
 		case ONcLFoot_Index:
-		case ONcRLeg_Index:	
+		case ONcRLeg_Index:
 		case ONcRLeg1_Index:
 		case ONcRFoot_Index:
 
@@ -12548,7 +12548,7 @@ ONrCharacter_Callback_FindEnvCollisions(
 		PHtCollider *newCollider;
 		UUtBool collide;
 		M3tPoint3D intersection;
-			
+
 		collide = PHrCollision_Quad_SphereTreeVector(
 			inEnvironment,	curCollision->gqIndex, active_character->sphereTree, &localVelocity, &intersection);
 
@@ -12612,7 +12612,7 @@ ONrCharacter_Callback_FindEnvCollisions(
 			(*ioNumColliders)++;
 		}
 	}
-	
+
 	return;
 }
 
@@ -12660,10 +12660,10 @@ static void ONrCharacter_Land(ONtCharacter *inCharacter, ONtActiveCharacter *ioA
 	else {
 		float falling_delta;
 		float fall_percent;
-		
+
 		falling_delta = character_class->airConstants.damage_end - character_class->airConstants.damage_start;
 		fall_percent = (falling_height - character_class->airConstants.damage_start) / falling_delta;
-		falling_damage = fall_percent * inCharacter->maxHitPoints; 
+		falling_damage = fall_percent * inCharacter->maxHitPoints;
 	}
 
 	if (falling_damage > 0.f) {
@@ -12674,13 +12674,13 @@ static void ONrCharacter_Land(ONtCharacter *inCharacter, ONtActiveCharacter *ioA
 		float falling_knockback = 0.f;
 
 		ONrCharacter_TakeDamage(
-			inCharacter, 
-			int_falling_damage, 
-			falling_knockback, 
-			NULL, 
-			NULL, 
-			WPcDamageOwner_Falling, 
-			ONcAnimType_Land_Dead);	
+			inCharacter,
+			int_falling_damage,
+			falling_knockback,
+			NULL,
+			NULL,
+			WPcDamageOwner_Falling,
+			ONcAnimType_Land_Dead);
 	}
 
 	ioActiveCharacter->inAirControl.velocity.x = 0;
@@ -12744,18 +12744,18 @@ static UUtBool FindGroundCollision(ONtCharacter *inCharacter, ONtActiveCharacter
 	velocity.y -= foot_offset + solid_offset;
 
 	if (gChrDebugFall) {
-		COrConsole_Printf("ground collision %s frame %d {fh %3.3f max %3.3f feet %3.3f} %3.3f -> %3.3f", 
-			inCharacter->player_name, 
-			ONgGameState->gameTime, 
+		COrConsole_Printf("ground collision %s frame %d {fh %3.3f max %3.3f feet %3.3f} %3.3f -> %3.3f",
+			inCharacter->player_name,
+			ONgGameState->gameTime,
 			foot_offset,
 			height,
 			feet_location,
-			sphere.center.y, 
+			sphere.center.y,
 			sphere.center.y + velocity.y);
 	}
 
 	AKrCollision_Sphere(
-		ONgGameState->level->environment, 
+		ONgGameState->level->environment,
 		&sphere,
 		&velocity,
 		AKcGQ_Flag_Chr_Col_Skip | AKcGQ_Flag_Wall,
@@ -12785,9 +12785,9 @@ static UUtBool FindGroundCollision(ONtCharacter *inCharacter, ONtActiveCharacter
 		float gq_plane_d, sphere_d;
 		UUtBool gq_is_floor;
 		UUtBool gq_is_ceiling;
-			
+
 		AKmPlaneEqu_GetComponents(
-			gqCollision->planeEquIndex, 
+			gqCollision->planeEquIndex,
 			environment->planeArray->planes,
 			gq_plane_normal.x,
 			gq_plane_normal.y,
@@ -12820,7 +12820,7 @@ static UUtBool FindGroundCollision(ONtCharacter *inCharacter, ONtActiveCharacter
 			float new_max;
 			float debug_min_y = UUcFloat_Max;
 			float debug_max_y = UUcFloat_Min;
-			
+
 
 			for(point_itr = 0; point_itr < num_points; point_itr++)
 			{
@@ -12932,7 +12932,7 @@ ONrCharacter_Callback_PrivateMovement(
 			active_character->inAirControl.jump_height = active_character->physics->position.y;
 		}
 
-		active_character->offGroundFrames++;		
+		active_character->offGroundFrames++;
 	}
 	else
 	{
@@ -13010,7 +13010,7 @@ ONrCharacter_Callback_FindPhyCollisions(
 	// player does not push weapons
 	skip_weapons = (character->charType == ONcChar_Player);
 	has_any_physics_collisions = !(character->flags & ONcCharacterFlag_Dead_2_Moving);
-	
+
 	if (has_any_physics_collisions) {
 		for (i=0; i < PHgPhysicsContextArray->num_contexts; i++)
 		{
@@ -13022,7 +13022,7 @@ ONrCharacter_Callback_FindPhyCollisions(
 			if (targetContext->callback->type == PHcCallback_Character) continue;
 			if (skip_weapons && (targetContext->callback->type == PHcCallback_Weapon)) continue;
 			if (targetContext->callback->type == PHcCallback_Powerup) continue;
-			if (targetContext->flags & PHcFlags_Physics_DontBlock) continue; 
+			if (targetContext->flags & PHcFlags_Physics_DontBlock) continue;
 
 			PHrPhysics_Single_PhyCollision(inContext, targetContext, inVelocity, outColliders, ioNumColliders);
 		}
@@ -13178,7 +13178,7 @@ ONtCharacterClass *ONrGetCharacterClass(const char *inString)
 		inString,
 		&result);
 
-	if (UUcError_None != error) { 
+	if (UUcError_None != error) {
 		result = NULL;
 	}
 
@@ -13209,13 +13209,13 @@ static void ONrCharacter_SetWeaponVarient(ONtCharacter *ioCharacter, ONtActiveCh
 		WPtWeaponClass		*weaponClass;
 		UUtBool two_handed_weapon;
 		UUtBool lefty;
-		
+
 		weaponClass = WPrGetClass(ioCharacter->inventory.weapons[0]);
 		UUmAssertReadPtr(weaponClass, sizeof(WPtWeaponClass));
 
 		two_handed_weapon = (weaponClass->flags & WPcWeaponClassFlag_TwoHanded) ? UUcTrue : UUcFalse;
 		lefty = ioCharacter->characterClass->leftHanded;
-		
+
 		if (lefty & two_handed_weapon) {
 			ioActiveCharacter->animVarient |= ONcAnimVarientMask_Lefty_Rifle;
 		}
@@ -13325,7 +13325,7 @@ void ONrCharacter_BuildPhysicsFlags(ONtCharacter *ioCharacter, ONtActiveCharacte
 	else {
 		myPhysics->flags &= ~PHcFlags_Physics_TwoReflectionPasses;
 	}
-	
+
 	if (ioCharacter->flags & ONcCharacterFlag_Dead_2_Moving) {
 		myPhysics->flags |= PHcFlags_Physics_DontBlock;
 	}
@@ -13593,7 +13593,7 @@ void ONrCharacter_PickupWeapon(
 		if (WPrSlot_FindEmpty(&inCharacter->inventory, &stowedSlot, UUcTrue)) {
 			WPrSlot_Swap(&inCharacter->inventory, stowedSlot, WPcPrimarySlot);
 			ONrCharacter_UseWeapon(inCharacter, NULL);
-		} 
+		}
 		else {
 			// no slots found. we must drop the weapon.
 			ONrCharacter_DropWeapon(inCharacter, UUcFalse, WPcPrimarySlot, UUcFalse);
@@ -13616,7 +13616,7 @@ void ONrCharacter_PickupPowerup(
 	WPtPowerup *inPowerup)
 {
 	if (inPowerup == NULL) { return; }
-	
+
 	if (WPrPowerup_Give(inCharacter, inPowerup->type, inPowerup->amount, UUcFalse, UUcTrue))
 	{
 		WPrPowerup_Delete(inPowerup);
@@ -13633,7 +13633,7 @@ void ONrCharacter_HandlePickupInput(
 {
 	WPtWeapon *weapon = NULL;
 	WPtPowerup *powerup = NULL;
-	
+
 	// can't do a pickup while running a reload or holster animation
 	if (ONrOverlay_IsActive(inActiveCharacter->overlay + ONcOverlayIndex_InventoryManagement)) {
 		return;
@@ -14059,9 +14059,9 @@ UUtBool ONrCharacter_Reload(ONtCharacter *ioCharacter, ONtActiveCharacter *ioAct
 		return UUcTrue;
 	}
 
-	reload_animation = TRrCollection_Lookup(ioCharacter->characterClass->animations, 
-											WPrGetClass(ioCharacter->inventory.weapons[0])->reloadAnimType, 
-											ONcAnimState_Standing, 
+	reload_animation = TRrCollection_Lookup(ioCharacter->characterClass->animations,
+											WPrGetClass(ioCharacter->inventory.weapons[0])->reloadAnimType,
+											ONcAnimState_Standing,
 											ioActiveCharacter->animVarient);
 	if (reload_animation != NULL) {
 		// use the ammo and start the reload
@@ -14098,9 +14098,9 @@ UUtBool ONrCharacter_Holster(ONtCharacter *ioCharacter, ONtActiveCharacter *ioAc
 
 		holster_animation =
 			TRrCollection_Lookup(
-				ioCharacter->characterClass->animations, 
-				holster_anim_type, 
-				ONcAnimState_Standing, 
+				ioCharacter->characterClass->animations,
+				holster_anim_type,
+				ONcAnimState_Standing,
 				ioActiveCharacter->animVarient);
 
 		if (NULL != holster_animation) {
@@ -14134,9 +14134,9 @@ void ONrCharacter_Draw(ONtCharacter *ioCharacter, ONtActiveCharacter *ioActiveCh
 
 		draw_animation =
 			TRrCollection_Lookup(
-				ioCharacter->characterClass->animations, 
-				draw_anim_type, 
-				ONcAnimState_Standing, 
+				ioCharacter->characterClass->animations,
+				draw_anim_type,
+				ONcAnimState_Standing,
 				ioActiveCharacter->animVarient);
 
 		if (NULL != draw_animation) {
@@ -14312,7 +14312,7 @@ void ONrCharacter_ConsoleAction_Begin(ONtCharacter *inCharacter, ONtActionMarker
 	UUmAssert( inCharacter );
 	UUmAssert( inActionMarker );
 	UUmAssert( !inCharacter->console_marker );
-	
+
 	// mark character as moving towards marker
 	inCharacter->console_marker = inActionMarker;
 
@@ -14345,7 +14345,7 @@ void ONrCharacter_ConsoleAction_Finish(ONtCharacter *inCharacter, UUtBool inSucc
 			// tell the AI that the console action completed, successfully or unsuccessfully
 			AI2rNotifyConsoleAction(inCharacter, inSuccess);
 		}
-	} 
+	}
 	else {
 		// we have been knocked out of the console action, don't try to draw our weapon ever
 		WPrInventory_Weapon_Purge_Magic(&inCharacter->inventory);
@@ -14371,8 +14371,8 @@ void ONrCharacter_ConsoleAction_Update(ONtCharacter *inCharacter, ONtActiveChara
 	float				new_facing;
 	float				min_distance = UUmFeet(4.0);
 	float				distance;
-	UUtBool				is_running_a_console_animation = 
-		(ioActiveCharacter->curAnimType == ONcAnimType_Console) ||  
+	UUtBool				is_running_a_console_animation =
+		(ioActiveCharacter->curAnimType == ONcAnimType_Console) ||
 		(ioActiveCharacter->curAnimType == ONcAnimType_Console_Punch);
 
 	UUmAssert( inCharacter );
@@ -14407,7 +14407,7 @@ void ONrCharacter_ConsoleAction_Update(ONtCharacter *inCharacter, ONtActiveChara
 	if (is_running_a_console_animation)
 	{
 		action_frame = UUmMin(ioActiveCharacter->animation->actionFrame, ioActiveCharacter->animation->numFrames - 1);
-		
+
 		UUmAssert( action_frame != -1 );
 
 		if (ioActiveCharacter->animFrame == action_frame)
@@ -14416,13 +14416,13 @@ void ONrCharacter_ConsoleAction_Update(ONtCharacter *inCharacter, ONtActiveChara
 			OBJrConsole_OnActivate( object, inCharacter );
 			ONrCharacter_ConsoleAction_Finish( inCharacter, UUcTrue );
 		}
-		return;		
+		return;
 	}
 
 	new_position.x = action_marker->position.x;
 	new_position.y = object->position.y;
 	new_position.z = action_marker->position.z;
-	
+
 	distance = MUmVector_GetDistance( inCharacter->location, new_position );
 
 	MUmVector_Subtract( new_vector, new_position, inCharacter->location );
@@ -14430,7 +14430,7 @@ void ONrCharacter_ConsoleAction_Update(ONtCharacter *inCharacter, ONtActiveChara
 	new_facing = MUrATan2( new_vector.x, new_vector.z );
 
 	UUmTrig_Clip( new_facing );
-	
+
 	// if we are close enough to the console...
 	if (distance < 2.f) {
 		// face the console...
@@ -14444,7 +14444,7 @@ void ONrCharacter_ConsoleAction_Update(ONtCharacter *inCharacter, ONtActiveChara
 		// run the console animation...
 		if (!ONrCharacter_IsReloading(inCharacter)) {
 			const TRtAnimation *new_animation;
-		
+
 			new_animation = ONrCharacter_DoAnimation( inCharacter, ioActiveCharacter, ONcAnimPriority_Force, (console_osd->flags & OBJcConsoleFlag_Punch) ? ONcAnimType_Console_Punch : ONcAnimType_Console );
 
 			if (NULL == new_animation) {
@@ -14465,18 +14465,18 @@ void ONrCharacter_ConsoleAction_Update(ONtCharacter *inCharacter, ONtActiveChara
 		if (ioActiveCharacter->curAnimType != ONcAnimType_Console_Walk) {
 			const TRtAnimation *animation = TRrCollection_Lookup(inCharacter->characterClass->animations, ONcAnimType_Console_Walk, ioActiveCharacter->nextAnimState, ioActiveCharacter->animVarient);
 
-			if (NULL != animation) { 
+			if (NULL != animation) {
 				ONrCharacter_SetAnimation_External(inCharacter, ioActiveCharacter->nextAnimState, animation, 12);
 			}
 		}
-		
+
 		inCharacter->desiredFacing = action_marker->direction;
 
 		MUmVector_Normalize(new_vector);
 		MUmVector_Scale( new_vector, (float)UUmMin( 0.25, distance ) );
 		new_position.x = inCharacter->location.x + new_vector.x;
 		new_position.y = inCharacter->location.y + new_vector.y;
-		new_position.z = inCharacter->location.z + new_vector.z;		
+		new_position.z = inCharacter->location.z + new_vector.z;
 
 		ONrCharacter_Teleport(inCharacter, &new_position, UUcFalse);
 	}
@@ -14519,7 +14519,7 @@ static void ONiSetupCharacterIntersectState(ONtCharacter *inCharacter, TRtCharac
 	outState->original_position = outState->position;
 	outState->dirty_position = UUcFalse;
 }
-						
+
 // set up an animation intersection context for determining whether one character can strike another
 void ONrSetupAnimIntersectionContext(ONtCharacter *inAttacker, ONtCharacter *inTarget,
 									 UUtBool inConsiderAttack, TRtAnimIntersectContext *outContext)
@@ -14594,10 +14594,10 @@ void ONrSetupAnimIntersectionContext(ONtCharacter *inAttacker, ONtCharacter *inT
 		costheta = MUrCos(inTarget->facing);	sintheta = MUrSin(inTarget->facing);
 		outContext->target_velocity_estimate.y = sintheta * delta_position.x + costheta * delta_position.z;
 		outContext->target_velocity_estimate.x = costheta * delta_position.x - sintheta * delta_position.x;
-	} else {		
+	} else {
 		// get a velocity estimate for the target - in XZ space, then transform to XY animspace.
 		ONrCharacter_GetVelocityEstimate(inTarget, target_active, &outContext->target_velocity_estimate);
-		outContext->target_velocity_estimate.y = outContext->target_velocity_estimate.z;		
+		outContext->target_velocity_estimate.y = outContext->target_velocity_estimate.z;
 	}
 
 	// use the delta-position to get the target's vertical motion
@@ -14922,7 +14922,7 @@ static UUtBool GetQuadRangeClipped(UUtInt32 inNumPoints, const M3tPoint3D **inPo
 	if (0 == new_total_points) { goto exit; }
 
 	if (new_total_points >= 3) {
-		for(itr = 0; itr < new_total_points; itr++) 
+		for(itr = 0; itr < new_total_points; itr++)
 		{
 			float y0 = clipped_points1[itr].y;
 			float y1 = clipped_points1[(itr + 1) % new_total_points].y;
@@ -14972,7 +14972,7 @@ static void ONrCorpse_Create(ONtCharacter *inCharacter)
 
 		ONrCorpse_Create_VisibleList(new_corpse);
 	}
-	
+
 	next++;
 
 	if (next >= count) {
@@ -15049,9 +15049,9 @@ static void  ONrCorpse_Display(M3tPoint3D *inCameraLocation)
 			}
 
 			// ONrCorpse_Print_NodeList(this_corpse->node_list);
-			
+
 			corpse_is_visible  = AKrEnvironment_NodeList_Visible(this_corpse->node_list);
-			
+
 			if (corpse_is_visible) {
 				if (character_class != NULL)
 				{
@@ -15125,7 +15125,7 @@ void ONrCharacter_Invis_Update(ONtCharacter *ioCharacter, ONtActiveCharacter *io
 		ioActiveCharacter->invis_active = UUcTrue;
 	}
 	else if ((invis_remaining > 0) || (ioActiveCharacter->invis_active)) {
-		
+
 		const UUtUns32 fade_out = 120;
 		float goal_invis_character_alpha = (invis_remaining > fade_out) ? 0.f : 1.f;
 		float fade_in_alpha_speed = 0.02f;
@@ -15432,7 +15432,7 @@ UUtBool ONrCharacter_AutoAim(ONtCharacter *ioCharacter, ONtActiveCharacter *ioAc
 	if (MUrPoint_Distance_Squared(&ioCharacter->location, &target->location) > UUmSQR(500.f)) {
 		goto exit;
 	}
-		
+
 	if (!gWeaponAutoAim) {
 		goto exit;
 	}
@@ -15462,8 +15462,8 @@ UUtBool ONrCharacter_AutoAim(ONtCharacter *ioCharacter, ONtActiveCharacter *ioAc
 		M3tVector3D aiming_vector;
 
 		ONrCreateTargetingVector(
-			&shoot_location, 
-			&src_location, 
+			&shoot_location,
+			&src_location,
 			&WPrGetClass(ioCharacter->inventory.weapons[0])->ai_parameters,
 			ioActiveCharacter->matricies + ONcWeapon_Index,
 			&aiming_vector);
@@ -15536,7 +15536,7 @@ void ONrCharacter_CinematicEndHolster(ONtCharacter *inCharacter, UUtBool inForce
 
 	if (inCharacter->inventory.weapons[0] != NULL) {
 		return;
-	} 
+	}
 
 	{
 		ONtActiveCharacter *active_character = ONrGetActiveCharacter(inCharacter);
@@ -15585,8 +15585,8 @@ UUtBool ONrCharacter_IsGunThroughWall(ONtCharacter *inCharacter, ONtActiveCharac
 
 	{
 		UUtUns32 attachment_index;
-		
-		for (attachment_index = 0; attachment_index < weapon_class->attachment_count; attachment_index++) 
+
+		for (attachment_index = 0; attachment_index < weapon_class->attachment_count; attachment_index++)
 		{
 			WPtParticleAttachment *attachment = weapon_class->attachment + attachment_index;
 
@@ -15621,7 +15621,7 @@ UUtBool ONrCharacter_IsGunThroughWall(ONtCharacter *inCharacter, ONtActiveCharac
 
 	// NOTE: if the character is shooting over a ledge with a long weapon this function may fail when it should
 	// pass, fix later. -Michael Evans july 1, 2000
-	
+
 exit:
 	return gun_is_through_wall;
 }
@@ -15790,14 +15790,14 @@ UUtUns16 ONrCharacter_GetAnimationImpactType(UUtUns16 inAnimType)
 		{ONcAnimType_Walk_Start,						ONcAnimationImpact_Walk},
 		{ONcAnimType_Walk_Sidestep_Left,				ONcAnimationImpact_Walk},
 		{ONcAnimType_Walk_Sidestep_Right,				ONcAnimationImpact_Walk},
-		{ONcAnimType_Walk_Backwards,					ONcAnimationImpact_Walk},				
+		{ONcAnimType_Walk_Backwards,					ONcAnimationImpact_Walk},
 		{ONcAnimType_Console_Walk,						ONcAnimationImpact_Walk},
 		{ONcAnimType_Walk_Stop,							ONcAnimationImpact_WalkStop},
 
 		// running footsteps
 		{ONcAnimType_Run,								ONcAnimationImpact_Run},
 		{ONcAnimType_Run_Backwards,						ONcAnimationImpact_Run},
-		{ONcAnimType_Run_Sidestep_Left,					ONcAnimationImpact_Run},			
+		{ONcAnimType_Run_Sidestep_Left,					ONcAnimationImpact_Run},
 		{ONcAnimType_Run_Sidestep_Right,				ONcAnimationImpact_Run},
 		{ONcAnimType_Run_Start,							ONcAnimationImpact_RunStart},
 		{ONcAnimType_Run_Backwards_Start,				ONcAnimationImpact_RunStart},
@@ -15807,28 +15807,28 @@ UUtUns16 ONrCharacter_GetAnimationImpactType(UUtUns16 inAnimType)
 		{ONcAnimType_1Step_Stop,						ONcAnimationImpact_1Step},
 
 		// crouching footsteps
-		{ONcAnimType_Crouch_Run,						ONcAnimationImpact_Crouch},				
-		{ONcAnimType_Crouch_Run_Backwards,				ONcAnimationImpact_Crouch},		
+		{ONcAnimType_Crouch_Run,						ONcAnimationImpact_Crouch},
+		{ONcAnimType_Crouch_Run_Backwards,				ONcAnimationImpact_Crouch},
 		{ONcAnimType_Crouch_Run_Sidestep_Left,			ONcAnimationImpact_Crouch},
 		{ONcAnimType_Crouch_Run_Sidestep_Right,			ONcAnimationImpact_Crouch},
 		{ONcAnimType_Crouch_Walk,						ONcAnimationImpact_Crouch},
 		{ONcAnimType_Crouch_Walk_Backwards,				ONcAnimationImpact_Crouch},
 		{ONcAnimType_Crouch_Walk_Sidestep_Left,			ONcAnimationImpact_Crouch},
-		{ONcAnimType_Crouch_Walk_Sidestep_Right,		ONcAnimationImpact_Crouch},	
+		{ONcAnimType_Crouch_Walk_Sidestep_Right,		ONcAnimationImpact_Crouch},
 
 		// sliding
 		{ONcAnimType_Slide,								ONcAnimationImpact_Slide},
 
 		// knockdowns
 		{ONcAnimType_Blownup,							ONcAnimationImpact_Knockdown},
-		{ONcAnimType_Blownup_Behind,					ONcAnimationImpact_Knockdown},				
+		{ONcAnimType_Blownup_Behind,					ONcAnimationImpact_Knockdown},
 		{ONcAnimType_Knockdown_Head,					ONcAnimationImpact_Knockdown},
-		{ONcAnimType_Knockdown_Body,					ONcAnimationImpact_Knockdown},				
+		{ONcAnimType_Knockdown_Body,					ONcAnimationImpact_Knockdown},
 		{ONcAnimType_Knockdown_Foot,					ONcAnimationImpact_Knockdown},
 		{ONcAnimType_Knockdown_Crouch,					ONcAnimationImpact_Knockdown},
 		{ONcAnimType_Knockdown_Head_Behind,				ONcAnimationImpact_Knockdown},
 		{ONcAnimType_Knockdown_Body_Behind,				ONcAnimationImpact_Knockdown},
-		{ONcAnimType_Knockdown_Foot_Behind,				ONcAnimationImpact_Knockdown},		
+		{ONcAnimType_Knockdown_Foot_Behind,				ONcAnimationImpact_Knockdown},
 		{ONcAnimType_Knockdown_Crouch_Behind,			ONcAnimationImpact_Knockdown},
 
 		// been thrown
@@ -15852,7 +15852,7 @@ UUtUns16 ONrCharacter_GetAnimationImpactType(UUtUns16 inAnimType)
 
 		// landing
 		{ONcAnimType_Land,								ONcAnimationImpact_Land},
-		{ONcAnimType_Land_Forward,						ONcAnimationImpact_Land},				
+		{ONcAnimType_Land_Forward,						ONcAnimationImpact_Land},
 		{ONcAnimType_Land_Right,						ONcAnimationImpact_Land},
 		{ONcAnimType_Land_Left,							ONcAnimationImpact_Land},
 		{ONcAnimType_Land_Back,							ONcAnimationImpact_Land},
@@ -15874,12 +15874,12 @@ UUtUns16 ONrCharacter_GetAnimationImpactType(UUtUns16 inAnimType)
 		{ONcAnimType_Kick_Left,							ONcAnimationImpact_Land},
 		{ONcAnimType_Kick_Right,						ONcAnimationImpact_Land},
 		{ONcAnimType_Kick_Back,							ONcAnimationImpact_Land},
-		{ONcAnimType_Kick_Low,							ONcAnimationImpact_Land},					
+		{ONcAnimType_Kick_Low,							ONcAnimationImpact_Land},
 		{ONcAnimType_Punch_Forward,						ONcAnimationImpact_Land},
 		{ONcAnimType_Punch_Left,						ONcAnimationImpact_Land},
 		{ONcAnimType_Punch_Right,						ONcAnimationImpact_Land},
 		{ONcAnimType_Punch_Back,						ONcAnimationImpact_Land},
-		{ONcAnimType_Punch_Low,							ONcAnimationImpact_Land},					
+		{ONcAnimType_Punch_Low,							ONcAnimationImpact_Land},
 		{ONcAnimType_Kick2,								ONcAnimationImpact_Land},
 		{ONcAnimType_Kick3,								ONcAnimationImpact_Land},
 		{ONcAnimType_Kick3_Forward,						ONcAnimationImpact_Land},
@@ -15887,12 +15887,12 @@ UUtUns16 ONrCharacter_GetAnimationImpactType(UUtUns16 inAnimType)
 		{ONcAnimType_Punch3,							ONcAnimationImpact_Land},
 		{ONcAnimType_Punch4,							ONcAnimationImpact_Land},
 		{ONcAnimType_PPK,								ONcAnimationImpact_Land},
-		{ONcAnimType_PKK,								ONcAnimationImpact_Land},						
+		{ONcAnimType_PKK,								ONcAnimationImpact_Land},
 		{ONcAnimType_PKP,								ONcAnimationImpact_Land},
 		{ONcAnimType_KPK,								ONcAnimationImpact_Land},
 		{ONcAnimType_KPP,								ONcAnimationImpact_Land},
 		{ONcAnimType_KKP,								ONcAnimationImpact_Land},
-		{ONcAnimType_PK,								ONcAnimationImpact_Land},							
+		{ONcAnimType_PK,								ONcAnimationImpact_Land},
 		{ONcAnimType_KP,								ONcAnimationImpact_Land},
 		{ONcAnimType_PPKK,								ONcAnimationImpact_Land},
 		{ONcAnimType_PPKKK,								ONcAnimationImpact_Land},
@@ -15900,12 +15900,12 @@ UUtUns16 ONrCharacter_GetAnimationImpactType(UUtUns16 inAnimType)
 		{ONcAnimType_Punch_Heavy,						ONcAnimationImpact_Land},
 		{ONcAnimType_Kick_Heavy,						ONcAnimationImpact_Land},
 		{ONcAnimType_Punch_Forward_Heavy,				ONcAnimationImpact_Land},
-		{ONcAnimType_Kick_Forward_Heavy,				ONcAnimationImpact_Land},			
+		{ONcAnimType_Kick_Forward_Heavy,				ONcAnimationImpact_Land},
 		{ONcAnimType_Run_Kick,							ONcAnimationImpact_Land},
 		{ONcAnimType_Run_Punch,							ONcAnimationImpact_Land},
 		{ONcAnimType_Run_Back_Punch,					ONcAnimationImpact_Land},
 		{ONcAnimType_Run_Back_Kick,						ONcAnimationImpact_Land},
-		{ONcAnimType_Sidestep_Left_Kick,				ONcAnimationImpact_Land},			
+		{ONcAnimType_Sidestep_Left_Kick,				ONcAnimationImpact_Land},
 		{ONcAnimType_Sidestep_Left_Punch,				ONcAnimationImpact_Land},
 		{ONcAnimType_Sidestep_Right_Kick,				ONcAnimationImpact_Land},
 		{ONcAnimType_Sidestep_Right_Punch,				ONcAnimationImpact_Land},
@@ -15991,8 +15991,8 @@ void ONrCharacter_PlayAnimationImpact(ONtCharacter *ioCharacter, ONtActiveCharac
 
 	sprintf(msgbuf, "%s(%s) %s%d", TMrInstance_GetInstanceName(ioActiveCharacter->animation), ONrAnimTypeToString(ioActiveCharacter->curAnimType),
 				(inFootstep == TRcFootstep_None) ? "" :
-				(inFootstep == TRcFootstep_Left) ? "L" : 
-				(inFootstep == TRcFootstep_Right) ? "R" : 
+				(inFootstep == TRcFootstep_Left) ? "L" :
+				(inFootstep == TRcFootstep_Right) ? "R" :
 				(inFootstep == TRcFootstep_Single) ? "S" : "?", ioActiveCharacter->animFrame);
 
 	anim_impact_type = ONrCharacter_GetAnimationImpactType(ioActiveCharacter->curAnimType);
@@ -16026,7 +16026,7 @@ void ONrCharacter_PlayAnimationImpact(ONtCharacter *ioCharacter, ONtActiveCharac
 			}
 		}
 		COrConsole_Printf("%s: anim_impact_type %s -> impact %s (floor %s)", msgbuf,
-			(impact_type->name == NULL) ? "<error>" : impact_type->name, MArImpactType_GetName(impact->impact_type), 
+			(impact_type->name == NULL) ? "<error>" : impact_type->name, MArImpactType_GetName(impact->impact_type),
 			MArMaterialType_GetName(material_type));
 	}
 
@@ -16084,7 +16084,7 @@ UUtError ONrCharacter_MakeInactive(ONtCharacter *ioCharacter)
 		active_index = ONrCharacter_GetActiveIndex(ioCharacter);
 		UUmAssert((active_index >= 0) && (active_index < ONgGameState->usedActiveCharacters));
 		activeCharacter = ONgGameState->activeCharacterStorage + active_index;
-		
+
 		UUmAssert(activeCharacter->active_index == ioCharacter->active_index);
 		if (activeCharacter->index == ioCharacter->index) {
 			ONrGameState_DeleteActiveCharacter(activeCharacter, UUcTrue);
@@ -16137,17 +16137,17 @@ void ONrCharacter_MinorHitReaction(ONtCharacter *ioCharacter)
 
 	hit_overlay =
 		TRrCollection_Lookup(
-		ioCharacter->characterClass->animations, 
-		hit_overlay_anim_type, 
-		ONcAnimState_Anything, 
+		ioCharacter->characterClass->animations,
+		hit_overlay_anim_type,
+		ONcAnimState_Anything,
 		active_character->animVarient);
 
 	if (NULL == hit_overlay) {
 		hit_overlay =
 			TRrCollection_Lookup(
-			ioCharacter->characterClass->animations, 
-			ONcAnimType_Hit_Overlay, 
-			ONcAnimState_Anything, 
+			ioCharacter->characterClass->animations,
+			ONcAnimType_Hit_Overlay,
+			ONcAnimState_Anything,
 			active_character->animVarient);
 	}
 
@@ -16191,7 +16191,7 @@ const TRtAnimation *ONrCharacter_TryImmediateAnimation(ONtCharacter *ioCharacter
 M3tMatrix4x3 *ONrCharacter_GetMatrix(ONtCharacter *inCharacter, UUtUns32 inIndex)
 {
 	ONtActiveCharacter *active_character = ONrGetActiveCharacter(inCharacter);
-	
+
 	if (active_character == NULL) {
 		return NULL;
 	} else {
@@ -16229,7 +16229,7 @@ void ONrCharacter_ForceStand(ONtCharacter *inCharacter)
 UUtBool ONrActiveCharacter_IsPlayingThisAnimationName(ONtActiveCharacter *inActiveCharacter, const char *inDesiredAnimationName)
 {
 	UUtBool is_playing_the_animation = UUcFalse;
-	
+
 	if (NULL != inActiveCharacter) {
 		const char *animation_instance_name;
 
@@ -16320,7 +16320,7 @@ UUtBool ONrCharacter_Collide_Ray(ONtCharacter *inCharacter, M3tPoint3D *inPoint,
 				bbox.maxPoint.x += ONgCharacterCollision_Grow;
 				bbox.maxPoint.y += ONgCharacterCollision_Grow;
 				bbox.maxPoint.z += ONgCharacterCollision_Grow;
-				
+
 				if ((bbox.minPoint.x >= bbox.maxPoint.x) ||
 					(bbox.minPoint.y >= bbox.maxPoint.y) ||
 					(bbox.minPoint.z >= bbox.maxPoint.z)) {
@@ -16552,7 +16552,7 @@ void ONrGameState_NotifyCameraCut(void)
 	for(itr = 0; itr < count; itr++)
 	{
 		ONtActiveCharacter *active_character = ONrGetActiveCharacter(characters[itr]);
-		
+
 		if (NULL != active_character) {
 			active_character->curBody = TRcBody_NotDrawn;
 		}
@@ -16612,7 +16612,7 @@ void ONrGameState_DisplayAiming(void)
 
 		M3rDraw_State_SetInt(M3cDrawStateIntType_Fog, M3cDrawStateFogDisable);
 		M3rGeom_State_Commit();
-	
+
 		WPrDrawSprite(sprite, &ONgLaserStop, scale_mode);
 	M3rGeom_State_Pop();
 
@@ -16740,7 +16740,7 @@ static void ONiCharacter_PainUpdate(ONtCharacter *ioCharacter)
 {
 	ONtPainConstants *pain_constants = &ioCharacter->characterClass->painConstants;
 	UUtUns32 current_time = ONrGameState_GetGameTime();
-	
+
 	if (ioCharacter->painState.decay_timer > 0) {
 		ioCharacter->painState.decay_timer--;
 
@@ -16792,7 +16792,7 @@ static void ONiCharacter_QueueHurtSound(ONtCharacter *ioCharacter, UUtUns32 inHu
 	}
 
 	ioCharacter->painState.queue_timer = ONcPain_DelayFrames;
-	ioCharacter->painState.queue_type = inHurtType;	
+	ioCharacter->painState.queue_type = inHurtType;
 	ioCharacter->painState.queue_volume = inVolume;
 }
 
@@ -16885,7 +16885,7 @@ void ONrCharacter_Pain(ONtCharacter *ioCharacter, UUtUns32 inDamage, UUtUns32 in
 	// play the sound
 	ONiCharacter_QueueHurtSound(ioCharacter, pain_type, volume);
 
-/*	COrConsole_Printf("  done %s, now %d / %d, timer frames %d", 
+/*	COrConsole_Printf("  done %s, now %d / %d, timer frames %d",
 		ONcPainTypeName[ioCharacter->painState.last_sound_type], ioCharacter->painState.num_light, ioCharacter->painState.num_medium,
 		ioCharacter->painState.last_sound_time + pain_constants->hurt_min_timer - current_time);*/
 }
@@ -16939,7 +16939,7 @@ UUtError ONrCharacterClass_ProcHandler(TMtTemplateProc_Message inMessage, void *
 										void *inPrivateData)
 {
 	ONtCharacterClass *character_class = (ONtCharacterClass *) inInstancePtr;
-	
+
 	// handle the message
 	switch (inMessage)
 	{
@@ -16950,7 +16950,7 @@ UUtError ONrCharacterClass_ProcHandler(TMtTemplateProc_Message inMessage, void *
 			}
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -17042,7 +17042,7 @@ static void ONrCharacter_VerifyExtraBody(ONtCharacter *ioCharacter, ONtActiveCha
 		if (character_has_weapon_in_hand && !character_has_extra_body) {
 			COrConsole_Printf("character has a weapon but no extra body");
 
-			ioActiveCharacter->extraBody->parts[0].geometry = WPrGetClass(ioCharacter->inventory.weapons[0])->geometry;		
+			ioActiveCharacter->extraBody->parts[0].geometry = WPrGetClass(ioCharacter->inventory.weapons[0])->geometry;
 		}
 		else if (!character_has_weapon_in_hand && character_has_extra_body) {
 			COrConsole_Printf("character has no weapon but does have extra body");
@@ -17133,7 +17133,7 @@ static void ONrCharacter_SetMovementThisFrame(ONtCharacter *inCharacter, ONtActi
 
 	inActiveCharacter->movementThisFrame.x = inVector->x;
 	inActiveCharacter->movementThisFrame.z = inVector->z;
-	
+
 	if (inVector->y < 0.f) {
 		inActiveCharacter->movementThisFrame.y = 0.f;
 		inActiveCharacter->gravityThisFrame = inVector->y;

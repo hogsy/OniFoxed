@@ -1,12 +1,12 @@
 /*
 	FILE:	RV_DrawContext_Private.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 17, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -32,11 +32,11 @@ typedef struct RVtTextureMapPrivate
 	UUtUns32 			raveFlags;
 	TQAImagePixelType	pixelType;
 	TQAImage			image[9];
-	
+
 	void*				convertedData;
-	
+
 	TQATexture*			raveTexture;
-	
+
 } RVtTextureMapPrivate;
 
 #define RVcStateStack_MaxDepth 3
@@ -49,9 +49,9 @@ typedef struct RVtDrawContextPrivate
 
 	UUtUns16			width;
 	UUtUns16			height;
-	
+
 	UUtUns8				stateFlags;
-	
+
 	UUtUns16					stateTOS;
 	void*						statePtrStack[RVcStateStack_MaxDepth][M3cDrawStatePtrType_NumTypes];
 	UUtInt32					stateIntStack[RVcStateStack_MaxDepth][M3cDrawStateIntType_NumTypes];

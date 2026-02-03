@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_GC_Method_Camera.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -21,7 +21,7 @@ MSrCamera_Initialize(
 void
 MSrCamera_UpdateMatrices(
 	MStGeomCamera*			inCameraPrivate);
-	
+
 UUtError
 MSrGeomContext_Method_Camera_New(
 	M3tGeomCamera*		*outCamera);

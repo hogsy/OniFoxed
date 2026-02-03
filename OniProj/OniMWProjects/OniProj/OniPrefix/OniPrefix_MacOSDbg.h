@@ -10,29 +10,29 @@
 	#define DEBUGGING			1
 
 	#define MSmPixelTouch		0
-	
+
 	#define DEBUGGING_STOPONERROR	1
-	
+
 	#define UUmDebuggerSymFileName	"OniDbg.xSYM"
-	
+
 	#define	UUmPasswordProtect	0
-	
+
 	#if !defined(UUmPlatform) && !defined(UUmPlatform_Mac)
 		#define UUmPlatform_Mac			2
 		#define UUmPlatform				UUmPlatform_Mac
-	
+
 		#include "gl_code_version.h"
-	
+
 		#undef UUmPlatform
 		#undef UUmPlatform_Mac
-	
+
 	#else
 		#include "gl_code_version.h"
 
 	#endif
 
 	#define SHIPPING_VERSION	0
-	
+
 	#if SHIPPING_VERSION
 	#define STAND_ALONE_ONLY 1
 	#else

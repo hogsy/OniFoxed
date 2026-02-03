@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Melee.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: May 19, 2000
-	
+
 	PURPOSE: Melee AI for Oni
-	
+
 	Copyright (c) 2000
 
 */

@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_GC_Method_Matrix.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -35,23 +35,23 @@ MSrGeomContext_Method_MatrixStack_Push(
 {
 	UUtInt32*				tosPtr;
 	UUtInt32				tosValue;
-	
+
 	if(MSgGeomContextPrivate->matrix_TOS >= M3cModelMatrix_MaxDepth)
 	{
 		return UUcError_Generic;
 	}
-	
+
 	tosPtr = &MSgGeomContextPrivate->matrix_TOS;
-	
+
 	tosValue = *tosPtr;
-	
+
 	(MSgGeomContextPrivate->matrixStack)[tosValue + 1] =
 		(MSgGeomContextPrivate->matrixStack)[tosValue];
 
-	*tosPtr += 1;	
-	
+	*tosPtr += 1;
+
 	MSgGeomContextPrivate->matrixStackTop++;
-	
+
 	MSgGeomContextPrivate->matrixStackDirty = UUcTrue;
 
 	MSmStackVerify();
@@ -75,13 +75,13 @@ MSrGeomContext_Method_MatrixStack_Pop(
 	{
 		*tosPtr -= 1;
 	}
-	
+
 	MSgGeomContextPrivate->matrixStackTop--;
-	
+
 	MSgGeomContextPrivate->matrixStackDirty = UUcTrue;
 
 	MSmStackVerify();
-	
+
 	return UUcError_None;
 }
 
@@ -92,7 +92,7 @@ MSrGeomContext_Method_MatrixStack_Get(
 	M3tMatrix4x3				*curModelMatrix = (M3tMatrix4x3 *) MSgGeomContextPrivate->matrixStackTop;
 
 	UUmAssertWritePtr(outMatrix3, sizeof(M3tMatrix4x3));
-	
+
 	*outMatrix3 = *curModelMatrix;
 
 	return UUcError_None;
@@ -104,32 +104,32 @@ MSrGeomContext_Method_MatrixStack_Identity(
 {
 	M3tMatrix4x3*			m;
 	UUtInt32				tosValue;
-	
+
 	tosValue = MSgGeomContextPrivate->matrix_TOS;
-	
+
 	m = &(MSgGeomContextPrivate->matrixStack)[tosValue];
 
-	// build identity matrix	
+	// build identity matrix
 	m->m[0][0] = 1.0f;
 	m->m[0][1] = 0.0f;
 	m->m[0][2] = 0.0f;
-	
+
 	m->m[1][0] = 0.0f;
 	m->m[1][1] = 1.0f;
 	m->m[1][2] = 0.0f;
-	
+
 	m->m[2][0] = 0.0f;
 	m->m[2][1] = 0.0f;
 	m->m[2][2] = 1.0f;
-	
+
 	m->m[3][0] = 0.0f;
 	m->m[3][1] = 0.0f;
 	m->m[3][2] = 0.0f;
-	
+
 	MSgGeomContextPrivate->matrixStackDirty = UUcTrue;
 
 	MSmStackVerify();
-	
+
 	return UUcError_None;
 }
 
@@ -137,10 +137,10 @@ UUtError
 MSrGeomContext_Method_MatrixStack_Clear(
 	void)
 {
-	
+
 	// remove everything from the stack and the final element is the identity
 	MSgGeomContextPrivate->matrix_TOS = 0;
-	
+
 	MSgGeomContextPrivate->matrixStackTop = MSgGeomContextPrivate->matrixStack;
 
 	MSrGeomContext_Method_MatrixStack_Identity();
@@ -148,7 +148,7 @@ MSrGeomContext_Method_MatrixStack_Clear(
 	MSgGeomContextPrivate->matrixStackDirty = UUcTrue;
 
 	MSmStackVerify();
-	
+
 	return UUcError_None;
 }
 
@@ -176,14 +176,14 @@ MSrGeomContext_Method_MatrixStack_Rotate(
 	UUmAssert(inY > -1e9f && inY < 1e9f);
 	UUmAssert(inZ > -1e9f && inZ < 1e9f);
 	UUmAssertTrigRange(inRadians);
-	
+
 	MUrMatrix_BuildRotate(
 		inRadians,
 		inX,
 		inY,
 		inZ,
 		&matrix);
-	
+
 	MSmMatrixVerify(&matrix);
 	MSiStackMultiply(&matrix);
 	MSmStackVerify();
@@ -240,7 +240,7 @@ MSrGeomContext_Method_MatrixStack_Multiply(
 }
 
 void MSrGeomContext_Method_MatrixToQuat(
-	const M3tMatrix4x3 *inMatrix, 
+	const M3tMatrix4x3 *inMatrix,
 	M3tQuaternion *outQuat)
 {
 	M3tMatrix4x3 *privateInMatrix = (M3tMatrix4x3 *) inMatrix;
@@ -250,7 +250,7 @@ void MSrGeomContext_Method_MatrixToQuat(
 
 void
 MSrGeomContext_Method_QuatToMatrix(
-	const M3tQuaternion *inQuat, 
+	const M3tQuaternion *inQuat,
 	M3tMatrix4x3 *outMatrix)
 {
 	M3tMatrix4x3 *privateOutMatrix = (M3tMatrix4x3 *) outMatrix;
@@ -258,9 +258,9 @@ MSrGeomContext_Method_QuatToMatrix(
 	MUrQuatToMatrix(inQuat, privateOutMatrix);
 }
 
-void 
+void
 MSrGeomContext_Method_Matrix_GetTranslation(
-	const M3tMatrix4x3 *inMatrix, 
+	const M3tMatrix4x3 *inMatrix,
 	M3tPoint3D *outTranslation)
 {
 	M3tMatrix4x3 *privateInMatrix = (M3tMatrix4x3 *) inMatrix;
@@ -270,8 +270,8 @@ MSrGeomContext_Method_Matrix_GetTranslation(
 
 void
 MSrGeomContext_Method_Matrix_Multiply (
-	const M3tMatrix4x3	*inMatrixA, 
-	const M3tMatrix4x3	*inMatrixB, 
+	const M3tMatrix4x3	*inMatrixA,
+	const M3tMatrix4x3	*inMatrixB,
 	M3tMatrix4x3			*outResult)
 {
 	M3tMatrix4x3 *pInA = (M3tMatrix4x3 *) inMatrixA;
@@ -283,9 +283,9 @@ MSrGeomContext_Method_Matrix_Multiply (
 
 void
 MSrGeomContext_Method_Matrix_MultiplyPoints (
-	const M3tMatrix4x3	 *inMatrix, 
+	const M3tMatrix4x3	 *inMatrix,
 	const UUtUns16	      inNumPoints,
-	const M3tPoint3D	 *inPoints, 
+	const M3tPoint3D	 *inPoints,
 	M3tPoint3D			 *outPoints)
 {
 	M3tMatrix4x3 *privateInMatrix = (M3tMatrix4x3 *) inMatrix;

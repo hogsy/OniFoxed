@@ -33,14 +33,14 @@ WMrCursor_Draw(
 	IMtPoint2D				*inDestination)
 {
 	M3tPointScreen			dest;
-	
+
 	if (WMgCursor_Visible == UUcFalse) { return; }
-	
+
 	dest.x = (float)(inDestination->x - WMcCursor_Center_X);
 	dest.y = (float)(inDestination->y - WMcCursor_Center_Y);
 	dest.z = 0.5f;
 	dest.invW = 1.0f / 0.5f;
-	
+
 	PSrPartSpec_Draw(
 		inCursor->cursor_partspec,
 		PScPart_MiddleMiddle,
@@ -59,7 +59,7 @@ WMrCursor_Get(
 	WMtCursorList			*cursor_list;
 	UUtUns32				i;
 	WMtCursor				*cursor;
-	
+
 	error =
 		TMrInstance_GetDataPtr(
 			WMcTemplate_CursorList,
@@ -69,9 +69,9 @@ WMrCursor_Get(
 	{
 		return NULL;
 	}
-	
+
 	cursor = NULL;
-	
+
 	for (i = 0; i < cursor_list->num_cursors; i++)
 	{
 		if (cursor_list->cursors[i].cursor_type == inCursorType)
@@ -80,7 +80,7 @@ WMrCursor_Get(
 			break;
 		}
 	}
-	
+
 	return cursor;
 }
 
@@ -103,7 +103,7 @@ WMrCursor_RegisterTemplates(
 	void)
 {
 	UUtError				error;
-	
+
 	error =
 		TMrTemplate_Register(
 			WMcTemplate_CursorList,

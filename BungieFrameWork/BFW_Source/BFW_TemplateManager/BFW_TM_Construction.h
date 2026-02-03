@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_TM_Construction.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 8, 1997
-	
+
 	PURPOSE: Manage data file construction
-	
+
 	Copyright 1997
 
 */
@@ -27,13 +27,13 @@ extern "C" {
 
 	void TMrConstruction_MajorCheck(
 		void);
-	
+
 	#define TMmConstruction_MajorCheck()	TMrConstruction_MajorCheck()
-	
+
 #else
 
 	#define TMmConstruction_MajorCheck()
-	
+
 #endif
 
 UUtError
@@ -80,7 +80,7 @@ UUtBool
 TMrConstruction_Instance_CheckExists(
 	TMtTemplateTag		inTemplateTag,
 	const char*			inInstanceName);
-	
+
 UUtError
 TMrConstruction_Instance_NewUnique(
 	TMtTemplateTag		inTemplateTag,

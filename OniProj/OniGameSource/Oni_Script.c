@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_Script.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Nov 13, 1999
-	
+
 	PURPOSE:
-	
+
 	Copyright 1997, 1998
 
 */
@@ -48,7 +48,7 @@ ONiScript_LoadDirectory(
 	BFtFileRef			curFileRef;
 
 	UUrMemory_Clear(&curFileRef, sizeof(curFileRef));
-	
+
 	error =
 		BFrDirectory_FileIterator_New(
 			inDirectoryRef,
@@ -56,23 +56,23 @@ ONiScript_LoadDirectory(
 			".bsl",
 			&fileIterator);
 	if(error != UUcError_None) goto abort;
-	
+
 	while(1)
 	{
 		error = BFrDirectory_FileIterator_Next(fileIterator, &curFileRef);
 		if(error != UUcError_None) break;
-		
+
 		error = BFrFileRef_LoadIntoMemory(&curFileRef, &length, &textFile);
 		if(error != UUcError_None) goto abort;
-		
+
 		error =	SLrScript_Database_Add(BFrFileRef_GetLeafName(&curFileRef), textFile);
 		if(error != UUcError_None) goto abort;
-				
+
 		UUrMemory_Block_Delete(textFile);
 	}
-	
+
 	BFrDirectory_FileIterator_Delete(fileIterator);
-	
+
 	return UUcError_None;
 
 abort:
@@ -93,7 +93,7 @@ ONiScript_Reload(
 	UUtError	error;
 	BFtFileRef	levelRef;
 	char		buffer[256];
-	
+
 	SLrScript_Database_Reset();
 
 	levelRef = TMgDataFolderRef;
@@ -107,7 +107,7 @@ ONiScript_Reload(
 		COrConsole_Printf("Could not find \"%s\" IGMD directory", ONgScript_LevelName);
 		return UUcError_None;
 	}
-	
+
 	// load all script files
 	error = ONiScript_LoadDirectory(&levelRef);
 	if(error != UUcError_None)
@@ -115,7 +115,7 @@ ONiScript_Reload(
 		COrConsole_Printf("Could not load \"%s\" IGMD directory", ONgScript_LevelName);
 		return UUcError_None;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -124,7 +124,7 @@ ONrScript_Initialize(
 	void)
 {
 	UUtError	error;
-	
+
 	error =
 		SLrScript_Command_Register_Void(
 			"script_reload",
@@ -132,7 +132,7 @@ ONrScript_Initialize(
 			"",
 			ONiScript_Reload);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -151,7 +151,7 @@ ONrScript_LevelBegin(
 	SLrScript_LevelBegin();
 
 	ONgScript_LevelName = inLevelName;
-	
+
 	ONgScript_StaticParameterBaseOverflowed = UUcFalse;
 	ONgScript_NextStaticParameterOffset = 0;
 	UUrMemory_Clear(&ONgScript_StaticParameterBase, ONcScript_StaticParameterSize);

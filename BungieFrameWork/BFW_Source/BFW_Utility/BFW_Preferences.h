@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Preferences.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: 8/18, 1997
-	
+
 	PURPOSE: Interface to the windows style preference files
-	
+
 	Copyright 1997
 
 */
@@ -27,7 +27,7 @@ UUtError UUrPreferences_Initialize(
 const char *UUrPreferences_GetString(const char *inWhichPreference);
 
 UUtUns32 UUrPreferences_GetNumber(const char *inWhichPreference);
-	
+
 void UUrPreferences_Terminate(
 	void);
 

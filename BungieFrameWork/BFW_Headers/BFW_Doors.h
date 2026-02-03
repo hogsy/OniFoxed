@@ -20,12 +20,12 @@ typedef tm_struct OBtDoorClass
 {
 	UUtUns16			id;
 	UUtUns16			flags;		// OBtDoorClassFlags
-	
+
 	OBtAnimation		*openCloseAnim;
-	
+
 	UUtUns16			openKey;		// Not used
 	UUtUns16			closeKey;		// "
-	
+
 	float				activationRadiusSquared;
 	UUtUns16			objectID;		// ???
 	UUtUns16			linkID;
@@ -38,10 +38,10 @@ typedef tm_template('O','B','D','C', "Door class array")
 OBtDoorClassArray
 {
 	tm_pad						pad0[22];
-	
+
 	tm_varindex UUtUns16		numDoors;
 	tm_vararray OBtDoorClass	doors[1];
-	
+
 } OBtDoorClassArray;
 
 typedef enum OBtDoorActivationState

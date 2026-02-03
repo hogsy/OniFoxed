@@ -35,6 +35,6 @@ IMPrImport_AddSubtitles(
 	GRtGroup*				inGroup,
 	char*					inInstanceName);
 
-	
+
 // ======================================================================
 #endif /* IMP_SOUND2_H */

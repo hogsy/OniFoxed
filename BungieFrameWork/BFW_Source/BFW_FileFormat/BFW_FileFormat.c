@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_FileFormat.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1998
-	
+
 	PURPOSE: Interface to various graphical file formats
-	
+
 	Copyright 1998
 
 */
@@ -22,7 +22,7 @@
 typedef UUtBool
 (*FFtFunc_IsType)(
 	BFtFileRef*		inFileRef);
-	
+
 typedef UUtError
 (*FFtFunc_Read)(
 	BFtFileRef*		inFileRef,
@@ -31,7 +31,7 @@ typedef UUtError
 	UUtUns16		*outHeight,
 	IMtMipMap		*outMipMap,
 	void*			*outData);
-	
+
 typedef UUtError
 (*FFtFunc_Write)(
 	BFtFileRef*		inFileRef,
@@ -45,7 +45,7 @@ typedef UUtError
 (*FFtFunc_Peek)(
 	BFtFileRef*		inFileRef,
 	FFtFileInfo*	outFileInfo);
-	
+
 typedef struct FFtParser
 {
 	FFtFormat_2D	format;
@@ -53,7 +53,7 @@ typedef struct FFtParser
 	FFtFunc_Read	read;
 	FFtFunc_Write	write;
 	FFtFunc_Peek	peek;
-	
+
 } FFtParser;
 
 FFtParser	FFgParserTable[] =
@@ -63,7 +63,7 @@ FFtParser	FFgParserTable[] =
 		{FFcFormat_2D_DDS, FFrType_IsDDS, FFrRead_DDS, FFrWrite_DDS, FFrPeek_DDS},
 		{FFcFormat_2D_None, NULL, NULL, NULL}
 	};
-	
+
 UUtError
 FFrWrite_2D(
 	BFtFileRef*		inFileRef,
@@ -75,7 +75,7 @@ FFrWrite_2D(
 	void*			inData)
 {
 	FFtParser*	curParser;
-	
+
 	for(curParser = FFgParserTable;
 		curParser->format != FFcFormat_2D_None;
 		curParser++)
@@ -91,7 +91,7 @@ FFrWrite_2D(
 					inData);
 		}
 	}
-	
+
 	// Could not find parser
 	return UUcError_Generic;
 }
@@ -127,13 +127,13 @@ FFrRead_2D_Reduce(
 
 	buffer_size = IMrImage_ComputeSize(inPixelType, info.mipMap, info.width, info.height);
 	reduced_buffer_size = IMrImage_ComputeSize(inPixelType, info.mipMap, info.width >> inReduce, info.height >> inReduce);
-	out_buffer = UUrMemory_Block_New(reduced_buffer_size); 
-	if (error != UUcError_None) { 
+	out_buffer = UUrMemory_Block_New(reduced_buffer_size);
+	if (error != UUcError_None) {
 		goto error_exit;
 	}
 
 	error = FFrRead_2D(inFileRef, inPixelType, &width, &height, &mipMap, &buffer);
-	if (error != UUcError_None) { 
+	if (error != UUcError_None) {
 		goto error_exit;
 	}
 
@@ -153,7 +153,7 @@ FFrRead_2D_Reduce(
 	else {
 		error = IMrImage_Scale(inScaleMode, width, height, inPixelType, buffer, width >> inReduce, height >> inReduce, out_buffer);
 
-		if (error != UUcError_None) { 
+		if (error != UUcError_None) {
 			goto error_exit;
 		}
 	}
@@ -192,7 +192,7 @@ FFrRead_2D(
 	void*			*outData)			// Caller is responsible for freeing this memory
 {
 	FFtParser*	curParser;
-	
+
 	for(curParser = FFgParserTable;
 		curParser->format != FFcFormat_2D_None;
 		curParser++)
@@ -220,7 +220,7 @@ FFrPeek_2D(
 {
 	FFtParser*	curParser;
 	UUtError error;
-	
+
 	for(curParser = FFgParserTable;
 		curParser->format != FFcFormat_2D_None;
 		curParser++)

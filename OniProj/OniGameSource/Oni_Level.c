@@ -1,8 +1,8 @@
 /*
 	Oni_Level.c
-	
+
 	Level stuff
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -45,7 +45,7 @@ UUtError AIrCreatePlayerFromTextFile(void)
 	ONtFlag	flag;
 	UUtError error;
 	UUtUns16 itr, char_index;
-	
+
 	// player character is denoted by script ID 0
 	setup = ONrLevel_CharacterSetup_ID_To_Pointer(0);
 	if (setup == NULL) {
@@ -74,10 +74,10 @@ UUtError AIrCreatePlayerFromTextFile(void)
 	// create the character at this flag
 	error = ONrGameState_NewCharacter(NULL, setup, &flag, &char_index);
 	UUmError_ReturnOnError(error);
-	
+
 	// set this character to be the player controlled character
 	ONrGameState_SetPlayerNum(char_index);
-		
+
 	return UUcError_None;
 }
 
@@ -86,7 +86,7 @@ typedef struct ONtLevel_FindLocation
 	const OBJtObject	*closest_object;
 	float				closest_distance;	/* distance of the closest_object from position */
 	M3tPoint3D			position;			/* find object closest to this position */
-	
+
 } ONtLevel_FindLocation;
 
 // ---
@@ -124,7 +124,7 @@ ONiLevel_SetDefaultReverb(
 {
 	UUtUns16				num_descriptors;
 	UUtError				error;
-	
+
 	num_descriptors = (UUtUns16)TMrInstance_GetTagCount(ONcTemplate_Level_Descriptor);
 
 	if (num_descriptors > 0)
@@ -134,7 +134,7 @@ ONiLevel_SetDefaultReverb(
 		for (i = 0; i < num_descriptors; i++)
 		{
 			ONtLevel_Descriptor		*descriptor;
-			
+
 			// get a pointer to the first descriptor
 			error =
 				TMrInstance_GetDataPtr_ByNumber(
@@ -142,17 +142,17 @@ ONiLevel_SetDefaultReverb(
 					i,
 					&descriptor);
 			if (error != UUcError_None) return error;
-			
+
 			if (descriptor->level_number == inLevelNum)
 			{
-#if 0			
+#if 0
 				// set the default reverb for the level
 				SSrReverb_SetDefault(descriptor->default_reverb);
 #endif
 			}
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -165,27 +165,27 @@ ONiDialog_LevelLoadProgress(
 {
 	UUtBool					handled;
 	WMtWindow				*progress_bar;
-	
+
 	handled = UUcTrue;
-	
+
 	// get the progress bar
 	progress_bar = WMrDialog_GetItemByID(inDialog, OWcLevelLoad_ProgressBar);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			WMrMessage_Send(progress_bar, WMcMessage_SetValue, 0, 0);
 		break;
-		
+
 		case WMcMessage_SetValue:
 			WMrMessage_Send(progress_bar, WMcMessage_SetValue, inParam1, 0);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -196,9 +196,9 @@ ONiLevel_LevelLoadDialog_Start(
 	void)
 {
 	WMtDialogID				id;
-	
+
 	if (ONgLevelLoadProgress != NULL) { return; }
-	
+
 	// load the dialog
 #if SHIPPING_VERSION
 	id = OWcDialog_OGU_LevelLoadProgress;
@@ -207,14 +207,14 @@ ONiLevel_LevelLoadDialog_Start(
 #else
 	id = OWcDialog_LevelLoadProgress;
 #endif
-	
+
 	WMrDialog_Create(
 		id,
 		NULL,
 		ONiDialog_LevelLoadProgress,
 		(UUtUns32) -1,
 		&ONgLevelLoadProgress);
-	
+
 	// display the dialog on the screen
 	M3rGeom_Frame_Start(0);
 	WMrDisplay();
@@ -226,7 +226,7 @@ ONiLevel_LevelLoadDialog_Stop(
 	void)
 {
 	if (ONgLevelLoadProgress == NULL) { return; }
-	
+
 	// tell the dialog to stop and do one more update so it
 	// can process the stop order
 	WMrWindow_Delete(ONgLevelLoadProgress);
@@ -245,7 +245,7 @@ ONrLevel_LevelLoadDialog_Update(
 
 	// update the dialog's progress bar
 	WMrMessage_Send(ONgLevelLoadProgress, WMcMessage_SetValue, (UUtUns32)inPercentComplete, 0);
-	
+
 	// display the dialog on the screen
 	M3rGeom_Frame_Start(0);
 	WMrDisplay();
@@ -274,7 +274,7 @@ ONrLevel_Unload(
 
 	ONrMechanics_LevelEnd();
 	OBJrObject_LevelEnd();
-	
+
 	ONrInGameUI_LevelUnload();
 	AIrLevelEnd();
 	AI2rLevelEnd();
@@ -294,9 +294,9 @@ ONrLevel_Unload(
 	TMrLevel_Unload(ONgCurrentLevel);
 	SS2rSoundData_FlushDeallocatedPointers();	// CB: must come after TMrLevel_Unload, it flushes pointers to disposed sound data
 	WMrLevel_Unload();
-	
+
 	UUrMemory_Leak_StopAndReport();
-	
+
 	if (ONgCurrentLevel == 0)
 	{
 		ONgCurrentLevel = (UUtUns16)(-1);
@@ -320,20 +320,20 @@ static UUtError ONrLevel_TemplateHandler(
 	/**************
 	* Level template handler
 	*/
-	
+
 	ONtLevel *level = (ONtLevel *)inDataPtr;
-		
+
 	switch(inMessage)
 	{
 		case TMcTemplateProcMessage_Update:
 		case TMcTemplateProcMessage_DisposePreProcess:
 			break;
-		
-		case TMcTemplateProcMessage_NewPostProcess:		
-		case TMcTemplateProcMessage_LoadPostProcess:				
+
+		case TMcTemplateProcMessage_NewPostProcess:
+		case TMcTemplateProcMessage_LoadPostProcess:
 			break;
-			
-			
+
+
 		default:
 			UUmAssert(!"Illegal message");
 	}
@@ -348,9 +348,9 @@ UUtError ONrLevel_Initialize(
 	/******************
 	* Performs game launch init for level data structures
 	*/
-	
+
 	UUtError error;
-	
+
 	// Install level template's private data
 	error = TMrTemplate_PrivateData_New(
 		ONcTemplate_Level,
@@ -358,7 +358,7 @@ UUtError ONrLevel_Initialize(
 		ONrLevel_TemplateHandler,
 		&ONgTemplate_Level_PrivateData);
 	UUmError_ReturnOnError(error);
-	
+
 	// Install flag array template's proc handler
 	error = TMrTemplate_PrivateData_New(
 		ONcTemplate_FlagArray,
@@ -366,10 +366,10 @@ UUtError ONrLevel_Initialize(
 		ONiFlagArray_TemplateHandler,
 		&ONgTemplate_FlagArray_PrivateData);
 	UUmError_ReturnOnError(error);
-	
+
 	ONgCurrentLevel = 0;
 //	ONgLevelLoadDialog = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -379,7 +379,7 @@ void ONrLevel_Terminate(
 	/****************
 	* Performs game shutdown of level data structures
 	*/
-	
+
 	// can't possibly imagine what might go here, because the
 	// template manager handles private data shutdown
 }
@@ -389,13 +389,13 @@ ONrLevel_LoadZero(
 	void)
 {
 	UUtError			error;
-	
+
 	UUrStartupMessage("loading level 0...");
 
 	// load the texture materials
 	error = ONrTextureMaterials_Initialize();
 	UUmError_ReturnOnErrorMsg(error, "Could not initialize the texture materials");
-	
+
 	// initialize the impact effects
 	error = ONrImpactEffects_Initialize();
 	UUmError_ReturnOnErrorMsg(error, "Could not initialize the impact effects");
@@ -417,11 +417,11 @@ ONrLevel_LoadZero(
 	// initialize the oni sound variant list
 	error = OSrLevel_Load(0);
 	UUmError_ReturnOnErrorMsg(error, "The sound system didn't like level 0");
-	
+
 	// load binary data files (p3 particles, sounds, etc)
 	error = OBDrLevel_Load(0);
 	UUmError_ReturnOnErrorMsg(error, "Could not load binary data for level 0");
-	
+
 	ONrIEBinaryData_Process();
 	ONrTextureMaterials_PreProcess();
 
@@ -457,7 +457,7 @@ static UUtError ONrLevel_ParticleLoad()
 
 	// begin particles for the level
 	EPrLevelStart(0);
-	
+
 	return UUcError_None;
 }
 
@@ -472,10 +472,10 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 	TRgLevelNumber = inLevelNum;
 
 	UUrMemory_Leak_Start("These leaks are between level load and unload");
-	
+
 	// disable all sound except stuff coming from scripts
 	OSrSetScriptOnly(UUcTrue);
-	
+
 	// display the level load dialog
 	if (inProgressBar) {
 		ONiLevel_LevelLoadDialog_Start();
@@ -485,15 +485,15 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 	// load the level from storage
 	error = TMrLevel_Load(inLevelNum, TMcPrivateData_Yes);
 	UUmError_ReturnOnError(error);
-	
+
 	if (inProgressBar) {
 		ONrLevel_LevelLoadDialog_Update(20);
 	}
-	
+
 	// prepare the object system for data read by the binary data loader
 	error = OBJrLevel_Load(inLevelNum);
 	UUmError_ReturnOnError(error);
-	
+
 	if (inProgressBar) {
 		ONrLevel_LevelLoadDialog_Update(24);
 	}
@@ -501,14 +501,14 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 	// load binary data for the level (p3 particles, furniture, object placement etc)
 	error = OBDrLevel_Load(inLevelNum);
 	UUmError_ReturnOnErrorMsg(error, "Could not load binary data");
-	
+
 	if (inProgressBar) {
 		ONrLevel_LevelLoadDialog_Update(25);
 	}
 
 	// Reset all the textures for the card
 	M3rDrawContext_ResetTextures();
-	
+
 	if (inProgressBar) {
 		ONrLevel_LevelLoadDialog_Update(28);
 	}
@@ -523,11 +523,11 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 
 	// texture materials must be loaded before akira (needed to set up breakable flag)
 	ONrTextureMaterials_LevelLoad();
-	
+
 	// akira
 	error = AKrLevel_Begin(ONgGameState->level->environment);
 	UUmError_ReturnOnError(error);
-	
+
 	if (inProgressBar) {
 		ONrLevel_LevelLoadDialog_Update(35);
 	}
@@ -535,10 +535,10 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 	// Sound
 	error = ONiLevel_SetDefaultReverb(inLevelNum);
 	UUmError_ReturnOnError(error);
-	
+
 	error = OSrLevel_Load(inLevelNum);
 	UUmError_ReturnOnError(error);
-	
+
 	// particles must be after AKrLevel_Begin due to decal creation against the environment
 	error = ONrLevel_ParticleLoad();
 	UUmError_ReturnOnError(error);
@@ -573,7 +573,7 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 
 	// Doors (after objects)
 	error = OBrDoor_Array_LevelBegin(&ONgGameState->doors,ONgGameState->level->doorArray);
-	UUmError_ReturnOnErrorMsg(error, "Door init failed");	
+	UUmError_ReturnOnErrorMsg(error, "Door init failed");
 
 	if (inProgressBar) {
 		ONrLevel_LevelLoadDialog_Update(65);
@@ -596,10 +596,10 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 	error = OBJrFurniture_CreateParticles();
 	UUmError_ReturnOnError(error);
 
-	// initialize the AI 
+	// initialize the AI
 	error = AIrLevelBegin();
 	UUmError_ReturnOnError(error);
-	
+
 	// Initialize the script system - this must come before the AI2 system is initialized
 	// or else spawn scripts will not function on characters
 	error = ONrScript_LevelBegin(ONgGameState->level->name);
@@ -608,7 +608,7 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 	// initialize the new AI system:
 	// creates characters from OBJcType_Character objects
 	error = AI2rLevelBegin();
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
 	// make sure that we have a player character by now. if there has not been one made
 	// by the AI2 system, creates character 0 as player character.
@@ -638,16 +638,16 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 
 	// set the input mode to game
 	LIrMode_Set(LIcMode_Game);
-	
+
 	// enable the console display
 	COrConsole_TemporaryDisable(UUcFalse);
 	COrMessage_TemporaryDisable(UUcFalse);
 
 #if TOOL_VERSION
-	// Run the console config file	
+	// Run the console config file
 	if (COcConfigFile_Read == ONgCommandLine.readConfigFile) COrRunConfigFile("oni_config.txt");
 #endif
-		
+
 	if (inProgressBar) {
 		ONrLevel_LevelLoadDialog_Update(85);
 	}
@@ -659,14 +659,14 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 
 	error = ONrMechanics_LevelBegin( );
 	UUmError_ReturnOnError(error);
-	
+
 	if (inProgressBar) {
 		ONrLevel_LevelLoadDialog_Update(87);
 	}
 
 	error = ONrInGameUI_LevelLoad(inLevelNum);
 	UUmError_ReturnOnError(error);
-	
+
 	if (inProgressBar) {
 		ONrLevel_LevelLoadDialog_Update(90);
 	}
@@ -679,7 +679,7 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 
 	// hide level load dialog
 	ONiLevel_LevelLoadDialog_Stop();
-	
+
 	// save the loaded level number
 	ONgCurrentLevel = inLevelNum;
 
@@ -688,7 +688,7 @@ UUtError ONrLevel_Load(UUtUns16 inLevelNum, UUtBool inProgressBar)
 	// find appropriate AItCharacterSetup instances.
 
 	error = SLrScript_ExecuteOnce("main", 0, NULL, NULL, NULL);
-	
+
 	ONrGameState_SplashScreen("intro_splash_screen", NULL, UUcFalse);
 
 	// enable all sound
@@ -703,10 +703,10 @@ ONiFlagsExist(
 	UUtUns32				inUserData)
 {
 	UUtBool					*found;
-	
+
 	found = (UUtBool*)inUserData;
 	*found = UUcTrue;
-	
+
 	return UUcFalse;
 }
 
@@ -717,33 +717,33 @@ ONiFlagArray_TemplateHandler(
 	void*					inPrivateData)
 {
 	ONtFlagArray			*flag_array;
-	
+
 	flag_array = (ONtFlagArray*)inDataPtr;
 	UUmAssert(flag_array);
-	
+
 	switch(inMessage)
 	{
 		case TMcTemplateProcMessage_Update:
 		case TMcTemplateProcMessage_DisposePreProcess:
-		case TMcTemplateProcMessage_NewPostProcess:		
+		case TMcTemplateProcMessage_NewPostProcess:
 		break;
-		
+
 		case TMcTemplateProcMessage_LoadPostProcess:
 		{
 			UUtUns32		i;
 			UUtBool			flags_exist;
 			UUtError		error;
 			OBJtOSD_All		osd_all;
-			
+
 			// don't create any flags from the flag array if
 			// any flags have already been created
 			flags_exist = UUcFalse;
 			OBJrObjectType_EnumerateObjects(
 				OBJcType_Flag,
 				ONiFlagsExist,
-				(UUtUns32)&flags_exist); 
+				(UUtUns32)&flags_exist);
 			if (flags_exist) { break; }
-			
+
 			// set up default flag properties
 			error = OBJrObject_OSD_SetDefaults(OBJcType_Flag, &osd_all);
 			UUmError_ReturnOnError(error);
@@ -753,20 +753,20 @@ ONiFlagArray_TemplateHandler(
 			{
 				M3tPoint3D		rotation;
 				ONtFlag			*flag;
-				
+
 				flag = &flag_array->flags[i];
-				
+
 				osd_all.osd.flag_osd.shade = IMcShade_Green;
 				osd_all.osd.flag_osd.id_prefix = 'MX';
 				osd_all.osd.flag_osd.id_number = flag->idNumber;
 #if TOOL_VERSION
 				osd_all.osd.flag_osd.note[0] = '\0';
 #endif
-				
+
 				rotation.x = 0.0f;
-				rotation.y = flag->rotation * M3cRadToDeg; 
+				rotation.y = flag->rotation * M3cRadToDeg;
 				rotation.z = 0.0f;
-				
+
 				OBJrObject_New(
 					OBJcType_Flag,
 					&flag->location,
@@ -774,8 +774,8 @@ ONiFlagArray_TemplateHandler(
 					&osd_all);
 			}
 		}
-		break;	
-		
+		break;
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
@@ -791,16 +791,16 @@ ONiLevel_Flag_GetByLocation(
 {
 	ONtLevel_FindLocation		*find_loc;
 	float						distance_squared;
-	
+
 	find_loc = (ONtLevel_FindLocation*)inUserData;
-	
+
 	distance_squared = MUrPoint_Distance_Squared(&inObject->position, &find_loc->position);
 	if (distance_squared < find_loc->closest_distance)
 	{
 		find_loc->closest_distance = distance_squared;
 		find_loc->closest_object = inObject;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -811,17 +811,17 @@ ONrLevel_Flag_ID_To_Location(
 {
 	OBJtOSD_All					osd_all;
 	OBJtObject					*object;
-	
+
 	// set the search params
 	osd_all.osd.flag_osd.id_number = inID;
-	
+
 	// find the object
 	object = OBJrObjectType_Search(OBJcType_Flag, OBJcSearch_FlagID, &osd_all);
 	if (object == NULL) { return UUcFalse; }
-	
+
 	// return the object location
 	OBJrObject_GetPosition(object, outLocation, NULL);
-	
+
 	return UUcTrue;
 }
 
@@ -829,19 +829,19 @@ UUtBool ONrLevel_Path_ID_To_Path(UUtInt16 inID, OBJtOSD_PatrolPath *outPath)
 {
 	OBJtOSD_All					osd_all;
 	OBJtObject					*object;
-	
+
 	// set the search params
 	osd_all.osd.patrolpath_osd.id_number = inID;
-	
+
 	// find the object
 	object = OBJrObjectType_Search(OBJcType_PatrolPath, OBJcSearch_PatrolPathID, &osd_all);
 	if (object == NULL) { return UUcFalse; }
 
 	OBJrObject_GetObjectSpecificData(object, &osd_all);
-	
-	// build an ONtFlag 
+
+	// build an ONtFlag
 	*outPath = osd_all.osd.patrolpath_osd;
-	
+
 	return UUcTrue;
 }
 
@@ -849,19 +849,19 @@ UUtBool ONrLevel_Combat_ID_To_Combat(UUtUns16 inID, OBJtOSD_Combat *outCombat)
 {
 	OBJtOSD_All					osd_all;
 	OBJtObject					*object;
-	
+
 	// set the search params
 	osd_all.osd.combat_osd.id = inID;
-	
+
 	// find the object
 	object = OBJrObjectType_Search(OBJcType_Combat, OBJcSearch_CombatID, &osd_all);
 	if (object == NULL) { return UUcFalse; }
 
 	OBJrObject_GetObjectSpecificData(object, &osd_all);
-	
+
 	// store the combat settings
 	*outCombat = osd_all.osd.combat_osd;
-	
+
 	return UUcTrue;
 }
 
@@ -873,7 +873,7 @@ UUtBool ONrLevel_Melee_ID_To_Melee_Ptr(UUtUns16 inID, OBJtOSD_Melee **outMelee)
 {
 	OBJtOSD_All					osd_all;
 	OBJtObject					*object;
-	
+
 	// find the object with this ID
 	osd_all.osd.melee_osd.id = inID;
 	object = OBJrObjectType_Search(OBJcType_Melee, OBJcSearch_MeleeID, &osd_all);
@@ -890,19 +890,19 @@ UUtBool ONrLevel_Neutral_ID_To_Neutral(UUtUns16 inID, OBJtOSD_Neutral *outNeutra
 {
 	OBJtOSD_All					osd_all;
 	OBJtObject					*object;
-	
+
 	// set the search params
 	osd_all.osd.neutral_osd.id = inID;
-	
+
 	// find the object
 	object = OBJrObjectType_Search(OBJcType_Neutral, OBJcSearch_NeutralID, &osd_all);
 	if (object == NULL) { return UUcFalse; }
 
 	OBJrObject_GetObjectSpecificData(object, &osd_all);
-	
-	// store the neutral behavior 
+
+	// store the neutral behavior
 	*outNeutral = osd_all.osd.neutral_osd;
-	
+
 	return UUcTrue;
 }
 
@@ -914,17 +914,17 @@ ONrLevel_Flag_ID_To_Flag(
 	OBJtOSD_All					osd_all;
 	OBJtObject					*object;
 	M3tPoint3D					z_axis;
-	
+
 	// set the search params
 	osd_all.osd.flag_osd.id_number = inID;
-	
+
 	// find the object
 	object = OBJrObjectType_Search(OBJcType_Flag, OBJcSearch_FlagID, &osd_all);
 	if (object == NULL) { return UUcFalse; }
-	
-	// build an ONtFlag 
+
+	// build an ONtFlag
 	OBJrObject_GetObjectSpecificData(object, &osd_all);
-	
+
 	// CB: to make sure that the flag's *actual* rotation is drawn we don't just use
 	// the euler Y angle any more, but rather work out where the rotation matrix takes
 	// the +Z axis to.
@@ -936,7 +936,7 @@ ONrLevel_Flag_ID_To_Flag(
 	outFlag->idNumber	= osd_all.osd.flag_osd.id_number;
 	outFlag->deleted	= UUcFalse;
 	outFlag->maxFlag	= UUcFalse;
-	
+
 	return UUcTrue;
 }
 
@@ -946,10 +946,10 @@ ONrLevel_Flag_GetVector(
 	M3tVector3D					*outVector)
 {
 	const M3tPoint3D defFacing = {0,0,1.0f};
-	
+
 	UUmAssertReadPtr(inFlag, sizeof(*inFlag));
 	UUmAssertWritePtr(outVector, sizeof(*outVector));
-	
+
 	MUrPoint_RotateYAxis(&defFacing, inFlag->rotation, outVector);
 	MUrNormalize(outVector);
 }
@@ -977,28 +977,28 @@ ONrLevel_Flag_Location_To_Flag(
 {
 	ONtLevel_FindLocation		find_loc;
 	OBJtOSD_All					osd_all;
-	
+
 	UUrMemory_Clear(outFlag, sizeof(ONtFlag));
-	
+
 	// setup the find_id struct
 	find_loc.closest_object = NULL;
 	find_loc.closest_distance = UUcFloat_Max;
 	find_loc.position = *inLocation;
-	
+
 	// enumerate the objects
 	OBJrObjectType_EnumerateObjects(OBJcType_Flag, ONiLevel_Flag_GetByLocation, (UUtUns32)&find_loc);
-	
+
 	// if no object was found, return NULL
 	if (find_loc.closest_object == NULL) { return UUcFalse; }
-	
+
 	OBJrObject_GetObjectSpecificData(find_loc.closest_object, &osd_all);
-	
+
 	outFlag->location	= find_loc.closest_object->position;
 	outFlag->rotation	= (find_loc.closest_object->rotation.y * M3cDegToRad);
 	outFlag->idNumber	= osd_all.osd.flag_osd.id_number;
 	outFlag->deleted	= UUcFalse;
 	outFlag->maxFlag	= UUcFalse;
-	
+
 	return UUcTrue;
 }
 
@@ -1008,14 +1008,14 @@ ONrLevel_Flag_Delete(
 {
 	OBJtOSD_All					osd_all;
 	OBJtObject					*object;
-	
+
 	// set the search params
 	osd_all.osd.flag_osd.id_number = inID;
-	
+
 	// find the object
 	object = OBJrObjectType_Search(OBJcType_Flag, OBJcSearch_FlagID, &osd_all);
 	if (object == NULL) { return; }
-	
+
 	OBJrObject_Delete(object);
 }
 
@@ -1120,14 +1120,14 @@ UUtUns16 ONrLevel_GetNextLevel(UUtUns16 inLevelNum)
 	UUtUns32	num_descriptors;
 	UUtUns32	i;
 	UUtUns16	next_level = 0xFFFF;
-	
+
 	// get the number of descriptors
 	num_descriptors = TMrInstance_GetTagCount(ONcTemplate_Level_Descriptor);
 
 	for (i = 0; i < num_descriptors; i++)
 	{
 		ONtLevel_Descriptor		*descriptor;
-		
+
 		// get a pointer to the first descriptor
 		error =	TMrInstance_GetDataPtr_ByNumber(ONcTemplate_Level_Descriptor, i, &descriptor);
 		UUmAssert(UUcError_None == error);

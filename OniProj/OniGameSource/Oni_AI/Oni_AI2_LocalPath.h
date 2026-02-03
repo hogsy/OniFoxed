@@ -4,11 +4,11 @@
 
 /*
 	FILE:	Oni_AI2_LocalPath.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: May 08, 1999
-	
+
 	PURPOSE: Local-grid pathfinding for Oni AI
 
 	Copyright (c) 2000

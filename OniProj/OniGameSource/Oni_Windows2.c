@@ -37,29 +37,29 @@ OWrLevelList_Initialize(
 	UUtError				error;
 	UUtUns32				num_descriptors;
 	UUtBool					vidmaster = UUcFalse;
-	
+
 	// get the number of descriptors
 	num_descriptors = (UUtUns16)TMrInstance_GetTagCount(ONcTemplate_Level_Descriptor);
 	if (num_descriptors > 0)
 	{
 		UUtUns32			i;
 		WMtListBox			*levels;
-		
+
 		// get a pointer to the level list
 		levels = WMrDialog_GetItemByID(inDialog, inItemID);
 		if (levels == NULL) return;
-		
+
 		for (i = 0; i < num_descriptors; i++)
 		{
 			ONtLevel_Descriptor		*descriptor;
 			UUtUns32				index;
-			
+
 			// get a pointer to the first descriptor
 			error =	TMrInstance_GetDataPtr_ByNumber(ONcTemplate_Level_Descriptor, i, &descriptor);
 			if (error != UUcError_None) {
 				return;
 			}
-			
+
 			// if the level in the descriptor doesn't exist, move on
 			// to the next descriptor
 			if (!TMrLevel_Exists(descriptor->level_number)) {
@@ -72,7 +72,7 @@ OWrLevelList_Initialize(
 					continue;
 				}
 			}
-#endif		
+#endif
 
 			// add the name of the level to the list
 			index = WMrListBox_AddString(levels, descriptor->level_name);
@@ -85,7 +85,7 @@ OWrLevelList_Initialize(
 				const ONtContinue *save_point;
 
 				for(save_point_index = 0; save_point_index < ONcPersist_NumContinues; save_point_index++)
-				{				
+				{
 					save_point = ONrPersist_GetContinue(descriptor->level_number, save_point_index);
 
 					if (save_point != NULL) {
@@ -114,11 +114,11 @@ OWrLevelList_GetLevelNumber(
 {
 	WMtWindow		*levels;
 	UUtUns16		level_number;
-	
+
 	// get a pointer to the levels listbox
 	levels = WMrDialog_GetItemByID(inDialog, inItemID);
 	if (levels == NULL) { return (UUtUns16)(-1); }
-	
+
 	// get the level number of the selected item
 	level_number = (UUtUns16)WMrListBox_GetItemData(levels, (UUtUns32)(-1));
 	return level_number;
@@ -129,10 +129,10 @@ void
 OWrLevelLoad_StartLevel(
 	UUtUns16				inLevel)
 {
-	UUtUns16				num_descriptors;	
+	UUtUns16				num_descriptors;
 	UUtUns16				level_number = inLevel & 0x00ff;
 	UUtUns16				save_point = (inLevel & 0xff00) >> 8;
-	
+
 	// get the number of descriptors
 	num_descriptors = (UUtUns16)TMrInstance_GetTagCount(ONcTemplate_Level_Descriptor);
 	if (num_descriptors > 0)
@@ -150,13 +150,13 @@ OWrLevelLoad_StartLevel(
 		{
 			ONrLevel_Unload();
 		}
-		
+
 		// try to load the new level
 		ONrGameState_ClearContinue();
 
 		if (save_point != 0) {
 			const ONtContinue *save_point_data = ONrPersist_GetContinue(level_number, save_point);
-			
+
 			UUmAssert(save_point_data != NULL);
 
 			if (NULL != save_point_data) {
@@ -164,7 +164,7 @@ OWrLevelLoad_StartLevel(
 			}
 		}
 
-		ONrLevel_Load(OWgLevelNumber, UUcTrue);	
+		ONrLevel_Load(OWgLevelNumber, UUcTrue);
 
 		// run the game
 		WMrMessage_Post(NULL, OWcMessage_RunGame, 0, 0);
@@ -183,7 +183,7 @@ OWrOniWindow_Startup(
 {
 	// set the desktop background to none
 	WMrSetDesktopBackground(PSrPartSpec_LoadByType(PScPartSpecType_BackgroundColor_None));
-	
+
 	// run the main menu
 	OWrOniWindow_Toggle();
 }
@@ -195,9 +195,9 @@ OWrOniWindow_Toggle(
 {
 		WMrActivate();
 		LIrMode_Set(LIcMode_Normal);
-		
+
 		ONrOutGameUI_MainMenu_Display();
-		
+
 		LIrMode_Set(LIcMode_Game);
 		WMrDeactivate();
 }
@@ -227,7 +227,7 @@ OWrInitialize(
 	// ------------------------------
 	error = WMrStartup();
 	UUmError_ReturnOnError(error);
-	
+
 	OWgLevelNumber = (UUtUns16)0xFFFF;
 
 	return UUcError_None;
@@ -240,7 +240,7 @@ OWrInitialize(
 {
 	UUtBool success= UUcFalse;
 	WMtWindow *desktop= WMrGetDesktop();
-	
+
 	if (OWgOniWindow) WMrWindow_SetSize(OWgOniWindow, new_width, new_height);
 	if (desktop) WMrWindow_SetSize(desktop, new_width, new_height);
 	success= (ONrMotoko_SetupDrawing(&ONgPlatformData) == UUcError_None) ? UUcTrue : UUcFalse;
@@ -269,18 +269,18 @@ OWrLevelEnd(
 	void)
 {
 }
-	
+
 // ----------------------------------------------------------------------
 void
 OWrUpdate(
 	void)
 {
 	WMtEvent			event;
-	
+
 	while (WMrMessage_Get(&event))
 	{
 		UUtUns32			handled;
-		
+
 		handled = WMrMessage_Dispatch(&event);
 		if (handled == WMcResult_NoWindow)
 		{
@@ -289,7 +289,7 @@ OWrUpdate(
 				case WMcMessage_Quit:
 					ONgTerminateGame = UUcTrue;
 				break;
-				
+
 				// Oni defined messages
 				case OWcMessage_RunGame:
 					OWgRunStartup = UUcFalse;

@@ -1,14 +1,14 @@
 /*
 	FILE:	TE_Symbol.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 18, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
-		
+
 */
 #ifndef TE_SYMBOL_H
 #define TE_SYMBOL_H
@@ -52,7 +52,7 @@ TErSymbolTable_AddID(
 void
 TErSymbolTable_StartField(
 	void);
-	
+
 void
 TErSymbolTable_EndField(
 	void);
@@ -60,7 +60,7 @@ TErSymbolTable_EndField(
 void
 TErSymbolTable_Field_VarIndex(
 	void);
-	
+
 void
 TErSymbolTable_Field_VarArray(
 	void);
@@ -72,11 +72,11 @@ TErSymbolTable_Field_TemplateRef(
 void
 TErSymbolTable_Field_RawRef(
 	void);
-	
+
 void
 TErSymbolTable_Field_SeparateIndex(
 	void);
-	
+
 void
 TErSymbolTable_Field_Pad(
 	void);
@@ -100,7 +100,7 @@ TErSymbolTable_Field_8Byte(
 void
 TErSymbolTable_Field_4Byte(
 	void);
-	
+
 void
 TErSymbolTable_Field_2Byte(
 	void);
@@ -132,13 +132,13 @@ TErSymbolTable_EndEnum(
 void
 TErSymbolTable_FinishUp(
 	void);
-	
+
 void
 TErSymbolTable_Initialize(
 	void);
-	
+
 void
 TErSymbolTable_Terminate(
 	void);
-	
+
 #endif /* TE_SYMBOL_H */

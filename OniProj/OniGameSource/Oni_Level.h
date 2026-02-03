@@ -2,9 +2,9 @@
 
 /*
 	Oni_Level.h
-	
+
 	Level stuff
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -50,7 +50,7 @@ typedef tm_template('O','N','M','A', "Imported Marker Node Array")
 ONtMarkerArray
 {
 	tm_pad					pad0[22];
-	
+
 	tm_varindex UUtUns16	numMarkers;
 	tm_vararray ONtMarker	markers[1];
 } ONtMarkerArray;
@@ -90,7 +90,7 @@ ONtSpawnArray
 typedef tm_struct ONtObjectGunk
 {
 	UUtUns32				object_tag;
-	TMtIndexArray			*gq_array;	
+	TMtIndexArray			*gq_array;
 } ONtObjectGunk;
 
 #define ONcTemplate_ObjectGunkArray UUm4CharToUns32('O', 'N', 'O', 'A')
@@ -130,19 +130,19 @@ ONtTriggerArray
 	tm_vararray ONtTrigger	triggers[1];
 } ONtTriggerArray;
 
-	
+
 #define ONcTemplate_Level UUm4CharToUns32('O','N','L','V')
 typedef tm_template('O','N','L','V', "Oni Game Level")
 ONtLevel
 {
 	char name[64];	// Must be same as ONcMaxLevelName above (for TE)
-	
+
 	AKtEnvironment			*environment;
 	OBtObjectSetupArray		*objectSetupArray;
 	ONtMarkerArray			*markerArray;
 	ONtFlagArray			*flagArray;
 	ONtTriggerArray			*triggerArray;
-	
+
 	ONtSkyClass				*sky_class;
 	float					sky_height;
 
@@ -150,7 +150,7 @@ ONtLevel
 	AItScriptTriggerClassArray *scriptTriggerArray;
 	ONtSpawnArray			*spawnArray;
 	OBtDoorClassArray		*doorArray;
-	
+
 	ONtObjectGunkArray		*object_gunk_array;
 
 	EPtEnvParticleArray		*envParticleArray;
@@ -165,11 +165,11 @@ ONtLevel
 typedef tm_template('O', 'N', 'L', 'D', "Oni Game Level Descriptor")
 ONtLevel_Descriptor
 {
-	
+
 	UUtUns16			level_number;
 	UUtUns16			next_level_number;
 	char				level_name[64];  // must be the same as ONcMaxLevelName
-	
+
 } ONtLevel_Descriptor;
 
 
@@ -206,7 +206,7 @@ ONrLevel_LevelLoadDialog_Update(
 UUtUns16
 ONrLevel_GetCurrentLevel(
 	void);
-	
+
 void
 ONrLevel_Unload(
 	void);
@@ -224,7 +224,7 @@ ONrLevel_Load(UUtUns16	inLevelNum, UUtBool inProgressBar);
 
 void ONrLevel_Terminate(
 	void);
-	
+
 UUtError ONrLevel_Initialize(
 	void);
 
@@ -241,14 +241,14 @@ ONrLevel_Trigger_Display(
 	ONtTrigger				*inTrigger,
 	UUtUns32				inShade);
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // action markers
 
 ONtActionMarker* ONrLevel_ActionMarker_New( void);
 
 ONtActionMarker* ONrLevel_ActionMarker_FindNearest(const M3tPoint3D	*inLocation);
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // object ids
 
 UUtBool ONrLevel_FindObjectTag( UUtUns32 inObjectTag );
@@ -256,7 +256,7 @@ ONtObjectGunk	*ONrLevel_FindObjectGunk( UUtUns32 inObjectTag );
 IMtShade ONrLevel_ObjectGunk_GetShade(ONtObjectGunk	*inObjectGunk);
 void	 ONrLevel_ObjectGunk_SetShade(ONtObjectGunk *inObjectGunk, IMtShade inShade);
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // preload textures
 
 void ONrLevel_Preload_Textures(void);

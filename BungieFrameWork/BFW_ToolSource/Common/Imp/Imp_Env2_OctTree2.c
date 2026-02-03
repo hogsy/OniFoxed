@@ -5,8 +5,8 @@
 
 	CREATED: Sept 3, 1997
 
-	PURPOSE: 
-	
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -71,29 +71,29 @@ IMPiEnv_QuadTree_Build(
 	AKtQuadTree_Node*			qtNode;
 	UUtUns32					itr;
 	AKtOctTree_InteriorNode*	otInteriorNode;
-	
+
 	if(AKmOctTree_IsLeafNode(inOTNodeIndex))
 	{
 		*outQuadTreeIndex = inOTNodeIndex;
-		
+
 		return UUcError_None;
 	}
-	
+
 	// create a new interior quad tree node
 		if(inOTData->nextQTNodeIndex >= IMPcEnv_MaxQTNodes)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "out of interior nodes");
 		}
-		
+
 		newQTNodeIndex = inOTData->nextQTNodeIndex++;
-		
+
 		qtNode = inOTData->qtNodes + newQTNodeIndex;
-		
+
 		otInteriorNode = inOTData->interiorNodes + inOTNodeIndex;
-		
+
 		for(itr = 0; itr < 4; itr++)
 		{
-			error = 
+			error =
 				IMPiEnv_QuadTree_Build(
 					inBuildData,
 					inOTData,
@@ -102,9 +102,9 @@ IMPiEnv_QuadTree_Build(
 					&qtNode->children[itr]);
 			UUmError_ReturnOnError(error);
 		}
-		
+
 		*outQuadTreeIndex = newQTNodeIndex;
-		
+
 	return UUcError_None;
 }
 
@@ -115,27 +115,27 @@ IMPiEnv_OctTree_Init(
 	UUtUns32		i;
 
 	inOTData->maxDepth = 0;
-	
+
 	for(i = 0; i < IMPcEnv_OT_MaxGQsPerNode; i++)
 	{
 		inOTData->gqsPerNodeDist[i] = 0;
 	}
-	
+
 	for(i = 0; i < IMPcEnv_OT_MaxBNVsPerNode; i++)
 	{
 		inOTData->bnvsPerNodeDist[i] = 0;
 	}
-	
+
 	for(i = 0; i < IMPcEnv_OT_NumLeafNodeDims; i++)
 	{
 		inOTData->leafNodeSizeDist[i] = 0;
 	}
-	
+
 	inOTData->nextLeafNodeIndex = 0;
 	inOTData->nextInteriorNodeIndex = 0;
-	
+
 	inOTData->nextGQIndex = 0;
-	
+
 	inOTData->nextQTNodeIndex = 0;
 	inOTData->nextBNVIndex = 0;
 }
@@ -151,7 +151,7 @@ IMPiEnv_OctTree_PrintStats(
 	fprintf(inFile, "num leaf nodes: %d"UUmNL, inOTData->nextLeafNodeIndex);
 	fprintf(inFile, "max depth: %d"UUmNL, inOTData->maxDepth);
 	fprintf(inFile, "distribution"UUmNL);
-	
+
 	for(i = 0; i < IMPcEnv_OT_MaxGQsPerNode; i++)
 	{
 		fprintf(inFile, "GQsPerNode[%d] = %d"UUmNL, i, inOTData->gqsPerNodeDist[i]);
@@ -184,7 +184,7 @@ IMPiEnv_OctTree_FindIntersectionGQs(
 	M3tPoint3D*			pointArray;
 	M3tPlaneEquation*	planeArray;
 	UUtUns32			numIndices = 0;
-	
+
 	UUmAssert(outNewGQIndexArray != NULL);
 
 	pointArray = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
@@ -196,12 +196,12 @@ IMPiEnv_OctTree_FindIntersectionGQs(
 	{
 		curGQIndex = inGQIndexArray[index];
 		curGQ = inBuildData->gqList + curGQIndex;
-		
+
 		if(curGQ->flags & AKcGQ_Flag_NoTextureMask)
 		{
 			continue;
 		}
-		
+
 		if(CLrQuad_Box(
 			curGQ->projection,
 			pointArray,
@@ -215,7 +215,7 @@ IMPiEnv_OctTree_FindIntersectionGQs(
 			outNewGQIndexArray[numIndices++] = curGQIndex;
 		}
 	}
-	
+
 	*outNewGQIndexCount = numIndices;
 }
 
@@ -233,7 +233,7 @@ IMPiEnv_OctTree_Build_BNVInfo_CheckQuad(
 	M3tQuad						targetQuad;
 	M3tQuad*				curQuad;
 	M3tQuad*				quadArray;
-	
+
 	pointArray = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
 	quadArray = AUrSharedQuadArray_GetList(inBuildData->sharedBNVQuadArray);
 
@@ -244,12 +244,12 @@ IMPiEnv_OctTree_Build_BNVInfo_CheckQuad(
 		for(curQuadIndex = 0; curQuadIndex < curSide->numBNVQuads; curQuadIndex++)
 		{
 			curQuad = quadArray + curSide->bnvQuadList[curQuadIndex];
-			
+
 			targetQuad.indices[0] = (curQuad->indices[0]);
 			targetQuad.indices[1] = (curQuad->indices[1]);
 			targetQuad.indices[2] = (curQuad->indices[2]);
 			targetQuad.indices[3] = (curQuad->indices[3]);
-			
+
 			if(CLrQuad_Quad(
 				CLcProjection_Unknown,	// projection A
 				inPointList,			// point array A
@@ -269,7 +269,7 @@ IMPiEnv_OctTree_Build_BNVInfo_CheckQuad(
 			) != CLcCollision_None) return UUcTrue;
 		}
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -285,22 +285,22 @@ IMPiEnv_OctTree_Build_BNVInfo_Check(
 	IMPtEnv_BNV_Side*	curSide;
 	UUtUns32			curQuadIndex;
 	UUtUns32			curVertexIndex;
-	
+
 	M3tQuad*		quadArray;
 	M3tPoint3D*			pointArray;
 	M3tQuad*		curQuad;
 	M3tPoint3D*			curPoint;
-	
+
 	float				minX, minY, minZ;
 	float				maxX, maxY, maxZ;
-	
+
 	minX = inBBox->minPoint.x;
 	minY = inBBox->minPoint.y;
 	minZ = inBBox->minPoint.z;
 	maxX = inBBox->maxPoint.x;
 	maxY = inBBox->maxPoint.y;
 	maxZ = inBBox->maxPoint.z;
-	
+
 	// First check if any ot vertices are in the BNV's bsp tree
 		points[0].x = minX; points[0].y = minY; points[0].z = minZ;
 		if(IMPiEnv_Process_BSP_PointInBSP(inBuildData, inBNV, &points[0], 0) == UUcTrue) return UUcTrue;
@@ -325,7 +325,7 @@ IMPiEnv_OctTree_Build_BNVInfo_Check(
 
 		points[7].x = maxX; points[7].y = maxY; points[7].z = maxZ;
 		if(IMPiEnv_Process_BSP_PointInBSP(inBuildData, inBNV, &points[7], 0) == UUcTrue) return UUcTrue;
-	
+
 	quadArray = AUrSharedQuadArray_GetList(inBuildData->sharedBNVQuadArray);
 	pointArray = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
 
@@ -337,11 +337,11 @@ IMPiEnv_OctTree_Build_BNVInfo_Check(
 			for(curQuadIndex = 0; curQuadIndex < curSide->numBNVQuads; curQuadIndex++)
 			{
 				curQuad = quadArray + curSide->bnvQuadList[curQuadIndex];
-				
+
 				for(curVertexIndex = 0; curVertexIndex < 4; curVertexIndex++)
 				{
 					curPoint = pointArray + curQuad->indices[curVertexIndex];
-					
+
 					if(minX <= curPoint->x && curPoint->x <= maxX &&
 						minY <= curPoint->y && curPoint->y <= maxY &&
 						minZ <= curPoint->z && curPoint->z <= maxZ)
@@ -351,7 +351,7 @@ IMPiEnv_OctTree_Build_BNVInfo_Check(
 				}
 			}
 		}
-	
+
 	// minX plane
 	quad.indices[0] = 0; quad.indices[1] = 2; quad.indices[2] = 6; quad.indices[3] = 4;
 	if(IMPiEnv_OctTree_Build_BNVInfo_CheckQuad(
@@ -359,7 +359,7 @@ IMPiEnv_OctTree_Build_BNVInfo_Check(
 		inBNV,
 		points,
 		&quad) == UUcTrue) return UUcTrue;
-	
+
 	// maxX plane
 	quad.indices[0] = 1; quad.indices[1] = 3; quad.indices[2] = 7; quad.indices[3] = 5;
 	if(IMPiEnv_OctTree_Build_BNVInfo_CheckQuad(
@@ -367,7 +367,7 @@ IMPiEnv_OctTree_Build_BNVInfo_Check(
 		inBNV,
 		points,
 		&quad) == UUcTrue) return UUcTrue;
-	
+
 	// minY plane
 	quad.indices[0] = 0; quad.indices[1] = 1; quad.indices[2] = 5; quad.indices[3] = 4;
 	if(IMPiEnv_OctTree_Build_BNVInfo_CheckQuad(
@@ -375,7 +375,7 @@ IMPiEnv_OctTree_Build_BNVInfo_Check(
 		inBNV,
 		points,
 		&quad) == UUcTrue) return UUcTrue;
-	
+
 	// maxY plane
 	quad.indices[0] = 2; quad.indices[1] = 3; quad.indices[2] = 7; quad.indices[3] = 6;
 	if(IMPiEnv_OctTree_Build_BNVInfo_CheckQuad(
@@ -383,7 +383,7 @@ IMPiEnv_OctTree_Build_BNVInfo_Check(
 		inBNV,
 		points,
 		&quad) == UUcTrue) return UUcTrue;
-	
+
 	// minZ plane
 	quad.indices[0] = 0; quad.indices[1] = 1; quad.indices[2] = 3; quad.indices[3] = 2;
 	if(IMPiEnv_OctTree_Build_BNVInfo_CheckQuad(
@@ -391,7 +391,7 @@ IMPiEnv_OctTree_Build_BNVInfo_Check(
 		inBNV,
 		points,
 		&quad) == UUcTrue) return UUcTrue;
-	
+
 	// maxZ plane
 	quad.indices[0] = 4; quad.indices[1] = 5; quad.indices[2] = 7; quad.indices[3] = 6;
 	if(IMPiEnv_OctTree_Build_BNVInfo_CheckQuad(
@@ -399,7 +399,7 @@ IMPiEnv_OctTree_Build_BNVInfo_Check(
 		inBNV,
 		points,
 		&quad) == UUcTrue) return UUcTrue;
-	
+
 	return UUcFalse;
 }
 
@@ -418,7 +418,7 @@ IMPiEnv_OctTree_FindIntersectionBNVs(
 	M3tPoint3D*			pointArray;
 	M3tPlaneEquation*	planeArray;
 	UUtUns32			numIndices = 0;
-	
+
 	UUmAssert(outNewBNVIndexArray != NULL);
 
 	pointArray = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
@@ -441,7 +441,7 @@ IMPiEnv_OctTree_FindIntersectionBNVs(
 			outNewBNVIndexArray[numIndices++] = curBNVIndex;
 		}
 	}
-	
+
 	*outNewBNVIndexCount = numIndices;
 }
 
@@ -453,13 +453,13 @@ IMPiEnv_OctTree_NodeContainsNode(
 {
 	AKtOctTree_InteriorNode*	interiorNode;
 	UUtUns32					itr;
-	
+
 	if(inCurNodeIndex == inDesiredNode) return UUcTrue;
-	
+
 	if(AKmOctTree_IsLeafNode(inCurNodeIndex)) return UUcFalse;
-	
+
 	interiorNode = inOTData->interiorNodes + inCurNodeIndex;
-	
+
 	for(itr = 0; itr < 8; itr++)
 	{
 		if(IMPiEnv_OctTree_NodeContainsNode(
@@ -470,10 +470,10 @@ IMPiEnv_OctTree_NodeContainsNode(
 			return UUcTrue;
 		}
 	}
-	
+
 	return UUcFalse;
 }
-	
+
 static void
 IMPiEnv_OctTree_Verify_ExtraInfo_Adjacent(
 	IMPtEnv_OTData*				inOTData,
@@ -483,7 +483,7 @@ IMPiEnv_OctTree_Verify_ExtraInfo_Adjacent(
 {
 	UUtUns32	adjIndex;
 	UUtUns32	mirrorSide;
-	UUtUns32	mirrorSideTable[] = 
+	UUtUns32	mirrorSideTable[] =
 				{
 					AKcOctTree_Side_PosX,
 					AKcOctTree_Side_NegX,
@@ -494,11 +494,11 @@ IMPiEnv_OctTree_Verify_ExtraInfo_Adjacent(
 				};
 	IMPtEnv_OTExtraNodeInfo*	adjExtraNodeInfo;
 	UUtBool						nodeContaintsNode;
-	
+
 	adjIndex = inNodeExtraInfo->adjacent[inSide];
-	
+
 	if(adjIndex == 0xFFFFFFFF) return;
-	
+
 	if(AKmOctTree_IsLeafNode(adjIndex))
 	{
 		adjExtraNodeInfo = inOTData->leafNodeExtras + AKmOctTree_GetLeafIndex(adjIndex);
@@ -507,7 +507,7 @@ IMPiEnv_OctTree_Verify_ExtraInfo_Adjacent(
 	{
 		adjExtraNodeInfo = inOTData->interiorNodeExtras + adjIndex;
 	}
-	
+
 	switch(inSide)
 	{
 		case AKcOctTree_Side_NegX:
@@ -529,11 +529,11 @@ IMPiEnv_OctTree_Verify_ExtraInfo_Adjacent(
 			UUmAssert(inNodeExtraInfo->maxZIndex == adjExtraNodeInfo->minZIndex);
 			break;
 	}
-	
+
 	mirrorSide = mirrorSideTable[inSide];
-	
+
 	UUmAssert(inNodeExtraInfo->depth >= adjExtraNodeInfo->depth);
-	
+
 	nodeContaintsNode =
 		IMPiEnv_OctTree_NodeContainsNode(
 			inOTData,
@@ -561,35 +561,35 @@ IMPiEnv_OctTree_Verify_SideRecursive(
 	float					maxX, maxY, maxZ;
 	float					minX, minY, minZ;
 	UUtUns32				targetLeafNodeIndex;
-	
+
 	if(inTargetAdjInfo == 0xFFFFFFFF) return;
-	
+
 	if(AKmOctTree_IsLeafNode(inTargetAdjInfo))
 	{
 		targetLeafNodeIndex = AKmOctTree_GetLeafIndex(inTargetAdjInfo);
 		targetLeafNode = inOTData->leafNodes + targetLeafNodeIndex;
-		
+
 		if(AKmOctTree_IsLeafNode(targetLeafNode->adjInfo[inTargetAdjsCurSideIndex]))
 		{
 			UUmAssert(targetLeafNode->adjInfo[inTargetAdjsCurSideIndex] == AKmOctTree_MakeLeafIndex(inCurLeafNodeIndex));
 		}
-		
+
 		dimIndex = ((targetLeafNode->dim_Encode >> AKcOctTree_Shift_Dim) & AKcOctTree_Mask_Dim);
 		UUmAssert(dimIndex < 9);
 		curDim = AKgIntToFloatDim[dimIndex];
-		
+
 		maxXIndex = ((targetLeafNode->dim_Encode >> AKcOctTree_Shift_X) & AKcOctTree_Mask_X);
 		UUmAssert(maxXIndex < 512);
 		maxX = AKgIntToFloatXYZ[maxXIndex];
-		
+
 		maxYIndex = ((targetLeafNode->dim_Encode >> AKcOctTree_Shift_Y) & AKcOctTree_Mask_Y);
 		UUmAssert(maxYIndex < 512);
 		maxY = AKgIntToFloatXYZ[maxYIndex];
-		
+
 		maxZIndex = ((targetLeafNode->dim_Encode >> AKcOctTree_Shift_Z) & AKcOctTree_Mask_Z);
 		UUmAssert(maxZIndex < 512);
 		maxZ = AKgIntToFloatXYZ[maxZIndex];
-		
+
 		minX = maxX - curDim;
 		minY = maxY - curDim;
 		minZ = maxZ - curDim;
@@ -619,7 +619,7 @@ IMPiEnv_OctTree_Verify_SideRecursive(
 	else
 	{
 		curQuadNode = inOTData->qtNodes + inTargetAdjInfo;
-		
+
 		for(itr = 0; itr < 4; itr++)
 		{
 			IMPiEnv_OctTree_Verify_SideRecursive(
@@ -649,11 +649,11 @@ IMPiEnv_OctTree_Verify_SideAdjInfo_IMeanItThisTime(
 	UUtUns32		inCorrectLeafIndex)
 {
 	UUtUns32	theFuckingIndex;
-	
+
 	if(AKmOctTree_IsLeafNode(inAdjInfo))
 	{
 		theFuckingIndex = AKmOctTree_GetLeafIndex(inAdjInfo);
-		
+
 		UUmAssert(theFuckingIndex == inCorrectLeafIndex);
 	}
 	else
@@ -663,13 +663,13 @@ IMPiEnv_OctTree_Verify_SideAdjInfo_IMeanItThisTime(
 			inOTData,
 			0,
 			inTargetLeafNodeIndex);
-		
+
 		// compute the difference between the target leaf node level and the current level
 		// this is the number of levels in the quad tree
-		
+
 	}
 }
-	
+
 static void
 IMPiEnv_OctTree_Verify_SideAdjInfo(
 	IMPtEnv_OTData*	inOTData,
@@ -682,16 +682,16 @@ IMPiEnv_OctTree_Verify_SideAdjInfo(
 	UUtUns32					targetAdjLeafIndex;
 	UUtUns32					itr;
 	AKtQuadTree_Node*			curQuadTreeNode;
-	
+
 	if(inAdjInfo == 0xFFFFFFFF) return;
-	
+
 	if(AKmOctTree_IsLeafNode(inAdjInfo))
 	{
 		targetLeafIndex = AKmOctTree_GetLeafIndex(inAdjInfo);
 		targetLeafNode = inOTData->leafNodes + targetLeafIndex;
-		
+
 		targetAdjLeafIndex = targetLeafNode->adjInfo[inSideIndex];
-		
+
 		IMPiEnv_OctTree_Verify_SideAdjInfo_IMeanItThisTime(
 			inOTData,
 			targetAdjLeafIndex,
@@ -701,7 +701,7 @@ IMPiEnv_OctTree_Verify_SideAdjInfo(
 	else
 	{
 		curQuadTreeNode = inOTData->qtNodes + inAdjInfo;
-		
+
 		for(itr = 0; itr < 4; itr++)
 		{
 			IMPiEnv_OctTree_Verify_SideAdjInfo(
@@ -723,13 +723,13 @@ IMPiEnv_OctTree_Verify_SideAdjInfoRecursive(
 	UUtUns32					itr;
 	AKtOctTree_InteriorNode*	curInteriorNode;
 	AKtOctTree_LeafNode*		curLeafNode;
-	
+
 	if(AKmOctTree_IsLeafNode(inCurIndex))
 	{
 		leafIndex = AKmOctTree_GetLeafIndex(inCurIndex);
-		
+
 		curLeafNode = inOTData->leafNodes + leafIndex;
-		
+
 		IMPiEnv_OctTree_Verify_SideAdjInfo(
 			inOTData,
 			curLeafNode->adjInfo[AKcOctTree_Side_NegX],
@@ -764,7 +764,7 @@ IMPiEnv_OctTree_Verify_SideAdjInfoRecursive(
 	else
 	{
 		curInteriorNode = inOTData->interiorNodes + inCurIndex;
-		
+
 		for(itr = 0; itr < 8; itr++)
 		{
 			IMPiEnv_OctTree_Verify_SideAdjInfoRecursive(
@@ -788,13 +788,13 @@ IMPiEnv_OctTree_Verify(
 	UUtUns32				maxXIndex;
 	UUtUns32				maxYIndex;
 	UUtUns32				maxZIndex;
-	
+
 	// Second verify that indices match up between adjacent nodes
 		IMPiEnv_OctTree_Verify_SideAdjInfoRecursive(
 			inOTData,
 			0,
 			0xFFFFFFFF);
-	
+
 	// first check that all side values match
 	for(itr = 0, curLeafNode = inOTData->leafNodes;
 		itr < inOTData->nextLeafNodeIndex;
@@ -803,23 +803,23 @@ IMPiEnv_OctTree_Verify(
 		dimIndex = ((curLeafNode->dim_Encode >> AKcOctTree_Shift_Dim) & AKcOctTree_Mask_Dim);
 		UUmAssert(dimIndex < 9);
 		curDim = AKgIntToFloatDim[dimIndex];
-		
+
 		maxXIndex = ((curLeafNode->dim_Encode >> AKcOctTree_Shift_X) & AKcOctTree_Mask_X);
 		UUmAssert(maxXIndex < 512);
 		maxX = AKgIntToFloatXYZ[maxXIndex];
-		
+
 		maxYIndex = ((curLeafNode->dim_Encode >> AKcOctTree_Shift_Y) & AKcOctTree_Mask_Y);
 		UUmAssert(maxYIndex < 512);
 		maxY = AKgIntToFloatXYZ[maxYIndex];
-		
+
 		maxZIndex = ((curLeafNode->dim_Encode >> AKcOctTree_Shift_Z) & AKcOctTree_Mask_Z);
 		UUmAssert(maxZIndex < 512);
 		maxZ = AKgIntToFloatXYZ[maxZIndex];
-		
+
 		minX = maxX - curDim;
 		minY = maxY - curDim;
 		minZ = maxZ - curDim;
-		
+
 		// Verify current node's negX side with adj nodes posX side
 			IMPiEnv_OctTree_Verify_SideRecursive(
 				inOTData,
@@ -834,7 +834,7 @@ IMPiEnv_OctTree_Verify(
 				curLeafNode->adjInfo[AKcOctTree_Side_PosX],
 				AKcOctTree_Side_NegX,
 				maxX);
-		
+
 		// Verify this negY side with adj posY side
 			IMPiEnv_OctTree_Verify_SideRecursive(
 				inOTData,
@@ -849,7 +849,7 @@ IMPiEnv_OctTree_Verify(
 				curLeafNode->adjInfo[AKcOctTree_Side_PosY],
 				AKcOctTree_Side_NegY,
 				maxY);
-		
+
 		// Verify this negZ side with adj posZ side
 			IMPiEnv_OctTree_Verify_SideRecursive(
 				inOTData,
@@ -866,7 +866,7 @@ IMPiEnv_OctTree_Verify(
 				maxZ);
 	}
 
-}	
+}
 
 UUtUns32 oct_tree_bnv_memory_saved = 0;
 UUtUns32 oct_tree_gq_memory_saved = 0;
@@ -887,14 +887,14 @@ static void	IMPiEnv_OctTree_LeafNode_CreateGQList(
 	inOTData->leafNodeSizeDist[inNodeExtraInfo->dimIndex]++;
 
 	ioLeafNode->dim_Encode = inNodeExtraInfo->dimIndex << AKcOctTree_Shift_Dim;
-	
+
 	ioLeafNode->dim_Encode |= inNodeExtraInfo->maxXIndex << AKcOctTree_Shift_X;
 	ioLeafNode->dim_Encode |= inNodeExtraInfo->maxYIndex << AKcOctTree_Shift_Y;
 	ioLeafNode->dim_Encode |= inNodeExtraInfo->maxZIndex << AKcOctTree_Shift_Z;
-	
+
 	// Update the gq stuff
 	inOTData->gqsPerNodeDist[gq_index_count]++;
-	
+
 	if(gq_index_count == 0) {
 		ioLeafNode->gqIndirectIndex_Encode = 0;
 	}
@@ -904,7 +904,7 @@ static void	IMPiEnv_OctTree_LeafNode_CreateGQList(
 
 		ioLeafNode->gqIndirectIndex_Encode = (inOTData->nextGQIndex << AKcOctTree_GQInd_Start_Shift) | gq_index_count;
 	}
-	
+
 	if(gq_index_count > 0)
 	{
 		for(itr = 0; itr < gq_index_count; itr++)
@@ -912,7 +912,7 @@ static void	IMPiEnv_OctTree_LeafNode_CreateGQList(
 			if(gGQ_RemapArray[inGQIndexArray[itr]] == 0xFFFFFFFF) {
 				gGQ_RemapArray[inGQIndexArray[itr]] = gGQ_NumRemapped++;
 			}
-						
+
 			gGQ_RemapArray_CreateGQList[itr] = gGQ_RemapArray[inGQIndexArray[itr]];
 		}
 	}
@@ -936,7 +936,7 @@ static void	IMPiEnv_OctTree_LeafNode_CreateGQList(
 
 		UUmAssert(itr >= 0);
 		UUmAssert(((UUtUns32) itr) < inOTData->nextGQIndex);
-		
+
 		test_memory = inOTData->gqIndexArray + itr;
 
 		is_equal = UUrMemory_IsEqual(test_memory, gGQ_RemapArray_CreateGQList, gq_index_count * sizeof(UUtUns32));
@@ -1002,7 +1002,7 @@ static void IMPiEnv_OctTree_LeafNode_CreateBNVList(
 
 		UUmAssert(itr >= 0);
 		UUmAssert(((UUtUns32) itr) < inOTData->nextBNVIndex);
-		
+
 		test_memory = inOTData->bnv_index_array + itr;
 
 		is_equal = UUrMemory_IsEqual(test_memory, inBNVIndexArray, inBNVIndexCount * sizeof(UUtUns32));
@@ -1069,7 +1069,7 @@ IMPiEnv_OctTree_Build_Recursive(
 
 	AKtOctTree_LeafNode*		leafNode;
 	AKtOctTree_InteriorNode*	interiorNode;
-	
+
 	M3tBoundingBox_MinMax		childBBox;
 	UUtUns32					childGQIndexCount;
 	UUtUns32*					childGQIndexArray;
@@ -1081,12 +1081,12 @@ IMPiEnv_OctTree_Build_Recursive(
 	UUtUns32*					childBNVIndexArray;
 
 	static UUtUns32				statusDotCounter = 0;
-		
+
 	float						nodeCenterX, nodeCenterY, nodeCenterZ;
 	UUtUns32					*top_of_stack = inTopOfStack;
 
 	UUmAssert((top_of_stack >= IMPgOctree2_StackBase) && (top_of_stack < IMPgOctree2_StackMax));
-	
+
 	// Print out the cheesy status dots
 	if(statusDotCounter++ % 2000 == 0) Imp_PrintMessage(IMPcMsg_Important,".");
 
@@ -1095,10 +1095,10 @@ IMPiEnv_OctTree_Build_Recursive(
 	{
 		inOTData->maxDepth = inLevel;
 	}
-	
+
 	// Get this node's dimension
 	nodeDim = inBoundingBox->maxPoint.x - inBoundingBox->minPoint.x;
-	
+
 	UUmAssert(nodeDim > 0.0f);
 	UUmAssert(nodeDim == (inBoundingBox->maxPoint.y - inBoundingBox->minPoint.y));
 	UUmAssert(nodeDim == (inBoundingBox->maxPoint.z - inBoundingBox->minPoint.z));
@@ -1121,12 +1121,12 @@ IMPiEnv_OctTree_Build_Recursive(
 			Imp_PrintWarning("oct tree node had too many gqs (%d / %d)", inGQIndexCount, IMPcEnv_OT_MaxGQsPerNode);
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Environment too complex for oct tree, too many GQs");
 		}
-		
+
 		if(inBNVIndexCount >= IMPcEnv_OT_MaxBNVsPerNode)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Environment too complex for oct tree, too many BNVs");
 		}
-		
+
 		if(inOTData->nextLeafNodeIndex >= IMPcEnv_MaxLeafNodes)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Too many parent nodes");
@@ -1145,17 +1145,17 @@ IMPiEnv_OctTree_Build_Recursive(
 		nodeExtraInfo = inOTData->interiorNodeExtras + nodeIndex;
 		interiorNode = inOTData->interiorNodes + nodeIndex;
 	}
-		
+
 	// create the node extra info
 	{
 		float	tf1 = (float)(log(nodeDim) / log(2.0));
 		float	tf2 = (float)(log(AKcMinOTDim) / log(2.0));
-		
+
 		nodeExtraInfo->dimIndex = (UUtUns32) (tf1 - tf2);
 	}
 
 	//nodeExtraInfo->dimIndex = ((log(nodeDim) - log(AKcMinOTDim))/log(2.0));
-		
+
 	nodeExtraInfo->minXIndex = (UUtUns16) (inBoundingBox->minPoint.x / AKcMinOTDim + 255.0f);
 	nodeExtraInfo->minYIndex = (UUtUns16) (inBoundingBox->minPoint.y / AKcMinOTDim + 255.0f);
 	nodeExtraInfo->minZIndex = (UUtUns16) (inBoundingBox->minPoint.z / AKcMinOTDim + 255.0f);
@@ -1171,11 +1171,11 @@ IMPiEnv_OctTree_Build_Recursive(
 	UUmAssert(nodeExtraInfo->maxXIndex >= 0);
 	UUmAssert(nodeExtraInfo->maxYIndex >= 0);
 	UUmAssert(nodeExtraInfo->maxZIndex >= 0);
-	
+
 	nodeExtraInfo->depth = inLevel;
 	nodeExtraInfo->parent = inParent;
 	nodeExtraInfo->myOctant = inOctant;
-		
+
 	// if we are in a leaf node then create it
 	if(nodeIsLeaf)
 	{
@@ -1184,10 +1184,10 @@ IMPiEnv_OctTree_Build_Recursive(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Too many gq indices.");
 		}
-		
+
 		UUmAssert(outChildIndex != NULL);
 		*outChildIndex = AKmOctTree_MakeLeafIndex(nodeIndex);
-		
+
 		if (inGQIndexCount > AKcOctTree_GQInd_Len_Mask) {
 			// CB: we can store at most AKcOctTree_GQInd_Len_Mask GQs in a single leaf node due to the bitmask packing. warn about this
 			// and truncate the GQ list so that we don't corrupt other fields in the bitmask.
@@ -1199,35 +1199,35 @@ IMPiEnv_OctTree_Build_Recursive(
 
 		IMPiEnv_OctTree_LeafNode_CreateGQList(leafNode, nodeExtraInfo, inBuildData, inOTData, inGQIndexCount, inGQIndexArray);
 		IMPiEnv_OctTree_LeafNode_CreateBNVList(leafNode, inBuildData, inOTData, inBNVIndexCount, inBNVIndexArray);
-		
+
 		return UUcError_None;
 	}
 
-	// we are in an interior node	
+	// we are in an interior node
 	if(outChildIndex != NULL)
 	{
 		*outChildIndex = nodeIndex;
 	}
-	
+
 	childGQIndexArray = top_of_stack;
 	top_of_stack += inGQIndexCount;
-	
+
 	childBNVIndexArray = top_of_stack;
 	top_of_stack += inBNVIndexCount;
-	
+
 	UUmAssert((top_of_stack >= IMPgOctree2_StackBase) && (top_of_stack < IMPgOctree2_StackMax));
-	
+
 	nodeCenterX = (inBoundingBox->minPoint.x + inBoundingBox->maxPoint.x) * 0.5f;
 	nodeCenterY = (inBoundingBox->minPoint.y + inBoundingBox->maxPoint.y) * 0.5f;
 	nodeCenterZ = (inBoundingBox->minPoint.z + inBoundingBox->maxPoint.z) * 0.5f;
-	
+
 	// First find all the leaf nodes
 	for(childOctantItr = 0; childOctantItr < 8; childOctantItr++)
 	{
 		childBBox.minPoint.x = (childOctantItr & AKcOctTree_SideBV_X) ? nodeCenterX : inBoundingBox->minPoint.x;
 		childBBox.minPoint.y = (childOctantItr & AKcOctTree_SideBV_Y) ? nodeCenterY : inBoundingBox->minPoint.y;
 		childBBox.minPoint.z = (childOctantItr & AKcOctTree_SideBV_Z) ? nodeCenterZ : inBoundingBox->minPoint.z;
-	
+
 		childBBox.maxPoint.x = (childOctantItr & AKcOctTree_SideBV_X) ? inBoundingBox->maxPoint.x : nodeCenterX;
 		childBBox.maxPoint.y = (childOctantItr & AKcOctTree_SideBV_Y) ? inBoundingBox->maxPoint.y : nodeCenterY;
 		childBBox.maxPoint.z = (childOctantItr & AKcOctTree_SideBV_Z) ? inBoundingBox->maxPoint.z : nodeCenterZ;
@@ -1241,7 +1241,7 @@ IMPiEnv_OctTree_Build_Recursive(
 			&childGQIndexCount);
 
 		childGQTotal += childGQIndexCount;
-		
+
 		IMPiEnv_OctTree_FindIntersectionBNVs(
 			inBuildData,
 			inBNVIndexCount,
@@ -1251,8 +1251,8 @@ IMPiEnv_OctTree_Build_Recursive(
 			&childBNVIndexCount);
 
 		childBNVTotal += childBNVIndexCount;
-		
-		error = 
+
+		error =
 			IMPiEnv_OctTree_Build_Recursive(
 				inBuildData,
 				inOTData,
@@ -1268,10 +1268,10 @@ IMPiEnv_OctTree_Build_Recursive(
 				&interiorNode->children[childOctantItr]);
 		UUmError_ReturnOnError(error);
 	}
-		
+
 	UUmAssert(childGQTotal >= inGQIndexCount);
 	UUmAssert(childBNVTotal >= inBNVIndexCount);
-	
+
 	return UUcError_None;
 }
 
@@ -1288,19 +1288,19 @@ IMPiEnv_OctTree_Build_AdjInfo_ForSide(
 	UUtError				error;
 	UUtUns32				adjInfoIndex;
 	AKtOctTree_LeafNode*	leafNode;
-	
+
 	adjInfoIndex = inNodeExtraInfo->adjacent[inSide];
-	
+
 	leafNode = inOTData->leafNodes + inNodeIndex;
-	
+
 	if(AKmOctTree_IsLeafNode(adjInfoIndex))
 	{
 		leafNode->adjInfo[inSide] = adjInfoIndex;
-		
+
 		return UUcError_None;
 	}
-	
-	error = 
+
+	error =
 		IMPiEnv_QuadTree_Build(
 			inBuildData,
 			inOTData,
@@ -1308,7 +1308,7 @@ IMPiEnv_OctTree_Build_AdjInfo_ForSide(
 			adjInfoIndex,
 			&leafNode->adjInfo[inSide]);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -1319,14 +1319,14 @@ IMPiEnv_OctTree_Build_AdjInfo(
 {
 	UUtError					error;
 	IMPtEnv_OTExtraNodeInfo*	curExtraNodeInfo;
-	UUtUns32					nodeIndexItr;	
+	UUtUns32					nodeIndexItr;
 
 	for(nodeIndexItr = 0, curExtraNodeInfo = inOTData->leafNodeExtras;
 		nodeIndexItr < inOTData->nextLeafNodeIndex;
 		nodeIndexItr++, curExtraNodeInfo++)
 	{
 		// Compute info for neg x side
-		error = 
+		error =
 			IMPiEnv_OctTree_Build_AdjInfo_ForSide(
 				inBuildData,
 				inOTData,
@@ -1337,7 +1337,7 @@ IMPiEnv_OctTree_Build_AdjInfo(
 				0);
 		UUmError_ReturnOnError(error);
 		// Compute info for pos x side
-		error = 
+		error =
 			IMPiEnv_OctTree_Build_AdjInfo_ForSide(
 				inBuildData,
 				inOTData,
@@ -1347,9 +1347,9 @@ IMPiEnv_OctTree_Build_AdjInfo(
 				AKcOctTree_SideAxis_X,
 				1);
 		UUmError_ReturnOnError(error);
-		
+
 		// Compute info for neg y side
-		error = 
+		error =
 			IMPiEnv_OctTree_Build_AdjInfo_ForSide(
 				inBuildData,
 				inOTData,
@@ -1360,7 +1360,7 @@ IMPiEnv_OctTree_Build_AdjInfo(
 				0);
 		UUmError_ReturnOnError(error);
 		// Compute info for pos y side
-		error = 
+		error =
 			IMPiEnv_OctTree_Build_AdjInfo_ForSide(
 				inBuildData,
 				inOTData,
@@ -1370,9 +1370,9 @@ IMPiEnv_OctTree_Build_AdjInfo(
 				AKcOctTree_SideAxis_Y,
 				1);
 		UUmError_ReturnOnError(error);
-		
+
 		// Compute info for neg z side
-		error = 
+		error =
 			IMPiEnv_OctTree_Build_AdjInfo_ForSide(
 				inBuildData,
 				inOTData,
@@ -1383,7 +1383,7 @@ IMPiEnv_OctTree_Build_AdjInfo(
 				0);
 		UUmError_ReturnOnError(error);
 		// Compute info for pos z side
-		error = 
+		error =
 			IMPiEnv_OctTree_Build_AdjInfo_ForSide(
 				inBuildData,
 				inOTData,
@@ -1394,7 +1394,7 @@ IMPiEnv_OctTree_Build_AdjInfo(
 				1);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1413,7 +1413,7 @@ IMPiEnv_OctTree_Build_ExtraInfo_ForSide(
 	UUtUns32					curOctant;
 	UUtUns32					octantStack[16];
 	UUtInt16					octantTOS = 0;
-	
+
 	if(AKmOctTree_IsLeafNode(curNodeIndex))
 	{
 		UUmAssert(AKmOctTree_GetLeafIndex(curNodeIndex) < inOTData->nextLeafNodeIndex);
@@ -1422,7 +1422,7 @@ IMPiEnv_OctTree_Build_ExtraInfo_ForSide(
 	{
 		UUmAssert(curNodeIndex < inOTData->nextInteriorNodeIndex);
 	}
-	
+
 	// go up until we can move into a sibling
 		while(1)
 		{
@@ -1431,9 +1431,9 @@ IMPiEnv_OctTree_Build_ExtraInfo_ForSide(
 				inNodeExtraInfo->adjacent[inSide] = 0xFFFFFFFF;
 				return;
 			}
-			
+
 			octantStack[octantTOS++] = curNodeExtraInfo->myOctant;
-			
+
 			if(inPosNeg)
 			{
 				if(!(curNodeExtraInfo->myOctant & inAxis)) break;
@@ -1442,37 +1442,37 @@ IMPiEnv_OctTree_Build_ExtraInfo_ForSide(
 			{
 				if(curNodeExtraInfo->myOctant & inAxis) break;
 			}
-			
+
 			curNodeIndex = curNodeExtraInfo->parent;
-			
+
 			UUmAssert(curNodeIndex < inOTData->nextInteriorNodeIndex);
 
 			curNodeExtraInfo = inOTData->interiorNodeExtras + curNodeIndex;
 		}
-	
+
 	UUmAssert(curNodeExtraInfo->myOctant != 0xFFFFFFFF);
-	
+
 	UUmAssert(inNodeExtraInfo->depth >= curNodeExtraInfo->depth);
-	
+
 	curNodeIndex = curNodeExtraInfo->parent;
-	
+
 	while(octantTOS > 0)
 	{
 		curOctant = octantStack[--octantTOS];
-		
+
 		UUmAssert(curOctant < 8);
-		
+
 		curOctant = (curOctant & ~inAxis) | (~curOctant & inAxis);
-		
+
 		potentialNextIndex = inOTData->interiorNodes[curNodeIndex].children[curOctant];
-		
+
 		UUmAssert(potentialNextIndex != 0xFFFFFFFF);
-		
+
 		curNodeIndex = potentialNextIndex;
-		
+
 		if(AKmOctTree_IsLeafNode(curNodeIndex)) break;
 	}
-	
+
 	if(!AKmOctTree_IsLeafNode(curNodeIndex))
 	{
 		curNodeExtraInfo = inOTData->interiorNodeExtras + curNodeIndex;
@@ -1492,8 +1492,8 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 	IMPtEnv_OTData*		inOTData)
 {
 	IMPtEnv_OTExtraNodeInfo*	curExtraNodeInfo;
-	UUtUns32					nodeIndexItr;	
-	
+	UUtUns32					nodeIndexItr;
+
 	for(nodeIndexItr = 0, curExtraNodeInfo = inOTData->interiorNodeExtras;
 		nodeIndexItr < inOTData->nextInteriorNodeIndex;
 		nodeIndexItr++, curExtraNodeInfo++)
@@ -1514,7 +1514,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				AKcOctTree_Side_PosX,
 				AKcOctTree_SideBV_X,
 				1);
-		
+
 		// Compute info for neg y side
 			IMPiEnv_OctTree_Build_ExtraInfo_ForSide(
 				inOTData,
@@ -1531,7 +1531,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				AKcOctTree_Side_PosY,
 				AKcOctTree_SideBV_Y,
 				1);
-		
+
 		// Compute info for neg z side
 			IMPiEnv_OctTree_Build_ExtraInfo_ForSide(
 				inOTData,
@@ -1549,7 +1549,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				AKcOctTree_SideBV_Z,
 				1);
 	}
-	
+
 	for(nodeIndexItr = 0, curExtraNodeInfo = inOTData->leafNodeExtras;
 		nodeIndexItr < inOTData->nextLeafNodeIndex;
 		nodeIndexItr++, curExtraNodeInfo++)
@@ -1570,7 +1570,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				AKcOctTree_Side_PosX,
 				AKcOctTree_SideBV_X,
 				1);
-		
+
 		// Compute info for neg y side
 			IMPiEnv_OctTree_Build_ExtraInfo_ForSide(
 				inOTData,
@@ -1587,7 +1587,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				AKcOctTree_Side_PosY,
 				AKcOctTree_SideBV_Y,
 				1);
-		
+
 		// Compute info for neg z side
 			IMPiEnv_OctTree_Build_ExtraInfo_ForSide(
 				inOTData,
@@ -1605,7 +1605,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				AKcOctTree_SideBV_Z,
 				1);
 	}
-	
+
 	for(nodeIndexItr = 0, curExtraNodeInfo = inOTData->interiorNodeExtras;
 		nodeIndexItr < inOTData->nextInteriorNodeIndex;
 		nodeIndexItr++, curExtraNodeInfo++)
@@ -1616,7 +1616,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 			UUmAssert(inOTData->interiorNodeExtras[curExtraNodeInfo->parent].depth == curExtraNodeInfo->depth - 1);
 			UUmAssert(inOTData->interiorNodeExtras[curExtraNodeInfo->parent].dimIndex == curExtraNodeInfo->dimIndex + 1);
 		}
-		
+
 		// Verify
 			IMPiEnv_OctTree_Verify_ExtraInfo_Adjacent(
 				inOTData,
@@ -1629,7 +1629,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				curExtraNodeInfo,
 				nodeIndexItr,
 				AKcOctTree_Side_PosX);
-		
+
 		// Verify
 			IMPiEnv_OctTree_Verify_ExtraInfo_Adjacent(
 				inOTData,
@@ -1642,7 +1642,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				curExtraNodeInfo,
 				nodeIndexItr,
 				AKcOctTree_Side_PosY);
-		
+
 		// Verify
 			IMPiEnv_OctTree_Verify_ExtraInfo_Adjacent(
 				inOTData,
@@ -1656,7 +1656,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				nodeIndexItr,
 				AKcOctTree_Side_PosZ);
 	}
-	
+
 	for(nodeIndexItr = 0, curExtraNodeInfo = inOTData->leafNodeExtras;
 		nodeIndexItr < inOTData->nextLeafNodeIndex;
 		nodeIndexItr++, curExtraNodeInfo++)
@@ -1681,7 +1681,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				curExtraNodeInfo,
 				AKmOctTree_MakeLeafIndex(nodeIndexItr),
 				AKcOctTree_Side_PosX);
-		
+
 		// Verify
 			IMPiEnv_OctTree_Verify_ExtraInfo_Adjacent(
 				inOTData,
@@ -1694,7 +1694,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				curExtraNodeInfo,
 				AKmOctTree_MakeLeafIndex(nodeIndexItr),
 				AKcOctTree_Side_PosY);
-		
+
 		// Verify
 			IMPiEnv_OctTree_Verify_ExtraInfo_Adjacent(
 				inOTData,
@@ -1709,7 +1709,7 @@ IMPiEnv_OctTree_Build_ExtraInfo(
 				AKcOctTree_Side_PosZ);
 	}
 }
-	
+
 static UUtError
 IMPiEnv_OctTree_Build(
 	IMPtEnv_BuildData*	inBuildData,
@@ -1717,7 +1717,7 @@ IMPiEnv_OctTree_Build(
 {
 	UUtError		error;
 	UUtUns32		i;
-	
+
 	UUtUns32*		initialGQIndexArray;
 	UUtUns32*		initialBNVIndexArray;
 	UUtUns32		oct_tree_stack_size;
@@ -1740,21 +1740,21 @@ IMPiEnv_OctTree_Build(
 	top_of_stack = initial_stack;
 
 	initialGQIndexArray = top_of_stack;
-	top_of_stack += inBuildData->numGQs;	
-	
-	for(i = 0; i < inBuildData->numGQs; i++) 
+	top_of_stack += inBuildData->numGQs;
+
+	for(i = 0; i < inBuildData->numGQs; i++)
 	{
 		initialGQIndexArray[i] = i;
 	}
-	
+
 	initialBNVIndexArray = top_of_stack;
-	top_of_stack += inBuildData->numBNVs; 
-	
+	top_of_stack += inBuildData->numBNVs;
+
 	for(i = 0; i < inBuildData->numBNVs; i++)
 	{
 		initialBNVIndexArray[i] = i;
 	}
-		
+
 	bBox.minPoint.x = -AKcMaxHalfOTDim;
 	bBox.minPoint.y = -AKcMaxHalfOTDim;
 	bBox.minPoint.z = -AKcMaxHalfOTDim;
@@ -1762,7 +1762,7 @@ IMPiEnv_OctTree_Build(
 	bBox.maxPoint.y = AKcMaxHalfOTDim;
 	bBox.maxPoint.z = AKcMaxHalfOTDim;
 
-	
+
 	error =
 		IMPiEnv_OctTree_Build_Recursive(
 			inBuildData,
@@ -1779,26 +1779,26 @@ IMPiEnv_OctTree_Build(
 			NULL);
 
 	Imp_PrintMessage(IMPcMsg_Important, ""UUmNL);
-	Imp_PrintMessage(IMPcMsg_Important, "compaction saved %d/%d -> %d/%d = %d/%d (bnv/gq),bytes"UUmNL, 
+	Imp_PrintMessage(IMPcMsg_Important, "compaction saved %d/%d -> %d/%d = %d/%d (bnv/gq),bytes"UUmNL,
 		oct_tree_bnv_memory_saved + (inOTData->nextBNVIndex * 2), oct_tree_gq_memory_saved + (inOTData->nextGQIndex * 2),
 		inOTData->nextBNVIndex * 2, inOTData->nextGQIndex * 2,
 		oct_tree_bnv_memory_saved, oct_tree_gq_memory_saved);
-	
+
 	UUrMemory_Block_Delete(initial_stack);
-	
+
 	IMPiEnv_OctTree_Build_ExtraInfo(
 		inBuildData,
 		inOTData);
-	
-	error = 
+
+	error =
 		IMPiEnv_OctTree_Build_AdjInfo(
 			inBuildData,
 			inOTData);
 	UUmError_ReturnOnError(error);
-	
-	
+
+
 	IMPiEnv_OctTree_Verify(inOTData);
-	
+
 	return error;
 }
 
@@ -1811,41 +1811,41 @@ IMPrEnv_Process_OctTrees2(
 	M3tPoint3D*		pointArray;
 	float			globalMinX, globalMinY, globalMinZ;
 	float			globalMaxX, globalMaxY, globalMaxZ;
-	
+
 	UUtUns32		curPointIndex;
 	M3tPoint3D*		curPoint;
 	UUtUns32		numPoints;
 	UUtInt64		time;
-	
+
 	IMPtEnv_GQ*		newGQList;
 	UUtUns32		itr;
 	UUtUns32 		point_NumRemapped;
 	UUtUns32*		point_RemapArray;
 	IMPtEnv_GQ*		curGQ;
 	UUtUns32		vertexItr;
-	
+
 	M3tQuad*	curQuad;
 	M3tQuad*	quadList;
 	UUtUns32		numQuads;
-	
+
 	gGQ_NumRemapped = 0;
 	gGQ_RemapArray = UUrMemory_Block_New(inBuildData->numGQs * sizeof(UUtUns32));
 	UUmError_ReturnOnNull(gGQ_RemapArray);
 
 	gGQ_RemapArray_CreateGQList = UUrMemory_Block_New(inBuildData->numGQs * sizeof(UUtUns32));
-	UUmError_ReturnOnNull(gGQ_RemapArray_CreateGQList);	
-	
+	UUmError_ReturnOnNull(gGQ_RemapArray_CreateGQList);
+
 	UUrMemory_Set32(gGQ_RemapArray, 0xFFFFFFFF, inBuildData->numGQs * sizeof(UUtUns32));
-	
+
 	newGQList = UUrMemory_Block_New(inBuildData->numGQs * sizeof(IMPtEnv_GQ));
 	UUmError_ReturnOnNull(newGQList);
-	
+
 	globalMinX = globalMinY = globalMinZ = 1e9;
 	globalMaxX = globalMaxY = globalMaxZ = -1e9;
 
 	pointArray = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
 	numPoints = AUrSharedPointArray_GetNum(inBuildData->sharedPointArray);
-	
+
 	// First find the global min max
 		for(curPointIndex = 0, curPoint = pointArray;
 			curPointIndex < numPoints;
@@ -1870,7 +1870,7 @@ IMPrEnv_Process_OctTrees2(
 		IMPrEnv_LogError("Exceeded max environment dimension - octree bounds (%f %f %f) - (%f %f %f)",
 						globalMinX, globalMinY, globalMinZ, globalMaxX, globalMaxY, globalMaxZ);
 	}
-	
+
 	// Compute Oct Tree for collision detection
 	time = UUrMachineTime_High();
 
@@ -1883,7 +1883,7 @@ IMPrEnv_Process_OctTrees2(
 
 	time = UUrMachineTime_High() - time;
 	Imp_PrintMessage(IMPcMsg_Important, "total time = %f" UUmNL UUmNL, UUrMachineTime_High_To_Seconds(time));
-	
+
 	// Fill the rest of the remap array
 		for(itr = 0; itr < inBuildData->numGQs; itr++)
 		{
@@ -1892,20 +1892,20 @@ IMPrEnv_Process_OctTrees2(
 				gGQ_RemapArray[itr] = gGQ_NumRemapped++;
 			}
 		}
-		
+
 		UUmAssert(gGQ_NumRemapped == inBuildData->numGQs);
-		
+
 		for(itr = 0; itr < inBuildData->numGQs; itr++)
 		{
 			newGQList[gGQ_RemapArray[itr]] = inBuildData->gqList[itr];
 		}
-		
-		UUrMemory_Block_Delete(gGQ_RemapArray);		
-		UUrMemory_Block_Delete(gGQ_RemapArray_CreateGQList);		
+
+		UUrMemory_Block_Delete(gGQ_RemapArray);
+		UUrMemory_Block_Delete(gGQ_RemapArray_CreateGQList);
 		UUrMemory_Block_Delete(inBuildData->gqList);
-		
+
 		inBuildData->gqList = newGQList;
-		
+
 		AUrSharedElemArray_Resort((AUtSharedElemArray*)inBuildData->sharedPointArray);
 
 		point_NumRemapped = 0;
@@ -1913,9 +1913,9 @@ IMPrEnv_Process_OctTrees2(
 			UUrMemory_Block_New(
 				AUrSharedPointArray_GetNum(inBuildData->sharedPointArray) * sizeof(UUtUns32));
 		UUmError_ReturnOnNull(point_RemapArray);
-		
+
 		UUrMemory_Set32(point_RemapArray, 0xFFFFFFFF, AUrSharedPointArray_GetNum(inBuildData->sharedPointArray) * sizeof(UUtUns32));
-		
+
 		for(itr = 0, curGQ = inBuildData->gqList;
 			itr < inBuildData->numGQs;
 			itr++, curGQ++)
@@ -1929,10 +1929,10 @@ IMPrEnv_Process_OctTrees2(
 				curGQ->visibleQuad.indices[vertexItr] = point_RemapArray[curGQ->visibleQuad.indices[vertexItr]];
 			}
 		}
-		
+
 		quadList = AUrSharedQuadArray_GetList(inBuildData->sharedBNVQuadArray);
 		numQuads = AUrSharedQuadArray_GetNum(inBuildData->sharedBNVQuadArray);
-		
+
 		for(itr = 0, curQuad = quadList;
 			itr < numQuads;
 			itr++, curQuad++)
@@ -1946,7 +1946,7 @@ IMPrEnv_Process_OctTrees2(
 				curQuad->indices[vertexItr] = point_RemapArray[curQuad->indices[vertexItr]];
 			}
 		}
-		
+
 		for(itr = 0;
 			itr < AUrSharedPointArray_GetNum(inBuildData->sharedPointArray);
 			itr++)
@@ -1956,21 +1956,21 @@ IMPrEnv_Process_OctTrees2(
 				point_RemapArray[itr] = point_NumRemapped++;
 			}
 		}
-		
+
 		UUmAssert(point_NumRemapped == AUrSharedPointArray_GetNum(inBuildData->sharedPointArray));
-		
+
 		error = AUrSharedPointArray_Reorder(inBuildData->sharedPointArray, point_RemapArray);
 		UUmError_ReturnOnError(error);
-		
+
 		UUrMemory_Block_Delete(point_RemapArray);
-		
+
 		AUrSharedQuadArray_Resort(inBuildData->sharedBNVQuadArray);
 
 		pointArray = AUrSharedPointArray_GetList(inBuildData->sharedPointArray);
 
-		
+
 	fprintf(IMPgEnv_StatsFile, "**ot stats"UUmNL);
 	IMPiEnv_OctTree_PrintStats(IMPgEnv_StatsFile, &inBuildData->otData);
-	
+
 	return UUcError_None;
 }

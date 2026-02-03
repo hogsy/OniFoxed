@@ -1,12 +1,12 @@
 /*
 	FILE:	UU_Platform.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 6, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */

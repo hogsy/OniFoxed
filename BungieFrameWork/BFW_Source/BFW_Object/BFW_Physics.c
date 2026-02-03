@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Physics.c
-	
+
 	AUTHOR:	Quinn Dunki, Michael Evans
-	
+
 	CREATED: 4/8/98
-	
+
 	PURPOSE: Physics engine
-	
+
 	Copyright (c) Bungie Software 1998, 1999, 2000
 
 */
@@ -40,7 +40,7 @@ static void PHiPhysics_Apply_Gravity(PHtPhysicsContext *inContext)
 {
 	/************
 	* Applies gravity to an object
-	*/	
+	*/
 	if (inContext->flags & PHcFlags_Physics_NoGravity)  {
 	}
 	else {
@@ -88,7 +88,7 @@ static PHtSphereTree *OBiCollision_SphereTree_Env(
 					inSkipFlag,
 					inV);
 
-		if (collision) 
+		if (collision)
 		{
 			return collision;
 		}
@@ -148,7 +148,7 @@ UUtBool PHrCollision_Point_SphereTree(
 			{
 				break;
 			}
-		}	
+		}
 	}
 
 	if (outChildB)
@@ -193,7 +193,7 @@ UUtBool PHrCollision_Volume_SphereTree(
 
 	normalV = *inAV;
 	d = MUmVector_GetLength(normalV);
-	
+
 	discardByAV = !(inUseMinimumDiscardThreshold && (fabs(d) < PHcBackfacingMinVelocity));
 	if (discardByAV) {
 		if (d!=0.0f) MUmVector_Scale(normalV,1.0f/d);
@@ -283,7 +283,7 @@ PHtSphereTree *PHrCollision_SphereTree_SphereTree(
 	*
 	* Collides iff a leaf node of a collides with leaf node of b
 	*
-	* returns the leaf of a that collide and in outChildB sets the 
+	* returns the leaf of a that collide and in outChildB sets the
 	* leaf of B that collided
 	*
 	*/
@@ -341,7 +341,7 @@ PHtSphereTree *PHrCollision_SphereTree_SphereTree(
 			{
 				break;
 			}
-		}	
+		}
 	}
 
 	if (outChildB)
@@ -427,7 +427,7 @@ UUtBool PHrPhysics_Update_Animation(
 		// Autostart animation
 		OBrAnim_Start(ioAnimContext);
 	}
-	
+
 	if (ioAnimContext->animContextFlags & OBcAnimContextFlags_Animate)
 	{
 		// Track frame number
@@ -476,7 +476,7 @@ UUtBool PHrPhysics_Update_Animation(
 }
 
 static void PHiRemoveBackfacingCollisions(
-		PHtPhysicsContext *inContext, 
+		PHtPhysicsContext *inContext,
 		const M3tVector3D *inVelocity,
 		PHtCollider *ioColliders,
 		UUtUns16 *ioNumColliders)
@@ -512,7 +512,7 @@ static void PHiRemoveBackfacingCollisions(
 				remove = UUcTrue;
 			}
 		}
-		
+
 		if (remove)
 		{
 			count -= 1;
@@ -552,7 +552,7 @@ static int UUcExternal_Call sort_collisions_callback(const void *elem_1, const v
 }
 
 static void sort_collisions(
-		const PHtPhysicsContext *inContext, 
+		const PHtPhysicsContext *inContext,
 		PHtCollider *colliders,
 		UUtUns16 numColliders)
 {
@@ -582,7 +582,7 @@ UUtBool OBrPhysics_Update_Reflect(PHtPhysicsContext *inContext, M3tVector3D *inV
 	MUmAssertVector(*inVelocityThisFrame, 1e9f);
 
 	numColliders = 0;
-	
+
 	switch (inContext->level)
 	{
 		case PHcPhysics_None:
@@ -617,8 +617,8 @@ UUtBool OBrPhysics_Update_Reflect(PHtPhysicsContext *inContext, M3tVector3D *inV
 
 	//
 	sort_collisions(inContext, colliders, numColliders);
-	
-	if (inContext->flags & PHcFlags_Physics_IgnoreReflection) { 
+
+	if (inContext->flags & PHcFlags_Physics_IgnoreReflection) {
 		goto skip_reflection;
 	}
 
@@ -640,7 +640,7 @@ UUtBool OBrPhysics_Update_Reflect(PHtPhysicsContext *inContext, M3tVector3D *inV
 		if (!MUmVector_IsZero(pushBackVector))
 		{
 			reflected = UUcTrue;
-			
+
 			if (inContext->callback->applyForce != NULL) {
 				inContext->callback->applyForce(inContext, colliders + itr);
 			}
@@ -694,11 +694,11 @@ UUtBool OBrPhysics_Update_ReflectHalt(PHtPhysicsContext *inContext, M3tVector3D 
 	PHtPhysicsContext *pushedContext;
 
 	// 3. recollide & respond with a halt
-	
+
 	// PHtCollider *closest_collider;
 
 	numColliders = 0;
-	
+
 	switch (inContext->level)
 	{
 		case PHcPhysics_None:
@@ -724,9 +724,9 @@ UUtBool OBrPhysics_Update_ReflectHalt(PHtPhysicsContext *inContext, M3tVector3D 
 		default:
 			UUmAssert(!"Unsupported physics type");
 	}
-	
+
 	PHiRemoveBackfacingCollisions(inContext, inVelocityThisFrame, colliders, &numColliders);
-	
+
 	// closest_collider = find_closest_collider(numColliders, colliders);
 	// distance_to_plane = magic_compute_distance_to_plane(inContext, closest_collider.plane);
 	// MUrVector_Set_Length(inVelocityThisFrame, distance_to_plane);
@@ -798,7 +798,7 @@ static void OBiPhysics_Update(PHtPhysicsContext *inContext)
 
 	M3tVector3D velocityThisFrame;
 	AKtEnvironment *environment = ONgGameState->level->environment;
-	
+
 	// set up for the new frame
 	inContext->flags &= ~PHcFlags_Physics_CollidedThisFrame;
 
@@ -899,9 +899,9 @@ static void OBiPhysics_Update(PHtPhysicsContext *inContext)
 
 	MUmAssertVector(inContext->velocity, 1e9f);
 	MUmAssertVector(velocityThisFrame, 1e9f);
-	
+
 	// 5. private movement
-	if (NULL != inContext->callback->privateMovement) 
+	if (NULL != inContext->callback->privateMovement)
 	{
 		inContext->callback->privateMovement(inContext);
 	}
@@ -926,7 +926,7 @@ static void OBiPhysics_Update(PHtPhysicsContext *inContext)
 	MUmAssertVector(velocityThisFrame, 1e9f);
 
 	// 8. update
-	if (NULL != inContext->callback->update) 
+	if (NULL != inContext->callback->update)
 	{
 		inContext->callback->update(inContext);
 	}
@@ -1018,7 +1018,7 @@ void PHrPhysicsContext_Delete(void)
 
 		for (itr = 0; itr < count; itr++)
 		{
-			if (PHgPhysicsContextArray->contexts[itr].flags & PHcFlags_Physics_InUse) {	
+			if (PHgPhysicsContextArray->contexts[itr].flags & PHcFlags_Physics_InUse) {
 				PHrPhysics_Delete(PHgPhysicsContextArray->contexts + itr);
 			}
 		}
@@ -1044,7 +1044,7 @@ PHtPhysicsContext *PHrPhysicsContext_Add(void)
 
 	if (NULL != PHgPhysicsContextArray) {
 		UUtUns32 itr;
-		
+
 		for (itr=0; itr < PHgPhysicsContextArray->max_contexts; itr++)
 		{
 			if (PHgPhysicsContextArray->contexts[itr].flags & PHcFlags_Physics_InUse) {
@@ -1062,7 +1062,7 @@ PHtPhysicsContext *PHrPhysicsContext_Add(void)
 	}
 
 	UUmAssert(!"Ran out of physics contexts! Fatal!");
-	
+
 exit:
 	return result;
 }
@@ -1191,7 +1191,7 @@ void PHrSphereTree_Delete(PHtSphereTree *inTree)
 	*/
 	if (!inTree) return;
 
-	if (inTree->sibling) 
+	if (inTree->sibling)
 	{
 		PHrSphereTree_Delete(inTree->sibling);
 		PHrSphereTree_Delete(inTree->child);
@@ -1207,7 +1207,7 @@ static void PHiSphereTree_Draw(PHtSphereTree *tree)
 	*/
 
 	ONrDrawSphere(
-		NULL, 
+		NULL,
 		tree->sphere.radius,
 		&tree->sphere.center);
 
@@ -1220,7 +1220,7 @@ static void PHiSphereTree_Draw(PHtSphereTree *tree)
 	{
 		PHiSphereTree_Draw(tree->sibling);
 	}
-	
+
 	return;
 }
 
@@ -1248,10 +1248,10 @@ void PHrPhysics_MaintainMatrix(PHtPhysicsContext *physics)
 	M3tPoint3D *point;
 	M3tPlaneEquation *plane;
 	UUtUns32 i;
-	
+
 	// Apply all positional data
 	MUmAssertVector(physics->position, 1e9f);
-	
+
 	switch (physics->level)
 	{
 		case PHcPhysics_Static:
@@ -1279,13 +1279,13 @@ noanim:	case PHcPhysics_Newton:
 						OBrAnim_Matrix(&physics->animContext, &physics->matrix);
 					}
 
-					if (physics->animContext.animation->animFlags & OBcAnimFlags_Localized) 
+					if (physics->animContext.animation->animFlags & OBcAnimFlags_Localized)
 					{
 						MUrMatrix_Multiply(&physics->origin, &physics->matrix, &physics->matrix);
 					}
 
 					// FIXME: jtd - this is a hack for double doors
-					if (physics->animContext.animContextFlags & OBcAnimContextFlags_RotateY180) 
+					if (physics->animContext.animContextFlags & OBcAnimContextFlags_RotateY180)
 					{
 						MUrMatrixStack_RotateY( &physics->matrix, M3cPi );
 						MUrMatrixStack_RotateZ( &physics->matrix, M3cPi );
@@ -1309,7 +1309,7 @@ noanim:	case PHcPhysics_Newton:
 			&physics->matrix,
 			physics->axisBox.localPoints,
 			physics->worldAlignedBounds->worldPoints);
-	
+
 		// Update face planes and projections
 		for (i=0; i<M3cNumBoundingFaces; i++)
 		{
@@ -1317,7 +1317,7 @@ noanim:	case PHcPhysics_Newton:
 				physics->worldAlignedBounds->normals + i,
 				&physics->matrix,
 				&normal);
-		
+
 			point = physics->worldAlignedBounds->worldPoints + physics->worldAlignedBounds->faces[i].indices[0];
 			plane = physics->worldAlignedBounds->curPlanes + i;
 
@@ -1343,12 +1343,12 @@ void PHrPhysics_Delete(PHtPhysicsContext *ioPhysics)
 	* Cleans up a physics context
 	*/
 
-	if (ioPhysics->callback->preDispose) 
+	if (ioPhysics->callback->preDispose)
 	{
 		ioPhysics->callback->preDispose(ioPhysics);
 	}
 
-	if (ioPhysics->sphereTree) 
+	if (ioPhysics->sphereTree)
 	{
 		PHrSphereTree_Delete(ioPhysics->sphereTree);
 	}
@@ -1389,8 +1389,8 @@ static UUtError PHrStatus(
 	SLtErrorContext*		inErrorContext,
 	UUtUns32				inParameterListLength,
 	SLtParameter_Actual		*inParameterList,
-	UUtUns32				*outTicksTillCompletion,	
-	UUtBool					*outStall,					
+	UUtUns32				*outTicksTillCompletion,
+	UUtBool					*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	UUtUns32 itr;
@@ -1501,7 +1501,7 @@ void PHrPhysics_Callback_FindEnvCollisions(
 	else
 	{
 		AKrCollision_Sphere(
-			inEnvironment, 
+			inEnvironment,
 			&inContext->sphereTree->sphere,
 			&localVelocity,
 			collision_skipflag,
@@ -1514,9 +1514,9 @@ void PHrPhysics_Callback_FindEnvCollisions(
 		AKtGQ_General *gqGeneral = inEnvironment->gqGeneralArray->gqGeneral + curCollision->gqIndex;
 		AKtGQ_Collision *gqCollision = inEnvironment->gqCollisionArray->gqCollision + curCollision->gqIndex;
 		UUtBool touched;
-		
+
 		touched = UUcTrue;
-	
+
 		if (touched)
 		{
 			M3tPlaneEquation plane;
@@ -1557,7 +1557,7 @@ void PHrPhysics_Callback_FindEnvCollisions(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -1581,7 +1581,7 @@ PHrPhysics_Single_PhyCollision(
 	if (inTargetContext->flags & PHcFlags_Physics_DontBlock)	return UUcFalse;
 	if (inContext->flags & PHcFlags_Physics_NoCollision)		return UUcFalse;
 	if (inTargetContext->flags & PHcFlags_Physics_NoCollision)	return UUcFalse;
-	
+
 	oldNumColliders = *ioNumColliders;
 
 	useDiscardThreshold = (inTargetContext->level == PHcPhysics_Animate) && (inContext->flags & PHcFlags_Physics_InitialCollisionPass);
@@ -1623,7 +1623,7 @@ PHrPhysics_Single_PhyCollision(
 	else
 	{
 		collideTree = PHrCollision_SphereTree_SphereTree(
-			inContext->sphereTree, 
+			inContext->sphereTree,
 			inVelocity,
 			inTargetContext->sphereTree,
 			NULL);
@@ -1655,33 +1655,33 @@ PHrPhysics_Single_PhyCollision(
 				plane.b = 1.0f;
 				plane.c = 0;
 				plane.d = - collisionPoint.y;
-			} else {			
+			} else {
 				// targetPoint = target_center + radius * vectorToMe
 				temp = vectorToMe;
 				MUmVector_Scale(temp, inTargetContext->sphereTree->sphere.radius);
 				targetPoint = inTargetContext->sphereTree->sphere.center;
 				MUmVector_Increment(targetPoint, temp);
-				
+
 				// myPoint = my_center + -radius * vectorToMe
 				temp = vectorToMe;
 				MUmVector_Scale(temp, -inContext->sphereTree->sphere.radius);
 				myPoint = inContext->sphereTree->sphere.center;
 				MUmVector_Increment(myPoint, temp);
-				
+
 				// average those two points
 				MUmVector_Add(collisionPoint, targetPoint, myPoint);
 				MUmVector_Scale(collisionPoint, 0.5f);
-				
+
 				// compute the plane
 				plane.a = vectorToMe.x;
 				plane.b = vectorToMe.y;
 				plane.c = vectorToMe.z;
-				
+
 				// ax + by + cz + d = 0
 				// d = -(ax + by + cz)
 				plane.d = -(
-					(plane.a * collisionPoint.x) + 
-					(plane.b * collisionPoint.y) + 
+					(plane.a * collisionPoint.x) +
+					(plane.b * collisionPoint.y) +
 					(plane.c * collisionPoint.z));
 			}
 
@@ -1689,7 +1689,7 @@ PHrPhysics_Single_PhyCollision(
 			newCollider->data = inTargetContext;
 			newCollider->plane = plane;
 			newCollider->planePoint = collisionPoint;
-			
+
 			(*ioNumColliders) += 1;
 		}
 
@@ -1717,7 +1717,7 @@ PHrPhysics_Callback_FindPhyCollisions(
 {
 	UUtUns32 i;
 	PHtCallback_SkipPhyCollisions skip_callback;
-	
+
 	skip_callback = inContext->callback->skipPhyCollisions;
 
 	for (i = 0; i < PHgPhysicsContextArray->max_contexts; i++)
@@ -1742,7 +1742,7 @@ PHrPhysics_Callback_FindPhyCollisions(
 }
 
 void PHrPhysics_Accelerate(
-	PHtPhysicsContext *physics, 
+	PHtPhysicsContext *physics,
 	const M3tVector3D *inAcceleration)
 {
 	MUmVector_Increment(physics->acceleration, *inAcceleration);
@@ -1849,7 +1849,7 @@ PHrCollision_Quad_SphereTreeVector(
 			if (collide) { break; }
 		}
 	}
-	
+
 	return collide;
 }
 
@@ -1865,7 +1865,7 @@ PHrPhysics_Colliders_GetFromSphere(
 	UUtUns16		maxColliders;
 	UUtUns16		curColliderIndex = 0;
 	PHtCollider*	curCollider;
-	
+
 	UUmAssertReadPtr(PHgPhysicsContextArray, sizeof(*PHgPhysicsContextArray));
 	UUmAssertReadPtr(inSphere, sizeof(*inSphere));
 	UUmAssertReadPtr(ioNumColliders, sizeof(*ioNumColliders));
@@ -1875,31 +1875,31 @@ PHrPhysics_Colliders_GetFromSphere(
 
 	sphereTree.sphere = *inSphere;
 	sphereTree.child = sphereTree.sibling = NULL;
-	
+
 	for(itr = 0; itr < PHgPhysicsContextArray->num_contexts; itr++)
 	{
 		PHtPhysicsContext *targetContext = PHgPhysicsContextArray->contexts + itr;
-		
+
 		if (!(targetContext->flags & PHcFlags_Physics_InUse)) continue;
 
 		if (PHrCollision_SphereTree_SphereTree(&sphereTree, inVector, targetContext->sphereTree, NULL) != NULL)
 		{
 			// add this to colliders
 			curCollider = outColliders + curColliderIndex++;
-			
+
 			curCollider->type = PHcCollider_Phy;
 			curCollider->data = targetContext;
 			curCollider->distanceSquared = MUmVector_GetDistanceSquared(sphereTree.sphere.center, targetContext->sphereTree->sphere.center);
-			
+
 			if(curColliderIndex >= maxColliders) break;
 		}
 	}
-	
+
 	if(curColliderIndex > 1)
 	{
 		qsort(outColliders, curColliderIndex, sizeof(PHtCollider), sort_collisions_callback);
 	}
-	
+
 	*ioNumColliders = curColliderIndex;
 }
 

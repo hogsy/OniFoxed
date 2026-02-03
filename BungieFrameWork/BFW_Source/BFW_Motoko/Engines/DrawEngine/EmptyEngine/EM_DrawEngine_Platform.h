@@ -1,12 +1,12 @@
 /*
 	FILE:	EM_DrawEngine_Platform.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -21,5 +21,5 @@ EDrDrawEngine_Platform_SetupDrawContextPrivate(
 void
 EDrDrawEngine_Platform_DestroyDrawContextPrivate(
 	EDtDrawContextPrivate*		inDrawContextPrivate);
-	
+
 #endif /* EM_DRAWENGINE_PLATFORM_H */

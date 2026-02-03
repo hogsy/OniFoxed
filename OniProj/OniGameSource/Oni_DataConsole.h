@@ -1,13 +1,13 @@
 #pragma once
 
 /*	FILE:	Oni_DataConsole.h
-	
+
 	AUTHOR:	Quinn Dunki
-	
+
 	CREATED: April 2 1999
-	
+
 	PURPOSE: control of interactive consoles in ONI
-	
+
 	Copyright 1998
 
 */
@@ -32,7 +32,7 @@ typedef struct ONtDataConsole
 	ONtCharacter *owner;	// Who is currently using us
 
 	// Multipurpose data:
-	UUtUns16 timer;	
+	UUtUns16 timer;
 	UUtUns16 idl,idg;
 	void *pointer;
 } ONtDataConsole;

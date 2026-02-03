@@ -1,12 +1,12 @@
 /*
 	FILE:	OG_GC_Method_Light.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */

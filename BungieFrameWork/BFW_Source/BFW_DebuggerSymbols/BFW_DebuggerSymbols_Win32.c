@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_DebuggerSymbols_Win32.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: July 12, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -34,6 +34,6 @@ DSrProgramCounter_GetFileAndLine(
 	char		*outFunctionName,
 	UUtUns32	*outLine)
 {
-	
+
 	return UUcError_Generic;
 }

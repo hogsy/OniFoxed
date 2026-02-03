@@ -51,18 +51,18 @@ VMiView_Create(
 	UUtUns16				i;
 	UUtBool					result;
 	VMtView_PrivateData		*private_data;
-	
+
 	// get the private data of the view
 	private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 	UUmAssert(private_data);
-	
+
 	// set the view's parent
 	private_data->parent = inParent;
 	private_data->layer	= inLayer;
-	
+
 	// tell this view that it was created
 	result = (UUtBool)VMrView_SendMessage(inView, VMcMessage_Create, 0, 0);
-	
+
 	// load the child views
 	for (i = 0; i < inView->num_child_views; i++)
 	{
@@ -71,7 +71,7 @@ VMiView_Create(
 			inView,
 			inLayer + 1);
 	}
-	
+
 	return result;
 }
 
@@ -81,13 +81,13 @@ VMiView_Destory(
 	VMtView					*inView)
 {
 	UUtUns16				i;
-	
+
 	VMrView_SendMessage(inView, VMcMessage_Destroy, 0, 0);
 
 	for (i = 0; i < inView->num_child_views; i++)
 	{
 		VMtView				*child = (VMtView*)inView->child_views[i].view_ref;
-		
+
 		VMiView_Destory(child);
 	}
 }
@@ -98,7 +98,7 @@ VMiView_IsGroup(
 	VMtView					*inView)
 {
 	UUtBool					is_group;
-	
+
 	is_group = UUcFalse;
 	switch (inView->type)
 	{
@@ -108,7 +108,7 @@ VMiView_IsGroup(
 			is_group = UUcTrue;
 		break;
 	}
-	
+
 	return is_group;
 }
 
@@ -126,31 +126,31 @@ VMiView_GetViewUnderPoint(
 	VMtView					*found_view;
 	UUtUns16				deepest_layer;
 	UUtBool					view_found;
-	
+
 	UUmAssert(inView);
-	
+
 	// get the data
 	private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 	UUmAssert(private_data);
-	
+
 	// initalize the data
 	found_view = NULL;
 	deepest_layer = 0;
 	view_found = UUcFalse;
-	
+
 	// initialize the bounds_rect
 	bounds_rect.left = inView->location.x;
 	bounds_rect.top = inView->location.y;
 	bounds_rect.right = bounds_rect.left + inView->width;
 	bounds_rect.bottom = bounds_rect.top + inView->height;
-	
+
 	// check to see if the point is in the bounds of the view
 	if (IMrRect_PointIn(&bounds_rect, inPoint) ||
 		VMiView_IsGroup(inView))
 	{
 		UUtUns16			i;
 		IMtPoint2D			new_point;
-		
+
 		// make sure the flags match
 		if (((inView->flags & inFlags) == inFlags) &&
 			!VMiView_IsGroup(inView))
@@ -160,12 +160,12 @@ VMiView_GetViewUnderPoint(
 			deepest_layer = private_data->layer;
 			view_found = UUcTrue;
 		}
-		
+
 		// calculate a parent relative point
 		new_point = *inPoint;
 		new_point.x -= inView->location.x;
 		new_point.y -= inView->location.y;
-		
+
 		// search the child views
 		for (i = 0; i < inView->num_child_views; i++)
 		{
@@ -173,10 +173,10 @@ VMiView_GetViewUnderPoint(
 			UUtBool		result;
 			VMtView		*out_view;
 			UUtUns16	out_layer;
-			
+
 			// don't look in views that aren't visible
 			if (!(child->flags & VMcViewFlag_Visible)) continue;
-			
+
 			// is the point in the child view?
 			result =
 				VMiView_GetViewUnderPoint(
@@ -199,7 +199,7 @@ VMiView_GetViewUnderPoint(
 			}
 		}
 	}
-	
+
 	// set the outgoing data
 	*outView = found_view;
 	*outLayer = deepest_layer;
@@ -221,11 +221,11 @@ VMrView_DefaultCallback(
 {
 	VMtView_PrivateData		*private_data;
 	UUtUns16				i;
-	
+
 	// get a pointer to the private data
 	private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 	UUmAssert(private_data);
-	
+
 	// handle the message
 	switch (inMessage)
 	{
@@ -235,26 +235,26 @@ VMrView_DefaultCallback(
 
 			// tell the child view to draw
 			destination = (M3tPointScreen*)inParam2;
-				
+
 			// draw the child windows
 			for (i = 0; i < inView->num_child_views; i++)
 			{
 				VMtView			*child_view;
 				M3tPointScreen	dest;
-				
+
 				// get a pointer to the child view
 				child_view = inView->child_views[i].view_ref;
-				
+
 				dest = *destination;
 				dest.x += (float)child_view->location.x;
 				dest.y += (float)child_view->location.y;
-				
+
 				VMrView_Draw(child_view, &dest);
 			}
 		}
 		break;
 	}
-	
+
 	return 0;
 }
 
@@ -272,9 +272,9 @@ VMrView_Timer_Start(
 {
 	VMtView_PrivateData		*private_data;
 	VMtViewTimer			*timer;
-	
+
 	UUmAssert(inView);
-	
+
 	// get the private data of the view
 	private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 	UUmAssert(private_data);
@@ -288,20 +288,20 @@ VMrView_Timer_Start(
 			return UUcError_Generic;
 		}
 	}
-	
+
 	// create a new timer
 	timer = (VMtViewTimer*)UUrMemory_Block_New(sizeof(VMtViewTimer));
 	UUmError_ReturnOnNull(timer);
-	
+
 	// initialize the timer
 	timer->next				= private_data->timers;
 	timer->timer_id			= inTimerID;
 	timer->timer_frequency	= inTimerFrequency;
 	timer->next_update		= 0;
-	
+
 	// add the timer to the list
 	private_data->timers = timer;
-	
+
 	return UUcError_None;
 }
 
@@ -314,13 +314,13 @@ VMrView_Timer_Stop(
 	VMtView_PrivateData		*private_data;
 	VMtViewTimer			*current;
 	VMtViewTimer			*previous;
-	
+
 	UUmAssert(inView);
 
 	// get the private data of the view
 	private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 	UUmAssert(private_data);
-	
+
 	// find the timer in the list
 	previous = NULL;
 	current = private_data->timers;
@@ -329,12 +329,12 @@ VMrView_Timer_Stop(
 		// stop if the timer with inTimerID has been found
 		if (current->timer_id == inTimerID)
 			break;
-		
+
 		// move to the next timer
 		previous = current;
 		current = current->next;
 	}
-	
+
 	// if current == NULL then no matching timer was found
 	if (current)
 	{
@@ -343,7 +343,7 @@ VMrView_Timer_Stop(
 			previous->next = current->next;
 		else
 			private_data->timers = current->next;
-		
+
 		UUrMemory_Block_Delete(current);
 	}
 }
@@ -355,21 +355,21 @@ VMrView_Timer_Update(
 {
 	VMtView_PrivateData		*private_data;
 	UUtUns16				i;
-	
+
 	UUmAssert(inView);
 
 	// get the private data of the view
 	private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 	UUmAssert(private_data);
-	
+
 	if (private_data->timers)
 	{
 		VMtViewTimer			*timer;
 		UUtUns32				time;
-		
+
 		// get the current time
 		time = UUrMachineTime_Sixtieths();
-		
+
 		// update the timers
 		timer = private_data->timers;
 		while (timer)
@@ -378,7 +378,7 @@ VMrView_Timer_Update(
 			{
 				// set the next update
 				timer->next_update = time + timer->timer_frequency;
-				
+
 				// send VMcMessage_Timer to the view
 				VMrView_SendMessage(
 					inView,
@@ -386,11 +386,11 @@ VMrView_Timer_Update(
 					time,
 					timer->timer_id);
 			}
-			
+
 			timer = timer->next;
 		}
 	}
-	
+
 	// update the children of this view
 	for (i = 0; i < inView->num_child_views; i++)
 	{
@@ -410,7 +410,7 @@ VMrView_Draw(
 	M3tPointScreen			*inDestination)
 {
 	UUmAssert(inView);
-	
+
 	if (inView->flags & VMcViewFlag_Visible)
 	{
 		VMrView_SendMessage(
@@ -420,7 +420,7 @@ VMrView_Draw(
 			(UUtUns32)inDestination);
 	}
 }
-	
+
 // ----------------------------------------------------------------------
 VMtView*
 VMrView_GetNextFocusableView(
@@ -432,7 +432,7 @@ VMrView_GetNextFocusableView(
 	UUtUns16				desired_flags;
 	VMtView					*next_focusable_view;
 	VMtView					*child;
-	
+
 	// setup the variables
 	current_focus_index = 0;
 	next_focusable_view = NULL;
@@ -441,7 +441,7 @@ VMrView_GetNextFocusableView(
 		VMcViewFlag_Enabled |
 		VMcViewFlag_Active |
 		VMcViewFlag_CanFocus;
-	
+
 	// find the current view in the list
 	if (inCurrentFocus)
 	{
@@ -450,15 +450,15 @@ VMrView_GetNextFocusableView(
 			if (inCurrentFocus == (VMtView*)inView->child_views[i].view_ref)
 				break;
 		}
-		
+
 		current_focus_index = i;
 	}
-	
+
 	// search the rest of the list for the view
 	for (i = current_focus_index + 1; i < inView->num_child_views; i++)
 	{
 		child = inView->child_views[i].view_ref;
-		
+
 		// check the flags
 		if ((child->flags & desired_flags) == desired_flags)
 		{
@@ -467,7 +467,7 @@ VMrView_GetNextFocusableView(
 			break;
 		}
 	}
-	
+
 	// NOTE: if inCurrentFocus == NULL then the whole list has already been searched
 	if ((next_focusable_view == NULL) && (inCurrentFocus != NULL))
 	{
@@ -477,7 +477,7 @@ VMrView_GetNextFocusableView(
 		for (i = 0; i < current_focus_index + 1; i++)
 		{
 			child = inView->child_views[i].view_ref;
-			
+
 			// check the flags
 			if ((child->flags & desired_flags) == desired_flags)
 			{
@@ -487,7 +487,7 @@ VMrView_GetNextFocusableView(
 			}
 		}
 	}
-	
+
 	return next_focusable_view;
 }
 
@@ -497,11 +497,11 @@ VMrView_GetParent(
 	VMtView					*inView)
 {
 	VMtView_PrivateData		*private_data;
-	
+
 	// get the data
 	private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 	UUmAssert(private_data);
-	
+
 	return private_data->parent;
 }
 
@@ -511,16 +511,16 @@ VMrView_GetValue(
 	VMtView					*inView)
 {
 	UUtUns32				result;
-	
+
 	UUmAssert(inView);
-	
+
 	result =
 		VMrView_SendMessage(
 			inView,
 			VMcMessage_GetValue,
 			0,
 			0);
-	
+
 	return result;
 }
 
@@ -533,9 +533,9 @@ VMrView_GetViewUnderPoint(
 {
 	VMtView					*view;
 	UUtUns16				layer;
-	
+
 	VMiView_GetViewUnderPoint(inView, inPoint, inFlags, &view, &layer);
-	
+
 	return view;
 }
 
@@ -547,7 +547,7 @@ VMrView_Load(
 {
 	// load and initialize the views
 	VMiView_Create(inView, inParent, 0);
-	
+
 	return UUcError_None;
 }
 
@@ -560,16 +560,16 @@ VMrView_PointGlobalToView(
 {
 	VMtView_PrivateData		*private_data;
 	IMtPoint2D				new_point;
-	
+
 	// get a pointer to the view's private data
 	private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 	UUmAssert(private_data);
-	
+
 	// calculate the new point
 	new_point = *inPoint;
 	new_point.x -= inView->location.x;
 	new_point.y -= inView->location.y;
-	
+
 	// save the new_point
 	*outPoint = new_point;
 
@@ -581,7 +581,7 @@ VMrView_PointGlobalToView(
 			private_data->parent,
 			&new_point,
 			outPoint);
-	}	
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -593,9 +593,9 @@ VMrView_ProcHandler(
 {
 	VMtView					*view;
 	VMtView_PrivateData		*private_data;
-	
+
 	UUmAssert(inInstancePtr);
-	
+
 	// get a pointer to the view
 	view = (VMtView*)inInstancePtr;
 //	UUmAssert(view->view_data);
@@ -603,7 +603,7 @@ VMrView_ProcHandler(
 	// get a pointer to the view's private data
 	private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, view);
 	UUmAssert(private_data);
-	
+
 	switch(inMessage)
 	{
 		case TMcTemplateProcMessage_NewPostProcess:
@@ -613,30 +613,30 @@ VMrView_ProcHandler(
 			private_data->parent = NULL;
 			private_data->timers = NULL;
 			private_data->layer = 0;
-			
+
 			// add dialog views to the view list
 			switch (view->type)
 			{
 				case VMcViewType_Box:
 					private_data->callback = VMrView_Box_Callback;
 				break;
-				
+
 				case VMcViewType_Button:
 					private_data->callback = VMrView_Button_Callback;
 				break;
-				
+
 				case VMcViewType_CheckBox:
 					private_data->callback = VMrView_CheckBox_Callback;
 				break;
-				
+
 				case VMcViewType_Dialog:
 					private_data->callback = VMrView_Dialog_Callback;
 				break;
-				
+
 				case VMcViewType_EditField:
 					private_data->callback = VMrView_EditField_Callback;
 				break;
-				
+
 				case VMcViewType_ListBox:
 					private_data->callback = VMrView_ListBox_Callback;
 				break;
@@ -644,56 +644,56 @@ VMrView_ProcHandler(
 				case VMcViewType_Picture:
 					private_data->callback = VMrView_Picture_Callback;
 				break;
-				
+
 				case VMcViewType_RadioButton:
 					private_data->callback = VMrView_RadioButton_Callback;
 				break;
-				
+
 				case VMcViewType_RadioGroup:
 					private_data->callback = VMrView_RadioGroup_Callback;
 				break;
-				
+
 				case VMcViewType_Scrollbar:
 					private_data->callback = VMrView_Scrollbar_Callback;
 				break;
-				
+
 				case VMcViewType_Slider:
 					private_data->callback = VMrView_Slider_Callback;
 				break;
-				
+
 				case VMcViewType_Tab:
 					private_data->callback = VMrView_Tab_Callback;
 				break;
-				
+
 				case VMcViewType_TabGroup:
 					private_data->callback = VMrView_TabGroup_Callback;
 				break;
-				
+
 				case VMcViewType_Text:
 					private_data->callback = VMrView_Text_Callback;
 				break;
-				
+
 				default:
 					UUmAssert(!"Unknown View Type");
 				break;
 			}
 		break;
-		
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 			while (private_data->timers)
 			{
 				VMrView_Timer_Stop(view, private_data->timers->timer_id);
 			}
 		break;
-		
+
 		case TMcTemplateProcMessage_Update:
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -706,14 +706,14 @@ VMrView_SendMessage(
 	UUtUns32				inParam2)
 {
 	VMtView_PrivateData		*private_data;
-	
+
 	UUmAssert(inView);
 
 	// get a pointer to the view's private data
 	private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 	UUmAssert(private_data);
 	UUmAssert(private_data->callback);
-	
+
 	return private_data->callback(inView, inMessage, inParam1, inParam2);
 }
 
@@ -724,7 +724,7 @@ VMrView_SetActive(
 	UUtBool					inIsActive)
 {
 	UUmAssert(inView);
-	
+
 	if (inIsActive)
 		inView->flags |= VMcViewFlag_Active;
 	else
@@ -738,14 +738,14 @@ VMrView_SetCallback(
 	VMtViewCallback			inCallback)
 {
 	VMtView_PrivateData		*private_data;
-	
+
 	UUmAssert(inView);
 	UUmAssert(inCallback);
-	
+
 	// get the private data
 	private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 	UUmAssert(private_data);
-	
+
 	private_data->callback = inCallback;
 }
 
@@ -756,7 +756,7 @@ VMrView_SetEnabled(
 	UUtBool					inIsEnabled)
 {
 	UUmAssert(inView);
-	
+
 	if (inIsEnabled)
 		inView->flags |= VMcViewFlag_Enabled;
 	else
@@ -770,9 +770,9 @@ VMrView_SetFocus(
 	UUtBool					inIsFocused)
 {
 	UUtUns16				desired_flags;
-	
+
 	UUmAssert(inView);
-	
+
 	desired_flags =
 		VMcViewFlag_Visible |
 		VMcViewFlag_Enabled |
@@ -796,9 +796,9 @@ VMrView_SetLocation(
 	IMtPoint2D				*inLocation)
 {
 	UUmAssert(inView);
-	
+
 	inView->location = *inLocation;
-	
+
 	VMrView_SendMessage(
 		inView,
 		VMcMessage_Location,
@@ -814,10 +814,10 @@ VMrView_SetSize(
 	UUtUns16				inHeight)
 {
 	UUmAssert(inView);
-	
+
 	inView->width = inWidth;
 	inView->height = inHeight;
-	
+
 	VMrView_SendMessage(
 		inView,
 		VMcMessage_Size,
@@ -832,7 +832,7 @@ VMrView_SetValue(
 	UUtUns32				inValue)
 {
 	UUmAssert(inView);
-	
+
 	VMrView_SendMessage(
 		inView,
 		VMcMessage_SetValue,
@@ -847,7 +847,7 @@ VMrView_SetVisible(
 	UUtBool					inIsVisible)
 {
 	UUmAssert(inView);
-	
+
 	if (inIsVisible)
 		inView->flags |= VMcViewFlag_Visible;
 	else
@@ -860,7 +860,7 @@ VMrView_Unload(
 	VMtView					*inView)
 {
 	UUmAssert(inView);
-	
+
 	VMiView_Destory(inView);
 }
 
@@ -884,30 +884,30 @@ VMiPartSpec_CalcUV(
 	float					ru;
 	float					tv;
 	float					bv;
-	
+
 	texture = (M3tTextureMap*)inPartSpec->texture;
-	
+
 	invTextureWidth = 1.0f / (float)texture->width;
 	invTextureHeight = 1.0f / (float)texture->height;
-	
+
 	lu = (float)inPartSpec->part_matrix_tl[inColumn][inRow].x * invTextureWidth;
 	tv = (float)inPartSpec->part_matrix_tl[inColumn][inRow].y * invTextureHeight;
-	
+
 	bv = (float)inPartSpec->part_matrix_br[inColumn][inRow].y * invTextureHeight;
 	ru = (float)inPartSpec->part_matrix_br[inColumn][inRow].x * invTextureWidth;
-	
+
 	// tl
 	ioUVs[0].u = lu;
 	ioUVs[0].v = tv;
-	
+
 	// tr
 	ioUVs[1].u = ru;
 	ioUVs[1].v = tv;
-	
+
 	// bl
 	ioUVs[2].u = lu;
 	ioUVs[2].v = bv;
-	
+
 	// br
 	ioUVs[3].u = ru;
 	ioUVs[3].v = bv;
@@ -922,16 +922,16 @@ VMiPartSpec_ProcHandler(
 {
 	VMtPartSpec				*part_spec;
 	VMtPartSpec_PrivateData	*private_data;
-	
+
 	UUmAssert(inInstancePtr);
-	
+
 	// get a pointer to the part spec
 	part_spec = (VMtPartSpec*)inInstancePtr;
 
 	// get a pointer to the view's private data
 	private_data = (VMtPartSpec_PrivateData*)inPrivateData;
 	UUmAssert(private_data);
-	
+
 	switch(inMessage)
 	{
 		case TMcTemplateProcMessage_NewPostProcess:
@@ -949,18 +949,18 @@ VMiPartSpec_ProcHandler(
 			VMiPartSpec_CalcUV(part_spec, private_data->rm, 2, 1);
 			VMiPartSpec_CalcUV(part_spec, private_data->rb, 2, 2);
 		break;
-		
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 		break;
-		
+
 		case TMcTemplateProcMessage_Update:
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -975,17 +975,17 @@ VMrInitialize(
 	void)
 {
 	UUtError				error;
-	
+
 	// install the private data and/or procs
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_View,
 			sizeof(VMtView_PrivateData),
 			VMrView_ProcHandler,
 			&DMgTemplate_View_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
-	
-	error = 
+
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_PartSpecification,
 			sizeof(VMtPartSpec_PrivateData),
@@ -993,7 +993,7 @@ VMrInitialize(
 			&DMgTemplate_PartSpec_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
 
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_View_Button,
 			sizeof(VMtView_Button_PrivateData),
@@ -1001,7 +1001,7 @@ VMrInitialize(
 			&DMgTemplate_Button_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
 
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_View_CheckBox,
 			sizeof(VMtView_CheckBox_PrivateData),
@@ -1009,7 +1009,7 @@ VMrInitialize(
 			&DMgTemplate_CheckBox_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
 
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_View_EditField,
 			sizeof(VMtView_EditField_PrivateData),
@@ -1017,7 +1017,7 @@ VMrInitialize(
 			&DMgTemplate_EditField_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
 
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_View_ListBox,
 			sizeof(VMtView_ListBox_PrivateData),
@@ -1025,7 +1025,7 @@ VMrInitialize(
 			&DMgTemplate_ListBox_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
 
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_View_RadioButton,
 			sizeof(VMtView_RadioButton_PrivateData),
@@ -1033,7 +1033,7 @@ VMrInitialize(
 			&DMgTemplate_RadioButton_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
 
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_View_RadioGroup,
 			sizeof(VMtView_RadioGroup_PrivateData),
@@ -1041,15 +1041,15 @@ VMrInitialize(
 			&DMgTemplate_RadioGroup_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
 
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_View_Tab,
 			sizeof(VMtView_Tab_PrivateData),
 			VMrView_Tab_ProcHandler,
 			&DMgTemplate_Tab_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
-	
-	error = 
+
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_View_Text,
 			sizeof(VMtView_Text_PrivateData),
@@ -1057,7 +1057,7 @@ VMrInitialize(
 			&DMgTemplate_Text_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
 
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_View_Slider,
 			sizeof(VMtView_Slider_PrivateData),
@@ -1065,7 +1065,7 @@ VMrInitialize(
 			&DMgTemplate_Slider_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install the proc handler");
 
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			VMcTemplate_View_Scrollbar,
 			sizeof(VMtView_Scrollbar_PrivateData),

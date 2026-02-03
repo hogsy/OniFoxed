@@ -1,13 +1,13 @@
 #if TOOL_VERSION
 /*
 	FILE:	Oni_Win_AI_Character.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: April 25, 2000
-	
+
 	PURPOSE: AI Character Windows
-	
+
 	Copyright (c) Bungie Software 2000
 
 */
@@ -109,7 +109,7 @@ static const char *OBJgJob_Name[AI2cGoal_Max] =
 	"Neutral",
 	"Panic"
 };
-	
+
 static const char *OBJgAlert_Name[AI2cAlertStatus_Max] =
 {
 	"Lull",
@@ -324,7 +324,7 @@ OWrProp_Char_Callback(
 	WMtText				*combat_description;
 	WMtText				*melee_description;
 	WMtText				*neutral_description;
-	
+
 	char				string[100];
 	UUtUns32			alarm_bitmask;
 
@@ -336,7 +336,7 @@ OWrProp_Char_Callback(
 	UUtBool				neutral_data_changed = UUcFalse;
 
 	OBJrObject_GetObjectSpecificData(object, &object_specific_data);
-	
+
 	team_menu = (WMtPopupMenu *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_Team);
 	weapon_menu = (WMtPopupMenu *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_Weapon);
 	job_menu = (WMtPopupMenu *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_Job);
@@ -373,13 +373,13 @@ OWrProp_Char_Callback(
 	unkillable = (WMtCheckBox *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_Unkillable);
 	infinite_ammo = (WMtCheckBox *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_InfiniteAmmo);
 	omniscient = (WMtCheckBox *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_Omniscient);
-	has_lsi = (WMtCheckBox *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_HasLSI);	
+	has_lsi = (WMtCheckBox *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_HasLSI);
 	boss = (WMtCheckBox *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_Boss);
 	upgrade_difficulty = (WMtCheckBox *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_UpgradeDifficulty);
 	no_autodrop = (WMtCheckBox *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_NoAutoDrop);
 
 	character_class = (WMtListBox *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_Class);
-	
+
 	job_data_prompt = (WMtText *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_JobDataPrompt);
 	job_data_button = (WMtButton *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_JobDataSelect);
 	job_data_edit = (WMtEditField *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_JobDataEdit);
@@ -390,7 +390,7 @@ OWrProp_Char_Callback(
 	neutral_description = (WMtText *) WMrDialog_GetItemByID(inDialog, OWTcCharProp_NeutralDescription);
 
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -484,13 +484,13 @@ OWrProp_Char_Callback(
 				UUtUns16 item_id;
 				WMtEditField *set_edit_field;
 
-				for(item_id = OWTcCharProp_InvUse; item_id < (OWTcCharProp_InvUse + OBJcCharInv_Max); item_id++) 
+				for(item_id = OWTcCharProp_InvUse; item_id < (OWTcCharProp_InvUse + OBJcCharInv_Max); item_id++)
 				{
 					set_edit_field = (WMtEditField *) WMrDialog_GetItemByID(inDialog, item_id);
 					WMrEditField_SetInt32(set_edit_field, object_specific_data.osd.character_osd.inventory[item_id - OWTcCharProp_InvUse][OBJcCharSlot_Use]);
 				}
 
-				for(item_id = OWTcCharProp_InvDrop; item_id < (OWTcCharProp_InvDrop + OBJcCharInv_Max); item_id++) 
+				for(item_id = OWTcCharProp_InvDrop; item_id < (OWTcCharProp_InvDrop + OBJcCharInv_Max); item_id++)
 				{
 					set_edit_field = (WMtEditField *) WMrDialog_GetItemByID(inDialog, item_id);
 					WMrEditField_SetInt32(set_edit_field, object_specific_data.osd.character_osd.inventory[item_id - OWTcCharProp_InvDrop][OBJcCharSlot_Drop]);
@@ -503,10 +503,10 @@ OWrProp_Char_Callback(
 			melee_data_changed = UUcTrue;
 			neutral_data_changed = UUcTrue;
 			dirty = UUcTrue;
-		break;		
-		
+		break;
+
 		case WMcMessage_Command:
-			switch(UUmLowWord(inParam1)) 
+			switch(UUmLowWord(inParam1))
 			{
 				case OWTcCharProp_JobDataSelect:
 					if (AI2cGoal_Patrol == object_specific_data.osd.character_osd.job) {
@@ -522,7 +522,7 @@ OWrProp_Char_Callback(
 					job_data_changed = UUcTrue;
 					dirty = UUcTrue;
 				break;
-	
+
 				case WMcDialogItem_Cancel:
 					WMrDialog_ModalEnd(inDialog, UUcFalse);
 				break;
@@ -750,7 +750,7 @@ OWrProp_Char_Callback(
 					}
 					dirty = UUcTrue;
 				break;
-				
+
 				case OWTcCharProp_EditCombat:
 					object_specific_data.osd.character_osd.combat_id = OWrChooseCombat(object_specific_data.osd.character_osd.combat_id);
 					combat_data_changed = UUcTrue;
@@ -772,7 +772,7 @@ OWrProp_Char_Callback(
 				default:
 					{
 						UUtBool is_inventory = UUcFalse;
-						UUtUns16 *inventory_dataptr;						
+						UUtUns16 *inventory_dataptr;
 						UUtUns16 item_id = UUmLowWord(inParam1);
 
 						if ((item_id >= OWTcCharProp_InvUse) && (item_id < (OWTcCharProp_InvUse + OBJcCharInv_Max))) {
@@ -907,7 +907,7 @@ OWrProp_Char_Callback(
 		dirty = UUcTrue;
 
 		WMrWindow_SetTitle(job_data_description, "", WMcMaxTitleLength);
-		 
+
 		switch(object_specific_data.osd.character_osd.job)
 		{
 			case AI2cGoal_Patrol:
@@ -947,7 +947,7 @@ OWrProp_Char_Callback(
 			melee_data_changed = UUcTrue;
 		}
 	}
-	
+
 	if (job_data_changed) {
 		char job_data_changed_buffer[256];
 
@@ -980,7 +980,7 @@ OWrProp_Char_Callback(
 	if (combat_data_changed) {
 		OBJtOSD_Combat combat;
 		char combat_description_buffer[256];
-		UUtBool combat_found; 
+		UUtBool combat_found;
 
 		combat_found = ONrLevel_Combat_ID_To_Combat(object_specific_data.osd.character_osd.combat_id, &combat);
 
@@ -1005,7 +1005,7 @@ OWrProp_Char_Callback(
 	if (melee_data_changed) {
 		AI2tMeleeProfile *profile;
 		char melee_description_buffer[256];
-		UUtBool melee_found; 
+		UUtBool melee_found;
 
 		melee_found = ONrLevel_Melee_ID_To_Melee_Ptr(object_specific_data.osd.character_osd.melee_id, &profile);
 
@@ -1030,7 +1030,7 @@ OWrProp_Char_Callback(
 	if (neutral_data_changed) {
 		OBJtOSD_Neutral neutral;
 		char neutral_description_buffer[256];
-		UUtBool neutral_found; 
+		UUtBool neutral_found;
 
 		neutral_found = ONrLevel_Neutral_ID_To_Neutral(object_specific_data.osd.character_osd.neutral_id, &neutral);
 

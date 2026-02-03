@@ -99,7 +99,7 @@ UUtUns32 *UUrBitVector_New(UUtUns32 size)
 {
 	UUtUns32 *result;
 	UUtUns32 temp= UUmBitVector_Sizeof(size);
-	
+
 	result= UUrMemory_Block_NewClear(temp);
 
 	return result;
@@ -170,7 +170,7 @@ UUtBool UUrBitVector_TestBitRange(const UUtUns32 *bitVector, UUtUns32 start, UUt
 	UUtUns32	end_mask= BV_MASK(end);
 	UUtUns32	start_index= BV_INDEX(start);
 	UUtUns32	end_index= BV_INDEX(end);
-	
+
 	UUmAssert(bitVector);
 	if (start_index==end_index)
 	{
@@ -181,17 +181,17 @@ UUtBool UUrBitVector_TestBitRange(const UUtUns32 *bitVector, UUtUns32 start, UUt
 	else
 	{
 		UUtUns32 iterator= start_index+1;
-		
+
 		if (bitVector[start_index] & start_mask) return UUcTrue;
-		
+
 		while (iterator!=end_index)
 		{
 			if (bitVector[iterator++])	return UUcTrue;
 		}
-		
+
 		if (bitVector[end_index] & end_mask) return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -201,10 +201,10 @@ void UUrBitVector_SetBitRange(UUtUns32 *bitVector, UUtUns32 start, UUtUns32 end)
 	UUtUns32 end_mask= BV_MASK(end);
 	UUtUns32 start_index= BV_INDEX(start);
 	UUtUns32 end_index= BV_INDEX(end);
-	
+
 	UUmAssert(bitVector);
 	if (start_index!=end_index)
-	{	
+	{
 		UUtUns32 iterator= start_index+1;
 
 		// loop over the middle
@@ -229,10 +229,10 @@ void UUrBitVector_ClearBitRange(UUtUns32 *bitVector, UUtUns32 start, UUtUns32 en
 	UUtUns32 end_mask= ~BV_MASK(end);
 	UUtUns32 start_index= BV_INDEX(start);
 	UUtUns32 end_index= BV_INDEX(end);
-	
+
 	UUmAssert(bitVector);
 	if (start_index!=end_index)
-	{	
+	{
 		UUtUns32 iterator= start_index+1;
 
 		// loop over the middle
@@ -247,7 +247,7 @@ void UUrBitVector_ClearBitRange(UUtUns32 *bitVector, UUtUns32 start, UUtUns32 en
 	{
 		start_mask &= ~end_mask;
 	}
-	
+
 	bitVector[start_index] &= ~start_mask;
 }
 
@@ -257,10 +257,10 @@ void UUrBitVector_ToggleBitRange(UUtUns32 *bitVector, UUtUns32 start, UUtUns32 e
 	UUtUns32 end_mask= BV_MASK(end);
 	UUtUns32 start_index= BV_INDEX(start);
 	UUtUns32 end_index= BV_INDEX(end);
-	
+
 	UUmAssert(bitVector);
 	if (start_index!=end_index)
-	{	
+	{
 		UUtUns32 iterator= start_index+1;
 
 		// loop over the middle
@@ -288,7 +288,7 @@ UUtUns32 __fastcall UUrBitVector_FindFirstSet(UUtInt32 r3)
 	__asm
 	{
 		mov eax, 32			// if ecx = 0, eax is unset so move 32 to eax
-		bsf eax, ecx		
+		bsf eax, ecx
 	}
 }
 
@@ -297,20 +297,20 @@ UUtUns32 __fastcall UUrBitVector_FindFirstSet(UUtInt32 r3)
 #elif defined(i_cntlzw)
 
 // POWERPC count trailing zeroes
-// # R3 contains x  
-// addi  R4,R3,-1  # x - 1  
-// andc  R4,R4,R3  # ~x & (x - 1)  
-// cntlzw  R4,R4  # t = nlz(~x & (x - 1))  
-// subfic  R4,R4,32  # ntz(x) = 32 - t  
+// # R3 contains x
+// addi  R4,R3,-1  # x - 1
+// andc  R4,R4,R3  # ~x & (x - 1)
+// cntlzw  R4,R4  # t = nlz(~x & (x - 1))
+// subfic  R4,R4,32  # ntz(x) = 32 - t
 
 UUtUns32 UUrBitVector_FindFirstSet(UUtInt32 r3)
 {
 	UUtUns32 r4;
 
-	r4 = r3 - 1;			// addi  R4,R3,-1  # x - 1  
-	r4 = ~r3 & r4;			// andc  R4,R4,R3  # ~x & (x - 1)  
+	r4 = r3 - 1;			// addi  R4,R3,-1  # x - 1
+	r4 = ~r3 & r4;			// andc  R4,R4,R3  # ~x & (x - 1)
 	r4 = i_cntlzw(r4);		// cntlzw  R4,R4  # t = nlz(~x & (x - 1))
-	r4 = 32 - r4;			// subfic  R4,R4,32  # ntz(x) = 32 - t  
+	r4 = 32 - r4;			// subfic  R4,R4,32  # ntz(x) = 32 - t
 
 	return r4;
 }
@@ -321,7 +321,7 @@ UUtUns32 UUrBitVector_FindFirstSet(UUtInt32 value)
 {
 	// this implementation will work for other platforms
 	int i;
-	
+
 	for (i=0; i < 32; i++)
 	{
 		if (value & BV_MASK(i))
@@ -329,7 +329,7 @@ UUtUns32 UUrBitVector_FindFirstSet(UUtInt32 value)
 			break;
 		}
 	}
-	
+
 	return i;
 }
 
@@ -348,18 +348,18 @@ UUtInt32 UUrBitVector_FindFirstSetRange(const UUtUns32 *bitVector, UUtInt32 star
 	UUtUns32 num;
 	UUtUns32 start_mask= BV_START_MASK(start);
 	UUtInt32 result = UUcBitVector_None;
-	
+
 	UUmAssert(bitVector);
-	
+
 	if (start > end)
 	{
 		return UUcBitVector_None;
 	}
-	
+
 	if (start_index==end_index)
 	{
 		num= UUrBitVector_FindFirstSet(bitVector[start_index] & (start_mask & BV_MASK(end)));
-		if (num < UUcUns32Bits)	
+		if (num < UUcUns32Bits)
 		{
 			result = ((start_index * UUcUns32Bits) + num);
 			goto exit;
@@ -369,17 +369,17 @@ UUtInt32 UUrBitVector_FindFirstSetRange(const UUtUns32 *bitVector, UUtInt32 star
 	{
 		// only check just inside the start
 		num= UUrBitVector_FindFirstSet(bitVector[start_index] & start_mask);
-		if (num < UUcUns32Bits)	
+		if (num < UUcUns32Bits)
 		{
 			result = ((start_index * UUcUns32Bits) + num);
 			goto exit;
 		}
-		
+
 		// loop through the middle
 		for (index= start_index+1; index < end_index; index++)
 		{
 			num= UUrBitVector_FindFirstSet(bitVector[index]);
-			if (num < UUcUns32Bits)	
+			if (num < UUcUns32Bits)
 			{
 				result = ((index * UUcUns32Bits) + num);
 				goto exit;
@@ -388,12 +388,12 @@ UUtInt32 UUrBitVector_FindFirstSetRange(const UUtUns32 *bitVector, UUtInt32 star
 
 		// only check upto the end
 		num= UUrBitVector_FindFirstSet(bitVector[end_index] & BV_MASK(end));
-		if (num < UUcUns32Bits)	
+		if (num < UUcUns32Bits)
 		{
 			result = ((end_index * UUcUns32Bits) + num);
 			goto exit;
 		}
-	}		
+	}
 
 exit:
 	return result;
@@ -410,21 +410,21 @@ UUtInt32 UUrBitVector_FindFirstClearRange(const UUtUns32 *bitVector, UUtInt32 st
 	UUtInt32 result = UUcBitVector_None;
 	UUtUns32 final_mask;
 	UUtUns32 inv_mask;
-	
+
 	UUmAssert(bitVector);
-	
+
 	if (start > end)
 	{
 		return UUcBitVector_None;
 	}
-	
+
 	if (start_index==end_index)
 	{
 		final_mask = (start_mask & BV_MASK(end));
 		inv_mask = ~final_mask;
-		
+
 		num= UUrBitVector_FindFirstClear((bitVector[start_index] & final_mask) | inv_mask);
-		if (num < UUcUns32Bits)	
+		if (num < UUcUns32Bits)
 		{
 			result = ((start_index * UUcUns32Bits) + num);
 			goto exit;
@@ -434,17 +434,17 @@ UUtInt32 UUrBitVector_FindFirstClearRange(const UUtUns32 *bitVector, UUtInt32 st
 	{
 		// only check just inside the start
 		num= UUrBitVector_FindFirstClear((bitVector[start_index] & start_mask) | ~start_mask);
-		if (num < UUcUns32Bits)	
+		if (num < UUcUns32Bits)
 		{
 			result = ((start_index * UUcUns32Bits) + num);
 			goto exit;
 		}
-		
+
 		// loop through the middle
 		for (index= start_index+1; index < end_index; index++)
 		{
 			num= UUrBitVector_FindFirstClear(bitVector[index]);
-			if (num < UUcUns32Bits)	
+			if (num < UUcUns32Bits)
 			{
 				result = ((index * UUcUns32Bits) + num);
 				goto exit;
@@ -455,12 +455,12 @@ UUtInt32 UUrBitVector_FindFirstClearRange(const UUtUns32 *bitVector, UUtInt32 st
 		final_mask = BV_MASK(end);
 		inv_mask = ~final_mask;
 		num= UUrBitVector_FindFirstClear((bitVector[end_index] & final_mask) | inv_mask);
-		if (num < UUcUns32Bits)	
+		if (num < UUcUns32Bits)
 		{
 			result = ((end_index * UUcUns32Bits) + num);
 			goto exit;
 		}
-	}		
+	}
 
 exit:
 	return result;
@@ -501,14 +501,14 @@ void UUrBitVector_SetBitAll(UUtUns32 *bitVector, UUtUns32 size)
 void UUrBitVectors_Xor(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 size)
 {
 	UUtUns32 index;
-	
+
 	UUmAssert(vector1);
 	UUmAssert(vector2);
 	for (index= 0; index < BV_INDEX(size); index++)
 	{
 		vector2[index] ^= vector1[index];
 	}
-	
+
 	if (BV_NUM(size))
 	{
 		vector2[BV_INDEX(size)] ^= (vector1[BV_INDEX(size)] & BV_MASK(size));
@@ -519,14 +519,14 @@ void UUrBitVectors_Xor(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 size
 void UUrBitVectors_Or(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 size)
 {
 	UUtUns32 index;
-	
+
 	UUmAssert(vector1);
 	UUmAssert(vector2);
 	for (index= 0; index < BV_INDEX(size); index++)
 	{
 		vector2[index] |= vector1[index];
 	}
-	
+
 	if (BV_NUM(size))
 	{
 		vector2[BV_INDEX(size)] |= (vector1[BV_INDEX(size)] & BV_MASK(size));
@@ -537,14 +537,14 @@ void UUrBitVectors_Or(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 size)
 void UUrBitVectors_And(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 size)
 {
 	UUtUns32 index;
-	
+
 	UUmAssert(vector1);
 	UUmAssert(vector2);
 	for (index= 0; index < BV_INDEX(size); index++)
 	{
 		vector2[index] &= vector1[index];
 	}
-	
+
 	if (BV_NUM(size))
 	{
 		vector2[BV_INDEX(size)] &= (vector1[BV_INDEX(size)] & BV_MASK(size));
@@ -556,7 +556,7 @@ void UUrBitVectors_Nor(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 size
 {
 	UUtUns32 index;
 	UUtUns32 temp;
-	
+
 	UUmAssert(vector1);
 	UUmAssert(vector2);
 	for (index= 0; index < BV_INDEX(size); index++)
@@ -564,7 +564,7 @@ void UUrBitVectors_Nor(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 size
 		temp= (vector2[index] | vector1[index]);
 		vector2[index]= ~temp;
 	}
-	
+
 	if (BV_NUM(size))
 	{
 		temp= vector2[BV_INDEX(size)] | (vector1[BV_INDEX(size)] & BV_MASK(size));
@@ -576,7 +576,7 @@ void UUrBitVectors_Nor(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 size
 void UUrBitVectors_Nand(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 size)
 {	UUtUns32 index;
 	UUtUns32 temp;
-	
+
 	UUmAssert(vector1);
 	UUmAssert(vector2);
 	for (index= 0; index < BV_INDEX(size); index++)
@@ -584,7 +584,7 @@ void UUrBitVectors_Nand(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 siz
 		temp= (vector2[index] & vector1[index]);
 		vector2[index]= ~temp;
 	}
-	
+
 	if (BV_NUM(size))
 	{
 		temp= vector2[BV_INDEX(size)] & (vector1[BV_INDEX(size)] & BV_MASK(size));
@@ -596,14 +596,14 @@ void UUrBitVectors_Nand(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 siz
 void UUrBitVectors_Andc(const UUtUns32 *vector1, const UUtUns32 *vector2, UUtUns32 *vectorDest, UUtUns32 size)
 {
 	UUtUns32 index;
-	
+
 	UUmAssert(vector1);
 	UUmAssert(vector2);
 	for (index= 0; index < BV_INDEX(size); index++)
 	{
 		vectorDest[index] = vector1[index] & ~vector2[index];
 	}
-	
+
 	if (BV_NUM(size))
 	{
 		vectorDest[BV_INDEX(size)] = (vector1[index] & ~vector2[BV_INDEX(size)]) & BV_MASK(size);
@@ -615,7 +615,7 @@ void UUrBitVectors_Xnor(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 siz
 {
 	UUtUns32 index;
 	UUtUns32 temp;
-	
+
 	UUmAssert(vector1);
 	UUmAssert(vector2);
 	for (index= 0; index < BV_INDEX(size); index++)
@@ -623,7 +623,7 @@ void UUrBitVectors_Xnor(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 siz
 		temp= (vector2[index] ^ vector1[index]);
 		vector2[index]= ~temp;
 	}
-	
+
 	if (BV_NUM(size))
 	{
 		temp= vector2[BV_INDEX(size)] ^ (vector1[BV_INDEX(size)] & BV_MASK(size));
@@ -635,14 +635,14 @@ void UUrBitVectors_Xnor(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 siz
 void UUrBitVector_Copy(const UUtUns32 *vector1, UUtUns32 *vector2, UUtUns32 size)
 {
 	UUtUns32 index;
-	
+
 	UUmAssert(vector1);
 	UUmAssert(vector2);
 	for (index= 0; index < BV_INDEX(size); index++)
 	{
 		vector2[index] = vector1[index];
 	}
-	
+
 	if (BV_NUM(size))
 	{
 		vector2[BV_INDEX(size)] = (vector1[BV_INDEX(size)] & BV_MASK(size));
@@ -671,14 +671,14 @@ UUtBool UUrBitVector_Expand16Bit(
 	UUtUns32	end_index= BV_INDEX(end);
 	UUtUns32	i;
 	UUtUns32	pattern;
-	
+
 	UUmAssert(bitVector);
 	if (start_index==end_index)
 	{
 		start_mask &= end_mask;
-		
+
 		pattern = bitVector[start_index] & start_mask;
-		
+
 		for(i = 32; i-- > 0;)
 		{
 			if(start_mask & (1 << i))
@@ -697,9 +697,9 @@ UUtBool UUrBitVector_Expand16Bit(
 	else
 	{
 		UUtUns32 iterator= start_index+1;
-		
+
 		pattern = bitVector[start_index] & start_mask;
-		
+
 		for(i = 32; i-- > 0;)
 		{
 			if(start_mask & (1 << i))
@@ -714,7 +714,7 @@ UUtBool UUrBitVector_Expand16Bit(
 				}
 			}
 		}
-		
+
 		while (iterator!=end_index)
 		{
 			pattern = bitVector[iterator++];
@@ -741,9 +741,9 @@ UUtBool UUrBitVector_Expand16Bit(
 				}
 			}
 		}
-		
+
 		pattern = bitVector[end_index] & end_mask;
-		
+
 		for(i = 32; i-- > 0;)
 		{
 			if(end_mask & (1 << i))
@@ -759,13 +759,13 @@ UUtBool UUrBitVector_Expand16Bit(
 			}
 		}
 	}
-	
+
 	return UUcFalse;
 }
 #endif
 
 
-static UUtUns8	g2BitSubtractor[256] = 
+static UUtUns8	g2BitSubtractor[256] =
 {
     0x0,    //00000000 -> 00000000
     0x0,    //00000001 -> 00000000
@@ -1068,18 +1068,18 @@ void UUr2BitVector_Decrement(UUtUns32 *in2BitVector, UUtUns32 inSize)
 		UUtUns32 byte4;
 
 		byte1 = (long_value >> 24) & 0xff;
-		byte1 = g2BitSubtractor[byte1]; 
+		byte1 = g2BitSubtractor[byte1];
 
 		byte2 = (long_value >> 16) & 0xff;
-		byte2 = g2BitSubtractor[byte2]; 
+		byte2 = g2BitSubtractor[byte2];
 
 		byte3 = (long_value >> 8) & 0xff;
-		byte3 = g2BitSubtractor[byte3]; 
+		byte3 = g2BitSubtractor[byte3];
 
 		byte4 = (long_value >> 0) & 0xff;
-		byte4 = g2BitSubtractor[byte4]; 
+		byte4 = g2BitSubtractor[byte4];
 
-		*curLong = (byte1 << 24) | (byte2 << 16) | (byte3 << 8) | (byte4 << 0); 
+		*curLong = (byte1 << 24) | (byte2 << 16) | (byte3 << 8) | (byte4 << 0);
 	}
 
 	return;

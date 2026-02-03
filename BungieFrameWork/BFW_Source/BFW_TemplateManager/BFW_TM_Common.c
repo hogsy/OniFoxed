@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_TM3_Utility.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: July 10, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -60,9 +60,9 @@ TMiSwapCode_Dump_Indent(
 	UUtUns32	inSwapCodeOffset)
 {
 	UUtUns32	itr;
-	
+
 	fprintf(inFile, "[%04d, %04d]", inSwapCodeOffset, inDataOffset);
-	
+
 	for(itr = 0; itr < inIndent; itr++)
 	{
 		fprintf(inFile, "\t");
@@ -83,15 +83,15 @@ TMiSwapCode_Dump_Recursive(
 	UUtBool					stop;
 	UUtUns8					count;
 	UUtUns32				savedDataOffset;
-	
+
 	curSwapCode = *ioSwapCode;
 
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
@@ -99,25 +99,25 @@ TMiSwapCode_Dump_Recursive(
 				fprintf(inFile, "8Byte(%02x)\n", TMcSwapCode_8Byte);
 				curDataOffset += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "4Byte(%02x)\n", TMcSwapCode_4Byte);
 				curDataOffset += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "2Byte(%02x)\n", TMcSwapCode_2Byte);
 				curDataOffset += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "1Byte(%02x)\n", TMcSwapCode_1Byte);
 				curDataOffset += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "begin array(%02x)\n", TMcSwapCode_BeginArray);
@@ -133,13 +133,13 @@ TMiSwapCode_Dump_Recursive(
 					inSwapCodeBase);
 				curDataOffset += (curDataOffset - savedDataOffset) * (count - 1);
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				TMiSwapCode_Dump_Indent(inFile, inIndent-1, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "end array(%02x)\n", TMcSwapCode_EndArray);
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "begin vararray(%02x)\n", TMcSwapCode_BeginVarArray);
@@ -162,7 +162,7 @@ TMiSwapCode_Dump_Recursive(
 					default:
 						UUmAssert(!"Swap codes damaged");
 				}
-				
+
 				TMiSwapCode_Dump_Recursive(
 					inFile,
 					inIndent+1,
@@ -170,13 +170,13 @@ TMiSwapCode_Dump_Recursive(
 					&curDataOffset,
 					inSwapCodeBase);
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				TMiSwapCode_Dump_Indent(inFile, inIndent-1, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "end vararray(%02x)\n", TMcSwapCode_EndVarArray);
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "templatePtr(%02x): %c%c%c%c\n", TMcSwapCode_TemplatePtr,
@@ -184,16 +184,16 @@ TMiSwapCode_Dump_Recursive(
 					(*(UUtUns32*)curSwapCode >> 16) & 0xFF,
 					(*(UUtUns32*)curSwapCode >> 8) & 0xFF,
 					(*(UUtUns32*)curSwapCode >> 0) & 0xFF);
-					
+
 				curSwapCode += 4;
 				curDataOffset += 4;
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataOffset = curDataOffset;
 }
@@ -209,9 +209,9 @@ TMrInitialize(
 	BFtFileRef*		inGameDataFolderRef)
 {
 	UUtError	error;
-	
+
 	TMgInGame = inGame;
-	
+
 	UUmAssert(sizeof(TMtInstanceFile_Header) == UUcProcessor_CacheLineSize * 2);
 
 	/*
@@ -219,9 +219,9 @@ TMrInitialize(
 	 */
 	TMgDataFolderRef = *inGameDataFolderRef;
 	UUrStartupMessage("DataFolder = %s", BFrFileRef_GetLeafName(&TMgDataFolderRef));
-	
+
 	TMrTemplate_BuildList();
-	
+
 	if(inGame == UUcTrue)
 	{
 		error = TMrGame_Initialize();
@@ -270,23 +270,23 @@ TMrTemplate_Register(
 	TMtAllowFolding		inAllowFolding)
 {
 	TMtTemplateDefinition	*curTemplateDefinition;
-	
+
 	curTemplateDefinition = TMrUtility_Template_FindDefinition(inTemplateTag);
 
 	if(curTemplateDefinition == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "template does not exist");
 	}
-	
+
 	if(curTemplateDefinition->flags & TMcTemplateFlag_Registered)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "template already registered");
 	}
-	
+
 	// Add 4 to make up for preamble
 	if(curTemplateDefinition->size + curTemplateDefinition->varArrayElemSize != inSize + TMcPreDataSize)
 	{
-		AUrMessageBox(AUcMBType_OK, "Template %s size %d var elem size %d inSize %d pre data size %d", 
+		AUrMessageBox(AUcMBType_OK, "Template %s size %d var elem size %d inSize %d pre data size %d",
 			curTemplateDefinition->name,
 			curTemplateDefinition->size,
 			curTemplateDefinition->varArrayElemSize,
@@ -299,12 +299,12 @@ TMrTemplate_Register(
 	}
 
 	curTemplateDefinition->flags |= TMcTemplateFlag_Registered;
-	
+
 	if(inAllowFolding == TMcFolding_Allow)
 	{
 		curTemplateDefinition->flags |= TMcTemplateFlag_AllowFolding;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -314,17 +314,17 @@ TMrSwapCode_DumpDefinition(
 	TMtTemplateDefinition*	inTemplateDefinition)
 {
 	fprintf(inFile, "Name: %s\n", inTemplateDefinition->name);
-	fprintf(inFile, "Tag: %c%c%c%c\n", 
+	fprintf(inFile, "Tag: %c%c%c%c\n",
 		(inTemplateDefinition->tag >> 24) & 0xFF,
 		(inTemplateDefinition->tag >> 16) & 0xFF,
 		(inTemplateDefinition->tag >> 8) & 0xFF,
 		(inTemplateDefinition->tag >> 0) & 0xFF);
-	
+
 	fprintf(inFile, "Swap Codes:\n");
 	{
 		UUtUns8*	swapCodes = inTemplateDefinition->swapCodes;
 		UUtUns32	dataOffset = 0;
-		
+
 		TMiSwapCode_Dump_Indent(inFile, 0, 0, 0);
 		fprintf(inFile, "begin array\n");
 		TMiSwapCode_Dump_Recursive(inFile, 1, &swapCodes, &dataOffset, inTemplateDefinition->swapCodes);
@@ -336,13 +336,13 @@ TMrSwapCode_DumpAll(
 	FILE*	inFile)
 {
 	UUtUns32	itr;
-	
+
 	for(itr = 0; itr < TMgNumTemplateDefinitions; itr++)
 	{
 		fprintf(inFile, "******************************************\n");
 		TMrSwapCode_DumpDefinition(inFile, TMgTemplateDefinitionArray + itr);
 	}
-	
+
 }
 
 UUtError
@@ -351,17 +351,17 @@ TMrTemplate_InstallByteSwap(
 	TMtTemplateProc_ByteSwap	inProc)
 {
 	TMtTemplateDefinition*	templatePtr;
-	
+
 	templatePtr = TMrUtility_Template_FindDefinition(inTemplateTag);
 	if(templatePtr == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not find template");
 	}
-	
+
 	UUmAssert(templatePtr->varArrayElemSize > 0);
-	
+
 	templatePtr->byteSwapProc = inProc;
-	
+
 	return UUcError_None;
 }
 
@@ -371,7 +371,7 @@ TMrUtility_Template_FindDefinition(
 {
 	TMtTemplateDefinition*	curTemplate = TMgTemplateDefinitionArray;
 	UUtInt32				i;
-	
+
 	if(TMgTemplateDefinitionArray == NULL) return NULL;
 
 	for(i = TMgNumTemplateDefinitions; i-- > 0;)
@@ -380,10 +380,10 @@ TMrUtility_Template_FindDefinition(
 		{
 			return curTemplate;
 		}
-		
+
 		curTemplate++;
 	}
-	
+
 	if(TMgInGame)
 	{
 		UUmAssert(0);
@@ -394,7 +394,7 @@ TMrUtility_Template_FindDefinition(
 			(inTemplateTag >> 8) & 0xFF,
 			(inTemplateTag >> 0) & 0xFF);
 	}
-	
+
 	return NULL;
 }
 
@@ -402,19 +402,19 @@ void
 TMrUtility_SkipVarArray(
 	UUtUns8*			*ioSwapCode)
 {
-	
+
 	UUtBool		stop;
 	UUtUns8*	curSwapCode;
 	char		swapCode;
-	
+
 	curSwapCode = *ioSwapCode;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
@@ -422,43 +422,43 @@ TMrUtility_SkipVarArray(
 
 			case TMcSwapCode_4Byte:
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				curSwapCode++;
-				
+
 				TMrUtility_SkipVarArray(&curSwapCode);
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				curSwapCode++;
 
 				TMrUtility_SkipVarArray(
 					&curSwapCode);
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 				curSwapCode += 4;
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 }
 
@@ -477,9 +477,9 @@ TMrUtility_VarArrayReset_Recursive(
 
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		switch(*curSwapCode++)
@@ -487,39 +487,39 @@ TMrUtility_VarArrayReset_Recursive(
 			case TMcSwapCode_8Byte:
 				curDataPtr += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				count = *curSwapCode++;
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				for(i = 0; i < count; i++)
 				{
 					curSwapCode = origSwapCode;
-					
+
 					TMrUtility_VarArrayReset_Recursive(
 						&curSwapCode,
 						&curDataPtr,
 						inInitialVarArrayLength);
 				}
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				switch(*curSwapCode++)
 				{
@@ -527,23 +527,23 @@ TMrUtility_VarArrayReset_Recursive(
 						*(UUtUns64 *)curDataPtr = inInitialVarArrayLength;
 						curDataPtr += 8;
 						break;
-						
+
 					case TMcSwapCode_4Byte:
 						*(UUtUns32 *)curDataPtr = inInitialVarArrayLength;
 						curDataPtr += 4;
 						break;
-						
+
 					case TMcSwapCode_2Byte:
 						*(UUtUns16 *)curDataPtr = (UUtUns16)inInitialVarArrayLength;
 						curDataPtr += 2;
 						break;
-						
+
 					default:
 						UUmDebugStr("swap codes are messed up.");
 				}
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				if(inInitialVarArrayLength > 0)
 				{
 					for(i = 0; i < inInitialVarArrayLength; i++)
@@ -561,22 +561,22 @@ TMrUtility_VarArrayReset_Recursive(
 					TMrUtility_SkipVarArray(&curSwapCode);
 				}
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 				*(void**)curDataPtr = NULL;
 				curSwapCode += 4;
 				curDataPtr += 4;
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
 }
@@ -594,38 +594,38 @@ TMrUtility_LevelInfo_Get(
 	char*		dot;
 	char*		cp;
 	UUtUns32	levelNum;
-	
+
 	UUtUns32	checksum = 0;
 	UUtUns32	factor = 1;
 	UUtUns32	c;
-	
+
 	UUrString_Copy(nameBuffer, BFrFileRef_GetLeafName(inInstanceFileRef), BFcMaxFileNameLength);
-	
+
 	underscore = strchr(nameBuffer, '_');
 	if(underscore == NULL)
 	{
 		return UUcError_Generic;
 	}
-	
+
 	*underscore = 0;
-	
+
 	sscanf(nameBuffer + 5, "%d", &levelNum);
-	
+
 	cp = underscore + 1;
-	
+
 	dot = strchr(cp, '.');
 	if(dot == NULL)
 	{
 		return UUcError_Generic;
 	}
-	
+
 	*dot = 0;
-	
+
 	if(outLevelSuffix != NULL)
 	{
 		UUrString_Copy(outLevelSuffix, cp, BFcMaxFileNameLength);
 	}
-	
+
 	if(!strcmp(cp, "Final"))
 	{
 		if(outFinal != NULL)
@@ -644,26 +644,26 @@ TMrUtility_LevelInfo_Get(
 		{
 			c = *cp++;
 			if(c == 0) break;
-			
+
 			checksum += (toupper(c) - 'A' + 1) * factor++;
 		}
 	}
-	
+
 	if(levelNum >= 128)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Can not have a level number larger than 127");
 	}
-	
+
 	if(outLevelNumber != NULL)
 	{
 		*outLevelNumber = levelNum;
 	}
-	
+
 	if(outInstanceFileID != NULL)
 	{
 		*outInstanceFileID = (levelNum << 25) | ((checksum & 0xFFFFFF) << 1) | 1;
 	}
-	
+
 	return UUcError_None;
 }
 

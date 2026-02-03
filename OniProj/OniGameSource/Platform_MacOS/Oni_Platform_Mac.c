@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_Platform_Mac.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: April 2, 1997
-	
+
 	PURPOSE: Macintosh specific code
-	
+
 	Copyright 1997
 
 */
@@ -59,7 +59,7 @@ static Boolean changed_display_device= false;
 #if defined(DEBUGGING) && DEBUGGING
 
 	#define DEBUG_AKIRA 1
-	
+
 #endif
 
 #if defined(DEBUG_AKIRA) && DEBUG_AKIRA
@@ -87,7 +87,7 @@ static UUtUns32 macos_read_display_pref(
 {
 	UUtUns32 pref= 0L;
 	Handle pref_handle;
-	
+
 	pref_handle= GetResource('pref', MAC_PREF_RSRC_ID);
 	if (pref_handle && (GetHandleSize(pref_handle) == sizeof(UUtUns32)))
 	{
@@ -96,7 +96,7 @@ static UUtUns32 macos_read_display_pref(
 		HUnlock(pref_handle);
 		ReleaseResource(pref_handle);
 	}
-	
+
 	return pref;
 }
 
@@ -104,7 +104,7 @@ static void macos_write_display_pref(
 	UUtUns32 pref)
 {
 	Handle pref_handle;
-	
+
 	pref_handle= GetResource('pref', MAC_PREF_RSRC_ID);
 	if (pref_handle)
 	{
@@ -116,7 +116,7 @@ static void macos_write_display_pref(
 		WriteResource(pref_handle);
 		ReleaseResource(pref_handle);
 	}
-	
+
 	return;
 }
 
@@ -137,14 +137,14 @@ static pascal Boolean device_list_filter(
 	if ((event->what == updateEvt) && (event->message == (UInt32)dialog))
 	{
 		Cell item_cell;
-		
+
 		BeginUpdate((WindowPtr)dialog);
-		
+
 		LUpdate(GetPortVisibleRegion(GetDialogPort(dialog), NULL), device_list);
-		
+
 		item_cell.h= 0;
 		item_cell.v= 0;
-		
+
 		while (item_cell.v < device_count)
 		{
 			LDraw(item_cell, device_list);
@@ -155,7 +155,7 @@ static pascal Boolean device_list_filter(
 		// push it outwards one pixel and frame the list
 		InsetRect(&temp_rect, -1, -1);
 		FrameRect(&temp_rect);
-        
+
         EndUpdate((WindowPtr)dialog);
 	}
 	else
@@ -174,7 +174,7 @@ static pascal Boolean device_list_filter(
 			if (PtInRect(point, &temp_rect))
 			{
 				Boolean clicked= LClick(point, nil, device_list);
-				
+
 				// if they double-clicked the list, return 1, as if the OK button had been pressed
 				*item_hit= clicked ? _button_ok : _list_item;
 				event_handled= true;
@@ -200,39 +200,39 @@ static GDHandle mac_enumerate_display_devices(
 	Rect item_rect;
 	Handle item_handle;
 	OSErr err= noErr;
-	
+
 	selected_device= DMGetFirstScreenDevice(true);
 	dialog= GetNewDialog(MAC_DISPLAY_SELECT_RSRC_ID, nil, (WindowPtr)-1L);
-	
+
 	if (dialog)
 	{
 		//ModalFilterUPP modal_filter_UPP= (ModalFilterUPP)NewModalFilterProc(device_list_filter);
 		ModalFilterUPP modal_filter_UPP= (ModalFilterUPP)device_list_filter;
-		
+
 		GetDialogItem(dialog, _list_item, &item_hit, &item_handle, &item_rect);
 		item_rect.right-= 16; // make room for scroll bar
-		
+
 		device_list= LNew(&item_rect, &list_rect, item_cell, nil, (WindowPtr)dialog, false, false, false, true);
 		if (device_list)
 		{
 			LSetDrawingMode(true, device_list);
-			
+
 			display_devices[0]= GetDeviceList();
-			
+
 			while (display_devices[device_count] && (device_count < MAX_DISPLAY_DEVICES) && (err == noErr))
 			{
 				DisplayIDType display_id;
-				
+
 				err= DMGetDisplayIDByGDevice(display_devices[device_count], &display_id, false);
 				if (err == noErr)
 				{
 					Str255 display_name= "\p";
-					
+
 					err= DMGetNameByAVID(display_id, 0L, display_name);
 					if (err == noErr)
 					{
 						int list_count= LAddRow(1, device_count, device_list);
-						
+
 						UUmAssert(list_count == device_count);
 						item_cell.h= 0;
 						item_cell.v= list_count;
@@ -248,11 +248,11 @@ static GDHandle mac_enumerate_display_devices(
 				UUtUns32 display_pref;
 				int saved_display_index; // will be saved as a base-1 integer
 				UUtBool option_key_down;
-				
+
 				display_pref= macos_read_display_pref();
 				saved_display_index= (display_pref >> _mac_saved_display_index_pref_shift);
 				option_key_down= LIrPlatform_TestKey(LIcKeyCode_LeftOption, 0);
-				
+
 				if (saved_display_index && (saved_display_index <= device_count) && (option_key_down == UUcFalse))
 				{
 					// use saved display index
@@ -265,20 +265,20 @@ static GDHandle mac_enumerate_display_devices(
 					SetPort(GetDialogPort(dialog));
 					ShowWindow((WindowPtr)dialog);
 					DrawDialog(dialog);
-					
+
 					item_cell.h= 0;
 					item_cell.v= 0;
-					
+
 					while (item_cell.v < device_count)
 					{
 						LDraw(item_cell, device_list);
 						item_cell.v++;
 					}
-			
+
 					do
 					{
 						ModalDialog(modal_filter_UPP, &item_hit);
-						
+
 						if (item_hit == _save_device_check_box)
 						{
 							GetDialogItem(dialog, _save_device_check_box, &item_type, &item_handle, &item_rect);
@@ -288,20 +288,20 @@ static GDHandle mac_enumerate_display_devices(
 							}
 						}
 					} while ((item_hit != _button_ok) && (item_hit != _button_cancel));
-				
+
 					if (item_hit == _button_ok)
 					{
 						item_cell.h= 0;
 						item_cell.v= 0;
-						
+
 						if (LGetSelect(true, &item_cell, device_list))
 						{
 							if (display_devices[item_cell.v] != NULL)
 							{
 								UUtUns32 save_device= 0;
-								
+
 								selected_device= display_devices[item_cell.v];
-								
+
 								// do we need to save the selected display index?
 								GetDialogItem(dialog, _save_device_check_box, &item_type, &item_handle, &item_rect);
 								if (item_handle)
@@ -321,19 +321,19 @@ static GDHandle mac_enumerate_display_devices(
 					}
 				}
 			}
-			
+
 			LDispose(device_list);
 		}
-		
+
 		DisposeModalFilterUPP(modal_filter_UPP);
 		DisposeDialog(dialog);
 	}
-	
+
 	if (selected_device == NULL)
 	{
 		selected_device= GetMainDevice();
 	}
-	
+
 	return selected_device;
 }
 
@@ -343,7 +343,7 @@ static void mac_restore_original_display_device(
 	if (changed_display_device)
 	{
 		OSErr err;
-		
+
 		// restore original device
 		err= DMGetGDeviceByDisplayID(original_display_id, &original_device, true);
 		if (err == noErr)
@@ -355,7 +355,7 @@ static void mac_restore_original_display_device(
 		err= DMEndConfigureDisplays(display_state_handle);
 		UUmAssert(err == noErr);
 	}
-	
+
 	return;
 }
 
@@ -363,16 +363,16 @@ static Boolean mac_change_display_device(
 	GDHandle new_device)
 {
 	Boolean success= false;
-	
+
 	if (original_device == NULL)
 	{
 		original_device= GetMainDevice();
 	}
-	
+
 	if (new_device && (new_device != original_device))
 	{
 		OSErr err;
-		
+
 		// save and change main device
 		err= DMGetDisplayIDByGDevice(original_device, &original_display_id, true);
 		if (err == noErr)
@@ -395,7 +395,7 @@ static Boolean mac_change_display_device(
 	{
 		success= true;
 	}
-	
+
 	return success;
 }
 
@@ -421,7 +421,7 @@ static void mac_hide_menu_bar(
 		HideMenuBar();
 		menu_bar_is_visible= FALSE;
 	}
-	
+
 	return;
 }
 
@@ -432,7 +432,7 @@ static void mac_show_menu_bar(
 	{
 		ShowMenuBar();
 	}
-	
+
 	return;
 }
 
@@ -447,19 +447,19 @@ ONrPlatform_Initialize(
 	GDHandle				device;
 	DisplayIDType			displayID;
 	DSpContextAttributes	attributes;
-#endif	
+#endif
 	short width, height, depth;
 	GDHandle selected_display_device;
-	
+
 	selected_display_device= mac_enumerate_display_devices();
 	UUmAssert(selected_display_device);
-	
+
 	if (mac_change_display_device(selected_display_device) == false)
 	{
 		AUrMessageBox(AUcMBType_OK, "Whoa, something bad happened while trying to change the display device. Try playing Oni from your main monitor next time.");
 		exit(0);
 	}
-	
+
 	depth= 16;
 	if (GetQDGlobalsScreenBits(&screen_bits) != NULL)
 	{
@@ -471,7 +471,7 @@ ONrPlatform_Initialize(
 		width= 640;
 		height= 480;
 	}
-		
+
 #ifdef USE_DRAW_SPROCKET
 	// start draw sprocket
 	status = DSpStartup();
@@ -479,7 +479,7 @@ ONrPlatform_Initialize(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to start Draw Sprocket");
 	}
-	
+
 	// initialize the draw sprocket attributes
 	ONgDSp_ContextAttributes.frequency				= 0;
 	ONgDSp_ContextAttributes.displayWidth			= width; //ONgCommandLine.width;
@@ -499,14 +499,14 @@ ONrPlatform_Initialize(
 	ONgDSp_ContextAttributes.reserved3[1]			= 0;
 	ONgDSp_ContextAttributes.reserved3[2]			= 0;
 	ONgDSp_ContextAttributes.reserved3[3]			= 0;
-	
+
 	// create the draw sprocket context
 	status = DSpCanUserSelectContext(&ONgDSp_ContextAttributes, &select_possible);
 	if (status != noErr)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Problem with Draw Sprockets");
 	}
-	
+
 	if (select_possible)
 	{
 		device = DMGetFirstScreenDevice(UUcTrue);
@@ -514,13 +514,13 @@ ONrPlatform_Initialize(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "No Screen devices available");
 		}
-		
+
 		status = DMGetDisplayIDByGDevice(device, &displayID, UUcTrue);
 		if (status != noErr)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to get Display ID from GDevice");
 		}
-		
+
 		status =
 			DSpUserSelectContext(
 				&ONgDSp_ContextAttributes,
@@ -531,7 +531,7 @@ ONrPlatform_Initialize(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "User unable to select context");
 		}
-		
+
 /*		status = DSpContext_GetAttributes(ONgDSp_Context, &attributes);
 		if (status != noErr)
 		{
@@ -546,13 +546,13 @@ ONrPlatform_Initialize(
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to find a suitable device");
 		}
 	}
-	
+
 	status = DSpContext_Reserve(ONgDSp_Context, &ONgDSp_ContextAttributes);
 	if (status != noErr)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to create the display");
 	}
-	
+
 	status = DSpContext_GetAttributes(ONgDSp_Context, &attributes);
 	if (status != noErr)
 	{
@@ -564,19 +564,19 @@ ONrPlatform_Initialize(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to fade the display");
 	}
-	
+
 	status = DSpContext_SetState(ONgDSp_Context, kDSpContextState_Active);
 	if ((status != noErr) && (status != kDSpConfirmSwitchWarning))
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to set the display");
 	}
-	
+
 	status = DSpContext_FadeGammaIn(kDSpEveryContext, NULL);
 	if (status != noErr)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to fade the display");
 	}
-#endif // DrawSprocket setup	
+#endif // DrawSprocket setup
 	// create a window
 	{
 		Point origin= {0,0};
@@ -585,35 +585,35 @@ ONrPlatform_Initialize(
 		const RGBColor black_color= {0,0,0};
 		unsigned long value= 0;
 		OSErr err= noErr;
-	
+
 	#ifdef USE_MAC_MENU
 		Handle menu_bar= NULL;
-	
+
 		menu_bar= GetNewMBar(MAC_MBAR_RSRC_ID); // the memory for this is LEAKED.
 		if(menu_bar)
 		{
 			SetMenuBar(menu_bar);
 		}
 	#endif
-		
+
 	#ifdef USE_DRAW_SPROCKET
 		if (ONgDSp_Context)
 		{
 			DSpContext_LocalToGlobal(ONgDSp_Context, &origin);
 		}
 	#endif
-		
+
 		win_rect.left= origin.h;
 		win_rect.top= origin.v;
 		win_rect.right= win_rect.left + width;
 		win_rect.bottom= win_rect.top + height;
-		
+
 		window = NewCWindow(NULL, &win_rect, "\p", 0, plainDBox, (WindowPtr)-1, 0, 0);
 		if (window == NULL)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to create a window");
 		}
-		
+
 		// set the context color of the window to black to avoid the white flash when the
 		// window appears
 		SetWindowContentColor(window, &black_color);
@@ -629,7 +629,7 @@ ONrPlatform_Initialize(
 		{
 			short h= 0;
 			short v= GetMBarHeight();
-			
+
 			MoveWindow(window, h, v, true);
 		}
 		ShowWindow(window);
@@ -643,7 +643,7 @@ ONrPlatform_Initialize(
 		outPlatformData->gameWindow= window;
 		oni_mac_window= window;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -661,7 +661,7 @@ void ONrPlatform_Terminate(
 		// fade to black
 		DSpContext_FadeGammaOut(kDSpEveryContext, NULL);
 	}
-#endif	
+#endif
 	// dispose of the window
 	if (ONgPlatformData.gameWindow)
 	{
@@ -671,7 +671,7 @@ void ONrPlatform_Terminate(
 	// fade back to normal
 	if (ONgDSp_Context)
 	{
-		DSpContext_SetState(ONgDSp_Context, kDSpContextState_Inactive);	
+		DSpContext_SetState(ONgDSp_Context, kDSpContextState_Inactive);
 		DSpContext_FadeGammaIn(kDSpEveryContext, NULL);
 		DSpContext_Release(ONgDSp_Context);
 		ONgDSp_Context = NULL;
@@ -691,7 +691,7 @@ ONrPlatform_CopyAkiraToScreen(
 	UUtUns16	inBufferHeight,
 	UUtUns16	inRowBytes,
 	UUtUns16*	inBaseAdddr);
-	
+
 // ----------------------------------------------------------------------
 void
 ONrPlatform_CopyAkiraToScreen(
@@ -701,21 +701,21 @@ ONrPlatform_CopyAkiraToScreen(
 	UUtUns16*	inBaseAdddr)
 {
 	#if 0//defined(DEBUG_AKIRA) && DEBUG_AKIRA
-		
+
 		UUtUns16	x, y;
-		
+
 		double*	srcPtr, *dstPtr;
-		
+
 		for(y = 0; y < inBufferHeight; y++)
 		{
 			srcPtr = (double*)((char*)inBaseAdddr + y * inRowBytes);
 			dstPtr = (double*)((char*)gAkiraBaseAddr + y * gAkiraRowBytes);
-			
+
 			for(x = 0; x < inBufferWidth >> 2; x++)
 			{
 				*dstPtr++ = *srcPtr++;
 			}
-			
+
 		}
 
 	#endif
@@ -735,10 +735,10 @@ void ONrPlatform_ErrorHandler(
 	char				*message)
 {
 	unsigned char	pascalStr[256];
-	
+
 	sprintf((char *)pascalStr+1,"%s (%s)", message, debugDescription);
 	pascalStr[0] = strlen((char *)pascalStr+1);
-	
+
 	DebugStr(pascalStr);
 }
 
@@ -760,7 +760,7 @@ ONrPlatform_GetGammaParams(
 	*outMinGamma = ONcMinGamma;
 	*outMaxGamma = ONcMaxGamma;
 	*outCurrentGamma = 100;
-	
+
 	return UUcError_None;
 }
 
@@ -772,21 +772,21 @@ ONrPlatform_SetGamma(
 #ifdef USE_DRAW_SPROCKET
 	DSpContextReference		dsp_context;
 	RGBColor				black;
-	
+
 	UUmAssert((inNewGamma >= ONcMinGamma) && (inNewGamma <= ONcMaxGamma));
 
 	// set the color
 	black.red = 0;
 	black.green = 0;
 	black.blue = 0;
-	
+
 	// get the Draw Sprocket context
 	dsp_context = (DSpContextReference)GetWRefCon(ONgPlatformData.gameWindow);
 	if (dsp_context == NULL) return UUcError_Generic;
-	
+
 	// set the gamma of the context
 	DSpContext_FadeGamma(dsp_context, inNewGamma, &black);
 #endif
-	
+
 	return UUcError_None;
 }

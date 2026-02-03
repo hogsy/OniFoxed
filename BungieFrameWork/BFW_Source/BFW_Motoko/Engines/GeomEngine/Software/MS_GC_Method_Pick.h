@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_GC_Method_Pick.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Jan 14, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */

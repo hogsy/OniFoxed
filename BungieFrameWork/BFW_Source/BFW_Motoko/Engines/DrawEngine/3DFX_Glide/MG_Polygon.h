@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_Polygon.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: July 5, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -29,18 +29,18 @@
 #include "rasterizer_3dfx.h"
 
 void MGrDrawPolygon_VertexList_TextureUnlit(
-		int nverts, 
-		const GrVertex vlist[], 
+		int nverts,
+		const GrVertex vlist[],
 		MGtTextureMapPrivate *inTexture);
 
 void MGrDrawPolygon_VertexList_TextureInterpolate(
-		int nverts, 
-		const GrVertex vlist[], 
+		int nverts,
+		const GrVertex vlist[],
 		MGtTextureMapPrivate *inTexture);
 
 void MGrDrawPolygon_VertexList_TextureFlat(
-		int nverts, 
-		const GrVertex vlist[], 
+		int nverts,
+		const GrVertex vlist[],
 		MGtTextureMapPrivate *inTexture);
 
 void MGrDrawTriangle_TextureInterpolate(

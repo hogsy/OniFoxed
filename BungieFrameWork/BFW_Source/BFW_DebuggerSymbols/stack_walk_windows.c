@@ -88,7 +88,7 @@ void stack_walk_initialize(
 	memset(&stack_walk_input, 0, sizeof(stack_walk_input));
 	UUrStartupMessage("stack crawl generation code enabled");
 	stack_walk_initalized= TRUE;
-	
+
 	return;
 }
 
@@ -114,7 +114,7 @@ void stack_walk(
 			{
 				HANDLE sw_thread;
 				DWORD thread_id;
-				
+
 				sw_thread= CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)stack_walk_thread_proc,
 					&in, 0, &thread_id);
 				if (sw_thread)
@@ -173,7 +173,7 @@ void stack_walk_with_context(
 			{
 				HANDLE sw_thread;
 				DWORD thread_id;
-				
+
 				sw_thread= CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)stack_walk_thread_proc,
 					&stack_walk_input, 0, &thread_id);
 				if (sw_thread)
@@ -211,7 +211,7 @@ void stack_walk_with_context(
 
 int handle_exception(
 	LPEXCEPTION_POINTERS exception_data)
-{	
+{
 	int ret= EXCEPTION_CONTINUE_SEARCH;
 
 	if (exception_data)
@@ -261,7 +261,7 @@ static void stack_walk_thread_proc(
 			{
 				DWORD opts= SymGetOptions();
 				boolean success= FALSE;
-				
+
 				opts|= (SYMOPT_UNDNAME|SYMOPT_DEFERRED_LOADS);
 				SymSetOptions(opts);
 
@@ -301,7 +301,7 @@ static void stack_walk_thread_proc(
 					// Initialize the stack_frame structure for the first call.  This is only
 					// necessary for Intel CPUs, and isn't mentioned in the documentation.
 					UUrDebuggerMessage("starting stack trace");
-			
+
 					memset(&stack_frame, 0, sizeof(stack_frame));
 					stack_frame.AddrPC.Offset= context.Eip;
 					stack_frame.AddrPC.Mode= AddrModeFlat;
@@ -311,7 +311,7 @@ static void stack_walk_thread_proc(
 					stack_frame.AddrFrame.Mode= AddrModeFlat;
 
 					for (frame_num = 0; frame_num < MAX_FRAMES; ++frame_num)
-					{					
+					{
 						BYTE symbol_buffer[sizeof(IMAGEHLP_SYMBOL)+MAXIMUM_SYMBOL_NAME_LENGTH]= {0};
 						PIMAGEHLP_SYMBOL p_symbol= (PIMAGEHLP_SYMBOL)symbol_buffer;
 						IMAGEHLP_MODULE module;
@@ -382,7 +382,7 @@ static void stack_walk_thread_proc(
 							DWORD section= 0, offset= 0, sgsfa_error;
 
 							sgsfa_error= GetLastError();
-					
+
 							get_logical_address((PVOID)(stack_frame.AddrPC.Offset), module, MAX_PATH, &section, &offset);
 							sprintf(formatted_address[frame_num], "%08x %s+%04x [SymGetSymFromAddr() returned %ld]",
 								section, module, offset, sgsfa_error);
@@ -409,7 +409,7 @@ static void stack_walk_thread_proc(
 						while (i>=stack_walk_input.levels_to_ignore)
 						{
 							unsigned long addr= strtoul(formatted_address[i], NULL, 16);
-							
+
 							UUrDebuggerMessage("%d: %s %s", j, formatted_address[i],
 								(symbol_list ? symbol_name_from_address(addr, symbol_list, num_symbols) : ""));
 							checksum^= addr;
@@ -418,7 +418,7 @@ static void stack_walk_thread_proc(
 						}
 
 						if (symbol_list) free(symbol_list);
-						
+
 						UUrDebuggerMessage("end of stack trace : stack trace checksum= 0x%lX", checksum);
 					}
 				}
@@ -443,7 +443,7 @@ static void stack_walk_thread_proc(
 }
 
 static boolean get_logical_address(
-	void *addr, 
+	void *addr,
 	char *module,
 	long length,
 	long *section,
@@ -504,7 +504,7 @@ static SymbolPtr parse_map_file(
 	else
 	{
 		char line[MAX_LINE_LENGTH]= "";
-		
+
 		// display filename
 		if (fgets(line, MAX_LINE_LENGTH, file_ptr))
 		{
@@ -540,7 +540,7 @@ static SymbolPtr parse_map_file(
 		symbol_list = (SymbolPtr)calloc(MAX_NUMBER_OF_SYMBOLS, sizeof(Symbol));
 		if (!symbol_list)
 			goto DONE;
-		
+
 		// build the symbol list
 		for (i=0;i<MAX_NUMBER_OF_SYMBOLS;i++)
 		{
@@ -548,7 +548,7 @@ static SymbolPtr parse_map_file(
 			{
 				char *delimiters= " \t\n\r";
 				char *tok, *end_str= NULL;
-				
+
 				// get address
 				tok= strtok(line, ":");
 				if (tok && *tok==' ') // a single whitespace ' ' should preceed each valid line
@@ -682,7 +682,7 @@ static SymbolPtr parse_map_file(
 						break;
 					}
 
-				} // else, maybe a blank line?		
+				} // else, maybe a blank line?
 			}
 			else
 			{
@@ -695,7 +695,7 @@ static SymbolPtr parse_map_file(
 DONE:
 
 	fclose(file_ptr);
-	
+
 	if (symbol_list)
 	{
 		*num_symbols= i;

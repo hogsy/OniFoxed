@@ -24,15 +24,15 @@ WMrCreate_Texture(
 	UUtError			error;
 
 	*outTextureRef = NULL;
-	
+
 	// ------------------------------
 	// create the appropriate texture map
 	// ------------------------------
-	if ((inWidth > M3cTextureMap_MaxWidth) || 
+	if ((inWidth > M3cTextureMap_MaxWidth) ||
 		(inHeight > M3cTextureMap_MaxHeight))
 	{
 		M3tTextureMap_Big		*texture_big;
-		
+
 		// create a big texture map
 		error =
 			M3rTextureMap_Big_New(
@@ -44,13 +44,13 @@ WMrCreate_Texture(
 				"VUrCreate_Texture Big",
 				&texture_big);
 		UUmError_ReturnOnErrorMsg(error, "Unable to create texture map");
-		
+
 		*outTextureRef = (void*)texture_big;
 	}
 	else
 	{
 		M3tTextureMap			*texture;
-		
+
 		// create a texture map
 		error =
 			M3rTextureMap_New(
@@ -65,7 +65,7 @@ WMrCreate_Texture(
 
 		*outTextureRef = (void*)texture;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -79,12 +79,12 @@ WMrCreate_StringTexture(
 	UUtRect				*outStringBounds)
 {
 	UUtError			error;
-	
+
 	IMtPixel			background_color;
 
 	UUtRect				bounds;
 	IMtPoint2D			dest;
-	
+
 	UUmAssert(inString);
 	UUmAssert(outStringTexture);
 	UUmAssert(outStringBounds);
@@ -94,12 +94,12 @@ WMrCreate_StringTexture(
 	outStringBounds->top	= 0;
 	outStringBounds->right	= 0;
 	outStringBounds->bottom	= 0;
-	
+
 	// ------------------------------
 	// set the colors to draw with
 	// ------------------------------
 	background_color = IMrPixel_FromShade(WMcPrefered_PixelType, WMcColor_Background);
-	
+
 	DCrText_SetShade(WMcColor_Text);
 
 	// ------------------------------
@@ -107,30 +107,30 @@ WMrCreate_StringTexture(
 	// ------------------------------
 	// set the style
 	DCrText_SetStyle(inStyle);
-	
+
 	// set the format
 	DCrText_SetFormat(inFormat);
-	
+
 	// ------------------------------
 	// create the appropriate texture map
 	// ------------------------------
 	// get the bounds of the string
 	DCrText_GetStringRect(inString, &bounds);
-	
+
 	// create the texture
 	error = WMrCreate_Texture(bounds.right, bounds.bottom, outStringTexture);
 	UUmError_ReturnOnErrorMsg(error, "Unable to create texture map");
-	
+
 	// clear the texture
 	WMrClearTexture(*outStringTexture, NULL, background_color);
-	
+
 	// ------------------------------
 	// draw the text on the texture
 	// ------------------------------
 	// set the dest
 	dest.x = 0;
 	dest.y = 0;
-	
+
 	// draw the text into the texture map
 	DCrText_DrawString(
 		*outStringTexture,
@@ -139,7 +139,7 @@ WMrCreate_StringTexture(
 		&dest);
 
 	*outStringBounds = bounds;
-	
+
 	return UUcError_None;
 }
 
@@ -152,14 +152,14 @@ WMrClearTexture(
 {
 	TMtTemplateTag		tag;
 	UUtRect				bounds;
-	
+
 	tag = TMrInstance_GetTemplateTag(inTexture);
 	if (tag == M3cTemplate_TextureMap)
 	{
 		M3tTextureMap		*texture;
-		
+
 		texture = (M3tTextureMap*)inTexture;
-		
+
 		if (inBounds == NULL)
 		{
 			bounds.left = 0;
@@ -171,16 +171,16 @@ WMrClearTexture(
 		{
 			bounds = *inBounds;
 		}
-		
+
 		// fill the texture map with the background color
 		M3rTextureMap_Fill(texture, inColor, &bounds);
 	}
 	else if (tag == M3cTemplate_TextureMap_Big)
 	{
 		M3tTextureMap_Big	*texture_big;
-		
+
 		texture_big = (M3tTextureMap_Big*)inTexture;
-		
+
 		if (inBounds == NULL)
 		{
 			bounds.left = 0;
@@ -192,9 +192,9 @@ WMrClearTexture(
 		{
 			bounds = *inBounds;
 		}
-		
+
 		// fill the texture map with the background color
 		M3rTextureMap_Big_Fill(texture_big, inColor, &bounds);
 	}
 }
-	
+

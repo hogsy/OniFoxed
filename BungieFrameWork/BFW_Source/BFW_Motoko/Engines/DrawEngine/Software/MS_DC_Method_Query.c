@@ -24,12 +24,12 @@ MSrDrawContext_TextureFormatAvailable(
 		case M3cTextureType_ARGB8888:
 			return UUcTrue;
 			break;
-		
+
 		default:
 			return UUcFalse;
 			break;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -40,7 +40,7 @@ MSrDrawContext_GetWidth(
 {
 	MStDrawContextPrivate	*drawContextPrivate;
 	drawContextPrivate = (MStDrawContextPrivate *)inDrawContext->privateContext;
-	
+
 	return (UUtUns16)drawContextPrivate->width;
 }
 
@@ -51,7 +51,7 @@ MSrDrawContext_GetHeight(
 {
 	MStDrawContextPrivate	*drawContextPrivate;
 	drawContextPrivate = (MStDrawContextPrivate *)inDrawContext->privateContext;
-	
+
 	return (UUtUns16)drawContextPrivate->height;
 }
 

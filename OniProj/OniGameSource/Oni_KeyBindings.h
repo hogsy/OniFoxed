@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_KeyBindings.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: January 26, 2000
-	
+
 	PURPOSE:
-	
+
 	Copyright 2000
 
 */
@@ -55,7 +55,7 @@ typedef enum ONtDebuggingKey
 	ONcDebugKey_ToggleActiveCamera,
 
 	ONcDebugKey_SingleStepMode,
-	
+
 	ONcDebugKey_CharToCamera,
 
 	ONcDebugKey_KillParticles,
@@ -81,7 +81,7 @@ typedef enum ONtDebuggingKey
 
 	ONcDebugKey_Num,
 	ONcDebugKey_None
-	
+
 } ONtDebuggingKey;
 
 UUtBool ONrDebugKey_WentDown(ONtDebuggingKey inKey);

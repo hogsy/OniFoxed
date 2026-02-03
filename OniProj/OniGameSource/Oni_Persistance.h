@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	Oni_Persistance.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: June 19, 2000
-	
+
 	PURPOSE: Persistant data storage
-	
+
 	Copyright (c) Microsoft
 
 */

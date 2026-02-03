@@ -1076,7 +1076,7 @@ static void BKrRestoreBitDepth(
 			}
 		}
 	}
-	
+
 #elif defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
 
 #endif

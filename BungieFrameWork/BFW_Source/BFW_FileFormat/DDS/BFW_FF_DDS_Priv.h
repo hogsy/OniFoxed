@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_FF_DDS_PRIV_H.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Jan 11, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -30,10 +30,10 @@ typedef struct FFtDDS_FileHeader_Raw
 	UUtUns16	width;			// 16..17
 	char		unknown3[10];	// 18..27
 	UUtUns8		mipMapLevels;	// 28	i.e. 1 means no extra map levels
-	char		unknown4[3];	
-	char		unknown5[0x10];	
-	char		unknown6[0x10];	
-	char		unknown7[0x10];	
+	char		unknown4[3];
+	char		unknown5[0x10];
+	char		unknown6[0x10];
+	char		unknown7[0x10];
 	char		unknown8[4];
 	UUtUns32	format;			// example: DXT1
 	char		unknown9[8];

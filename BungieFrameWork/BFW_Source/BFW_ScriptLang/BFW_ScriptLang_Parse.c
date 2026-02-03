@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_ScriptLang_Eval.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -78,7 +78,7 @@ static const char *SLiParseStateToString(UUtUns8 inParseState)
 		const char *string;
 	} parse_state_to_string_table;
 
-	parse_state_to_string_table table[] = 
+	parse_state_to_string_table table[] =
 	{
 		{ SLcParseState_Global, "SLcParseState_Global" },
 		{ SLcParseState_DataDef, "SLcParseState_DataDef" },
@@ -193,9 +193,9 @@ SLiContext_Dump_Info(SLtContext *inContext, SLtToken *curToken)
 {
 #if SUPPORT_DEBUG_FILES
 	static BFtDebugFile *stream = NULL;
-	UUtInt32 itr; 
+	UUtInt32 itr;
 
-	if (NULL == stream) { 
+	if (NULL == stream) {
 		stream = BFrDebugFile_Open("hard_core_script_debug.txt");
 	}
 
@@ -211,7 +211,7 @@ SLiContext_Dump_Info(SLtContext *inContext, SLtToken *curToken)
 		{
 			BFrDebugFile_Printf(stream, "\t%s\n", SLiExprToString(inContext->curFuncState->exprStack + itr));
 		}
-				
+
 
 		BFrDebugFile_Printf(stream, "parse stack %d\n", inContext->curFuncState->parseTOS);
 		BFrDebugFile_Printf(stream, "-------------------------\n");
@@ -236,7 +236,7 @@ SLiScript_Parse_Statement(
 	SLtToken*					*ioCurToken,
 	SLtParse_Block_Statement*	inParseBlock_Statement,
 	SLtParse_Block_Expression*	inParseBlock_Expr);
-	
+
 static UUtError
 SLiScript_Parse_Statements(
 	SLtToken*					*ioCurToken,
@@ -258,7 +258,7 @@ SLiScript_Parse_TokenStarts_DataDefinition(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -270,7 +270,7 @@ SLiScript_Parse_TokenStarts_FuncDefinition(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -319,7 +319,7 @@ SLiScript_Parse_TokenStarts_Expression(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -331,7 +331,7 @@ SLrScript_Parse_TokenStarts_Operator_Unary(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -354,7 +354,7 @@ SLrScript_Parse_TokenStarts_Operator_Binary(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -368,7 +368,7 @@ SLiScript_Parse_TokenStarts_Operator_Arith(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -386,7 +386,7 @@ SLiScript_Parse_TokenStarts_Operator_Cmp(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -400,7 +400,7 @@ SLiScript_Parse_TokenStarts_Operator_Logical(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -412,7 +412,7 @@ SLiScript_Parse_TokenStarts_Operator_Assign(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -425,7 +425,7 @@ SLiScript_Parse_TokenStarts_OldParameter(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -441,7 +441,7 @@ SLiScript_Parse_TokenStarts_OldFunctionCall(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -457,9 +457,9 @@ SLiScript_Parse_TokenStarts_FunctionCall(
 	{
 		return UUcTrue;
 	}
-	
+
 	if(SLiScript_Parse_TokenStarts_OldFunctionCall(inCurToken, inExecuting)) return UUcTrue;
-	
+
 	return UUcFalse;
 }
 
@@ -480,8 +480,8 @@ SLiScript_Parse_TokenStarts_Statement(
 	{
 		return UUcTrue;
 	}
-		
-	return UUcFalse;	
+
+	return UUcFalse;
 }
 
 static UUtError
@@ -497,10 +497,10 @@ SLiScript_Parse_VerifyToken(
 			inErrorContext,
 			inCurToken,
 			inDesiredToken);
-		
+
 		return UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -510,7 +510,7 @@ SLiParse_Stack_Push(
 	UUtUns8		inNewState)
 {
 	UUmAssert(inContext->curFuncState->parseTOS < SLcContext_ParseStack_MaxDepth);
-	
+
 	inContext->curFuncState->parseStack[inContext->curFuncState->parseTOS++] = inNewState;
 }
 
@@ -521,7 +521,7 @@ SLiParse_Stack_Pop(
 	if (inContext->curFuncState->parseTOS == 0) {
 		UUmAssert(0);
 		return SLcParseState_DefaultReturn;
-	} else {	
+	} else {
 		return inContext->curFuncState->parseStack[--inContext->curFuncState->parseTOS];
 	}
 }
@@ -533,26 +533,26 @@ SLrParse_FuncStack_Push_Console(
 	SLtToken*			inToken)
 {
 	SLtContext_FuncState*	newState;
-	
+
 	newState = inContext->funcStack + inContext->funcTOS++;
 	inContext->curFuncState = newState;
-	
+
 	UUrMemory_Clear(newState, sizeof(*newState));
-	
+
 	newState->funcName = "(console)";
 	newState->symbol = NULL;
-	
+
 	newState->curToken = inToken;
-	
+
 	newState->scopeLevel = 1;
-	
+
 	SLiParse_Stack_Push(inContext, SLcParseState_DefaultReturn);
 	SLiParse_Stack_Push(inContext, SLcParseState_Statements);
 	SLrStatement_Level_Push(inContext, UUcTrue);
 
 	return UUcError_None;
 }
-	
+
 
 UUtError
 SLrParse_FuncStack_Push(
@@ -566,35 +566,35 @@ SLrParse_FuncStack_Push(
 	SLtContext_FuncState*	newState;
 	SLtSymbol*				funcSymbol;
 	UUtUns16				itr;
-	
+
 	BFrDebugFile_Printf(SLgDebugFile, "pushing context \"%s\"", inFuncName);
 	SLrDebugMessage_LogParamList(inParameterListLength, inParameterList);
-	
+
 	error = SLrScript_Database_Symbol_Get(inContext, inFuncName, &funcSymbol);
 	if(error != UUcError_None)
 	{
 		SLrScript_Error_Semantic(inErrorContext, "Could not find function \"%s\"", inFuncName);
 		return UUcError_Generic;
 	}
-	
+
 	if(inContext->funcTOS >= SLcContext_FuncState_MaxDepth)
 	{
 		UUmAssert(0);
 		return UUcError_Generic;
 	}
-	
+
 	if(funcSymbol->kind == SLcSymbolKind_Func_Script)
 	{
 		newState = inContext->funcStack + inContext->funcTOS++;
 		inContext->curFuncState = newState;
-		
+
 		UUrMemory_Clear(newState, sizeof(*newState));
-		
+
 		newState->funcName = inFuncName;
 		newState->symbol = funcSymbol;
 		newState->scopeLevel = 1;
-			
-		error = 
+
+		error =
 			SLrScript_ParameterCheckAndPromote(
 				inErrorContext,
 				inFuncName,
@@ -602,11 +602,11 @@ SLrParse_FuncStack_Push(
 				&inParameterListLength,
 				inParameterList);
 		if(error != UUcError_None) return error;
-								
+
 		// enter all the parameters
 		for(itr = 0; itr < inParameterListLength; itr++)
 		{
-			error = 
+			error =
 				SLrScript_Database_Var_Add(
 					inContext,
 					funcSymbol->u.funcScript.paramList[itr].name,
@@ -617,7 +617,7 @@ SLrParse_FuncStack_Push(
 		}
 
 		newState->curToken = funcSymbol->u.funcScript.startToken;
-		
+
 		SLiParse_Stack_Push(inContext, SLcParseState_DefaultReturn);
 		SLiParse_Stack_Push(inContext, SLcParseState_Statements);
 		SLrStatement_Level_Push(inContext, UUcTrue);
@@ -625,10 +625,10 @@ SLrParse_FuncStack_Push(
 	else if(funcSymbol->kind == SLcSymbolKind_Func_Command)
 	{
 		SLtParameter_Actual	resultParameter;
-		
+
 		if(funcSymbol->u.funcCommand.numParamListOptions > 0)
 		{
-			error = 
+			error =
 				SLrCommand_ParameterCheckAndPromote(
 					inErrorContext,
 					inFuncName,
@@ -642,8 +642,8 @@ SLrParse_FuncStack_Push(
 		inContext->stalled = UUcFalse;
 		resultParameter.type = SLcType_Void;
 		resultParameter.val.i = 0;
-		
-		error = 
+
+		error =
 			funcSymbol->u.funcCommand.command(
 				inErrorContext,
 				inParameterListLength,
@@ -661,33 +661,33 @@ SLrParse_FuncStack_Push(
 		}
 
 //		COrConsole_Printf("slr %s %d | %d", inFuncName, inContext->stalled, inContext->ticksTillCompletion);
-		
+
 		if ((inContext->ticksTillCompletion > 0) || (inContext->stalled))
 		{
 			// we are only here if we are sleeping or stalled
-			
+
 			// schedule this task to be executed later
-			error = 
+			error =
 				SLrScheduler_Schedule(
 					inContext,
 					inErrorContext,
 					inContext->stalled ? 1 : inContext->ticksTillCompletion);
 			if(error != UUcError_None) return error;
-			
+
 			if(inContext->stalled)
 			{
 				newState = inContext->funcStack + inContext->funcTOS++;
 				inContext->curFuncState = newState;
-				
+
 				UUrMemory_Clear(newState, sizeof(*newState));
-				
+
 				newState->funcName = inFuncName;
 				newState->symbol = funcSymbol;
 
 				// copy over the parameters
 				newState->numParams = inParameterListLength;
 				UUrMemory_MoveFast(inParameterList, newState->params, inParameterListLength * sizeof(*inParameterList));
-			}			
+			}
 		}
 	}
 	else
@@ -695,18 +695,18 @@ SLrParse_FuncStack_Push(
 		SLrScript_Error_Semantic(inErrorContext, "Could not find function \"%s\"", inFuncName);
 		return UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 }
 
-static UUtError 
+static UUtError
 SLrParse_FuncStack_Pop(
 	SLtContext*	inContext)
 {
 	if (inContext->funcTOS == 0) {
 		UUmAssert(0);
 		return UUcError_Generic;
-	} else {	
+	} else {
 		inContext->funcTOS--;
 		inContext->curFuncState = inContext->funcStack + inContext->funcTOS - 1;
 		return UUcError_None;
@@ -737,9 +737,9 @@ SLrScript_Parse(
 	SLtToken*				iteratorSavedToken;
 	SLtSymbol*				iteratorSymbol;
 	SLtSymbol*				iteratorVarSymbol;
-	SLtToken*				stalledToken;	
+	SLtToken*				stalledToken;
 	SLtContext_FuncState*	curFuncState;
-	
+
 	inContext->ticksTillCompletion = 0;
 
 	curFuncState = inContext->curFuncState;
@@ -749,24 +749,24 @@ SLrScript_Parse(
 
 	if(inMode == SLcParseMode_AddToDatabase)
 	{
-		
+
 		SLiParse_Stack_Push(inContext, SLcParseState_Global);
 		inErrorContext->funcName = "(global scope)";
 	}
 	else if(inMode == SLcParseMode_InitialExecution)
 	{
-		
+
 	}
 	else if(inMode == SLcParseMode_ContinueExecution)
 	{
 		// check for stalled function call
-		if (inContext->stalled) {		
+		if (inContext->stalled) {
 			UUmAssert(curFuncState->symbol->kind == SLcSymbolKind_Func_Command);
 
 			inContext->ticksTillCompletion = 0;
 			inContext->stalled = UUcFalse;
-			
-			error = 
+
+			error =
 				curFuncState->symbol->u.funcCommand.command(
 					inErrorContext,
 					curFuncState->numParams,
@@ -775,11 +775,11 @@ SLrScript_Parse(
 					&inContext->stalled,
 					NULL);
 			if (error != UUcError_None) return error;
-			
+
 			if ((inContext->ticksTillCompletion > 0) || (inContext->stalled))
 			{
 				// schedule this task to be executed later
-				error = 
+				error =
 					SLrScheduler_Schedule(
 						inContext,
 						inErrorContext,
@@ -794,16 +794,16 @@ SLrScript_Parse(
 					return error;
 				}
 			}
-			
+
 		}
 	}
 	else
 	{
 		UUmAssert(!"Illegal mode");
 	}
-	
-	
-startOver:	
+
+
+startOver:
 	curFuncState = inContext->curFuncState;
 	curToken = curFuncState->curToken;
 
@@ -814,14 +814,14 @@ startOver:
 		inErrorContext->line = curToken->line;
 		curFuncState = inContext->curFuncState;
 		inErrorContext->funcName = curFuncState->funcIdent;
-		
+
 		switch(SLiParse_Stack_Pop(inContext))
 		{
 			case SLcParseState_Global:
 				UUmAssert(inMode == SLcParseMode_AddToDatabase);
-				
+
 				globalScope = UUcTrue;
-				
+
 				SLiParse_Stack_Push(inContext, SLcParseState_Global);
 				if(SLiScript_Parse_TokenStarts_DataDefinition(curToken))
 				{
@@ -841,29 +841,29 @@ startOver:
 						inErrorContext,
 						curToken,
 						"expected either a data definition or a function definition");
-					
+
 					return UUcError_Generic;
 				}
 				break;
-				
+
 			case SLcParseState_DataDef:
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_Var);
 				if(error != UUcError_None) return error;
 				curToken++;
-				
+
 				SLiParse_Stack_Push(inContext, SLcParseState_DataDef2);
 				SLiParse_Stack_Push(inContext, SLcParseState_TypeSpec);
 				break;
-			
+
 			case SLcParseState_DataDef2:
 				identToken = curToken;
 
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_Identifier);
 				if(error != UUcError_None) return error;
 				curToken++;
-				
+
 				SLiParse_Stack_Push(inContext, SLcParseState_DataDef3);
-				
+
 				// check for an initialization
 				if(curToken->token == SLcToken_Assign)
 				{
@@ -872,14 +872,14 @@ startOver:
 				}
 				eval = inMode != SLcParseMode_AddToDatabase || globalScope;
 				break;
-			
+
 			case SLcParseState_DataDef3:
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_SemiColon);
 				if(error != UUcError_None) return error;
 				curToken++;
-				
+
 				inErrorContext->line = curToken->line;
-				
+
 				if(eval == UUcFalse ||
 					SLrExpr_GetResult(
 						inContext,
@@ -890,10 +890,10 @@ startOver:
 					resultVal.i = 0;
 					resultType = typeSpec;
 				}
-				
+
 				error = SLrExpr_ConvertValue(inErrorContext, resultType, typeSpec, &resultVal);
 				if(error != UUcError_None) return error;
-				
+
 				if(globalScope || inMode != SLcParseMode_AddToDatabase)
 				{
 					SLrScript_Database_Var_Add(
@@ -905,67 +905,67 @@ startOver:
 				}
 				eval = inMode != SLcParseMode_AddToDatabase;
 				break;
-				
+
 			case SLcParseState_TypeSpec:
 				switch(curToken->token)
 				{
 					case SLcToken_String:
 						typeSpec = SLcType_String;
 						break;
-					
+
 					case SLcToken_Float:
 						typeSpec = SLcType_Float;
 						break;
-					
+
 					case SLcToken_Int:
 						typeSpec = SLcType_Int32;
 						break;
-					
+
 					case SLcToken_Void:
 						typeSpec = SLcType_Void;
 						break;
-					
+
 					case SLcToken_Bool:
 						typeSpec = SLcType_Bool;
 						break;
-					
+
 					default:
 						SLrScript_Error_Parse(
 							inErrorContext,
 							curToken,
 							"expected a type specification here");
-						
+
 						return UUcError_Generic;
 				}
 				curToken++;
 				break;
-			
+
 			case SLcParseState_FuncDef:
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_Func);
 				if(error != UUcError_None) return error;
 				curToken++;
-				
+
 				SLiParse_Stack_Push(inContext, SLcParseState_FuncDef2);
-				
+
 				typeSpec = SLcType_Void;
-				
+
 				if(SLiScript_Parse_TokenStarts_TypeSpec(curToken))
 				{
 					SLiParse_Stack_Push(inContext, SLcParseState_TypeSpec);
 				}
 				break;
-				
+
 			case SLcParseState_FuncDef2:
 				funcDefIdentToken = curToken;
 				funcDefReturnType = typeSpec;
-				
+
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_Identifier);
 				if(error != UUcError_None) return error;
 				curToken++;
-				
+
 				funcDefParamIndex = 0;
 				SLiParse_Stack_Push(inContext, SLcParseState_FuncDef3);
-				
+
 				if(curToken->token == SLcToken_LeftParen)
 				{
 					curToken++;
@@ -985,10 +985,10 @@ startOver:
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_LeftCurley);
 				if(error != UUcError_None) return error;
 				curToken++;
-				
+
 				funcDefStartToken = curToken;
 				globalScope = UUcFalse;
-				
+
 				SLiParse_Stack_Push(inContext, SLcParseState_FuncDef4);
 				SLiParse_Stack_Push(inContext, SLcParseState_Statements);
 				break;
@@ -997,7 +997,7 @@ startOver:
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_RightCurley);
 				if(error != UUcError_None) return error;
 				curToken++;
-				
+
 				if(inMode == SLcParseMode_AddToDatabase)
 				{
 					inErrorContext->line = curToken->line;
@@ -1017,7 +1017,7 @@ startOver:
 					SLrStatement_Level_Pop(inContext);
 				}
 				break;
-							
+
 			case SLcParseState_FuncDef_FormalParamList:
 				SLiParse_Stack_Push(inContext, SLcParseState_FuncDef_FormalParamList_Finished);
 				if(curToken->token == SLcToken_Void)
@@ -1030,16 +1030,16 @@ startOver:
 					SLiParse_Stack_Push(inContext, SLcParseState_TypeSpec);
 				}
 				break;
-				
+
 			case SLcParseState_FuncDef_FormalParamList2:
 				funcDefParams[funcDefParamIndex].name = curToken->lexem;
 				funcDefParams[funcDefParamIndex].type = typeSpec;
 				funcDefParamIndex++;
-				
+
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_Identifier);
 				if(error != UUcError_None) return error;
 				curToken++;
-				
+
 				if(curToken->token == SLcToken_Comma)
 				{
 					curToken++;
@@ -1047,33 +1047,33 @@ startOver:
 					SLiParse_Stack_Push(inContext, SLcParseState_TypeSpec);
 				}
 				break;
-			
+
 			case SLcParseState_FuncDef_FormalParamList_Finished:
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_RightParen);
 				if(error != UUcError_None) return error;
 				curToken++;
 				break;
-			
+
 			case SLcParseState_Statements:
 				SLiParse_Stack_Push(inContext, SLcParseState_Statements2);
 				SLiParse_Stack_Push(inContext, SLcParseState_Statement);
 				break;
-							
+
 			case SLcParseState_Statements2:
 				if(SLiScript_Parse_TokenStarts_Statement(curToken))
 				{
 					SLiParse_Stack_Push(inContext, SLcParseState_Statements);
 				}
 				break;
-							
+
 			case SLcParseState_Statement:
-				
+
 				if(curToken->token == SLcToken_LeftCurley)
 				{
 					curToken++;
 					SLiParse_Stack_Push(inContext, SLcParseState_Statement_ReturnFromCurley);
 					SLiParse_Stack_Push(inContext, SLcParseState_Statements);
-					
+
 					if(inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext))
 					{
 						SLrScript_Database_Scope_Enter(inContext);
@@ -1091,21 +1091,21 @@ startOver:
 					inContext->stalled = UUcFalse;
 					stalledToken = curToken;
 					UUmAssert(curFuncState->parenTOS == 0);
-					
+
 				}
 				else if(curToken->token == SLcToken_Schedule)
 				{
 					curToken++;
 					SLiParse_Stack_Push(inContext, SLcParseState_Statement_Schdl_ReturnFromFuncCall);
 					SLiParse_Stack_Push(inContext, SLcParseState_Expression_FunctionCall);
-					
+
 				}
 				else if(curToken->token == SLcToken_Fork)
 				{
 					curToken++;
 					SLiParse_Stack_Push(inContext, SLcParseState_Statement_Fork_ReturnFromFuncCall);
 					SLiParse_Stack_Push(inContext, SLcParseState_Expression_FunctionCall);
-					
+
 				}
 				else if(curToken->token == SLcToken_Sleep)
 				{
@@ -1140,10 +1140,10 @@ startOver:
 
 					error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_Identifier);
 					if(error != UUcError_None) return error;
-					
+
 					if(inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext))
 					{
-						error = 
+						error =
 							SLrScript_Database_Symbol_Get(
 								inContext,
 								curToken->lexem,
@@ -1153,21 +1153,21 @@ startOver:
 							SLrScript_Error_Semantic(inErrorContext, "iterator \"%s\" does not exist", curToken->lexem);
 							return UUcError_Generic;
 						}
-						
+
 					}
-					
+
 					curToken++;
-					
+
 					error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_Using);
 					if(error != UUcError_None) return error;
 					curToken++;
-					
+
 					error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_Identifier);
 					if(error != UUcError_None) return error;
-					
+
 					if(inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext))
 					{
-						error = 
+						error =
 							SLrScript_Database_Symbol_Get(
 								inContext,
 								curToken->lexem,
@@ -1177,13 +1177,13 @@ startOver:
 							SLrScript_Error_Semantic(inErrorContext, "iterator variable \"%s\" does not exist", curToken->lexem);
 							return UUcError_Generic;
 						}
-						
+
 						if(iteratorSymbol->u.iterator.type != iteratorVarSymbol->u.var.type)
 						{
 							SLrScript_Error_Semantic(inErrorContext, "iterator variable \"%s\" types do not match", curToken->lexem);
 							return UUcError_Generic;
 						}
-	
+
 						if(iteratorSymbol->u.iterator.getFirst(&iteratorVarSymbol->u.var.val))
 						{
 							iteratorSavedToken = curToken + 1;
@@ -1191,7 +1191,7 @@ startOver:
 						}
 					}
 					curToken++;
-					
+
 					SLiParse_Stack_Push(inContext, SLcParseState_Statement);
 				}
 				else
@@ -1199,10 +1199,10 @@ startOver:
 					// empty statement do nothing
 				}
 				break;
-			
+
 			case SLcParseState_Statement_Iterating:
 				UUmAssert(inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext));
-				
+
 				if(iteratorSymbol->u.iterator.getNext(&iteratorVarSymbol->u.var.val))
 				{
 					curToken = iteratorSavedToken;
@@ -1210,17 +1210,17 @@ startOver:
 					SLiParse_Stack_Push(inContext, SLcParseState_Statement);
 				}
 				break;
-				
-			
+
+
 			case SLcParseState_Statement_If_ReturnFromExpr:
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_RightParen);
 				if(error != UUcError_None) return error;
 				curToken++;
-				
+
 				SLiParse_Stack_Push(inContext, SLcParseState_Statement_If_ReturnFromExpr3);
 				SLiParse_Stack_Push(inContext, SLcParseState_Statement_If_ReturnFromExpr2);
 				SLiParse_Stack_Push(inContext, SLcParseState_Statement);
-				
+
 				if(inMode != SLcParseMode_AddToDatabase)
 				{
 					if(SLrStatement_Evaluate(inContext) == UUcFalse)
@@ -1234,18 +1234,18 @@ startOver:
 						{
 							UUmAssert(0);
 						}
-						
+
 						if(resultType != SLcType_Int32 && resultType != SLcType_Bool)
 						{
 							SLrScript_Error_Semantic(inErrorContext, "if needs an integer or boolean");
 							return UUcError_Generic;
 						}
-						
+
 						SLrStatement_Level_Push(inContext, resultVal.i == 0 ? UUcFalse : UUcTrue);
 					}
 				}
 				break;
-			
+
 			case SLcParseState_Statement_If_ReturnFromExpr2:
 				if(curToken->token == SLcToken_Else)
 				{
@@ -1257,14 +1257,14 @@ startOver:
 					}
 				}
 				break;
-			
+
 			case SLcParseState_Statement_If_ReturnFromExpr3:
 				if(inMode != SLcParseMode_AddToDatabase)
 				{
 					SLrStatement_Level_Pop(inContext);
 				}
 				break;
-			
+
 			case SLcParseState_Statement_Return_ReturnFromExpr:
 				if(!(curToken[-1].flags & SLcTokenFlag_PrecedesNewline))
 				{
@@ -1278,7 +1278,7 @@ startOver:
 					// ; is optional
 					curToken++;
 				}
-				
+
 				// pop the expr and put it in the result slot
 				if(SLrExpr_GetResult(
 					inContext,
@@ -1289,11 +1289,11 @@ startOver:
 					inContext->returnType = SLcType_Void;
 					inContext->returnValue.i = 0;
 				}
-				
+
 				if(inMode != SLcParseMode_AddToDatabase) goto done;
-				
+
 				break;
-				
+
 			case SLcParseState_Statement_Sleep_ReturnFromExpr:
 				if(!(curToken[-1].flags & SLcTokenFlag_PrecedesNewline))
 				{
@@ -1307,7 +1307,7 @@ startOver:
 					// ; is optional
 					curToken++;
 				}
-				
+
 				if(inMode == SLcParseMode_AddToDatabase)
 				{
 					if(funcDefReturnType != SLcType_Void)
@@ -1320,7 +1320,7 @@ startOver:
 				else if(SLrStatement_Evaluate(inContext))
 				{
 					curFuncState->curToken = curToken;
-					
+
 					// schedule this context to be slept
 					if(SLrExpr_GetResult(
 						inContext,
@@ -1332,18 +1332,18 @@ startOver:
 						return UUcError_Generic;
 					}
 					UUmAssert(resultType == SLcType_Int32);
-					
-					error = 
+
+					error =
 						SLrScheduler_Schedule(
 							inContext,
 							inErrorContext,
 							resultVal.i);
 					if(error != UUcError_None) return error;
-					
+
 					return UUcError_None;
 				}
 				break;
-				
+
 			case SLcParseState_Statement_ReturnFromCurley:
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_RightCurley);
 				if(error != UUcError_None) return error;
@@ -1353,7 +1353,7 @@ startOver:
 					SLrScript_Database_Scope_Leave(inContext);
 				}
 				break;
-				
+
 			case SLcParseState_Statement_Expr_ReturnFromExpr:
 				if(!(curToken[-1].flags & SLcTokenFlag_PrecedesNewline))
 				{
@@ -1367,7 +1367,7 @@ startOver:
 					// ; is optional
 					curToken++;
 				}
-					
+
 				if(inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext))
 				{
 					if(SLrExpr_GetResult(
@@ -1378,7 +1378,7 @@ startOver:
 					{
 						inContext->returnType = SLcType_Void;
 					}
-					
+
 					if(curFuncState->parenTOS != 0)
 					{
 						SLrScript_Error_Semantic(inErrorContext, "Missing some )'s");
@@ -1386,7 +1386,7 @@ startOver:
 					}
 				}
 				break;
-				
+
 			case SLcParseState_Statement_Schdl_ReturnFromFuncCall:
 				if(curToken->token == SLcToken_At)
 				{
@@ -1416,7 +1416,7 @@ startOver:
 					}
 				}
 				break;
-				
+
 			case SLcParseState_Statement_Schdl_At:
 				if(!(curToken[-1].flags & SLcTokenFlag_PrecedesNewline))
 				{
@@ -1430,7 +1430,7 @@ startOver:
 					// ; is optional
 					curToken++;
 				}
-				
+
 				if(inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext))
 				{
 					inErrorContext->line = curToken->line;
@@ -1443,20 +1443,20 @@ startOver:
 						UUmAssert(0);
 						return UUcError_Generic;
 					}
-					
+
 					if(resultType != SLcType_Int32)
 					{
 						SLrScript_Error_Semantic(inErrorContext, "schedule at needs an integer");
 						return UUcError_Generic;
 					}
-					
-					error = 
+
+					error =
 						SLrExprListToParamList(
 							inContext,
 							inErrorContext,
 							paramList);
 					if(error != UUcError_None) return error;
-					
+
 					inErrorContext->line = curToken->line;
 					error =
 						SLrScript_Schedule(
@@ -1492,12 +1492,12 @@ startOver:
 					// ; is optional
 					curToken++;
 				}
-				
+
 				if(inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext))
 				{
 					UUtUns32	numberOfTimes;
 					UUtUns32	timeDelta;
-					
+
 					inErrorContext->line = curToken->line;
 					if(SLrExpr_GetResult(
 						inContext,
@@ -1508,15 +1508,15 @@ startOver:
 						UUmAssert(0);
 						return UUcError_Generic;
 					}
-					
+
 					if(resultType != SLcType_Int32)
 					{
 						SLrScript_Error_Semantic(inErrorContext, "schedule at needs an integer");
 						return UUcError_Generic;
 					}
-					
+
 					timeDelta = resultVal.i;
-					
+
 					if(SLrExpr_GetResult(
 						inContext,
 						inErrorContext,
@@ -1526,22 +1526,22 @@ startOver:
 						UUmAssert(0);
 						return UUcError_Generic;
 					}
-					
+
 					if(resultType != SLcType_Int32)
 					{
 						SLrScript_Error_Semantic(inErrorContext, "schedule at needs an integer");
 						return UUcError_Generic;
 					}
-					
+
 					numberOfTimes = resultVal.i;
-					
-					error = 
+
+					error =
 						SLrExprListToParamList(
 							inContext,
 							inErrorContext,
 							paramList);
 					if(error != UUcError_None) return error;
-					
+
 					inErrorContext->line = curToken->line;
 					error =
 						SLrScript_Schedule(
@@ -1565,7 +1565,7 @@ startOver:
 					if(error != UUcError_None) return error;
 				}
 				break;
-				
+
 			case SLcParseState_Expression2:
 				if(curToken->token == SLcToken_LeftParen)
 				{
@@ -1574,7 +1574,7 @@ startOver:
 						error = SLrExpr_Parse_LeftParen(inContext, inErrorContext);
 						if(error != UUcError_None) return error;
 					}
-					
+
 					curToken++;
 					SLiParse_Stack_Push(inContext, SLcParseState_Expression3);
 					SLiParse_Stack_Push(inContext, SLcParseState_Expression2);
@@ -1586,7 +1586,7 @@ startOver:
 						error = SLrExpr_Parse_Op_Unary(inContext, inErrorContext, curToken);
 						if(error != UUcError_None) return error;
 					}
-					
+
 					curToken++;
 					SLiParse_Stack_Push(inContext, SLcParseState_Expression2);
 				}
@@ -1605,7 +1605,7 @@ startOver:
 							error = SLrExpr_Parse_Identifier(inContext, curToken);
 							if(error != UUcError_None) return error;
 						}
-						
+
 						curToken++;
 						SLiParse_Stack_Push(inContext, SLcParseState_Expression4);
 					}
@@ -1617,12 +1617,12 @@ startOver:
 						error = SLrExpr_Parse_Op_Constant(inContext, curToken);
 						if(error != UUcError_None) return error;
 					}
-					
+
 					curToken++;
 					SLiParse_Stack_Push(inContext, SLcParseState_Expression4);
 				}
 				break;
-			
+
 			case SLcParseState_Expression4:
 				if(SLrScript_Parse_TokenStarts_Operator_Binary(curToken))
 				{
@@ -1631,23 +1631,23 @@ startOver:
 						error = SLrExpr_Parse_Op_Binary(inContext, inErrorContext, curToken);
 						if(error != UUcError_None) return error;
 					}
-					
+
 					curToken++;
 					SLiParse_Stack_Push(inContext, SLcParseState_Expression2);
 				}
 				break;
-			
+
 			case SLcParseState_Expression_Finish:
 				if(eval || (inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext)))
 				{
 					error = SLrExpr_Parse_RightParen(inContext, inErrorContext);
 					if(error != UUcError_None) return error;
-					
+
 					error = SLrExpr_Parse_Final(inContext, inErrorContext);
 					if(error != UUcError_None) return error;
 				}
 				break;
-				
+
 			case SLcParseState_Expression_FunctionCall:
 				UUmAssert(curToken->token == SLcToken_Identifier);
 				if(inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext))
@@ -1655,7 +1655,7 @@ startOver:
 					error = SLrExpr_Parse_FunctionCall_Ident(inContext, curToken);
 					if(error != UUcError_None) return error;
 				}
-				
+
 				if(SLiScript_Parse_TokenStarts_OldFunctionCall(curToken, inMode != SLcParseMode_AddToDatabase))
 				{
 					if(!(curToken->flags & SLcTokenFlag_PrecedesNewline))
@@ -1672,21 +1672,21 @@ startOver:
 					curToken++;
 				}
 				break;
-			
+
 			case SLcParseState_Expression3:
 				error = SLiScript_Parse_VerifyToken(inErrorContext, curToken, SLcToken_RightParen);
 				if(error != UUcError_None) return error;
-				
+
 				if(eval || (inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext)))
 				{
 					error = SLrExpr_Parse_RightParen(inContext, inErrorContext);
 					if(error != UUcError_None) return error;
 				}
-				
+
 				curToken++;
 				SLiParse_Stack_Push(inContext, SLcParseState_Expression4);
 				break;
-				
+
 			case SLcParseState_Expression_FunctionCall_ParamList_New:
 				if(curToken->token == SLcToken_RightParen)
 				{
@@ -1705,7 +1705,7 @@ startOver:
 					error = SLrExpr_Parse_Param(inContext);
 					if(error != UUcError_None) return error;
 				}
-				
+
 				if(curToken->token == SLcToken_Comma)
 				{
 					curToken++;
@@ -1740,22 +1740,22 @@ startOver:
 				}
 				curToken++;
 				break;
-				
+
 			case SLcParseState_Expression_FunctionCall_Finish:
 				if(inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext))
 				{
 					curFuncState->curToken = curToken;
-					
+
 					error = SLrExpr_Parse_FunctionCall_Make(inContext, inErrorContext);
 					if(error != UUcError_None) return error;
-					
+
 					if(inContext->ticksTillCompletion > 0 || inContext->stalled)
 					{
 						// we need to sleep for a while
-						
+
 						return UUcError_None;
 					}
-					
+
 					if(inContext->returnType != SLcType_Void)
 					{
 						SLrExpr_Push_Const(
@@ -1763,17 +1763,17 @@ startOver:
 							inContext->returnType,
 							inContext->returnValue);
 					}
-					
+
 					curToken = inContext->curFuncState->curToken;
-					
+
 				}
 				break;
-				
+
 			case SLcParseState_DefaultReturn:
 				//inContext->returnType = SLcType_Void;
 				//inContext->returnValue.i = 0;
 				goto done;
-			
+
 			case SLcParseState_Statement_Fork_ReturnFromFuncCall:
 				if(!(curToken[-1].flags & SLcTokenFlag_PrecedesNewline))
 				{
@@ -1787,10 +1787,10 @@ startOver:
 					// ; is optional
 					curToken++;
 				}
-				
+
 				if(inMode != SLcParseMode_AddToDatabase && SLrStatement_Evaluate(inContext))
 				{
-					error = 
+					error =
 						SLrExprListToParamList(
 							inContext,
 							inErrorContext,
@@ -1806,23 +1806,23 @@ startOver:
 					if(error != UUcError_None) return error;
 				}
 				break;
-			
-			
-			
+
+
+
 			default:
 				UUmAssert(0);
 		}
 	}
 
 done:
-	
+
 	if(inContext->funcTOS == 1) return UUcError_None;
-	
+
 	error = SLrParse_FuncStack_Pop(inContext);
 	if (error != UUcError_None) {
 		return error;
 	}
-	
+
 	// if the result is not NULL then put the result on this stack
 	if(inContext->returnType != SLcType_Void)
 	{
@@ -1831,10 +1831,10 @@ done:
 			inContext->returnType,
 			inContext->returnValue);
 	}
-	
+
 	goto startOver;
-	
-	
+
+
 	return UUcError_None;
 }
 
@@ -1848,24 +1848,24 @@ SLrParse_TokenToType(
 		case SLcToken_Float:
 			*outVariableType = SLcType_Float;
 			return UUcError_None;
-			
+
 		case SLcToken_String:
 			*outVariableType = SLcType_String;
 			return UUcError_None;
-		
+
 		case SLcToken_Void:
 			*outVariableType = SLcType_Void;
 			return UUcError_None;
-		
+
 		case SLcToken_Int:
 			*outVariableType = SLcType_Int32;
 			return UUcError_None;
-		
+
 		case SLcToken_Bool:
 			*outVariableType = SLcType_Bool;
 			return UUcError_None;
 	}
-	
+
 	return UUcError_Generic;
 }
 
@@ -1880,47 +1880,47 @@ SLrParse_ConstTokenToTypeAndVal(
 		case SLcToken_Constant_Int:
 			*outType = SLcType_Int32;
 			break;
-			
+
 		case SLcToken_Constant_Float:
 			*outType = SLcType_Float;
 			break;
-			
+
 		case SLcToken_Constant_String:
 			*outType = SLcType_String;
 			break;
-		
+
 		case SLcToken_Constant_Bool:
 			*outType = SLcType_Bool;
 			break;
-		
+
 		default:
 			UUmAssert(0);
 			return UUcError_Generic;
 	}
-	
+
 	switch(*outType)
 	{
 		case SLcType_Int32:
 			UUrString_To_Int32(inToken->lexem, &outVal->i);
 			break;
-		
+
 		case SLcType_String:
 			outVal->str = (char*)inToken->lexem;
 			break;
-		
+
 		case SLcType_Float:
 			UUrString_To_Float(inToken->lexem, &outVal->f);
 			break;
-		
+
 		case SLcType_Bool:
 			outVal->b = inToken->lexem[0] == '0' ? UUcFalse : UUcTrue;
 			break;
-		
+
 		default:
 			UUmAssert(0);
 			return UUcError_Generic;
 	}
-	
+
 	return UUcError_None;
 }
 

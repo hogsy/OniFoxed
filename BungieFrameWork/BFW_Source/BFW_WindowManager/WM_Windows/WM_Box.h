@@ -21,10 +21,10 @@ enum
 	WMcBoxStyle_HasOutline		= (0x0001 << 16),
 	WMcBoxStyle_HasBackground	= (0x0002 << 16),
 	WMcBoxStyle_HasTitle		= (0x0004 << 16),
-	
+
 	WMcBoxStyle_PlainBox		= (WMcBoxStyle_HasOutline),
 	WMcBoxStyle_GroupBox		= (WMcBoxStyle_HasOutline | WMcBoxStyle_HasTitle | WMcBoxStyle_HasBackground)
-	
+
 };
 
 // ======================================================================

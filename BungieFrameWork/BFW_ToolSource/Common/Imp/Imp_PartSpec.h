@@ -18,7 +18,7 @@ Imp_AddPartSpec(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 UUtError
 Imp_AddPartSpecList(
 	BFtFileRef*			inSourceFile,
@@ -32,6 +32,6 @@ Imp_AddPartSpecUI(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 // ======================================================================
 #endif /* IMP_PARTSPEC_H */

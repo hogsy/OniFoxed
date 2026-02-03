@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Panic.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 16, 2000
-	
+
 	PURPOSE: Noncombatant AI for Oni
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */
@@ -88,7 +88,7 @@ void AI2rPanic_Update(ONtCharacter *ioCharacter)
 	ONtActiveCharacter *active_character;
 
 	UUmAssert(ioCharacter->ai2State.currentGoal == AI2cGoal_Panic);
-	panic_state = &ioCharacter->ai2State.currentState->state.panic;	
+	panic_state = &ioCharacter->ai2State.currentState->state.panic;
 
 	current_time = ONrGameState_GetGameTime();
 	if (current_time > panic_state->panic_endtime) {
@@ -150,7 +150,7 @@ void AI2rPanic_Update(ONtCharacter *ioCharacter)
 					enemy_behind = UUcTrue;
 				}
 			}
-			
+
 			// send a keypress through to the executor telling us to get up
 			AI2rExecutor_MoveOverride(ioCharacter,	((enemy_behind) ? LIc_BitMask_Forward : LIc_BitMask_Backward) |
 													((panic_state->kneeling) ? LIc_BitMask_Crouch : 0));
@@ -166,13 +166,13 @@ void AI2rPanic_Update(ONtCharacter *ioCharacter)
 			AI2rMovement_ChangeMovementMode(ioCharacter, AI2cMovementMode_Creep);
 			AI2rMovement_StopAiming(ioCharacter);
 		}
-	
+
 		if (panic_state->currently_dazed) {
 			// don't move
-			AI2rPath_Halt(ioCharacter); 
+			AI2rPath_Halt(ioCharacter);
 			AI2rMovement_StopAiming(ioCharacter);
 			AI2rMovement_StopGlancing(ioCharacter);
-		}	
+		}
 	}
 }
 
@@ -284,7 +284,7 @@ UUtBool AI2rCharacter_IsDangerousContact(ONtCharacter *ioCharacter, ONtCharacter
 	if (inEntry->strength <= AI2cContactStrength_Forgotten) {
 		// this is no longer a factor
 		return UUcFalse;
-	
+
 	} else if (AI2rKnowledge_IsHurtEvent(inEntry->last_type)) {
 		// always worry about this
 		return UUcTrue;
@@ -452,7 +452,7 @@ void AI2rCharacter_Panic(ONtCharacter *ioCharacter, AI2tKnowledgeEntry *inEntry,
 
 #if AI_VERBOSE_PANIC
 			COrConsole_Printf("%s: now being panicked by %s (previous %s)", ioCharacter->player_name, inEntry->enemy->player_name,
-					(panic_state->panic_cause == NULL) ? "none" : 
+					(panic_state->panic_cause == NULL) ? "none" :
 					((panic_state->panic_cause->enemy == NULL) ? "none" : panic_state->panic_cause->enemy->player_name));
 #endif
 			// switch to being panicked by this character

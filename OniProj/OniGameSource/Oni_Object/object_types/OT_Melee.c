@@ -72,10 +72,10 @@ OBJiMelee_Enumerate(
 	UUtUns32						inUserData)
 {
 	char							name[OBJcMaxNameLength + 1];
-	
+
 	OBJrObject_GetName(inObject, name, OBJcMaxNameLength);
 	inEnumCallback(name, inUserData);
-	
+
 	return UUcError_None;
 }
 
@@ -103,9 +103,9 @@ OBJiMelee_OSDGetName(
 	const AI2tMeleeProfile	*profile;
 
 	profile = &inOSD->osd.melee_osd;
-	
+
 	UUrString_Copy(outName, profile->name, inNameLength);
-	
+
 	return;
 }
 
@@ -117,7 +117,7 @@ OBJiMelee_OSDSetName(
 	AI2tMeleeProfile		*profile;
 
 	profile = &inOSD->osd.melee_osd;
-	
+
 	UUrString_Copy(profile->name, outName, sizeof(profile->name));
 
 	return;
@@ -135,7 +135,7 @@ OBJiMelee_GetOSD(
 	UUtUns32				blocksize;
 
 	profile = (AI2tMeleeProfile *) inObject->object_data;
-	
+
 	outOSD->osd.melee_osd = *profile;
 
 	// *** allocate and copy the variable-length arrays
@@ -181,7 +181,7 @@ OBJiMelee_GetOSDWriteSize(
 {
 	UUtUns32 profile_size, technique_size, move_size;
 	AI2tMeleeProfile *profile = (AI2tMeleeProfile *) inObject->object_data;
-	
+
 	technique_size = 0;
 	technique_size += sizeof(profile->technique->name);
 	technique_size += sizeof(profile->technique->user_flags);
@@ -387,7 +387,7 @@ OBJiMelee_New(
 {
 	OBJtOSD_All				osd_all;
 	UUtError				error;
-	
+
 	if (NULL == inOSD) {
 		error = OBJiMelee_SetDefaults(&osd_all);
 		UUmError_ReturnOnError(error);
@@ -396,11 +396,11 @@ OBJiMelee_New(
 	{
 		OBJiMelee_DuplicateOSD(inOSD, &osd_all);
 	}
-	
+
 	// set the object specific data and position
 	error = OBJrObject_SetObjectSpecificData(inObject, &osd_all);
 	UUmError_ReturnOnError(error);
-	
+
 	OBJrObject_UpdatePosition(inObject);
 
 	return UUcError_None;
@@ -419,7 +419,7 @@ OBJiMelee_Read(
 	AI2tMeleeMove			*move;
 	UUtUns32				itr, num_techniques;
 	UUtUns32				bytes_read = 0;
-	
+
 	bytes_read += OBJmGet4BytesFromBuffer(inBuffer, profile->id,						UUtUns32,				inSwapIt);
 	bytes_read += OBJmGetStringFromBuffer(inBuffer, profile->name,						sizeof(profile->name),	inSwapIt);
 	bytes_read += OBJmGetStringFromBuffer(inBuffer, profile->char_classname,			sizeof(profile->char_classname),inSwapIt);
@@ -510,7 +510,7 @@ OBJiMelee_Read(
 
 	// bring the object up to date
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return bytes_read;
 }
 
@@ -522,11 +522,11 @@ OBJiMelee_SetOSD(
 {
 	AI2tMeleeProfile		*profile;
 	UUtUns32				blocksize;
-	
+
 	UUmAssert(inOSD);
-	
+
 	profile = (AI2tMeleeProfile *) inObject->object_data;
-	
+
 	// *** copy the data from inOSD to the melee profile
 
 	UUrString_Copy(profile->name, inOSD->osd.melee_osd.name, sizeof(inOSD->osd.melee_osd.name));
@@ -578,7 +578,7 @@ OBJiMelee_SetOSD(
 	}
 
 	profile->char_class = inOSD->osd.melee_osd.char_class;
-	
+
 	return UUcError_None;
 }
 
@@ -601,7 +601,7 @@ OBJiMelee_Write(
 	AI2tMeleeTechnique		*technique;
 	AI2tMeleeMove			*move;
 	UUtUns32				itr, bytes_available, num_techniques;
-	
+
 	bytes_available = *ioBufferSize;
 
 	OBJmWrite4BytesToBuffer(ioBuffer, profile->id,						UUtUns32,				bytes_available, OBJcWrite_Little);
@@ -623,7 +623,7 @@ OBJiMelee_Write(
 	OBJmWrite4BytesToBuffer(ioBuffer, profile->weight_blocking,						float,		bytes_available, OBJcWrite_Little);
 
 	OBJmWrite4BytesToBuffer(ioBuffer, profile->weight_throwdanger,					float,		bytes_available, OBJcWrite_Little);
-	
+
 	OBJmWrite2BytesToBuffer(ioBuffer, profile->dazed_minframes,			UUtUns16,				bytes_available, OBJcWrite_Little);
 	OBJmWrite2BytesToBuffer(ioBuffer, profile->dazed_maxframes,			UUtUns16,				bytes_available, OBJcWrite_Little);
 
@@ -726,10 +726,10 @@ OBJiMelee_Search(
 {
 	OBJtOSD_Melee		*melee_osd;
 	UUtBool				found;
-	
+
 	// get a pointer to the object osd
 	melee_osd = (OBJtOSD_Melee *)inObject->object_data;
-	
+
 	// perform the check
 	switch (inSearchType)
 	{
@@ -745,7 +745,7 @@ OBJiMelee_Search(
 			found = UUcFalse;
 		break;
 	}
-	
+
 	return found;
 }
 
@@ -784,10 +784,10 @@ OBJrMelee_Initialize(
 {
 	UUtError				error;
 	OBJtMethods				methods;
-	
+
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew				= OBJiMelee_New;
 	methods.rSetDefaults		= OBJiMelee_SetDefaults;
@@ -809,7 +809,7 @@ OBJrMelee_Initialize(
 	methods.rSetClassVisible	= OBJiMelee_SetVisible;
 	methods.rGetUniqueOSD		= OBJiMelee_GetUniqueOSD;
 	methods.rLevelBegin			= OBJiMelee_LevelBegin;
-	
+
 	// register the furniture methods
 	error =
 		OBJrObjectGroup_Register(
@@ -820,7 +820,7 @@ OBJrMelee_Initialize(
 			&methods,
 			OBJcObjectGroupFlag_CanSetName | OBJcObjectGroupFlag_CommonToAllLevels);
 	UUmError_ReturnOnError(error);
-		
+
 	return UUcError_None;
 }
 

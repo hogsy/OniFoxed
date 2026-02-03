@@ -1,12 +1,12 @@
 /*
 	FILE:	Imp_Character.c
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: Nov 1, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 2000
 */
 
@@ -67,7 +67,7 @@ typedef struct TRtFootstepClass
 	float footstep_active_threshold;
 } TRtFootstepClass;
 
-TRtFootstepClass footstep_class_table[] = 
+TRtFootstepClass footstep_class_table[] =
 {
 	{ ONcAnimType_Standing_Turn_Left,			UUcTrue,  0.0f, 0.0f, 0.0f  },
 	{ ONcAnimType_Standing_Turn_Left,			UUcTrue,  0.0f, 0.0f, 0.0f  },
@@ -77,10 +77,10 @@ TRtFootstepClass footstep_class_table[] =
 	{ ONcAnimType_Run_Sidestep_Right_Start,		UUcTrue, 0.2f, 0.3f, 0.05f },
 	{ ONcAnimType_Run_Backwards_Start,			UUcTrue, 0.2f, 0.3f, 0.05f },
 	{ ONcAnimType_Walk_Start,					UUcFalse, 0.2f, 0.3f, 0.05f },
-	{ ONcAnimType_Walk_Backwards_Start,			UUcFalse, 0.2f, 0.3f, 0.05f },		
+	{ ONcAnimType_Walk_Backwards_Start,			UUcFalse, 0.2f, 0.3f, 0.05f },
 
 	{ ONcAnimType_Walk,							UUcFalse, 0.2f, 0.3f, 0.05f },
-	{ ONcAnimType_Walk_Backwards,				UUcFalse, 0.2f, 0.3f, 0.05f },		
+	{ ONcAnimType_Walk_Backwards,				UUcFalse, 0.2f, 0.3f, 0.05f },
 	{ ONcAnimType_Walk_Sidestep_Left,			UUcFalse, 0.2f, 0.3f, 0.05f },
 	{ ONcAnimType_Walk_Sidestep_Right,			UUcFalse, 0.2f, 0.3f, 0.05f },
 	{ ONcAnimType_Walk_Stop,					UUcTrue, 0.0f, 0.0f, 0.0f },
@@ -159,7 +159,7 @@ TRtFootstepClass *iGetFootstepClass(TRtAnimType inType)
 		}
 	}
 
-	return footstep_class;	
+	return footstep_class;
 }
 
 
@@ -200,7 +200,7 @@ static UUtUns16 iNumAnimStates(void);
 extern UUtUns8 IMPgDefaultCompressionSize = TRcAnimationCompression6;
 
 enum {
-	cDefaultScreenCompressionSize = TRcAnimationCompression16 
+	cDefaultScreenCompressionSize = TRcAnimationCompression16
 };
 
 enum {
@@ -248,7 +248,7 @@ static const UUtUns32 IMPgAttackPartHierarchy[IMPcAttackPartIndex_Max] = {
 	ONcRArm1_Index,
 	ONcRArm2_Index
 };
-	
+
 // pointer to the last biped we read in - used when constructing AND files
 // to determine hierarchy and geometry bounding boxes
 static TRtBody *IMPgLastBiped = NULL;
@@ -269,15 +269,15 @@ static TRtBody *IMPgLastBiped = NULL;
 //
 // During execution, the algoirthm begins by writing out the first
 // quaternion in the original data as the first key-frame. Once a
-// key frame quaternion is written, it looks for the next key frame 
+// key frame quaternion is written, it looks for the next key frame
 // by looking at the next quaternions in the original data and testing
 // them to see if they'd make good key-frames. When a quaternion is
 // found that will not make a good key-frame the last "good" quaternion
 // is written out and the process begins again.
 //
 // A quaternion is considered to make a "good" key-frame if the quaternions
-// that result from interpolating all of the frames between that quaternion 
-// and the last key-frame are within DEGREE_TOL degrees of the original 
+// that result from interpolating all of the frames between that quaternion
+// and the last key-frame are within DEGREE_TOL degrees of the original
 // data. We can compute the number of degrees difference between two
 // quaternions by inverting one quaternion, multiplying the two quaternions
 // together, and looking at the real component of the quaternion, which
@@ -289,13 +289,13 @@ static TRtBody *IMPgLastBiped = NULL;
 // One more note, the compression subroutine is a two pass alogirthm.
 // On the first pass it figures out how big the data it wants to
 // compress is so it can allocate it. The second pass writes out the
-// actual structure. 
+// actual structure.
 
 // This is a temperary array used to hold the original data. The Bungie
-// compression routines do some transformations as pre-processing, so 
+// compression routines do some transformations as pre-processing, so
 // this array reflects the result of those transformations.
 
-M3tQuaternion tmpQuatArray[16384]; 
+M3tQuaternion tmpQuatArray[16384];
 
 //
 // The maximum number of degrees between the compressed data and the
@@ -304,7 +304,7 @@ M3tQuaternion tmpQuatArray[16384];
 
 //
 // This subroutine figures out the maximum difference between the
-// result of interpolating quat_array[first] and quat_array[last] 
+// result of interpolating quat_array[first] and quat_array[last]
 // between first and last and the actual values of quat_array[first..last]
 //
 
@@ -317,7 +317,7 @@ float get_max_angle(M3tQuaternion *quat_array, int first, int last)
   // mapping.
   //
 
-  float max_angle=1.0f;	
+  float max_angle=1.0f;
   int i;
   M3tQuaternion current;
 
@@ -355,7 +355,7 @@ float get_max_angle(M3tQuaternion *quat_array, int first, int last)
       // pheta is PI .. 2*PI. For the purposes of measuring the angle
       // between the two quaternions we can map pheta to 2*PI-pheta if
       // cos(pheta/2) is less than zero. cos(pheta/2) == -cos(2*PI-pheta/2)
-      // so we just negate w. 
+      // so we just negate w.
 
       if (diff.w<0)
           diff.w=-diff.w;
@@ -479,7 +479,7 @@ void do_lossy_anim_compress (
       int skip_next=0;
       int interval=0;
 
-      // the current frame of the animation that we're processing. 
+      // the current frame of the animation that we're processing.
 
       UUtUns32 frameItr;
 
@@ -631,7 +631,7 @@ static char *GetLocalFileName(char *filename)
 
 	return output;
 }
-							
+
 
 static M3tMatrix4x3
 ReadMatrix(BFtTextFile *inFileRef)
@@ -762,7 +762,7 @@ static const char *iGetBodySuffix(TRtBodySelector selector)
 UUtError
 Imp_AddBiped(
 	BFtFileRef*			inSourceFile,
-	UUtUns32			inSourceFileModDate, 
+	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName)
 {
@@ -794,14 +794,14 @@ Imp_AddBiped(
 
 	// store the newly constructed biped
 	IMPgLastBiped = body;
-	
+
 	return UUcError_None;
 }
 
 UUtError
 Imp_AddBody(
 	BFtFileRef*			inSourceFile,
-	UUtUns32			inSourceFileModDate, 
+	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName)
 {
@@ -831,7 +831,7 @@ Imp_AddBody(
 
 			Imp_PrintWarning("prefix is now %s",base_file_name);
 		}
-		
+
 		error = BFrFileRef_DuplicateAndReplaceName(inSourceFile, base_file_name, &baseRef);
 		if (BFcError_FileNotFound == error) { error = UUcError_None; }
 		UUmError_ReturnOnError(error);
@@ -885,9 +885,9 @@ Imp_AddBody(
 			}
 		}
 	}
-		
+
 	BFrFileRef_Dispose(baseRef);
-	
+
 	bodySpread = NULL;
 	for(itr = TRcBody_SuperHigh; 1; itr--)
 	{
@@ -952,7 +952,7 @@ static UUtError Imp_CreateBody(
 
 		return UUcError_None;
 	}
-	
+
 	error = Imp_ParseEnvFile(inFileRef, &header);
 	IMPmError_ReturnOnError(error);
 
@@ -980,7 +980,7 @@ static UUtError Imp_CreateBody(
 			header->numNodes,
 			&body->translationStorage);
 	IMPmError_ReturnOnError(error);
-	
+
 	error =
 		TMrConstruction_Instance_NewUnique(
 			TRcTemplate_IndexArray,
@@ -1008,7 +1008,7 @@ static UUtError Imp_CreateBody(
 			part_translations->y = 0.f;
 			part_translations->z = 0.f;
 		}
-		
+
 		UUmAssert(curNode->child < UUcMaxUns8);
 		UUmAssert(curNode->sibling < UUcMaxUns8);
 
@@ -1035,7 +1035,7 @@ static UUtError Imp_CreateBody(
 	Imp_EnvFile_Delete(header);
 
 	*outBody = body;
-	
+
 	return UUcError_None;
 }
 
@@ -1080,7 +1080,7 @@ static IMPtTextureName *Imp_GetTextureList(BFtFileRef *inMMEFile, UUtUns32 *outC
 
 		cache_obsolete = cache_mod_time < mme_mod_time;
 	}
-	
+
 	// try reading cache
 	if (!cache_obsolete) {
 		BFtTextFile *cache_read_file;
@@ -1120,7 +1120,7 @@ static IMPtTextureName *Imp_GetTextureList(BFtFileRef *inMMEFile, UUtUns32 *outC
 		{
 			MXtHeader *header;
 			UUtUns16 mxtNodeItr;
-			
+
 			error = Imp_ParseEnvFile(inMMEFile, &header);
 			UUmAssert(UUcError_None == error);
 
@@ -1191,7 +1191,7 @@ Imp_ProcessBodyTextures(
 	IMPtTextureName			*texture_list;
 
 	tTextureFlags			flags;
-	
+
 	texture_list = Imp_GetTextureList(inMMEFile, &count, &fileModDate);
 
 	if(TMrConstruction_Instance_CheckExists(TRcTemplate_BodyTextures, inInstanceName)) {
@@ -1205,7 +1205,7 @@ Imp_ProcessBodyTextures(
 				count,
 				&bodyTextures);
 	IMPmError_ReturnOnError(error);
-	
+
 	// read the texture names
 	textureFileNames = (char **) UUrMemory_Block_New(sizeof(char *) * count);
 	UUmError_ReturnOnNull(textureFileNames);
@@ -1218,15 +1218,15 @@ Imp_ProcessBodyTextures(
 		const char *diffuseTexture;
 
 		diffuseTexture = texture_list[nodeItr].texture_name;
-		
+
 		textureFileNames[nodeItr] = UUrMemory_Block_New(cMaxNameLength);
 		UUmError_ReturnOnNull(textureFileNames[nodeItr]);
-		
+
 		sprintf(textureFileNames[nodeItr], "%s", diffuseTexture);
 
 		texturePlaceholderNames[nodeItr] = UUrMemory_Block_New(cMaxNameLength * 2 * sizeof(char));
 		UUmError_ReturnOnNull(texturePlaceholderNames[nodeItr]);
-		
+
 		UUmAssert(strlen(textureFileNames[nodeItr]) < cMaxNameLength);
 		UUmAssert(strlen(directoryLeafName) < cMaxNameLength);
 
@@ -1234,12 +1234,12 @@ Imp_ProcessBodyTextures(
 		UUrString_Cat(texturePlaceholderNames[nodeItr], "/", cMaxNameLength);
 		UUrString_Cat(texturePlaceholderNames[nodeItr], diffuseTexture, cMaxNameLength);
 	}
-	
+
 	// set the texture flags outside of the loop
 	Imp_ClearTextureFlags(&flags);
 	flags.hasFlagFile = cTextureFlagFile_Yes;
 	flags.flags = M3cTextureFlags_HasMipMap;
-		
+
 	// ==== load in all the textures ====
 	for(nodeItr = 0; nodeItr < count; nodeItr++)
 	{
@@ -1252,7 +1252,7 @@ Imp_ProcessBodyTextures(
 					textureFileNames[nodeItr],
 					&BMPFileRef);
 		IMPmError_ReturnOnError(error);
-		
+
 		error = Imp_ProcessTexture(
 					BMPFileRef,
 					IMPgLowMemory ? 2 : 0,
@@ -1261,10 +1261,10 @@ Imp_ProcessBodyTextures(
 					texturePlaceholderNames[nodeItr],
 					IMPcIgnoreTextureRef);
 		IMPmError_ReturnOnError(error);
-		
+
 		UUmAssert(strchr(texturePlaceholderNames[nodeItr], '.') == NULL);
 		bodyTextures->maps[nodeItr] = M3rTextureMap_GetPlaceholder(texturePlaceholderNames[nodeItr]);
-		
+
 		BFrFileRef_Dispose(BMPFileRef);
 	}
 
@@ -1281,11 +1281,11 @@ Imp_ProcessBodyTextures(
 	UUrMemory_Block_Delete(textureFileNames);
 	UUrMemory_Block_Delete(texturePlaceholderNames);
 	UUrMemory_Block_Delete(texture_list);
-	
+
 	return UUcError_None;
 }
 
-UUtError 
+UUtError
 Imp_AddBodyTextures(
 	BFtFileRef*			inSourceFile,
 	UUtUns32			inSourceFileModDate,
@@ -1299,8 +1299,8 @@ Imp_AddBodyTextures(
 
 	char*					directoryFileName;
 	BFtFileRef*				directoryFileRef;
-	
-	// build the model file ref	
+
+	// build the model file ref
 	error = GRrGroup_GetString(inGroup, "file", &modelFileName);
 	IMPmError_ReturnOnError(error);
 
@@ -1511,7 +1511,7 @@ static UUtError iInsertAnimationArrays(	TRtAnimation *ioAnimation,
 	max2oni.m[0][1] = 0.0;
 	max2oni.m[1][1] = 0.0;
 	max2oni.m[2][1] = 1.f;
-	max2oni.m[3][1] = 0.0; 
+	max2oni.m[3][1] = 0.0;
 
 	max2oni.m[0][2] = 0.0;
 	max2oni.m[1][2] = -1.f;
@@ -1520,7 +1520,7 @@ static UUtError iInsertAnimationArrays(	TRtAnimation *ioAnimation,
 
 	//
 	// step 1 build in max coorindate system
-	// 
+	//
 
 #ifndef LOSSY_ANIM
 	ioAnimation->data = TMrConstruction_Raw_New(rotationDataSize, 4, TRcTemplate_Animation);
@@ -1565,7 +1565,7 @@ static UUtError iInsertAnimationArrays(	TRtAnimation *ioAnimation,
 		}
 	}
 
-	if (ioAnimation->flags & (1 << ONcAnimFlag_ThrowSource)) { 
+	if (ioAnimation->flags & (1 << ONcAnimFlag_ThrowSource)) {
 		ioAnimation->throwInfo = TMrConstruction_Raw_New(sizeof(TRtThrowInfo), 4, TRcTemplate_Animation);
 		UUrMemory_MoveFast(throwInfo, ioAnimation->throwInfo, sizeof(TRtThrowInfo));
 	}
@@ -1601,14 +1601,14 @@ static UUtError iInsertAnimationArrays(	TRtAnimation *ioAnimation,
 		srcTime = 0;
 	}
 	else {
-		srcTime = ioAnimation->duration; 
+		srcTime = ioAnimation->duration;
 	}
 
 	if (ioAnimation->flags & (1 << ONcAnimFlag_ThrowTarget)) {
 		// this is necessary, because throw target characters have wacky orientation
 		suppress_attack_warnings = UUcTrue;
 	}
-	
+
 	if (ioAnimation->numAttacks > 0) {
 		// work out the direction of this attack
 		anim_direction = (TRtDirection) ioAnimation->moveDirection;
@@ -1752,10 +1752,10 @@ static UUtError iInsertAnimationArrays(	TRtAnimation *ioAnimation,
 			}
 
 			MUmQuat_VerifyUnit(&thisQuat);
-	
+
 			iCompressQuaternion(
-				&thisQuat, 
-				&(((UUtUns8 *)(ioAnimation->data)) [dstIndex]), 
+				&thisQuat,
+				&(((UUtUns8 *)(ioAnimation->data)) [dstIndex]),
 				ioAnimation->compressionSize);
 		}
 #endif
@@ -1825,8 +1825,8 @@ static UUtError iInsertAnimationArrays(	TRtAnimation *ioAnimation,
 	ioAnimation->takeDamages = TMrConstruction_Raw_Write(ioAnimation->takeDamages);
 	ioAnimation->blurs = TMrConstruction_Raw_Write(ioAnimation->blurs);
 	ioAnimation->shortcuts = TMrConstruction_Raw_Write(ioAnimation->shortcuts);
-	ioAnimation->throwInfo = TMrConstruction_Raw_Write(ioAnimation->throwInfo); 
-	ioAnimation->footsteps = TMrConstruction_Raw_Write(ioAnimation->footsteps); 
+	ioAnimation->throwInfo = TMrConstruction_Raw_Write(ioAnimation->throwInfo);
+	ioAnimation->footsteps = TMrConstruction_Raw_Write(ioAnimation->footsteps);
 	ioAnimation->particles = TMrConstruction_Raw_Write(ioAnimation->particles);
 	ioAnimation->positionPoints = TMrConstruction_Raw_Write(ioAnimation->positionPoints);
 	ioAnimation->extentInfo.attackExtents = TMrConstruction_Raw_Write(ioAnimation->extentInfo.attackExtents);
@@ -1836,13 +1836,13 @@ static UUtError iInsertAnimationArrays(	TRtAnimation *ioAnimation,
 }
 
 static UUtError iCreateBlankAnimation(
-						char *inInstanceName, 
-						UUtUns16 inDuration, 
+						char *inInstanceName,
+						UUtUns16 inDuration,
 						UUtUns16 inFPS,
-						UUtUns16 inNumNodes, 
-						UUtUns8 inCompressionSize, 
-						TMtPlaceHolder inSoundPlaceHolders[TRcMaxSounds], 
-						UUtUns16 inSoundFrames[TRcMaxSounds], 
+						UUtUns16 inNumNodes,
+						UUtUns8 inCompressionSize,
+						TMtPlaceHolder inSoundPlaceHolders[TRcMaxSounds],
+						UUtUns16 inSoundFrames[TRcMaxSounds],
 
 						TRtAttack inAttacks[TRcMaxAttacks],
 						TRtBlur inBlurs[TRcMaxBlurs],
@@ -1858,7 +1858,7 @@ static UUtError iCreateBlankAnimation(
 	UUmAssert(inFPS > 0);
 
 	// create the template with the correctly sized variable array
-	error = 
+	error =
 		TMrConstruction_Instance_Renew(
 			TRcTemplate_Animation,
 			inInstanceName,
@@ -1866,9 +1866,9 @@ static UUtError iCreateBlankAnimation(
 			outAnimation);
 	UUmError_ReturnOnErrorMsgP(error, "failed to renew animation name = %s", (UUtUns32) inInstanceName, 0, 0);
 
-	
+
 	(*outAnimation)->positions = NULL;
-	(*outAnimation)->heights = NULL;	
+	(*outAnimation)->heights = NULL;
 	(*outAnimation)->particles = NULL;
 	(*outAnimation)->extentInfo.attackExtents = NULL;
 	(*outAnimation)->positionPoints = NULL;
@@ -1982,27 +1982,27 @@ static UUtError Imp_ANMFile_Read(
 	error = BFrTextFile_VerifyNextStr(textFile, "start frame");
 	IMPmError_ReturnOnError(error);
 
-	outHeader->startFrame = BFrTextFile_GetUUtInt32(textFile);	
+	outHeader->startFrame = BFrTextFile_GetUUtInt32(textFile);
 
 	error = BFrTextFile_VerifyNextStr(textFile, "end frame");
 	IMPmError_ReturnOnError(error);
 
-	outHeader->endFrame = BFrTextFile_GetUUtInt32(textFile);	
+	outHeader->endFrame = BFrTextFile_GetUUtInt32(textFile);
 
 	error = BFrTextFile_VerifyNextStr(textFile, "ticks per frame");
 	IMPmError_ReturnOnError(error);
 
-	outHeader->ticksPerFrame = BFrTextFile_GetUUtUns32(textFile);	
+	outHeader->ticksPerFrame = BFrTextFile_GetUUtUns32(textFile);
 
 	error = BFrTextFile_VerifyNextStr(textFile, "start time");
 	IMPmError_ReturnOnError(error);
 
-	outHeader->startTime = BFrTextFile_GetUUtUns32(textFile);	
+	outHeader->startTime = BFrTextFile_GetUUtUns32(textFile);
 
 	error = BFrTextFile_VerifyNextStr(textFile, "end time");
 	IMPmError_ReturnOnError(error);
 
-	outHeader->endTime = BFrTextFile_GetUUtUns32(textFile);	
+	outHeader->endTime = BFrTextFile_GetUUtUns32(textFile);
 
 	error = BFrTextFile_VerifyNextStr(textFile, "");
 	IMPmError_ReturnOnError(error);
@@ -2099,7 +2099,7 @@ static UUtError Imp_ANMFile_Read(
 			}
 
 			// compute euler, make quaternion
-			if (writeThisNode) 
+			if (writeThisNode)
 			{
 				euler = MUrMatrixToEuler(&matrix, MUcEulerOrderZYZs);
 				quaternion = MUrEulerToQuat(&euler);
@@ -2189,7 +2189,7 @@ static UUtError Imp_ANDFile_Write(
 	numQuat = inHeader->numFileFrames * inHeader->numNodes;
 
 	error = BFrFile_Open(inDataFile, "w", &dstFile);
-	UUmError_ReturnOnErrorMsgP(error, "failed to open %s w/ write priv", 
+	UUmError_ReturnOnErrorMsgP(error, "failed to open %s w/ write priv",
 		(UUtUns32) BFrFileRef_GetLeafName(inDataFile), 0, 0);
 
 	error = BFrFile_Write(dstFile, sizeof(stamp), &stamp);
@@ -2337,7 +2337,7 @@ static BFtFileRef *iMakeANDFileRef(BFtFileRef *inFileRef)
 	UUmAssertReadPtr(inFileRef, 4);
 
 	UUrString_Copy(newLeafName, oldLeafName, BFcMaxFileNameLength);
-	
+
 	scan = newLeafName;
 
 	while((*scan != '.') && (*scan != '\0')) { scan++; }
@@ -2359,7 +2359,7 @@ static BFtFileRef *iMakeANDFileRef(BFtFileRef *inFileRef)
 
 static UUtBool iSetAttackDirection_From_State(TRtAnimState state, TRtDirection *outDirection)
 {
-	switch(state) 
+	switch(state)
 	{
 		case ONcAnimState_Running_Right_Down:
 		case ONcAnimState_Running_Left_Down:
@@ -2397,10 +2397,10 @@ static UUtBool iSetAttackDirection_From_State(TRtAnimState state, TRtDirection *
 static void iSetAttackDirection(UUtUns32 inFlags, UUtUns8 inNumAttacks, TRtAnimType inAnimType, TRtAnimState inFromState,
 								UUtUns8 inNumShortcuts, TRtShortcut *inShortcuts, TRtDirection *outDirection)
 {
-	const UUtUns32 aim_mask = 
-		(1 << ONcAnimFlag_Aim_Forward) | 
-		(1 << ONcAnimFlag_Aim_Left) | 
-		(1 << ONcAnimFlag_Aim_Right) | 
+	const UUtUns32 aim_mask =
+		(1 << ONcAnimFlag_Aim_Forward) |
+		(1 << ONcAnimFlag_Aim_Left) |
+		(1 << ONcAnimFlag_Aim_Right) |
 		(1 << ONcAnimFlag_Aim_Backward) |
 		(1 << ONcAnimFlag_Aim_360);
 	UUtUns32 itr;
@@ -2453,7 +2453,7 @@ static void iSetAttackDirection(UUtUns32 inFlags, UUtUns8 inNumAttacks, TRtAnimT
 		case ONcAnimType_Sidestep_Left_Punch:
 			*outDirection = TRcDirection_Left;
 			return;
-				
+
 		case ONcAnimType_Kick_Right:
 		case ONcAnimType_Punch_Right:
 		case ONcAnimType_Sidestep_Right_Kick:
@@ -2547,7 +2547,7 @@ void iGetTransformedBBox(M3tGeometry *inGeometry,  M3tMatrix4x3 *inMatrix, M3tBo
 		outBBox->minPoint.z = UUmMin(outBBox->minPoint.z, local.z);
 		outBBox->maxPoint.x = UUmMax(outBBox->maxPoint.x, local.x);
 		outBBox->maxPoint.y = UUmMax(outBBox->maxPoint.y, local.y);
-		outBBox->maxPoint.z = UUmMax(outBBox->maxPoint.z, local.z);		
+		outBBox->maxPoint.z = UUmMax(outBBox->maxPoint.z, local.z);
 	}
 
 	return;
@@ -2578,7 +2578,7 @@ void HandleFootstep(TRtFootstepClass *inTypeClass, TRtFootstepClass *inDetectCla
 	iGetTransformedBBox(IMPgLastBiped->geometries[in_foot_index], inMatricies + in_foot_index, &foot_bbox);
 
 	if (IMPgDebugFootsteps) {
-		Imp_PrintMessage(IMPcMsg_Important, "%d (%2.2f, %2.2f, %2.2f) (%2.2f, %2.2f, %2.2f)"UUmNL, inFrameItr, 
+		Imp_PrintMessage(IMPcMsg_Important, "%d (%2.2f, %2.2f, %2.2f) (%2.2f, %2.2f, %2.2f)"UUmNL, inFrameItr,
 			foot_bbox.minPoint.x, foot_bbox.minPoint.y, foot_bbox.minPoint.z,
 			foot_bbox.maxPoint.x, foot_bbox.maxPoint.y, foot_bbox.maxPoint.z);
 	}
@@ -2765,7 +2765,7 @@ static UUtError iBuildFramePositions(UUtUns32 inFlags, TRtAnimType inAnimType, A
 			this_dist = MUrSqrt(UUmSQR(delta.x) + UUmSQR(delta.y));
 			this_angle = MUrATan2(delta.x, -delta.y);
 			UUmTrig_Clip(this_angle);
-			
+
 			// update our attack's extent ring
 			attack_ring.max_distance			= UUmMax(this_dist, attack_ring.max_distance);
 			attack_ring.max_height				= UUmMax(delta.z,	attack_ring.max_height);
@@ -2817,7 +2817,7 @@ static UUtError iBuildFramePositions(UUtUns32 inFlags, TRtAnimType inAnimType, A
 	 */
 
 	if ((numAttackFrames > 0) && (inDirection == TRcDirection_None)) {
-			
+
 		if (max_dist == max_dir_dist[0]) {
 			inDirection = computed_direction = TRcDirection_Forwards;
 
@@ -2959,8 +2959,8 @@ static UUtError iBuildFramePositions(UUtUns32 inFlags, TRtAnimType inAnimType, A
 	outExtentInfo->computed_attack_direction = computed_direction;
 
 
-	// build the footsteps 
-	
+	// build the footsteps
+
 	{
 		TRtFootstepClass *footstep_type_class, *footstep_detect_class;
 		TRtFootstepList *footstep_list;
@@ -2982,12 +2982,12 @@ static UUtError iBuildFramePositions(UUtUns32 inFlags, TRtAnimType inAnimType, A
 		if (NULL != footstep_detect_class) {
 			UUtBool is_left_foot_ready;
 			UUtBool is_right_foot_ready;
-			
+
 			M3tPoint3D *root_location_this_frame = inPointArray + 0;
 
 			{
 				M3tBoundingBox_MinMax initial_bbox;
-				
+
 				iGetTransformedBBox(IMPgLastBiped->geometries[ONcLFoot_Index], inMatrixArray + ONcLFoot_Index, &initial_bbox);
 				is_left_foot_ready = (initial_bbox.minPoint.z) >= footstep_detect_class->foostep_initial_clear_threshold;
 
@@ -2996,17 +2996,17 @@ static UUtError iBuildFramePositions(UUtUns32 inFlags, TRtAnimType inAnimType, A
 			}
 
 
-			for (frameItr = 0, matrixPtr = inMatrixArray; frameItr < inHeader->numFileFrames; matrixPtr += inHeader->numNodes, frameItr++) 
+			for (frameItr = 0, matrixPtr = inMatrixArray; frameItr < inHeader->numFileFrames; matrixPtr += inHeader->numNodes, frameItr++)
 			{
 				HandleFootstep(footstep_type_class, footstep_detect_class, &is_left_foot_ready, frameItr, ONcLFoot_Index, TRcFootstep_Left, matrixPtr, inPointArray + frameItr, &footstep_list);
 				HandleFootstep(footstep_type_class, footstep_detect_class, &is_right_foot_ready, frameItr, ONcRFoot_Index, TRcFootstep_Right, matrixPtr, root_location_this_frame, &footstep_list);
-			}			
+			}
 		}
 
 		*outFootstepList = footstep_list;
 	}
 
-	
+
 	return UUcError_None;
 }
 
@@ -3014,7 +3014,7 @@ static UUtError iBuildFramePositions(UUtUns32 inFlags, TRtAnimType inAnimType, A
 
 
 static UUtError iProcessAnimationFile(
-			BFtFileRef			*inANMFileRef, 
+			BFtFileRef			*inANMFileRef,
 			UUtUns32			inFlags,
 			TRtAnimType			inAnimType,
 			TRtAnimType			inFootstepDetectType,
@@ -3059,7 +3059,7 @@ static UUtError iProcessAnimationFile(
 
 	error = BFrFileRef_GetModTime(inANMFileRef, &ANMTimestamp);
 	UUmError_ReturnOnErrorMsg(error, "failed to get anm file mod time");
-	
+
 	if (IMPgForceANDRebuild) {
 		// don't even bother looking for the file
 		build_andfile = UUcTrue;
@@ -3135,13 +3135,13 @@ static UUtError iMakeAnimationOverlay(
 
 	// move the data up to where the old frame 0 data was
 	UUrMemory_MoveOverlap(
-		outQuatArray + outHeader->numNodes, 
-		outQuatArray, 
-		sizeof(M3tQuaternion) * outHeader->numNodes * (outHeader->numFileFrames - 1)); 
+		outQuatArray + outHeader->numNodes,
+		outQuatArray,
+		sizeof(M3tQuaternion) * outHeader->numNodes * (outHeader->numFileFrames - 1));
 
 	UUrMemory_MoveOverlap(
-		outPositionArray + 1, 
-		outPositionArray, 
+		outPositionArray + 1,
+		outPositionArray,
 		sizeof(M3tPoint3D) * (outHeader->numFileFrames - 1));
 
 	outHeader->numFileFrames -= 1;
@@ -3167,7 +3167,7 @@ static UUtError iMakeAnimationOverlay(
 					usedParts |= 1 << nodeItr;
 					UUmAssert(nodeItr < 32);
 				}
-				
+
 				// subtract off frame 0, node n
 				MUrQuatToMatrix(frame0Quats + nodeItr, &first_rotation_matrix);
 				MUrMatrix_Inverse(&first_rotation_matrix, &first_rotation_matrix);
@@ -3177,9 +3177,9 @@ static UUtError iMakeAnimationOverlay(
 			}
 		}
 	}
-	
+
 	UUrMemory_Block_Delete(frame0Quats);
-	
+
 	*outUsedParts = usedParts;
 
 	return UUcError_None;
@@ -3192,14 +3192,14 @@ UUtError Imp_GetAnimState(GRtGroup *inGroup, const char *inName, TRtAnimState *o
 	TRtAnimState state;
 
 	error = GRrGroup_GetString(inGroup, inName, &stateString);
-	if (error) { 
-		Imp_PrintWarning("invalid field %s", inName); 
+	if (error) {
+		Imp_PrintWarning("invalid field %s", inName);
 		return error;
 	}
 
 	error = iStringToAnimState(stateString, &state);
-	if (error) { 
-		Imp_PrintWarning("'%s' is an invalid state", stateString); 
+	if (error) {
+		Imp_PrintWarning("'%s' is an invalid state", stateString);
 		return error;
 	}
 
@@ -3216,13 +3216,13 @@ UUtError Imp_GetAnimType(GRtGroup *inGroup, const char *inName, TRtAnimType *out
 
 	// find the type of animation this is and the type that follows
 	error = GRrGroup_GetString(inGroup, inName, &typeString);
-	if (error) { 
+	if (error) {
 		return error;
 	}
 
 	error = IMPrStringToAnimType(typeString, &type);
-	if (error) { 
-		Imp_PrintWarning("'%s' is an invalid animType", typeString); 
+	if (error) {
+		Imp_PrintWarning("'%s' is an invalid animType", typeString);
 		return error;
 	}
 
@@ -3238,13 +3238,13 @@ static UUtError iGetAnimStateQuietly(GRtGroup *inGroup, const char *inName, TRtA
 	TRtAnimState state;
 
 	error = GRrGroup_GetString(inGroup, inName, &stateString);
-	if (error) { 
+	if (error) {
 		return UUcError_None;
 	}
 
 	error = iStringToAnimState(stateString, &state);
-	if (error) { 
-		Imp_PrintWarning("'%s' is an invalid state", stateString); 
+	if (error) {
+		Imp_PrintWarning("'%s' is an invalid state", stateString);
 		return error;
 	}
 
@@ -3296,7 +3296,7 @@ static UUtBool iGetShortcut(TRtAnimState inFromState, GRtGroup *inGroup, const c
 		AUrMessageBox(AUcMBType_OK, "ShortcutState %d (%s) is none/invalid!", inNumber, shortcutStateString);
 		return UUcFalse;
 	}
-	
+
 	if (inFromState == outShortcut->state) {
 		AUrMessageBox(AUcMBType_OK, "ShortcutState %d (%s) matches fromState!", inNumber, shortcutStateString);
 		return UUcFalse;
@@ -3321,9 +3321,9 @@ static UUtBool iGetShortcut(TRtAnimState inFromState, GRtGroup *inGroup, const c
 	sprintf(varName, "%sLength%d", inPrefix, inNumber+1);
 	error = GRrGroup_GetUns16(inGroup, varName, &(outShortcut->length));
 
-	Imp_PrintMessage(IMPcMsg_Cosmetic, "shortcut %d state %s length %d"UUmNL, 
-		inNumber, 
-		iStateToString(outShortcut->state), 
+	Imp_PrintMessage(IMPcMsg_Cosmetic, "shortcut %d state %s length %d"UUmNL,
+		inNumber,
+		iStateToString(outShortcut->state),
 		outShortcut->length);
 
 	if (UUcError_None != error)	{
@@ -3357,7 +3357,7 @@ typedef struct tBPMbuild
 {
 	char					*name;
 	UUtUns16				part_index;
-	
+
 } tBPMbuild;
 
 static UUtError
@@ -3393,9 +3393,9 @@ Imp_BodyPartMaterials(
 		{ "RHand", ONcRHand_Index },
 		{ NULL, 0 }
 	};
-	
+
 	*outBodyPartMaterials = NULL;
-	
+
 	// create an instance of a body part material template
 	error =
 		TMrConstruction_Instance_NewUnique(
@@ -3403,7 +3403,7 @@ Imp_BodyPartMaterials(
 			0,
 			&body_part_materials);
 	UUmError_ReturnOnErrorMsg(error, "Unable to create body part materials");
-	
+
 	// get a pointer to the body part materials group
 	error =
 		GRrGroup_GetElement(
@@ -3415,29 +3415,29 @@ Imp_BodyPartMaterials(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to find bodyPartMaterials");
 	}
-	
+
 	// get the elements from the group
 	for (part = body_parts; part->name != NULL; part++)
 	{
 		char				*material_name;
 		TMtPlaceHolder		material;
-		
+
 		// get the material name for the body part
 		error = GRrGroup_GetString(body_part_group, part->name, &material_name);
 		UUmError_ReturnOnErrorMsg(error, "Unable to get the name of a body part material");
-		
+
 		error =
 			TMrConstruction_Instance_GetPlaceHolder(
 				MAcTemplate_Material,
 				material_name,
 				&material);
 		UUmError_ReturnOnErrorMsg(error, "Unable to create placeholder for material");
-		
+
 		body_part_materials->materials[part->part_index] = (MAtMaterial*)material;
 	}
-	
+
 	*outBodyPartMaterials = body_part_materials;
-	
+
 	return UUcError_None;
 }
 
@@ -3474,9 +3474,9 @@ Imp_BodyPartImpacts(
 		{ "RHand", ONcRHand_Index },
 		{ NULL, 0 }
 	};
-	
+
 	*outBodyPartImpacts = NULL;
-	
+
 	// create an instance of a body part impacts template
 	error =
 		TMrConstruction_Instance_NewUnique(
@@ -3484,7 +3484,7 @@ Imp_BodyPartImpacts(
 			0,
 			&body_part_impacts);
 	UUmError_ReturnOnErrorMsg(error, "Unable to create body part impacts");
-	
+
 	/*
 	 * read the hit impacts
 	 */
@@ -3500,27 +3500,27 @@ Imp_BodyPartImpacts(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to find hitImpacts");
 	}
-	
+
 	// get the elements from the group
 	for (part = body_parts; part->name != NULL; part++)
 	{
 		char				*impact_name;
 		TMtPlaceHolder		impact;
-		
+
 		// get the impact name for the body part
 		error = GRrGroup_GetString(body_part_group, part->name, &impact_name);
 		UUmError_ReturnOnErrorMsg(error, "Unable to get the name of a body part impact");
-		
+
 		error =
 			TMrConstruction_Instance_GetPlaceHolder(
 				MAcTemplate_Impact,
 				impact_name,
 				&impact);
 		UUmError_ReturnOnErrorMsg(error, "Unable to create placeholder for impact");
-		
+
 		body_part_impacts->hit_impacts[part->part_index] = (MAtImpact*)impact;
 	}
-	
+
 	/*
 	 * read the blocked impacts
 	 */
@@ -3536,27 +3536,27 @@ Imp_BodyPartImpacts(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to find blockedImpacts");
 	}
-	
+
 	// get the elements from the group
 	for (part = body_parts; part->name != NULL; part++)
 	{
 		char				*impact_name;
 		TMtPlaceHolder		impact;
-		
+
 		// get the impact name for the body part
 		error = GRrGroup_GetString(body_part_group, part->name, &impact_name);
 		UUmError_ReturnOnErrorMsg(error, "Unable to get the name of a body part impact");
-		
+
 		error =
 			TMrConstruction_Instance_GetPlaceHolder(
 				MAcTemplate_Impact,
 				impact_name,
 				&impact);
 		UUmError_ReturnOnErrorMsg(error, "Unable to create placeholder for impact");
-		
+
 		body_part_impacts->blocked_impacts[part->part_index] = (MAtImpact*)impact;
 	}
-	
+
 	/*
 	 * read the killed impacts
 	 */
@@ -3572,27 +3572,27 @@ Imp_BodyPartImpacts(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to find killedImpacts");
 	}
-	
+
 	// get the elements from the group
 	for (part = body_parts; part->name != NULL; part++)
 	{
 		char				*impact_name;
 		TMtPlaceHolder		impact;
-		
+
 		// get the impact name for the body part
 		error = GRrGroup_GetString(body_part_group, part->name, &impact_name);
 		UUmError_ReturnOnErrorMsg(error, "Unable to get the name of a body part impact");
-		
+
 		error =
 			TMrConstruction_Instance_GetPlaceHolder(
 				MAcTemplate_Impact,
 				impact_name,
 				&impact);
 		UUmError_ReturnOnErrorMsg(error, "Unable to create placeholder for impact");
-		
+
 		body_part_impacts->killed_impacts[part->part_index] = (MAtImpact*)impact;
 	}
-	
+
 	*outBodyPartImpacts = body_part_impacts;
 
 	return UUcError_None;
@@ -3605,10 +3605,10 @@ iCompareFrameNum(
 {
 	const TRtSound				*sound1;
 	const TRtSound				*sound2;
-	
+
 	sound1 = (TRtSound*)inItem1;
 	sound2 = (TRtSound*)inItem2;
-		
+
 	return sound1->frameNum - sound2->frameNum;
 }
 
@@ -3704,7 +3704,7 @@ iParseAnimationParticles(
 			if (sscanf((char *) element, "%hd", &particle->startFrame) == 0) {
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "animation particle: start frame must be a number");
 			}
-		
+
 			// read the particle start frame
 			error =	GRrGroup_Array_GetElement(sub_array, cParticleArray_EndFrame, &element_type, &element);
 			IMPmError_ReturnOnError(error);
@@ -3718,7 +3718,7 @@ iParseAnimationParticles(
 
 		particle->pad = 0;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3835,7 +3835,7 @@ Imp_AddAnimation(
 	// sounds
 	TRtSound				*new_sounds = NULL;
 	UUtUns32				num_new_sounds = 0;
-	
+
 	// these are storage before we build the arrays we will actually use
 	M3tPoint3D		*positionArray = NULL;
 	M3tQuaternion	*quatArray = NULL;
@@ -3846,7 +3846,7 @@ Imp_AddAnimation(
 
 	{
 		char *badName;
-		const char *validNames[] = 
+		const char *validNames[] =
 		{
 			"template",
 			"instance",
@@ -3976,7 +3976,7 @@ Imp_AddAnimation(
 			"reverseShortcutFlag8",
 			"reverseShortcutFlags8",
 			"reverseShortcutLength8",
-			
+
 			"damage",
 			"damageBits",
 			"firstDamageFrame",
@@ -4025,11 +4025,11 @@ Imp_AddAnimation(
 			"stagger1",
 			"stagger2",
 
-			"softPause", 	
-			"hardPause", 
+			"softPause",
+			"hardPause",
 			"pause",
-			"compression", 
-			"reverseInstance",  
+			"compression",
+			"reverseInstance",
 			"reverseAnimType",
 			"reverseFromState",
 			"reverseToState",
@@ -4075,7 +4075,7 @@ Imp_AddAnimation(
 		UUmError_ReturnOnErrorMsgP(error, "Invalid group string %s", (UUtUns32) badName, 0, 0);
 	}
 
-	error = 
+	error =
 		Imp_Common_BuildInstance(
 			inSourceFile,
 			inSourceFileModDate,
@@ -4099,10 +4099,10 @@ Imp_AddAnimation(
 
 	{
 		char *footstep_string;
-		
+
 		error = GRrGroup_GetString(inGroup, "footsteps", &footstep_string);
-	
-		
+
+
 		if (UUcError_None == error) {
 			char *cur_footstep_string;
 			char *strtok_internal;
@@ -4111,7 +4111,7 @@ Imp_AddAnimation(
 
 			forcedFootstepList = UUrMemory_Block_NewClear(sizeof(TRtFootstepList));
 
-			cur_footstep_string = UUrString_Tokenize1(footstep_string, ".", &strtok_internal); 
+			cur_footstep_string = UUrString_Tokenize1(footstep_string, ".", &strtok_internal);
 
 			while(cur_footstep_string != NULL)
 			{
@@ -4159,13 +4159,13 @@ Imp_AddAnimation(
 			}
 		}
 	}
-	
+
 	{
 		char *footstep_string;
-		
+
 		error = GRrGroup_GetString(inGroup, "reverseFootsteps", &footstep_string);
-	
-		
+
+
 		if (UUcError_None == error) {
 			char *cur_footstep_string;
 			char *strtok_internal;
@@ -4174,7 +4174,7 @@ Imp_AddAnimation(
 
 			forcedReverseFootstepList = UUrMemory_Block_NewClear(sizeof(TRtFootstepList));
 
-			cur_footstep_string = UUrString_Tokenize1(footstep_string, ".", &strtok_internal); 
+			cur_footstep_string = UUrString_Tokenize1(footstep_string, ".", &strtok_internal);
 
 			while(cur_footstep_string != NULL)
 			{
@@ -4304,20 +4304,20 @@ Imp_AddAnimation(
 
 	error = GRrGroup_GetFloat(inGroup, "finalRotation", &finalRotation);
 	if (error) { finalRotation = 0; }
-	else { 
-		if (3.14f == finalRotation) { 
-			Imp_PrintWarning("finalRotation should be in degrees"); 
+	else {
+		if (3.14f == finalRotation) {
+			Imp_PrintWarning("finalRotation should be in degrees");
 		}
 
-		finalRotation *= M3c2Pi / 360.f; 
+		finalRotation *= M3c2Pi / 360.f;
 	}
 
 	error = GRrGroup_GetString(inGroup, "varients", &varientStr);
-	if (error) { 
+	if (error) {
 		error = GRrGroup_GetString(inGroup, "varient", &varientStr);
 		if (error) {
-			Imp_PrintWarning("no varients field"); 
-			return error; 
+			Imp_PrintWarning("no varients field");
+			return error;
 		}
 	}
 
@@ -4376,7 +4376,7 @@ Imp_AddAnimation(
 	{
 		UUtMemory_Array					*sound_array;
 		TRtSound						*sound_array_list;
-		
+
 		sound_array = UUrMemory_Array_New(sizeof(TRtSound), 1, 0, 10);
 		UUmError_ReturnOnNull(sound_array);
 		for (itr = 0; ; itr++)
@@ -4384,11 +4384,11 @@ Imp_AddAnimation(
 			char						*sound_name;
 			UUtUns16					frame_num;
 			UUtUns32					index;
-			
+
 			sprintf(suffix, "%d", itr + 1);
 			sprintf(varName, "new_sound%s", suffix);
 			error = GRrGroup_GetString(inGroup, varName, &sound_name);
-			
+
 			// for itr 0 try sound as awell as sound1
 			if ((UUcError_None != error) && (0 == itr)) {
 				sprintf(suffix, "");
@@ -4396,50 +4396,50 @@ Imp_AddAnimation(
 				error = GRrGroup_GetString(inGroup, varName, &sound_name);
 			}
 			if (UUcError_None != error) { break; }
-			
+
 			sprintf(varName, "new_soundFrame%s", suffix);
 			error = GRrGroup_GetUns16(inGroup, varName, &frame_num);
 			UUmError_ReturnOnErrorMsg(error, "invalid soundFrame");
-			
+
 			// add the new_sound to the sound_array
 			error = UUrMemory_Array_GetNewElement(sound_array, &index, NULL);
 			UUmError_ReturnOnErrorMsg(error, "unable to add new sound to sound array");
-			
+
 			sound_array_list = (TRtSound*)UUrMemory_Array_GetMemory(sound_array);
-			
+
 			UUrString_Copy(sound_array_list[index].impulseName, sound_name, SScMaxNameLength);
 			sound_array_list[index].frameNum = frame_num;
-			
+
 			// byte swap the frame number
 			UUmSwapLittle_2Byte(&sound_array_list[index].frameNum);
 		}
-		
+
 		// add the sounds to the raw data
 		new_sounds = NULL;
 		num_new_sounds = UUrMemory_Array_GetUsedElems(sound_array);
 		if (num_new_sounds > 0)
 		{
 			sound_array_list = (TRtSound*)UUrMemory_Array_GetMemory(sound_array);
-			
+
 			// sort by frame number
 			qsort(sound_array_list, num_new_sounds, sizeof(TRtSound), iCompareFrameNum);
-			
+
 			// create the raw data
 			new_sounds = TMrConstruction_Raw_New((sizeof(TRtSound) * num_new_sounds), 4, TRcTemplate_Animation);
 			UUmError_ReturnOnNull(new_sounds);
-			
+
 			// copy the sound_array_list into the raw data
 			UUrMemory_MoveFast(sound_array_list, new_sounds, (sizeof(TRtSound) * num_new_sounds));
-			
+
 			// write the raw data
 			new_sounds = TMrConstruction_Raw_Write(new_sounds);
 		}
-		
+
 		// cleanup
 		UUrMemory_Array_Delete(sound_array);
 		sound_array = NULL;
 	}
-	
+
 	//// direct animations
 	for(itr = 0; itr < TRcMaxDirectAnimations; itr++)
 	{
@@ -4459,10 +4459,10 @@ Imp_AddAnimation(
 
 		if (UUcError_None == error) {
 			error = TMrConstruction_Instance_GetPlaceHolder(
-				TRcTemplate_Animation, 
-				directAnimationNames[itr], 
+				TRcTemplate_Animation,
+				directAnimationNames[itr],
 				&(directAnimationPlaceHolder[itr]));
-			UUmError_ReturnOnErrorMsg(error, "Imp_AddAnimation: could not make an animation placeholder");	
+			UUmError_ReturnOnErrorMsg(error, "Imp_AddAnimation: could not make an animation placeholder");
 		}
 	}
 
@@ -4549,7 +4549,7 @@ Imp_AddAnimation(
 
 		sprintf(varName, "damageBits%s", suffix);
 		error = iGetPartMask(inGroup, varName, &(attacks[numAttacks].damageBits));
-		
+
 		if (error != UUcError_None) {
 			Imp_PrintWarning("could not find valid %s", varName);
 			return error;
@@ -4578,8 +4578,8 @@ Imp_AddAnimation(
 		}
 		else {
 			error = TMrConstruction_Instance_GetPlaceHolder(
-				SScTemplate_Sound, 
-				hitSoundName, 
+				SScTemplate_Sound,
+				hitSoundName,
 				&hitSoundPlaceHolder);
 			UUmError_ReturnOnErrorMsg(error, "Imp_AddAnimation: could not make the hit sound placeholder");
 
@@ -4645,7 +4645,7 @@ Imp_AddAnimation(
 	{
 		float floatBlurAmount;
 
-		// clear the blur 
+		// clear the blur
 		blurs[numBlurs].blurParts = 0;
 		blurs[numBlurs].firstBlurFrame = 1;
 		blurs[numBlurs].lastBlurFrame = 0;
@@ -4681,7 +4681,7 @@ Imp_AddAnimation(
 			blurs[numBlurs].blurSkip = 1;
 		}
 
-		floatBlurAmount = UUmPin(floatBlurAmount, 0.f, 1.f);		
+		floatBlurAmount = UUmPin(floatBlurAmount, 0.f, 1.f);
 		blurs[numBlurs].blurAmount = (UUtUns8) (floatBlurAmount * 255.f);
 
 		numBlurs++;
@@ -4708,7 +4708,7 @@ Imp_AddAnimation(
 		}
 		else {
 			compressionSize = IMPgDefaultCompressionSize;
-		}	
+		}
 	}
 
 	// get the actionFrame which may also be called the swapWeaponFrame
@@ -4770,7 +4770,7 @@ Imp_AddAnimation(
 		if (error) { continue; }
 
 		numTakeDamages++;
-	}	
+	}
 
 	// animation particles
 	numParticles = 0;
@@ -4813,7 +4813,7 @@ Imp_AddAnimation(
 
 	UUrMemory_Clear(&extentInfo, sizeof(extentInfo));
 	error = iProcessAnimationFile(
-			ANMFileRef, 
+			ANMFileRef,
 			flags,
 			animType,
 			footstepDetectType,
@@ -4854,7 +4854,7 @@ Imp_AddAnimation(
 	}
 
 	if (header->numNodes >= TRcMaxParts) {
-		AUrMessageBox(AUcMBType_OK, "ANMFile %s had %d nodes, %d is the maximum allowed!", 
+		AUrMessageBox(AUcMBType_OK, "ANMFile %s had %d nodes, %d is the maximum allowed!",
 			BFrFileRef_GetLeafName(ANMFileRef),
 			header->numNodes,
 			TRcMaxParts);
@@ -4865,10 +4865,10 @@ Imp_AddAnimation(
 	 * create the animation templated structures
 	 */
 
-	error = iCreateBlankAnimation(inInstanceName, header->duration, fps, header->numNodes, compressionSize, 
+	error = iCreateBlankAnimation(inInstanceName, header->duration, fps, header->numNodes, compressionSize,
 		soundPlaceHolders, soundFrames, attacks, blurs, directAnimationPlaceHolder, &animation);
 	IMPmError_ReturnOnError(error);
-	
+
 	UUmAssertWritePtr(animation, sizeof(*animation));
 	animation->instanceName = NULL;
 	animation->type = animType;
@@ -4901,10 +4901,10 @@ Imp_AddAnimation(
 	UUrString_Copy(animation->attackName, attack_impact_name, ONcCharacterAttackNameLength + 1);
 
 	if (NULL != reverseName) {
-		error = iCreateBlankAnimation(reverseName, header->duration, fps, header->numNodes, compressionSize, 
+		error = iCreateBlankAnimation(reverseName, header->duration, fps, header->numNodes, compressionSize,
 			soundPlaceHolders, soundFrames, attacks, blurs, directAnimationPlaceHolder, &reverseAnimation);
 		IMPmError_ReturnOnError(error);
-		
+
 		UUmAssertWritePtr(reverseAnimation, sizeof(*reverseAnimation));
 		reverseAnimation->instanceName = NULL;
 		reverseAnimation->type = reverseAnimType;
@@ -5035,7 +5035,7 @@ Imp_AddAnimation(
 										useFootsteps);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	if (forcedFootstepList != NULL) {
 		UUrMemory_Block_Delete(forcedFootstepList);
 	}
@@ -5045,7 +5045,7 @@ Imp_AddAnimation(
 
 	iCloseAnimationFile(ANMMappingRef, header, positionArray, quatArray, framePositionArray, automaticFootstepList);
 	BFrFileRef_Dispose(ANMFileRef);
-	
+
 	return UUcError_None;
 }
 
@@ -5066,17 +5066,17 @@ Imp_AddAnimationCollection(
 
 	AUtMB_ButtonChoice buttonChoice;
 	char *recursiveLookupString;
-	
+
 	if(TMrConstruction_Instance_CheckExists(TRcTemplate_AnimationCollection, inInstanceName)) {
 		Imp_PrintMessage(IMPcMsg_Important, "animation collection already imported"UUmNL);
 		return UUcError_None;
 	}
-	
+
 	// open our group array
 	error = GRrGroup_GetElement(
-				inGroup, 
-				"tagList", 
-				&elementType, 
+				inGroup,
+				"tagList",
+				&elementType,
 				&animationList);
 
 	if ((error != UUcError_None) || (elementType != GRcElementType_Array))
@@ -5105,13 +5105,13 @@ Imp_AddAnimationCollection(
 
 	// check for a recursiveSearch table
 	error = GRrGroup_GetString(inGroup, "lookup", &recursiveLookupString);
-	
+
 	if (UUcError_None == error) {
 		Imp_PrintMessage(IMPcMsg_Cosmetic, "recursive lookup table %s"UUmNL, recursiveLookupString);
 
 		error = TMrConstruction_Instance_GetPlaceHolder(
-			TRcTemplate_AnimationCollection, 
-			recursiveLookupString, 
+			TRcTemplate_AnimationCollection,
+			recursiveLookupString,
 			(TMtPlaceHolder*)&(collection->recursiveLookup));
 		UUmError_ReturnOnErrorMsg(error, "Imp_AddAnimationCollection: could not make a placeholder");
 	}
@@ -5146,16 +5146,16 @@ Imp_AddAnimationCollection(
 		if (0 == strcmp(instanceTag, "")) {
 			Imp_PrintWarning("animation tags should not be blank");
 		}
-		
+
 		error = GRrGroup_GetUns16(animListEntryGroup, "weight", &weight);
 		UUmError_ReturnOnErrorMsg(error, "could not find weight");
-		
+
 		error = TMrConstruction_Instance_GetPlaceHolder(
-			TRcTemplate_Animation, 
-			instanceTag, 
+			TRcTemplate_Animation,
+			instanceTag,
 			(TMtPlaceHolder*)&animation);
 		UUmError_ReturnOnErrorMsg(error, "Imp_AddAnimationCollection: could not make a placeholder");
-		
+
 		collection->entry[itr].animation = animation;
 		collection->entry[itr].weight = weight;
 		collection->entry[itr].virtualFromState = TRcAnimState_None;
@@ -5180,7 +5180,7 @@ Imp_AddScreenCollection(
 	GRtElementArray*	animationList;
 
 	AUtMB_ButtonChoice buttonChoice;
-	
+
 	if(TMrConstruction_Instance_CheckExists(TRcTemplate_ScreenCollection, inInstanceName)) {
 		Imp_PrintMessage(IMPcMsg_Important, "screen collection already imported"UUmNL);
 		return UUcError_None;
@@ -5188,9 +5188,9 @@ Imp_AddScreenCollection(
 
 	// open our group array
 	error = GRrGroup_GetElement(
-				inGroup, 
-				"tagList", 
-				&elementType, 
+				inGroup,
+				"tagList",
+				&elementType,
 				&animationList);
 
 	if ((error != UUcError_None) || (elementType != GRcElementType_Array))
@@ -5237,13 +5237,13 @@ Imp_AddScreenCollection(
 		if (0 == strcmp(instanceTag, "")) {
 			Imp_PrintWarning("aiming screen tags should not be blank");
 		}
-			
+
 		error = TMrConstruction_Instance_GetPlaceHolder(
-			TRcTemplate_AimingScreen, 
-			instanceTag, 
+			TRcTemplate_AimingScreen,
+			instanceTag,
 			(TMtPlaceHolder*)&screen);
 		UUmError_ReturnOnErrorMsg(error, "Imp_AddAnimationCollection: could not make a placeholder");
-		
+
 		collection->screen[itr] = screen;
 	}
 
@@ -5345,7 +5345,7 @@ IMPiParseCharacterParticleElement(
 
 	// particle class will be set up at runtime
 	particle.particle_class = NULL;
-	
+
 	// success, copy the particle into the array and increment the number of particles if we have to
 	ioParticles[itr] = particle;
 	if (itr >= *ioNumParticles) {
@@ -5436,7 +5436,7 @@ IMPiParseCharacterParticles(
 	inClass->particles->numParticles = num_particles;
 	UUrMemory_MoveFast(&particle_storage, &inClass->particles->particle, num_particles * sizeof(ONtCharacterParticle));
 	inClass->particles->classes_found = UUcFalse;
-	
+
 	return UUcError_None;
 }
 
@@ -5527,7 +5527,7 @@ IMPiParseCharacterImpacts(
 		impact->impact_type = MAcInvalidID;
 		impact->modifier_type = ONcIEModType_Any;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -5592,7 +5592,7 @@ IMPiParseCharacterAnimationImpacts(
 				Imp_PrintMessage(IMPcMsg_Important, "  %s\n", type_ptr->name);
 			}
 			IMPmError_ReturnOnErrorMsg(UUcError_Generic, "character animation impact: unknown impact anim type");
-		}		
+		}
 
 		UUmAssert((type_ptr->type >= 0) && (type_ptr->type < ONcAnimationImpact_Max));
 		impact = &outImpacts->impact[type_ptr->type];
@@ -5668,7 +5668,7 @@ Imp_AddCharacterClass(
 		Imp_PrintWarning("character class %s has no 'variant' tag in any of its definition files!", inInstanceName);
 		variantName = "unknown";
 	}
-	
+
 	// model
 	error =	GRrGroup_GetString(inGroup, "bodyTag", &bodyTag);
 	UUmError_ReturnOnErrorMsg(error, "could not find bodyTag");
@@ -5686,15 +5686,15 @@ Imp_AddCharacterClass(
 
 	error = TMrConstruction_Instance_GetPlaceHolder(TRcTemplate_BodyTextures, textureTag, (TMtPlaceHolder*)&(characterClass->textures));
 	UUmError_ReturnOnErrorMsg(error, "could not find body textures");
-	
+
 	// body part materials
 	error = Imp_BodyPartMaterials(inGroup, &characterClass->bodyPartMaterials);
 	UUmError_ReturnOnErrorMsg(error, "could not process the body part materials");
-	
+
 	// body part impacts
 	error = Imp_BodyPartImpacts(inGroup, &characterClass->bodyPartImpacts);
 	UUmError_ReturnOnErrorMsg(error, "could not process the body part impacts");
-	
+
 	// fight mode duration
 	error = GRrGroup_GetUns32(inGroup, "fightModeDuration", &(characterClass->fightModeDuration));
 	UUmError_ReturnOnErrorMsg(error, "could not find fightModeDuration");
@@ -5858,7 +5858,7 @@ Imp_AddCharacterClass(
 
 	error = GRrGroup_GetFloat(inGroup, "jump_forward", &(characterClass->jumpConstants.jumpDistance));
 	UUmError_ReturnOnErrorMsg(error, "could not find jump forward distance");
-	characterClass->jumpConstants.jumpDistanceSquares = 
+	characterClass->jumpConstants.jumpDistanceSquares =
 		(UUtUns8)(characterClass->jumpConstants.jumpDistance / PHcSquareSize);
 
 	// Cover finding constants
@@ -5883,7 +5883,7 @@ Imp_AddCharacterClass(
 	error = GRrGroup_GetFloat(inGroup, "autofreeze_v", &(characterClass->autofreezeConstants.distance_y));
 	UUmError_ReturnOnErrorMsg(error, "could not find autofreeze V distance");
 
-	// Inventory constants	
+	// Inventory constants
 	error = GRrGroup_GetUns16(inGroup, "inv_hypoTime", &(characterClass->inventoryConstants.hypoTime));
 	UUmError_ReturnOnErrorMsg(error, "could not find hypo time");
 
@@ -5907,7 +5907,7 @@ Imp_AddCharacterClass(
 			characterClass->lodConstants.distance_squared[lod_distance_itr] = UUmSQR(characterClass->lodConstants.distance_squared[lod_distance_itr]);
 		}
 	}
-	
+
 
 	// scale constants
 	error = GRrGroup_GetFloat(inGroup, "scale_low", &(characterClass->scaleLow));
@@ -5926,7 +5926,7 @@ Imp_AddCharacterClass(
 		characterClass->vision.central_distance = UUmMax(characterClass->vision.periph_distance, characterClass->vision.central_distance);
 	} else {
 		characterClass->vision.periph_distance = characterClass->vision.central_distance;
-	}	
+	}
 
 	error = GRrGroup_GetFloat(inGroup, "vision_vertical", &(characterClass->vision.vertical_range));
 	UUmError_ReturnOnError(error);
@@ -6136,9 +6136,9 @@ Imp_AddFacingTable(
 	UUtUns16				numAnimStates;
 	GRtElementType			elementType;
 	GRtElementArray*		facingList;
-	
+
 	buildInstance = !TMrConstruction_Instance_CheckExists(TRcTemplate_FacingTable, inInstanceName);
-	
+
 	if (!buildInstance)
 	{
 		return UUcError_None;
@@ -6150,9 +6150,9 @@ Imp_AddFacingTable(
 
 	// open our group array
 	error = GRrGroup_GetElement(
-				inGroup, 
-				"facingList", 
-				&elementType, 
+				inGroup,
+				"facingList",
+				&elementType,
 				&facingList);
 
 	if (elementType != GRcElementType_Array) {
@@ -6162,7 +6162,7 @@ Imp_AddFacingTable(
 
 	tableSize = (UUtUns16) GRrGroup_Array_GetLength(facingList);
 	if (GRrGroup_Array_GetLength(facingList) > UUcMaxUns16) {
-		
+
 	}
 	UUmError_ReturnOnErrorMsg(error, "facing list to long");
 
@@ -6242,12 +6242,12 @@ static UUtError MakeStringArray(GRtGroup *inGroup, UUtBool inBuild, char *inInst
 
 	UUtUns16				numStrings;
 	GRtElementArray*		stringList;
-	
+
 	// open our group array
 	error = GRrGroup_GetElement(
-				inGroup, 
-				"stringList", 
-				&elementType, 
+				inGroup,
+				"stringList",
+				&elementType,
 				&stringList);
 
 	if (elementType != GRcElementType_Array) {
@@ -6328,12 +6328,12 @@ Imp_AddStringList(
 	UUtError				error;
 	TMtStringArray			*outStrings;
 	UUtBool					buildInstance;
-	
-	
+
+
 	buildInstance = !TMrConstruction_Instance_CheckExists(TMcTemplate_StringArray, inInstanceName);
 
 	if (buildInstance)
-	{	
+	{
 		error = MakeStringArray(inGroup, UUcTrue, inInstanceName, &outStrings);
 	}
 
@@ -6347,11 +6347,11 @@ static UUtError LoadStringTable(const char *inPath, TMtStringArray **outArray)
 	UUtError error;
 	TMtStringArray *array = NULL;
 	BFtFileRef *fileRef;
-	
+
 	error = BFrFileRef_MakeFromName(inPath, &fileRef);
 	UUmError_ReturnOnErrorMsg(error, "could not open shortcut flags");
 
-	if (!BFrFileRef_FileExists(fileRef)) { 
+	if (!BFrFileRef_FileExists(fileRef)) {
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "could not open shortcut flags file");
 	}
 
@@ -6424,7 +6424,7 @@ static UUtError iLoadTables(void)
 		error = LoadStringTable(path, &gStringToBodyFlagTable);
 		UUmError_ReturnOnErrorMsg(error, "could not open body flags");
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -6434,7 +6434,7 @@ static UUtError iParamListToVarients(const char *varientStr, UUtUns16 *varients)
 {
 	UUtError error;
 	UUtUns32 tempVarients;
-	
+
 	UUmAssert(gStringToAnimVarientTable);	// should have been loaded by init
 
 	error = AUrParamListToBitfield(varientStr, gStringToAnimVarientTable, &tempVarients);
@@ -6448,7 +6448,7 @@ static UUtError iParamListToVarients(const char *varientStr, UUtUns16 *varients)
 static UUtError iParamListToAnimFlags(const char *inFlagStr, UUtUns32 *outFlags)
 {
 	UUtError error;
-	
+
 	UUmAssert(gStringToAnimFlagTable);
 
 	error = AUrParamListToBitfield(inFlagStr, gStringToAnimFlagTable, outFlags);
@@ -6459,7 +6459,7 @@ static UUtError iParamListToAnimFlags(const char *inFlagStr, UUtUns32 *outFlags)
 static UUtError iParamListToShortcutFlags(const char *inFlagStr, UUtUns32 *outFlags)
 {
 	UUtError error;
-	
+
 	UUmAssert(gStringToShortcutFlagTable);
 
 	error = AUrParamListToBitfield(inFlagStr, gStringToShortcutFlagTable, outFlags);
@@ -6470,7 +6470,7 @@ static UUtError iParamListToShortcutFlags(const char *inFlagStr, UUtUns32 *outFl
 static UUtError iParamListToAttackFlags(const char *inFlagStr, UUtUns32 *outFlags)
 {
 	UUtError error;
-	
+
 	UUmAssert(gStringToAttackFlagTable);
 
 	error = AUrParamListToBitfield(inFlagStr, gStringToAttackFlagTable, outFlags);
@@ -6481,7 +6481,7 @@ static UUtError iParamListToAttackFlags(const char *inFlagStr, UUtUns32 *outFlag
 static UUtError iParamListToBodyFlags(const char *inFlagStr, UUtUns32 *outFlags)
 {
 	UUtError error;
-	
+
 	UUmAssert(gStringToAttackFlagTable);
 
 	error = AUrParamListToBitfield(inFlagStr, gStringToBodyFlagTable, outFlags);
@@ -6494,7 +6494,7 @@ UUtError IMPrStringToAnimType(const char *inString, TRtAnimType *result)
 {
 	UUtError error = UUcError_None;
 	UUtInt16 lookup;
-	
+
 	UUmAssert(gStringToAnimTypeTable);
 
 	lookup = AUrLookupString(inString, gStringToAnimTypeTable);
@@ -6511,7 +6511,7 @@ UUtError IMPrStringToAnimType(const char *inString, TRtAnimType *result)
 
 static char *iStateToString(TRtAnimType type)
 {
-	
+
 	UUmAssert(gStringToAnimStateTable);
 
 	UUmAssert(type < gStringToAnimStateTable->numStrings);
@@ -6523,7 +6523,7 @@ UUtError iStringToAnimState(const char *inString, TRtAnimState *result)
 {
 	UUtError error = UUcError_None;
 	UUtInt16 lookup;
-	
+
 	UUmAssert(gStringToAnimStateTable);
 
 	lookup = AUrLookupString(inString, gStringToAnimStateTable);
@@ -6541,7 +6541,7 @@ UUtError iStringToAnimState(const char *inString, TRtAnimState *result)
 static UUtUns16 iNumAnimStates(void)
 {
 	UUtError error = UUcError_None;
-	
+
 	UUmAssert(gStringToAnimStateTable);
 
 	return gStringToAnimStateTable->numStrings;
@@ -6582,9 +6582,9 @@ Imp_AddAimingScreen(
 	UUtBool buildInstance;
 
 	char	*animationTag;
-	
+
 	buildInstance = !TMrConstruction_Instance_CheckExists(TRcTemplate_AimingScreen, inInstanceName);
-	
+
 	if (!buildInstance)
 	{
 		return UUcError_None;
@@ -6738,8 +6738,8 @@ Imp_AddSavedFilm(
 	//newFilm->pad4 = 0;
 
 	UUrMemory_MoveFast(
-		filmDataKeys, 
-		newFilm->keys, 
+		filmDataKeys,
+		newFilm->keys,
 		filmData->numKeys * sizeof(ONtFilmKey));
 
 	BFrFile_UnMap(mappingRef);
@@ -6794,7 +6794,7 @@ Imp_AddAnimCache(
 	Imp_OpenAnimCache(cacheRef);
 
 	BFrFileRef_Dispose(cacheRef);
-	
+
 	return UUcError_None;
 }
 
@@ -6808,30 +6808,30 @@ Imp_AddVariant(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(ONcTemplate_VariantList,	inInstanceName);
-	
+
 	if (build_instance)
 	{
 		char					*variant_name;
 		char					*upgrade_name;
 		char					*parent_name;
 		ONtCharacterVariant		*variant;
-		
+
 		// get the name of the variant
 		error = GRrGroup_GetString(inGroup, "name", &variant_name);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get variant name");
-		
+
 		// get the name of the upgraded variant
 		error = GRrGroup_GetString(inGroup, "upgrade_name", &upgrade_name);
 		if (error != UUcError_None) { upgrade_name = ""; }
-		
+
 		// get the name of the parent
 		error = GRrGroup_GetString(inGroup, "parent", &parent_name);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get parent name");
-		
+
 		// build an instance of the variant name list
 		error =
 			TMrConstruction_Instance_Renew(
@@ -6840,11 +6840,11 @@ Imp_AddVariant(
 				0,
 				&variant);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create dialog data instance");
-		
+
 		// copy the variant names into the variant
 		UUrString_Copy(variant->name, variant_name, ONcMaxVariantNameLength);
 		UUrString_Copy(variant->upgrade_name, upgrade_name, ONcMaxVariantNameLength);
-		
+
 		// set the parent
 		if (UUrString_Compare_NoCase(parent_name, "none") != 0)
 		{
@@ -6861,7 +6861,7 @@ Imp_AddVariant(
 			variant->parent = NULL;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -6875,10 +6875,10 @@ Imp_AddVariantList(
 	UUtError			error;
 
 	UUtBool				build_instance;
-		
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(ONcTemplate_VariantList, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		GRtElementType			element_type;
@@ -6897,13 +6897,13 @@ Imp_AddVariantList(
 		{
 			IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to get variants array");
 		}
-		
+
 		num_items = GRrGroup_Array_GetLength(variants_array);
 		if (num_items == 0)
 		{
 			IMPmError_ReturnOnErrorMsg(UUcError_Generic, "The variants array is empty");
 		}
-		
+
 		// build an instance of the variant name list
 		error =
 			TMrConstruction_Instance_Renew(
@@ -6912,11 +6912,11 @@ Imp_AddVariantList(
 				num_items,
 				&variant_list);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create variant list instance");
-		
+
 		for (i = 0; i < num_items; i++)
 		{
 			char				*variant_name;
-			
+
 			// get the ith item from the variants array
 			error =
 				GRrGroup_Array_GetElement(
@@ -6925,12 +6925,12 @@ Imp_AddVariantList(
 					&element_type,
 					&variant_name);
 			IMPmError_ReturnOnErrorMsg(error, "unable to get variant name from array");
-			
+
 			if (element_type != GRcElementType_String)
 			{
 				IMPmError_ReturnOnErrorMsg(error, "variant array item was not a string");
 			}
-			
+
 			// get a reference to the template
 			error =
 				TMrConstruction_Instance_GetPlaceHolder(
@@ -6940,7 +6940,7 @@ Imp_AddVariantList(
 			UUmError_ReturnOnErrorMsg(error, "could not set variant placeholder");
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -6954,10 +6954,10 @@ Imp_Character_Initialize(
 	void)
 {
 	UUtError	error;
-	
+
 	error = iLoadTables();
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 

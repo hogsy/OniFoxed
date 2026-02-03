@@ -42,12 +42,12 @@ IMPiTurret_GetLightData(
 	GRtGroup				*group;
 	GRtElementType			groupType;
 	GRtGroup				*ls_group;
-	
+
 	IMPtLS_LightType		light_type;
 	IMPtLS_Distribution		light_distribution;
-	OBJtLSData				*ls_data = NULL;	
-	
-	// init	
+	OBJtLSData				*ls_data = NULL;
+
+	// init
 	groupContext = NULL;
 
 	// make sure there is user data to process
@@ -55,7 +55,7 @@ IMPiTurret_GetLightData(
 	{
 		goto cleanup;
 	}
-	
+
 	// create a GRtGroup from the user data
 	error =
 		GRrGroup_Context_NewFromString(
@@ -65,7 +65,7 @@ IMPiTurret_GetLightData(
 			&groupContext,
 			&group);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// get the ls group from the user data group
 	error =
 		GRrGroup_GetElement(
@@ -74,7 +74,7 @@ IMPiTurret_GetLightData(
 			&groupType,
 			&ls_group);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// create the OBJtLSData instance
 	error =
 		TMrConstruction_Instance_Renew(
@@ -83,11 +83,11 @@ IMPiTurret_GetLightData(
 			0,
 			&ls_data);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// init
 	ls_data->index = inIndex;
 	ls_data->light_flags = OBJcLightFlag_HasLight;
-	
+
 	// process the user data
 	error =
 		IMPrEnv_GetLSData(
@@ -99,7 +99,7 @@ IMPiTurret_GetLightData(
 			&ls_data->beam_angle,
 			&ls_data->field_angle);
 	if (error != UUcError_None) { goto cleanup; }
-	
+
 	// set the light type flags
 	if (light_type == IMPcLS_LightType_Area)
 	{
@@ -113,7 +113,7 @@ IMPiTurret_GetLightData(
 	{
 		ls_data->light_flags |= OBJcLightFlag_Type_Point;
 	}
-	
+
 	// set the light distribution flags
 	if (light_distribution == IMPcLS_Distribution_Diffuse)
 	{
@@ -123,7 +123,7 @@ IMPiTurret_GetLightData(
 	{
 		ls_data->light_flags |= OBJcLightFlag_Dist_Spot;
 	}
-	
+
 cleanup:
 	*ioLSData = ls_data;
 	if (groupContext)
@@ -166,7 +166,7 @@ Imp_AddTurret(
 	M3tVector3D			marker_pos, marker_z, attach_x, attach_y, attach_z;
 	float				tempfloat, axial_dot;
 	OBJtTurretClass		*turret;
-	
+
 	// build the turret instance
 	error = TMrConstruction_Instance_Renew( OBJcTemplate_TurretClass, inInstanceName, 0, &turret);
 	IMPmError_ReturnOnError(error);
@@ -184,7 +184,7 @@ Imp_AddTurret(
 
 		BFrFileRef_Dispose(modelFileRef);
 
-		if (header->numNodes > 1) 
+		if (header->numNodes > 1)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Turret base model had > 1 node!");
 		}
@@ -197,7 +197,7 @@ Imp_AddTurret(
 
 		error = Imp_Node_To_Geometry_ApplyMatrix(header->nodes, turret->base_geometry);
 		UUmError_ReturnOnErrorMsg(error, "failed to build the geometry");
-				
+
 		// get the light data
 		IMPiTurret_GetLightData( &header->nodes[0], 0, &turret->base_ls_data );
 
@@ -231,7 +231,7 @@ Imp_AddTurret(
 
 		BFrFileRef_Dispose(modelFileRef);
 
-		if (header->numNodes > 1) 
+		if (header->numNodes > 1)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Turret turret model file had > 1 node!");
 		}
@@ -253,7 +253,7 @@ Imp_AddTurret(
 		UUmAssert(turret->turret_geometry->baseMap);
 
 
-		// grab the texture 
+		// grab the texture
 		//error = Imp_AddLocalTexture( inSourceFileRef, textureName, &turret->turret_geometry->baseMap );
 		//IMPmError_ReturnOnErrorMsg(error, "Could not create texture place holder");
 
@@ -280,7 +280,7 @@ Imp_AddTurret(
 
 		BFrFileRef_Dispose(modelFileRef);
 
-		if (header->numNodes > 1) 
+		if (header->numNodes > 1)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Turret barrel model file had > 1 node!");
 		}
@@ -315,7 +315,7 @@ Imp_AddTurret(
 			//static M3tVector3D		weapon_orient_dir = {1, 0, 0};			// WEAPON
 			static M3tVector3D		weapon_orient_dir = {0, 0, 1};		// TURRET
 			M3tQuaternion			ai_shooter_inverse_quat;
-			
+
 			// set up defaults
 			turret->attachment_count = 0;
 			turret->shooter_count = 0;
@@ -328,30 +328,30 @@ Imp_AddTurret(
 				{
 					UUmError_ReturnOnErrorMsg(UUcError_Generic, "attachments must be an array");
 				}
-				
+
 				turret->attachment_count = (UUtUns16) GRrGroup_Array_GetLength(attachmentArray);
 				found_shooter = UUcFalse;
-				
+
 				for(itr = 0, attachment = turret->attachment; itr < turret->attachment_count; itr++, attachment++)
 				{
 					error = GRrGroup_Array_GetElement(attachmentArray, itr, &elementType, &attachmentGroup);
-					if (error != UUcError_None) 
+					if (error != UUcError_None)
 					{
 						sprintf(errmsg, "could not get attachment #%d from group", itr);
 						UUmError_ReturnOnErrorMsg(error, errmsg);
 					}
-					
+
 					if(elementType != GRcElementType_Group)
 					{
 						UUmError_ReturnOnErrorMsg(UUcError_Generic, "every element of 'attachments' array must be a group");
 					}
-					
+
 					// find the marker on the weapon that this is attached to
 					error = GRrGroup_GetString(attachmentGroup, "marker", &tempstring);
 					UUmError_ReturnOnErrorMsg(error, "every attachment entry must have a 'marker'");
 
-					marker = Imp_EnvFile_GetMarker(header->nodes + 0, tempstring);				
-					if (marker) 
+					marker = Imp_EnvFile_GetMarker(header->nodes + 0, tempstring);
+					if (marker)
 					{
 						// it's important that the attachment matrix should be a rigid body transformation matrix
 						// i.e. no scale or shear. so we do this orthonormal basis construction thang.
@@ -370,18 +370,18 @@ Imp_AddTurret(
 
 						marker_pos = MUrMatrix_GetTranslation(&marker->matrix);
 						MUrMatrix_SetTranslation(&attachment->matrix, &marker_pos);
-					} 
-					else 
+					}
+					else
 					{
 						sprintf(errmsg, "couldn't find marker %s on the weapon geometry", tempstring);
 						UUmError_ReturnOnErrorMsg(UUcError_Generic, errmsg);
-					}				
+					}
 
 					// find the particle class
 					error = GRrGroup_GetString(attachmentGroup, "particle_class", &tempstring);
 					UUmError_ReturnOnErrorMsg(error, "every attachment entry must have a 'particle_class'");
-					
-					if ((strlen(tempstring) < 1) || (strlen(tempstring) > P3cParticleClassNameLength)) 
+
+					if ((strlen(tempstring) < 1) || (strlen(tempstring) > P3cParticleClassNameLength))
 					{
 						sprintf(errmsg, "particle class name '%s' is not within range 1-%d chars", tempstring, P3cParticleClassNameLength);
 						UUmError_ReturnOnErrorMsg(UUcError_Generic, errmsg);
@@ -391,28 +391,28 @@ Imp_AddTurret(
 
 					// find the index of this attachment
 					error = GRrGroup_GetInt32(attachmentGroup, "index", &tempint);
-					if (error == UUcError_None) 
+					if (error == UUcError_None)
 					{
 						attachment->shooter_index = (UUtUns16) tempint;
-					} 
-					else 
+					}
+					else
 					{
 						attachment->shooter_index = (UUtUns16) -1;
 					}
 
 					// get the shooter properties (if they're there...)
 					error = GRrGroup_GetFloat(attachmentGroup, "rof", &tempfloat);
-					if (error == UUcError_None) 
+					if (error == UUcError_None)
 					{
 						attachment->chamber_time = (UUtUns16) MUrUnsignedSmallFloat_To_Uns_Round(UUcFramesPerSecond / tempfloat);
 						// this attachment is a shooter. it must have an index.
-						if (attachment->shooter_index == (UUtUns16) -1) 
+						if (attachment->shooter_index == (UUtUns16) -1)
 						{
 							attachment->shooter_index = turret->shooter_count;
 						}
 
 						turret->shooter_count++;
-						if (!found_shooter) 
+						if (!found_shooter)
 						{
 							// this is the first shooter attached to this weapon.
 							//
@@ -439,7 +439,7 @@ Imp_AddTurret(
 						}
 					}
 				}
-				if (!found_shooter) 
+				if (!found_shooter)
 				{
 					MUrMatrix_Identity(&turret->ai_params.shooter_inversematrix);
 					MUmVector_Set(turret->ai_params.shooterdir_gunspace, 1, 0, 0);
@@ -498,18 +498,18 @@ Imp_AddTurret(
 	if (error != UUcError_None) {
 		turret->timeout = 900;
 	}
-	
+
 	// free time
 	error = GRrGroup_GetUns16(inGroup, "freeTime", &(turret->freeTime));
 	if (error != UUcError_None) turret->freeTime = 0;
-	
+
 	error = Imp_Turret_ReadCombatBehavior(
 		inSourceFileRef,
 		inSourceFileModDate,
 		inGroup,
 		inInstanceName,
 		turret);
-	if (error != UUcError_None) 
+	if (error != UUcError_None)
 		IMPmError_ReturnOnErrorMsg(error, "error reading turret AI params");
 
 	// name
@@ -539,7 +539,7 @@ Imp_AddTurret(
 	UUrString_Copy(turret->active_soundname, soundName, SScMaxNameLength);
 	turret->active_sound = NULL;
 
-	return UUcError_None;	
+	return UUcError_None;
 }
 
 
@@ -561,7 +561,7 @@ UUtError Imp_Turret_ReadCombatBehavior(
 		inInstanceName,
 		UUcFalse,
 		&inTurret->ai_params );
-	if (error != UUcError_None) 
+	if (error != UUcError_None)
 		IMPmError_ReturnOnErrorMsg(error, "error reading turret AI params");
 
 
@@ -584,7 +584,7 @@ UUtError Imp_Turret_ReadCombatBehavior(
 	inTurret->targeting_params.startle_miss_angle_min *= M3cDegToRad;
 
 	error = GRrGroup_GetFloat(inGroup, "startle_miss_angle_max", &inTurret->targeting_params.startle_miss_angle_max);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inTurret->targeting_params.startle_miss_angle_max = 30.0f;
 	inTurret->targeting_params.startle_miss_angle_max *= M3cDegToRad;
 
@@ -593,7 +593,7 @@ UUtError Imp_Turret_ReadCombatBehavior(
 		inTurret->targeting_params.startle_miss_decay = 0.5f;
 #else
 	error = GRrGroup_GetFloat(inGroup, "startle_miss_angle", &inTurret->targeting_params.startle_miss_angle);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inTurret->targeting_params.startle_miss_angle = 30.0f;
 
 	inTurret->targeting_params.startle_miss_angle = UUmPin(inTurret->targeting_params.startle_miss_angle, 0.f, 80.0f);
@@ -608,19 +608,19 @@ UUtError Imp_Turret_ReadCombatBehavior(
 		 */
 
 	error = GRrGroup_GetFloat(inGroup, "predict_amount", &inTurret->targeting_params.predict_amount);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inTurret->targeting_params.predict_amount = 1.0f;
 
 	error = GRrGroup_GetUns32(inGroup, "predict_delayframes", &inTurret->targeting_params.predict_delayframes);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inTurret->targeting_params.predict_delayframes = 5;
 
 	error = GRrGroup_GetUns32(inGroup, "predict_velocityframes",  &inTurret->targeting_params.predict_velocityframes);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inTurret->targeting_params.predict_velocityframes = 15;
 
 	error = GRrGroup_GetUns32(inGroup, "predict_trendframes",  &inTurret->targeting_params.predict_trendframes);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inTurret->targeting_params.predict_trendframes = 60;
 
 
@@ -640,33 +640,33 @@ UUtError Imp_Turret_ReadCombatBehavior(
 	skill = &inTurret->shooting_skill;
 
 	error = GRrGroup_GetFloat(inGroup, "skill_recoil_compensation", &skill->recoil_compensation);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		skill->recoil_compensation = 0.3f;
 
 	// best_aiming_angle is read as degrees, stored as sin(theta)
 	error = GRrGroup_GetFloat(inGroup, "skill_best_aiming_angle", &skill->best_aiming_angle);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		skill->best_aiming_angle = 0.5f;
 	skill->best_aiming_angle = MUrSin(skill->best_aiming_angle * M3cDegToRad);
 
 	error = GRrGroup_GetFloat(inGroup, "skill_shot_error", &skill->shot_error);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		skill->shot_error = 0.0f;
 
 	error = GRrGroup_GetFloat(inGroup, "skill_shot_decay", &skill->shot_decay);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		skill->shot_decay = 0.5f;
 
 	error = GRrGroup_GetFloat(inGroup, "skill_inaccuracy", &skill->gun_inaccuracy);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		skill->gun_inaccuracy = 1.0f;
 
 	error = GRrGroup_GetUns16(inGroup, "skill_delay_min", &skill->delay_min);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		skill->delay_min = 0;
 
 	error = GRrGroup_GetUns16(inGroup, "skill_delay_max", &skill->delay_max);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		skill->delay_max = 0;
 
 	return UUcError_None;

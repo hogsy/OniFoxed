@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Neutral.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 13, 2000
-	
+
 	PURPOSE: Neutral AI for Oni
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */
@@ -61,7 +61,7 @@ UUtBool AI2rNeutral_ChangeBehavior(ONtCharacter *ioCharacter, UUtUns16 inNeutral
 	if (ioCharacter->charType != ONcChar_AI2) {
 		return UUcFalse;
 	}
-	
+
 	if (!inInitialize && (ioCharacter->ai2State.neutralBehaviorID == inNeutralID)) {
 		// we already have this neutral behavior
 		return (ioCharacter->ai2State.neutralBehaviorID != (UUtUns16) -1);
@@ -98,7 +98,7 @@ static UUtBool AI2iNeutral_CheckStraightLinePath(ONtCharacter *ioCharacter, ONtC
 	UUtUns8 stop_weight;
 	UUtBool found_path, localmove_escape;
 	ONtCharacter *prev_ignorechar;
-	
+
 	ONrCharacter_GetPathfindingLocation(ioCharacter, &our_pt);
 	ONrCharacter_GetPathfindingLocation(inTarget, &player_pt);
 
@@ -242,7 +242,7 @@ UUtBool AI2rNeutral_CheckTrigger(ONtCharacter *ioCharacter, ONtCharacter *inTarg
 				ioCharacter->ai2State.neutralLastCheck = current_time + AI2cNeutral_EnemyScareFrames;
 				return UUcFalse;
 			}
-		}		
+		}
 	}
 
 #if 0
@@ -403,7 +403,7 @@ void AI2rNeutral_Exit(ONtCharacter *ioCharacter)
 
 	{
 		UUtBool we_are_aborting;
-		
+
 		we_are_aborting = ((neutral_state->current_line == -1) || (neutral_state->current_line < neutral_state->behavior.num_lines));
 
 		AI2rNeutral_Stop(ioCharacter, UUcTrue, we_are_aborting, UUcFalse, UUcFalse);
@@ -618,7 +618,7 @@ void AI2rNeutral_Update(ONtCharacter *ioCharacter)
 	ONtActiveCharacter *target_active, *active_character = ONrGetActiveCharacter(ioCharacter);
 
 	UUmAssert(ioCharacter->ai2State.currentGoal == AI2cGoal_Neutral);
-	neutral_state = &ioCharacter->ai2State.currentState->state.neutral;	
+	neutral_state = &ioCharacter->ai2State.currentState->state.neutral;
 	UUmAssertReadPtr(active_character, sizeof(ONtActiveCharacter));
 
 	if ((active_character == NULL) ||
@@ -692,7 +692,7 @@ void AI2rNeutral_Update(ONtCharacter *ioCharacter)
 			if (neutral_state->behavior.flags & AI2cNeutralBehaviorFlag_NoResume) {
 				ioCharacter->ai2State.neutralFlags |= AI2cNeutralFlag_DisableResume;
 			}
-			
+
 			// make note of the neutral interaction
 			ioCharacter->neutral_interaction_char = neutral_state->target_character;
 			neutral_state->target_character->neutral_interaction_char = ioCharacter;
@@ -753,7 +753,7 @@ void AI2rNeutral_Update(ONtCharacter *ioCharacter)
 				} else {
 					// reset our timer, and hail the target
 					neutral_state->hail_timer = AI2cNeutral_HailRepeatTimer + UUmRandomRange(0, AI2cNeutral_HailRandomTimer);
-					
+
 					AI2iNeutral_PlayTriggerSound(ioCharacter, neutral_state);
 
 					if (active_character != NULL) {
@@ -923,7 +923,7 @@ void AI2rNeutral_Update(ONtCharacter *ioCharacter)
 	}
 }
 
-static UUtBool AI2iNeutral_ConversationAnimation(ONtCharacter *ioCharacter, UUtUns16 inAnimType, 
+static UUtBool AI2iNeutral_ConversationAnimation(ONtCharacter *ioCharacter, UUtUns16 inAnimType,
 												UUtBool inAnimateOnce, UUtBool inRepeatAnimation, UUtBool *ioAnimStarted)
 {
 	ONtActiveCharacter *active_character = ONrGetActiveCharacter(ioCharacter);
@@ -937,7 +937,7 @@ static UUtBool AI2iNeutral_ConversationAnimation(ONtCharacter *ioCharacter, UUtU
 		if (active_character->curAnimType == inAnimType) {
 			// we're playing the animation
 			*ioAnimStarted = UUcTrue;
-			
+
 			// block until animation finishes
 			return UUcTrue;
 

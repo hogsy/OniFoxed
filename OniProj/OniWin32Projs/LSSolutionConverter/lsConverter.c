@@ -15,10 +15,10 @@ main(
 	BFtFileRef*			destFileRef;
 	BFtFileIterator*	fileIterator;
 	LStData*			lsData;
-	
+
 	UUrInitialize(UUcFalse);
 
-	error = 
+	error =
 		BFrFileRef_SearchAndMakeFromName(
 			"LS2LSDPlease",
 			&directory);
@@ -37,17 +37,17 @@ main(
 	{
 		return 1;
 	}
-	
+
 	while(1)
 	{
-		error = 
+		error =
 			BFrDirectory_FileIterator_Next(
 				fileIterator,
 				&sourceFileRef);
 		if(error != UUcError_None) break;
 
 		fprintf(stderr, "Processing file: %s"UUmNL, BFrFileRef_GetLeafName(sourceFileRef));
-		
+
 		error =
 			BFrFileRef_Duplicate(
 				sourceFileRef,
@@ -57,14 +57,14 @@ main(
 		BFrFileRef_SetLeafNameSuffex(
 			destFileRef,
 			"lsd");
-		
+
 		error = LSrData_CreateFromLSFile(BFrFileRef_GetFullPath(sourceFileRef), &lsData);
 		UUmAssert(error == UUcError_None);
 
 		// Spit out the spewData
 		fprintf(stderr, "\tNum Points: %d\n", lsData->numPoints);
 		fprintf(stderr, "\tNum Faces: %d\n", lsData->numFaces);
-		
+
 		if(LSrData_GetSize(lsData) >= LScMaxDataSize)
 		{
 			fprintf(stderr, "WARNING: This LS file is too big(>50Meg)"UUmNL);
@@ -79,7 +79,7 @@ main(
 
 		BFrFileRef_Dispose(sourceFileRef);
 	}
-	
+
 	BFrFileRef_Dispose(directory);
 
 	BFrDirectory_FileIterator_Delete(fileIterator);

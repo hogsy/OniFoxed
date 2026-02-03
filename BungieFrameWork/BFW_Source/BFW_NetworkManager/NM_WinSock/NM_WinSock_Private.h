@@ -18,7 +18,7 @@ struct NMtNetContextPrivate
 	SOCKET				socket;
 	WSAEVENT			event;
 	NMtQueues			queues;
-	
+
 };
 
 // ======================================================================

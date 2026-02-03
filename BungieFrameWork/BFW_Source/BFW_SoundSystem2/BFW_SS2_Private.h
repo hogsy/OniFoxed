@@ -69,12 +69,12 @@ struct SStSoundChannel
 	float							channel_volume;
 	float							distance_volume;
 	float							permutation_volume;
-	
+
 	float							pan_left;	// only used for debugging
 	float							pan_right;	// only used for debugging
-	
+
 	SStSoundChannel_PlatformData	pd;
-	
+
 };
 
 // ======================================================================
@@ -92,27 +92,27 @@ SSiSoundChannel_CanPan(
 UUtBool
 SSiSoundChannel_IsAmbient(
 	SStSoundChannel				*inSoundChannel);
-	
+
 UUtBool
 SSiSoundChannel_IsLocked(
 	SStSoundChannel				*inSoundChannel);
-	
+
 UUtBool
 SSiSoundChannel_IsLooping(
 	SStSoundChannel				*inSoundChannel);
-	
+
 UUtBool
 SSiSoundChannel_IsPaused(
 	SStSoundChannel				*inSoundChannel);
-	
+
 UUtBool
 SSiSoundChannel_IsPlaying(
 	SStSoundChannel				*inSoundChannel);
-	
+
 UUtBool
 SSiSoundChannel_IsUpdating(
 	SStSoundChannel				*inSoundChannel);
-	
+
 void
 SSiSoundChannel_SetAmbient(
 	SStSoundChannel				*inSoundChannel,
@@ -151,11 +151,11 @@ SSiSoundChannels_GetChannelByID(
 UUtUns32
 SSiSoundChannels_GetNumChannels(
 	void);
-	
+
 // ----------------------------------------------------------------------
 UUtBool
 SSiPlayingAmbient_UpdateSoundChannel(
 	SStSoundChannel				*inSoundChannel);
-	
+
 // ======================================================================
 #endif /* BFW_SS2_PRIVATE_H */

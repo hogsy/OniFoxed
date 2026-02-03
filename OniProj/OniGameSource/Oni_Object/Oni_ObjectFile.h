@@ -23,7 +23,7 @@
 #define OBJmGet4BytesFromBuffer(src,dst,type,swap_it)				\
 			(dst) = *((type*)(src));								\
 			((UUtUns8*)(src)) += sizeof(type);						\
-			if ((swap_it)) { UUrSwap_4Byte(&(dst)); }							
+			if ((swap_it)) { UUrSwap_4Byte(&(dst)); }
 
 #define OBJmWrite4BytesToBuffer(buf,val,type,num_bytes)				\
 			*((type*)(buf)) = (val);								\
@@ -33,7 +33,7 @@
 #define OBJmGet2BytesFromBuffer(src,dst,type,swap_it)				\
 			(dst) = *((type*)(src));								\
 			((UUtUns8*)(src)) += sizeof(type);						\
-			if ((swap_it)) { UUrSwap_2Byte(&(dst)); }							
+			if ((swap_it)) { UUrSwap_2Byte(&(dst)); }
 
 #define OBJmWrite2BytesToBuffer(buf,val,type,num_bytes)				\
 			*((type*)(buf)) = (val);								\
@@ -46,7 +46,7 @@
 void
 OBJrObjectFiles_Close(
 	void);
-	
+
 UUtError
 OBJrObjectFiles_LevelLoad(
 	UUtUns16				inLevelNumber);
@@ -58,20 +58,20 @@ OBJrObjectFiles_LevelUnload(
 void
 OBJrObjectFiles_Open(
 	void);
-	
+
 UUtError
 OBJrObjectFiles_RegisterObjectType(
 	UUtUns32				inObjectType,
 	char					*inSubName);
-	
+
 UUtError
 OBJrObjectFiles_SaveBegin(
 	void);
-	
+
 UUtError
 OBJrObjectFiles_SaveEnd(
 	void);
-	
+
 UUtError
 OBJrObjectFiles_Write(
 	UUtUns32				inObjectType,
@@ -86,6 +86,6 @@ OBJrObjectFiles_Initialize(
 void
 OBJrObjectFiles_Terminate(
 	void);
-	
+
 // ======================================================================
 #endif /* ONI_OBJECTFILE_H */

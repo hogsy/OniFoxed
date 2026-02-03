@@ -1,8 +1,8 @@
 /*
 	Oni_AI_Script.c
-	
+
 	Script level AI stuff
-	
+
 	Author: Quinn Dunki, Michael Evans
 
 	Copyright (c) 1998 Bungie Software
@@ -48,13 +48,13 @@ static void AIiObjectsFromScript(
 	/****************
 	* Finds the objects matching a scripting ID. Returns a list of object pointers.
 	*/
-	
+
 	UUtUns16 i,count;
 	OBtObject *object;
 	OBtObjectList *objects;
 	UUtUns32 id_low = UUmMin(inScriptID1, inScriptID2);
 	UUtUns32 id_high = UUmMax(inScriptID1, inScriptID2);
-	
+
 	objects = ONrGameState_GetObjectList();
 
 	*outNumObjects=0;
@@ -64,11 +64,11 @@ static void AIiObjectsFromScript(
 	}
 
 	count = objects->numObjects;
-	
+
 	for (i=0; i<count; i++)
 	{
 		object = objects->object_list + i;
-		
+
 		if ((object->flags & OBcFlags_InUse) == 0)
 			continue;
 
@@ -105,7 +105,7 @@ UUtError AIrScript_LevelBegin_Triggers(
 	if ((ONgLevel->scriptTriggerArray == NULL) || (ONgLevel->scriptTriggerArray->numTriggers == 0)) {
 		return UUcError_None;
 	}
-	
+
 	ONgGameState->triggers.triggers = UUrMemory_Block_New(sizeof(AItScriptTrigger) * ONgLevel->scriptTriggerArray->numTriggers);
 
 	if (!ONgGameState->triggers.triggers) {
@@ -169,13 +169,13 @@ AIrUtility_New_GetCharacterFromID(
 		curChr = present_character_list[itr];
 
 		UUmAssert(curChr->flags & ONcCharacterFlag_InUse);
-		
+
 		if (curChr->scriptID == inID) {
 			result = curChr;
 			break;
 		}
 	}
-	
+
 	if ((result == NULL) && (inExhaustive)) {
 		// search the entire character array, not just the present list
 		present_character_count = ONrGameState_GetNumCharacters();
@@ -207,7 +207,7 @@ AIiScript_CameraInterpolate_Internal(
 	/**********
 	* cm_interpolate animation number-of-frames
 	*/
-	
+
 	CAtCamera*		camera = ONgGameState->local.camera;
 	OBtAnimation*	animation;
 	M3tMatrix4x3	matrix;
@@ -235,7 +235,7 @@ AIiScript_CameraInterpolate_Internal(
 
 	numFrames = (UUtUns32) UUmMax(inParameterList[1].val.i, 1);
 	CArInterpolate_Enter_Matrix(&matrix, numFrames);
-	
+
 	return UUcError_None;
 }
 
@@ -299,7 +299,7 @@ AIiScript_CameraAnim_Internal(
 	/**********
 	* cm_anim [move/look/both] animation
 	*/
-	
+
 	UUtError		error;
 	CAtCamera*		camera = ONgGameState->local.camera;
 	OBtAnimation*	animation;
@@ -312,7 +312,7 @@ AIiScript_CameraAnim_Internal(
 		*outStalled = UUcFalse;
 	}
 
-	
+
 	// Load the named animation
 	error =
 		TMrInstance_GetDataPtr(
@@ -331,7 +331,7 @@ AIiScript_CameraAnim_Internal(
 	}
 
 	CArAnimate_Enter(animation);
-	
+
 	return UUcError_None;
 }
 
@@ -484,11 +484,11 @@ AIiScript_ForceDraw(
 	/******************
 	* obj_force_draw id id
 	*/
-	
+
 	OBtObject *objects[AIcMaxObjectsOfOneID];
 	UUtUns32 i, count;
 	UUtInt32 p0, p1;
-	
+
 	p0 = inParameterList[0].val.i;
 	p1 = (inParameterListLength >= 2) ? inParameterList[1].val.i : p0;
 
@@ -498,7 +498,7 @@ AIiScript_ForceDraw(
 	{
 		objects[i]->flags |= OBcFlags_ForceDraw;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -514,11 +514,11 @@ AIiScript_ObjShow(
 	/******************
 	* obj_show id id
 	*/
-	
+
 	OBtObject *objects[AIcMaxObjectsOfOneID];
 	UUtUns32 i, count;
 	UUtInt32 p0, p1;
-	
+
 	p0 = inParameterList[0].val.i;
 	p1 = (inParameterListLength >= 2) ? inParameterList[1].val.i : p0;
 
@@ -528,7 +528,7 @@ AIiScript_ObjShow(
 	{
 		OBrShow(objects[i], UUcTrue);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -544,7 +544,7 @@ AIiScript_ObjHide(
 	/******************
 	* obj_hide id id
 	*/
-	
+
 	OBtObject *objects[AIcMaxObjectsOfOneID];
 	UUtUns32 i, count;
 	UUtInt32 p0, p1;
@@ -558,7 +558,7 @@ AIiScript_ObjHide(
 	{
 		OBrShow(objects[i], UUcFalse);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -574,9 +574,9 @@ AIiScript_ObjKill(
 
 {
 	/******************
-	* obj_kill id id 
+	* obj_kill id id
 	*/
-	
+
 	OBtObject *objects[AIcMaxObjectsOfOneID];
 	UUtUns32 i, count;
 	UUtInt32 p0, p1;
@@ -590,7 +590,7 @@ AIiScript_ObjKill(
 	{
 		OBrDelete(objects[i]);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -607,9 +607,9 @@ AIiScript_ObjShade(
 
 {
 	/******************
-	* obj_shade id id 
+	* obj_shade id id
 	*/
-	
+
 	OBtObject *objects[AIcMaxObjectsOfOneID];
 	UUtUns32 i, count;
 	UUtInt32 p0, p1;
@@ -635,7 +635,7 @@ AIiScript_ObjShade(
 		objects[i]->flags |= OBcFlags_FlatLighting;
 		objects[i]->flat_lighting_shade = shade;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -652,8 +652,8 @@ AIiScript_ObjCreate(
 	/******************
 	* obj_create id id
 	*/
-		
-	
+
+
 	UUtUns32 i;
 	UUtUns32 id_low;
 	UUtUns32 id_high;
@@ -669,24 +669,24 @@ AIiScript_ObjCreate(
 		id_low = UUmMin(i0, i1);
 		id_high = UUmMax(i0, i1);
 	}
-	
+
 	for (i=0; i < ONgGameState->level->objectSetupArray->numObjects; i++)
 	{
 		OBtObjectSetup *setup = ONgGameState->level->objectSetupArray->objects + i;
 
-		if ((setup->scriptID >= id_low) && (setup->scriptID <= id_high)) {		
+		if ((setup->scriptID >= id_low) && (setup->scriptID <= id_high)) {
 			OBtObject *object;
 
 			if (!(setup->flags & OBcFlags_InUse)) continue;
 
 			object = OBrList_Add(ONgGameState->objects);
-			OBrInit(object,setup);			
+			OBrInit(object,setup);
 		}
 	}
-	
+
 	return UUcError_None;
 }
-	
+
 
 static UUtError
 AIiScript_EnvSetAnim_Internal(
@@ -701,7 +701,7 @@ AIiScript_EnvSetAnim_Internal(
 	/****************
 	* env_setanim object newanim
 	*/
-	
+
 	OBtObject *objects[AIcMaxObjectsOfOneID];
 	UUtUns32 i,count;
 	UUtError error;
@@ -741,7 +741,7 @@ AIiScript_EnvSetAnim_Internal(
 	for (i=0; i < count; i++)
 	{
 		error = OBrSetAnimationByName(objects[i], name);
-		
+
 		if (error != UUcError_None) {
 			SLrScript_ReportError(inErrorContext, "Couldn't load animation for scripted swap");
 			return error;
@@ -798,7 +798,7 @@ AIiScript_EnvAnim_Internal(
 	/****************
 	* env_anim object_id object_id
 	*/
-	
+
 	OBtObject *objects[AIcMaxObjectsOfOneID];
 	UUtUns32 count;
 	UUtUns32 i;
@@ -887,7 +887,7 @@ AIiScript_Letterbox(
 	/**********
 	* letterbox [0|1]
 	*/
-	
+
 	UUtUns16	state = (UUtUns16)inParameterList[0].val.i;
 
 	if (state) {
@@ -1018,7 +1018,7 @@ AIiScript_Input(
 	/**************
 	* input [0/1]
 	*/
-	
+
 	UUtUns16 value;
 
 	value = (UUtUns16)inParameterList[0].val.i;
@@ -1068,11 +1068,11 @@ AIiScript_FadeOut(
 	float		r;
 	float		g;
 	float		b;
-	
+
 	r = (inParameterList[0].type == SLcType_Int32) ? inParameterList[0].val.i : inParameterList[0].val.f;
 	g = (inParameterList[1].type == SLcType_Int32) ? inParameterList[1].val.i : inParameterList[1].val.f;
 	b = (inParameterList[2].type == SLcType_Int32) ? inParameterList[2].val.i : inParameterList[2].val.f;
-	
+
 	numFrames = inParameterList[3].val.i;
 
 	r = UUmPin(r, 0.f, 1.f);
@@ -1096,19 +1096,19 @@ AIiScript_EnvTexSwap(
 	/****************
 	* env_texswap gqstart texname
 	*/
-	
+
 	UUtError error;
 	UUtUns32 gqS,i,gq;
-	
+
 	M3tTextureMap *texture;
 	AKtEnvironment *env = ONgGameState->level->environment;
 	char texname[AIcMaxScriptName];
 
 	COrConsole_Printf("obsolete env_texswap called");
-	
+
 	gqS = inParameterList[0].val.i;
-	
-	for (i=0; i<=env->envQuadRemaps->numIndices; i++) 
+
+	for (i=0; i<=env->envQuadRemaps->numIndices; i++)
 	{
 		UUtUns16 texture_map_index;
 
@@ -1119,25 +1119,25 @@ AIiScript_EnvTexSwap(
 		UUrString_Copy(texname,	inParameterList[1].val.str,AIcMaxScriptName);
 		UUrString_StripExtension(texname);
 		UUrString_Capitalize(texname, AIcMaxScriptName);
-		
+
 		error =
 			TMrInstance_GetDataPtr(
 				M3cTemplate_TextureMap,
 				texname,
 				&texture);
-		
+
 		if (error != UUcError_None)
 		{
 			SLrScript_ReportError(inErrorContext, "caCould not load texture map \"%s\" for scripted swap", texname);
 			return UUcError_Generic;
 		}
-	
+
 		// Find the index for that texture
 		for (texture_map_index = 0; texture_map_index < env->textureMapArray->numMaps; texture_map_index++)
 		{
 			if (env->textureMapArray->maps[texture_map_index] == texture) break;
 		}
-	
+
 		UUmAssert(texture_map_index < env->textureMapArray->numMaps);
 
 		env->gqRenderArray->gqRender[gq].textureMapIndex = texture_map_index;
@@ -1158,15 +1158,15 @@ AIiScript_EnvShow(
 	/****************
 	* env_show ref [0/1]
 	*/
-	
+
 	UUtUns32 ref,i,gq;
 	UUtBool t;
 	AKtEnvironment *env = ONgGameState->level->environment;
-	
+
 	ref = inParameterList[0].val.i;
 	t = (UUtBool)inParameterList[1].val.i;
-	
-	for (i=0; i<=env->envQuadRemaps->numIndices; i++) 
+
+	for (i=0; i<=env->envQuadRemaps->numIndices; i++)
 	{
 		if (env->envQuadRemaps->indices[i] != ref) continue;
 		gq = env->envQuadRemapIndices->indices[i];
@@ -1198,7 +1198,7 @@ AIiScript_EnvBroken(
 	/****************
 	* env_broken ref
 	*/
-	
+
 	UUtUns32 refstart,refend,i,gq,flags,bv_index;
 	UUtUns32 unbroken_bv[AIcEnvBroken_BVLength];
 	UUtUns32 num_unbroken, num_broken;
@@ -1213,7 +1213,7 @@ AIiScript_EnvBroken(
 	} else {
 		refend = refstart;
 	}
-	
+
 	if (refend >= refstart + 32 * AIcEnvBroken_BVLength) {
 		COrConsole_Printf("### env_broken: trying to read objects %d-%d, exceeded max object count of %d",
 							refstart, refend, 32 * AIcEnvBroken_BVLength);
@@ -1222,7 +1222,7 @@ AIiScript_EnvBroken(
 
 	num_unbroken = 0;
 	UUrBitVector_ClearBitAll(unbroken_bv, AIcEnvBroken_BVLength);
-	for (i = 0; i <= env->envQuadRemaps->numIndices; i++) 
+	for (i = 0; i <= env->envQuadRemaps->numIndices; i++)
 	{
 		if ((env->envQuadRemaps->indices[i] < refstart) || (env->envQuadRemaps->indices[i] > refend))
 			continue;
@@ -1261,14 +1261,14 @@ AIiScript_EnvShade(
 	/****************
 	* env_shade ref ref r g b
 	*/
-	
+
 	UUtUns32 ref_low;
 	UUtUns32 ref_high;
 	UUtUns32 shade;
 	UUtUns32 i;
 
 	AKtEnvironment *env = ONgGameState->level->environment;
-	
+
 	ref_low = UUmMin(inParameterList[0].val.i, inParameterList[1].val.i);
 	ref_high = UUmMax(inParameterList[0].val.i, inParameterList[1].val.i);
 
@@ -1286,8 +1286,8 @@ AIiScript_EnvShade(
 		shade |= (MUrUnsignedSmallFloat_To_Uns_Round(g * 255) << 8);
 		shade |= (MUrUnsignedSmallFloat_To_Uns_Round(b * 255) << 0);
 	}
-	
-	for (i=0; i<=env->envQuadRemaps->numIndices; i++) 
+
+	for (i=0; i<=env->envQuadRemaps->numIndices; i++)
 	{
 		if ((env->envQuadRemaps->indices[i] >= ref_low) && (env->envQuadRemaps->indices[i] <= ref_high)) {
 			UUtUns32 gq_index;
@@ -1510,7 +1510,7 @@ static UUtError AIiScript_MessageRemove(
 	SLtParameter_Actual		*ioReturnValue)
 {
 	const char *message_tag = NULL;
-	
+
 	if (inParameterListLength > 0) {
 		message_tag = inParameterList[0].val.str;
 	}
@@ -1631,7 +1631,7 @@ UUtError AIrScript_Initialize(
 	*/
 	UUtError				error;
 	SLtRegisterVoidFunctionTable	table[] =
-	{		
+	{
 		{ "cm_anim", "initiates a camera animation", "cam_spec:string{\"move\" | \"look\" | \"both\"} anim_name:string", AIiScript_CameraAnim_NoBlock },
 		{ "cm_anim_block", "initiates a camera animation", "cam_spec:string{\"move\" | \"look\" | \"both\"} anim_name:string", AIiScript_CameraAnim_Block },
 
@@ -1661,7 +1661,7 @@ UUtError AIrScript_Initialize(
 
 		{ "env_setanim", "sets up an animation for an object", "obj_id:int object_name:string", AIiScript_EnvSetAnim_NoBlock },
 		{ "env_setanim_block", "sets up an animation for an object", "obj_id:int object_name:string", AIiScript_EnvSetAnim_Block },
-		
+
 		{ "letterbox", "starts or stops letterboxing", "start_stop:int{0 | 1}",	AIiScript_Letterbox },
 		{ "input", "turns input on or off", "on_off:int{0 | 1}", AIiScript_Input },
 		{ "fade_in", "fades the screen in", "ticks:int", AIiScript_FadeIn },
@@ -1671,7 +1671,7 @@ UUtError AIrScript_Initialize(
 		{ "env_shade", "sets the shade of a block of objects", "gq_ref:int gq_ref:int r:float g:float b:float", AIiScript_EnvShade },
 		{ "begin_cutscene", "begins a cutscene", NULL, AIiScript_BeginCutScene },
 		{ "end_cutscene", "ends a cutscene", "", AIiScript_EndCutScene },
-		{ "cutscene_sync", "marks a point in a cutscene", NULL, AIiScript_CutsceneSyncMark },		
+		{ "cutscene_sync", "marks a point in a cutscene", NULL, AIiScript_CutsceneSyncMark },
 		{ "dprint", "debugging print", "astring:string", AIiScript_DPrint },
 		{ "dmsg", "debugging message", "astring:string", AIiScript_DMsg },
 		{ "win", "win this level", NULL, AIiScript_Win },
@@ -1706,6 +1706,6 @@ void AIrScript_Terminate(
 	/*******************
 	* Game shutdown
 	*/
-	
+
 	return;
 }

@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Combat.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: April 20, 2000
-	
+
 	PURPOSE: Combat Manager for Oni AI system
-	
+
 	Copyright (c) 2000
 
 */
@@ -151,7 +151,7 @@ UUtUns32 AI2gCombat_LOSUsedPoints, AI2gCombat_LOSNextPoint;
 // -- internal function prototypes
 
 // behavior control
-static void AI2iCombat_ChangeBehavior(ONtCharacter *ioCharacter, AI2tCombatState *ioCombatState);	
+static void AI2iCombat_ChangeBehavior(ONtCharacter *ioCharacter, AI2tCombatState *ioCombatState);
 static void AI2iCombat_RevertToBasicBehavior(ONtCharacter *ioCharacter, AI2tCombatState *ioCombatState);
 
 // contact and knowledge handling
@@ -295,7 +295,7 @@ void AI2rCombat_Enter(ONtCharacter *ioCharacter)
 {
 	AI2tCombatState *combat_state;
 	AI2tTargetingOwner targeting_owner;
-        
+
 	UUmAssert(ioCharacter->charType == ONcChar_AI2);
 	UUmAssert(ioCharacter->ai2State.currentGoal == AI2cGoal_Combat);
 	combat_state = &ioCharacter->ai2State.currentState->state.combat;
@@ -326,7 +326,7 @@ void AI2rCombat_Enter(ONtCharacter *ioCharacter)
 	combat_state->alternate_trigger_pressed = UUcFalse;
 	combat_state->no_technique_timer = 0;
 	combat_state->try_advance_timer = 0;
-	
+
 	// we don't respond to stimuli in the same way any more
 	ioCharacter->ai2State.knowledgeState.callback = &AI2rCombat_NotifyKnowledge;
 
@@ -407,7 +407,7 @@ void AI2rCombat_Update(ONtCharacter *ioCharacter)
 	// TEMPORARY DEBUGGING
 //	UUrDebuggerMessage("AI2rCombat_Update: target knowledge ptr is 0x%08X\n", (UUtUns32) combat_state->target_knowledge);
 
-//	UUmAssert((combat_state->target_knowledge >= AI2gKnowledgeBase) && 
+//	UUmAssert((combat_state->target_knowledge >= AI2gKnowledgeBase) &&
 //				(combat_state->target_knowledge < AI2gKnowledgeBase + AI2gKnowledge_ClearSpaceIndex));
 
 	// check that our target is still valid... may also change targets or drop us out of the combat manager
@@ -454,7 +454,7 @@ void AI2rCombat_Update(ONtCharacter *ioCharacter)
 		// check to see if we are dazed from a fall
 		if (AI2rCombat_Behavior(ioCharacter, combat_state, AI2cCombatMessage_Fallen, &handled, 0, 0, 0)) {
 			// lie still
-			AI2rPath_Halt(ioCharacter); 
+			AI2rPath_Halt(ioCharacter);
 			AI2rMovement_StopAiming(ioCharacter);
 			AI2iCombat_Trigger(ioCharacter, combat_state, UUcFalse);
 			return;
@@ -493,7 +493,7 @@ void AI2rCombat_Update(ONtCharacter *ioCharacter)
 
 				AI2iCombat_ChangeBehavior(ioCharacter, combat_state);
 			}
-/*		COrConsole_Printf("%s: combat range %s -> %s, new behavior %s", ioCharacter->player_name, 
+/*		COrConsole_Printf("%s: combat range %s -> %s, new behavior %s", ioCharacter->player_name,
 			AI2cCombatRangeName[old_range], AI2cCombatRangeName[target_range],
 			AI2cBehaviorName[ioCharacter->ai2State.combatSettings.behavior[target_range - 1]]);*/
 		}
@@ -645,7 +645,7 @@ void AI2rCombat_Update(ONtCharacter *ioCharacter)
 										combat_state->runningpickup_enable ? "YES" : "NO");
 				}
 			}
-			
+
 			// maybe try to pick up the gun that we are going for 'on the run'
 			combat_state->maneuver.gun_running_pickup = combat_state->runningpickup_enable && AI2rManeuver_TryRunningGunPickup(ioCharacter, combat_state);
 		} else {
@@ -752,7 +752,7 @@ void AI2rCombat_Update(ONtCharacter *ioCharacter)
 	if (ioCharacter->ai2State.alarmStatus.action_marker != NULL) {
 		// we are in combat instead of going for our alarm
 		if (combat_state->distance_to_target < ioCharacter->ai2State.alarmSettings.chase_enemy_dist) {
-			// we are close enough to reset our timer 
+			// we are close enough to reset our timer
 #if DEBUG_VERBOSE_ALARM
 			COrConsole_Printf("in combat, close enough (%f < %f) to reset fight timer",
 				combat_state->distance_to_target, ioCharacter->ai2State.alarmSettings.chase_enemy_dist);
@@ -776,7 +776,7 @@ void AI2rCombat_Update(ONtCharacter *ioCharacter)
 	/*
 	 * targeting update
 	 */
-	
+
 	disable_shooting = able_to_melee;
 	disable_shooting = disable_shooting || ONrCharacter_IsStartling(ioCharacter, &startle_frame);
 	disable_shooting = disable_shooting || ((too_close_weight > 0.2f) && (combat_state->maneuver.primary_movement == AI2cPrimaryMovement_Retreat));
@@ -811,7 +811,7 @@ void AI2rCombat_Update(ONtCharacter *ioCharacter)
 			// don't run targeting at all
 			looking_at_target = UUcFalse;
 		}
-		
+
 		if (!looking_at_target) {
 			// just look in our direction of motion
 			AI2rMovement_StopAiming(ioCharacter);
@@ -1116,7 +1116,7 @@ void AI2rCombat_NotifyKnowledge(ONtCharacter *ioCharacter, AI2tKnowledgeEntry *i
 
 			} else {
 				priority_differential = AI2rKnowledge_CompareFunc(combat_state->target_knowledge, inEntry, UUcTrue, ioCharacter);
-				
+
 				if (priority_differential > 0) {
 					// higher priority target overrules
 					change_targets = UUcTrue;
@@ -1128,7 +1128,7 @@ void AI2rCombat_NotifyKnowledge(ONtCharacter *ioCharacter, AI2tKnowledgeEntry *i
 			}
 
 			if ((combat_state->target_knowledge != NULL) && (inEntry->strength == AI2cContactStrength_Definite)) {
-				// attack people who are significantly closer than our current target - don't attack 
+				// attack people who are significantly closer than our current target - don't attack
 				// people who are a long distance further away
 				newcontact_distance = MUmVector_GetDistanceSquared(combat_state->targeting.targeting_frompt, inEntry->last_location);
 				oldcontact_distance = MUmVector_GetDistanceSquared(combat_state->targeting.targeting_frompt, combat_state->target_knowledge->last_location);
@@ -1157,7 +1157,7 @@ void AI2rCombat_NotifyKnowledge(ONtCharacter *ioCharacter, AI2tKnowledgeEntry *i
 					change_targets = UUcTrue;
 				}
 			}
-			
+
 			if (change_targets) {
 				if (clear_hurt_me && (combat_state->target_knowledge != NULL)) {
 					combat_state->target_knowledge->has_hurt_me = UUcFalse;
@@ -1245,7 +1245,7 @@ static UUtBool AI2iCombat_CheckTarget(ONtCharacter *ioCharacter, AI2tCombatState
 					(ioCombatState->investigate_body_timer < ioCombatState->combat_parameters->investigate_body_delay / 2)) {
 					UUtUns32 random_val, random_chance;
 					ONtActiveCharacter *active_character = ONrForceActiveCharacter(ioCharacter);
-	
+
 					ioCombatState->dead_done_taunt = UUcTrue;
 					ioCombatState->dead_taunt_enable = UUcFalse;
 
@@ -1792,7 +1792,7 @@ static UUtBool AI2iCheckFightBack(ONtCharacter *ioCharacter, AI2tCombatState *io
 
 	return UUcFalse;
 }
-			
+
 static UUtUns32 AI2iTryToFindGunBehavior(ONtCharacter *ioCharacter, AI2tCombatState *ioCombatState,
 								   AI2tCombatMessage inMsg, UUtBool *inHandled,
 								   UUtUns32 inParam1, UUtUns32 inParam2, UUtUns32 inParam3)
@@ -2047,7 +2047,7 @@ static UUtUns32 AI2iBehavior_Stare(ONtCharacter *ioCharacter, AI2tCombatState *i
 	case AI2cCombatMessage_BeginBehavior:
 		// nothing to set up in our internal state
 		return 0;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		// stand still
 		ioCombatState->maneuver.primary_movement_weights[AI2cPrimaryMovement_Hold] = 1.0f;
@@ -2093,7 +2093,7 @@ static UUtUns32 AI2iBehavior_HoldAndFire(ONtCharacter *ioCharacter, AI2tCombatSt
 	case AI2cCombatMessage_BeginBehavior:
 		// nothing to set up in our internal state
 		return 0;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		// stand still
 		ioCombatState->maneuver.primary_movement_weights[AI2cPrimaryMovement_Hold] = 1.0f;
@@ -2140,7 +2140,7 @@ static UUtUns32 AI2iBehavior_FiringCharge(ONtCharacter *ioCharacter, AI2tCombatS
 	case AI2cCombatMessage_BeginBehavior:
 		// nothing to set up in our internal state
 		return 0;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		// move towards the target
 		ioCombatState->maneuver.primary_movement_weights[AI2cPrimaryMovement_Advance] = 1.0f;
@@ -2183,7 +2183,7 @@ static UUtUns32 AI2iBehavior_Melee(ONtCharacter *ioCharacter, AI2tCombatState *i
 	case AI2cCombatMessage_BeginBehavior:
 		// nothing to set up in our internal state
 		return 0;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		// go into melee
 		ioCombatState->maneuver.primary_movement_weights[AI2cPrimaryMovement_Melee] = 1.0f;
@@ -2224,7 +2224,7 @@ static UUtUns32 AI2iBehavior_RunForAlarm(ONtCharacter *ioCharacter, AI2tCombatSt
 		ioCombatState->maneuver.primary_movement_weights[AI2cPrimaryMovement_FindAlarm] = 1.2f;
 	}
 
-	if ((ioCombatState->behavior_state.alarm.tried_alarm) && 
+	if ((ioCombatState->behavior_state.alarm.tried_alarm) &&
 		(inMsg != AI2cCombatMessage_BeginBehavior) && (inMsg != AI2cCombatMessage_EndBehavior)) {
 		// we can't find an alarm - run our try to find gun behavior
 		if ((ioCharacter->inventory.weapons[0] == NULL) || ONrCharacter_OutOfAmmo(ioCharacter)) {
@@ -2236,7 +2236,7 @@ static UUtUns32 AI2iBehavior_RunForAlarm(ONtCharacter *ioCharacter, AI2tCombatSt
 	case AI2cCombatMessage_BeginBehavior:
 		ioCombatState->behavior_state.alarm.tried_alarm = UUcFalse;
 		return 0;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		// if we can't find an alarm, run away
 		ioCombatState->maneuver.primary_movement_weights[AI2cPrimaryMovement_Retreat] = 0.8f;
@@ -2429,7 +2429,7 @@ static UUtUns32 AI2iBehavior_Barabbas(ONtCharacter *ioCharacter, AI2tCombatState
 				break;
 		}
 		return 0;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		if (barabbas_state->disable_beam_timer > AI2cCombat_UpdateFrames) {
 			barabbas_state->disable_beam_timer -= AI2cCombat_UpdateFrames;
@@ -2665,7 +2665,7 @@ static UUtUns32 AI2iBehavior_BarabbasShoot(ONtCharacter *ioCharacter, AI2tCombat
 			AI2rMovement_ChangeMovementMode(ioCharacter, AI2cMovementMode_Walk);
 		}
 		break;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		if (ioCombatState->behavior_state.barabbas.disable_beam_timer) {
 			ioCombatState->behavior_state.barabbas.barabbas_mode = AI2cBarabbas_WaitForWeapon;
@@ -2708,7 +2708,7 @@ static UUtUns32 AI2iBehavior_BarabbasAdvance(ONtCharacter *ioCharacter, AI2tComb
 	case AI2cCombatMessage_BeginBehavior:
 		ioCombatState->behavior_state.barabbas.barabbas_mode = AI2cBarabbas_ShootBeam;
 		break;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		if (ioCombatState->behavior_state.barabbas.disable_beam_timer) {
 			ioCombatState->behavior_state.barabbas.barabbas_mode = AI2cBarabbas_AdvanceGrenading;
@@ -2749,7 +2749,7 @@ static UUtUns32 AI2iBehavior_BarabbasMelee(ONtCharacter *ioCharacter, AI2tCombat
 	case AI2cCombatMessage_BeginBehavior:
 		ioCombatState->behavior_state.barabbas.barabbas_mode = AI2cBarabbas_Melee;
 		break;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		if ((ioCharacter->inventory.weapons[0] != NULL) && (WPrIsFiring(ioCharacter->inventory.weapons[0]))) {
 			// barabbas has to wait for his gun to finish firing
@@ -2869,12 +2869,12 @@ static UUtBool AI2iBehavior_SuperNinjaCheckTeleportFlee(ONtCharacter *ioCharacte
 											   AI2tBehaviorState_SuperNinja *ioNinjaState)
 {
 	// don't teleport while invisible
-	if (ioCharacter->inventory.invisibilityRemaining > 0) 
+	if (ioCharacter->inventory.invisibilityRemaining > 0)
 		return UUcFalse;
 
 	if (ioNinjaState->flee_damage_taken < AI2cSuperNinja_FleeTeleportDamage)
 		return UUcFalse;
-	
+
 	if (ioCombatState->distance_to_target >= AI2cSuperNinja_FleeTeleportRange) {
 		return UUcFalse;
 	}
@@ -2888,12 +2888,12 @@ static UUtBool AI2iBehavior_SuperNinjaCheckTeleportAdvance(ONtCharacter *ioChara
 											   AI2tBehaviorState_SuperNinja *ioNinjaState)
 {
 	// don't teleport while invisible
-	if (ioCharacter->inventory.invisibilityRemaining > 0) 
+	if (ioCharacter->inventory.invisibilityRemaining > 0)
 		return UUcFalse;
 
 	if (ioNinjaState->superninja_mode != AI2cSuperNinja_Advance)
 		return UUcFalse;
-	
+
 	if (ioCombatState->distance_to_target < AI2cSuperNinja_AdvanceTeleportRange) {
 #if AI_DEBUG_SUPERNINJA
 		COrConsole_Printf("superninja advance: too close to teleport (%f < %f)",
@@ -2944,7 +2944,7 @@ static UUtUns32 AI2iBehavior_SuperNinja(ONtCharacter *ioCharacter, AI2tCombatSta
 				break;
 		}
 		return 0;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		if (superninja_state->disable_fireball_timer > AI2cCombat_UpdateFrames) {
 			superninja_state->disable_fireball_timer -= AI2cCombat_UpdateFrames;
@@ -2972,13 +2972,13 @@ static UUtUns32 AI2iBehavior_SuperNinja(ONtCharacter *ioCharacter, AI2tCombatSta
 #if AI_DEBUG_SUPERNINJA
 				COrConsole_Printf("superninja: flee damage staying at %d (%d more frames)",
 							superninja_state->flee_damage_taken, superninja_state->flee_damagestay_timer);
-#endif						
+#endif
 			} else {
 				if (superninja_state->flee_damage_taken > AI2cSuperNinja_DamageDecayAmount) {
 					superninja_state->flee_damage_taken -= AI2cSuperNinja_DamageDecayAmount;
 #if AI_DEBUG_SUPERNINJA
 					COrConsole_Printf("superninja: flee damage decays to %d", superninja_state->flee_damage_taken);
-#endif						
+#endif
 				} else {
 					superninja_state->flee_damage_taken = 0;
 				}
@@ -2996,14 +2996,14 @@ static UUtUns32 AI2iBehavior_SuperNinja(ONtCharacter *ioCharacter, AI2tCombatSta
 			superninja_state->superninja_mode = AI2cSuperNinja_TeleportFlee;
 #if AI_DEBUG_SUPERNINJA
 			COrConsole_Printf("superninja: starting flee teleport");
-#endif						
+#endif
 
 		} else if (AI2iBehavior_SuperNinjaCheckTeleportAdvance(ioCharacter, ioCombatState, superninja_state)) {
 			// super ninja would rather close the distance to target by teleporting in
 			superninja_state->superninja_mode = AI2cSuperNinja_TeleportAdvance;
 #if AI_DEBUG_SUPERNINJA
 			COrConsole_Printf("superninja: starting close teleport");
-#endif						
+#endif
 
 		} else if (AI2iBehavior_SuperNinjaCheckInvis(ioCharacter, ioCombatState, superninja_state)) {
 			// super ninja wants to turn invisible
@@ -3050,7 +3050,7 @@ static UUtUns32 AI2iBehavior_SuperNinja(ONtCharacter *ioCharacter, AI2tCombatSta
 						superninja_state->superninja_mode = AI2cSuperNinja_Melee;
 #if AI_DEBUG_SUPERNINJA
 						COrConsole_Printf("superninja: found no suitable points to teleport retreat to, aborting");
-#endif						
+#endif
 					}
 					break;
 
@@ -3076,7 +3076,7 @@ static UUtUns32 AI2iBehavior_SuperNinja(ONtCharacter *ioCharacter, AI2tCombatSta
 						superninja_state->superninja_mode = AI2cSuperNinja_Advance;
 #if AI_DEBUG_SUPERNINJA
 						COrConsole_Printf("superninja: found no suitable points to teleport behind, aborting");
-#endif						
+#endif
 					}
 					break;
 			}
@@ -3094,7 +3094,7 @@ static UUtUns32 AI2iBehavior_SuperNinja(ONtCharacter *ioCharacter, AI2tCombatSta
 						COrConsole_Printf("superninja: animtype %s curstate %s fromstate %s [queued %s] -> inactive and upright, do special move",
 											ONrAnimTypeToString(active_character->curAnimType), ONrAnimStateToString(active_character->curFromState),
 											ONrAnimStateToString(active_character->nextAnimState), ONrAnimTypeToString(active_character->nextAnimType));
-#endif						
+#endif
 						// perform our fireball attack
 						ONrCharacter_FightMode(ioCharacter);
 						animation = ONrCharacter_DoAnimation(ioCharacter, active_character, ONcAnimPriority_Appropriate, ONcAnimType_Ninja_Fireball);
@@ -3124,7 +3124,7 @@ static UUtUns32 AI2iBehavior_SuperNinja(ONtCharacter *ioCharacter, AI2tCombatSta
 						COrConsole_Printf("superninja: animtype %s curstate %s fromstate %s [queued %s] -> inactive and upright, do special move",
 											ONrAnimTypeToString(active_character->curAnimType), ONrAnimStateToString(active_character->curFromState),
 											ONrAnimStateToString(active_character->nextAnimState), ONrAnimTypeToString(active_character->nextAnimType));
-#endif						
+#endif
 						// perform our invisibility move
 						ONrCharacter_FightMode(ioCharacter);
 						animation = ONrCharacter_DoAnimation(ioCharacter, active_character, ONcAnimPriority_Appropriate, ONcAnimType_Ninja_Invisible);
@@ -3155,7 +3155,7 @@ static UUtUns32 AI2iBehavior_SuperNinja(ONtCharacter *ioCharacter, AI2tCombatSta
 						COrConsole_Printf("superninja: animtype %s curstate %s fromstate %s [queued %s] -> inactive and upright, do special move",
 											ONrAnimTypeToString(active_character->curAnimType), ONrAnimStateToString(active_character->curFromState),
 											ONrAnimStateToString(active_character->nextAnimState), ONrAnimTypeToString(active_character->nextAnimType));
-#endif						
+#endif
 						// perform our teleport-in move
 						ONrCharacter_FightMode(ioCharacter);
 						animation = ONrCharacter_DoAnimation(ioCharacter, active_character, ONcAnimPriority_Appropriate, ONcAnimType_Teleport_In);
@@ -3366,7 +3366,7 @@ static UUtUns32 AI2iBehavior_SuperNinjaFireball(ONtCharacter *ioCharacter, AI2tC
 	case AI2cCombatMessage_BeginBehavior:
 		ioCombatState->behavior_state.superNinja.superninja_mode = AI2cSuperNinja_Fireball;
 		break;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		if ((ioCombatState->behavior_state.superNinja.disable_fireball_timer == 0) && (ONrCharacter_IsInactiveUpright(ioCharacter))) {
 			ioCombatState->behavior_state.superNinja.superninja_mode = AI2cSuperNinja_Fireball;
@@ -3393,7 +3393,7 @@ static UUtUns32 AI2iBehavior_SuperNinjaAdvance(ONtCharacter *ioCharacter, AI2tCo
 	case AI2cCombatMessage_BeginBehavior:
 		ioCombatState->behavior_state.superNinja.superninja_mode = AI2cSuperNinja_Advance;
 		break;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		ioCombatState->behavior_state.superNinja.superninja_mode = AI2cSuperNinja_Advance;
 		break;
@@ -3416,7 +3416,7 @@ static UUtUns32 AI2iBehavior_SuperNinjaMelee(ONtCharacter *ioCharacter, AI2tComb
 	case AI2cCombatMessage_BeginBehavior:
 		ioCombatState->behavior_state.superNinja.superninja_mode = AI2cSuperNinja_Melee;
 		break;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		// FIXME: trigger off super ninja's damage taken field to see if we want to escape
 		ioCombatState->behavior_state.superNinja.superninja_mode = AI2cSuperNinja_Melee;
@@ -3433,7 +3433,7 @@ static UUtUns32 AI2iBehavior_SuperNinjaMelee(ONtCharacter *ioCharacter, AI2tComb
 // ------------------------------------------------------------------------------------
 // -- mutant muro's special-case behavior functions
 
-static void AI2iMutantMuro_DisableShield(AI2tBehaviorState_MutantMuro *ioMuroState, 
+static void AI2iMutantMuro_DisableShield(AI2tBehaviorState_MutantMuro *ioMuroState,
 										 UUtUns32 inDecayTime, UUtUns32 inDisableTime)
 {
 	if ((ioMuroState->shield_disable_timer > 0) || (ioMuroState->shield_decay_timer > 0)) {
@@ -3483,7 +3483,7 @@ static UUtUns32 AI2iBehavior_MutantMuro(ONtCharacter *ioCharacter, AI2tCombatSta
 				break;
 		}
 		return 0;
-	
+
 	case AI2cCombatMessage_PrimaryMovement:
 		// track muro's shield
 
@@ -3624,7 +3624,7 @@ static UUtUns32 AI2iBehavior_MutantMuroZeus(ONtCharacter *ioCharacter, AI2tComba
 				ioCombatState->maneuver.primary_movement_weights[AI2cPrimaryMovement_GetUp] = 1.0f;
 				break;
 			}
-			
+
 			lightning_enable = (ioCombatState->distance_to_target > AI2cMutantMuro_ZeusTargetDistance);
 			lightning_enable = lightning_enable || (ioCombatState->have_los);
 
@@ -3692,7 +3692,7 @@ static UUtUns32 AI2iBehavior_MutantMuroZeus(ONtCharacter *ioCharacter, AI2tComba
 				COrConsole_Printf("mutantmuro: animtype %s curstate %s fromstate %s [queued %s] -> inactive and upright, do special move",
 									ONrAnimTypeToString(active_character->curAnimType), ONrAnimStateToString(active_character->curFromState),
 									ONrAnimStateToString(active_character->nextAnimState), ONrAnimTypeToString(active_character->nextAnimType));
-#endif						
+#endif
 				ONrCharacter_FightMode(ioCharacter);
 				animation = ONrCharacter_DoAnimation(ioCharacter, active_character, ONcAnimPriority_Appropriate, ONcAnimType_Muro_Thunderbolt);
 				if (animation == NULL) {
@@ -3807,9 +3807,9 @@ static UUtUns32 AI2iBehavior_MutantMuroMelee(ONtCharacter *ioCharacter, AI2tComb
 						COrConsole_Printf("mutantmuro: animtype %s curstate %s fromstate %s [queued %s] -> inactive and upright, do special move",
 											ONrAnimTypeToString(active_character->curAnimType), ONrAnimStateToString(active_character->curFromState),
 											ONrAnimStateToString(active_character->nextAnimState), ONrAnimTypeToString(active_character->nextAnimType));
-#endif						
+#endif
 
-						// kill stun while trying to turtle 
+						// kill stun while trying to turtle
 						active_character->hitStun = 0;
 						active_character->blockStun = 0;
 						active_character->staggerStun = 0;
@@ -4066,4 +4066,4 @@ void AI2rCombat_Report(ONtCharacter *ioCharacter, AI2tCombatState *ioCombatState
 	if (inVerbose) {
 		AI2rCombat_Behavior(ioCharacter, ioCombatState, AI2cCombatMessage_Report, &handled, 0, 0, 0);
 	}
-}	
+}

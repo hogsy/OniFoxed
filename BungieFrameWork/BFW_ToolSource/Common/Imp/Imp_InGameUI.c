@@ -51,7 +51,7 @@ static AUtFlagElement	IMPgMoveKeys[] =
 	{ "quick",						ONcKey_Quick },
 	{ "w",							ONcKey_Wait },
 	{ "wait",						ONcKey_Wait },
-	
+
 	{ NULL,							0 }
 };
 
@@ -63,7 +63,7 @@ static AUtFlagElement	IMPgPowerupTypes[] =
 	{ "shield",						WPcPowerup_ShieldBelt },
 	{ "invis",						WPcPowerup_Invisibility },
 	{ "lsi",						WPcPowerup_LSI },
-	
+
 	{ NULL,							WPcPowerup_None }
 };
 
@@ -77,14 +77,14 @@ typedef struct ONtIGUI_StringListElem
 {
 	char							id[ONcIGUI_ElemName_MaxChars];
 	char							*text;
-	
+
 } ONtIGUI_StringListElem;
 
 typedef struct ONtIGUI_StringList
 {
 	UUtUns32						num_lines;
 	ONtIGUI_StringListElem			lines[1024];
-	
+
 } ONtIGUI_StringList;
 
 // ======================================================================
@@ -98,18 +98,18 @@ IGUIiStringList_Get(
 	UUtError			error;
 	BFtTextFile			*text_file;
 	ONtIGUI_StringList	*string_list;
-	
+
 	text_file = NULL;
 	string_list = NULL;
-	
+
 	error = BFrTextFile_MapForRead(inSourceFile, &text_file);
 	if (error != UUcError_None) { return NULL; }
-	
+
 	// find the "#strings" line
 	do
 	{
 		char				*start;
-		
+
 		start = BFrTextFile_GetNextStr(text_file);
 		if (start == NULL) { goto exit; }
 		if (UUrString_CompareLen_NoCase(start, "#strings", strlen("#strings")) == 0)
@@ -118,11 +118,11 @@ IGUIiStringList_Get(
 		}
 	}
 	while (1);
-	
+
 	// the file has a string list, so allocate an ONtIGUI_StringList
 	string_list = (ONtIGUI_StringList*)UUrMemory_Block_NewClear(sizeof(ONtIGUI_StringList));
 	string_list->num_lines = 0;
-	
+
 	// the following are the actual text
 	do
 	{
@@ -130,13 +130,13 @@ IGUIiStringList_Get(
 		char					elem_name[ONcIGUI_ElemName_MaxChars];
 		UUtUns32				i;
 		UUtUns32				index;
-		
+
 		string = BFrTextFile_GetNextStr(text_file);
 		if (string == NULL) { break; }
-		
+
 		// skip lines that don't begin with #
 		if (string[0] != '#') { continue; }
-		
+
 		// read the element name
 		UUrMemory_Clear(elem_name, ONcIGUI_ElemName_MaxChars);
 		for (i = 0; i < ONcIGUI_ElemName_MaxChars; i++)
@@ -144,7 +144,7 @@ IGUIiStringList_Get(
 			if (UUrIsSpace(string[i + 1])) { break; }
 			elem_name[i] = string[i + 1];
 		}
-		
+
 		// find the start of the string
 		do
 		{
@@ -154,30 +154,30 @@ IGUIiStringList_Get(
 			string++;
 		}
 		while (1);
-		
+
 		// create the ONtIGUI_StringListElem
 		index = string_list->num_lines;
 		UUrString_Copy(
 			string_list->lines[index].id,
 			elem_name,
 			ONcIGUI_ElemName_MaxChars);
-		
+
 		string_list->lines[index].text = (char*)UUrMemory_Block_New((strlen(string) + 1));
 		if (string_list->lines[index].text != NULL)
 		{
 			UUrString_Copy(string_list->lines[index].text, string, (strlen(string) + 1));
 		}
-		
+
 		string_list->num_lines++;
 	}
 	while (1);
-	
+
 exit:
 	if (text_file)
 	{
 		BFrTextFile_Close(text_file);
 	}
-	
+
 	return string_list;
 }
 
@@ -189,26 +189,26 @@ IGUIiStringList_GetText(
 {
 	UUtUns32			i;
 	char				*text;
-	
+
 	if ((inStringList == NULL) || (inElemName == NULL)) { return NULL; }
-	
+
 	text = NULL;
-	
+
 	for (i = 0; i < inStringList->num_lines; i++)
 	{
 		UUtInt32			result;
-		
+
 		result =
 			UUrString_Compare_NoCase(
 				inStringList->lines[i].id,
 				inElemName);
-				
+
 		if (result != 0) { continue; }
-		
+
 		text = inStringList->lines[i].text;
 		break;
 	}
-	
+
 	return text;
 }
 
@@ -218,9 +218,9 @@ IGUIiStringList_Delete(
 	ONtIGUI_StringList	*inStringList)
 {
 	UUtUns32			i;
-	
+
 	if (inStringList == NULL) { return; }
-	
+
 	for (i = 0; i < inStringList->num_lines; i++)
 	{
 		if (inStringList->lines[i].text != NULL)
@@ -229,7 +229,7 @@ IGUIiStringList_Delete(
 			inStringList->lines[i].text = NULL;
 		}
 	}
-	
+
 	UUrMemory_Block_Delete(inStringList);
 	inStringList = NULL;
 }
@@ -250,11 +250,11 @@ iGetTextureByPath(
 	BFtFileRef			*texture_file_ref;
 	const char			*texture_name;
 	TMtPlaceHolder		texture_map;
-	
+
 	UUmAssert(inPath);
 	UUmAssert(inParentDir);
 	UUmAssert(outTextureMap);
-	
+
 	// create a new file ref using the file name
 	error =
 		BFrFileRef_DuplicateAndReplaceName(
@@ -262,10 +262,10 @@ iGetTextureByPath(
 			inPath,
 			&texture_file_ref);
 	IMPmError_ReturnOnErrorMsg(error, "texture file was not found");
-	
+
 	// set the textures name
 	texture_name = BFrFileRef_GetLeafName(texture_file_ref);
-	
+
 	// process the texture map file
 	error =
 		Imp_ProcessTexture_File(
@@ -273,11 +273,11 @@ iGetTextureByPath(
 			texture_name,
 			&texture_map);
 	IMPmError_ReturnOnErrorMsg(error, "unable to process the texture");
-	
+
 	BFrFileRef_Dispose(texture_file_ref);
-	
+
 	*outTextureMap = texture_map;
-	
+
 	return UUcError_None;
 }
 
@@ -292,11 +292,11 @@ iGetTextureBigByPath(
 	BFtFileRef			*texture_file_ref;
 	const char			*texture_name;
 	TMtPlaceHolder		texture_map;
-	
+
 	UUmAssert(inPath);
 	UUmAssert(inParentDir);
 	UUmAssert(outTextureMap);
-	
+
 	// create a new file ref using the file name
 	error =
 		BFrFileRef_DuplicateAndReplaceName(
@@ -304,10 +304,10 @@ iGetTextureBigByPath(
 			inPath,
 			&texture_file_ref);
 	IMPmError_ReturnOnErrorMsg(error, "texture file was not found");
-	
+
 	// set the textures name
 	texture_name = BFrFileRef_GetLeafName(texture_file_ref);
-	
+
 	// process the texture map file
 	error =
 		Imp_ProcessTexture_Big_File(
@@ -315,11 +315,11 @@ iGetTextureBigByPath(
 			texture_name,
 			&texture_map);
 	IMPmError_ReturnOnErrorMsg(error, "unable to process the texture");
-	
+
 	BFrFileRef_Dispose(texture_file_ref);
-	
+
 	*outTextureMap = texture_map;
-	
+
 	return UUcError_None;
 }
 
@@ -344,9 +344,9 @@ Imp_IGUI_FontInfo(
 	// initialize the font info
 	UUrMemory_Clear(outFontInfo, sizeof(ONtIGUI_FontInfo));
 	outFontInfo->flags = IGUIcFontInfoFlag_None;
-	
+
 	if (inGroup == NULL) { return; }
-	
+
 	// get the font_info from the group
 	error =
 		GRrGroup_GetElement(
@@ -366,14 +366,14 @@ Imp_IGUI_FontInfo(
 		{
 			outFontInfo->flags |= IGUIcFontInfoFlag_FontFamily;
 		}
-		
+
 		// get teh font size
 		error = GRrGroup_GetUns32(data, "font_size", &font_size);
 		if (error == UUcError_None)
 		{
 			outFontInfo->flags |= IGUIcFontInfoFlag_FontSize;
 		}
-		
+
 		// get the font style
 		error = GRrGroup_GetElement(data, "font_style", &element_type, &font_style_data);
 		if (error == UUcError_None)
@@ -389,7 +389,7 @@ Imp_IGUI_FontInfo(
 				outFontInfo->flags |= IGUIcFontInfoFlag_FontStyle;
 			}
 		}
-		
+
 		// get the font shade
 		error = GRrGroup_GetElement(data, "font_shade", &element_type, &font_shade_data);
 		if (error == UUcError_None)
@@ -423,16 +423,16 @@ Imp_IGUI_FontInfo(
 		{
 			outFontInfo->flags |= IGUIcFontInfoFlag_FontFamily;
 		}
-		
+
 		// get teh font size
 		error = GRrGroup_Array_GetElement(data, cInfoSize, &element_type, &font_size_data);
 		if (error == UUcError_None)
 		{
 			outFontInfo->flags |= IGUIcFontInfoFlag_FontSize;
 		}
-		
+
 		sscanf((char*)font_size_data, "%d", &font_size);
-		
+
 		// get the font style
 		error = GRrGroup_Array_GetElement(data, cInfoStyle, &element_type, &font_style_data);
 		if (error == UUcError_None)
@@ -448,7 +448,7 @@ Imp_IGUI_FontInfo(
 				outFontInfo->flags |= IGUIcFontInfoFlag_FontStyle;
 			}
 		}
-		
+
 		// get the font shade
 		error = GRrGroup_Array_GetElement(data, cInfoShade, &element_type, &font_shade_data);
 		if (error == UUcError_None)
@@ -474,12 +474,12 @@ Imp_IGUI_FontInfo(
 			}
 		}
 	}
-	
+
 	// setup the outFontInfo data
 	if ((outFontInfo->flags & IGUIcFontInfoFlag_FontFamily) != 0)
 	{
 		// get a placeholder for the font
-		error = 
+		error =
 			TMrConstruction_Instance_GetPlaceHolder(
 				TScTemplate_FontFamily,
 				font_name,
@@ -494,7 +494,7 @@ Imp_IGUI_FontInfo(
 	{
 		outFontInfo->font_size = (UUtUns16)font_size;
 	}
-	
+
 	if ((outFontInfo->flags & IGUIcFontInfoFlag_FontStyle) != 0)
 	{
 		outFontInfo->font_style = (TStFontStyle)font_style;
@@ -520,7 +520,7 @@ Imp_IGUI_String(
 	UUtUns32			length;
 	UUtBool				no_quotes;
 	char				*last_quote;
-	
+
 	// create the string
 	error =
 		TMrConstruction_Instance_NewUnique(
@@ -532,23 +532,23 @@ Imp_IGUI_String(
 		Imp_PrintWarning("Unable to create string instance.");
 		return NULL;
 	}
-	
+
 	switch (inElementType)
 	{
 		case GRcElementType_String:
 			// get the text
 			elem_name = (char*)inData;
-			
+
 			// get the font info
 			Imp_IGUI_FontInfo(NULL, &string->font_info);
 		break;
-		
+
 		case GRcElementType_Group:
 		{
 			GRtGroup				*group;
-			
+
 			group = (GRtGroup*)inData;
-			
+
 			// get the text
 			error = GRrGroup_GetString(group, "text", &elem_name);
 			if (error != UUcError_None)
@@ -556,18 +556,18 @@ Imp_IGUI_String(
 				Imp_PrintWarning("Unable to get text from text_array group.");
 				return NULL;
 			}
-			
+
 			// get the font info
 			Imp_IGUI_FontInfo(group, &string->font_info);
 		}
 		break;
-		
+
 		default:
 			Imp_PrintWarning("can't process that element type");
 			return NULL;
 		break;
 	}
-	
+
 	// get the string from the inStringList
 	text = IGUIiStringList_GetText(inStringList, elem_name);
 	if (text == NULL)
@@ -575,7 +575,7 @@ Imp_IGUI_String(
 		Imp_PrintWarning("Unable to get text %s from the string list", elem_name);
 		return NULL;
 	}
-	
+
 	// make sure the strings will have at least one character in it and that it begins
 	// with a quotation mark
 	no_quotes = UUcFalse;
@@ -584,7 +584,7 @@ Imp_IGUI_String(
 	{
 		no_quotes = UUcTrue;
 	}
-	
+
 	if (no_quotes == UUcFalse)
 	{
 		// find the last quotation mark and make sure there is only white space
@@ -592,11 +592,11 @@ Imp_IGUI_String(
 		// one quote on the line if this code is reached
 		last_quote = strrchr(text, '"');
 		last_quote++;
-		
+
 		while (1)
 		{
 			char			c;
-			
+
 			c = *last_quote++;
 			if (c == 0) { break; }
 			if (UUrIsSpace(c) == UUcFalse)
@@ -606,7 +606,7 @@ Imp_IGUI_String(
 			}
 		}
 	}
-		
+
 	if (no_quotes == UUcTrue)
 	{
 		if (length < 3)
@@ -629,14 +629,14 @@ Imp_IGUI_String(
 		{
 			text[ONcIGUI_MaxStringLength - 1] = '\0';
 		}
-		
+
 		// copy the text into the string
 		UUrString_Copy(string->string, (text + 1), ONcIGUI_MaxStringLength);
-		
+
 		length = strlen(string->string);
 		string->string[length - 1] = '\0';
 	}
-	
+
 	// return the string
 	return string;
 }
@@ -654,7 +654,7 @@ Imp_IGUI_StringArray(
 	UUtUns32			num_elements;
 	ONtIGUI_StringArray	*string_array;
 	UUtUns32			i;
-	
+
 	error =
 		GRrGroup_GetElement(
 			inGroup,
@@ -666,14 +666,14 @@ Imp_IGUI_StringArray(
 //		Imp_PrintWarning("Unable to get string array from group");
 		return NULL;
 	}
-	
+
 	num_elements = GRrGroup_Array_GetLength(text_array);
 	if (num_elements == 0)
 	{
 //		Imp_PrintWarning("The string array has no items in it");
 		return NULL;
 	}
-	
+
 	// create the text array
 	error =
 		TMrConstruction_Instance_NewUnique(
@@ -685,13 +685,13 @@ Imp_IGUI_StringArray(
 		Imp_PrintWarning("Unable to create string array instance.");
 		return NULL;
 	}
-	
+
 	for (i = 0; i < num_elements; i++)
 	{
 		void				*data;
-		
+
 		string_array->string[i] = NULL;
-		
+
 		// get the text from the array
 		error =
 			GRrGroup_Array_GetElement(
@@ -704,11 +704,11 @@ Imp_IGUI_StringArray(
 			Imp_PrintWarning("Unable to get element from text array");
 			continue;
 		}
-		
+
 		// process the string
 		string_array->string[i] = Imp_IGUI_String(data, element_type, inStringList);
 	}
-	
+
 	// return the string array
 	return string_array;
 }
@@ -726,12 +726,12 @@ Imp_IGUI_Page(
 	ONtIGUI_Page		*page;
 	char				*part_name;
 	TMtPlaceHolder		part;
-	
+
 	pict = 0;
 	path = NULL;
 	page = NULL;
 	part = 0;
-	
+
 	// create the template instance
 	error =
 		TMrConstruction_Instance_NewUnique(
@@ -743,14 +743,14 @@ Imp_IGUI_Page(
 		Imp_PrintWarning("Unable to create the page instance");
 		return NULL;
 	}
-	
+
 	// import the pict
 	error = GRrGroup_GetString(inGroup, "pict", &path);
 	if (error == UUcError_None)
 	{
 		error = iGetTextureByPath(path, inSourceFile, &pict);
 	}
-	
+
 	// import the part
 	if (pict == 0)
 	{
@@ -763,16 +763,16 @@ Imp_IGUI_Page(
 				&part);
 		}
 	}
-	
+
 	// set the data
 	if (pict != 0) { page->pict = (void*)pict; }
 	else { page->pict = (void*)part; }
 	page->text = Imp_IGUI_StringArray(inGroup, "text", inStringList);
 	page->hint = Imp_IGUI_StringArray(inGroup, "hint", inStringList);
-	
-	// get the font info 
+
+	// get the font info
 	Imp_IGUI_FontInfo(inGroup, &page->font_info);
-	
+
 	return page;
 }
 
@@ -790,7 +790,7 @@ Imp_IGUI_PageArray(
 	GRtElementArray		*element_array;
 	ONtIGUI_PageArray	*page_array;
 	UUtUns32			i;
-	
+
 	// get the page_array element array
 	error =
 		GRrGroup_GetElement(
@@ -803,7 +803,7 @@ Imp_IGUI_PageArray(
 		Imp_PrintWarning("Unable to get page_array from group");
 		return NULL;
 	}
-	
+
 	// get the number of elements
 	num_elements = GRrGroup_Array_GetLength(element_array);
 	if (num_elements == 0)
@@ -811,9 +811,9 @@ Imp_IGUI_PageArray(
 		Imp_PrintWarning("The page_array doesn't have any elements in it.");
 		return NULL;
 	}
-	
+
 	// create the template instance
-	error = 
+	error =
 		TMrConstruction_Instance_NewUnique(
 			ONcTemplate_IGUI_PageArray,
 			num_elements,
@@ -823,12 +823,12 @@ Imp_IGUI_PageArray(
 		Imp_PrintWarning("Unable to create the page array instance");
 		return NULL;
 	}
-	
+
 	// process the array elements
 	for (i = 0; i < num_elements; i++)
 	{
 		GRtGroup			*page_group;
-		
+
 		error =
 			GRrGroup_Array_GetElement(
 				element_array,
@@ -840,11 +840,11 @@ Imp_IGUI_PageArray(
 			Imp_PrintWarning("Unable to process page group in page_array");
 			continue;
 		}
-		
+
 		page_array->pages[i] = Imp_IGUI_Page(inSourceFile, page_group, inStringList);
 	}
-	
-	return page_array;	
+
+	return page_array;
 }
 
 // ----------------------------------------------------------------------
@@ -858,11 +858,11 @@ Imp_AddDiaryPage(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(ONcTemplate_DiaryPage, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		GRtElementType		element_type;
@@ -875,21 +875,21 @@ Imp_AddDiaryPage(
 		UUtUns32			i;
 		ONtIGUI_Page		*page;
 		ONtIGUI_StringList	*string_list;
-		
+
 		// get the level number
 		error = GRrGroup_GetInt16(inGroup, "level_number", &level_number);
 		IMPmError_ReturnOnErrorMsg(error, "unable to get level number");
-		
+
 		// get the page number
 		error = GRrGroup_GetInt16(inGroup, "page_number", &page_number);
 		IMPmError_ReturnOnErrorMsg(error, "unable to get page number");
-		
+
 		// get the page number
 		error = GRrGroup_GetBool(inGroup, "has_new_move", &has_new_move);
 		if (error != UUcError_None) {
 			has_new_move = UUcFalse;
 		}
-		
+
 		// get the move keys
 		error =
 			GRrGroup_GetElement(
@@ -901,16 +901,16 @@ Imp_AddDiaryPage(
 		{
 			IMPmError_ReturnOnErrorMsg(UUcError_Generic, "unable to get key array");
 		}
-		
+
 		UUrMemory_Clear(keys, sizeof(ONtKey) * ONcMaxNumKeys);
 		for (i = 0; i < GRrGroup_Array_GetLength(key_array); i++)
 		{
 			UUtUns32			flag;
 			void				*element;
-			
+
 			error = GRrGroup_Array_GetElement(key_array, i, &element_type, &element);
-			IMPmError_ReturnOnErrorMsg(error, "unable to get element from key array"); 
-			
+			IMPmError_ReturnOnErrorMsg(error, "unable to get element from key array");
+
 			error =
 				AUrFlags_ParseFromGroupArray(
 					IMPgMoveKeys,
@@ -918,10 +918,10 @@ Imp_AddDiaryPage(
 					element,
 					&flag);
 			IMPmError_ReturnOnErrorMsg(error, "Unable to process keys");
-			
+
 			keys[i] = (ONtKey)flag;
 		}
-		
+
 		// get the string list
 		string_list = IGUIiStringList_Get(inSourceFile);
 		if (string_list == NULL)
@@ -929,10 +929,10 @@ Imp_AddDiaryPage(
 			Imp_PrintWarning("Unable to get the string list for the Diary Page");
 			return UUcError_None;
 		}
-		
+
 		// get the IGUI page
 		page = Imp_IGUI_Page(inSourceFile, inGroup, string_list);
-		
+
 		// create the DiaryPage instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -944,16 +944,16 @@ Imp_AddDiaryPage(
 		{
 			IGUIiStringList_Delete(string_list);
 			string_list = NULL;
-			
+
 			IMPmError_ReturnOnErrorMsg(error, "Unable to create diary page instance");
 		}
-		
+
 		// fill in the elements of the diary_page
 		diary_page->level_number = level_number;
 		diary_page->page_number = page_number;
 		diary_page->has_new_move = has_new_move;
 		diary_page->page = page;
-				
+
 		for (i = 0; i < ONcMaxNumKeys; i++)
 		{
 			diary_page->keys[i] = keys[i];
@@ -962,7 +962,7 @@ Imp_AddDiaryPage(
 		IGUIiStringList_Delete(string_list);
 		string_list = NULL;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -977,16 +977,16 @@ Imp_AddHelpPage(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(ONcTemplate_HelpPage, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		ONtHelpPage			*help_page;
 		ONtIGUI_StringList	*string_list;
-		
+
 		// get the strings
 		string_list = IGUIiStringList_Get(inSourceFile);
 		if (string_list == NULL)
@@ -1003,11 +1003,11 @@ Imp_AddHelpPage(
 				0,
 				&help_page);
 		IMPmError_ReturnOnErrorMsg(error, "unable to create the help page");
-		
+
 		// create the text page
 		help_page->page = Imp_IGUI_Page(inSourceFile, inGroup, string_list);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1022,7 +1022,7 @@ Imp_AddItemPage(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(ONcTemplate_ItemPage, inInstanceName);
 
@@ -1032,7 +1032,7 @@ Imp_AddItemPage(
 		UUtUns32			powerup_type;
 		ONtItemPage			*item_page;
 		ONtIGUI_StringList	*string_list;
-		
+
 		// get the strings
 		string_list = IGUIiStringList_Get(inSourceFile);
 		if (string_list == NULL)
@@ -1044,7 +1044,7 @@ Imp_AddItemPage(
 		// get the type
 		error = GRrGroup_GetString(inGroup, "type", &type);
 		IMPmError_ReturnOnErrorMsg(error, "unable to get the item page type");
-		
+
 		error =
 			AUrFlags_ParseFromGroupArray(
 				IMPgPowerupTypes,
@@ -1052,7 +1052,7 @@ Imp_AddItemPage(
 				type,
 				&powerup_type);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to process keys");
-		
+
 		// create the template instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -1061,12 +1061,12 @@ Imp_AddItemPage(
 				0,
 				&item_page);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create item page instance");
-				
+
 		// set the data
 		item_page->powerup_type = (WPtPowerupType)powerup_type;
 		item_page->page = Imp_IGUI_Page(inSourceFile, inGroup, string_list);
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -1081,18 +1081,18 @@ Imp_AddObjectivePage(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(ONcTemplate_ObjectivePage, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		UUtInt16				level_number;
 		ONtObjectivePage		*objective_page;
 		ONtIGUI_PageArray		*objective_page_array;
 		ONtIGUI_StringList		*string_list;
-		
+
 		// get the strings
 		string_list = IGUIiStringList_Get(inSourceFile);
 		if (string_list == NULL)
@@ -1104,7 +1104,7 @@ Imp_AddObjectivePage(
 		// get the level number
 		error = GRrGroup_GetInt16(inGroup, "level_number", &level_number);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get the level number");
-		
+
 		objective_page_array = Imp_IGUI_PageArray(inSourceFile, inGroup, "objective_array", string_list);
 		if (objective_page_array == NULL)
 		{
@@ -1119,11 +1119,11 @@ Imp_AddObjectivePage(
 				0,
 				&objective_page);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create objective page instance");
-		
+
 		objective_page->level_number = level_number;
 		objective_page->objectives = objective_page_array;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1138,17 +1138,17 @@ Imp_AddWeaponPage(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(ONcTemplate_WeaponPage, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		char				*weapon_class;
 		ONtWeaponPage		*weapon_page;
 		ONtIGUI_StringList	*string_list;
-		
+
 		// get the strings
 		string_list = IGUIiStringList_Get(inSourceFile);
 		if (string_list == NULL)
@@ -1160,7 +1160,7 @@ Imp_AddWeaponPage(
 		// get the weapon class
 		error = GRrGroup_GetString(inGroup, "weaponClass", &weapon_class);
 		IMPmError_ReturnOnErrorMsg(error, "unable to get weapon class");
-		
+
 		// create the weapon page template instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -1169,7 +1169,7 @@ Imp_AddWeaponPage(
 				0,
 				&weapon_page);
 		IMPmError_ReturnOnErrorMsg(error, "unable to create the weapon page");
-		
+
 		// save a placeholder to the weapon class
 		error =
 			TMrConstruction_Instance_GetPlaceHolder(
@@ -1177,11 +1177,11 @@ Imp_AddWeaponPage(
 				weapon_class,
 				(TMtPlaceHolder*)&(weapon_page->weaponClass));
 		UUmError_ReturnOnErrorMsg(error, "could not set weapon page's weapon class");
-		
+
 		// create the text page
 		weapon_page->page = Imp_IGUI_Page(inSourceFile, inGroup, string_list);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1198,10 +1198,10 @@ Imp_AddEnemyScannerUI(
 
 	UUtBool				bool_result;
 	UUtBool				build_instance;
-	
+
 	UUtUns32			create_date;
 	UUtUns32			compile_date;
-	
+
 	// check to see if the dialogs need to be built
 	bool_result =
 		TMrConstruction_Instance_CheckExists(
@@ -1211,7 +1211,7 @@ Imp_AddEnemyScannerUI(
 	if (bool_result)
 	{
 		compile_date = UUrConvertStrToSecsSince1900(gInGameUICompileTime);
-		
+
 		build_instance = (UUtBool)(create_date < inSourceFileModDate ||
 									create_date < compile_date);
 	}
@@ -1219,7 +1219,7 @@ Imp_AddEnemyScannerUI(
 	{
 		build_instance = UUcTrue;
 	}
-	
+
 	if (build_instance)
 	{
 		char					*focus_texture_path;
@@ -1227,21 +1227,21 @@ Imp_AddEnemyScannerUI(
 		TMtPlaceHolder			focus_texture;
 		TMtPlaceHolder			background_texture;
 		ONtEnemyScannerUI		*enemy_scanner_ui;
-				
+
 		// get a pointer to all of the textures
 		error = GRrGroup_GetString(inGroup, "focus_texture", &focus_texture_path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path for focus texture");
-		
+
 		error = GRrGroup_GetString(inGroup, "background_texture", &background_texture_path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path for backgrouind texture");
-		
+
 		// create placeholders for the textures
 		error = iGetTextureByPath(focus_texture_path, inSourceFile, &focus_texture);
 		IMPmError_ReturnOnErrorMsg(error, "unable to process the focus texture");
-		
+
 		error = iGetTextureBigByPath(background_texture_path, inSourceFile, &background_texture);
 		IMPmError_ReturnOnErrorMsg(error, "unable to process the background texture");
-		
+
 		// create an instance of the enemy scanner ui
 		error =
 			TMrConstruction_Instance_Renew(
@@ -1250,13 +1250,13 @@ Imp_AddEnemyScannerUI(
 				0,
 				&enemy_scanner_ui);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create enemy scanner ui");
-		
+
 		// save the pointers
 		enemy_scanner_ui->focus = (M3tTextureMap*)focus_texture;
 		enemy_scanner_ui->background = (M3tTextureMap_Big*)background_texture;
 	}
 #endif
-	
+
 	return UUcError_None;
 }
 
@@ -1271,118 +1271,118 @@ Imp_AddKeyIcons(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(ONcTemplate_KeyIcons, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		char				*path;
 		TMtPlaceHolder		place_holder;
 		ONtKeyIcons			*key_icons;
-		
+
 		// build the key icons
-		error = 
+		error =
 			TMrConstruction_Instance_Renew(
 				ONcTemplate_KeyIcons,
 				inInstanceName,
 				0,
 				&key_icons);
 		IMPmError_ReturnOnErrorMsg(error,"Unable to create the key icons instance");
-		
+
 		// load the icons
 		// ------------------------------
 		error = GRrGroup_GetString(inGroup, "punch", &path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path");
-		
+
 		error = iGetTextureByPath(path, inSourceFile, &place_holder);
 		IMPmError_ReturnOnErrorMsg(error, "unable to texture place holder");
-		
+
 		key_icons->punch = (M3tTextureMap*)place_holder;
 
 		// ------------------------------
 		error = GRrGroup_GetString(inGroup, "kick", &path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path");
-		
+
 		error = iGetTextureByPath(path, inSourceFile, &place_holder);
 		IMPmError_ReturnOnErrorMsg(error, "unable to texture place holder");
-		
+
 		key_icons->kick = (M3tTextureMap*)place_holder;
 
 		// ------------------------------
 		error = GRrGroup_GetString(inGroup, "forward", &path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path");
-		
+
 		error = iGetTextureByPath(path, inSourceFile, &place_holder);
 		IMPmError_ReturnOnErrorMsg(error, "unable to texture place holder");
-		
+
 		key_icons->forward = (M3tTextureMap*)place_holder;
 
 		// ------------------------------
 		error = GRrGroup_GetString(inGroup, "backward", &path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path");
-		
+
 		error = iGetTextureByPath(path, inSourceFile, &place_holder);
 		IMPmError_ReturnOnErrorMsg(error, "unable to texture place holder");
-		
+
 		key_icons->backward = (M3tTextureMap*)place_holder;
 
 		// ------------------------------
 		error = GRrGroup_GetString(inGroup, "left", &path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path");
-		
+
 		error = iGetTextureByPath(path, inSourceFile, &place_holder);
 		IMPmError_ReturnOnErrorMsg(error, "unable to texture place holder");
-		
+
 		key_icons->left = (M3tTextureMap*)place_holder;
 
 		// ------------------------------
 		error = GRrGroup_GetString(inGroup, "right", &path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path");
-		
+
 		error = iGetTextureByPath(path, inSourceFile, &place_holder);
 		IMPmError_ReturnOnErrorMsg(error, "unable to texture place holder");
-		
+
 		key_icons->right = (M3tTextureMap*)place_holder;
 
 		// ------------------------------
 		error = GRrGroup_GetString(inGroup, "crouch", &path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path");
-		
+
 		error = iGetTextureByPath(path, inSourceFile, &place_holder);
 		IMPmError_ReturnOnErrorMsg(error, "unable to texture place holder");
-		
+
 		key_icons->crouch = (M3tTextureMap*)place_holder;
 
 		// ------------------------------
 		error = GRrGroup_GetString(inGroup, "jump", &path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path");
-		
+
 		error = iGetTextureByPath(path, inSourceFile, &place_holder);
 		IMPmError_ReturnOnErrorMsg(error, "unable to texture place holder");
-		
+
 		key_icons->jump = (M3tTextureMap*)place_holder;
 
 		// ------------------------------
 		error = GRrGroup_GetString(inGroup, "hold", &path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path");
-		
+
 		error = iGetTextureByPath(path, inSourceFile, &place_holder);
 		IMPmError_ReturnOnErrorMsg(error, "unable to texture place holder");
-		
+
 		key_icons->hold = (M3tTextureMap*)place_holder;
 
 		// ------------------------------
 		error = GRrGroup_GetString(inGroup, "plus", &path);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get path");
-		
+
 		error = iGetTextureByPath(path, inSourceFile, &place_holder);
 		IMPmError_ReturnOnErrorMsg(error, "unable to texture place holder");
-		
+
 		key_icons->plus = (M3tTextureMap*)place_holder;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1395,10 +1395,10 @@ Imp_AddTextConsole(
 	char*				inInstanceName)
 {
 	UUtError			error;
-	
+
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(ONcTemplate_TextConsole, inInstanceName);
 
@@ -1407,7 +1407,7 @@ Imp_AddTextConsole(
 		ONtIGUI_StringList			*string_list;
 		ONtIGUI_PageArray			*console_data;
 		ONtTextConsole				*text_console;
-		
+
 		// get the strings
 		string_list = IGUIiStringList_Get(inSourceFile);
 		if (string_list == NULL)
@@ -1415,21 +1415,21 @@ Imp_AddTextConsole(
 			Imp_PrintWarning("Unable to get the string list for the text console");
 			return UUcError_None;
 		}
-		
+
 		// get the console_data
 		console_data = Imp_IGUI_PageArray(inSourceFile, inGroup, "text", string_list);
 		if (console_data == NULL)
 		{
 			IGUIiStringList_Delete(string_list);
 			string_list = NULL;
-			
+
 			Imp_PrintWarning("Unable to get the text for the text console");
 			return UUcError_None;
 		}
-		
+
 		IGUIiStringList_Delete(string_list);
 		string_list = NULL;
-		
+
 		// create the text console instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -1438,11 +1438,11 @@ Imp_AddTextConsole(
 				0,
 				&text_console);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create the text console instance");
-		
+
 		// set the console_data of the text_console
 		text_console->console_data = console_data;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1457,10 +1457,10 @@ Imp_AddHUDHelp(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
+
 	// check to see if the instance needs to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(ONcTemplate_IGUI_HUDHelp, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		char				*leftTexture;
@@ -1476,7 +1476,7 @@ Imp_AddHUDHelp(
 		ONtIGUI_HUDTextItem	*item_array;
 		char				*text_line, *stringptr, *string_end;
 		ONtIGUI_HUDHelp		*help_instance;
-		
+
 		// get the textures
 		error = GRrGroup_GetString(inGroup, "left_texture", &leftTexture);
 		IMPmError_ReturnOnErrorMsg(error, "unable to get left texture");
@@ -1487,7 +1487,7 @@ Imp_AddHUDHelp(
 		// get the offsets
 		error = GRrGroup_GetInt16(inGroup, "left_offset_x", &leftOffset.x);
 		IMPmError_ReturnOnErrorMsg(error, "unable to get left x offset");
-		
+
 		error = GRrGroup_GetInt16(inGroup, "left_offset_y", &leftOffset.y);
 		IMPmError_ReturnOnErrorMsg(error, "unable to get left y offset");
 
@@ -1576,7 +1576,7 @@ Imp_AddHUDHelp(
 				left_items + right_items,
 				&help_instance);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create HUD help info instance");
-		
+
 		// fill in the elements of the help_instance
 		error = TMrConstruction_Instance_GetPlaceHolder(M3cTemplate_TextureMap, leftTexture, (TMtPlaceHolder *) &help_instance->left_texture);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get left-texture placeholder");
@@ -1592,7 +1592,7 @@ Imp_AddHUDHelp(
 		UUrMemory_MoveFast(left_itemarray, &help_instance->text_items[0], left_items * sizeof(ONtIGUI_HUDTextItem));
 		UUrMemory_MoveFast(right_itemarray, &help_instance->text_items[left_items], right_items * sizeof(ONtIGUI_HUDTextItem));
 	}
-	
+
 	return UUcError_None;
 }
 

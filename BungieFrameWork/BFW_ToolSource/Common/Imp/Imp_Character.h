@@ -1,13 +1,13 @@
 
 /*
 	FILE:	Imp_Character.h
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: Nov 1, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997, 1998
 
 */
@@ -33,13 +33,6 @@ Imp_AddAnimCache(
 UUtError
 Imp_AddBiped(
 	BFtFileRef*			inSourceFile,
-	UUtUns32			inSourceFileModDate, 
-	GRtGroup*			inGroup,
-	char*				inInstanceName);
-
-UUtError
-Imp_AddBody(
-	BFtFileRef*			inSourceFile,
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
@@ -50,7 +43,14 @@ Imp_AddBody(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-					
+
+UUtError
+Imp_AddBody(
+	BFtFileRef*			inSourceFile,
+	UUtUns32			inSourceFileModDate,
+	GRtGroup*			inGroup,
+	char*				inInstanceName);
+
 UUtError
 Imp_AddAnimation(
 	BFtFileRef*			inSourceFile,
@@ -127,19 +127,19 @@ Imp_AddVariant(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup			*inGroup,
 	char				*inInstanceName);
-	
+
 UUtError
 Imp_AddVariantList(
 	BFtFileRef			*inSourceFile,
 	UUtUns32			inSourceFileModDate,
 	GRtGroup			*inGroup,
 	char				*inInstanceName);
-	
+
 UUtError
 Imp_Character_Initialize(
 	void);
 
-void 
+void
 Imp_Character_Terminate(void);
 
 UUtError Imp_GetAnimState(GRtGroup *inGroup, const char *inName, TRtAnimState *outState);

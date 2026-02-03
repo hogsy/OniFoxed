@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Guard.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: June 22, 2000
-	
+
 	PURPOSE: Guard AI for Oni
-	
+
 	Copyright (c) 2000
 
 */
@@ -95,13 +95,13 @@ void AI2rGuard_NewDirection(ONtCharacter *ioCharacter, AI2tGuardDirState *ioDirS
 				continue;
 			}
 		}
-	
+
 		// form this look vector
 		UUmTrig_Clip(try_direction);
 		MUmVector_Set(ioDirState->cur_direction, AI2cGuard_ClearDistance * MUrSin(try_direction), 0,
 												 AI2cGuard_ClearDistance * MUrCos(try_direction));
 
-		if ((attempts >= AI2cGuard_MaxClearAttempts) || 
+		if ((attempts >= AI2cGuard_MaxClearAttempts) ||
 			(!AKrCollision_Point(environment, &eye_point, &ioDirState->cur_direction, AKcGQ_Flag_LOS_CanSee_Skip_AI, 0))) {
 			// return this direction
 			ioDirState->has_cur_direction = UUcTrue;
@@ -181,7 +181,7 @@ void AI2rGuard_RecalcScanDir(ONtCharacter *ioCharacter, AI2tScanState *ioScanSta
 
 	theta += ioScanState->cur_angle;
 	UUmTrig_Clip(theta);
-	
+
 	ioScanState->facing_vector.x = horiz_dist * MUrSin(theta);
 	ioScanState->facing_vector.z = horiz_dist * MUrCos(theta);
 	ioScanState->facing_vector.y = ioScanState->dir_state.cur_direction.y;

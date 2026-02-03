@@ -173,7 +173,7 @@ enum
 	OBJcMoveMode_UD			= 0x0002,	/* up/down */
 	OBJcMoveMode_FB			= 0x0004,	/* forward/backward */
 	OBJcMoveMode_Wall		= 0x0008,	/* stick to walls (overrides forward/backward) */
-	
+
 	OBJcMoveMode_All		= (OBJcMoveMode_LR | OBJcMoveMode_UD | OBJcMoveMode_FB)
 };
 
@@ -182,7 +182,7 @@ enum
 	OBJcRotateMode_XY		= 0x0001,
 	OBJcRotateMode_XZ		= 0x0002,
 	OBJcRotateMode_YZ		= 0x0004,
-	
+
 	OBJcRotateMode_XYZ		= (OBJcRotateMode_XY | OBJcRotateMode_XZ | OBJcRotateMode_XY)
 };
 
@@ -214,13 +214,13 @@ enum
 	OBJcSearch_PatrolPathID			= 0x0002
 };
 
-enum 
+enum
 {
 	OBJcSearch_CombatName			= 0x0001,
 	OBJcSearch_CombatID				= 0x0002
 };
 
-enum 
+enum
 {
 	OBJcSearch_MeleeName			= 0x0001,
 	OBJcSearch_MeleeID				= 0x0002
@@ -232,7 +232,7 @@ enum
 	OBJcSearch_TriggerVolumeID		= 0x0002
 };
 
-enum 
+enum
 {
 	OBJcSearch_NeutralName			= 0x0001,
 	OBJcSearch_NeutralID			= 0x0002
@@ -262,14 +262,14 @@ enum
 {
 	OBJcLightFlag_None			= 0x0000,
 	OBJcLightFlag_HasLight		= 0x0001,
-	
+
 	OBJcLightFlag_Type_Point	= 0x0010,
 	OBJcLightFlag_Type_Linear	= 0x0020,
 	OBJcLightFlag_Type_Area		= 0x0040,
-	
+
 	OBJcLightFlag_Dist_Diffuse	= 0x0100,
 	OBJcLightFlag_Dist_Spot		= 0x0200
-	
+
 };
 
 // ======================================================================
@@ -285,12 +285,12 @@ typedef UUtBool
 	OBJtObjectType			inObjectType,
 	const char				*inName,
 	UUtUns32				inUserData);
-	
+
 typedef UUtBool
 (*OBJtEnumCallback_Object)(
 	OBJtObject				*inObject,
 	UUtUns32				inUserData);
-	
+
 typedef UUtBool
 (*OBJtEnumCallback_ObjectName)(
 	const char				*inName,
@@ -326,7 +326,7 @@ typedef void
 (*OBJtMethod_OSD_SetName)(
 	OBJtOSD_All				*inObject,
 	const char				*inName);
-	
+
 typedef void
 (*OBJtMethod_GetOSD)(
 	const OBJtObject		*inObject,
@@ -346,11 +346,11 @@ typedef UUtError
 (*OBJtMethod_New)(
 	OBJtObject				*inObject,
 	const OBJtOSD_All		*inOSD);
-	
+
 typedef UUtError
 (*OBJtMethod_SetDefaults)(
 	OBJtOSD_All				*outOSD);
-	
+
 typedef UUtUns32
 (*OBJtMethod_Read)(
 	OBJtObject				*inObject,
@@ -361,7 +361,7 @@ typedef UUtUns32
 typedef void
 (*OBJtMethod_UpdatePosition)(
 	OBJtObject				*inObject);
-	
+
 typedef UUtError
 (*OBJtMethod_SetOSD)(
 	OBJtObject				*inObject,
@@ -372,7 +372,7 @@ typedef UUtError
 	OBJtObject				*inObject,
 	UUtUns8					*ioBuffer,
 	UUtUns32				*ioBufferSize);
-	
+
 typedef const char *
 (*OBJtMethod_IsInvalid)(
 	OBJtObject				*inObject);
@@ -380,7 +380,7 @@ typedef const char *
 typedef UUtError
 (*OBJtMethod_LevelBegin)(
 	void);
-	
+
 typedef UUtError
 (*OBJtMethod_LevelEnd)(
 	void);
@@ -420,11 +420,11 @@ typedef struct OBJtMethods
 	OBJtMethod_OSD_SetName			rOSDSetName;
 	OBJtMethod_IntersectsLine		rIntersectsLine;
 	OBJtMethod_UpdatePosition		rUpdatePosition;
-	
+
 	OBJtMethod_GetOSD				rGetOSD;
 	OBJtMethod_GetOSDWriteSize		rGetOSDWriteSize;
 	OBJtMethod_SetOSD				rSetOSD;
-	
+
 	OBJtMethod_Write				rWrite;
 	OBJtMethod_Read					rRead;
 
@@ -434,7 +434,7 @@ typedef struct OBJtMethods
 	OBJtMethod_SetClassVisible		rSetClassVisible;
 
 	OBJtMethod_GetUniqueOSD			rGetUniqueOSD;
-	
+
 } OBJtMethods;
 
 struct OBJtObject
@@ -446,7 +446,7 @@ struct OBJtObject
 	M3tPoint3D						rotation;
 	OBJtMethods						*methods;
 	ONtMechanicsClass				*mechanics_class;
-	UUtUns32						object_data[0];	
+	UUtUns32						object_data[0];
 };
 // ----------------------------------------------------------------------
 #define OBJcTemplate_LSData				UUm4CharToUns32('O', 'B', 'L', 'S')
@@ -459,7 +459,7 @@ OBJtLSData
 	UUtUns32						light_intensity;
 	float							beam_angle;
 	float							field_angle;
-	
+
 } OBJtLSData;
 
 typedef tm_struct OBJtFurnGeom
@@ -467,7 +467,7 @@ typedef tm_struct OBJtFurnGeom
 	UUtUns32						gq_flags;
 	M3tGeometry						*geometry;
 	OBJtLSData						*ls_data;
-	
+
 } OBJtFurnGeom;
 
 #define OBJcTemplate_FurnGeomArray		UUm4CharToUns32('O', 'F', 'G', 'A')
@@ -497,17 +497,17 @@ OBJtTriggerEmitterClass
 typedef tm_template	('T', 'R', 'I', 'G', "Trigger")
 OBJtTriggerClass
 {
-	UUtUns32						color;			
+	UUtUns32						color;
 	UUtUns16						time_on;
 	UUtUns16						time_off;
-		
+
 	float							start_offset;
 	float							anim_scale;
 
 	M3tGeometry						*base_geometry;
 	OBJtLSData						*base_ls_data;
 	UUtUns32						base_gq_flags;
-	
+
 	OBJtTriggerEmitterClass			*emitter;
 
 	OBtAnimation					*animation;
@@ -538,11 +538,11 @@ OBJtTurretClass
 {
 	char							name[32];
 	char							base_name[32];
-	
+
 	UUtUns16						flags;
 	UUtUns16						freeTime;
 
-	UUtUns16						reloadTime;	
+	UUtUns16						reloadTime;
 	UUtUns16						barrelCount;
 
 	UUtUns16						recoilAnimType;
@@ -578,13 +578,13 @@ OBJtTurretClass
 
 	UUtUns32						timeout;
 
-	float							min_vert_angle;	
-	float							max_vert_angle;	
+	float							min_vert_angle;
+	float							max_vert_angle;
 
 	float							min_horiz_angle;
 	float							max_horiz_angle;
 
-	float							max_vert_speed;	
+	float							max_vert_speed;
 	float							max_horiz_speed;
 
 	char							active_soundname[32];		// SScMaxNameLength
@@ -896,7 +896,7 @@ typedef struct OBJtOSD_Flag
 	char					note[OBJcMaxNoteChars + 1];
 #endif
 	M3tMatrix4x3			rotation_matrix;		/* internal use only */
-	
+
 } OBJtOSD_Flag;
 
 typedef struct OBJtOSD_Furniture
@@ -910,7 +910,7 @@ typedef struct OBJtOSD_Furniture
 	M3tBoundingSphere		bounding_sphere;		/* internal use only */
 	UUtUns32				num_particles;			/* internal use only */
 	EPtEnvParticle			*particle;				/* internal use only */
-	
+
 } OBJtOSD_Furniture;
 
 // these are kept only for compatibility with object versions before 13
@@ -926,14 +926,14 @@ typedef struct OBJtOSD_Particle
 
 	UUtBool					is_decal;				/* internal use only */
 	struct OBJtObject		*owner;					/* internal use only */
-	
+
 } OBJtOSD_Particle;
 
 typedef struct OBJtOSD_PowerUp
 {
 	WPtPowerupType			powerup_type;
 	WPtPowerup				*powerup;				/* internal use only */
-	
+
 } OBJtOSD_PowerUp;
 
 // ------------------------------
@@ -941,40 +941,40 @@ typedef enum OBJtSoundType
 {
 	OBJcSoundType_Spheres	= 'SPHR',
 	OBJcSoundType_BVolume	= 'VLME'
-	
+
 } OBJtSoundType;
 
 typedef struct OBJtOSD_Sound_Spheres
 {
 	float					max_volume_distance;
 	float					min_volume_distance;
-	
+
 } OBJtOSD_Sound_Spheres;
 
 typedef struct OBJtOSD_Sound_BVolume
 {
 	M3tBoundingBox_MinMax	bbox;
 	M3tBoundingVolume		bvolume;
-	
+
 } OBJtOSD_Sound_BVolume;
 
 typedef struct OBJtOSD_Sound
 {
 	OBJtSoundType			type;
-	
+
 	char					ambient_name[SScMaxNameLength];
 	SStAmbient				*ambient;				/* internal use only */
-	
+
 	float					pitch;
 	float					volume;
-	
+
 	union
 	{
 		OBJtOSD_Sound_Spheres		spheres;
 		OBJtOSD_Sound_BVolume		bvolume;
-		
+
 	} u;
-	
+
 } OBJtOSD_Sound;
 // ------------------------------
 
@@ -1010,7 +1010,7 @@ typedef struct OBJtOSD_Trigger
 	ONtEventList				event_list;								// persist
 	OBJtLSData					*base_ls_data;							// internal
 
-	OBJtTriggerEmitterInstance	*emitters;								// internal	
+	OBJtTriggerEmitterInstance	*emitters;								// internal
 
 	UUtUns16					change_time;							// internal
 	UUtBool						laser_on;								// internal
@@ -1023,22 +1023,22 @@ typedef struct OBJtOSD_Trigger
 	SStPlayID					playing_sound;							// internal
 
 	M3tPoint3D					*cached_points;							// internal
-	
+
 } OBJtOSD_Trigger;
 
 typedef struct OBJtOSD_Turret
 {
-	UUtUns16					id;										// persist		
+	UUtUns16					id;										// persist
 	UUtUns16					flags;									// persist
 	UUtUns16					state;									// internal
 
 	char						turret_class_name[OBJcMaxNameLength];	// persist
 	OBJtTurretClass				*turret_class;							// internal
-	
+
 	UUtUns32					target_teams;							// persist		- targeting
 
 	OBJtLSData					*base_ls_data;							// internal
-	
+
 	float						vert_angle;								// internal		- actual positioning
 	float						horiz_angle;							// internal
 	float						desired_horiz_angle;					// internal		- desired positioning
@@ -1050,7 +1050,7 @@ typedef struct OBJtOSD_Turret
 	M3tMatrix4x3				barrel_matrix;							// internal
 	M3tMatrix4x3				projectile_matrix;						// internal
 	UUtBool						target_los;								// internal
-	
+
 	UUtUns16					chamber_time;							// internal		- timing
 	UUtUns16					check_target_time;						// internal
 	UUtUns32					active_time;							// internal
@@ -1086,7 +1086,7 @@ typedef struct OBJtOSD_Console
 	char						screen_inactive[OBJcMaxNameLength];		// persist
 	char						screen_active[OBJcMaxNameLength];		// persist
 	char						screen_triggered[OBJcMaxNameLength];	// persist
-	
+
 	ONtEventList				event_list;								// persist
 
 	OBJtLSData					*ls_data_array;							// internal
@@ -1123,12 +1123,12 @@ typedef struct OBJtOSD_Door
 	OBJtDoorClass				*door_class;						// internal
 	AKtDoorFrame				*door_frame;						// internal
 
-	OBtObject					*internal_door_object[2];			// internal	
+	OBtObject					*internal_door_object[2];			// internal
 	OBtObjectSetup				*internal_door_object_setup[2];		// setup for those objects
 
 	char						door_texture[2][32];				// persist
 	M3tTextureMap				*door_texture_ptr[2];				// internal
-	
+
 	M3tPoint3D					door_frame_position;				// persist
 
 	ONtEventList				event_list;							// persist
@@ -1143,7 +1143,7 @@ typedef struct OBJtOSD_Door
 	IMtShade					shade;								// internal
 
 	M3tBoundingBox_MinMax		bBox;								// internal
-	
+
 	M3tMatrix4x3				door_matrix[2];						// internal
 
 	OBtAnimationContext			animation_context;					// internal			- for testing non-object-gunked doors
@@ -1159,7 +1159,7 @@ typedef struct OBJtOSD_Door
 } OBJtOSD_Door;
 
 // ==================================================================================================================
-// 
+//
 // ==================================================================================================================
 
 enum
@@ -1204,7 +1204,7 @@ typedef struct OBJtOSD_Weapon
 {
 	char						weapon_class_name[WPcMaxWeaponName];
 	WPtWeaponClass				*weapon_class;						// internal
-	
+
 } OBJtOSD_Weapon;
 
 struct OBJtOSD_All
@@ -1228,7 +1228,7 @@ struct OBJtOSD_All
 		OBJtOSD_Melee			melee_osd;
 		OBJtOSD_Neutral			neutral_osd;
 	} osd;
-	
+
 };
 
 // ======================================================================
@@ -1261,8 +1261,8 @@ static UUcInline OBJtObjectType OBJrObject_GetType(const OBJtObject *inObject)
 }
 
 static UUcInline UUtError OBJrObject_Enumerate(
-	OBJtObject *inObject, 
-	OBJtEnumCallback_ObjectName inEnumCallback, 
+	OBJtObject *inObject,
+	OBJtEnumCallback_ObjectName inEnumCallback,
 	UUtUns32 inUserData)
 {
 	return inObject->methods->rEnumerate(inObject, inEnumCallback, inUserData);
@@ -1313,14 +1313,14 @@ static UUcInline UUtBool OBJrObject_IntersectsLine(
 	const M3tPoint3D		*inEndPoint)
 {
 	return inObject->methods->rIntersectsLine(inObject, inStartPoint, inEndPoint);
-}	
+}
 
 static UUcInline UUtUns32 OBJrObject_GetOSDWriteSize(const OBJtObject *inObject)
 {
 	return inObject->methods->rGetOSDWriteSize(inObject);
 }
-	
-static UUcInline UUtUns32 OBJrObject_Read(	
+
+static UUcInline UUtUns32 OBJrObject_Read(
 	OBJtObject				*inObject,
 	UUtUns16 				inVersion,
 	UUtBool					inSwapIt,
@@ -1339,26 +1339,26 @@ OBJrObject_CreateFromBuffer(
 void
 OBJrObject_Delete(
 	OBJtObject				*inObject);
-	
+
 void
 OBJrObject_Draw(
 	OBJtObject				*inObject);
-	
+
 void
 OBJrObject_GetPosition(
 	const OBJtObject		*inObject,
 	M3tPoint3D				*outPosition,
 	M3tPoint3D				*outRotation);
-		
+
 void
 OBJrObject_GetRotationMatrix(
 	const OBJtObject		*inObject,
 	M3tMatrix4x3			*outMatrix);
-	
+
 UUtBool
 OBJrObject_IsLocked(
 	const OBJtObject			*inObject);
-	
+
 UUtError
 OBJrObject_New(
 	const OBJtObjectType	inObjectType,
@@ -1376,40 +1376,40 @@ void
 OBJrObject_MouseRotate_Begin(
 	OBJtObject				*inObject,
 	IMtPoint2D				*inMousePosition);
-	
+
 void
 OBJrObject_MouseRotate_Update(
 	OBJtObject				*inObject,
 	IMtPoint2D				*inPositionDelta);
-	
+
 void
 OBJrObject_MouseRotate_End(
 	void);
-	
+
 void
 OBJrObject_SetLocked(
 	OBJtObject				*ioObject,
 	UUtBool					inIsLocked);
-		
+
 void
 OBJrObject_SetPosition(
 	OBJtObject				*ioObject,
 	const M3tPoint3D		*inPosition,
 	const M3tPoint3D		*inRotation);
-	
+
 void
 OBJrObject_SetRotationMatrix(
 	OBJtObject				*ioObject,
 	M3tMatrix4x3			*inMatrix);
-	
+
 void
 OBJrObject_Write(
 	OBJtObject				*inObject,
 	UUtUns8					*ioBuffer,
 	UUtUns32				*ioNumBytes);
 
-OBJtObject* 
-OBJrObject_FindByID( 
+OBJtObject*
+OBJrObject_FindByID(
 	UUtUns32				inID );
 
 // ----------------------------------------------------------------------
@@ -1422,7 +1422,7 @@ OBJrObjectType_EnumerateObjects(
 OBJtObject *OBJrObjectType_GetObject_ByNumber(
 	OBJtObjectType inObjectType,
 	UUtUns32 inIndex);
-	
+
 void
 OBJrObjectType_GetUniqueOSD(
 	OBJtObjectType					inObjectType,
@@ -1431,27 +1431,27 @@ OBJrObjectType_GetUniqueOSD(
 UUtBool
 OBJrObjectType_GetVisible(
 	OBJtObjectType					inObjectType);
-	
+
 UUtBool
 OBJrObjectType_IsLocked(
 	OBJtObjectType					inObjectType);
-	
+
 OBJtObject*
 OBJrObjectType_Search(
 	OBJtObjectType					inObjectType,
 	UUtUns32						inSearchType,
 	const OBJtOSD_All				*inSearchParams);
-	
+
 void
 OBJrObjectType_SetVisible(
 	OBJtObjectType					inObjectType,
 	UUtBool							inIsVisible);
-	
+
 void
 OBJrObjectTypes_Enumerate(
 	OBJtEnumCallback_ObjectType		inEnumCallback,
 	UUtUns32						inUserData);
-	
+
 const char *
 OBJrObjectType_GetName(
 	OBJtObjectType					inObjectType);
@@ -1491,24 +1491,24 @@ OBJrPatrolPath_WritePathData(
 UUtError
 OBJrLevel_Load(
 	UUtUns16				inLevelNumber);
-	
+
 void
 OBJrLevel_Unload(
 	void);
-	
+
 // ----------------------------------------------------------------------
 void
 OBJrSelectedObjects_Delete(
 	void);
-	
+
 UUtUns32
 OBJrSelectedObjects_GetNumSelected(
 	void);
-		
+
 OBJtObject*
 OBJrSelectedObjects_GetSelectedObject(
 	UUtUns32				inIndex);
-	
+
 UUtBool
 OBJrSelectedObjects_IsObjectSelected(
 	const OBJtObject		*inObject);
@@ -1516,24 +1516,24 @@ OBJrSelectedObjects_IsObjectSelected(
 UUtBool
 OBJrSelectedObjects_Lock_Get(
 	void);
-	
+
 void
 OBJrSelectedObjects_Lock_Set(
 	UUtBool					inLock);
-	
+
 void
 OBJrSelectedObjects_Select(
 	OBJtObject				*inObject,
 	UUtBool					inAddToList);
-	
+
 void
 OBJrSelectedObjects_Unselect(
 	OBJtObject				*inObject);
-	
+
 void
 OBJrSelectedObjects_UnselectAll(
 	void);
-	
+
 void
 OBJrSelectedObjects_MoveCameraToSelection(
 	void);
@@ -1546,24 +1546,24 @@ OBJrMoveMode_Get(
 void
 OBJrMoveMode_Set(
 	UUtUns32				inMoveMode);
-	
+
 UUtUns32
 OBJrRotateMode_Get(
 	void);
-	
+
 void
 OBJrRotateMode_Set(
 	UUtUns32				inRotateMode);
-	
+
 // ----------------------------------------------------------------------
 void
 OBJrDrawObjects(
 	void);
-	
+
 OBJtObject*
 OBJrGetObjectUnderPoint(
 	IMtPoint2D				*inPoint);
-	
+
 UUtError
 OBJrInitialize(
 	void);
@@ -1571,11 +1571,11 @@ OBJrInitialize(
 UUtError
 OBJrRegisterTemplates(
 	void);
-	
+
 void
 OBJrSaveObjects(
 	UUtUns32				inObjectType);
-	
+
 void
 OBJrTerminate(
 	void);
@@ -1600,19 +1600,19 @@ OBJrSound_GetMinMaxDistances(
 	const OBJtObject		*inObject,
 	float					*outMaxVolumeDistance,
 	float					*outMinVolumeDistance);
-	
+
 float
 OBJrSound_GetPitch(
 	const OBJtObject		*inObject);
-	
+
 OBJtSoundType
 OBJrSound_GetType(
 	const OBJtObject		*inObject);
-	
+
 float
 OBJrSound_GetVolume(
 	const OBJtObject		*inObject);
-	
+
 UUtBool
 OBJrSound_PointIn(
 	const OBJtObject		*inObject,
@@ -1730,12 +1730,12 @@ OBJrPowerUp_NameToType(
 UUtError OBJrObject_LevelBegin(void);
 UUtError OBJrObject_LevelEnd(void);
 
-// resets and add all objects of inType 
+// resets and add all objects of inType
 // into the listbox sorted with the item
 // data equal tobject pointers
 
 void OBJrObjectType_BuildListBox(
-	OBJtObjectType inObjectType, 
+	OBJtObjectType inObjectType,
 	WMtWindow *ioListBox,
 	UUtBool inAllowNone);
 

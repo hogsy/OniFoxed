@@ -1,12 +1,12 @@
 /*
 	FILE:	OG_GC_Method_Geometry.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -31,7 +31,7 @@ OGrGeomContext_Method_Sprite_Draw(
 	M3tMatrix3x3*		inOrientation,
 	float				inXOffset,
 	float				inXShorten,
-	float				inXChop);	
+	float				inXChop);
 
 UUtError
 OGrGeomContext_Method_Contrail_Draw(
@@ -39,18 +39,18 @@ OGrGeomContext_Method_Contrail_Draw(
 			float				inV0,
 			float				inV1,
 			M3tContrailData*	inPoint0,
-			M3tContrailData*	inPoint1);	
+			M3tContrailData*	inPoint1);
 
 UUtError
 OGrGeomContext_Method_Geometry_Draw(
 	M3tGeometry*		inGeometryObject);
-			
+
 UUtError
 OGrGeomContext_Method_Geometry_PolyDraw(
 	UUtUns32			inNumPoints,
 	M3tPoint3D*			inPoints,
 	UUtUns32			inShade);
-			
+
 UUtError
 OGrGeomContext_Method_Geometry_LineDraw(
 	UUtUns32			inNumPoints,
@@ -67,6 +67,6 @@ UUtBool
 OGrGeomContext_Method_PointVisible(
 	M3tPoint3D*			inPoint,
 	float				inTolerance);
-			
+
 
 #endif /* OG_GC_METHOD_GEOMETRY_H */

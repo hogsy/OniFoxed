@@ -1,12 +1,12 @@
 /*
 	FILE:	Imp_AI2.c
-	
+
 	AUTHOR:	 Chris Butcher
-	
+
 	CREATED: April 11, 2000
-	
+
 	PURPOSE: AI data importer
-	
+
 	Copyright (c) 2000 Bungie Software
 */
 
@@ -25,7 +25,7 @@
 #include <string.h>
 #include <ctype.h>
 
-AUtFlagElement	IMPgAI2BehaviorFlags[] = 
+AUtFlagElement	IMPgAI2BehaviorFlags[] =
 {
 	{
 		"never-startle",
@@ -114,7 +114,7 @@ UUtError Imp_AI2_ReadClassBehavior(
 
 	error = GRrGroup_GetFloat(inGroup, "daze_delay_min", &dazed_delay);
 	if (error == UUcError_None)	{
-		inClass->ai2_behavior.dazed_minframes = 
+		inClass->ai2_behavior.dazed_minframes =
 			(UUtUns16) MUrUnsignedSmallFloat_To_Uns_Round(UUcFramesPerSecond * dazed_delay);
 	} else {
 		inClass->ai2_behavior.dazed_minframes = 60;
@@ -122,7 +122,7 @@ UUtError Imp_AI2_ReadClassBehavior(
 
 	error = GRrGroup_GetFloat(inGroup, "daze_delay_max", &dazed_delay);
 	if (error == UUcError_None)	{
-		inClass->ai2_behavior.dazed_maxframes = 
+		inClass->ai2_behavior.dazed_maxframes =
 			(UUtUns16) MUrUnsignedSmallFloat_To_Uns_Round(UUcFramesPerSecond * dazed_delay);
 	} else {
 		inClass->ai2_behavior.dazed_maxframes = 100;
@@ -168,26 +168,26 @@ UUtError Imp_AI2_ReadClassBehavior(
 		 */
 
 #if TARGETING_MISS_DECAY
-	error = GRrGroup_GetFloat(inGroup, "startle_miss_angle_min", 
+	error = GRrGroup_GetFloat(inGroup, "startle_miss_angle_min",
 		&inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_angle_min);
 	if (error != UUcError_None)
 		inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_angle_min = 4.5f;
 	inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_angle_min *= M3cDegToRad;
 
-	error = GRrGroup_GetFloat(inGroup, "startle_miss_angle_max", 
+	error = GRrGroup_GetFloat(inGroup, "startle_miss_angle_max",
 		&inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_angle_max);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_angle_max = 30.0f;
 	inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_angle_max *= M3cDegToRad;
 
-	error = GRrGroup_GetFloat(inGroup, "startle_miss_decay", 
+	error = GRrGroup_GetFloat(inGroup, "startle_miss_decay",
 		&inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_decay);
 	if (error != UUcError_None)
 		inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_decay = 0.5f;
 #else
-	error = GRrGroup_GetFloat(inGroup, "startle_miss_angle", 
+	error = GRrGroup_GetFloat(inGroup, "startle_miss_angle",
 		&inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_angle);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_angle = 30.0f;
 
 	inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_angle =
@@ -195,7 +195,7 @@ UUtError Imp_AI2_ReadClassBehavior(
 	inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_angle =
 		MUrSin(inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_angle * M3cDegToRad);
 
-	error = GRrGroup_GetFloat(inGroup, "startle_miss_distance", 
+	error = GRrGroup_GetFloat(inGroup, "startle_miss_distance",
 		&inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_distance);
 	if (error != UUcError_None)
 		inClass->ai2_behavior.combat_parameters.targeting_params.startle_miss_distance = 120.0f;
@@ -204,29 +204,29 @@ UUtError Imp_AI2_ReadClassBehavior(
 		 * enemy movement prediction
 		 */
 
-	error = GRrGroup_GetFloat(inGroup, "predict_amount", 
+	error = GRrGroup_GetFloat(inGroup, "predict_amount",
 		&inClass->ai2_behavior.combat_parameters.targeting_params.predict_amount);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inClass->ai2_behavior.combat_parameters.targeting_params.predict_amount = 1.0f;
 
-	error = GRrGroup_GetUns32(inGroup, "predict_positiondelayframes", 
+	error = GRrGroup_GetUns32(inGroup, "predict_positiondelayframes",
 		&inClass->ai2_behavior.combat_parameters.targeting_params.predict_positiondelayframes);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inClass->ai2_behavior.combat_parameters.targeting_params.predict_positiondelayframes = 0;
 
-	error = GRrGroup_GetUns32(inGroup, "predict_predictdelayframes", 
+	error = GRrGroup_GetUns32(inGroup, "predict_predictdelayframes",
 		&inClass->ai2_behavior.combat_parameters.targeting_params.predict_delayframes);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inClass->ai2_behavior.combat_parameters.targeting_params.predict_delayframes = 5;
 
-	error = GRrGroup_GetUns32(inGroup, "predict_velocityframes", 
+	error = GRrGroup_GetUns32(inGroup, "predict_velocityframes",
 		&inClass->ai2_behavior.combat_parameters.targeting_params.predict_velocityframes);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inClass->ai2_behavior.combat_parameters.targeting_params.predict_velocityframes = 15;
 
-	error = GRrGroup_GetUns32(inGroup, "predict_trendframes", 
+	error = GRrGroup_GetUns32(inGroup, "predict_trendframes",
 		&inClass->ai2_behavior.combat_parameters.targeting_params.predict_trendframes);
-	if (error != UUcError_None)	
+	if (error != UUcError_None)
 		inClass->ai2_behavior.combat_parameters.targeting_params.predict_trendframes = 60;
 
 	  /*
@@ -386,7 +386,7 @@ UUtError Imp_AI2_ReadClassBehavior(
 					Imp_PrintMessage(IMPcMsg_Important, "  %s\n", AI2cVocalizationTypeName[type_index]);
 				}
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "vocalization table: unknown type");
-			}		
+			}
 
 			// read the sound name
 			error =	GRrGroup_Array_GetElement(sub_array, cVocalization_Sound, &elemType, &element);

@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Pursuit.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: June 21, 2000
-	
+
 	PURPOSE: Pursuit AI for Oni
-	
+
 	Copyright (c) 2000
 
 */
@@ -55,7 +55,7 @@ enum {
 	AI2cPursuitCheck_PostGlance,
 	AI2cPursuitCheck_PostArrival,
 	AI2cPursuitCheck_ChangeTarget,
-	
+
 	AI2cPursuitCheck_Max
 };
 
@@ -350,7 +350,7 @@ static UUtBool AI2iPursuit_ChangeMode(ONtCharacter *ioCharacter, AI2tPursuitStat
 
 	UUmAssert((new_mode > AI2cPursuitMode_None) && (new_mode < AI2cPursuitMode_Max));
 #if DEBUG_VERBOSE_PURSUIT
-	COrConsole_Printf("%s: new mode is %s%s", ioCharacter->player_name, 
+	COrConsole_Printf("%s: new mode is %s%s", ioCharacter->player_name,
 						AI2cPursuitModeName[new_mode], force_change ? " (forced)" : "");
 #endif
 
@@ -386,7 +386,7 @@ static void AI2iPursuit_BeginMode(ONtCharacter *ioCharacter, AI2tPursuitState *i
 	M3tPoint3D vector_to_contact;
 	float angle_to_contact;
 	ONtActionMarker *found_alarm;
-	
+
 	UUmAssert((ioPursuitState->current_mode > AI2cPursuitMode_None) && (ioPursuitState->current_mode < AI2cPursuitMode_Max));
 
 	if ((ioPursuitState->pause_timer > 0) && (ioPursuitState->current_mode != AI2cPursuitMode_Forget)) {
@@ -538,7 +538,7 @@ static void AI2iPursuit_NextMode(ONtCharacter *ioCharacter, AI2tPursuitState *io
 				ioPursuitState->current_mode = AI2cPursuitMode_Forget;
 			}
 		break;
-		
+
 		case AI2cPursuitMode_Look:
 			// we've finished looking around upon reaching the contact area.
 			if (!AI2iPursuit_DesirePursuit(ioCharacter, ioPursuitState, AI2cPursuitCheck_PostArrival)) {
@@ -588,7 +588,7 @@ static void AI2iPursuit_GoTo_Update(ONtCharacter *ioCharacter, AI2tPursuitState 
 
 	// have we reached a point where we should be able to see the source of the contact?
 	finished_goto = UUcFalse;
-	if ((ioCharacter->pathState.at_destination) || 
+	if ((ioCharacter->pathState.at_destination) ||
 		(ioCharacter->pathState.distance_to_destination_squared < UUmSQR(AI2cPursuit_GoToContact_CloseDist))) {
 		// we are very close to the contact.
 		finished_goto = UUcTrue;
@@ -941,10 +941,10 @@ void AI2rPursuit_Report(ONtCharacter *ioCharacter, AI2tPursuitState *ioPursuitSt
 {
 	char reportbuf[256], tempbuf[64];
 
-	sprintf(reportbuf, "  strength %s (max %s)", 
+	sprintf(reportbuf, "  strength %s (max %s)",
 		AI2cContactStrengthName[ioPursuitState->target->strength],
 		AI2cContactStrengthName[ioPursuitState->target->highest_strength]);
-	
+
 	if (ioPursuitState->pause_timer > 0) {
 		sprintf(tempbuf, ", paused: %d frames", ioPursuitState->pause_timer);
 		strcat(reportbuf, tempbuf);

@@ -59,7 +59,7 @@ pascal	OSErr	FileCopy(short srcVRefNum,
 	allocates a buffer in the application heap. If you pass a
 	copy buffer to this routine, make its size a multiple of 512
 	($200) bytes for optimum performance.
-	
+
 	srcVRefNum		input:	Source volume specification.
 	srcDirID		input:	Source directory ID.
 	srcName			input:	Source file name.
@@ -80,7 +80,7 @@ pascal	OSErr	FileCopy(short srcVRefNum,
 							allocation blocks on the destination volume to
 							hold both the data and resource forks before
 							starting the copy.
-	
+
 	Result Codes
 		noErr				0		No error
 		readErr				–19		Driver does not respond to read requests
@@ -118,9 +118,9 @@ pascal	OSErr	FileCopy(short srcVRefNum,
 									modes
 		afpObjectTypeErr	-5025	Source is a directory, directory not found
 									or incomplete pathname
-	
+
 	__________
-	
+
 	Also see:	FSpFileCopy, DirectoryCopy, FSpDirectoryCopy
 */
 
@@ -148,7 +148,7 @@ pascal	OSErr	FSpFileCopy(const FSSpec *srcSpec,
 	allocates a buffer in the application heap. If you pass a
 	copy buffer to this routine, make its size a multiple of 512
 	($200) bytes for optimum performance.
-	
+
 	srcSpec			input:	An FSSpec record specifying the source file.
 	dstSpec			input:	An FSSpec record specifying the destination
 							directory.
@@ -165,7 +165,7 @@ pascal	OSErr	FSpFileCopy(const FSSpec *srcSpec,
 							enough allocation blocks on the destination
 							volume to hold both the data and resource forks
 							before starting the copy.
-	
+
 	Result Codes
 		noErr				0		No error
 		readErr				–19		Driver does not respond to read requests
@@ -203,9 +203,9 @@ pascal	OSErr	FSpFileCopy(const FSSpec *srcSpec,
 									modes
 		afpObjectTypeErr	-5025	Source is a directory, directory not found
 									or incomplete pathname
-	
+
 	__________
-	
+
 	Also see:	FileCopy, DirectoryCopy, FSpDirectoryCopy
 */
 

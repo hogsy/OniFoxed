@@ -15,7 +15,7 @@
 typedef struct SStSoundData_PrivateData
 {
 	SStSound				*soundList;
-	
+
 } SStSoundData_PrivateData;
 
 // ======================================================================

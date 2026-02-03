@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_FF_DDS.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Jan 12, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -25,7 +25,7 @@ FFrWrite_DDS(
 UUtBool
 FFrType_IsDDS(
 	BFtFileRef*		inFileRef);
-	
+
 UUtError
 FFrRead_DDS(
 	BFtFileRef*		inFileRef,

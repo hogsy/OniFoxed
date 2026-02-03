@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	Oni_Win_AI.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: April 11, 2000
-	
+
 	PURPOSE: AI Windows
-	
+
 	Copyright (c) Bungie Software 2000
 
 */

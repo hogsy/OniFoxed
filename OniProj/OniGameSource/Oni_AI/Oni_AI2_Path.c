@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Path.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 29, 2000
-	
+
 	PURPOSE: High-level Pathfinding AI for Oni
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */
@@ -73,7 +73,7 @@ static void AI2iPath_CheckDestination(ONtCharacter *ioCharacter);
 // -- global routines
 
 void AI2rPath_Initialize(ONtCharacter *ioCharacter)
-{	
+{
 	// we have no destination
 	ioCharacter->pathState.at_destination = UUcTrue;
 	ioCharacter->pathState.at_finalpoint = UUcTrue;
@@ -196,10 +196,10 @@ void AI2rPath_Update(ONtCharacter *ioCharacter)
 	if (ioCharacter->pathState.destinationType == AI2cDestinationType_None) {
 		// we are halted, stop our pathfinding
 		AI2rPath_Repath(ioCharacter, UUcTrue);
-	} else {		
+	} else {
 		// check to see whether we've received a new destination this frame
 		if ((ioCharacter->pathState.at_destination != ioCharacter->pathState.prev_at_destination) ||
-			(MUmVector_GetDistanceSquared(ioCharacter->pathState.destinationLocation, ioCharacter->pathState.prev_destination) > 
+			(MUmVector_GetDistanceSquared(ioCharacter->pathState.destinationLocation, ioCharacter->pathState.prev_destination) >
 					UUmSQR(AI2cNewDestination_Distance))) {
 			AI2iPath_NewDestination(ioCharacter);
 		}
@@ -295,7 +295,7 @@ void AI2rPath_FindGhostWaypoint(ONtCharacter *ioCharacter, M3tPoint3D *inStartPo
 static UUtBool AI2iPath_FindGlobalPath(ONtCharacter *ioCharacter, PHtGraph *inGraph)
 {
 	UUtBool					gotpath;
-	
+
 	if (ioCharacter->pathState.path_start_node == ioCharacter->pathState.path_end_node) {
 		// the path is entirely within one node
 		ioCharacter->pathState.path_num_nodes = 1;
@@ -324,7 +324,7 @@ static UUtBool AI2iPath_FindGlobalPath(ONtCharacter *ioCharacter, PHtGraph *inGr
 	}
 
 	// set up to follow this path
-	ioCharacter->pathState.path_current_node = 0;	
+	ioCharacter->pathState.path_current_node = 0;
 	ioCharacter->pathState.last_pathfinding_error = AI2cError_Pathfinding_NoError;
 
 	return UUcTrue;
@@ -372,7 +372,7 @@ static UUtBool AI2iPath_NextNode(ONtCharacter *ioCharacter)
 	UUtBool success;
 
 	ioCharacter->pathState.path_current_node += 1;
-		
+
 	if (ioCharacter->pathState.path_current_node >= ioCharacter->pathState.path_num_nodes) {
 		// we hit the end of our path
 		ioCharacter->pathState.path_current_node = 0;
@@ -435,7 +435,7 @@ static UUtBool AI2iPath_MakePath(ONtCharacter *ioCharacter, UUtBool inForce)
 	}
 #endif
 
-	// calculate the path nodes at the start and end of this path		
+	// calculate the path nodes at the start and end of this path
 	locationStart	= ioCharacter->actual_position;
 	locationEnd		= ioCharacter->pathState.destinationLocation;
 	locationEnd.y	+= PHcWorldCoord_YOffset;
@@ -624,7 +624,7 @@ UUtBool AI2rPath_StopAtDest(ONtCharacter *ioCharacter, float *outDestRadius)
 {
 	if (ioCharacter->pathState.destinationType == AI2cDestinationType_None) {
 		if (AI2rMovement_HasMovementModifiers(ioCharacter)) {
-			// we are being completely controlled by our movement modifiers - 
+			// we are being completely controlled by our movement modifiers -
 			// never stop moving
 			if (outDestRadius != NULL) {
 				*outDestRadius = 0;
@@ -720,9 +720,9 @@ void AI2rPath_Report(ONtCharacter *ioCharacter, UUtBool inVerbose, AI2tReportFun
 			break;
 
 		case AI2cDestinationType_Point:
-			sprintf(reportbuf, "  destination: point %f %f %f, tolerance %f", 
-					ioCharacter->pathState.destinationLocation.x, 
-					ioCharacter->pathState.destinationLocation.y, 
+			sprintf(reportbuf, "  destination: point %f %f %f, tolerance %f",
+					ioCharacter->pathState.destinationLocation.x,
+					ioCharacter->pathState.destinationLocation.y,
 					ioCharacter->pathState.destinationLocation.z,
 					ioCharacter->pathState.destinationData.point_data.required_distance);
 			strcat(reportbuf, (ioCharacter->pathState.destinationData.point_data.stop_at_point) ? " (stop)" : " (keep moving)");
@@ -734,8 +734,8 @@ void AI2rPath_Report(ONtCharacter *ioCharacter, UUtBool inVerbose, AI2tReportFun
 
 		case AI2cDestinationType_FollowCharacter:
 			sprintf(reportbuf, "  following %s (currently going to %f %f %f)", ioCharacter->pathState.destinationData.followcharacter_data.character->player_name,
-					ioCharacter->pathState.destinationLocation.x, 
-					ioCharacter->pathState.destinationLocation.y, 
+					ioCharacter->pathState.destinationLocation.x,
+					ioCharacter->pathState.destinationLocation.y,
 					ioCharacter->pathState.destinationLocation.z);
 			break;
 
@@ -752,7 +752,7 @@ void AI2rPath_Report(ONtCharacter *ioCharacter, UUtBool inVerbose, AI2tReportFun
 	} else if (ioCharacter->pathState.at_finalpoint) {
 		sprintf(reportbuf, "  at final point, orienting");
 		inFunction(reportbuf);
-		
+
 	} else {
 		sprintf(reportbuf, "  path from %f %f %f (BNV %d) to %f %f %f (BNV %d), currently in %d of %d nodes",
 				ioCharacter->pathState.path_start_location.x, ioCharacter->pathState.path_start_location.y, ioCharacter->pathState.path_start_location.z,
@@ -853,13 +853,13 @@ void AI2rPath_RenderPath(ONtCharacter *ioCharacter)
 		line_end.z += radius;
 		M3rGeom_Line_Light(&line_start, &line_end, shade);
 
-		line_start.x -= 2 * radius;		
+		line_start.x -= 2 * radius;
 		M3rGeom_Line_Light(&line_start, &line_end, shade);
 
 		line_end.z -= 2 * radius;
 		M3rGeom_Line_Light(&line_start, &line_end, shade);
 
-		line_start.x += 2 * radius;	
+		line_start.x += 2 * radius;
 		M3rGeom_Line_Light(&line_start, &line_end, shade);
 	}
 

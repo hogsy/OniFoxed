@@ -36,7 +36,7 @@ MAtMaterial
 	UUtBool						breakable;			// valid only at runtime
 	tm_pad						pad0[3];
 	tm_templateref				parent;
-	
+
 } MAtMaterial;
 
 #define MAcTemplate_Impact		UUm4CharToUns32('I', 'm', 'p', 't')
@@ -48,7 +48,7 @@ MAtImpact
 	UUtBool						lookup_bymaterial;	// valid only at runtime
 	tm_pad						pad0[3];
 	tm_templateref				parent;
-	
+
 } MAtImpact;
 
 // ======================================================================
@@ -57,7 +57,7 @@ MAtImpact
 MAtImpactType
 MArImpactType_GetByName(
 	const char					*inImpactTypeName);
-	
+
 const char*
 MArImpactType_GetName(
 	MAtImpactType				inImpactType);
@@ -78,7 +78,7 @@ MArImpactType_LookupByMaterial(
 MAtMaterialType
 MArMaterialType_GetByName(
 	const char					*inMaterialTypeName);
-	
+
 const char*
 MArMaterialType_GetName(
 	MAtMaterialType				inMaterialType);
@@ -93,7 +93,7 @@ MArMaterialType_GetParent(
 
 // returns UUcTrue iff inDescendant descends from inMaterial
 UUtBool MArMaterial_IsDescendent(
-	MAtMaterialType inDescendant, 
+	MAtMaterialType inDescendant,
 	MAtMaterialType inMaterial);
 
 UUtBool
@@ -104,7 +104,7 @@ MArMaterialType_IsBreakable(
 UUtUns32
 MArImpacts_GetNumTypes(
 	void);
-	
+
 UUtUns32
 MArMaterials_GetNumTypes(
 	void);
@@ -112,7 +112,7 @@ MArMaterials_GetNumTypes(
 UUtError
 MArMaterials_Initialize(
 	void);
-	
+
 UUtError
 MArMaterials_RegisterTemplates(
 	void);
@@ -120,7 +120,7 @@ MArMaterials_RegisterTemplates(
 void
 MArMaterials_Terminate(
 	void);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 MArImpacts_PreProcess(

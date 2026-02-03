@@ -92,7 +92,7 @@ static struct gl_texel_type_info gl_texel_type_info_table[] = {
 	{IMcPixelType_A8, _gl_pixel_download_classic, GL_ALPHA, GL_ALPHA8 },
 #endif
 	{IMcPixelType_A8, _gl_pixel_download_packed, GL_UNSIGNED_SHORT_4_4_4_4, GL_RGBA4},
-	
+
 	{IMcPixelType_A4I4, _gl_pixel_download_generic, 0, GL_LUMINANCE4_ALPHA4},
 	{IMcPixelType_ARGB8888, _gl_pixel_download_generic, 0, GL_RGBA},
 	{IMcPixelType_RGB888, _gl_pixel_download_generic, 0, GL_RGB},
@@ -139,7 +139,7 @@ boolean initialize_opengl(
 {
 	boolean success= TRUE;
 	UUtError error= _error_none;
-	
+
 	UUrStartupMessage("OpenGL platform initialization");
 	success= gl_platform_initialize();
 
@@ -294,7 +294,7 @@ boolean initialize_opengl(
 		gl->fog_end= ONI_FOG_END;
 
 	#ifdef ENABLE_GL_FOG
-		
+
 		GL_FXN(glFogi)(GL_FOG_MODE, GL_LINEAR);
 		GL_FXN(glFogfv)(GL_FOG_COLOR, (float *)&gl->fog_color);
 	#ifdef Z_SCALE
@@ -322,7 +322,7 @@ boolean initialize_opengl(
 #endif
 
 	#ifdef DISABLE_FOG_ON_3DFX
-	
+
 		if (strstr(gl->renderer, "3Dfx") || strstr(gl->renderer, "3dfx"))
 		{
 		// 3Dfx cards on Mac handle fog correctly (also, vendor string reported as "3dfx" instead of "3Dfx" but we don't want to rely on that)
@@ -345,16 +345,16 @@ boolean initialize_opengl(
 		}
 
 	#endif
-	
+
 	#if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
 		// glReadPixels() has proven to be prohibitively slow on current generation ATI
 		// and 3Dfx hardware (ie, the Mac video card market)
 		gl->depth_buffer_reads_disabled= TRUE;
 	#endif
-			
+
 		GL_FXN(glClearColor)(gl->clear_color.r, gl->clear_color.g, gl->clear_color.b, gl->clear_color.a);
 		GL_FXN(glClear)(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
+
 		gl_depth_mode_set(TRUE, TRUE);
 
 		GL_FXN(glViewport)(0, 0, gl->display_mode.width, gl->display_mode.height);
@@ -368,7 +368,7 @@ boolean initialize_opengl(
 
 boolean gl_query_extension(
 	char *extension)
-{	
+{
 	UUmAssert(gl->extensions);
 	UUmAssert(extension && extension[0] != '\0');
 
@@ -391,9 +391,9 @@ static void *load_gl_extension_routine(
 #else
 	#error "unknown platform"
 #endif
-	
+
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
-	
+
 	return extension_routine;
 }
 
@@ -423,7 +423,7 @@ void gl_reset_fog_parameters(
 #endif
 
 #endif
-	
+
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
 
 	return;
@@ -547,7 +547,7 @@ void gl_fog_update(
 				gl->fog_end_changing= FALSE;
 			}
 
-		} 
+		}
 		else if (delta < 0)
 		{
 			// we are ramping down the fog_end
@@ -579,10 +579,10 @@ void gl_camera_update(
 		//M3tManager_GeomCamera *active_camera;
 
 		UUmAssert(0); // uncharted territory ahead ...
-/*		
+/*
 		M3rCamera_GetActive((M3tGeomCamera**)&active_camera);
 		M3rManager_Camera_UpdateMatrices(active_camera);
-		
+
 		if (gl->camera_mode != _camera_mode_3d)
 		{
 			gl->camera_mode= camera_mode;
@@ -604,7 +604,7 @@ void gl_camera_update(
 				active_camera->upVector.y,
 				ZCOORD(active_camera->upVector.z));
 		}
-		
+
 		if (gl->update_camera_static_data)
 		{
 			#define _180_over_pi 57.295779513082320876798154814105
@@ -646,7 +646,7 @@ void gl_matrix4x3_oni_to_gl(
 	*m++ = inM[1][0]; *m++ = inM[1][1]; *m++ = inM[1][2]; *m++ = 0.0f;
 	*m++ = inM[2][0]; *m++ = inM[2][1]; *m++ = inM[2][2]; *m++ = 0.0f;
 	*m++ = inM[3][0]; *m++ = inM[3][1]; *m++ = inM[3][2]; *m++ = 1.0f;
-	
+
 	return;
 }
 
@@ -655,12 +655,12 @@ void gl_matrix4x4_oni_to_gl(
 	float *m)
 {
 	float **inM= (float **)in_matrix->m;
-	
+
 	*m++ = inM[0][0]; *m++ = inM[0][1]; *m++ = inM[0][2]; *m++ = inM[0][3];
 	*m++ = inM[1][0]; *m++ = inM[1][1]; *m++ = inM[1][2]; *m++ = inM[1][3];
 	*m++ = inM[2][0]; *m++ = inM[2][1]; *m++ = inM[2][2]; *m++ = inM[2][3];
 	*m++ = inM[3][0]; *m++ = inM[3][1]; *m++ = inM[3][2]; *m++ = inM[3][3];
-	
+
 	return;
 }
 
@@ -746,11 +746,11 @@ static void gl_set_texture_timestamp(
 {
 	UUmAssert(texture_map);
 	UUmAssert(gl);
-	
+
 	texture_map->pad1[0]= (UUtUns8)(gl->frame_count & 0x000000FF);
 	texture_map->pad1[1]= (UUtUns8)((gl->frame_count & 0x0000FF00) >> 8);
 	texture_map->pad1[2]= (UUtUns8)((gl->frame_count & 0x00FF0000) >> 16);
-	
+
 	return;
 }
 
@@ -758,14 +758,14 @@ static UUtUns32 gl_get_texture_timestamp(
 	M3tTextureMap *texture_map)
 {
 	UUtUns32 timestamp;
-	
+
 	UUmAssert(texture_map);
 	UUmAssert(gl);
-	
+
 	timestamp= texture_map->pad1[0] |
 		(((UUtUns32)texture_map->pad1[1] << 8) & 0x0000FF00) |
 		(((UUtUns32)texture_map->pad1[2] << 16) & 0x00FF0000);
-	
+
 	return timestamp;
 }
 
@@ -776,10 +776,10 @@ static int UUcExternal_Call gl_sort_textures_by_timestamp_proc(
 	// sort so that least recently used textures are at the front of the list; most recently used at the tail end
 	UUtUns32 timestamp0, timestamp1;
 	int ret;
-	
+
 	timestamp0= gl_get_texture_timestamp((M3tTextureMap *)t0);
 	timestamp1= gl_get_texture_timestamp((M3tTextureMap *)t1);
-	
+
 	if (timestamp0 < timestamp1)
 	{
 		ret= -1;
@@ -792,7 +792,7 @@ static int UUcExternal_Call gl_sort_textures_by_timestamp_proc(
 	{
 		ret= 0;
 	}
-	
+
 	return ret;
 }
 
@@ -803,7 +803,7 @@ static void gl_sort_textures_by_timestamp(
 	{
 		qsort(gl->loaded_texture_array, gl->num_loaded_textures, sizeof(M3tTextureMap *), gl_sort_textures_by_timestamp_proc);
 	}
-	
+
 	return;
 }
 
@@ -813,15 +813,15 @@ static void gl_purge_old_textures_with_memory_limit(UUtUns32 texture_memory_limi
 	{
 		UUtUns32 desired_resident_texture_memory_size;
 		UUtUns32 start_index= 0;
-		
+
 		gl_sort_textures_by_timestamp();
-		
-                
+
+
                 if (texture_memory_limit > DESIRED_MINIMUM_FREE_TEXTURE_MEMORY)
                     desired_resident_texture_memory_size= texture_memory_limit - DESIRED_MINIMUM_FREE_TEXTURE_MEMORY;
                 else
                     desired_resident_texture_memory_size= texture_memory_limit;
-                    
+
 		while ((gl->current_texture_memory > desired_resident_texture_memory_size) &&
 			(gl->num_loaded_textures > MINIMUM_TEXTURE_PURGE_LIMIT) &&
 			gl->loaded_texture_array[start_index])
@@ -854,7 +854,7 @@ static void gl_purge_old_textures_as_needed(
 	static UUtUns32 texture_memory_limit= 0L;
 	// texture_memory_limit is a desired upper limit for the amount of OpenGL textures to keep in memory
 	// (can be on the card or in RAM)
-	
+
 	if (texture_memory_limit == 0L)
 	{
 	#if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Mac)
@@ -865,7 +865,7 @@ static void gl_purge_old_textures_as_needed(
 		texture_memory_limit= MAX_DEFAULT_TEXTURE_MEMORY_LIMIT;
 	#endif
 	}
-	
+
 	gl_purge_old_textures_with_memory_limit(texture_memory_limit);
 }
 
@@ -873,10 +873,10 @@ static boolean gl_texture_list_add(
 	M3tTextureMap *texture_map)
 {
 	boolean success= FALSE;
-	
+
 	UUmAssert(texture_map);
 	UUmAssert(texture_map->opengl_texture_name);
-	
+
 	if (gl->loaded_texture_array == NULL)
 	{
 		gl->loaded_texture_array= (M3tTextureMap **)UUrMemory_Block_NewClear(KILO * sizeof(M3tTextureMap *));
@@ -885,7 +885,7 @@ static boolean gl_texture_list_add(
 			gl->loaded_texture_array_length= KILO;
 		}
 	}
-	
+
 	if (gl->loaded_texture_array)
 	{
 		if (gl->num_loaded_textures < gl->loaded_texture_array_length)
@@ -897,7 +897,7 @@ static boolean gl_texture_list_add(
 		else // need to grow array
 		{
 			M3tTextureMap **temp= (M3tTextureMap **) UUrMemory_Block_NewClear((KILO + gl->loaded_texture_array_length) * sizeof(M3tTextureMap *));
-			
+
 			if (temp)
 			{
 				UUrMemory_MoveFast(gl->loaded_texture_array, temp, gl->loaded_texture_array_length * sizeof(M3tTextureMap *));
@@ -910,7 +910,7 @@ static boolean gl_texture_list_add(
 			}
 		}
 	}
-	
+
 	if (success)
 	{
 		gl_set_texture_timestamp(texture_map);
@@ -926,10 +926,10 @@ static boolean gl_texture_list_remove(
 {
 	boolean success= FALSE;
 	UUtUns32 i= 0;
-	
+
 	UUmAssert(texture_map);
 	UUmAssert(texture_map->opengl_texture_name);
-	
+
 	while (i < gl->num_loaded_textures)
 	{
 		if (gl->loaded_texture_array[i] == texture_map)
@@ -939,7 +939,7 @@ static boolean gl_texture_list_remove(
 				UUtUns32 size= (gl->num_loaded_textures - (i+1)) * sizeof(M3tTextureMap *);
 				M3tTextureMap **src= gl->loaded_texture_array+i+1;
 				M3tTextureMap **dst= gl->loaded_texture_array+i;
-				
+
 				UUrMemory_MoveOverlap(src, dst, size);
 			}
 			--gl->num_loaded_textures;
@@ -975,9 +975,9 @@ UUtBool gl_texture_map_create(
 
 	download_proc= gl_texture_map_download_generic;
 	texture_info= &gl_texel_type_info_table[texture_map->texelType];
-	
+
 	gl_purge_old_textures_as_needed();
-		
+
 	switch (texture_info->download_type)
 	{
 		case _gl_pixel_download_S3:
@@ -1007,9 +1007,9 @@ UUtBool gl_texture_map_create(
 			success= FALSE;
 			break;
 	}
-	
+
 	mipmap= (texture_map->flags&M3cTextureFlags_HasMipMap) ? TRUE : FALSE;
-        
+
 	// generate opengl name
 	if (texture_map->opengl_texture_name == 0)
 	{
@@ -1063,12 +1063,12 @@ UUtBool gl_texture_map_create(
 			}
 
 			GL_FXN(glTexParameteri)(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			
+
 			if (mipmap)
 			{
 				static boolean trilinear_mipmapping_supported= TRUE;
 
-				if (trilinear_mipmapping_supported && 
+				if (trilinear_mipmapping_supported &&
 					// no trilinear filtering if graphics quality is minimum setting
 					ONrMotoko_GraphicsQuality_SupportTrilinear())
 				{
@@ -1128,10 +1128,10 @@ UUtBool gl_texture_map_create(
 					height= UUmMax(height, 1);
 				}
 			}
-			
+
 			UUmAssert(GL_FXN(glIsTexture)(texture_map->opengl_texture_name) == GL_TRUE);
 			UUmAssert(gl_GetError() == GL_NO_ERROR);
-			
+
 			texture_map->opengl_dirty= FALSE;
 			success= gl_texture_list_add(texture_map);
 			UUmAssert(success);
@@ -1171,7 +1171,7 @@ static void gl_texture_map_download_generic(
 		format= GL_RGB;
 	}
 
-	error= IMrImage_ConvertPixelType(IMcDitherMode_Off, 
+	error= IMrImage_ConvertPixelType(IMcDitherMode_Off,
 		width, height, IMcNoMipMap, texture_map->texelType, src,
 		new_pixel_type, buffer);
 	UUmAssert(error == UUcError_None);
@@ -1216,7 +1216,7 @@ static void gl_texture_map_download_packed_pixels(
 		case IMcPixelType_RGB555:
 			dst_pixel_type = IMcPixelType_RGBA5551;
 		break;
-		
+
 		case IMcPixelType_DXT1:
 			dst_pixel_type = IMcPixelType_RGBA5551;
 		break;
@@ -1236,7 +1236,7 @@ static void gl_texture_map_download_packed_pixels(
 
 	if (dst_pixel_type != texture_map->texelType) {
 		error = IMrImage_ConvertPixelType(
-			IMcDitherMode_Off, 
+			IMcDitherMode_Off,
 			width,
 			height,
 			IMcNoMipMap,
@@ -1257,14 +1257,14 @@ static void gl_texture_map_download_packed_pixels(
 		height,								// height
 		0,									// border {?} (GLint)
 		GL_RGBA,							// format of the pixel data (GLenum)
-		texture_info->download_info,		// packed format (GLenum) 
+		texture_info->download_info,		// packed format (GLenum)
 		tex_image_2d_buffer);
 
 	{
 		UUtInt32 error_code_test = GL_FXN(glGetError)();
 		UUtInt32 breakpoint_here = 0;
 	}
-	
+
 	return;
 }
 
@@ -1290,7 +1290,7 @@ static void gl_texture_map_download_classic(
 
 	GL_FXN(glTexImage2D)(GL_TEXTURE_2D, level,
 		texture_info->gl_internal_format, // GL format
-		width, height, 0, texture_info->download_info,	
+		width, height, 0, texture_info->download_info,
 		GL_UNSIGNED_BYTE, src);
 	#ifdef REPORT_ON_COMPRESSION_GL
 		gl_report_compression(texture_map, texture_info, level, width, height);
@@ -1342,7 +1342,7 @@ static void gl_texture_map_download_DXT1(
 	}
 
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
-	
+
 	return;
 }
 
@@ -1361,7 +1361,7 @@ static boolean gl_enumerate_compressed_texture_formats(
 	boolean compression_algorithm_selected= FALSE;
 
 	GL_FXN(glGetIntegerv)(GL_NUM_COMPRESSED_TEXTURE_FORMATS_ARB, num_compressed_texture_formats);
-	
+
 	if ((*num_compressed_texture_formats > 0) &&
 		(*num_compressed_texture_formats < num_array_elements))
 	{
@@ -1425,7 +1425,7 @@ static boolean gl_enumerate_compressed_texture_formats(
 				COMPRESS_FORMAT(IMcPixelType_RGB_Bytes, GL_COMPRESSED_RGB_FXT1_3DFX) // never used?
 				COMPRESS_FORMAT(IMcPixelType_RGBA_Bytes, GL_COMPRESSED_RGBA_FXT1_3DFX) // never used?
 				COMPRESS_FORMAT(IMcPixelType_DXT1, GL_COMPRESSED_RGB_FXT1_3DFX) // really a GL_RGB5_A1
-				
+
 				compression_algorithm_selected= TRUE;
 		*/
 			}
@@ -1436,7 +1436,7 @@ static boolean gl_enumerate_compressed_texture_formats(
 	{
 		*num_compressed_texture_formats= 0;
 	}
-	
+
 	return success;
 }
 
@@ -1528,7 +1528,7 @@ static int gl_texture_bytes(
 	}
 
 	size= bpp * width * height;
-	
+
 	if (include_mipmaps)
 	{
 		do
@@ -1554,7 +1554,7 @@ static void gl_report_compression(
 		if (gl_is_format_compressed(texture_info->gl_internal_format))
 		{
 			GLint iscompressed, compressed_size;
-			
+
 			GL_FXN(glGetTexLevelParameteriv)(GL_TEXTURE_2D, level, GL_TEXTURE_COMPRESSED_ARB, &iscompressed);
 			if (iscompressed)
 			{
@@ -1733,7 +1733,7 @@ UUtError gl_texture_map_proc_handler(
 	void *private_data)
 {
 	M3tTextureMap *texture_map= instance_ptr;
-	
+
 	switch (message)
 	{
 		case TMcTemplateProcMessage_NewPostProcess:
@@ -1743,7 +1743,7 @@ UUtError gl_texture_map_proc_handler(
 			texture_map->opengl_dirty= TRUE;
 			break;
 		case TMcTemplateProcMessage_LoadPostProcess:
-			M3rTextureMap_Prepare(texture_map);			
+			M3rTextureMap_Prepare(texture_map);
 			texture_map->opengl_texture_name= 0;
 			texture_map->opengl_dirty= TRUE;
 			break;
@@ -1811,7 +1811,7 @@ void gl_set_textures(
 		constant_alpha_blend= FALSE;
 	}
 #endif
-	
+
 	// handle blend factors
 	if (texture0)
 	{
@@ -1826,7 +1826,7 @@ void gl_set_textures(
 			{
 				UUmAssert(dfactor != NONE);
 			}
-			else 
+			else
 			{
 				UUmAssert(dfactor == NONE);
 				if (texture1 == NULL)
@@ -1878,7 +1878,7 @@ void gl_set_textures(
 		{
 			GL_FXN(glEnable)(GL_TEXTURE_2D);
 			GL_FXN(glBindTexture)(GL_TEXTURE_2D, texture0->opengl_texture_name);
-			
+
 			gl_set_texture_timestamp(texture0);
 		}
 		current_texture0= texture0;
@@ -1889,7 +1889,7 @@ void gl_set_textures(
 		// select & activate desired texture unit
 		GL_EXT(glActiveTextureARB)(GL_TEXTURE1_ARB);
 		GL_EXT(glClientActiveTextureARB)(GL_TEXTURE1_ARB);
-		
+
 		if (texture1 == NULL)
 		{
 			GL_FXN(glBindTexture)(GL_TEXTURE_2D, 0);
@@ -1917,7 +1917,7 @@ void gl_set_textures(
 				GL_FXN(glEnable)(GL_TEXTURE_2D);
 				GL_FXN(glBindTexture)(GL_TEXTURE_2D, texture1->opengl_texture_name);
 			}
-			
+
 			gl_set_texture_timestamp(texture1);
 		}
 		current_texture1= texture1;
@@ -1941,7 +1941,7 @@ void gl_set_textures(
 	}
 
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
-	
+
 	return;
 }
 
@@ -1968,8 +1968,8 @@ void gl_sync_to_vtrace(
 #endif
 	}
 #endif
-	
-	
+
+
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
 
 	return;
@@ -2010,13 +2010,13 @@ static void gl_setup_nv_combiners_for_env_maps(
 	GL_EXT(glCombinerParameteriNV)(GL_NUM_GENERAL_COMBINERS_NV, 1);
 	// glCombinerInputNV(GLenum stage, GLenum portion, GLenum variable, GLenum input, GLenum mapping, GLenum componentUsage)
 	// A= reflection map
-	GL_EXT(glCombinerInputNV)(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_A_NV, GL_TEXTURE0_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB); 
+	GL_EXT(glCombinerInputNV)(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_A_NV, GL_TEXTURE0_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
 	// B= base texture alpha
-	GL_EXT(glCombinerInputNV)(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_B_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA); 
+	GL_EXT(glCombinerInputNV)(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_B_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA);
 	// C= base texture rgb
-	GL_EXT(glCombinerInputNV)(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_C_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB); 
+	GL_EXT(glCombinerInputNV)(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_C_NV, GL_TEXTURE1_ARB, GL_UNSIGNED_IDENTITY_NV, GL_RGB);
 	// D= 1 (0 inverted == 1)
-	GL_EXT(glCombinerInputNV)(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_RGB); 
+	GL_EXT(glCombinerInputNV)(GL_COMBINER0_NV, GL_RGB, GL_VARIABLE_D_NV, GL_ZERO, GL_UNSIGNED_INVERT_NV, GL_RGB);
 	// output: spare0= (reflection map)*(base texture alpha) + (base texture rgb)
 	//glCombinerOutputNV(GLenum stage, GLenum portion, GLenum abOutput, GLenum cdOutput, GLenum sumOutput, GLenum scale, GLenum bias, GLboolean abDotProduct, GLboolean cdDotProduct, GLboolean muxSum)
 	//                     stage            portion  abOutput       cdOutput       sumOutput     scale     bias    abDot     cdDot     muxSum
@@ -2143,7 +2143,7 @@ static boolean gl_load_library(
 	#if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
 	success= gl_load_opengl_dll();
 	#endif
-		
+
 	/*
 		this marks the end of standard API functions that are required to run
 		optional extensions are loaded as needed
@@ -2237,7 +2237,7 @@ float gl_calculate_fog_factor(
 			world_point= UUrAlignMemory(world_buf);
 		}
 		*world_point= *point;
-	
+
 		MSrTransform_PointListToFrustumScreen(1, world_point, frustum_point, screen_point, &clip_code);
 		if (screen_point->z <= gl->fog_start)
 		{
@@ -2261,7 +2261,7 @@ UUtBool gl_voodoo_card_full_screen(
 	void)
 {
 	UUtBool voodoo_fullscreen= UUcFalse;
-	
+
 	if ((gl != NULL) && (gl->renderer != NULL) && (strstr(gl->renderer, "3Dfx") || strstr(gl->renderer, "3dfx")) && M3gResolutionSwitch)
 	{
 		voodoo_fullscreen= UUcTrue;

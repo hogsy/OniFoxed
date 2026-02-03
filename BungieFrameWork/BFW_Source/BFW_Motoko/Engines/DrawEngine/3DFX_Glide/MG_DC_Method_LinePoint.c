@@ -4,9 +4,9 @@
 	AUTHOR:	Brent H. Pease
 
 	CREATED: Sept 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -30,17 +30,17 @@ MGrPoint(
 	M3tPointScreen*	invCoord)
 {
 	GrVertex	glide_vertex;
-	
+
 	MGmConvertVertex_XYZ(invCoord, &glide_vertex);
-	
+
 	glide_vertex.oow *= 1.01f;
-	
+
 	MGrSet_ColorCombine(MGcColorCombine_ConstantColor);
 	MGrSet_AlphaCombine(MGcAlphaCombine_NoAlpha);
 	grDrawPoint(&glide_vertex);
 }
 
-void 
+void
 MGrLine_InterpVertex(
 	UUtUns32		inVIndex0,
 	UUtUns32		inVIndex1)
@@ -50,7 +50,7 @@ MGrLine_InterpVertex(
 		inVIndex1);
 }
 
-void 
+void
 MGrLine_InterpNone(
 	UUtUns32		inVIndex0,
 	UUtUns32		inVIndex1)
@@ -58,14 +58,14 @@ MGrLine_InterpNone(
 	M3tPointScreen				*screenPoints;
 
 	GrVertex glide_vertices[2];
-	
+
 	screenPoints =
 		(M3tPointScreen*)MGgDrawContextPrivate->statePtr[
 			M3cDrawStatePtrType_ScreenPointArray];
-	
+
 	MGmConvertVertex_XYZ(screenPoints + inVIndex0, glide_vertices + 0);
 	MGmConvertVertex_XYZ(screenPoints + inVIndex1, glide_vertices + 1);
-	
+
 	glide_vertices[0].oow *= 1.01f;
 	glide_vertices[1].oow *= 1.01f;
 

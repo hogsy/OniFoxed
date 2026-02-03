@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Neutral.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 13, 2000
-	
+
 	PURPOSE: Neutral-Character Interaction AI for Oni
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */

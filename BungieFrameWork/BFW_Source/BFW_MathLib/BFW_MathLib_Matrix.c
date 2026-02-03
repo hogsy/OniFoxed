@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Math.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: January 9, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -20,10 +20,10 @@
 #include "EulerAngles.h"
 #include "Decompose.h"
 
-const M3tMatrix4x3 MUgIdentityMatrix = 
+const M3tMatrix4x3 MUgIdentityMatrix =
 	{	1, 0, 0,
-		0, 1, 0, 
-		0, 0, 1, 
+		0, 1, 0,
+		0, 0, 1,
 		0, 0, 0 };
 
 void MUrMatrixToQuat(const M3tMatrix4x3 *inMatrix, M3tQuaternion *outQuat)
@@ -39,33 +39,33 @@ void MUrMatrixToQuat(const M3tMatrix4x3 *inMatrix, M3tQuaternion *outQuat)
 
   // check the diagonal
 
-  if (tr > 0.0) 
+  if (tr > 0.0)
   {
     s = MUrSqrt (tr + 1.f);
 
     outQuat->w = s * 0.5f; // S.S. / 2.f;
-    
+
 	s = 0.5f / s;
 
     outQuat->x = (inMatrix->m[2][1] - inMatrix->m[1][2]) * s;
     outQuat->y = (inMatrix->m[0][2] - inMatrix->m[2][0]) * s;
     outQuat->z = (inMatrix->m[1][0] - inMatrix->m[0][1]) * s;
 
-  } 
-  else {		
-	  
+  }
+  else {
+
 	  // diagonal is negative
-    
+
 	  i = 0;
 
       if (inMatrix->m[1][1] > inMatrix->m[0][0]) i = 1;
 	  if (inMatrix->m[2][2] > inMatrix->m[i][i]) i = 2;
-    
+
 	  j = nxt[i];
       k = nxt[j];
 
       s = MUrSqrt ((inMatrix->m[i][i] - (inMatrix->m[j][j] + inMatrix->m[k][k])) + 1.f);
-      
+
 	  q[i] = s * 0.5f;
 
       if (s != 0.0) s = 0.5f / s;
@@ -105,17 +105,17 @@ void MUrMatrix_GetCol(const M3tMatrix4x3 *inMatrix, UUtUns8 inCol, M3tPoint3D *o
 }
 
 void MUrMatrix_Multiply(
-			const M3tMatrix4x3	*inMatrixA, 
-			const M3tMatrix4x3	*inMatrixB, 
+			const M3tMatrix4x3	*inMatrixA,
+			const M3tMatrix4x3	*inMatrixB,
 			M3tMatrix4x3			*outResult)
 {
 	float	a00, a10, a20, a30;
 	float	a01, a11, a21, a31;
 	float	a02, a12, a22, a32;
-	
+
 	float	b0, b1, b2;
 	float	d0, d1, d2;
-	
+
 	a00 = inMatrixA->m[0][0];
 	a01 = inMatrixA->m[0][1];
 	a02 = inMatrixA->m[0][2];
@@ -131,68 +131,68 @@ void MUrMatrix_Multiply(
 	a30 = inMatrixA->m[3][0];
 	a31 = inMatrixA->m[3][1];
 	a32 = inMatrixA->m[3][2];
-	
+
 	b0 = inMatrixB->m[0][0];
 	b1 = inMatrixB->m[0][1];
 	b2 = inMatrixB->m[0][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
-	
+
 	outResult->m[0][0] = d0;
 	outResult->m[0][1] = d1;
 	outResult->m[0][2] = d2;
-	
+
 	b0 = inMatrixB->m[1][0];
 	b1 = inMatrixB->m[1][1];
 	b2 = inMatrixB->m[1][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
-	
+
 	outResult->m[1][0] = d0;
 	outResult->m[1][1] = d1;
 	outResult->m[1][2] = d2;
-	
+
 	b0 = inMatrixB->m[2][0];
 	b1 = inMatrixB->m[2][1];
 	b2 = inMatrixB->m[2][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
-	
+
 	outResult->m[2][0] = d0;
 	outResult->m[2][1] = d1;
 	outResult->m[2][2] = d2;
-	
+
 	b0 = inMatrixB->m[3][0];
 	b1 = inMatrixB->m[3][1];
 	b2 = inMatrixB->m[3][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2 + a30;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2 + a31;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2 + a32;
-	
+
 	outResult->m[3][0] = d0;
 	outResult->m[3][1] = d1;
 	outResult->m[3][2] = d2;
 }
 
 void MUrMatrix3x3_Multiply(
-			const M3tMatrix3x3	*inMatrixA, 
-			const M3tMatrix3x3	*inMatrixB, 
+			const M3tMatrix3x3	*inMatrixA,
+			const M3tMatrix3x3	*inMatrixB,
 			M3tMatrix3x3		*outResult)
 {
 	float	a00, a10, a20;
 	float	a01, a11, a21;
 	float	a02, a12, a22;
-	
+
 	float	b0, b1, b2;
 	float	d0, d1, d2;
-	
+
 	a00 = inMatrixA->m[0][0];
 	a01 = inMatrixA->m[0][1];
 	a02 = inMatrixA->m[0][2];
@@ -204,46 +204,46 @@ void MUrMatrix3x3_Multiply(
 	a20 = inMatrixA->m[2][0];
 	a21 = inMatrixA->m[2][1];
 	a22 = inMatrixA->m[2][2];
-	
+
 	b0 = inMatrixB->m[0][0];
 	b1 = inMatrixB->m[0][1];
 	b2 = inMatrixB->m[0][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
-	
+
 	outResult->m[0][0] = d0;
 	outResult->m[0][1] = d1;
 	outResult->m[0][2] = d2;
-	
+
 	b0 = inMatrixB->m[1][0];
 	b1 = inMatrixB->m[1][1];
 	b2 = inMatrixB->m[1][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
-	
+
 	outResult->m[1][0] = d0;
 	outResult->m[1][1] = d1;
 	outResult->m[1][2] = d2;
-	
+
 	b0 = inMatrixB->m[2][0];
 	b1 = inMatrixB->m[2][1];
 	b2 = inMatrixB->m[2][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
-	
+
 	outResult->m[2][0] = d0;
 	outResult->m[2][1] = d1;
 	outResult->m[2][2] = d2;
 }
 
 void MUrMatrix3x3_Transpose(
-			const M3tMatrix3x3	*inMatrix, 
+			const M3tMatrix3x3	*inMatrix,
 			M3tMatrix3x3		*outResult)
 {
 	outResult->m[0][0] = inMatrix->m[0][0];
@@ -267,15 +267,15 @@ void MUrMatrix3x3_Transpose(
 	result.m[0][0] = inA->m[0][0] * inB->m[0][0] + inA->m[1][0] * inB->m[0][1] + inA->m[2][0] * inB->m[0][2];
 	result.m[0][1] = inA->m[0][1] * inB->m[0][0] + inA->m[1][1] * inB->m[0][1] + inA->m[2][1] * inB->m[0][2];
 	result.m[0][2] = inA->m[0][2] * inB->m[0][0] + inA->m[1][2] * inB->m[0][1] + inA->m[2][2] * inB->m[0][2];
-		
+
 	result.m[1][0] = inA->m[0][0] * inB->m[1][0] + inA->m[1][0] * inB->m[1][1] + inA->m[2][0] * inB->m[1][2];
 	result.m[1][1] = inA->m[0][1] * inB->m[1][0] + inA->m[1][1] * inB->m[1][1] + inA->m[2][1] * inB->m[1][2];
 	result.m[1][2] = inA->m[0][2] * inB->m[1][0] + inA->m[1][2] * inB->m[1][1] + inA->m[2][2] * inB->m[1][2];
-	
+
 	result.m[2][0] = inA->m[0][0] * inB->m[2][0] + inA->m[1][0] * inB->m[2][1] + inA->m[2][0] * inB->m[2][2];
 	result.m[2][1] = inA->m[0][1] * inB->m[2][0] + inA->m[1][1] * inB->m[2][1] + inA->m[2][1] * inB->m[2][2];
 	result.m[2][2] = inA->m[0][2] * inB->m[2][0] + inA->m[1][2] * inB->m[2][1] + inA->m[2][2] * inB->m[2][2];
-	
+
 	result.m[3][0] = inA->m[0][0] * inB->m[3][0] + inA->m[1][0] * inB->m[3][1] + inA->m[2][0] * inB->m[3][2] + inA->m[3][0];
 	result.m[3][1] = inA->m[0][1] * inB->m[3][0] + inA->m[1][1] * inB->m[3][1] + inA->m[2][1] * inB->m[3][2] + inA->m[3][1];
 	result.m[3][2] = inA->m[0][2] * inB->m[3][0] + inA->m[1][2] * inB->m[3][1] + inA->m[2][2] * inB->m[3][2] + inA->m[3][2];
@@ -295,22 +295,22 @@ MUrMatrix_BuildRotateX(
 	float					s;
 
 	UUmAssert(NULL != outMatrix);
-	
+
 	c = MUrCos(inRadians);
 	s = MUrSin(inRadians);
 
 	outMatrix->m[0][0] = 1.f;
 	outMatrix->m[0][1] = 0;
 	outMatrix->m[0][2] = 0;
-	
+
 	outMatrix->m[1][0] = 0;
 	outMatrix->m[1][1] = c;
 	outMatrix->m[1][2] = s;
-	
+
 	outMatrix->m[2][0] = 0;
 	outMatrix->m[2][1] = -s;
 	outMatrix->m[2][2] = c;
-	
+
 	outMatrix->m[3][0] = 0.0f;
 	outMatrix->m[3][1] = 0.0f;
 	outMatrix->m[3][2] = 0.0f;
@@ -339,22 +339,22 @@ MUrMatrix_BuildRotateY(
 	float					s;
 
 	UUmAssert(NULL != outMatrix);
-	
+
 	c = MUrCos(inRadians);
 	s = MUrSin(inRadians);
 
 	outMatrix->m[0][0] = c;
 	outMatrix->m[0][1] = 0;
 	outMatrix->m[0][2] = -s;
-	
+
 	outMatrix->m[1][0] = 0;
 	outMatrix->m[1][1] = 1;
 	outMatrix->m[1][2] = 0;
-	
+
 	outMatrix->m[2][0] = s;
 	outMatrix->m[2][1] = 0;
 	outMatrix->m[2][2] = c;
-	
+
 	outMatrix->m[3][0] = 0.0f;
 	outMatrix->m[3][1] = 0.0f;
 	outMatrix->m[3][2] = 0.0f;
@@ -374,22 +374,22 @@ MUrMatrix_BuildRotateZ(
 	float					s;
 
 	UUmAssert(NULL != outMatrix);
-	
+
 	c = MUrCos(inRadians);
 	s = MUrSin(inRadians);
 
 	outMatrix->m[0][0] = c;
 	outMatrix->m[0][1] = s;
 	outMatrix->m[0][2] = 0;
-	
+
 	outMatrix->m[1][0] = -s;
 	outMatrix->m[1][1] = c;
 	outMatrix->m[1][2] = 0;
-	
+
 	outMatrix->m[2][0] = 0;
 	outMatrix->m[2][1] = 0;
 	outMatrix->m[2][2] = 1;
-	
+
 	outMatrix->m[3][0] = 0.0f;
 	outMatrix->m[3][1] = 0.0f;
 	outMatrix->m[3][2] = 0.0f;
@@ -404,18 +404,18 @@ MUrMatrix3x3_BuildRotateX(
 	float					s;
 
 	UUmAssert(NULL != outMatrix);
-	
+
 	c = MUrCos(inRadians);
 	s = MUrSin(inRadians);
 
 	outMatrix->m[0][0] = 1.f;
 	outMatrix->m[0][1] = 0;
 	outMatrix->m[0][2] = 0;
-	
+
 	outMatrix->m[1][0] = 0;
 	outMatrix->m[1][1] = c;
 	outMatrix->m[1][2] = s;
-	
+
 	outMatrix->m[2][0] = 0;
 	outMatrix->m[2][1] = -s;
 	outMatrix->m[2][2] = c;
@@ -434,18 +434,18 @@ MUrMatrix3x3_BuildRotateY(
 	float					s;
 
 	UUmAssert(NULL != outMatrix);
-	
+
 	c = MUrCos(inRadians);
 	s = MUrSin(inRadians);
 
 	outMatrix->m[0][0] = c;
 	outMatrix->m[0][1] = 0;
 	outMatrix->m[0][2] = -s;
-	
+
 	outMatrix->m[1][0] = 0;
 	outMatrix->m[1][1] = 1;
 	outMatrix->m[1][2] = 0;
-	
+
 	outMatrix->m[2][0] = s;
 	outMatrix->m[2][1] = 0;
 	outMatrix->m[2][2] = c;
@@ -465,18 +465,18 @@ MUrMatrix3x3_BuildRotateZ(
 	float					s;
 
 	UUmAssert(NULL != outMatrix);
-	
+
 	c = MUrCos(inRadians);
 	s = MUrSin(inRadians);
 
 	outMatrix->m[0][0] = c;
 	outMatrix->m[0][1] = s;
 	outMatrix->m[0][2] = 0;
-	
+
 	outMatrix->m[1][0] = -s;
 	outMatrix->m[1][1] = c;
 	outMatrix->m[1][2] = 0;
-	
+
 	outMatrix->m[2][0] = 0;
 	outMatrix->m[2][1] = 0;
 	outMatrix->m[2][2] = 1;
@@ -494,18 +494,18 @@ MUrMatrix3x3_BuildRotate(
 	float					s;
 
 	UUmAssert(NULL != outMatrix);
-	
+
 	c = MUrCos(inRadians);
 	s = MUrSin(inRadians);
 
 	outMatrix->m[0][0] = inX * inX * (1 - c) + c;
 	outMatrix->m[0][1] = inY * inX * (1 - c) + inZ * s;
 	outMatrix->m[0][2] = inX * inZ * (1 - c) - inY * s;
-	
+
 	outMatrix->m[1][0] = inX * inY * (1 - c) - inZ * s;
 	outMatrix->m[1][1] = inY * inY * (1 - c) + c;
 	outMatrix->m[1][2] = inY * inZ * (1 - c) + inX * s;
-	
+
 	outMatrix->m[2][0] = inX * inZ * (1 - c) + inY * s;
 	outMatrix->m[2][1] = inY * inZ * (1 - c) - inX * s;
 	outMatrix->m[2][2] = inZ * inZ * (1 - c) + c;
@@ -523,22 +523,22 @@ MUrMatrix_BuildRotate(
 	float					s;
 
 	UUmAssert(NULL != outMatrix);
-	
+
 	c = MUrCos(inRadians);
 	s = MUrSin(inRadians);
 
 	outMatrix->m[0][0] = inX * inX * (1 - c) + c;
 	outMatrix->m[0][1] = inY * inX * (1 - c) + inZ * s;
 	outMatrix->m[0][2] = inX * inZ * (1 - c) - inY * s;
-	
+
 	outMatrix->m[1][0] = inX * inY * (1 - c) - inZ * s;
 	outMatrix->m[1][1] = inY * inY * (1 - c) + c;
 	outMatrix->m[1][2] = inY * inZ * (1 - c) + inX * s;
-	
+
 	outMatrix->m[2][0] = inX * inZ * (1 - c) + inY * s;
 	outMatrix->m[2][1] = inY * inZ * (1 - c) - inX * s;
 	outMatrix->m[2][2] = inZ * inZ * (1 - c) + c;
-	
+
 	outMatrix->m[3][0] = 0.0f;
 	outMatrix->m[3][1] = 0.0f;
 	outMatrix->m[3][2] = 0.0f;
@@ -596,7 +596,7 @@ MUrMatrix_BuildUniformScale(
 	return;
 }
 
-void 
+void
 MUrMatrix_BuildScale(
 	M3tPoint3D		*inScale,
 	M3tMatrix4x3		*outMatrix)
@@ -650,7 +650,7 @@ void MUrMatrix_Inverse(const M3tMatrix4x3 *inM, M3tMatrix4x3 *outM)
 	MUrMatrix_Adjoint(inM, outM);
 
     /*  calculate the 4x4 determinant
-     *  if the determinant is zero, 
+     *  if the determinant is zero,
      *  then the inverse matrix is not unique.
      */
 
@@ -670,9 +670,9 @@ void MUrMatrix_Inverse(const M3tMatrix4x3 *inM, M3tMatrix4x3 *outM)
 }
 
 
-/* 
+/*
  *   MUrMatrix_Adjoint( original_matrix, inverse_matrix )
- * 
+ *
  *     calculate the MUrMatrix_Adjoint of a 4x4 matrix
  *
  *      Let  a   denote the minor determinant of matrix A obtained by
@@ -696,27 +696,27 @@ void MUrMatrix_Adjoint(const M3tMatrix4x3 *inM, M3tMatrix4x3 *outM)
     /* assign to individual variable names to aid  */
     /* selecting correct values  */
 
-	a1 = inM->m[0][0]; 
-	b1 = inM->m[0][1]; 
-	c1 = inM->m[0][2]; 
+	a1 = inM->m[0][0];
+	b1 = inM->m[0][1];
+	c1 = inM->m[0][2];
 //	d1 = inM->m[0][3];
 	d1 = 0.f;
 
-	a2 = inM->m[1][0]; 
-	b2 = inM->m[1][1]; 
-	c2 = inM->m[1][2]; 
+	a2 = inM->m[1][0];
+	b2 = inM->m[1][1];
+	c2 = inM->m[1][2];
 //	d2 = inM->m[1][3];
 	d2 = 0.f;
 
-	a3 = inM->m[2][0]; 
+	a3 = inM->m[2][0];
 	b3 = inM->m[2][1];
-	c3 = inM->m[2][2]; 
+	c3 = inM->m[2][2];
 //	d3 = inM->m[2][3];
 	d3 = 0.f;
 
-	a4 = inM->m[3][0]; 
-	b4 = inM->m[3][1]; 
-	c4 = inM->m[3][2]; 
+	a4 = inM->m[3][0];
+	b4 = inM->m[3][1];
+	c4 = inM->m[3][2];
 //	d4 = inM->m[3][3];
 	d4 = 1.f;
 
@@ -727,17 +727,17 @@ void MUrMatrix_Adjoint(const M3tMatrix4x3 *inM, M3tMatrix4x3 *outM)
     outM->m[1][0]  = - MUr3x3_Determinant( a2, a3, a4, c2, c3, c4, d2, d3, d4);
     outM->m[2][0]  =   MUr3x3_Determinant( a2, a3, a4, b2, b3, b4, d2, d3, d4);
     outM->m[3][0]  = - MUr3x3_Determinant( a2, a3, a4, b2, b3, b4, c2, c3, c4);
-        
+
     outM->m[0][1]  = - MUr3x3_Determinant( b1, b3, b4, c1, c3, c4, d1, d3, d4);
     outM->m[1][1]  =   MUr3x3_Determinant( a1, a3, a4, c1, c3, c4, d1, d3, d4);
     outM->m[2][1]  = - MUr3x3_Determinant( a1, a3, a4, b1, b3, b4, d1, d3, d4);
     outM->m[3][1]  =   MUr3x3_Determinant( a1, a3, a4, b1, b3, b4, c1, c3, c4);
-        
+
     outM->m[0][2]  =   MUr3x3_Determinant( b1, b2, b4, c1, c2, c4, d1, d2, d4);
     outM->m[1][2]  = - MUr3x3_Determinant( a1, a2, a4, c1, c2, c4, d1, d2, d4);
     outM->m[2][2]  =   MUr3x3_Determinant( a1, a2, a4, b1, b2, b4, d1, d2, d4);
     outM->m[3][2]  = - MUr3x3_Determinant( a1, a2, a4, b1, b2, b4, c1, c2, c4);
-        
+
 //    outM->m[0][3]  = - MUr3x3_Determinant( b1, b2, b3, c1, c2, c3, d1, d2, d3);
 //    outM->m[1][3]  =   MUr3x3_Determinant( a1, a2, a3, c1, c2, c3, d1, d2, d3);
 //    outM->m[2][3]  = - MUr3x3_Determinant( a1, a2, a3, b1, b2, b3, d1, d2, d3);
@@ -746,7 +746,7 @@ void MUrMatrix_Adjoint(const M3tMatrix4x3 *inM, M3tMatrix4x3 *outM)
 
 /*
  * float = MUrMatrix_Determinant( matrix )
- * 
+ *
  * calculate the determinant of a 4x4 matrix.
  */
 float MUrMatrix_Determinant(const M3tMatrix4x3 *inMatrix)
@@ -757,27 +757,27 @@ float MUrMatrix_Determinant(const M3tMatrix4x3 *inMatrix)
     /* assign to individual variable names to aid selecting */
 	/*  correct elements */
 
-	a1 = inMatrix->m[0][0]; 
-	b1 = inMatrix->m[0][1]; 
-	c1 = inMatrix->m[0][2]; 
+	a1 = inMatrix->m[0][0];
+	b1 = inMatrix->m[0][1];
+	c1 = inMatrix->m[0][2];
 	// d1 = inMatrix->m[0][3];
 	d1 = 0.f;
 
-	a2 = inMatrix->m[1][0]; 
-	b2 = inMatrix->m[1][1]; 
-	c2 = inMatrix->m[1][2]; 
+	a2 = inMatrix->m[1][0];
+	b2 = inMatrix->m[1][1];
+	c2 = inMatrix->m[1][2];
 	//d2 = inMatrix->m[1][3];
 	d2 = 0.f;
 
-	a3 = inMatrix->m[2][0]; 
-	b3 = inMatrix->m[2][1]; 
-	c3 = inMatrix->m[2][2]; 
+	a3 = inMatrix->m[2][0];
+	b3 = inMatrix->m[2][1];
+	c3 = inMatrix->m[2][2];
 	//d3 = inMatrix->m[2][3];
 	d3 = 0.f;
 
-	a4 = inMatrix->m[3][0]; 
-	b4 = inMatrix->m[3][1]; 
-	c4 = inMatrix->m[3][2]; 
+	a4 = inMatrix->m[3][0];
+	b4 = inMatrix->m[3][1];
+	c4 = inMatrix->m[3][2];
 	//d4 = inMatrix->m[3][3];
 	d4 = 1.f;
 
@@ -793,7 +793,7 @@ float MUrMatrix_Determinant(const M3tMatrix4x3 *inMatrix)
 
 /*
  * float = MUr3x3_Determinant(  a1, a2, a3, b1, b2, b3, c1, c2, c3 )
- * 
+ *
  * calculate the determinant of a 3x3 matrix
  * in the form
  *
@@ -814,7 +814,7 @@ float MUr3x3_Determinant(float a1, float a2, float a3, float b1, float b2, float
 
 /*
  * float = MUr2x2_Determinant( float a, float b, float c, float d )
- * 
+ *
  * calculate the determinant of a 2x2 matrix.
  */
 
@@ -891,7 +891,7 @@ void MUrMatrixStack_Translate(
 	float r30 = ioTOS->m[3][0];
 	float r31 = ioTOS->m[3][1];
 	float r32 = ioTOS->m[3][2];
-	
+
 	r30 += r00 * x + r10 * y + r20 * z;
 	r31 += r01 * x + r11 * y + r21 * z;
 	r32 += r02 * x + r12 * y + r22 * z;
@@ -944,7 +944,7 @@ void MUrMatrixStack_Quaternion(
 		testEuler = MUrQuatToEuler(&testQuat, MUcEulerOrderXYXs);
 		testQuat = MUrEulerToQuat(&testEuler);
 		MUrXYXsEulerToQuat(testEuler.x, testEuler.y, testEuler.z, &testQuat2);
-		
+
 		UUmAssert(MUrQuat_IsEqual(inQuaternion, &testQuat));
 		UUmAssert(MUrQuat_IsEqual(&testQuat2, &testQuat));
 	}
@@ -985,15 +985,15 @@ void MUrMatrix_Identity(M3tMatrix4x3 *ioMatrix)
 	ioMatrix->m[0][0] = 1.0f;
 	ioMatrix->m[0][1] = 0.0f;
 	ioMatrix->m[0][2] = 0.0f;
-	
+
 	ioMatrix->m[1][0] = 0.0f;
 	ioMatrix->m[1][1] = 1.0f;
 	ioMatrix->m[1][2] = 0.0f;
-	
+
 	ioMatrix->m[2][0] = 0.0f;
 	ioMatrix->m[2][1] = 0.0f;
 	ioMatrix->m[2][2] = 1.0f;
-	
+
 	ioMatrix->m[3][0] = 0.0f;
 	ioMatrix->m[3][1] = 0.0f;
 	ioMatrix->m[3][2] = 0.0f;
@@ -1008,11 +1008,11 @@ void MUrMatrix3x3_Identity(M3tMatrix3x3 *ioMatrix)
 	ioMatrix->m[0][0] = 1.0f;
 	ioMatrix->m[0][1] = 0.0f;
 	ioMatrix->m[0][2] = 0.0f;
-	
+
 	ioMatrix->m[1][0] = 0.0f;
 	ioMatrix->m[1][1] = 1.0f;
 	ioMatrix->m[1][2] = 0.0f;
-	
+
 	ioMatrix->m[2][0] = 0.0f;
 	ioMatrix->m[2][1] = 0.0f;
 	ioMatrix->m[2][2] = 1.0f;
@@ -1043,7 +1043,7 @@ void MUrMatrix_Translate(
 	float r30 = ioMatrix->m[3][0];
 	float r31 = ioMatrix->m[3][1];
 	float r32 = ioMatrix->m[3][2];
-	
+
 	r30 += r00 * x + r10 * y + r20 * z;
 	r31 += r01 * x + r11 * y + r21 * z;
 	r32 += r02 * x + r12 * y + r22 * z;
@@ -1189,11 +1189,11 @@ void MUrMatrix_DecomposeAffine(const M3tMatrix4x3 *inMatrix, MUtAffineParts *out
 	outParts->translation.x = parts.t.x;
 	outParts->translation.y = parts.t.y;
 	outParts->translation.z = parts.t.z;
-	
+
 	outParts->rotation.x = parts.q.x;
 	outParts->rotation.y = parts.q.y;
 	outParts->rotation.z = parts.q.z;
-	outParts->rotation.w = -parts.q.w;		// shoemake appears to have 
+	outParts->rotation.w = -parts.q.w;		// shoemake appears to have
 
 	outParts->stretchRotation.x = parts.u.x;
 	outParts->stretchRotation.y = parts.u.y;
@@ -1212,10 +1212,10 @@ void MUrMatrix_DecomposeAffine(const M3tMatrix4x3 *inMatrix, MUtAffineParts *out
 void MUrMatrix_To_RotationMatrix(const M3tMatrix4x3 *inMatrix, M3tMatrix4x3 *outMatrix)
 {
 	MUtAffineParts	parts;
-	
+
 	MUrMatrix_DecomposeAffine(inMatrix, &parts);
 
-	// rotate 
+	// rotate
 	MUrQuatToMatrix(&parts.rotation, outMatrix);
 
 	return;
@@ -1226,17 +1226,17 @@ void MUrMatrix_StripScale(const M3tMatrix4x3 *inMatrix, M3tMatrix4x3 *outMatrix)
 	MUtAffineParts	parts;
 	M3tMatrix4x3		translateTM;
 	M3tMatrix4x3		rotateTM;
-	
+
 	MUrMatrix_DecomposeAffine(inMatrix, &parts);
 
 	// translate
 	MUrMatrix_BuildTranslate(
-		parts.translation.x, 
-		parts.translation.y, 
-		parts.translation.z, 
+		parts.translation.x,
+		parts.translation.y,
+		parts.translation.z,
 		&translateTM);
 
-	// rotate 
+	// rotate
 	MUrQuatToMatrix(&parts.rotation, &rotateTM);
 
 	// this should just be original matrix
@@ -1278,7 +1278,7 @@ void MUrMatrix_To_ScaleMatrix(const M3tMatrix4x3 *inMatrix, M3tMatrix4x3 *outMat
 	M3tMatrix4x3		invRotTM;
 
 	M3tMatrix4x3		temp;
-	
+
 	MUrMatrix_DecomposeAffine(inMatrix, &parts);
 
 	MUrQuat_Inverse(&parts.stretchRotation, &invQuat);
@@ -1296,12 +1296,12 @@ static UUtBool MUrMatrix_HasNonUniformScale(const M3tMatrix4x3 *inMatrix)
 {
 	MUtAffineParts	parts;
 	UUtBool			hasNonUniformScale;
-	
+
 	MUrMatrix_DecomposeAffine(inMatrix, &parts);
 
-	hasNonUniformScale = 
+	hasNonUniformScale =
 		(!UUmFloat_CompareEqu(parts.stretch.x, parts.stretch.y)) ||
-		(!UUmFloat_CompareEqu(parts.stretch.x, parts.stretch.z)) || 
+		(!UUmFloat_CompareEqu(parts.stretch.x, parts.stretch.z)) ||
 		(!UUmFloat_CompareEqu(parts.stretch.y, parts.stretch.z));
 
 	return hasNonUniformScale;
@@ -1332,10 +1332,10 @@ MUrMatrix4x3_Multiply3x3(
 	float	a00, a10, a20, a30;
 	float	a01, a11, a21, a31;
 	float	a02, a12, a22, a32;
-	
+
 	float	b0, b1, b2;
 	float	d0, d1, d2;
-	
+
 	a00 = inMatrix4x3->m[0][0];
 	a01 = inMatrix4x3->m[0][1];
 	a02 = inMatrix4x3->m[0][2];
@@ -1351,47 +1351,47 @@ MUrMatrix4x3_Multiply3x3(
 	a30 = inMatrix4x3->m[3][0];
 	a31 = inMatrix4x3->m[3][1];
 	a32 = inMatrix4x3->m[3][2];
-	
+
 	b0 = inMatrix3x3->m[0][0];
 	b1 = inMatrix3x3->m[0][1];
 	b2 = inMatrix3x3->m[0][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
-	
+
 	outMatrix4x3->m[0][0] = d0;
 	outMatrix4x3->m[0][1] = d1;
 	outMatrix4x3->m[0][2] = d2;
-	
+
 	b0 = inMatrix3x3->m[1][0];
 	b1 = inMatrix3x3->m[1][1];
 	b2 = inMatrix3x3->m[1][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
-	
+
 	outMatrix4x3->m[1][0] = d0;
 	outMatrix4x3->m[1][1] = d1;
 	outMatrix4x3->m[1][2] = d2;
-	
+
 	b0 = inMatrix3x3->m[2][0];
 	b1 = inMatrix3x3->m[2][1];
 	b2 = inMatrix3x3->m[2][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
-	
+
 	outMatrix4x3->m[2][0] = d0;
 	outMatrix4x3->m[2][1] = d1;
 	outMatrix4x3->m[2][2] = d2;
-	
+
 	d0 = a30;
 	d1 = a31;
 	d2 = a32;
-	
+
 	outMatrix4x3->m[3][0] = d0;
 	outMatrix4x3->m[3][1] = d1;
 	outMatrix4x3->m[3][2] = d2;
@@ -1405,15 +1405,15 @@ MUrMatrix4x3_BuildFrom3x3(
 	outMatrix4x3->m[0][0] = inMatrix3x3->m[0][0];
 	outMatrix4x3->m[0][1] = inMatrix3x3->m[0][1];
 	outMatrix4x3->m[0][2] = inMatrix3x3->m[0][2];
-	
+
 	outMatrix4x3->m[1][0] = inMatrix3x3->m[1][0];
 	outMatrix4x3->m[1][1] = inMatrix3x3->m[1][1];
 	outMatrix4x3->m[1][2] = inMatrix3x3->m[1][2];
-	
+
 	outMatrix4x3->m[2][0] = inMatrix3x3->m[2][0];
 	outMatrix4x3->m[2][1] = inMatrix3x3->m[2][1];
 	outMatrix4x3->m[2][2] = inMatrix3x3->m[2][2];
-	
+
 	outMatrix4x3->m[3][0] = 0.0f;
 	outMatrix4x3->m[3][1] = 0.0f;
 	outMatrix4x3->m[3][2] = 0.0f;
@@ -1458,7 +1458,7 @@ void MUrMatrix_DualAlignment(
 	UUmTrig_Clip(angle_delta);
 
 	MUrMatrix_BuildRotate(angle_delta, dst2->x, dst2->y, dst2->z, &rotate_matrix);
-	
+
 	// ok, we have a 2 stage process, alignment matrix, then rotate matrix
 	MUrMatrix_Multiply(&alignment_matrix1, &rotate_matrix, outMatrix);
 
@@ -1482,10 +1482,10 @@ MUrMath_Matrix4x4Multiply(
 	float	a01, a11, a21, a31;
 	float	a02, a12, a22, a32;
 	float	a03, a13, a23, a33;
-	
+
 	float	b0, b1, b2, b3;
 	float	d0, d1, d2, d3;
-	
+
 	a00 = inMatrixA->m[0][0];
 	a01 = inMatrixA->m[0][1];
 	a02 = inMatrixA->m[0][2];
@@ -1505,62 +1505,62 @@ MUrMath_Matrix4x4Multiply(
 	a31 = inMatrixA->m[3][1];
 	a32 = inMatrixA->m[3][2];
 	a33 = inMatrixA->m[3][3];
-	
+
 	b0 = inMatrixB->m[0][0];
 	b1 = inMatrixB->m[0][1];
 	b2 = inMatrixB->m[0][2];
 	b3 = inMatrixB->m[0][3];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2 + a30 * b3;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2 + a31 * b3;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2 + a32 * b3;
 	d3 = a03 * b0 + a13 * b1 + a23 * b2 + a33 * b3;
-	
+
 	outResult->m[0][0] = d0;
 	outResult->m[0][1] = d1;
 	outResult->m[0][2] = d2;
 	outResult->m[0][3] = d3;
-	
+
 	b0 = inMatrixB->m[1][0];
 	b1 = inMatrixB->m[1][1];
 	b2 = inMatrixB->m[1][2];
 	b3 = inMatrixB->m[1][3];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2 + a30 * b3;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2 + a31 * b3;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2 + a32 * b3;
 	d3 = a03 * b0 + a13 * b1 + a23 * b2 + a33 * b3;
-	
+
 	outResult->m[1][0] = d0;
 	outResult->m[1][1] = d1;
 	outResult->m[1][2] = d2;
 	outResult->m[1][3] = d3;
-	
+
 	b0 = inMatrixB->m[2][0];
 	b1 = inMatrixB->m[2][1];
 	b2 = inMatrixB->m[2][2];
 	b3 = inMatrixB->m[2][3];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2 + a30 * b3;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2 + a31 * b3;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2 + a32 * b3;
 	d3 = a03 * b0 + a13 * b1 + a23 * b2 + a33 * b3;
-	
+
 	outResult->m[2][0] = d0;
 	outResult->m[2][1] = d1;
 	outResult->m[2][2] = d2;
 	outResult->m[2][3] = d3;
-	
+
 	b0 = inMatrixB->m[3][0];
 	b1 = inMatrixB->m[3][1];
 	b2 = inMatrixB->m[3][2];
 	b3 = inMatrixB->m[3][3];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2 + a30 * b3;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2 + a31 * b3;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2 + a32 * b3;
 	d3 = a03 * b0 + a13 * b1 + a23 * b2 + a33 * b3;
-	
+
 	outResult->m[3][0] = d0;
 	outResult->m[3][1] = d1;
 	outResult->m[3][2] = d2;
@@ -1577,10 +1577,10 @@ MUrMath_Matrix4x4Multiply4x3(
 	float	a01, a11, a21, a31;
 	float	a02, a12, a22, a32;
 	float	a03, a13, a23, a33;
-	
+
 	float	b0, b1, b2;
 	float	d0, d1, d2, d3;
-	
+
 	a00 = inMatrixA->m[0][0];
 	a01 = inMatrixA->m[0][1];
 	a02 = inMatrixA->m[0][2];
@@ -1600,58 +1600,58 @@ MUrMath_Matrix4x4Multiply4x3(
 	a31 = inMatrixA->m[3][1];
 	a32 = inMatrixA->m[3][2];
 	a33 = inMatrixA->m[3][3];
-	
+
 	b0 = inMatrixB->m[0][0];
 	b1 = inMatrixB->m[0][1];
 	b2 = inMatrixB->m[0][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
 	d3 = a03 * b0 + a13 * b1 + a23 * b2;
-	
+
 	outResult->m[0][0] = d0;
 	outResult->m[0][1] = d1;
 	outResult->m[0][2] = d2;
 	outResult->m[0][3] = d3;
-	
+
 	b0 = inMatrixB->m[1][0];
 	b1 = inMatrixB->m[1][1];
 	b2 = inMatrixB->m[1][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
 	d3 = a03 * b0 + a13 * b1 + a23 * b2;
-	
+
 	outResult->m[1][0] = d0;
 	outResult->m[1][1] = d1;
 	outResult->m[1][2] = d2;
 	outResult->m[1][3] = d3;
-	
+
 	b0 = inMatrixB->m[2][0];
 	b1 = inMatrixB->m[2][1];
 	b2 = inMatrixB->m[2][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2;
 	d3 = a03 * b0 + a13 * b1 + a23 * b2;
-	
+
 	outResult->m[2][0] = d0;
 	outResult->m[2][1] = d1;
 	outResult->m[2][2] = d2;
 	outResult->m[2][3] = d3;
-	
+
 	b0 = inMatrixB->m[3][0];
 	b1 = inMatrixB->m[3][1];
 	b2 = inMatrixB->m[3][2];
-	
+
 	d0 = a00 * b0 + a10 * b1 + a20 * b2 + a30;
 	d1 = a01 * b0 + a11 * b1 + a21 * b2 + a31;
 	d2 = a02 * b0 + a12 * b1 + a22 * b2 + a32;
 	d3 = a03 * b0 + a13 * b1 + a23 * b2 + a33;
-	
+
 	outResult->m[3][0] = d0;
 	outResult->m[3][1] = d1;
 	outResult->m[3][2] = d2;
@@ -1700,12 +1700,12 @@ void MUrMatrix_Lerp(const M3tMatrix4x3 *inFrom, const M3tMatrix4x3 *inTo, float 
 
 	// translate
 	MUrMatrix_BuildTranslate(
-		lerpParts.translation.x, 
-		lerpParts.translation.y, 
-		lerpParts.translation.z, 
+		lerpParts.translation.x,
+		lerpParts.translation.y,
+		lerpParts.translation.z,
 		&translateTM);
 
-	// rotate 
+	// rotate
 	MUrQuatToMatrix(&lerpParts.rotation, &rotateTM);
 
 	// this should just be original matrix

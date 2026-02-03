@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_ScriptLang.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -40,7 +40,7 @@ BFtDebugFile*		SLgDebugFile = NULL;
 
 const char *SLcTypeName[SLcType_Max] = {"integer", "string", "float", "bool", "void"};
 
-UUtError 
+UUtError
 SLrScript_CommandTable_Register_Void(SLtRegisterVoidFunctionTable *inTable)
 {
 	SLtRegisterVoidFunctionTable *current_entry;
@@ -191,12 +191,12 @@ SLrScript_Schedule(
 {
 	UUtError	error;
 	SLtErrorContext				errorContext;
-	
+
 	errorContext.fileName = "(called from engine)";
 	errorContext.funcName = UUrMemory_String_GetStr(SLgLexemMemory, inName);
 	errorContext.line = 0;
 
-	error = 
+	error =
 		SLrScheduler_Execute(
 			inName,
 			&errorContext,
@@ -207,8 +207,8 @@ SLrScript_Schedule(
 			inNumberOfTimes,
 			ioReferencePtr);
 	if(error != UUcError_None) return error;
-	
-	return UUcError_None;	
+
+	return UUcError_None;
 }
 
 UUtError	// error code can probably be ignore - i will decide later
@@ -216,7 +216,7 @@ SLrScript_ExecuteOnce(
 	const char*				inName,
 	UUtUns16				inParameterListLength,
 	SLtParameter_Actual*	inParameterList,
-	SLtParameter_Actual		*ioReturnValue,	
+	SLtParameter_Actual		*ioReturnValue,
 	SLtContext **			ioReferencePtr)	// used for getting a reference to track currently-running scripts
 {
 	UUtError	error;
@@ -225,12 +225,12 @@ SLrScript_ExecuteOnce(
 
 	if (inParameterListLength)
 		UUrMemory_MoveFast(inParameterList, local_buffer, sizeof(SLtParameter_Actual) * inParameterListLength);
-	
+
 	errorContext.fileName = "(called from engine)";
 	errorContext.funcName = UUrMemory_String_GetStr(SLgLexemMemory, inName);
 	errorContext.line = 0;
 
-	error = 
+	error =
 		SLrScheduler_Execute(
 			inName,
 			&errorContext,
@@ -241,8 +241,8 @@ SLrScript_ExecuteOnce(
 			1,
 			ioReferencePtr);
 	if(error != UUcError_None) return error;
-	
-	return UUcError_None;	
+
+	return UUcError_None;
 }
 
 void
@@ -264,28 +264,28 @@ SLrScript_Database_Add(
 	SLtToken*	curToken;
 	SLtContext*	context;
 	SLtErrorContext	errorContext;
-	
+
 	UUrMemory_String_GetStr(SLgLexemMemory, inFileName);
 	errorContext.fileName = UUrMemory_String_GetStr(SLgLexemMemory, inFileName);
-	
+
 	error = SLrScript_TextToToken(SLgLexemMemory, inFileName, inText, &numTokens, &tokens);
 	UUmError_ReturnOnError(error);
-	
+
 	curToken = tokens;
-	
+
 	context = SLrContext_New(NULL);
 	UUmError_ReturnOnNull(context);
-	
+
 	context->curFuncState = context->funcStack;
 	context->curFuncState->parseTOS = 0;
 	context->curFuncState->curToken = tokens;
 	context->funcTOS = 1;
-	
+
 	error = SLrScript_Parse(context, &errorContext, SLcParseMode_AddToDatabase);
 	if(error != UUcError_None) return error;
-	
+
 	SLrContext_Delete(context);
-	
+
 	return UUcError_None;
 }
 
@@ -300,12 +300,12 @@ SLrGlobalVariable_Register(					// use to register a variable that is to be expo
 {
 	UUtError		error;
 	SLtErrorContext	errorContext;
-	
+
 	errorContext.fileName = "(called from engine)";
 	errorContext.funcName = "(called from engine)";
 	errorContext.line = 0;
-	
-	error = 
+
+	error =
 		SLrScript_Database_Var_Engine_Add(
 			inName,
 			inDescription,
@@ -315,7 +315,7 @@ SLrGlobalVariable_Register(					// use to register a variable that is to be expo
 			inVariableAddress,
 			inNotificationProc);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -394,7 +394,7 @@ SLrScript_Update(
 	UUtUns32	inGameTime)
 {
 	SLrScheduler_Update(inGameTime);
-	
+
 	return UUcError_None;
 }
 
@@ -409,7 +409,7 @@ SLiScript_ConsoleHook(
 	UUtUns16		numTokens;
 	SLtToken*		tokens;
 	SLtContext*		context;
-	
+
 	errorContext.fileName = "(called from console)";
 	errorContext.funcName = "(called from console)";
 	errorContext.line = 0;
@@ -422,47 +422,47 @@ SLiScript_ConsoleHook(
 			&numTokens,
 			&tokens);
 	if(error != UUcError_None) return UUcFalse;
-	
+
 	if(numTokens == 0) return UUcTrue;
-	
+
 	context = SLrContext_New(NULL);
 	if(context == NULL) return UUcFalse;
-	
+
 	error = SLrParse_FuncStack_Push_Console(context, &errorContext, tokens);
 	if(error != UUcError_None) goto done;
-	
-	error = 
+
+	error =
 		SLrScript_Parse(
 			context,
 			&errorContext,
 			SLcParseMode_InitialExecution);
-	
+
 	switch(context->returnType)
 	{
 		case SLcType_Int32:
 			COrConsole_Printf("int32: %d", context->returnValue.i);
 			break;
-			
+
 		case SLcType_Bool:
 			COrConsole_Printf("bool: %d", context->returnValue.b);
 			break;
-			
+
 		case SLcType_Float:
 			COrConsole_Printf("float: %f", context->returnValue.f);
 			break;
-			
+
 		case SLcType_String:
 			COrConsole_Printf("string: %s", context->returnValue.str);
 			break;
 	}
-	
+
 	if ((context->ticksTillCompletion == 0) && (!context->stalled)) {
 		SLrContext_Delete(context);
 	}
 
 done:
-	
-	return error == UUcError_None ? UUcTrue : UUcFalse;	
+
+	return error == UUcError_None ? UUcTrue : UUcFalse;
 }
 
 UUtError
@@ -470,36 +470,36 @@ SLrScript_Initialize(
 	void)
 {
 	UUtError	error;
-	
+
 	SLgLexemMemory = UUrMemory_String_New(SLcLexem_TableSize);
 	UUmError_ReturnOnNull(SLgLexemMemory);
-	
+
 	SLgPermStringMemory = UUrMemory_String_New(SLcLexem_TableSize);
 	UUmError_ReturnOnNull(SLgPermStringMemory);
-	
+
 	SLgDatabaseHeap = UUrMemory_Heap_New(SLcDatabase_HeapSize, UUcFalse);
 	UUmError_ReturnOnNull(SLgDatabaseHeap);
-	
+
 	SLgPermanentMem = UUrMemory_Pool_New(SLcPermanent_PoolSize, UUcFalse);
 	UUmError_ReturnOnNull(SLgPermanentMem);
-	
+
 	error = SLrScheduler_Initialize();
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		SLrScript_Command_Register_Void(
 			"dump_docs",
 			"Shows all registered variables and commands",
 			"",
 			SLrDatabase_Command_DumpAll);
 	UUmError_ReturnOnErrorMsg(error, "Unable to create a new command.");
-	
+
 	error = COrConsole_AddHook("", 0, SLiScript_ConsoleHook);
 	UUmError_ReturnOnError(error);
-	
+
 	SLgDebugFile = BFrDebugFile_Open("script_debug.txt");
 	UUmAssert(SLgDebugFile);
-	
+
 	return UUcError_None;
 }
 
@@ -508,12 +508,12 @@ SLrScript_Terminate(
 	void)
 {
 	SLrScheduler_Terminate();
-	
+
 	UUrMemory_String_Delete(SLgPermStringMemory);
 	UUrMemory_String_Delete(SLgLexemMemory);
 	UUrMemory_Heap_Delete(SLgDatabaseHeap);
 	UUrMemory_Pool_Delete(SLgPermanentMem);
-	
+
 	BFrDebugFile_Close(SLgDebugFile);
 
 	return;

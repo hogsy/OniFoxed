@@ -32,12 +32,12 @@
 
 static void Imp_GetDifficultyMultipliers(GRtGroup *inGroup, const char *inName, float *outMultipliers)
 {
-	UUtError				error;	
+	UUtError				error;
 	GRtElementType			element_type;
 	GRtElementArray			*multiplier_array;
 	void					*element;
 	UUtUns32				itr, array_length;
-	
+
 
 	UUmAssertWritePtr(outMultipliers, ONcDifficultyLevel_Count * sizeof(float));
 
@@ -58,14 +58,14 @@ static void Imp_GetDifficultyMultipliers(GRtGroup *inGroup, const char *inName, 
 
 			if ((error == UUcError_None) && (element_type == GRcElementType_String)) {
 				UUrString_To_Float((const char *) element, &outMultipliers[itr]);
-			}			
+			}
 		}
 	}
 }
 
 UUtError Imp_AddGameSettings( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFileModDate, GRtGroup* inGroup, char* inInstanceName )
 {
-	UUtError				error;	
+	UUtError				error;
 	ONtGameSettings			*settings;
 	GRtElementType			element_type;
 	GRtElementArray			*sub_array, *main_array;
@@ -146,28 +146,28 @@ UUtError Imp_AddGameSettings( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFile
 
 			// get the value of this point on the ramp
 			error =	GRrGroup_Array_GetElement(sub_array, cHealthColor_Value, &element_type, &element);
-			if ((error != UUcError_None) || (element_type != GRcElementType_String) || 
+			if ((error != UUcError_None) || (element_type != GRcElementType_String) ||
 				(UUrString_To_Float((const char *) element, &temp_float) != UUcError_None)) {
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "game settings: health color values must be numbers");
-			}			
+			}
 			settings->healthcolor_values[itr] = temp_float / 100.0f;
 
 			// get the color of this point
 			error =	GRrGroup_Array_GetElement(sub_array, cHealthColor_Red, &element_type, &element);
-			if ((error != UUcError_None) || (element_type != GRcElementType_String) || 
+			if ((error != UUcError_None) || (element_type != GRcElementType_String) ||
 				(UUrString_To_Uns32((const char *) element, &r) != UUcError_None)) {
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "game settings: health color red values must be numbers");
-			}			
+			}
 			error =	GRrGroup_Array_GetElement(sub_array, cHealthColor_Green, &element_type, &element);
-			if ((error != UUcError_None) || (element_type != GRcElementType_String) || 
+			if ((error != UUcError_None) || (element_type != GRcElementType_String) ||
 				(UUrString_To_Uns32((const char *) element, &g) != UUcError_None)) {
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "game settings: health color green values must be numbers");
-			}			
+			}
 			error =	GRrGroup_Array_GetElement(sub_array, cHealthColor_Blue, &element_type, &element);
-			if ((error != UUcError_None) || (element_type != GRcElementType_String) || 
+			if ((error != UUcError_None) || (element_type != GRcElementType_String) ||
 				(UUrString_To_Uns32((const char *) element, &b) != UUcError_None)) {
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "game settings: health color blue values must be numbers");
-			}			
+			}
 
 			settings->healthcolor_colors[itr] = 0xFF000000 | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
 		}
@@ -259,12 +259,12 @@ UUtError Imp_AddGameSettings( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFile
 
 			// get the start and end levels for which this prompt will be displayed
 			error =	GRrGroup_Array_GetElement(sub_array, cAutoPrompt_StartLevel, &element_type, &element);
-			if ((error != UUcError_None) || (element_type != GRcElementType_String) || 
+			if ((error != UUcError_None) || (element_type != GRcElementType_String) ||
 				(UUrString_To_Uns16((const char *) element, &settings->autoprompts[itr].start_level) != UUcError_None)) {
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "game settings: autoprompt start level values must be numbers");
 			}
 			error =	GRrGroup_Array_GetElement(sub_array, cAutoPrompt_EndLevel, &element_type, &element);
-			if ((error != UUcError_None) || (element_type != GRcElementType_String) || 
+			if ((error != UUcError_None) || (element_type != GRcElementType_String) ||
 				(UUrString_To_Uns16((const char *) element, &settings->autoprompts[itr].end_level) != UUcError_None)) {
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "game settings: autoprompt end level values must be numbers");
 			}
@@ -277,7 +277,7 @@ UUtError Imp_AddGameSettings( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFile
 			UUrString_Copy(settings->autoprompts[itr].message_name, (const char *) element, 32);
 		}
 	}
-	
+
 
 	return UUcError_None;
 }

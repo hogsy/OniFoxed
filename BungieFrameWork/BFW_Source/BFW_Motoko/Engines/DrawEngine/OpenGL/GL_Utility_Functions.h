@@ -1,12 +1,12 @@
 /*
 	FILE:	GL_DC_Method_Frame.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: August 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */

@@ -2,13 +2,13 @@
 
 /*
 	FILE:	BFW_Totoro.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Sept 25, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997, 1998
 
 */
@@ -34,7 +34,7 @@ typedef struct TRtBodyTextures TRtBodyTextures;
 typedef struct TRtAnimationCollection TRtAnimationCollection;
 typedef struct TRtAnimationIdentifier TRtAnimationIdentifier;
 typedef struct TRtScreenCollection TRtScreenCollection;
-typedef struct TRtAnimationCollectionPart TRtAnimationCollectionPart; 
+typedef struct TRtAnimationCollectionPart TRtAnimationCollectionPart;
 
 #define TRcAnimState_None		((TRtAnimState) 0)
 #define TRcAnimState_Anything	((TRtAnimState) 1)
@@ -42,7 +42,7 @@ typedef struct TRtAnimationCollectionPart TRtAnimationCollectionPart;
 #define TRcAnimType_None		((TRtAnimType) 0)
 #define TRcAnimType_Anything	((TRtAnimType) 1)
 
-enum 
+enum
 {
 	TRcAnimFlag_Prepared,
 	TRcAnimFlag_FirstPublic
@@ -63,7 +63,7 @@ enum
 UUtError
 TRrInitialize(
 	void);
-	
+
 void
 TRrTerminate(
 	void);
@@ -169,7 +169,7 @@ typedef UUtInt32 TRtBodySelector;
 typedef tm_template('T', 'R', 'B', 'S', "Totoro Body Set")
 TRtBodySet
 {
-	
+
 	TRtBody *body[5];
 } TRtBodySet;
 
@@ -182,7 +182,7 @@ typedef tm_template('T', 'R', 'F', 'T', "Totoro Facing Table")
 TRtFacingTable
 {
 	tm_pad					pad0[22];
-	
+
 	tm_varindex	UUtUns16	tableSize;
 	tm_vararray float		facing[1];
 } TRtFacingTable;
@@ -276,10 +276,10 @@ typedef tm_struct TRtAttack
 	float					knockback;
 	UUtUns32				flags;
 
-	UUtUns16				damage;				
-	UUtUns16				firstDamageFrame;	
+	UUtUns16				damage;
+	UUtUns16				firstDamageFrame;
 
-	UUtUns16				lastDamageFrame;	
+	UUtUns16				lastDamageFrame;
 	UUtUns16				damageAnimation;
 
 	UUtUns16				hitStun;
@@ -585,7 +585,7 @@ void TRrBody_DrawMagic(
   type rules
 
   1. must match inType
-  
+
   state rules
 
   1. must match inState or have a shortcut from inState
@@ -598,17 +598,17 @@ void TRrBody_DrawMagic(
  */
 
 const TRtAnimation *TRrCollection_Lookup(
-	const TRtAnimationCollection *inCollection, 
-	TRtAnimType inType, 
-	TRtAnimState inState, 
+	const TRtAnimationCollection *inCollection,
+	TRtAnimType inType,
+	TRtAnimState inState,
 	TRtAnimVarient inFlags);
 
-void 
+void
 TRrCollection_Lookup_Range(
-		TRtAnimationCollection *inCollection, 
-		TRtAnimType inType, 
-		TRtAnimState inState, 
-		TRtAnimationCollectionPart **outFirst, 
+		TRtAnimationCollection *inCollection,
+		TRtAnimType inType,
+		TRtAnimState inState,
+		TRtAnimationCollectionPart **outFirst,
 		UUtInt32 *outCount);
 
 TRtAnimationCollection *TRrCollection_GetRecursive(
@@ -685,5 +685,5 @@ TRtFootstepKind TRrGetFootstep(const TRtAnimation *inAnimation, TRtAnimTime inFr
 
 void TRrInstallConsoleVariables(void);
 
-	
+
 #endif /* BFW_TOTORO_H */

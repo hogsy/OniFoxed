@@ -28,7 +28,7 @@ UUtError
 ONrTextureMaterialList_TextureMaterial_Set(
 	const char					*inTextureName,
 	MAtMaterialType				inMaterialType);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 ONrTextureMaterials_Initialize(

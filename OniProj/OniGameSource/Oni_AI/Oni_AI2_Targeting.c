@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Targeting.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: April 20, 1999
-	
+
 	PURPOSE: Targeting infrastructure for Oni AI system
-	
+
 	Copyright (c) 2000
 
 */
@@ -85,7 +85,7 @@ void AI2rTargeting_Initialize(AI2tTargetingOwner inOwner, AI2tTargetingState *io
 	ioTargetingState->targeting_params = inTargetingParams;
 	ioTargetingState->shooting_skillarray = inShootingSkillArray;
 	ioTargetingState->callback = inCallbacks;
-		
+
 	ioTargetingState->current_aim_state = AI2cCombatAiming_ByMovementMode;
 	ioTargetingState->predictionbuf = NULL;
 	ioTargetingState->valid_target_pt = UUcFalse;
@@ -99,7 +99,7 @@ void AI2rTargeting_Update(AI2tTargetingState *ioTargetingState, UUtBool inPredic
 						  UUtBool inShootWeapon, float *outTooCloseWeight)
 {
 	ioTargetingState->last_computation_success = UUcFalse;
-	ioTargetingState->predict_position = inPredict && 
+	ioTargetingState->predict_position = inPredict &&
 				(ioTargetingState->weapon_parameters != NULL);
 
 	if (ioTargetingState->target == NULL) {
@@ -197,7 +197,7 @@ void AI2rTargeting_SetupNewTarget(AI2tTargetingState *ioTargetingState, ONtChara
 	MUmVector_Set(ioTargetingState->error_vector, 0, 0, 0);
 
 #if TARGETING_MISS_DECAY
-	// set up missing - if there is any, it will be modified down 
+	// set up missing - if there is any, it will be modified down
 	// by weapon max in calculatemissdirection
 	ioTargetingState->miss_count = (inInitialTarget) ? 100 : 0;
 #else
@@ -315,7 +315,7 @@ static void AI2iTargeting_NextMissDirection(AI2tTargetingState *ioTargetingState
 			// calculate the new miss rotation matrix
 			MUrQuat_SetValue(&miss_quaternion,
 				ioTargetingState->miss_axis.x,
-				ioTargetingState->miss_axis.y, 
+				ioTargetingState->miss_axis.y,
 				ioTargetingState->miss_axis.z,
 				ioTargetingState->miss_angle);
 			MUrQuatToMatrix(&miss_quaternion, &ioTargetingState->miss_matrix);
@@ -354,7 +354,7 @@ static void AI2iTargeting_CalculateMissDirection(AI2tTargetingState *ioTargeting
 
 	MUmVector_Copy(target_point, ioTargetingState->target->location);
 	target_point.y += ioTargetingState->target->heightThisFrame;
-	
+
 	MUmVector_Subtract(target_vector, target_point, our_point);
 
 	// work out where our weapon is currently pointing and get its angle from
@@ -402,7 +402,7 @@ static void AI2iTargeting_CalculateMissDirection(AI2tTargetingState *ioTargeting
 	// miss angle must start between the two values specified in the character class
 	miss_angle = UUmPin(miss_angle, ioTargetingState->targeting_params->startle_miss_angle_min,
 						ioTargetingState->targeting_params->startle_miss_angle_max);
-		
+
 	// store the current miss quaternion and matrix
 	ioTargetingState->miss_angle = miss_angle;
 	MUmVector_Set(ioTargetingState->miss_axis, qx, qy, qz);
@@ -441,12 +441,12 @@ static void AI2iTargeting_UpdatePrediction(AI2tTargetingState *ioTargetingState,
 		sample_trend = ioTargetingState->next_sample + UUmMin(ioTargetingState->num_samples_taken, trend_frames);
 		sample_vel   = ioTargetingState->next_sample + UUmMin(ioTargetingState->num_samples_taken, velocity_frames);
 		sample_now   = ioTargetingState->next_sample + UUmMin(ioTargetingState->num_samples_taken, delay_frames);
-		
+
 		// the buffer is trend_frames long
 		sample_trend %= bufsize;
 		sample_vel   %= bufsize;
 		sample_now   %= bufsize;
-		
+
 		if ((ioTargetingState->targeting_params->predict_positiondelayframes > 0) && (ioTargetingState->num_samples_taken > 0)) {
 			// we predict velocity starting from where they were some number of frames in the past
 			sample_base = ioTargetingState->next_sample + UUmMin(ioTargetingState->num_samples_taken, ioTargetingState->targeting_params->predict_positiondelayframes);
@@ -464,10 +464,10 @@ static void AI2iTargeting_UpdatePrediction(AI2tTargetingState *ioTargetingState,
 			MUmVector_Set(ioTargetingState->predicted_velocity, 0, 0, 0);
 		} else {
 			// estimate the enemy's velocity in units per second by averaging their motion over this time period
-			MUmVector_Subtract(enemy_velocity, ioTargetingState->predictionbuf[sample_now], 
+			MUmVector_Subtract(enemy_velocity, ioTargetingState->predictionbuf[sample_now],
 												ioTargetingState->predictionbuf[sample_vel]);
 			MUmVector_Scale(enemy_velocity, ((float) UUcFramesPerSecond) / (velocity_frames - delay_frames));
-			
+
 			current_enemy_speed = MUmVector_GetLength(enemy_velocity);
 
 			MUmVector_Copy(ioTargetingState->predicted_velocity, enemy_velocity);
@@ -477,7 +477,7 @@ static void AI2iTargeting_UpdatePrediction(AI2tTargetingState *ioTargetingState,
 				can_predict = UUcFalse;
 			}
 		}
-		
+
 		if (sample_trend == sample_now) {
 			// no samples yet!
 			can_predict = UUcFalse;
@@ -495,11 +495,11 @@ static void AI2iTargeting_UpdatePrediction(AI2tTargetingState *ioTargetingState,
 				can_predict = UUcFalse;
 			}
 		}
-		
+
 		// sample the new enemy location
 		next_sample = ioTargetingState->predictionbuf + ioTargetingState->next_sample;
 		*next_sample = sample_pt;
-		
+
 		ioTargetingState->num_samples_taken++;
 		if (ioTargetingState->next_sample == 0) {
 			ioTargetingState->next_sample = trend_frames - 1;
@@ -510,7 +510,7 @@ static void AI2iTargeting_UpdatePrediction(AI2tTargetingState *ioTargetingState,
 		if (can_predict) {
 			// determine how well our current leading velocity matches the character's general trend of movement
 			// recently.
-			
+
 			// both vectors should be pointing in the same direction
 			dir_accuracy = MUrVector_DotProduct(&enemy_velocity, &trend_motion) / (current_enemy_speed * current_trend_speed);
 
@@ -612,7 +612,7 @@ static void AI2iTargeting_ApplyTargetingError(AI2tTargetingState *ioTargetingSta
 void ONrCreateTargetingVector(
 	const M3tVector3D *current_aim_pt,						// point to aim the gun at, include prediction if required
 	const M3tVector3D *targeting_frompt,					// characters location + height this frame
-	const AI2tWeaponParameters *weapon_parameters,			// 
+	const AI2tWeaponParameters *weapon_parameters,			//
 	const M3tMatrix4x3 *weapon_matrix,						// character's weapon_matrix
 	M3tVector3D *targeting_vector)							// the final vector we should be aiming along
 {
@@ -640,7 +640,7 @@ void ONrCreateTargetingVector(
 	// and it's away from the enemy. this ensures that we don't get wacky stuff happening when people
 	// stand so close that the barrel of our gun goes through their chest (damn collision)
 	MUmVector_Copy(weapon_pt, weapon_parameters->shooter_perpoffset_gunspace);
-	weapon_pt.x -= AI2cCombat_WeaponTargetingOffsetShooterReverse * reverse_offset;		
+	weapon_pt.x -= AI2cCombat_WeaponTargetingOffsetShooterReverse * reverse_offset;
 	MUrMatrix_MultiplyPoint(&weapon_pt, weapon_matrix, &weapon_pt);
 
 	// adjust the target's location by weapon_pt rather than targeting_frompt so that we hit the target
@@ -676,14 +676,14 @@ static void AI2iTargeting_UpdateTargeting(AI2tTargetingState *ioTargetingState, 
 		desired_aim_state = AI2cCombatAiming_ForceLook;
 		aim_with_weapon = UUcFalse;
 	}
-		
+
 	if (ioTargetingState->current_aim_state != desired_aim_state) {
 		if (ioTargetingState->callback->rForceAimWithWeapon) {
 			ioTargetingState->callback->rForceAimWithWeapon(ioTargetingState, aim_with_weapon);
 		}
 		ioTargetingState->current_aim_state = desired_aim_state;
 	}
-	
+
 	if (aim_with_weapon) {
 		// work out where we are aiming at
 		MUmVector_Subtract(orig_aiming_vector, ioTargetingState->current_aim_pt,
@@ -707,7 +707,7 @@ static void AI2iTargeting_UpdateTargeting(AI2tTargetingState *ioTargetingState, 
 
 			gravity = ioTargetingState->weapon_parameters->ballistic_gravity * P3gGravityAccel;
 			gravity_sq = UUmSQR(gravity);
-			
+
 			// in order to hit the point at (dist, height) at time t we must have:
 			// x = dist / t
 			// y = height / t + 1/2 * gravity * t
@@ -762,7 +762,7 @@ static void AI2iTargeting_UpdateTargeting(AI2tTargetingState *ioTargetingState, 
 		// and it's away from the enemy. this ensures that we don't get wacky stuff happening when people
 		// stand so close that the barrel of our gun goes through their chest (damn collision)
 		MUmVector_Copy(ioTargetingState->weapon_pt, ioTargetingState->weapon_parameters->shooter_perpoffset_gunspace);
-		ioTargetingState->weapon_pt.x -= AI2cCombat_WeaponTargetingOffsetShooterReverse * reverse_offset;		
+		ioTargetingState->weapon_pt.x -= AI2cCombat_WeaponTargetingOffsetShooterReverse * reverse_offset;
 		MUrMatrix_MultiplyPoint(&ioTargetingState->weapon_pt, ioTargetingState->weapon_matrix, &ioTargetingState->weapon_pt);
 
 		// calculate the aiming vector required from weapon_pt rather than from targeting_frompt
@@ -871,7 +871,7 @@ static UUtBool AI2iTargeting_Fire(AI2tTargetingState *ioTargetingState)
 		UUmAssert(ioTargetingState->owner.type == AI2cTargetingOwnerType_Turret);
 		aiming_accuracy = MUrSqrt(UUmSQR(shooter_dir.x) + UUmSQR(shooter_dir.y));
 		aim_axial = shooter_dir.z;
-	}		
+	}
 
 	// there is a minimum alignment below which we will never fire... prevents
 	// stupid firing behavior when the enemy is in close. it's a ratio of axial
@@ -915,7 +915,7 @@ static UUtBool AI2iTargeting_Fire(AI2tTargetingState *ioTargetingState)
 
 	// if we are randomly jittering our target point, add this to the aiming tolerance
 	aiming_tolerance += AI2cCombat_Targeting_AimingErrorScale * ioTargetingState->error_distance;
-	
+
 #if TARGETING_MISS_DECAY
 	// if we are still in the initial-missing phase, increase our aiming tolerance
 	if (ioTargetingState->miss_count > 0) {
@@ -962,7 +962,7 @@ static UUtBool AI2iTargeting_Fire(AI2tTargetingState *ioTargetingState)
 #endif
 		aiming_tolerance *= 1.0f + increase_tolerance;
 	} else {
-		// the enemy is outside our max interpolation range. ensure that our 
+		// the enemy is outside our max interpolation range. ensure that our
 		// aiming tolerance never sinks below some class-specific angle... so we are actively
 		// incapable of aiming precisely at a distance
 		min_aiming_tolerance = ioTargetingState->shooting_skill->best_aiming_angle * aim_axial;
@@ -1046,7 +1046,7 @@ static UUtBool AI2iTargeting_Fire(AI2tTargetingState *ioTargetingState)
 #if AI_DEBUG_TARGETING
 		COrConsole_Printf("on target. accuracy %f, tolerance %f", aiming_accuracy, aiming_tolerance);
 #endif
-		
+
 		// we are on target. fire.
 		return UUcTrue;
 	}
@@ -1078,7 +1078,7 @@ void AI2rTargeting_ChangeWeapon(AI2tTargetingState *ioTargetingState, AI2tWeapon
 	index = ioTargetingState->weapon_parameters->shootskill_index;
 	UUmAssert((index >= 0) && (index < AI2cCombat_MaxWeapons));
 	ioTargetingState->shooting_skill = &ioTargetingState->shooting_skillarray[index];
-	
+
 	// set up the prediction buffer
 	ioTargetingState->predict_position = UUcTrue;
 	ioTargetingState->next_sample = ioTargetingState->targeting_params->predict_trendframes - 1;

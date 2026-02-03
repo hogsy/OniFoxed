@@ -1,12 +1,12 @@
 /*
 	FILE:	Motoko_State_Draw.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: July 28, 1999
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997-1999
 
 */
@@ -25,7 +25,7 @@ void*		M3gDrawStatePrivateStack;
 
 void**		M3gDrawStatePtr;
 UUtInt32*	M3gDrawStateInt;
-	
+
 UUtUns32	M3gDrawState_IntFlags;
 UUtUns32	M3gDrawState_PtrFlags;
 
@@ -59,7 +59,7 @@ M3iResolveTexture(M3tTextureMap *inTexture, UUtUns32 inTime)
 	} else {
 		time = inTime;
 	}
-	
+
 	if (inTexture->flags & M3cTextureFlags_Anim_RandomStart)
 	{
 		time += M3gDrawStateInt[M3cDrawStateIntType_TextureInstance];
@@ -72,10 +72,10 @@ M3iResolveTexture(M3tTextureMap *inTexture, UUtUns32 inTime)
 		// this code is to try to make our seed useful for the random
 		// code, should get pushed up to a higher level
 		UUgLocalRandomSeed = 0xfdedfded;
-		UUgLocalRandomSeed ^= 
-			((seed & 0x000000ff) << 24) | 
-			((seed & 0x0000ff00) << 8) | 
-			((seed & 0x00ff0000) >> 8) | 
+		UUgLocalRandomSeed ^=
+			((seed & 0x000000ff) << 24) |
+			((seed & 0x0000ff00) << 8) |
+			((seed & 0x00ff0000) >> 8) |
 			((seed & 0xff000000) >> 24);
 
 		frame = UUmLocalRandomRange(0, animation->numFrames);
@@ -119,43 +119,43 @@ M3rDraw_State_Initialize(
 	void)
 {
 	UUtUns16	stateItr;
-	
+
 	M3gDrawStateTOS = 0;
 	M3gDrawState_IntFlags = UUcMaxUns32;
 	M3gDrawState_PtrFlags = UUcMaxUns32;
-	
+
 	for(stateItr = 0; stateItr < M3cStateStack_MaxDepth; stateItr++)
 	{
 		M3gDrawStatePtrStack[stateItr] = UUrMemory_Block_New(sizeof(void*) * M3cDrawStatePtrType_NumTypes);
 		M3gDrawStateIntStack[stateItr] = UUrMemory_Block_New(sizeof(UUtUns32) * M3cDrawStateIntType_NumTypes);
 	}
-	
+
 	M3gDrawStatePtr = M3gDrawStatePtrStack[M3gDrawStateTOS];
 	M3gDrawStateInt = M3gDrawStateIntStack[M3gDrawStateTOS];
-	
+
 	M3gDrawStatePrivateStack = NULL;
-	
+
 	if(M3gDrawEngineList[M3gActiveDrawEngine].methods.privateStateSize != 0)
 	{
 		M3gDrawStatePrivateStack =
 			UUrMemory_Block_New(
-				M3gDrawEngineList[M3gActiveDrawEngine].methods.privateStateSize * 
+				M3gDrawEngineList[M3gActiveDrawEngine].methods.privateStateSize *
 					M3cStateStack_MaxDepth);
 		UUmError_ReturnOnNull(M3gDrawStatePrivateStack);
 
 		for(stateItr = 0; stateItr < M3cStateStack_MaxDepth; stateItr++)
 		{
 			M3gDrawEngineList[M3gActiveDrawEngine].methods.privateStateNew(
-				(void*)((char*)M3gDrawStatePrivateStack + 
+				(void*)((char*)M3gDrawStatePrivateStack +
 					M3gDrawEngineList[M3gActiveDrawEngine].methods.privateStateSize * stateItr));
 		}
 	}
-	
+
 	UUrMemory_Clear(M3gDrawStateInt, sizeof(UUtUns32) * M3cDrawStateIntType_NumTypes);
 	UUrMemory_Clear(M3gDrawStatePtr, sizeof(void*) * M3cDrawStatePtrType_NumTypes);
-	
+
 	M3gDrawStateInt[M3cDrawStateIntType_Alpha] = 0xFF;
-	
+
 	return UUcError_None;
 }
 
@@ -164,7 +164,7 @@ M3rDraw_State_Terminate(
 	void)
 {
 	UUtUns16	stateItr;
-	
+
 	for(stateItr = 0; stateItr < M3cStateStack_MaxDepth; stateItr++)
 	{
 		UUrMemory_Block_Delete(M3gDrawStatePtrStack[stateItr]);
@@ -176,10 +176,10 @@ M3rDraw_State_Terminate(
 		for(stateItr = 0; stateItr < M3cStateStack_MaxDepth; stateItr++)
 		{
 			M3gDrawEngineList[M3gActiveDrawEngine].methods.privateStateDelete(
-				(void*)((char*)M3gDrawStatePrivateStack + 
+				(void*)((char*)M3gDrawStatePrivateStack +
 					M3gDrawEngineList[M3gActiveDrawEngine].methods.privateStateSize * stateItr));
 		}
-		
+
 		UUrMemory_Block_Delete(M3gDrawStatePrivateStack);
 		M3gDrawStatePrivateStack = NULL;
 	}
@@ -193,7 +193,7 @@ M3rDraw_GetWidth(
 			displayDevices[M3gActiveDisplayDevice].
 				displayModes[M3gActiveDisplayMode].width;
 }
-	
+
 UUtUns16
 M3rDraw_GetHeight(
 	void)
@@ -209,10 +209,10 @@ M3rDraw_State_SetInt(
 	UUtInt32			inDrawState)
 {
 	UUmAssert(inDrawStateType < M3cDrawStateIntType_NumTypes);
-	
+
 	if(inDrawStateType != M3cDrawStateIntType_NumRealVertices &&
 		M3gDrawStateInt[inDrawStateType] == inDrawState) return;
-	
+
 	M3gDrawStateInt[inDrawStateType] = inDrawState;
 	M3gDrawState_IntFlags |= (1 << (UUtUns32)inDrawStateType);
 }
@@ -225,7 +225,7 @@ M3rDraw_State_GetInt(
 
 	return M3gDrawStateInt[inDrawStateType];
 }
-	
+
 void
 M3rDraw_State_SetPtr(
 	M3tDrawStatePtrType	inDrawStateType,
@@ -247,7 +247,7 @@ M3rDraw_State_GetPtr(
 	UUmAssert(inDrawStateType < M3cDrawStatePtrType_NumTypes);
 	return M3gDrawStatePtr[inDrawStateType];
 }
-	
+
 UUtError
 M3rDraw_State_Push(
 	void)
@@ -258,23 +258,23 @@ M3rDraw_State_Push(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Stack too deep");
 	}
-		
+
 	UUrMemory_MoveFast(
 		M3gDrawStateInt,
 		M3gDrawStateIntStack[M3gDrawStateTOS],
 		sizeof(UUtUns32) * M3cDrawStateIntType_NumTypes);
-	
+
 	UUrMemory_MoveFast(
 		M3gDrawStatePtr,
 		M3gDrawStatePtrStack[M3gDrawStateTOS],
 		sizeof(UUtUns32) * M3cDrawStatePtrType_NumTypes);
-	
+
 	M3gDrawStatePtr = M3gDrawStatePtrStack[M3gDrawStateTOS];
 	M3gDrawStateInt = M3gDrawStateIntStack[M3gDrawStateTOS];
 
 	return UUcError_None;
 }
-	
+
 UUtError
 M3rDraw_State_Pop(
 	void)
@@ -287,13 +287,13 @@ M3rDraw_State_Pop(
 	M3gDrawStateTOS--;
 	M3gDrawState_IntFlags = UUcMaxUns32;
 	M3gDrawState_PtrFlags = UUcMaxUns32;
-	
+
 	M3gDrawStatePtr = M3gDrawStatePtrStack[M3gDrawStateTOS];
 	M3gDrawStateInt = M3gDrawStateIntStack[M3gDrawStateTOS];
 
 	return UUcError_None;
 }
-	
+
 UUtError
 M3rDraw_State_Commit(
 	void)
@@ -304,23 +304,23 @@ M3rDraw_State_Commit(
 	UUtInt32		alpha;
 
 	time = M3gDrawStateInt[M3cDrawStateIntType_Time];
-	
+
 	if(M3gDrawState_PtrFlags & (1 << M3cDrawStatePtrType_BaseTextureMap))
 	{
-		M3gDrawStatePtr[M3cDrawStatePtrType_BaseTextureMap] = 
+		M3gDrawStatePtr[M3cDrawStatePtrType_BaseTextureMap] =
 			M3iResolveTexture(
 				M3gDrawStatePtr[M3cDrawStatePtrType_BaseTextureMap],
 				time);
 	}
-	
+
 	if(M3gDrawState_PtrFlags & (1 << M3cDrawStatePtrType_LightTextureMap))
 	{
-		M3gDrawStatePtr[M3cDrawStatePtrType_LightTextureMap] = 
+		M3gDrawStatePtr[M3cDrawStatePtrType_LightTextureMap] =
 			M3iResolveTexture(
 				M3gDrawStatePtr[M3cDrawStatePtrType_LightTextureMap],
 				time);
 	}
-		
+
 	texture = M3gDrawStatePtr[M3cDrawStatePtrType_BaseTextureMap];
 	alpha = M3gDrawStateInt[M3cDrawStateIntType_Alpha];
 
@@ -331,7 +331,7 @@ M3rDraw_State_Commit(
 	if((texture != NULL) && (texture->flags & M3cTextureFlags_Blend_Additive)) M3gDraw_Sorting = UUcTrue;
 #endif
 
-	if (M3gDrawStateInt[M3cDrawStateIntType_SubmitMode] == M3cDrawState_SubmitMode_SortAlphaTris) 
+	if (M3gDrawStateInt[M3cDrawStateIntType_SubmitMode] == M3cDrawState_SubmitMode_SortAlphaTris)
 	{
 		M3gDraw_Sorting = alpha < 0xff;
 
@@ -348,7 +348,7 @@ M3rDraw_State_Commit(
 			}
 			else if (texture->flags & M3cTextureFlags_ReceivesEnvMap)
 			{
-				// CB: 
+				// CB:
 				M3gDraw_Sorting = UUcFalse;
 			}
 			else
@@ -360,12 +360,12 @@ M3rDraw_State_Commit(
 	else {
 		M3gDraw_Sorting = UUcFalse;
 	}
-	
+
 	if(M3gDraw_Sorting)
 	{
 		M3gDraw_Vertex_Unified = M3gDrawStateInt[M3cDrawStateIntType_VertexFormat] == M3cDrawStateVertex_Unified;
 /*
-	}	
+	}
 	if(M3gDraw_Sorting)
 	{
 */
@@ -373,8 +373,8 @@ M3rDraw_State_Commit(
 		M3gManagerDrawContext.baseUVArray = (M3tTextureCoord*)M3gDrawStatePtr[M3cDrawStatePtrType_TextureCoordArray];
 		M3gManagerDrawContext.shadeArray = (UUtUns32*)M3gDrawStatePtr[M3cDrawStatePtrType_ScreenShadeArray_DC];
 	}
-	
-	error = 
+
+	error =
 		M3gDrawEngineList[M3gActiveDrawEngine].methods.privateStateUpdate(
 			(char*)M3gDrawStatePrivateStack + M3gDrawStateTOS * M3gDrawEngineList[M3gActiveDrawEngine].methods.privateStateSize,
 			M3gDrawState_IntFlags,
@@ -382,7 +382,7 @@ M3rDraw_State_Commit(
 			M3gDrawState_PtrFlags,
 			M3gDrawStatePtr);
 	UUmError_ReturnOnError(error);
-	
+
 	M3gDrawState_IntFlags = 0;
 	M3gDrawState_PtrFlags = 0;
 

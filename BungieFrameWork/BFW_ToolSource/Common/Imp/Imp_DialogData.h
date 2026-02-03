@@ -43,6 +43,6 @@ IMPrProcess_FontInfo(
 	void					*inData,
 	GRtElementType			inElementType,
 	TStFontInfo				*outFontInfo);
-	
+
 // ======================================================================
 #endif /* IMP_DIALOGDATA_H */

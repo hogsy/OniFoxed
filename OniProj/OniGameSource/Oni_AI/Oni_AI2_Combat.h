@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Combat.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: April 20, 2000
-	
+
 	PURPOSE: Combat Manager for Oni AI system
-	
+
 	Copyright (c) 2000
 
 */
@@ -270,7 +270,7 @@ typedef struct AI2tBehaviorState_SuperNinja {
 	UUtBool		fireball_started;
 	UUtBool		invis_started;
 	UUtBool		teleport_started;
-	
+
 	// medium-range controls
 	UUtBool		set_mediumrange_behavior;
 	UUtBool		mediumrange_enable_teleport;
@@ -475,7 +475,7 @@ static UUcInline UUtUns32 AI2rCombat_Behavior(ONtCharacter *ioCharacter, struct 
 {
 	UUtUns32 returnval;
 	AI2tBehaviorFunction function = ioCombatState->current_behavior.function;
-	
+
 	if (function == NULL) {
 		*inHandled = UUcFalse;
 		return 0;

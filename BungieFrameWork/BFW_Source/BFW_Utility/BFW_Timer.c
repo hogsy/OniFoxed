@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Timer.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: January 2, 2000
-	
+
 	PURPOSE: Timing utilities
-	
+
 	Copyright 2000
 
 */
@@ -135,7 +135,7 @@ void UUrTimerPhase_Beat(UUtTimerPhaseRef inReference)
 UUtTimerRef UUrTimer_Allocate(const char *inTimerType, const char *inTimerName)
 {
 	UUtTimerRef timer_ref;
-		
+
 	timer_ref = UUrMemory_Block_New(sizeof(UUtTimer));
 
 	if (NULL != timer_ref)
@@ -213,7 +213,7 @@ void UUrTimerSystem_WriteToDisk(void)
 		BFrFileRef_Dispose(file_reference);
 		file_reference = NULL;
 	}
-	
+
 	if (NULL != stream) {
 		UUtTimerRef current_cell;
 		UUtInt32 itr;
@@ -266,7 +266,7 @@ void UUrStallTimer_End(UUtStallTimer *inTimer, const char *inName)
 #if SUPPORT_DEBUG_FILES
 	{
 		static BFtDebugFile *log_file = NULL;
-		
+
 		if (NULL == log_file) {
 			log_file = BFrDebugFile_Open("touchpoint.txt");
 		}
@@ -281,7 +281,7 @@ void UUrStallTimer_End(UUtStallTimer *inTimer, const char *inName)
 #if SUPPORT_DEBUG_FILES
 	if (duration > duration_threshold) {
 		static BFtDebugFile *debug_file = NULL;
-		
+
 		if (NULL == debug_file) {
 			debug_file = BFrDebugFile_Open("stalls.txt");
 		}
@@ -375,7 +375,7 @@ UUtBool UUrPeformanceTimer_Display_Sort(UUtUns32 inA, UUtUns32 inB)
 static void UUrPerformanceTimer_WriteString(UUtPerformanceTimer *performance_timer, char *dest)
 {
 	if (dest != NULL) {
-		sprintf(dest, "%s count: %2.2f time: %2.2f", 
+		sprintf(dest, "%s count: %2.2f time: %2.2f",
 			performance_timer->name,
 			((float) performance_timer->slice_total_quantity) / 60.f,
 			100 * UUrMachineTime_High_To_Seconds(performance_timer->slice_total_time));

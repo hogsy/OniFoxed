@@ -25,14 +25,14 @@ VMrView_Dialog_Callback(
 	UUtUns32					result;
 	DMtDialogData				*dialog_data;
 	DMtDialogData_PrivateData	*private_data;
-	
+
 	// get the dialog data
 	dialog_data = (DMtDialogData*)inView->view_data;
 	private_data = (DMtDialogData_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Dialog_PrivateData, dialog_data);
 	UUmAssert(private_data);
-	
+
 	result = 0;
-	
+
 	switch (inMessage)
 	{
 		case VMcMessage_Create:
@@ -46,7 +46,7 @@ VMrView_Dialog_Callback(
 			private_data->mouse_clicked_time	= 0;
 			private_data->mouse_clicked_type	= VMcMessage_None;
 		return 0;
-		
+
 		case VMcMessage_KeyDown:
 		case VMcMessage_KeyUp:
 			if (private_data->text_focus_view)
@@ -58,14 +58,14 @@ VMrView_Dialog_Callback(
 						inParam1,
 						inParam2);
 			}
-			
+
 			if (result == 0)
 			{
 				if (private_data->callback == NULL) break;
 				result = private_data->callback(inView, inMessage, inParam1, inParam2);
 			}
 		return 0;
-		
+
 		case VMcMessage_Destroy:
 		case VMcMessage_Command:
 		case VMcMessage_Timer:
@@ -79,21 +79,21 @@ VMrView_Dialog_Callback(
 			if (private_data->callback == NULL) break;
 			result = private_data->callback(inView, inMessage, inParam1, inParam2);
 		return 0;
-		
+
 		case VMcMessage_Paint:
 		{
 			M3tPointScreen		destination;
 			UUtUns16			alpha;
-			
+
 			// set the alpha
 			if (inView->flags & VMcViewFlag_Enabled)
 				alpha = VUcAlpha_Enabled;
 			else
 				alpha = VUcAlpha_Disabled;
-			
+
 			// get a pointer to the destination
 			destination = *((M3tPointScreen*)inParam2);
-			
+
 			if (dialog_data->partspec)
 			{
 				VUrDrawPartSpecification(
@@ -105,7 +105,7 @@ VMrView_Dialog_Callback(
 					alpha);
 			}
 			else
-			
+
 			// don't draw if there aren't any textures to draw
 			if (dialog_data->b_textures->num_textures > 0)
 			{
@@ -119,13 +119,13 @@ VMrView_Dialog_Callback(
 			}
 		}
 		break;  // let the defaull callback draw the child views
-		
+
 		case VMcMessage_Update:
 			private_data->cursor_position.x = (UUtInt16)UUmHighWord(inParam1);
 			private_data->cursor_position.y = (UUtInt16)UUmLowWord(inParam1);
 		return 0;
 	}
-	
+
 	return VMrView_DefaultCallback(inView, inMessage, inParam1, inParam2);
 }
 
@@ -138,14 +138,14 @@ DMrDialogData_ProcHandler(
 {
 	DMtDialogData				*dialog_data;
 	DMtDialogData_PrivateData	*private_data;
-	
+
 	UUmAssert(inInstancePtr);
-	
+
 	// get the dialog data
 	dialog_data = (DMtDialogData*)inInstancePtr;
 	private_data = (DMtDialogData_PrivateData*)inDataPtr;
 	UUmAssert(private_data);
-	
+
 	switch(inMessage)
 	{
 		case TMcTemplateProcMessage_NewPostProcess:
@@ -161,17 +161,17 @@ DMrDialogData_ProcHandler(
 			private_data->mouse_clicked_time	= 0;
 			private_data->mouse_clicked_type	= VMcMessage_None;
 		break;
-		
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 		break;
-		
+
 		case TMcTemplateProcMessage_Update:
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
 	}
-	
+
 	return UUcError_None;
 }

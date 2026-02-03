@@ -1,12 +1,12 @@
 /*
 	FILE:	Motoko_Sort.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: July 30, 1999
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */
@@ -26,7 +26,7 @@ M3tTextureCoord sprite_uv[4] = { { 0.f, 0.f }, { 1.f, 0.f }, { 0.f, 1.f }, { 1.f
 M3tDrawContext_Counters	M3gDrawContext_Counters;
 
 /*
- * 
+ *
  */
 const M3tDrawContext_Counters*
 M3rDraw_Counters_Get(
@@ -37,24 +37,24 @@ M3rDraw_Counters_Get(
 
 /*
 * Frame functions
-*/	
-UUtError 
+*/
+UUtError
 M3rDraw_Frame_Start(
 	UUtUns32			inGameTime)
 {
 	UUtError	error;
-	
+
 	M3rDraw_State_SetInt(M3cDrawStateIntType_Time, inGameTime);
-	
+
 	error = M3rSort_Frame_Start();
 	UUmError_ReturnOnError(error);
-	
+
 	UUrMemory_Clear(&M3gDrawContext_Counters, sizeof(M3tDrawContext_Counters));
-	
+
 	return M3gManagerDrawContext.drawFuncs->frameStart(inGameTime);
 }
-	
-UUtError 
+
+UUtError
 M3rDraw_Frame_End(
 	void)
 {
@@ -62,11 +62,11 @@ M3rDraw_Frame_End(
 
 	error = M3rSort_Frame_End();
 	UUmError_ReturnOnError(error);
-	
+
 	return M3gManagerDrawContext.drawFuncs->frameEnd(&M3gDrawContext_Counters.textureDownload);
 }
 
-UUtError 
+UUtError
 M3rDraw_Frame_Sync(
 	void)
 {
@@ -160,7 +160,7 @@ M3rDraw_Triangle(
 	void*			inTriangle)
 {
 	M3gDrawContext_Counters.numTris++;
-	
+
 	if(!M3gDraw_Sorting)
 	{
 		M3gManagerDrawContext.drawFuncs->triangle(inTriangle);
@@ -297,15 +297,15 @@ M3rDraw_SpriteArray(
 	//}
 }
 
-UUtError 
+UUtError
 M3rDraw_ScreenCapture(
-	const UUtRect*	inRect, 
+	const UUtRect*	inRect,
 	void*			outBuffer)
 {
 	return M3gManagerDrawContext.drawFuncs->screenCapture(inRect, outBuffer);
 }
 
-UUtBool 
+UUtBool
 M3rDraw_PointVisible(
 	const M3tPointScreen	*inPoint,
 	float					inTolerance)
@@ -313,7 +313,7 @@ M3rDraw_PointVisible(
 	return M3gManagerDrawContext.drawFuncs->pointVisible(inPoint, inTolerance);
 }
 
-UUtBool 
+UUtBool
 M3rDraw_SupportPointVisible(
 	void)
 {
@@ -340,7 +340,7 @@ UUtError M3rSpriteArray_Draw( M3tSpriteArray* inSpriteArray )
 
 UUtError
 OGrGeomContext_Method_SpriteArray_Draw(
-	M3tSpriteArray*		inSpriteArray);	
+	M3tSpriteArray*		inSpriteArray);
 
 
 */

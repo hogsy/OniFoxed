@@ -23,7 +23,7 @@ enum
 	WMcButtonStyle_HasIcon			= (0x0004 << 16),	/* not supported yet */
 	WMcButtonStyle_Toggle			= (0x0008 << 16),
 	WMcButtonStyle_Default			= (0x0010 << 16),
-	
+
 	WMcButtonStyle_PushButton			= (WMcButtonStyle_HasBackground | WMcButtonStyle_HasTitle),
 	WMcButtonStyle_DefaultPushButton	= (WMcButtonStyle_HasBackground | WMcButtonStyle_HasTitle | WMcButtonStyle_Default),
 	WMcButtonStyle_IconButton			= (WMcButtonStyle_HasBackground | WMcButtonStyle_HasIcon),

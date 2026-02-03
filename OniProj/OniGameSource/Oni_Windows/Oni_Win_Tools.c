@@ -50,7 +50,7 @@ typedef struct OWtEORevert
 	OBJtObject				*object;
 	M3tPoint3D				position;
 	M3tPoint3D				rotation;
-	
+
 } OWtEORevert;
 
 typedef struct OWtEOPos
@@ -62,20 +62,20 @@ typedef struct OWtEOPos
 
 	M3tPoint3D				position_current;
 	M3tPoint3D				rotation_current;
-	
+
 } OWtEOPos;
 
 
 typedef struct OWtPTV
 {
 	OBJtObject				*object;
-	
+
 	UUtInt32				original_id;
 	M3tPoint3D				original_scale;
-	
+
 	UUtInt32				new_id;
 	M3tPoint3D				new_scale;
-	
+
 } OWtPTV;
 
 
@@ -83,14 +83,14 @@ typedef struct OWtCategory
 {
 	UUtUns32				object_type;
 	char					name[OBJcMaxNameLength + 1];
-	
+
 } OWtCategory;
 
 typedef struct OWtColorPopup
 {
 	char					*name;
 	IMtShade				shade;
-	
+
 } OWtColorPopup;
 
 typedef struct OWtLightProp
@@ -99,7 +99,7 @@ typedef struct OWtLightProp
 	UUtUns16				current_index;
 	UUtUns32				num_ls_datas;
 	OBJtLSData				*ls_data_array;
-	
+
 } OWtLightProp;
 
 typedef struct OWtCharListParams
@@ -123,7 +123,7 @@ typedef struct OWtSoundProp
 	OBJtObject				*object;
 	OBJtOSD_All				osd;
 	OBJtOSD_All				backup_osd;
-	
+
 } OWtSoundProp;
 
 // ======================================================================
@@ -154,10 +154,10 @@ static OWtColorPopup		OWgColorPopup[] =
 };
 
 static const char *AIgTeamList[] = { "konoko", "TCTF", "syndicate", "neutral", "security-guard", "rogue-konoko", "switzerland", "syndicate accessory", NULL };
-static const char *OWgTriggerVolumeFlagList[] = { 
-	"<Enter Once>", 
-	"<Inside Once>", 
-	"<Exit Once>", 
+static const char *OWgTriggerVolumeFlagList[] = {
+	"<Enter Once>",
+	"<Inside Once>",
+	"<Exit Once>",
 	"<Enter Disabled>",
 	"<Inside Disabled>",
 	"<Exit Disabled>",
@@ -189,18 +189,18 @@ OWiColorPopup_Init(
 {
 	OWtColorPopup			*data;
 	UUtUns16				i;
-	
+
 	for (data = OWgColorPopup, i = 0;
 		 data->name != NULL;
 		 data++, i++)
 	{
 		UUtError			error;
 		WMtMenuItemData		menu_item_data;
-		
+
 		menu_item_data.flags = WMcMenuItemFlag_Enabled;
 		menu_item_data.id = i;
 		UUrString_Copy(menu_item_data.title, data->name, WMcMaxTitleLength);
-		
+
 		error = WMrPopupMenu_AppendItem(inPopup, &menu_item_data);
 		if (error != UUcError_None) { return; }
 	}
@@ -226,7 +226,7 @@ OWiColorPopup_SelectItemFromShade(
 {
 	OWtColorPopup			*data;
 	UUtUns16				i;
-	
+
 	for (data = OWgColorPopup, i = 0;
 		 data->name != NULL;
 		 data++, i++)
@@ -253,7 +253,7 @@ OWiEOPos_EnableButtons(
 {
 	WMtWindow				*button;
 	UUtUns32				i;
-	
+
 	// enabled or disable the position buttons
 	for (i = EOcBtn_LocX_Inc_0_1; i <= EOcBtn_LocZ_Dec_10_0; i++)
 	{
@@ -267,7 +267,7 @@ OWiEOPos_EnableButtons(
 		button = WMrDialog_GetItemByID(inDialog, (UUtUns16)i);
 		WMrWindow_SetEnabled(button, inEnabled);
 	}
-	
+
 	// enable or disable the gravity button
 	button = WMrDialog_GetItemByID(inDialog, EOcBtn_Gravity);
 	WMrWindow_SetEnabled(button, inEnabled);
@@ -282,17 +282,17 @@ OWiEOPos_GetValFromField(
 	float					value;
 	WMtWindow				*edit_field;
 	char					string[255];
-	
+
 	value = 0.0f;
-	
+
 	// get the field
 	edit_field = WMrDialog_GetItemByID(inDialog, inItemID);
 	if (edit_field == NULL) { return value; }
-	
+
 	// get the value from the field
 	WMrMessage_Send(edit_field, EFcMessage_GetText, (UUtUns32)string, 255);
 	sscanf(string, "%f", &value);
-	
+
 	return value;
 }
 
@@ -305,50 +305,50 @@ OWiEOPos_SetEditFields(
 	WMtWindow				*text_field;
 	char					string[255];
 	OWtEOPos				*pos;
-	
+
 	// get pos
 	pos = (OWtEOPos*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(pos);
-	
+
 	// absolute location
 	edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_AbsLocX);
 	sprintf(string, "%5.3f", pos->position_current.x);
 	WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_AbsLocY);
 	sprintf(string, "%5.3f", pos->position_current.y);
 	WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_AbsLocZ);
 	sprintf(string, "%5.3f", pos->position_current.z);
 	WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	// offset location
 	edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_OffLocX);
 	sprintf(string, "%5.3f", (pos->position_current.x - pos->position_original.x));
 	WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_OffLocY);
 	sprintf(string, "%5.3f", (pos->position_current.y - pos->position_original.y));
 	WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_OffLocZ);
 	sprintf(string, "%5.3f", (pos->position_current.z - pos->position_original.z));
 	WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	// rotation
 	edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_RotX);
 	sprintf(string, "%5.3f", pos->rotation_current.x);
 	WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_RotY);
 	sprintf(string, "%5.3f", pos->rotation_current.y);
 	WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_RotZ);
 	sprintf(string, "%5.3f", pos->rotation_current.z);
 	WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	if (OBJrSelectedObjects_GetNumSelected() > 1)
 	{
 		text_field = WMrDialog_GetItemByID(inDialog, EOcTxt_RotType);
@@ -372,7 +372,7 @@ OWiEOPos_OffsetPositions(
 	{
 		OBJtObject				*object;
 		M3tPoint3D				position;
-		
+
 		object = OBJrSelectedObjects_GetSelectedObject(i);
 		MUmVector_Add(position, object->position, *inPositionOffset);
 		OBJrObject_SetPosition(object, &position, NULL);
@@ -390,14 +390,14 @@ OWiEOPos_SetRotations(
 {
 	UUtUns32				num_selected;
 	OBJtObject				*object;
-	
+
 	while (inRotation->x < 0.0f) 	{ inRotation->x += 360.0f; }
 	while (inRotation->y < 0.0f) 	{ inRotation->y += 360.0f; }
 	while (inRotation->z < 0.0f) 	{ inRotation->z += 360.0f; }
 	while (inRotation->x >= 360.0f) { inRotation->x -= 360.0f; }
 	while (inRotation->y >= 360.0f) { inRotation->y -= 360.0f; }
 	while (inRotation->z >= 360.0f) { inRotation->z -= 360.0f; }
-	
+
 	num_selected = OBJrSelectedObjects_GetNumSelected();
 	if (num_selected > 1)
 	{
@@ -406,12 +406,12 @@ OWiEOPos_SetRotations(
 		float				x_rad;
 		float				y_rad;
 		float				z_rad;
-		
+
 		// inRotation is an offset from the current rotation
 		x_rad = inRotation->x * M3cDegToRad;
 		y_rad = inRotation->y * M3cDegToRad;
 		z_rad = inRotation->z * M3cDegToRad;
-		
+
 		MUrMatrix_Identity(&rotation_matrix);
 		if (inRevert)
 		{
@@ -425,25 +425,25 @@ OWiEOPos_SetRotations(
 		MUrMatrix_RotateY(&rotation_matrix, y_rad);
 		MUrMatrix_RotateZ(&rotation_matrix, z_rad);
 		}
-		
+
 		for (i = 0; i < num_selected; i++)
 		{
 			M3tPoint3D			delta;
 			M3tPoint3D			position;
 			M3tMatrix4x3		object_rotation_matrix;
 			M3tMatrix4x3		rotation_result;
-			
+
 			object = OBJrSelectedObjects_GetSelectedObject(i);
 			MUmVector_Subtract(delta, object->position, inPos->position_current);
-			
+
 			MUrMatrix_MultiplyPoint(&delta, &rotation_matrix, &position);
 			MUmVector_Increment(position, inPos->position_current);
-			
+
 			OBJrObject_GetRotationMatrix(object, &object_rotation_matrix);
 			MUrMatrix_Multiply(&rotation_matrix, &object_rotation_matrix, &rotation_result);
-			
+
 			OBJrObject_SetRotationMatrix(object, &rotation_result);
-			
+
 			OBJrObject_SetPosition(object, &position,NULL);
 		}
 	}
@@ -464,32 +464,32 @@ OWiEOPos_Apply(
 	M3tPoint3D				position;
 	M3tPoint3D				rotation;
 	M3tPoint3D				delta;
-	
+
 	// get the position
 	position.x = OWiEOPos_GetValFromField(inDialog, EOcEF_AbsLocX);
 	position.y = OWiEOPos_GetValFromField(inDialog, EOcEF_AbsLocY);
 	position.z = OWiEOPos_GetValFromField(inDialog, EOcEF_AbsLocZ);
-	
+
 	// calculate the difference in the typed in position and the current position
 	MUmVector_Subtract(delta, position, inPos->position_current);
-	
+
 	// save the new position
 	MUmVector_Copy(inPos->position_current, position);
-	
+
 	// offset the position of the objects
 	OWiEOPos_OffsetPositions(&delta);
-	
+
 	// get the rotation
 	rotation.x = OWiEOPos_GetValFromField(inDialog, EOcEF_RotX);
 	rotation.y = OWiEOPos_GetValFromField(inDialog, EOcEF_RotY);
 	rotation.z = OWiEOPos_GetValFromField(inDialog, EOcEF_RotZ);
-	
+
 	// calculate the difference in the typed in rotation and the current rotation
 	MUmVector_Subtract(delta, rotation, inPos->rotation_current);
-	
+
 	// save the new rotation
 	MUmVector_Copy(inPos->rotation_current, rotation);
-	
+
 	// offset the rotation of the objets
 	OWiEOPos_SetRotations(inPos, &delta, UUcFalse);
 
@@ -507,9 +507,9 @@ OWiEOPos_ContentChanged(
 	float					new_value;
 	WMtWindow				*edit_field;
 	char					string[128];
-	
+
 	new_value = OWiEOPos_GetValFromField(inDialog, inControlID);
-	
+
 	switch (inControlID)
 	{
 		case EOcEF_AbsLocX:
@@ -517,37 +517,37 @@ OWiEOPos_ContentChanged(
 			sprintf(string, "%5.3f", (new_value - inPos->position_original.x));
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
 		break;
-		
+
 		case EOcEF_AbsLocY:
 			edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_OffLocY);
 			sprintf(string, "%5.3f", (new_value - inPos->position_original.y));
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
 		break;
-		
+
 		case EOcEF_AbsLocZ:
 			edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_OffLocZ);
 			sprintf(string, "%5.3f", (new_value - inPos->position_original.z));
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
 		break;
-		
+
 		case EOcEF_OffLocX:
 			edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_AbsLocX);
 			sprintf(string, "%5.3f", (inPos->position_original.x + new_value));
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
 		break;
-		
+
 		case EOcEF_OffLocY:
 			edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_AbsLocY);
 			sprintf(string, "%5.3f", (inPos->position_original.y + new_value));
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
 		break;
-		
+
 		case EOcEF_OffLocZ:
 			edit_field = WMrDialog_GetItemByID(inDialog, EOcEF_AbsLocZ);
 			sprintf(string, "%5.3f", (inPos->position_original.z + new_value));
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32)string, 0);
 		break;
-		
+
 		case EOcEF_RotX:
 		case EOcEF_RotY:
 		case EOcEF_RotZ:
@@ -567,9 +567,9 @@ OWiEOPos_Gravity(
 	UUtBool					result;
 	M3tVector3D				vector;
 	M3tPoint3D				delta;
-	
+
 	MUmVector_Set(vector, 0.0f, -50000.0f, 0.0f);
-	
+
 	// calculate the intersection with the floor
 	result =
 		AKrCollision_Point(
@@ -579,14 +579,14 @@ OWiEOPos_Gravity(
 			AKcGQ_Flag_Obj_Col_Skip,
 			AKcMaxNumCollisions);
 	if (result == UUcFalse) { return; }
-	
+
 	// set the new position of the object
 	MUmVector_Set(delta, 0.0f, (AKgCollisionList[0].collisionPoint.y - inPos->position_current.y), 0.0f);
 	OWiEOPos_OffsetPositions(&delta);
-	
+
 	// update the position
 	MUmVector_Increment(inPos->position_current, delta);
-	
+
 	// update the edit fields
 	OWiEOPos_SetEditFields(inDialog);
 }
@@ -599,26 +599,26 @@ OWiEOPos_Revert(
 {
 	UUtUns32				i;
 	OWtEORevert				*revert_array;
-	
+
 	if (inPos->revert == NULL) { return; }
-	
+
 	// revert all of the objects to their original rotation and position
 	revert_array = (OWtEORevert*)UUrMemory_Array_GetMemory(inPos->revert);
 	for (i = 0; i < UUrMemory_Array_GetUsedElems(inPos->revert); i++)
 	{
 		OBJrObject_SetPosition(
-			revert_array[i].object, 
+			revert_array[i].object,
 			&revert_array[i].position,
 			&revert_array[i].rotation);
 	}
-	
+
 	// reset the current position and rotation
 	MUmVector_Copy(inPos->position_current, inPos->position_original);
 	MUmVector_Copy(inPos->rotation_current, inPos->rotation_original);
-	
+
 	// update the edit fields
 	OWiEOPos_SetEditFields(inDialog);
-	
+
 	// disable the position buttons
 	OWiEOPos_EnableButtons(inDialog, UUcTrue);
 }
@@ -633,18 +633,18 @@ OWiEOPos_InitDialog(
 	UUtUns32				num_selected;
 	UUtUns32				i;
 	UUtRect					window_rect;
-	
+
 	num_selected = OBJrSelectedObjects_GetNumSelected();
 
 	// move the dialog to the left hand side of the screen
 	WMrWindow_GetRect(inDialog, &window_rect);
 	WMrWindow_SetLocation(inDialog, 0, window_rect.top);
-	
+
 	// allocate memory for the pos
 	pos = (OWtEOPos*)UUrMemory_Block_NewClear(sizeof(OWtEOPos));
 	UUmAssert(pos);
 	WMrDialog_SetUserData(inDialog, (UUtUns32)pos);
-	
+
 	// initialize the vars
 	pos->revert =
 		UUrMemory_Array_New(
@@ -663,7 +663,7 @@ OWiEOPos_InitDialog(
 	else
 	{
 		OWtEORevert				*revert_array;
-		
+
 		revert_array = (OWtEORevert*)UUrMemory_Array_GetMemory(pos->revert);
 		for (i = 0; i < num_selected; i++)
 		{
@@ -672,37 +672,37 @@ OWiEOPos_InitDialog(
 			OBJrObject_GetPosition(object, &revert_array[i].position, &revert_array[i].rotation);
 		}
 	}
-	
+
 	MUmVector_Set(pos->position_original, 0.0f, 0.0f, 0.0f);
 	MUmVector_Set(pos->rotation_original, 0.0f, 0.0f, 0.0f);
 
 	MUmVector_Set(pos->position_current, 0.0f, 0.0f, 0.0f);
 	MUmVector_Set(pos->rotation_current, 0.0f, 0.0f, 0.0f);
-	
+
 	// get the center of the selected objects and store the revert information
 	for (i = 0; i < num_selected; i++)
 	{
 		object = OBJrSelectedObjects_GetSelectedObject(i);
 		MUmVector_Increment(pos->position_original, object->position);
 	}
-	
+
 	pos->position_original.x /= num_selected;
 	pos->position_original.y /= num_selected;
 	pos->position_original.z /= num_selected;
-	
+
 	// set the rotation
 	if (num_selected == 1)
 	{
 		object = OBJrSelectedObjects_GetSelectedObject(0);
 		MUmVector_Copy(pos->rotation_original, object->rotation);
 	}
-	
+
 	// set the current position and rotation
 	MUmVector_Copy(pos->position_current, pos->position_original);
 	MUmVector_Copy(pos->rotation_current, pos->rotation_original);
-	
+
 	// update the edit fields
-	OWiEOPos_SetEditFields(inDialog);	
+	OWiEOPos_SetEditFields(inDialog);
 }
 
 // ----------------------------------------------------------------------
@@ -711,7 +711,7 @@ OWiEOPos_Destroy(
 	WMtDialog				*inDialog)
 {
 	OWtEOPos				*pos;
-	
+
 	// get a pointer to the pos
 	pos = (OWtEOPos*)WMrDialog_GetUserData(inDialog);
 	if (pos)
@@ -721,11 +721,11 @@ OWiEOPos_Destroy(
 			UUrMemory_Array_Delete(pos->revert);
 			pos->revert = NULL;
 		}
-		
+
 		UUrMemory_Block_Delete(pos);
 		WMrDialog_SetUserData(inDialog, 0);
 	}
-	
+
 	OWgDialog_Pos = NULL;
 }
 
@@ -737,21 +737,21 @@ OWiEOPos_HandleCommand(
 	UUtUns32				inParam2)
 {
 	OWtEOPos				*pos;
-	
+
 	// get a pointer to the pos
 	pos = (OWtEOPos*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(pos);
-	
+
 	if (UUmHighWord(inParam1) == WMcNotify_Click)
 	{
 		UUtUns16			field;
 		UUtBool				update;
 		float				val;
-		
+
 		field = 0;
 		update = UUcTrue;
 		val = 0.0f;
-		
+
 		switch (UUmLowWord(inParam1))
 		{
 			// Location
@@ -778,7 +778,7 @@ OWiEOPos_HandleCommand(
 			case EOcBtn_LocX_Dec_10_0:	field = EOcEF_AbsLocX; val = -10.0f;	break;
 			case EOcBtn_LocY_Dec_10_0:	field = EOcEF_AbsLocY; val = -10.0f;	break;
 			case EOcBtn_LocZ_Dec_10_0:	field = EOcEF_AbsLocZ; val = -10.0f;	break;
-			
+
 			// Rotation
 			case EOcBtn_RotX_Inc_1:		field = EOcEF_RotX; val = 1.0f;	break;
 			case EOcBtn_RotY_Inc_1:		field = EOcEF_RotY; val = 1.0f;	break;
@@ -803,12 +803,12 @@ OWiEOPos_HandleCommand(
 			case EOcBtn_RotX_Dec_90:	field = EOcEF_RotX; val = -90.0f;	break;
 			case EOcBtn_RotY_Dec_90:	field = EOcEF_RotY; val = -90.0f;	break;
 			case EOcBtn_RotZ_Dec_90:	field = EOcEF_RotZ; val = -90.0f;	break;
-			
+
 			// buttons
 			case EOcBtn_Revert:
 				OWiEOPos_Revert(inDialog, pos);
 			break;
-			
+
 			case EOcBtn_Gravity:
 				OWiEOPos_Gravity(inDialog, pos);
 			break;
@@ -817,41 +817,41 @@ OWiEOPos_HandleCommand(
 				OWiEOPos_Apply(inDialog, pos);
 				update = UUcFalse;
 			break;
-			
+
 			case WMcDialogItem_Cancel:
 				WMrWindow_Delete(inDialog);
 				update = UUcFalse;
 			break;
-			
+
 			default:
 				update = UUcFalse;
 			break;
 		}
-		
+
 		if (update)
 		{
 			M3tPoint3D					delta_position;
 			M3tPoint3D					delta_rotation;
-			
+
 			// calculate the delta_position and delta_rotation
 			MUmVector_Set(delta_position, 0.0f, 0.0f, 0.0f);
 			MUmVector_Set(delta_rotation, 0.0f, 0.0f, 0.0f);
-			
+
 			switch (field)
 			{
 				case EOcEF_AbsLocX:	delta_position.x += val;	break;
 				case EOcEF_AbsLocY:	delta_position.y += val;	break;
 				case EOcEF_AbsLocZ:	delta_position.z += val;	break;
-				
+
 				case EOcEF_RotX:	delta_rotation.x += val;	break;
 				case EOcEF_RotY:	delta_rotation.y += val;	break;
 				case EOcEF_RotZ:	delta_rotation.z += val;	break;
 			}
-			
+
 			// adjust the current position and rotation
 			MUmVector_Increment(pos->position_current, delta_position);
 			MUmVector_Increment(pos->rotation_current, delta_rotation);
-			
+
 			// check rotation ranges
 			while (pos->rotation_current.x < 0.0f)		{ pos->rotation_current.x += 360.0f; }
 			while (pos->rotation_current.y < 0.0f)		{ pos->rotation_current.y += 360.0f; }
@@ -859,13 +859,13 @@ OWiEOPos_HandleCommand(
 			while (pos->rotation_current.x >= 360.0f)	{ pos->rotation_current.x -= 360.0f; }
 			while (pos->rotation_current.y >= 360.0f)	{ pos->rotation_current.y -= 360.0f; }
 			while (pos->rotation_current.z >= 360.0f)	{ pos->rotation_current.z -= 360.0f; }
-			
+
 			// offset the selected object positions
 			OWiEOPos_OffsetPositions(&delta_position);
-			
+
 			// set the selected object rotations
 			OWiEOPos_SetRotations(pos, &delta_rotation, UUcFalse);
-			
+
 			// update the edit fields
 			OWiEOPos_SetEditFields(inDialog);
 		}
@@ -885,28 +885,28 @@ OWiEOPos_Callback(
 	UUtUns32				inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiEOPos_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiEOPos_Destroy(inDialog);
 		return UUcFalse;
-		
+
 		case WMcMessage_Command:
 			OWiEOPos_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -916,14 +916,14 @@ OWrEOPos_Display(
 	void)
 {
 	UUtError			error;
-	
+
 	if ((OWgDialog_Pos == NULL) && (OWgDialog_Prop == NULL))
 	{
 		// create the dialog
 		error = WMrDialog_Create(OWcDialog_EditObjectPos, NULL, OWiEOPos_Callback, (UUtUns32) -1, &OWgDialog_Pos);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -933,7 +933,7 @@ OWrEOPos_IsVisible(
 	void)
 {
 	if (OWgDialog_Pos == NULL) { return UUcFalse; }
-	
+
 	return WMrWindow_GetVisible(OWgDialog_Pos);
 }
 
@@ -949,14 +949,14 @@ OWiObjNew_CreateObject(
 {
 	WMtWindow				*popup;
 	UUtUns16				item_id;
-	
+
 	// get the popup menu
 	popup = WMrDialog_GetItemByID(inDialog, NOcPM_Category);
 	if (popup == NULL) { return UUcError_Generic; }
-	
+
 	// get the item id of the currently selected menu item
 	WMrPopupMenu_GetItemID(popup, (UUtUns16)(-1), &item_id);
-	
+
 	return OWrTools_CreateObject(OWgCategories[item_id].object_type, NULL);
 }
 
@@ -967,27 +967,27 @@ OWiObjNew_InitDialog(
 {
 	WMtWindow				*popup;
 	UUtUns16				i;
-	
+
 	// get the popup
 	popup = WMrDialog_GetItemByID(inDialog, NOcPM_Category);
 	if (popup == NULL) { return; }
-	
+
 	// fill in the categories
 	for (i = 0; i < OWgNumCategories; i++)
 	{
 		WMtMenuItemData		item_data;
-		
+
 		if (OWgCategories[i].name[0] == '\0') { continue; }
-		
+
 		// setup the item data
 		item_data.flags		= WMcMenuItemFlag_Enabled;
 		item_data.id		= i;
 		UUrString_Copy(item_data.title, OWgCategories[i].name, WMcMaxTitleLength);
-		
+
 		// add the item to the popup menu
 		WMrPopupMenu_AppendItem(popup, &item_data);
 	}
-	
+
 	// select the first item in the popup
 	WMrPopupMenu_SetSelection(popup, 0);
 }
@@ -1008,7 +1008,7 @@ OWiObjNew_HandleCommand(
 			{
 				UUtBool object_created;
 				OBJtObject *object;
-				
+
 				// create the object
 				error = OWiObjNew_CreateObject(inDialog);
 
@@ -1018,7 +1018,7 @@ OWiObjNew_HandleCommand(
 				if (error == UUcError_None) {
 					// get the object to work on
 					object = OBJrSelectedObjects_GetSelectedObject(0);
-									
+
 					// display the properties dialog
 					object_created = OWrProp_Display(object);
 
@@ -1028,7 +1028,7 @@ OWiObjNew_HandleCommand(
 				}
 			}
 		break;
-		
+
 		case WMcDialogItem_Cancel:
 			WMrWindow_Delete(inDialog);
 		break;
@@ -1044,28 +1044,28 @@ OWiObjNew_Callback(
 	UUtUns32				inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiObjNew_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWgDialog_ObjNew = NULL;
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiObjNew_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -1075,15 +1075,15 @@ OWrObjNew_Display(
 void)
 {
 	UUtError			error;
-	
+
 	if ((OWgDialog_Pos == NULL) &&
 		(OWgDialog_Prop == NULL))
 	{
 		// create the new object dialog
-		error = WMrDialog_Create(OWcDialog_ObjNew, NULL, OWiObjNew_Callback, (UUtUns32) -1, &OWgDialog_ObjNew);	
+		error = WMrDialog_Create(OWcDialog_ObjNew, NULL, OWiObjNew_Callback, (UUtUns32) -1, &OWgDialog_ObjNew);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1093,7 +1093,7 @@ OWrObjNew_IsVisible(
 	void)
 {
 	if (OWgDialog_ObjNew == NULL) { return UUcFalse; }
-	
+
 	return WMrWindow_GetVisible(OWgDialog_ObjNew);
 }
 // ======================================================================
@@ -1114,7 +1114,7 @@ static void OWiProp_Event_InitDialog( WMtDialog *inDialog )
 	ONtEventDescription			*desc;
 	char						value[100];
 	char						label[100];
-	
+
 	event = (ONtEvent*)WMrDialog_GetUserData(inDialog);
 	UUmAssert( event );
 
@@ -1138,7 +1138,7 @@ static void OWiProp_Event_InitDialog( WMtDialog *inDialog )
 		default:
 			UUmAssert( UUcFalse );
 	}
-	
+
 	WMrWindow_SetTitle( (WMtWindow*) inDialog, "Event Properties", 32 );
 
 	window = WMrDialog_GetItemByID(inDialog, PEcEF_Type);		UUmAssert( window );
@@ -1208,8 +1208,8 @@ static void OWiProp_Event_HandleCommand( WMtDialog *inDialog, UUtUns32 inParam1,
 			}
 			// close the dialog
 			WMrDialog_ModalEnd(inDialog, UUcTrue );
-		break;	
-		
+		break;
+
 		case WMcDialogItem_Cancel:
 			WMrDialog_ModalEnd( inDialog, UUcFalse );
 		break;
@@ -1222,9 +1222,9 @@ static void OWiProp_Event_HandleCommand( WMtDialog *inDialog, UUtUns32 inParam1,
 static UUtBool OWiProp_Event_Callback( WMtDialog *inDialog, WMtMessage inMessage, UUtUns32 inParam1, UUtUns32	inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -1233,16 +1233,16 @@ static UUtBool OWiProp_Event_Callback( WMtDialog *inDialog, WMtMessage inMessage
 
 		//case WMcMessage_Destroy:
 		//break;
-		
+
 		case WMcMessage_Command:
 			OWiProp_Event_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 #endif
@@ -1253,7 +1253,7 @@ static UUtBool OWiProp_Event_Display(ONtEvent* inEvent)
 {
 	UUtError			error;
 	UUtUns32			return_val;
-	error = WMrDialog_ModalBegin(OWcDialog_Prop_Event, NULL, OWiProp_Event_Callback, (UUtUns32) inEvent, (UUtUns32*) &return_val );	
+	error = WMrDialog_ModalBegin(OWcDialog_Prop_Event, NULL, OWiProp_Event_Callback, (UUtUns32) inEvent, (UUtUns32*) &return_val );
 	UUmAssert( error ==  UUcError_None );
 	if( !return_val || error != UUcError_None )
 		return UUcFalse;
@@ -1280,7 +1280,7 @@ static UUtBool OWiEvent_EnumEventTypes( const char *inName, UUtUns32 inUserData 
 	dlg = (OWtStringListDlgInstance*)	inUserData;
 
 	OWrStringListDialog_AddString( dlg, (char*) inName );
-	
+
 	return UUcTrue;
 }
 #endif
@@ -1310,7 +1310,7 @@ static UUtBool OWrEventList_NewEvent( ONtEventList* inEventList, WMtWindow* inWi
 	OWrStringListDialog_DoModal( &dlg );
 
 	OWrStringListDialog_Destroy( &dlg );
-	
+
 	if( !dlg.return_value || dlg.selected_index == -1 )
 		return UUcFalse;
 
@@ -1322,15 +1322,15 @@ static UUtBool OWrEventList_NewEvent( ONtEventList* inEventList, WMtWindow* inWi
 
 	if( !OWiProp_Event_Display( &event ) )
 	{
-		return UUcFalse;	
+		return UUcFalse;
 	}
 
 	ONrEventList_AddEvent( inEventList, &event );
-	
+
 	ONrEvent_GetName( &event, name, 100 );
 
 	WMrMessage_Send( inWindow, LBcMessage_AddString, (UUtUns32) name, 0);
-	
+
 	WMrWindow_SetFocus(inWindow);
 
 	return UUcTrue;
@@ -1345,8 +1345,8 @@ static UUtBool OWrEventList_DeleteEvent( ONtEventList* inEventList, WMtWindow* i
 	UUmAssert( inEventList && inWindow );
 
 	selection = WMrMessage_Send( inWindow, LBcMessage_GetSelection, (UUtUns32)-1, (UUtUns32)-1 );
-	
-	if( selection == LBcError) 
+
+	if( selection == LBcError)
 		return UUcFalse;
 
 	UUmAssert( selection <= inEventList->event_count );
@@ -1371,8 +1371,8 @@ static UUtBool OWrEventList_EditEvent( ONtEventList* inEventList, WMtWindow* inW
 	UUmAssert( inEventList && inWindow );
 
 	selection = WMrMessage_Send( inWindow, LBcMessage_GetSelection, (UUtUns32)-1, (UUtUns32)-1 );
-	
-	if( selection == LBcError) 
+
+	if( selection == LBcError)
 		return UUcFalse;
 
 	UUmAssert( selection < inEventList->event_count );
@@ -1493,15 +1493,15 @@ static void OWiProp_Door_SetFields( WMtDialog *inDialog )
 static UUtBool OWiListBox_DoorType_EnumCallback( const char *inName, UUtUns32 inUserData )
 {
 	WMtWindow				*window;
-	
+
 	UUmAssert( inUserData );
 
 	window = (WMtWindow*)inUserData;
 
 	if (!window)		return UUcFalse;
-	
+
 	WMrMessage_Send( window, LBcMessage_AddString, (UUtUns32) inName, 0);
-	
+
 	return UUcTrue;
 }
 #endif
@@ -1513,7 +1513,7 @@ static void OWiProp_Door_SelectItem( WMtDialog *inDialog )
 	WMtWindow			*window;
 	OBJtObject			*object;
 	OBJtOSD_All			*osd;
-	
+
 	// get a pointer to the osd
 	osd = (OBJtOSD_All*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(osd);
@@ -1525,7 +1525,7 @@ static void OWiProp_Door_SelectItem( WMtDialog *inDialog )
 	// get the currently selected object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
-	
+
 	// get the name of the selected object specific type
 	if( !osd->osd.door_osd.door_class_name[0] )
 	{
@@ -1554,7 +1554,7 @@ static UUtBool OWiListBox_DoorTextures_EnumCallback( const char *inName, UUtUns3
 	menu_item_data.flags	= WMcMenuItemFlag_Enabled;
 	menu_item_data.id		= id++;
 	UUrString_Copy(menu_item_data.title, inName, WMcMaxTitleLength);
-	
+
 	window = WMrDialog_GetItemByID( dialog, PDcPM_Texture0 );		UUmAssert( window );
 	error = WMrPopupMenu_AppendItem(window, &menu_item_data);
 
@@ -1575,21 +1575,21 @@ static void OWiProp_Door_InitDialog( WMtDialog *inDialog )
 	OBJtObjectType		object_type;
 	OBJtOSD_All			*osd;
 	WMtWindow			*editfield;
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, PDcLB_DoorTypes);
 	if (listbox == NULL) { return; }
-	
+
 	// get the currently selected object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
-	
+
 	// get the object type
 	object_type = OBJrObject_GetType(object);
-	
+
 	WMrMessage_Send( listbox, LBcMessage_AddString, (UUtUns32) "<none>", 0);
 
-	// enumerate the object specific types	
+	// enumerate the object specific types
 	OBJrObject_Enumerate( object, OWiListBox_DoorType_EnumCallback, (UUtUns32)listbox);
 
 	// enum the textures
@@ -1619,7 +1619,7 @@ static void OWiProp_Door_InitDialog( WMtDialog *inDialog )
 
 	// set the keyboard focus to the listbox
 	WMrWindow_SetFocus(listbox);
-	
+
 	// hilite the item currently in use
 	OWiProp_Door_SelectItem(inDialog);
 
@@ -1638,7 +1638,7 @@ static UUtError OWiProp_Door_SaveOSD( WMtDialog *inDialog )
 	UUtUns32			temp_int;
 	float				temp_float;
 	char				string[OBJcMaxNoteChars + 1];
-	UUtUns32			result;	
+	UUtUns32			result;
 	OBJtOSD_Door		*door_osd;
 	UUtUns16			id;
 
@@ -1647,10 +1647,10 @@ static UUtError OWiProp_Door_SaveOSD( WMtDialog *inDialog )
 		WMrDialog_MessageBox(inDialog, "Error", "The Door file is locked.", WMcMessageBoxStyle_OK);
 		return UUcError_None;
 	}
-	
+
 	// get a pointer to the object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
-	UUmAssert(object);	
+	UUmAssert(object);
 
 	// grab the temp OSD
 	door_osd = (OBJtOSD_Door*)WMrDialog_GetUserData(inDialog);
@@ -1675,19 +1675,19 @@ static UUtError OWiProp_Door_SaveOSD( WMtDialog *inDialog )
 	// id
 	window = WMrDialog_GetItemByID(inDialog, PDcEF_ID);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 6);
-	sscanf(string, "%d", &temp_int );	
+	sscanf(string, "%d", &temp_int );
 	osd_all.osd.door_osd.id	= (UUtUns16) temp_int;
 
 	// key id
 	window = WMrDialog_GetItemByID(inDialog, PDcEF_KeyID);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 6);
-	sscanf(string, "%d", &temp_int );	
+	sscanf(string, "%d", &temp_int );
 	osd_all.osd.door_osd.key_id	= (UUtUns16) temp_int;
 
 	// activation radius
 	window = WMrDialog_GetItemByID(inDialog, PDcEF_ActivationRadius);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 6);
-	sscanf(string, "%f", &temp_float );	
+	sscanf(string, "%f", &temp_float );
 	//temp_float *= _FootToDist;
 	temp_float = UUmFeet( temp_float );
 	osd_all.osd.door_osd.activation_radius_squared = temp_float * temp_float;
@@ -1698,42 +1698,42 @@ static UUtError OWiProp_Door_SaveOSD( WMtDialog *inDialog )
 		osd_all.osd.door_osd.flags |= OBJcDoorFlag_Locked;
 	else
 		osd_all.osd.door_osd.flags &= ~OBJcDoorFlag_Locked;
-	
+
 	// Initial Locked
 	window = WMrDialog_GetItemByID(inDialog, PDcCB_InitialLocked);
 	if (WMrMessage_Send(window, WMcMessage_GetValue, (UUtUns32) -1, (UUtUns32) -1))
 		osd_all.osd.door_osd.flags |= OBJcDoorFlag_InitialLocked;
 	else
 		osd_all.osd.door_osd.flags &= ~OBJcDoorFlag_InitialLocked;
-	
+
 	// Double doors
 	window = WMrDialog_GetItemByID(inDialog, PDcCB_DoubleDoors);
 	if (WMrMessage_Send(window, WMcMessage_GetValue, (UUtUns32) -1, (UUtUns32) -1))
 		osd_all.osd.door_osd.flags |= OBJcDoorFlag_DoubleDoors;
 	else
 		osd_all.osd.door_osd.flags &= ~OBJcDoorFlag_DoubleDoors;
-	
+
 	// Manual Door
 	window = WMrDialog_GetItemByID(inDialog, PDcCB_ManualDoor);
 	if (WMrMessage_Send(window, WMcMessage_GetValue, (UUtUns32) -1, (UUtUns32) -1))
 		osd_all.osd.door_osd.flags |= OBJcDoorFlag_Manual;
 	else
 		osd_all.osd.door_osd.flags &= ~OBJcDoorFlag_Manual;
-	
+
 	// One way Door
 	window = WMrDialog_GetItemByID(inDialog, PDcCB_OneWay);
 	if (WMrMessage_Send(window, WMcMessage_GetValue, (UUtUns32) -1, (UUtUns32) -1))
 		osd_all.osd.door_osd.flags |= OBJcDoorFlag_OneWay;
 	else
 		osd_all.osd.door_osd.flags &= ~OBJcDoorFlag_OneWay;
-	
+
 	// Reversed Door
 	window = WMrDialog_GetItemByID(inDialog, PDcCB_Reverse);
 	if (WMrMessage_Send(window, WMcMessage_GetValue, (UUtUns32) -1, (UUtUns32) -1))
 		osd_all.osd.door_osd.flags |= OBJcDoorFlag_Reverse;
 	else
 		osd_all.osd.door_osd.flags &= ~OBJcDoorFlag_Reverse;
-	
+
 	// Test mode
 	window = WMrDialog_GetItemByID(inDialog, PDcCB_Test);
 	if (WMrMessage_Send(window, WMcMessage_GetValue, (UUtUns32) -1, (UUtUns32) -1))
@@ -1747,7 +1747,7 @@ static UUtError OWiProp_Door_SaveOSD( WMtDialog *inDialog )
 		osd_all.osd.door_osd.flags |= OBJcDoorFlag_Mirror;
 	else
 		osd_all.osd.door_osd.flags &= ~OBJcDoorFlag_Mirror;
-	
+
 	// grab the textures
 	window = WMrDialog_GetItemByID(inDialog, PDcPM_Texture0);
 	WMrPopupMenu_GetItemID(window, -1, &id);
@@ -1788,18 +1788,18 @@ static void OWiProp_Door_HandleCommand(	WMtDialog *inDialog, UUtUns32 inParam1,	
 	OBJtObjectType		object_type;
 	OBJtOSD_All			*osd;
 	OBJtOSD_Door		*door_osd;
-	
+
 	// get a pointer to the osd
 	osd = (OBJtOSD_All*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(osd);
 
 	door_osd = (OBJtOSD_Door*) osd;
-	
+
 	// get the object and object type
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
 	object_type = OBJrObject_GetType(object);
-	
+
 	switch (UUmLowWord(inParam1))
 	{
 		case PDcBtn_NewEvent:
@@ -1845,7 +1845,7 @@ static void OWiProp_Door_HandleCommand(	WMtDialog *inDialog, UUtUns32 inParam1,	
 					osd_all.osd.door_osd.door_class_name[0] = 0;
 				}
 				else
-				{			
+				{
 					result = WMrMessage_Send( listbox, LBcMessage_GetText, (UUtUns32)type_name, (UUtUns32)(-1));
 					if (result == LBcError)		break;
 
@@ -1866,12 +1866,12 @@ static void OWiProp_Door_HandleCommand(	WMtDialog *inDialog, UUtUns32 inParam1,	
 			{
 				// set the object specific data
 				OWrObjectProperties_SetOSD(inDialog, object, osd);
-				
+
 				// hilite the item currently in use
 				OWiProp_Door_SelectItem(inDialog);
 			}
 		break;
-		
+
 		case PDcBtn_Cancel:
 			if (UUmHighWord(inParam1) == WMcNotify_Click)
 			{
@@ -1882,7 +1882,7 @@ static void OWiProp_Door_HandleCommand(	WMtDialog *inDialog, UUtUns32 inParam1,	
 			if (UUmHighWord(inParam1) == WMcNotify_Click)
 			{
 				// save the object specific data
-				//error = 
+				//error =
 					OWiProp_Door_SaveOSD(inDialog);
 				//if (error == UUcError_None)
 				{
@@ -1907,32 +1907,32 @@ static void OWiProp_Door_HandleMenuCommand( WMtDialog *inDialog, UUtUns32 inPara
 static UUtBool OWiProp_Door_Callback( WMtDialog *inDialog, WMtMessage inMessage, UUtUns32 inParam1, UUtUns32 inParam2 )
 {
 	UUtBool				handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiProp_Door_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWgDialog_Prop = NULL;
 		return UUcFalse;
-		
+
 		case WMcMessage_Command:
-			OWiProp_Door_HandleCommand(inDialog, inParam1, inParam2);			
+			OWiProp_Door_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiProp_Door_HandleMenuCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 #endif
@@ -2032,14 +2032,14 @@ static void OWiProp_Trigger_SetFields( WMtDialog *inDialog )
 static UUtBool OWiListBox_TriggerType_EnumCallback( const char *inName, UUtUns32 inUserData )
 {
 	WMtWindow				*listbox;
-	
+
 	// get the list box
 	listbox = (WMtWindow*)inUserData;
 	if (listbox == NULL) { return UUcFalse; }
-	
+
 	// add the character to the list
 	WMrMessage_Send( listbox, LBcMessage_AddString, (UUtUns32) inName, 0);
-	
+
 	return UUcTrue;
 }
 #endif
@@ -2051,7 +2051,7 @@ static void OWiProp_Trigger_SelectItem(	WMtDialog *inDialog )
 	WMtWindow			*listbox;
 	OBJtObject			*object;
 	OBJtOSD_Trigger		*trigger_osd;
-	
+
 	// get a pointer to the osd
 	trigger_osd = (OBJtOSD_Trigger *)WMrDialog_GetUserData(inDialog);
 	UUmAssert(trigger_osd);
@@ -2063,7 +2063,7 @@ static void OWiProp_Trigger_SelectItem(	WMtDialog *inDialog )
 	// get the currently selected object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
-	
+
 	// select the appropriate item
 	WMrMessage_Send( listbox, LBcMessage_SelectString, (UUtUns32)(-1), (UUtUns32) trigger_osd->trigger_class_name);
 }
@@ -2079,19 +2079,19 @@ static void OWiProp_Trigger_InitDialog(	WMtDialog *inDialog )
 	OBJtObjectType		object_type;
 	OBJtOSD_All			*osd;
 	WMtWindow			*editfield;
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, PTcLB_TriggerTypes);
 	if (listbox == NULL) { return; }
-	
+
 	// get the currently selected object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
-	
+
 	// get the object type
 	object_type = OBJrObject_GetType(object);
-	
-	// enumerate the object specific types	
+
+	// enumerate the object specific types
 	OBJrObject_Enumerate( object, OWiListBox_TriggerType_EnumCallback, (UUtUns32)listbox);
 
 	osd = (OBJtOSD_All*)UUrMemory_Block_NewClear(sizeof(OBJtOSD_All));
@@ -2124,7 +2124,7 @@ static void OWiProp_Trigger_InitDialog(	WMtDialog *inDialog )
 
 	// set the keyboard focus to the listbox
 	WMrWindow_SetFocus(listbox);
-	
+
 	// hilite the item currently in use
 	OWiProp_Trigger_SelectItem(inDialog);
 
@@ -2143,18 +2143,18 @@ static UUtError OWiProp_Trigger_SaveOSD(	WMtDialog *inDialog )
 	float				temp;
 	UUtUns32			temp_int;
 	char				string[OBJcMaxNoteChars + 1];
-	
+
 	OBJtOSD_Trigger		*trigger_osd;
-	
+
 	if (OBJrObjectType_IsLocked(OBJcType_Trigger) == UUcTrue)
 	{
 		WMrDialog_MessageBox(inDialog, "Error", "The Trigger file is locked.", WMcMessageBoxStyle_OK);
 		return UUcError_None;
 	}
-	
+
 	// get a pointer to the object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
-	UUmAssert(object);	
+	UUmAssert(object);
 
 	// grab the temp OSD
 	trigger_osd = (OBJtOSD_Trigger*)WMrDialog_GetUserData(inDialog);
@@ -2168,18 +2168,18 @@ static UUtError OWiProp_Trigger_SaveOSD(	WMtDialog *inDialog )
 	// get the id
 	window = WMrDialog_GetItemByID(inDialog, PTcEF_ID);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 6);
-	sscanf(string, "%d", &temp_int );	
+	sscanf(string, "%d", &temp_int );
 	osd_all.osd.trigger_osd.id	= (UUtUns16) temp_int;
 
 	// get the speed
 	window = WMrDialog_GetItemByID(inDialog, PTcEF_Speed);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 6);
-	sscanf(string, "%f", &osd_all.osd.trigger_osd.persistant_anim_scale );	
+	sscanf(string, "%f", &osd_all.osd.trigger_osd.persistant_anim_scale );
 
 	// get the starting offset
 	window = WMrDialog_GetItemByID(inDialog, PTcEF_StartOffset);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 6);
-	sscanf(string, "%f", &osd_all.osd.trigger_osd.start_offset );	
+	sscanf(string, "%f", &osd_all.osd.trigger_osd.start_offset );
 
 	// get the reversal
 	window = WMrDialog_GetItemByID(inDialog, PTcCB_Reverse);
@@ -2187,55 +2187,55 @@ static UUtError OWiProp_Trigger_SaveOSD(	WMtDialog *inDialog )
 		osd_all.osd.trigger_osd.flags |= OBJcTriggerFlag_ReverseAnim;
 	else
 		osd_all.osd.trigger_osd.flags &= ~OBJcTriggerFlag_ReverseAnim;
-	
+
 	// get the pingpong
 	window = WMrDialog_GetItemByID(inDialog, PTcCB_PingPong);
 	if (WMrMessage_Send(window, WMcMessage_GetValue, (UUtUns32) -1, (UUtUns32) -1))
 		osd_all.osd.trigger_osd.flags |= OBJcTriggerFlag_PingPong;
 	else
 		osd_all.osd.trigger_osd.flags &= ~OBJcTriggerFlag_PingPong;
-	
+
 	// get the active state
 	window = WMrDialog_GetItemByID(inDialog, PTcCB_Active);
 	if (WMrMessage_Send(window, WMcMessage_GetValue, (UUtUns32) -1, (UUtUns32) -1))
 		osd_all.osd.trigger_osd.flags |= OBJcTriggerFlag_Active;
 	else
 		osd_all.osd.trigger_osd.flags &= ~OBJcTriggerFlag_Active;
-	
+
 	// get the initial active state
 	window = WMrDialog_GetItemByID(inDialog, PTcCB_InitialActive);
 	if (WMrMessage_Send(window, WMcMessage_GetValue, (UUtUns32) -1, (UUtUns32) -1))
 		osd_all.osd.trigger_osd.flags |= OBJcTriggerFlag_InitialActive;
 	else
 		osd_all.osd.trigger_osd.flags &= ~OBJcTriggerFlag_InitialActive;
-	
+
 	// get the time on
 	window = WMrDialog_GetItemByID(inDialog, PTcEF_TimeOn);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 6);
-	sscanf(string, "%f", &temp );	
+	sscanf(string, "%f", &temp );
 	osd_all.osd.trigger_osd.time_on = (UUtUns16) ( temp * UUcFramesPerSecond );
-	
+
 	// get the time off
 	window = WMrDialog_GetItemByID(inDialog, PTcEF_TimeOff);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 6);
-	sscanf(string, "%f", &temp );	
+	sscanf(string, "%f", &temp );
 	osd_all.osd.trigger_osd.time_off = (UUtUns16) ( temp * UUcFramesPerSecond );
-	
+
 	// get the color
 	window = WMrDialog_GetItemByID(inDialog, PTcEF_Color);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 12 );
-	sscanf(string, "%x", &temp_int );	
+	sscanf(string, "%x", &temp_int );
 	osd_all.osd.trigger_osd.color = temp_int;
 
 	// get the emitter count
 	window = WMrDialog_GetItemByID(inDialog, PTcEF_EmitterCount);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 6);
-	sscanf(string, "%d", &temp_int );	
+	sscanf(string, "%d", &temp_int );
 	osd_all.osd.trigger_osd.emitter_count = (UUtUns16) temp_int;
 
 	// save the osd
 	OWrObjectProperties_SetOSD(window, object, &osd_all);
-	
+
 	return UUcError_None;
 }
 #endif
@@ -2248,18 +2248,18 @@ static void OWiProp_Trigger_HandleCommand(	WMtDialog *inDialog, UUtUns32 inParam
 	OBJtObjectType		object_type;
 	OBJtOSD_All			*osd;
 	OBJtOSD_Trigger		*trigger_osd;
-	
+
 	// get a pointer to the osd
 	osd = (OBJtOSD_All*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(osd);
 
 	trigger_osd = (OBJtOSD_Trigger*) osd;
-	
+
 	// get the object and object type
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
 	object_type = OBJrObject_GetType(object);
-	
+
 	switch (UUmLowWord(inParam1))
 	{
 		case PTcBtn_NewEvent:
@@ -2294,15 +2294,15 @@ static void OWiProp_Trigger_HandleCommand(	WMtDialog *inDialog, UUtUns32 inParam
 				char				type_name[256];
 				OBJtOSD_All			osd_all;
 				UUtUns32			result;
-				
+
 				// grab the box
 				listbox = WMrDialog_GetItemByID(inDialog, PTcLB_TriggerTypes);			UUmAssert( listbox );
 				if (listbox == NULL) { return; }
-				
+
 				// get the selected item text from the listbox
 				result = WMrMessage_Send( listbox, LBcMessage_GetText, (UUtUns32)type_name, (UUtUns32)(-1));
 				if (result == LBcError) { break; }
-				
+
 				// set the OSD to reflect the change
 				osd_all.osd.trigger_osd = osd->osd.trigger_osd;
 				UUrString_Copy( osd_all.osd.trigger_osd.trigger_class_name, type_name, OBJcMaxNameLength );
@@ -2321,12 +2321,12 @@ static void OWiProp_Trigger_HandleCommand(	WMtDialog *inDialog, UUtUns32 inParam
 			{
 				// set the object specific data
 				OWrObjectProperties_SetOSD(inDialog, object, osd);
-				
+
 				// hilite the item currently in use
 				OWiProp_Trigger_SelectItem(inDialog);
 			}
 		break;
-		
+
 		case PTcBtn_Cancel:
 			if (UUmHighWord(inParam1) == WMcNotify_Click)
 			{
@@ -2337,7 +2337,7 @@ static void OWiProp_Trigger_HandleCommand(	WMtDialog *inDialog, UUtUns32 inParam
 			if (UUmHighWord(inParam1) == WMcNotify_Click)
 			{
 				// save the object specific data
-				//error = 
+				//error =
 					OWiProp_Trigger_SaveOSD(inDialog);
 				//if (error == UUcError_None)
 				{
@@ -2375,32 +2375,32 @@ OWiProp_Trigger_Callback(
 	UUtUns32			inParam2)
 {
 	UUtBool				handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiProp_Trigger_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWgDialog_Prop = NULL;
 		return UUcFalse;
-		
+
 		case WMcMessage_Command:
-			OWiProp_Trigger_HandleCommand(inDialog, inParam1, inParam2);			
+			OWiProp_Trigger_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiProp_Trigger_HandleMenuCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 #endif
@@ -2418,21 +2418,21 @@ OWiProp_Console_SetFields( WMtDialog *inDialog )
 	OBJtOSD_All			*osd_all;
 	WMtWindow			*window;
 	char				string[255];
-	
+
 	// get the Console properties
 	osd_all = (OBJtOSD_All*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(osd_all);
-	
+
 	// update the controls
 
 	// ID
-	window = WMrDialog_GetItemByID(inDialog, PCONcEF_ID);					
+	window = WMrDialog_GetItemByID(inDialog, PCONcEF_ID);
 	UUmAssert( window );
 	sprintf(string, "%d", osd_all->osd.console_osd.id );
 	WMrMessage_Send(window, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	// active
-	window = WMrDialog_GetItemByID(inDialog, PCONcCB_Active);				
+	window = WMrDialog_GetItemByID(inDialog, PCONcCB_Active);
 	UUmAssert( window );
 	WMrMessage_Send(window, CBcMessage_SetCheck, (UUtUns32) ((osd_all->osd.console_osd.flags & OBJcConsoleFlag_Active) ? UUcTrue : UUcFalse), (UUtUns32) -1);
 
@@ -2449,12 +2449,12 @@ OWiProp_Console_SetFields( WMtDialog *inDialog )
 	WMrCheckBox_SetCheck(window, ((osd_all->osd.console_osd.flags & OBJcConsoleFlag_IsAlarm) ? UUcTrue : UUcFalse));
 
 	// triggered
-	window = WMrDialog_GetItemByID(inDialog, PCONcCB_Triggered);			
+	window = WMrDialog_GetItemByID(inDialog, PCONcCB_Triggered);
 	UUmAssert( window );
 	WMrMessage_Send(window, CBcMessage_SetCheck, (UUtUns32) ((osd_all->osd.console_osd.flags & OBJcConsoleFlag_Triggered) ? UUcTrue : UUcFalse), (UUtUns32) -1);
 
 	// set the popup menus
-	window = WMrDialog_GetItemByID(inDialog, PCONcPM_InactiveScreen);		
+	window = WMrDialog_GetItemByID(inDialog, PCONcPM_InactiveScreen);
 	UUmAssert( window );
 	if( strlen( osd_all->osd.console_osd.screen_inactive ) > 4 ) {
 		WMrPopupMenu_SelectString_NoCase( window, &osd_all->osd.console_osd.screen_inactive[4] );
@@ -2463,7 +2463,7 @@ OWiProp_Console_SetFields( WMtDialog *inDialog )
 		WMrPopupMenu_SelectString_NoCase( window, "<default>" );
 	}
 
-	window = WMrDialog_GetItemByID(inDialog, PCONcPM_ActiveScreen);			
+	window = WMrDialog_GetItemByID(inDialog, PCONcPM_ActiveScreen);
 	UUmAssert( window );
 	if( strlen( osd_all->osd.console_osd.screen_active ) > 4 ) {
 		WMrPopupMenu_SelectString_NoCase( window, &osd_all->osd.console_osd.screen_active[4] );
@@ -2472,17 +2472,17 @@ OWiProp_Console_SetFields( WMtDialog *inDialog )
 		WMrPopupMenu_SelectString_NoCase( window, "<default>" );
 	}
 
-	window = WMrDialog_GetItemByID(inDialog, PCONcPM_TriggeredScreen);		
+	window = WMrDialog_GetItemByID(inDialog, PCONcPM_TriggeredScreen);
 	UUmAssert( window );
 	if( strlen( osd_all->osd.console_osd.screen_triggered ) > 4 ) {
 		WMrPopupMenu_SelectString_NoCase( window, &osd_all->osd.console_osd.screen_triggered[4] );
 	}
 	else {
-		WMrPopupMenu_SelectString_NoCase( window, "<default>" ); 
+		WMrPopupMenu_SelectString_NoCase( window, "<default>" );
 	}
-	
+
 	// fill event list
-	window = WMrDialog_GetItemByID( inDialog, PCONcLB_Events );				
+	window = WMrDialog_GetItemByID( inDialog, PCONcLB_Events );
 	UUmAssert( window );
 	ONrEventList_FillListBox( &osd_all->osd.console_osd.event_list, window );
 
@@ -2510,7 +2510,7 @@ static UUtBool OWiListBox_ConsoleScreens_EnumCallback( const char *inName, UUtUn
 	menu_item_data.flags	= WMcMenuItemFlag_Enabled;
 	menu_item_data.id		= id++;
 	UUrString_Copy(menu_item_data.title, inName, WMcMaxTitleLength);
-	
+
 	// fill the screen list
 	window = WMrDialog_GetItemByID( dialog, PCONcPM_InactiveScreen );		UUmAssert( window );
 	error = WMrPopupMenu_AppendItem(window, &menu_item_data);
@@ -2532,10 +2532,10 @@ static UUtBool OWiListBox_ConsoleType_EnumCallback( const char *inName, UUtUns32
 	// get the list box
 	listbox = (WMtWindow*)inUserData;
 	if (listbox == NULL) { return UUcFalse; }
-	
+
 	// add the character to the list
 	WMrMessage_Send( listbox, LBcMessage_AddString, (UUtUns32) inName, 0);
-	
+
 	return UUcTrue;
 }
 #endif
@@ -2547,7 +2547,7 @@ static void OWiProp_Console_SelectItem( WMtDialog *inDialog )
 	WMtWindow				*listbox;
 	OBJtObject				*object;
 	OBJtOSD_Console			*console_osd;
-	
+
 	// get a pointer to the osd
 	console_osd = (OBJtOSD_Console *) WMrDialog_GetUserData(inDialog);
 	UUmAssert(console_osd);
@@ -2555,7 +2555,7 @@ static void OWiProp_Console_SelectItem( WMtDialog *inDialog )
 	// get the currently selected object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
-	
+
 	// set the type list
 	listbox = WMrDialog_GetItemByID(inDialog, PCONcLB_ConsoleTypes);
 	UUmAssert( listbox );
@@ -2576,7 +2576,7 @@ OWiProp_Console_InitDialog(
 	OBJtOSD_All				*osd;
 	UUtError				error;
 	WMtMenuItemData			menu_item_data;
-	
+
 	// get the currently selected object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
@@ -2597,7 +2597,7 @@ OWiProp_Console_InitDialog(
 
 	// fill the type list
 	window = WMrDialog_GetItemByID(inDialog, PCONcLB_ConsoleTypes);
-	if (window == NULL) { return; }	
+	if (window == NULL) { return; }
 	error = OBJrObject_Enumerate( object, OWiListBox_ConsoleType_EnumCallback, (UUtUns32)window );
 
 	error =	OBJrObjectUtil_EnumerateTemplate( ONcConsoleTexturePrefix, M3cTemplate_TextureMap, OWiListBox_ConsoleScreens_EnumCallback, (UUtUns32) inDialog );
@@ -2612,18 +2612,18 @@ OWiProp_Console_InitDialog(
 	// ID
 	window = WMrDialog_GetItemByID(inDialog, PCONcEF_ID);
 	WMrMessage_Send(window, EFcMessage_SetMaxChars, 6, 0);
-	
+
 	// set the keyboard focus to the listbox
 	window = WMrDialog_GetItemByID(inDialog, PCONcLB_ConsoleTypes);
-	if (window == NULL) { return; }	
+	if (window == NULL) { return; }
 	WMrWindow_SetFocus(window);
-	
+
 	// hilite the item currently in use
 	OWiProp_Console_SelectItem(inDialog);
 
 	// set the fields
 	OWiProp_Console_SetFields(inDialog);
-	
+
 	return;
 }
 #endif
@@ -2638,17 +2638,17 @@ static UUtError OWiProp_Console_SaveOSD( WMtDialog *inDialog)
 	char				string[OBJcMaxNoteChars + 1];
 	OBJtOSD_Console		*console_osd;
 	UUtUns16			id;
-	
+
 	if (OBJrObjectType_IsLocked(OBJcType_Console) == UUcTrue)
 	{
 		WMrDialog_MessageBox(inDialog, "Error", "The Console file is locked.", WMcMessageBoxStyle_OK);
 		return UUcError_None;
 	}
-	
+
 	// get a pointer to the object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	UUmAssert(object);
-	
+
 	// grab the temp OSD
 	console_osd = (OBJtOSD_Console*)WMrDialog_GetUserData(inDialog);
 	osd_all.osd.console_osd = *console_osd;
@@ -2656,7 +2656,7 @@ static UUtError OWiProp_Console_SaveOSD( WMtDialog *inDialog)
 	// get the id
 	window = WMrDialog_GetItemByID(inDialog, PCONcEF_ID);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 6);
-	sscanf(string, "%d", &osd_all.osd.console_osd.id );	
+	sscanf(string, "%d", &osd_all.osd.console_osd.id );
 
 	// get the selected item text from the listbox
 	window = WMrDialog_GetItemByID(inDialog, PCONcLB_ConsoleTypes);
@@ -2669,7 +2669,7 @@ static UUtError OWiProp_Console_SaveOSD( WMtDialog *inDialog)
 		osd_all.osd.console_osd.flags |= OBJcConsoleFlag_Active;
 	else
 		osd_all.osd.console_osd.flags &= ~OBJcConsoleFlag_Active;
-	
+
 	// get the initial active state
 	window = WMrDialog_GetItemByID(inDialog, PCONcCB_InitialActive);
 	if (WMrCheckBox_GetCheck(window)) {
@@ -2742,7 +2742,7 @@ static UUtError OWiProp_Console_SaveOSD( WMtDialog *inDialog)
 	}
 
 	OWrObjectProperties_SetOSD(window, object, &osd_all);
-	
+
 	return UUcError_None;
 }
 #endif
@@ -2758,20 +2758,20 @@ static void OWiProp_Console_HandleCommand(
 	WMtWindow			*listbox;
 	OBJtObjectType		object_type;
 	OBJtOSD_All			*osd;
-	
+
 	// get a pointer to the osd
 	osd = (OBJtOSD_All*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(osd);
-	
+
 	// get the object and object type
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
 	object_type = OBJrObject_GetType(object);
-	
+
 	// get the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, PCONcLB_ConsoleTypes);
 	if (listbox == NULL) { return; }
-	
+
 	switch (UUmLowWord(inParam1))
 	{
 		case PTcEF_ID:
@@ -2807,14 +2807,14 @@ static void OWiProp_Console_HandleCommand(
 				char				type_name[256];
 				OBJtOSD_All			osd_all;
 				UUtUns32			result;
-				
+
 				// get the selected item text from the listbox
 				result = WMrMessage_Send( listbox, LBcMessage_GetText, (UUtUns32)type_name, (UUtUns32)(-1));
 				if (result == LBcError) { break; }
-				
+
 				// set the OSD to reflect the change
 				osd_all.osd.console_osd = osd->osd.console_osd;
-				UUrString_Copy( osd_all.osd.console_osd.console_class_name, type_name, OBJcMaxNameLength);				
+				UUrString_Copy( osd_all.osd.console_osd.console_class_name, type_name, OBJcMaxNameLength);
 				// set the object specific data
 				OWrObjectProperties_SetOSD(inDialog, object, &osd_all);
 			}
@@ -2829,12 +2829,12 @@ static void OWiProp_Console_HandleCommand(
 			{
 				// set the object specific data
 				OWrObjectProperties_SetOSD(inDialog, object, osd);
-				
+
 				// hilite the item currently in use
 				OWiProp_Console_SelectItem(inDialog);
 			}
 		break;
-		
+
 		case PTcBtn_Cancel:
 			if (UUmHighWord(inParam1) == WMcNotify_Click)
 			{
@@ -2845,7 +2845,7 @@ static void OWiProp_Console_HandleCommand(
 			if (UUmHighWord(inParam1) == WMcNotify_Click)
 			{
 				// save the object specific data
-				//error = 
+				//error =
 					OWiProp_Console_SaveOSD(inDialog);
 				//if (error == UUcError_None)
 				{
@@ -2877,32 +2877,32 @@ static UUtBool OWiProp_Console_Callback(
 	UUtUns32			inParam2)
 {
 	UUtBool				handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiProp_Console_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWgDialog_Prop = NULL;
 		return UUcFalse;
-		
+
 		case WMcMessage_Command:
-			OWiProp_Console_HandleCommand(inDialog, inParam1, inParam2);			
+			OWiProp_Console_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiProp_Console_HandleMenuCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 #endif
@@ -2920,7 +2920,7 @@ static void OWiProp_Turret_SetFields( WMtDialog *inDialog)
 	char				string[255];
 	OBJtObject			*object = (OBJtObject *) WMrDialog_GetUserData(inDialog);
 	OBJtOSD_All			*osd_all = (OBJtOSD_All *) object->object_data;
-		
+
 	// update the controls
 
 	// ID
@@ -2992,14 +2992,14 @@ static void OWiProp_Turret_SetFields( WMtDialog *inDialog)
 static UUtBool OWiListBox_TurretType_EnumCallback( const char *inName, UUtUns32 inUserData )
 {
 	WMtWindow				*listbox;
-	
+
 	// get the list box
 	listbox = (WMtWindow*)inUserData;
 	if (listbox == NULL) { return UUcFalse; }
-	
+
 	// add the character to the list
 	WMrMessage_Send( listbox, LBcMessage_AddString, (UUtUns32) inName, 0);
-	
+
 	return UUcTrue;
 }
 #endif
@@ -3011,7 +3011,7 @@ static void OWiProp_Turret_SelectItem( WMtDialog *inDialog)
 	WMtWindow			*listbox;
 	OBJtObject			*object;
 	OBJtOSD_All			*osd;
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, PTUcLB_TurretTypes);
 	if (listbox == NULL) { return; }
@@ -3021,7 +3021,7 @@ static void OWiProp_Turret_SelectItem( WMtDialog *inDialog)
 	if (object == NULL) { return; }
 
 	osd = (OBJtOSD_All *) object->object_data;
-		
+
 	// select the appropriate item
 	WMrMessage_Send( listbox, LBcMessage_SelectString, (UUtUns32)(-1), (UUtUns32)osd->osd.turret_osd.turret_class_name);
 }
@@ -3034,18 +3034,18 @@ static void OWiProp_Turret_InitDialog( WMtDialog *inDialog)
 	WMtWindow			*window;
 	OBJtObject			*object = (OBJtObject *) WMrDialog_GetUserData(inDialog);
 	OBJtObjectType		object_type = OBJrObject_GetType(object);
-	
+
 	// get a pointer to the listbox
 	window = WMrDialog_GetItemByID(inDialog, PTUcLB_TurretTypes);		UUmAssert( window );
 	if (window == NULL) { return; }
 
-	// enumerate the object specific types	
+	// enumerate the object specific types
 	OBJrObject_Enumerate( object, OWiListBox_TurretType_EnumCallback, (UUtUns32)window);
 
 	// set the maximum number of characters in the editfields
 	window = WMrDialog_GetItemByID(inDialog, PTUcEF_ID);
 	WMrMessage_Send(window, EFcMessage_SetMaxChars, 6, 0);
-	
+
 	window = WMrDialog_GetItemByID(inDialog, PTUcEF_MaxHorizSpeed);
 	WMrMessage_Send(window, EFcMessage_SetMaxChars, 6, 0);
 
@@ -3073,7 +3073,7 @@ static void OWiProp_Turret_InitDialog( WMtDialog *inDialog)
 	// set the keyboard focus to the listbox
 	window = WMrDialog_GetItemByID(inDialog, PTUcLB_TurretTypes);		UUmAssert( window );
 	WMrWindow_SetFocus(window);
-	
+
 	// hilite the item currently in use
 	OWiProp_Turret_SelectItem(inDialog);
 
@@ -3093,17 +3093,17 @@ static UUtError OWiProp_Turret_SaveOSD( WMtDialog *inDialog)
 	OBJtOSD_All			osd_all;
 	OBJtOSD_Turret		*turret_osd;
 	char				string[OBJcMaxNoteChars + 1];
-	
+
 	if (OBJrObjectType_IsLocked(OBJcType_Turret) == UUcTrue)
 	{
 		WMrDialog_MessageBox(inDialog, "Error", "The Turret file is locked.", WMcMessageBoxStyle_OK);
 		return UUcError_None;
 	}
-	
+
 	// get a pointer to the object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	UUmAssert(object);
-	
+
 	turret_osd = (OBJtOSD_Turret*) object->object_data;
 
 	osd_all.osd.turret_osd = *turret_osd;
@@ -3116,8 +3116,8 @@ static UUtError OWiProp_Turret_SaveOSD( WMtDialog *inDialog)
 	// get the id
 	window = WMrDialog_GetItemByID(inDialog, PTUcEF_ID);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, OBJcMaxNoteChars);
-	sscanf(string, "%d", &osd_all.osd.turret_osd.id );	
-	
+	sscanf(string, "%d", &osd_all.osd.turret_osd.id );
+
 	// get the initial active state
 	window = WMrDialog_GetItemByID(inDialog, PTUcCB_InitialActive);
 	if (WMrMessage_Send(window, WMcMessage_GetValue, (UUtUns32) -1, (UUtUns32) -1))
@@ -3152,10 +3152,10 @@ static void OWiProp_Turret_HandleCommand( WMtDialog *inDialog, UUtUns32 inParam1
 	OBJtObject			*object = (OBJtObject *) WMrDialog_GetUserData(inDialog);
 	OBJtObjectType		object_type;
 	const OBJtOSD_All	*osd = (OBJtOSD_All	*) object->object_data;
-	
+
 	// get the object and object type
 	object_type = OBJrObject_GetType(object);
-	
+
 	switch (UUmLowWord(inParam1))
 	{
 		case PTUcEF_ID:
@@ -3172,7 +3172,7 @@ static void OWiProp_Turret_HandleCommand( WMtDialog *inDialog, UUtUns32 inParam1
 				UUtUns32			result;
 				WMtWindow			*listbox;
 				WMtWindow			*window;
-				
+
 				// get the listbox
 				listbox = WMrDialog_GetItemByID(inDialog, PTUcLB_TurretTypes);
 				if (listbox == NULL) { return; }
@@ -3180,10 +3180,10 @@ static void OWiProp_Turret_HandleCommand( WMtDialog *inDialog, UUtUns32 inParam1
 				// get the selected item text from the listbox
 				result = WMrMessage_Send( listbox, LBcMessage_GetText, (UUtUns32)type_name, (UUtUns32)(-1));
 				if (result == LBcError) { break; }
-				
+
 				// set the OSD to reflect the change
 				osd_all.osd.turret_osd = osd->osd.turret_osd;
-				UUrString_Copy( osd_all.osd.turret_osd.turret_class_name, type_name, OBJcMaxNameLength);				
+				UUrString_Copy( osd_all.osd.turret_osd.turret_class_name, type_name, OBJcMaxNameLength);
 				// set the object specific data
 				OWrObjectProperties_SetOSD(inDialog, object, &osd_all);
 
@@ -3230,7 +3230,7 @@ static void OWiProp_Turret_HandleCommand( WMtDialog *inDialog, UUtUns32 inParam1
 			{
 				WMtWindow *team_number_window;
 				UUtUns32 team_number;
-			
+
 				team_number_window = WMrDialog_GetItemByID(inDialog, PUTcEF_TargetTeamsNumber);
 				team_number = (UUtUns32) WMrEditField_GetInt32(team_number_window);
 
@@ -3257,12 +3257,12 @@ static void OWiProp_Turret_HandleCommand( WMtDialog *inDialog, UUtUns32 inParam1
 			if (UUmHighWord(inParam1) == WMcNotify_Click)
 			{
 				OWiProp_Turret_SetFields(inDialog);
-				
+
 				// hilite the item currently in use
 				OWiProp_Turret_SelectItem(inDialog);
 			}
 		break;
-		
+
 		case PTcBtn_Cancel:
 			if (UUmHighWord(inParam1) == WMcNotify_Click) {
 				OBJrSaveObjects(OBJcType_Turret);
@@ -3279,7 +3279,7 @@ static void OWiProp_Turret_HandleCommand( WMtDialog *inDialog, UUtUns32 inParam1
 		break;
 	}
 
-	return;		
+	return;
 }
 #endif
 
@@ -3292,7 +3292,7 @@ OWiProp_Turret_HandleMenuCommand(
 	UUtUns32			inParam2)
 {
 	IMtShade			shade;
-	
+
 	// get the shade
 	shade = OWiColorPopup_GetShadeFromID(UUmLowWord(inParam1));
 
@@ -3309,32 +3309,32 @@ OWiProp_Turret_Callback(
 	UUtUns32			inParam2)
 {
 	UUtBool				handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiProp_Turret_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWgDialog_Prop = NULL;
 		return UUcFalse;
-		
+
 		case WMcMessage_Command:
-			OWiProp_Turret_HandleCommand(inDialog, inParam1, inParam2);			
+			OWiProp_Turret_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiProp_Turret_HandleMenuCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 #endif
@@ -3356,14 +3356,14 @@ OWiProp_Flag_SetFields(
 	char				string[255];
 	char				char_1;
 	char				char_2;
-	
+
 	// get the flag properties
 	object = (OBJtObject*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(object);
-	
+
 	// get the object specific data
 	OBJrObject_GetObjectSpecificData(object, &osd_all);
-	
+
 	// update the controls
 	window = WMrDialog_GetItemByID(inDialog, PFcEF_ID_Prefix);
 	char_1 = UUmHighByte(osd_all.osd.flag_osd.id_prefix);
@@ -3374,13 +3374,13 @@ OWiProp_Flag_SetFields(
 	window = WMrDialog_GetItemByID(inDialog, PFcEF_ID_Number);
 	sprintf(string, "%d", osd_all.osd.flag_osd.id_number);
 	WMrMessage_Send(window, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	window = WMrDialog_GetItemByID(inDialog, PFcPM_Color);
 	OWiColorPopup_SelectItemFromShade(window, osd_all.osd.flag_osd.shade);
-	
+
 	window = WMrDialog_GetItemByID(inDialog, PFcEF_Note);
 	WMrMessage_Send(window, EFcMessage_SetText, (UUtUns32)osd_all.osd.flag_osd.note, 0);
-	
+
 	window = WMrDialog_GetItemByID(inDialog, WMcDialogItem_OK);
 	WMrWindow_SetEnabled(window, !OBJrObjectType_IsLocked(OBJcType_Flag));
 
@@ -3405,21 +3405,21 @@ OWiProp_Flag_InitDialog(
 		WMrDialog_ModalEnd(inDialog, UUcTrue);
 		return;
 	}
-		
+
 	// set the maximum number of characters in the editfields
 	editfield = WMrDialog_GetItemByID(inDialog, PFcEF_ID_Prefix);
 	WMrMessage_Send(editfield, EFcMessage_SetMaxChars, 3, 0);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, PFcEF_ID_Number);
 	WMrMessage_Send(editfield, EFcMessage_SetMaxChars, 6, 0);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, PFcEF_Note);
 	WMrMessage_Send(editfield, EFcMessage_SetMaxChars, OBJcMaxNoteChars, 0);
 
 	// initialize the popup menu
 	popup = WMrDialog_GetItemByID(inDialog, PFcPM_Color);
 	OWiColorPopup_Init(popup);
-	
+
 	// set the fields
 	OWiProp_Flag_SetFields(inDialog);
 }
@@ -3439,41 +3439,41 @@ OWiProp_Flag_SaveOSD(
 	char				char_2;
 	UUtUns32			id_number;
 	UUtUns16			color_id;
-	
+
 	if (OBJrObjectType_IsLocked(OBJcType_Flag) == UUcTrue)
 	{
 		WMrDialog_MessageBox(inDialog, "Error", "The flag file is locked.", WMcMessageBoxStyle_OK);
 		return UUcError_None;
 	}
-	
+
 	// get a pointer to the object
 	object = (OBJtObject*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(object);
-	
+
 	// get the id prefix
 	window = WMrDialog_GetItemByID(inDialog, PFcEF_ID_Prefix);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, OBJcMaxNoteChars);
-	sscanf(string, "%c%c", &char_1, &char_2);	
+	sscanf(string, "%c%c", &char_1, &char_2);
 	osd_all.osd.flag_osd.id_prefix = UUmMakeShort(char_1, char_2);
-	
+
 	// get the id number
 	window = WMrDialog_GetItemByID(inDialog, PFcEF_ID_Number);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, OBJcMaxNoteChars);
 	sscanf(string, "%d", &id_number);
 	osd_all.osd.flag_osd.id_number = (UUtInt16)id_number;
-	
+
 	// get the color
 	window = WMrDialog_GetItemByID(inDialog, PFcPM_Color);
 	WMrPopupMenu_GetItemID(window, -1, &color_id);
 	osd_all.osd.flag_osd.shade = OWiColorPopup_GetShadeFromID(color_id);
-	
+
 	// get the note
 	window = WMrDialog_GetItemByID(inDialog, PFcEF_Note);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, OBJcMaxNoteChars);
 	UUrString_Copy(osd_all.osd.flag_osd.note, string, OBJcMaxNoteChars);
-	
+
 	OWrObjectProperties_SetOSD(window, object, &osd_all);
-	
+
 	return UUcError_None;
 }
 #endif
@@ -3488,16 +3488,16 @@ OWiProp_Flag_HandleCommand(
 {
 	OBJtObject			*object;
 	UUtError			error;
-	
+
 	// get a pointer to the object
 	object = (OBJtObject*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(object);
-	
+
 	switch (UUmLowWord(inParam1))
 	{
 		case PFcEF_ID_Prefix:
 		break;
-		
+
 		case PFcEF_ID_Number:
 		{
 			WMtWindow				*editfield;
@@ -3506,7 +3506,7 @@ OWiProp_Flag_HandleCommand(
 			UUtUns32				id_number;
 			OBJtObject				*found_object;
 			WMtWindow				*save_button;
-			
+
 			// get the id number from the id number editfield and make sure it is in range
 			editfield = WMrDialog_GetItemByID(inDialog, PFcEF_ID_Number);
 			WMrMessage_Send(editfield, EFcMessage_GetText, (UUtUns32)string, OBJcMaxNoteChars);
@@ -3522,7 +3522,7 @@ OWiProp_Flag_HandleCommand(
 			{
 				id_number = 0;
 			}
-			
+
 			// set the save button to enabled or disabled depending on if the user has typed in
 			// a duplicate id number or no id number at all
 			osd_all.osd.flag_osd.id_number = (UUtUns16)id_number;
@@ -3538,10 +3538,10 @@ OWiProp_Flag_HandleCommand(
 			}
 		}
 		break;
-		
+
 		case PFcEF_Note:
 		break;
-		
+
 		case WMcDialogItem_Cancel:
 			if (UUmHighWord(inParam1) == WMcNotify_Click)
 			{
@@ -3549,7 +3549,7 @@ OWiProp_Flag_HandleCommand(
 				WMrDialog_ModalEnd(inDialog, UUcFalse);
 			}
 		break;
-		
+
 		case WMcDialogItem_OK:
 			if (UUmHighWord(inParam1) == WMcNotify_Click)
 			{
@@ -3575,7 +3575,7 @@ OWiProp_Flag_HandleMenuCommand(
 	UUtUns32			inParam2)
 {
 	IMtShade			shade;
-	
+
 	// get the shade
 	shade = OWiColorPopup_GetShadeFromID(UUmLowWord(inParam1));
 }
@@ -3591,32 +3591,32 @@ OWiProp_Flag_Callback(
 	UUtUns32			inParam2)
 {
 	UUtBool				handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiProp_Flag_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWgDialog_Prop = NULL;
 		return UUcFalse;
-		
+
 		case WMcMessage_Command:
-			OWiProp_Flag_HandleCommand(inDialog, inParam1, inParam2);			
+			OWiProp_Flag_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiProp_Flag_HandleMenuCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 #endif
@@ -3637,15 +3637,15 @@ OWiProp_Sound_EnableButtons(
 	WMtWindow					*button;
 	WMtWindow					*editfield;
 	UUtUns16					i;
-	
+
 	// get the sound_prop
 	sound_prop = (OWtSoundProp*)WMrDialog_GetUserData(inDialog);
 	sound_osd = &sound_prop->osd.osd.sound_osd;
-	
+
 	// set the edit button
 	button = WMrDialog_GetItemByID(inDialog, OWcSP_Btn_Edit);
 	WMrWindow_SetEnabled(button, (sound_osd->ambient != NULL));
-	
+
 	// set the edit fields
 	switch (sound_osd->type)
 	{
@@ -3659,7 +3659,7 @@ OWiProp_Sound_EnableButtons(
 
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Height);
 			WMrWindow_SetEnabled(editfield, UUcFalse);
-			
+
 			for (i = OWcSP_Btn_LenInc1; i <= OWcSP_Btn_HgtDec10; i++)
 			{
 				editfield = WMrDialog_GetItemByID(inDialog, i);
@@ -3673,7 +3673,7 @@ OWiProp_Sound_EnableButtons(
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_MinVolDist);
 			WMrWindow_SetEnabled(editfield, UUcTrue);
 		break;
-		
+
 		case OBJcSoundType_BVolume:
 			// disable sphere editfields
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_MaxVolDist);
@@ -3681,7 +3681,7 @@ OWiProp_Sound_EnableButtons(
 
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_MinVolDist);
 			WMrWindow_SetEnabled(editfield, UUcFalse);
-			
+
 			// enable bounding volume editifields and buttons
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Length);
 			WMrWindow_SetEnabled(editfield, UUcTrue);
@@ -3691,7 +3691,7 @@ OWiProp_Sound_EnableButtons(
 
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Height);
 			WMrWindow_SetEnabled(editfield, UUcTrue);
-			
+
 			for (i = OWcSP_Btn_LenInc1; i <= OWcSP_Btn_HgtDec10; i++)
 			{
 				editfield = WMrDialog_GetItemByID(inDialog, i);
@@ -3699,7 +3699,7 @@ OWiProp_Sound_EnableButtons(
 			}
 		break;
 	}
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Pitch);
 	WMrWindow_SetEnabled(editfield, UUcFalse);
 }
@@ -3715,69 +3715,69 @@ OWiProp_Sound_SetFields(
 	OBJtOSD_Sound				*sound_osd;
 	WMtWindow					*text;
 	WMtWindow					*editfield;
-	
+
 	// get the sound_prop
 	sound_prop = (OWtSoundProp*)WMrDialog_GetUserData(inDialog);
 	sound_osd = &sound_prop->osd.osd.sound_osd;
-	
+
 	// get the ambient sound
 	// fill in the text fields
 	text = WMrDialog_GetItemByID(inDialog, OWcSP_Txt_Name);
 	WMrWindow_SetTitle(text, sound_osd->ambient_name, SScMaxNameLength);
 	if (sound_osd->ambient == NULL) { WMrText_SetShade(text, IMcShade_Red); }
 	else { WMrText_SetShade(text, IMcShade_Black); }
-	
+
 	switch (sound_osd->type)
 	{
 		case OBJcSoundType_Spheres:
 			WMrDialog_RadioButtonCheck(inDialog, OWcSP_RB_Spheres, OWcSP_RB_Volume, OWcSP_RB_Spheres);
-			
+
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_MinVolDist);
 			WMrEditField_SetFloat(editfield, sound_osd->u.spheres.min_volume_distance);
-			
+
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_MaxVolDist);
 			WMrEditField_SetFloat(editfield, sound_osd->u.spheres.max_volume_distance);
 		break;
-		
+
 		case OBJcSoundType_BVolume:
 		{
 			float					length;
 			float					width;
 			float					height;
-			
+
 			length =
 				sound_osd->u.bvolume.bbox.maxPoint.x +
 				-sound_osd->u.bvolume.bbox.minPoint.x;
-			
+
 			width =
 				sound_osd->u.bvolume.bbox.maxPoint.z +
 				-sound_osd->u.bvolume.bbox.minPoint.z;
-				
+
 			height =
 				sound_osd->u.bvolume.bbox.maxPoint.y +
 				-sound_osd->u.bvolume.bbox.minPoint.y;
-			
+
 			WMrDialog_RadioButtonCheck(inDialog, OWcSP_RB_Spheres, OWcSP_RB_Volume, OWcSP_RB_Volume);
-			
+
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Length);
 			WMrEditField_SetFloat(editfield, length);
-			
+
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Width);
 			WMrEditField_SetFloat(editfield, width);
-			
+
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Height);
 			WMrEditField_SetFloat(editfield, height);
 		}
 		break;
-		
+
 		default:
 			UUmAssert(!"something is VERY wrong");
 		break;
 	}
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Pitch);
 	WMrEditField_SetFloat(editfield, sound_osd->pitch);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Volume);
 	WMrEditField_SetFloat(editfield, sound_osd->volume);
 }
@@ -3793,15 +3793,15 @@ OWiProp_Sound_SetAmbient(
 	OBJtOSD_Sound				*sound_osd;
 	SStAmbient					*ambient;
 	OWtSelectResult				result;
-	
+
 	// get the sound_prop
 	sound_prop = (OWtSoundProp*)WMrDialog_GetUserData(inDialog);
 	sound_osd = &sound_prop->osd.osd.sound_osd;
-	
+
 	// select the ambient sound
 	result = OWrSelect_AmbientSound(&ambient);
 	if (result == OWcSelectResult_Cancel) { return; }
-	
+
 	// set the sound osd data
 	if (ambient == NULL)
 	{
@@ -3812,10 +3812,10 @@ OWiProp_Sound_SetAmbient(
 		UUrString_Copy(sound_osd->ambient_name, ambient->ambient_name, SScMaxNameLength);
 	}
 	sound_osd->ambient = ambient;
-	
+
 	// fill in the fields
 	OWiProp_Sound_SetFields(inDialog);
-	
+
 	// enable the buttons fields
 	OWiProp_Sound_EnableButtons(inDialog);
 }
@@ -3830,15 +3830,15 @@ OWiProp_Sound_EditAmbient(
 	UUtError					error;
 	OWtSoundProp				*sound_prop;
 	OBJtOSD_Sound				*sound_osd;
-	
+
 	// get the sound_prop
 	sound_prop = (OWtSoundProp*)WMrDialog_GetUserData(inDialog);
 	sound_osd = &sound_prop->osd.osd.sound_osd;
-	
+
 	// edit the properties of the ambient sound
 	error = OWrAmbientProperties_Display(inDialog, sound_osd->ambient);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 #endif
@@ -3852,55 +3852,55 @@ OWiProp_Sound_SaveData(
 	OWtSoundProp				*sound_prop;
 	OBJtOSD_Sound				*sound_osd;
 	WMtWindow					*editfield;
-	
+
 	// get the sound_prop
 	sound_prop = (OWtSoundProp*)WMrDialog_GetUserData(inDialog);
 	sound_osd = &sound_prop->osd.osd.sound_osd;
-	
+
 	// get the data from the fields
 	switch (sound_osd->type)
 	{
 		case OBJcSoundType_Spheres:
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_MaxVolDist);
 			sound_osd->u.spheres.max_volume_distance = WMrEditField_GetFloat(editfield);
-			
+
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_MinVolDist);
 			sound_osd->u.spheres.min_volume_distance = WMrEditField_GetFloat(editfield);
 		break;
-		
+
 		case OBJcSoundType_BVolume:
 		{
 			float						length;
 			float						width;
 			float						height;
-			
+
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Length);
 			length = WMrEditField_GetFloat(editfield);
-			
+
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Width);
 			width = WMrEditField_GetFloat(editfield);
-			
+
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Height);
 			height = WMrEditField_GetFloat(editfield);
-			
+
 			// set the min max data based on the position of the object
 			sound_osd->u.bvolume.bbox.minPoint.x = -(length * 0.5f);
 			sound_osd->u.bvolume.bbox.minPoint.y = -(height * 0.5f);
 			sound_osd->u.bvolume.bbox.minPoint.z = -(width * 0.5f);
-			
+
 			sound_osd->u.bvolume.bbox.maxPoint.x = (length * 0.5f);
 			sound_osd->u.bvolume.bbox.maxPoint.y = (height * 0.5f);
 			sound_osd->u.bvolume.bbox.maxPoint.z = (width * 0.5f);
 		}
 		break;
 	}
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Pitch);
 	sound_osd->pitch = WMrEditField_GetFloat(editfield);
-	
+
 	editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Volume);
 	sound_osd->volume = WMrEditField_GetFloat(editfield);
-	
+
 	// set the object specific data
 	OBJrObject_SetObjectSpecificData(sound_prop->object, &sound_prop->osd);
 }
@@ -3914,7 +3914,7 @@ OWiProp_Sound_InitDialog(
 {
 	OBJtObject					*object;
 	OWtSoundProp				*sound_prop;
-	
+
 	// get a pointer to the selected object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL)
@@ -3922,26 +3922,26 @@ OWiProp_Sound_InitDialog(
 		WMrDialog_ModalEnd(inDialog, UUcTrue);
 		return;
 	}
-	
+
 	sound_prop = (OWtSoundProp*)UUrMemory_Block_NewClear(sizeof(OWtSoundProp));
 	if (sound_prop == NULL)
 	{
 		WMrDialog_ModalEnd(inDialog, UUcTrue);
 		return;
 	}
-	
+
 	sound_prop->object = object;
-	
+
 	// get the object specific data
 	OBJrObject_GetObjectSpecificData(object, &sound_prop->osd);
 	OBJrObject_GetObjectSpecificData(object, &sound_prop->backup_osd);
-	
+
 	// set the user data
 	WMrDialog_SetUserData(inDialog, (UUtUns32)sound_prop);
-	
+
 	// set the fields
 	OWiProp_Sound_SetFields(inDialog);
-	
+
 	// enable buttons
 	OWiProp_Sound_EnableButtons(inDialog);
 }
@@ -3954,14 +3954,14 @@ OWiProp_Sound_Destroy(
 	WMtDialog					*inDialog)
 {
 	OWtSoundProp				*sound_prop;
-	
+
 	// get the sound_prop
 	sound_prop = (OWtSoundProp*)WMrDialog_GetUserData(inDialog);
 	if (sound_prop != NULL)
 	{
 		UUrMemory_Block_Delete(sound_prop);
 		sound_prop = NULL;
-		
+
 		WMrDialog_SetUserData(inDialog, 0);
 	}
 }
@@ -3987,15 +3987,15 @@ OWiProp_Sound_HandleCommand(
 	OBJtOSD_Sound				*sound_osd;
 	float						value;
 	WMtWindow					*editfield;
-	
+
 	// get the sound_prop
 	sound_prop = (OWtSoundProp*)WMrDialog_GetUserData(inDialog);
 	sound_osd = &sound_prop->osd.osd.sound_osd;
-	
+
 	// interpret inParam1
 	command_type = UUmHighWord(inParam1);
 	control_id = UUmLowWord(inParam1);
-	
+
 	// handle the command
 	update_fields = UUcTrue;
 	switch (control_id)
@@ -4003,14 +4003,14 @@ OWiProp_Sound_HandleCommand(
 		case OWcSP_Btn_Set:
 			OWiProp_Sound_SetAmbient(inDialog);
 		break;
-		
+
 		case OWcSP_Btn_Edit:
 			OWiProp_Sound_EditAmbient(inDialog);
 		break;
-		
+
 		case OWcSP_RB_Spheres:
 			if (sound_osd->type == OBJcSoundType_Spheres) { break; }
-			
+
 			sound_osd->type = OBJcSoundType_Spheres;
 			WMrDialog_RadioButtonCheck(inDialog, OWcSP_RB_Spheres, OWcSP_RB_Volume, control_id);
 
@@ -4020,13 +4020,13 @@ OWiProp_Sound_HandleCommand(
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_MinVolDist);
 			WMrEditField_SetFloat(editfield, 10.0f);
 		break;
-		
+
 		case OWcSP_RB_Volume:
 			if (sound_osd->type == OBJcSoundType_BVolume) { break; }
-			
+
 			sound_osd->type = OBJcSoundType_BVolume;
 			WMrDialog_RadioButtonCheck(inDialog, OWcSP_RB_Spheres, OWcSP_RB_Volume, control_id);
-			
+
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Length);
 			WMrEditField_SetFloat(editfield, 100.0f);
 
@@ -4036,46 +4036,46 @@ OWiProp_Sound_HandleCommand(
 			editfield = WMrDialog_GetItemByID(inDialog, OWcSP_EF_Height);
 			WMrEditField_SetFloat(editfield, 100.0f);
 		break;
-		
+
 		case OWcSP_Btn_LenInc1:		OWmInc(OWcSP_EF_Length, 1.0f);		break;
 		case OWcSP_Btn_WidInc1:		OWmInc(OWcSP_EF_Width, 1.0f);		break;
 		case OWcSP_Btn_HgtInc1:		OWmInc(OWcSP_EF_Height, 1.0f);		break;
-		
+
 		case OWcSP_Btn_LenDec1:		OWmInc(OWcSP_EF_Length, -1.0f);		break;
 		case OWcSP_Btn_WidDec1:		OWmInc(OWcSP_EF_Width, -1.0f);		break;
 		case OWcSP_Btn_HgtDec1:		OWmInc(OWcSP_EF_Height, -1.0f);		break;
-		
+
 		case OWcSP_Btn_LenInc10:	OWmInc(OWcSP_EF_Length, 10.0f);		break;
 		case OWcSP_Btn_WidInc10:	OWmInc(OWcSP_EF_Width, 10.0f);		break;
 		case OWcSP_Btn_HgtInc10:	OWmInc(OWcSP_EF_Height, 10.0f);		break;
-		
+
 		case OWcSP_Btn_LenDec10:	OWmInc(OWcSP_EF_Length, -10.0f);	break;
 		case OWcSP_Btn_WidDec10:	OWmInc(OWcSP_EF_Width, -10.0f);		break;
 		case OWcSP_Btn_HgtDec10:	OWmInc(OWcSP_EF_Height, -10.0f);	break;
-		
+
 		case OWcSP_Btn_Cancel:
 			OBJrObject_SetObjectSpecificData(sound_prop->object, &sound_prop->backup_osd);
 			WMrDialog_ModalEnd(inDialog, UUcFalse);
 		return;
-		
+
 		case OWcSP_Btn_Save:
 			OWiProp_Sound_SaveData(inDialog);
 			WMrDialog_ModalEnd(inDialog, UUcTrue);
 		return;
-		
+
 		default:
 			update_fields = UUcFalse;
 		break;
 	}
-	
+
 	OWiProp_Sound_SaveData(inDialog);
-	
+
 	// update the fields
 	if (update_fields == UUcTrue)
 	{
 		OWiProp_Sound_SetFields(inDialog);
 	}
-	
+
 	// enable buttons
 	OWiProp_Sound_EnableButtons(inDialog);
 }
@@ -4091,32 +4091,32 @@ OWiProp_Sound_Callback(
 	UUtUns32					inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiProp_Sound_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiProp_Sound_Destroy(inDialog);
 			OWgDialog_Prop = NULL;
 		break;
-		
+
 		case WMcMessage_Command:
 			OWiProp_Sound_HandleCommand(
 				inDialog,
 				inParam1,
 				(WMtWindow*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 #endif
@@ -4136,7 +4136,7 @@ OWiProp_Generic_SelectItem(
 	OBJtObject			*object;
 	char				osd_name[256];
 	OBJtOSD_All			*osd;
-	
+
 	// get a pointer to the osd
 	osd = (OBJtOSD_All*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(osd);
@@ -4148,10 +4148,10 @@ OWiProp_Generic_SelectItem(
 	// get the currently selected object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
-	
+
 	// get the name of the selected object specific type
 	OBJrObject_GetName(object, osd_name, 256);
-	
+
 	// select the appropriate item
 	WMrMessage_Send(
 		listbox,
@@ -4169,18 +4169,18 @@ OWiListBox_ObjectType_EnumCallback(
 	UUtUns32				inUserData)
 {
 	WMtWindow				*listbox;
-	
+
 	// get the list box
 	listbox = (WMtWindow*)inUserData;
 	if (listbox == NULL) { return UUcFalse; }
-	
+
 	// add the character to the list
 	WMrMessage_Send(
 		listbox,
 		LBcMessage_AddString,
 		(UUtUns32) inName,
 		0);
-	
+
 	return UUcTrue;
 }
 #endif
@@ -4195,24 +4195,24 @@ OWiProp_Generic_InitDialog(
 	OBJtObject			*object;
 	OBJtObjectType		object_type;
 	OBJtOSD_All			*osd;
-	
+
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, PGcLB_ObjectTypes);
 	if (listbox == NULL) { return; }
-	
+
 	// get the currently selected object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
-	
+
 	// get the object type
 	object_type = OBJrObject_GetType(object);
-	
-	// enumerate the object specific types	
+
+	// enumerate the object specific types
 	OBJrObject_Enumerate(
 		object,
 		OWiListBox_ObjectType_EnumCallback,
 		(UUtUns32)listbox);
-	
+
 	// allocate memory for the osd
 	osd = (OBJtOSD_All*)UUrMemory_Block_NewClear(sizeof(OBJtOSD_All));
 	UUmAssert(osd);
@@ -4220,10 +4220,10 @@ OWiProp_Generic_InitDialog(
 
 	// get the object specific data
 	OBJrObject_GetObjectSpecificData(object, osd);
-	
+
 	// set the keyboard focus to the listbox
 	WMrWindow_SetFocus(listbox);
-	
+
 	// hilite the item currently in use
 	OWiProp_Generic_SelectItem(inDialog);
 }
@@ -4236,13 +4236,13 @@ OWiProp_Generic_Destroy(
 	WMtDialog			*inDialog)
 {
 	void				*data;
-	
+
 	data = (void*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(data);
-	
+
 	UUrMemory_Block_Delete(data);
 	WMrDialog_SetUserData(inDialog, 0);
-	
+
 	OWgDialog_Prop = NULL;
 }
 #endif
@@ -4259,16 +4259,16 @@ OWiProp_Generic_HandleCommand(
 	WMtWindow			*listbox;
 	OBJtObjectType		object_type;
 	OBJtOSD_All			*osd;
-	
+
 	// get a pointer to the osd
 	osd = (OBJtOSD_All*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(osd);
-	
+
 	// get the object and object type
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return UUcTrue; }
 	object_type = OBJrObject_GetType(object);
-	
+
 	switch (UUmLowWord(inParam1))
 	{
 		case PGcLB_ObjectTypes:
@@ -4277,11 +4277,11 @@ OWiProp_Generic_HandleCommand(
 				char				type_name[256];
 				OBJtOSD_All			osd_all;
 				UUtUns32			result;
-				
+
 				// get the listbox
 				listbox = WMrDialog_GetItemByID(inDialog, PGcLB_ObjectTypes);
 				if (listbox == NULL) { return UUcTrue; }
-	
+
 				// clear the OSD so we don't have garbage in it
 				UUrMemory_Clear(&osd_all, sizeof(OBJtOSD_All));
 
@@ -4293,7 +4293,7 @@ OWiProp_Generic_HandleCommand(
 						(UUtUns32)type_name,
 						(UUtUns32)(-1));
 				if (result == LBcError) { break; }
-				
+
 				// set the OSD to reflect the change
 				switch (object_type)
 				{
@@ -4324,7 +4324,7 @@ OWiProp_Generic_HandleCommand(
 						osd_all.osd.powerup_osd.powerup_type = OBJrPowerUp_NameToType(type_name);
 						osd_all.osd.powerup_osd.powerup = NULL;
 					break;
-					
+
 					case OBJcType_Weapon:
 						// copy the existing OSD data
 						osd_all.osd.weapon_osd = *((OBJtOSD_Weapon *) object->object_data);
@@ -4356,7 +4356,7 @@ OWiProp_Generic_HandleCommand(
 						UUrString_Copy(osd_all.osd.melee_osd.name, type_name, SLcScript_MaxNameLength);
 					break;
 				}
-				
+
 				// set the object specific data
 				OWrObjectProperties_SetOSD(inDialog, object, &osd_all);
 			}
@@ -4371,12 +4371,12 @@ OWiProp_Generic_HandleCommand(
 			{
 				// set the object specific data
 				OWrObjectProperties_SetOSD(inDialog, object, osd);
-				
+
 				// hilite the item currently in use
 				OWiProp_Generic_SelectItem(inDialog);
 			}
 		break;
-		
+
 		case WMcDialogItem_Cancel:
 			WMrDialog_ModalEnd(inDialog, UUcFalse);
 		break;
@@ -4405,28 +4405,28 @@ OWiProp_Generic_Callback(
 	UUtUns32			inParam2)
 {
 	UUtBool				handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiProp_Generic_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiProp_Generic_Destroy(inDialog);
 		return UUcFalse;
-		
+
 		case WMcMessage_Command:
 			handled = OWiProp_Generic_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 #endif
@@ -4445,7 +4445,7 @@ OWiProp_Furniture_Callback(
 	OBJtOSD_Furniture *	furniture_osd;
 
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -4457,11 +4457,11 @@ OWiProp_Furniture_Callback(
 				WMrEditField_SetText(editfield, furniture_osd->furn_tag);
 			}
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiProp_Generic_Destroy(inDialog);
 		return UUcFalse;
-		
+
 		case WMcMessage_Command:
 			handled = OWiProp_Generic_HandleCommand(inDialog, inParam1, inParam2);
 
@@ -4498,14 +4498,14 @@ OWiProp_Furniture_Callback(
 						break;
 					}
 				}
-			}			
+			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 #endif
@@ -4606,7 +4606,7 @@ OWiProp_TriggerVolume_Callback(
 
 
 #define base_ptr ((OBJtOSD_TriggerVolume *) NULL)
-	OWtFloatIncrement float_increment_table[] = 
+	OWtFloatIncrement float_increment_table[] =
 	{
 		{ cEditTriggerVolume_ScaleX, &base_ptr->scale.x, cEditTriggerVolume_ScaleX_Plus_One, +1.f },
 		{ cEditTriggerVolume_ScaleX, &base_ptr->scale.x, cEditTriggerVolume_ScaleX_Minus_One, -1.f },
@@ -4678,7 +4678,7 @@ OWiProp_TriggerVolume_Callback(
 			dirty = UUcTrue;
 			handled = UUcTrue;
 
-			switch(UUmLowWord(inParam1)) 
+			switch(UUmLowWord(inParam1))
 			{
 				case cEditTriggerVolume_Name:
 					WMrEditField_GetText(name_edit, trigger_volume_osd->name, sizeof(trigger_volume_osd->name));
@@ -4858,7 +4858,7 @@ OWrProp_Display(
 		{ OBJcType_Neutral,			OWcDialog_AI_EditNeutral,		OWrEditNeutral_Callback		},
 		{ OBJcType_Generic,			OWcDialog_Prop_Generic,			OWiProp_Generic_Callback	},
 	};
-	
+
 	if (NULL == inObject)
 	{
 		num_obj = OBJrSelectedObjects_GetNumSelected();
@@ -4876,7 +4876,7 @@ OWrProp_Display(
 				WMcMessageBoxStyle_OK);
 			return UUcFalse;
 		}
-	
+
 		// get a pointer to the selected object
 		inObject = OBJrSelectedObjects_GetSelectedObject(0);
 		if (NULL == inObject) { return UUcFalse; }
@@ -4886,14 +4886,14 @@ OWrProp_Display(
 		// select the object that was passed in
 		OBJrSelectedObjects_Select(inObject, UUcFalse);
 	}
-	
+
 	// get the osd
 	OBJrObject_GetObjectSpecificData(inObject, &object_specific_data);
-	
+
 	// get the object type
 	this_object_type = OBJrObject_GetType(inObject);
 	error = UUcError_Generic;
-	
+
 	// display the properties dialog for the selected object
 	for(this_setup = setup_list; 1; this_setup++)
 	{
@@ -4903,7 +4903,7 @@ OWrProp_Display(
 			break;
 		}
 	}
-	
+
 	// if there was an error or the user decided not to keep their changes then restore the object specific data
 	if ((error != UUcError_None) || (!message))
 	{
@@ -4914,7 +4914,7 @@ OWrProp_Display(
 	{
 		success = UUcTrue;
 	}
-	
+
 	return success;
 #else
 	return UUcFalse;
@@ -4927,7 +4927,7 @@ OWrProp_IsVisible(
 	void)
 {
 	if (OWgDialog_Prop == NULL) { return UUcFalse; }
-	
+
 	return WMrWindow_GetVisible(OWgDialog_Prop);
 }
 
@@ -4945,27 +4945,27 @@ OWiLightProp_SaveFields(
 	WMtWindow			*window;
 	UUtUns16			index;
 	char				string[255];
-	
+
 	// get the light properties
 	light_prop = (OWtLightProp*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(light_prop);
-	
+
 	// get the index
 	index = light_prop->current_index;
-	
+
 	// get the filter color
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_R);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 255);
 	sscanf(string, "%f", &light_prop->ls_data_array[index].filter_color[0]);
-	
+
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_G);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 255);
 	sscanf(string, "%f", &light_prop->ls_data_array[index].filter_color[1]);
-	
+
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_B);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 255);
 	sscanf(string, "%f", &light_prop->ls_data_array[index].filter_color[2]);
-	
+
 	// get the light type
 	light_prop->ls_data_array[index].light_flags &=
 		~(OBJcLightFlag_Type_Area | OBJcLightFlag_Type_Linear | OBJcLightFlag_Type_Point);
@@ -4987,7 +4987,7 @@ OWiLightProp_SaveFields(
 			light_prop->ls_data_array[index].light_flags |= OBJcLightFlag_Type_Point;
 		}
 	}
-	
+
 	// get the light distribution
 	light_prop->ls_data_array[index].light_flags &= ~(OBJcLightFlag_Dist_Diffuse | OBJcLightFlag_Dist_Spot);
 
@@ -5000,17 +5000,17 @@ OWiLightProp_SaveFields(
 	{
 		light_prop->ls_data_array[index].light_flags |= OBJcLightFlag_Dist_Spot;
 	}
-	
+
 	// get the light intensity
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_Intensity);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 255);
 	sscanf(string, "%d", &light_prop->ls_data_array[index].light_intensity);
-	
+
 	// get the light beam angle
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_BeamAngle);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 255);
 	sscanf(string, "%f", &light_prop->ls_data_array[index].beam_angle);
-	
+
 	// get the light field angle
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_FieldAngle);
 	WMrMessage_Send(window, EFcMessage_GetText, (UUtUns32)string, 255);
@@ -5025,17 +5025,17 @@ OWiLightProp_SaveToObject(
 	OWtLightProp		*light_prop;
 	OBJtOSD_All			osd_all;
 	UUtUns32			size;
-	
+
 	// get the light properties
 	light_prop = (OWtLightProp*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(light_prop);
-	
+
 	// get the object osd
 	OBJrObject_GetObjectSpecificData(light_prop->object, &osd_all);
-	
+
 	// calculate the size of the ls_data_array
 	size = sizeof(OBJtLSData) * light_prop->num_ls_datas;
-	
+
 	// copy the data from the light properties to the object's ls_data_array
 	UUrMemory_MoveFast(light_prop->ls_data_array, osd_all.osd.furniture_osd.ls_data_array, size);
 }
@@ -5050,31 +5050,31 @@ OWiLightProp_SetFields(
 	UUtUns16			index;
 	UUtUns16			radiobutton;
 	char				string[255];
-	
+
 	// get the light properties
 	light_prop = (OWtLightProp*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(light_prop);
-	
+
 	// get the current node being edited
 	window = WMrDialog_GetItemByID(inDialog, PLcPM_NodeName);
 	WMrPopupMenu_GetItemID(window, -1, &index);
-	
+
 	// save the current index number
 	light_prop->current_index = index;
-	
+
 	// set the filter color
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_R);
 	sprintf(string, "%5.3f", light_prop->ls_data_array[index].filter_color[0]);
 	WMrMessage_Send(window, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_G);
 	sprintf(string, "%5.3f", light_prop->ls_data_array[index].filter_color[1]);
 	WMrMessage_Send(window, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_B);
 	sprintf(string, "%5.3f", light_prop->ls_data_array[index].filter_color[2]);
 	WMrMessage_Send(window, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	// set the light type
 	if (light_prop->ls_data_array[index].light_flags & OBJcLightFlag_Type_Area)
 	{
@@ -5088,9 +5088,9 @@ OWiLightProp_SetFields(
 	{
 		radiobutton = (UUtUns16)PLcRB_Point;
 	}
-	
+
 	WMrDialog_RadioButtonCheck(inDialog, PLcRB_Area, PLcRB_Point, radiobutton);
-		
+
 	// set the light distribution
 	if (light_prop->ls_data_array[index].light_flags & OBJcLightFlag_Dist_Diffuse)
 	{
@@ -5100,19 +5100,19 @@ OWiLightProp_SetFields(
 	{
 		radiobutton = (UUtUns16)PLcRB_Spot;
 	}
-	
+
 	WMrDialog_RadioButtonCheck(inDialog, PLcRB_Diffuse, PLcRB_Spot, radiobutton);
-	
+
 	// set the light intensity
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_Intensity);
 	sprintf(string, "%d", light_prop->ls_data_array[index].light_intensity);
 	WMrMessage_Send(window, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	// set the light beam angle
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_BeamAngle);
 	sprintf(string, "%5.3f", light_prop->ls_data_array[index].beam_angle);
 	WMrMessage_Send(window, EFcMessage_SetText, (UUtUns32)string, 0);
-	
+
 	// set the light field angle
 	window = WMrDialog_GetItemByID(inDialog, PLcEF_FieldAngle);
 	sprintf(string, "%5.3f", light_prop->ls_data_array[index].field_angle);
@@ -5130,36 +5130,36 @@ OWiLightProp_InitDialog(
 	WMtWindow			*popup;
 	OBJtOSD_All			osd_all;
 	UUtUns32			size;
-	
+
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL)
 	{
 		WMrDialog_ModalEnd(inDialog, UUcTrue);
 		return;
 	}
-	
+
 	light_prop = (OWtLightProp*)UUrMemory_Block_NewClear(sizeof(OWtLightProp));
 	if (light_prop == NULL)
 	{
 		WMrDialog_ModalEnd(inDialog, UUcTrue);
 		return;
 	}
-	
+
 	// save the light properties
 	WMrDialog_SetUserData(inDialog, (UUtUns32)light_prop);
-	
+
 	// get the object specific data
 	OBJrObject_GetObjectSpecificData(object, &osd_all);
-	
+
 	// set the light prop data
 	light_prop->object = object;
 	light_prop->current_index = 0;
 	light_prop->num_ls_datas = osd_all.osd.furniture_osd.num_ls_datas;
 	light_prop->ls_data_array = NULL;
-	
+
 	// calculate the size of the ls_data_array
 	size = sizeof(OBJtLSData) * light_prop->num_ls_datas;
-	
+
 	// allocate memory for the ls_data_array
 	light_prop->ls_data_array = (OBJtLSData*)UUrMemory_Block_New(size);
 	if (light_prop->ls_data_array == NULL)
@@ -5168,17 +5168,17 @@ OWiLightProp_InitDialog(
 		WMrDialog_ModalEnd(inDialog, UUcTrue);
 		return;
 	}
-		
+
 	// copy the gq_data_array from the osd to the light_prop
 	UUrMemory_MoveFast(osd_all.osd.furniture_osd.ls_data_array, light_prop->ls_data_array, size);
-	
+
 	// build the popup menu
 	popup = WMrDialog_GetItemByID(inDialog, PLcPM_NodeName);
 	for (i = 0; i < light_prop->num_ls_datas; i++)
 	{
 		WMtMenuItemData			item_data;
 		UUtUns32				index;
-		
+
 		index = light_prop->ls_data_array[i].index;
 
 		item_data.flags = WMcMenuItemFlag_Enabled;
@@ -5187,10 +5187,10 @@ OWiLightProp_InitDialog(
 			item_data.title,
 			TMrInstance_GetInstanceName(osd_all.osd.furniture_osd.furn_geom_array->furn_geom[index].geometry),
 			WMcMaxTitleLength);
-		
+
 		WMrPopupMenu_AppendItem(popup, &item_data);
 	}
-	
+
 	WMrPopupMenu_SetSelection(popup, 0);
 }
 
@@ -5200,7 +5200,7 @@ OWiLightProp_Destroy(
 	WMtDialog			*inDialog)
 {
 	OWtLightProp		*light_prop;
-	
+
 	// delete the memory used
 	light_prop = (OWtLightProp*)WMrDialog_GetUserData(inDialog);
 	if (light_prop)
@@ -5210,10 +5210,10 @@ OWiLightProp_Destroy(
 			UUrMemory_Block_Delete(light_prop->ls_data_array);
 			light_prop->ls_data_array = NULL;
 		}
-		
+
 		UUrMemory_Block_Delete(light_prop);
 	}
-	
+
 	OWgDialog_LightProp = NULL;
 }
 
@@ -5231,24 +5231,24 @@ OWiLightProp_HandleCommand(
 			OWiLightProp_SaveToObject(inDialog);
 			WMrDialog_ModalEnd(inDialog, UUcTrue);
 		break;
-		
+
 		case WMcDialogItem_Cancel:
 			WMrDialog_ModalEnd(inDialog, UUcFalse);
 		break;
-		
+
 		case PLcRB_Area:
 		case PLcRB_Linear:
 		case PLcRB_Point:
 			WMrDialog_RadioButtonCheck(inDialog, PLcRB_Area, PLcRB_Point, (UUtUns16)UUmLowWord(inParam1));
 			OWiLightProp_SaveFields(inDialog);
 		break;
-		
+
 		case PLcRB_Diffuse:
 		case PLcRB_Spot:
 			WMrDialog_RadioButtonCheck(inDialog, PLcRB_Diffuse, PLcRB_Spot, (UUtUns16)UUmLowWord(inParam1));
 			OWiLightProp_SaveFields(inDialog);
 		break;
-		
+
 		default:
 			OWiLightProp_SaveFields(inDialog);
 		break;
@@ -5264,32 +5264,32 @@ OWiLightProp_Callback(
 	UUtUns32			inParam2)
 {
 	UUtBool				handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiLightProp_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWiLightProp_Destroy(inDialog);
 		return UUcFalse;
-		
+
 		case WMcMessage_Command:
 			OWiLightProp_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiLightProp_SetFields(inDialog);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -5299,7 +5299,7 @@ OWrLightProp_Display(
 	void)
 {
 	UUtError				error;
-	
+
 	if ((OWgDialog_Pos == NULL) &&
 		(OWgDialog_Prop == NULL) &&
 		(OBJrSelectedObjects_GetNumSelected() == 1) &&
@@ -5308,7 +5308,7 @@ OWrLightProp_Display(
 		error = WMrDialog_Create(OWcDialog_Prop_Light, NULL, OWiLightProp_Callback, 0, &OWgDialog_LightProp);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -5320,25 +5320,25 @@ OWrLightProp_HasLight(
 	OBJtObject				*object;
 	OBJtOSD_All				osd_all;
 	UUtUns32				i;
-	
+
 	// must be only one object selected
 	if (OBJrSelectedObjects_GetNumSelected() != 1) { return UUcFalse; }
-	
+
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return UUcFalse; }
-	
+
 	// object must be of type furniture
 	if (OBJrObject_GetType(object) != OBJcType_Furniture) { return UUcFalse; }
-	
+
 	// get the object specific data
 	OBJrObject_GetObjectSpecificData(object, &osd_all);
-	
+
 	// see if any of the geometries have light data associated with them
 	for (i = 0; i < osd_all.osd.furniture_osd.furn_geom_array->num_furn_geoms; i++)
 	{
 		if (osd_all.osd.furniture_osd.furn_geom_array->furn_geom[i].ls_data != NULL) { return UUcTrue; }
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -5356,11 +5356,11 @@ OWiProp_Particle_SetFields(
 	OBJtOSD_All			*osd_all;
 	WMtWindow			*window;
 //	char				string[255];
-	
+
 	// get the particle object's properties
 	osd_all = (OBJtOSD_All*)WMrDialog_GetUserData(inDialog);
 	UUmAssert(osd_all);
-	
+
 	// update the controls
 
 	// particle class
@@ -5414,11 +5414,11 @@ OWiProp_Particle_InitDialog(
 	P3tParticleClass	*particle_class;
 //	WMtWindow			*popup;
 	WMtWindow			*editfield;
-	
+
 	// get the currently selected object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	if (object == NULL) { return; }
-	
+
 	// must be a particle object!
 	object_type = OBJrObject_GetType(object);
 	if (object_type != OBJcType_Particle) {
@@ -5429,13 +5429,13 @@ OWiProp_Particle_InitDialog(
 	// get a pointer to the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, PPcLB_ClassList);
 	if (listbox == NULL) { return; }
-	
+
 	// iterate all particle classes and place their names in the list
 	particle_itr = P3cParticleClass_None;
 	while (P3rIterateClasses(&particle_itr, &particle_class)) {
 		WMrMessage_Send(listbox, LBcMessage_AddString, (UUtUns32) particle_class->classname, 0);
 	}
-	
+
 	// allocate memory for the dialog's OSD
 	osd = (OBJtOSD_All*)UUrMemory_Block_NewClear(sizeof(OBJtOSD_All));
 	UUmAssert(osd);
@@ -5446,10 +5446,10 @@ OWiProp_Particle_InitDialog(
 	// set the maximum number of characters in the editfields
 	editfield = WMrDialog_GetItemByID(inDialog, PPcEF_Tag);
 	WMrMessage_Send(editfield, EFcMessage_SetMaxChars, OBJcParticleTagNameLength, 0);
-	
+
 	// set the keyboard focus to the listbox
 	WMrWindow_SetFocus(listbox);
-	
+
 	// set the fields
 	OWiProp_Particle_SetFields(inDialog);
 }
@@ -5498,7 +5498,7 @@ OWiProp_Particle_NewClass(
 		// get a pointer to the object
 		object = OBJrSelectedObjects_GetSelectedObject(0);
 		UUmAssert(object);
-		
+
 		// set the decal sizes and angle
 		editfield = (WMtEditField *) WMrDialog_GetItemByID(inDialog, PPcEF_SizeX);
 		WMrEditField_SetFloat(editfield, osd_all->osd.particle_osd.particle.decal_xscale);
@@ -5527,7 +5527,7 @@ OWiProp_Particle_SaveOSD(
 	OBJtOSD_Particle	*particle_osd;
 	char				string[OBJcMaxNoteChars + 1];
 	float				x_scale, y_scale, angle;
-	
+
 	if (OBJrObjectType_IsLocked(OBJcType_Particle) == UUcTrue)
 	{
 		WMrDialog_MessageBox(inDialog, "Error", "The Particle file is locked, you cannot make changes.",
@@ -5535,11 +5535,11 @@ OWiProp_Particle_SaveOSD(
 		WMrDialog_ModalEnd(inDialog, UUcFalse);
 		return UUcError_Generic;
 	}
-	
+
 	// get a pointer to the object
 	object = OBJrSelectedObjects_GetSelectedObject(0);
 	UUmAssert(object);
-	
+
 	particle_osd = (OBJtOSD_Particle *) object->object_data;
 
 	osd_all.osd.particle_osd = *particle_osd;
@@ -5591,7 +5591,7 @@ OWiProp_Particle_SaveOSD(
 
 	OWrObjectProperties_SetOSD(inDialog, object, &osd_all);
 	OBJrObject_UpdatePosition(object);
-	
+
 	return UUcError_None;
 }
 #endif
@@ -5611,7 +5611,7 @@ OWrProp_Particle_Callback(
 	float				value, value_delta;
 	OBJtOSD_All *		osd_all;
 	WMtWindow *			window;
-	
+
 	handled = UUcTrue;
 	osd_all = (OBJtOSD_All *) WMrDialog_GetUserData(inDialog);
 
@@ -5620,7 +5620,7 @@ OWrProp_Particle_Callback(
 		case WMcMessage_InitDialog:
 			OWiProp_Particle_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(osd_all);
 		break;
@@ -5660,7 +5660,7 @@ OWrProp_Particle_Callback(
 					error = OWiProp_Particle_SaveOSD(inDialog);
 					WMrDialog_ModalEnd(inDialog, (error == UUcError_None) ? UUcTrue : UUcFalse);
 				break;
-		
+
 				case WMcDialogItem_Cancel:
 					WMrDialog_ModalEnd(inDialog, UUcFalse);
 				break;
@@ -5688,12 +5688,12 @@ OWrProp_Particle_Callback(
 				OWiProp_Particle_SaveOSD(inDialog);
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 #endif
@@ -5717,26 +5717,26 @@ OWrTools_CreateObject(
 	float					pitch;
 
 	// determine the position of the object
-	switch(inObjectType) 
+	switch(inObjectType)
 	{
 		case OBJcType_Door:
 		case OBJcType_Console:
-			if (CAgCamera.mode == CAcMode_Follow) 
+			if (CAgCamera.mode == CAcMode_Follow)
 			{
 				player_character = CAgCamera.star;
 				UUmAssert(player_character != NULL);
-				
+
 				position = CArGetLocation();
 				facing = CArGetFacing();
 
 				MUmVector_Set(rotation, 0, player_character->facing * M3cRadToDeg, 0);
-			
+
 				rotation.y += 180;
 				if( rotation.y > 360.0 )
 					rotation.y -= 360;
-				
-				position.x = player_character->location.x;	
-				position.z = player_character->location.z;	
+
+				position.x = player_character->location.x;
+				position.z = player_character->location.z;
 
 				position.x += MUrSin( player_character->facing ) * 10;
 				position.z += MUrCos( player_character->facing ) * 10;
@@ -5758,28 +5758,28 @@ OWrTools_CreateObject(
 				position.x += facing.x;
 				position.y += facing.y;
 				position.z += facing.z;
-			
+
 				rotation.x = 0.0f;
 				rotation.y = horiz_facing;
 				rotation.z = 0.0f;
 			}
 			break;
-		
+
 		case OBJcType_Particle:
 			{
 				facing			= CArGetFacing();
-				
+
 				horiz_facing	= MUrATan2(facing.x, facing.z);
 
 				pitch			= MUrASin( (float)fabs(facing.y) );
-				
+
 				if( facing.y > 0 )		pitch		= -pitch;
 
 				UUmTrig_Clip( pitch );
 				UUmTrig_Clip( horiz_facing );
-				
 
-				if (CAgCamera.mode == CAcMode_Follow) 
+
+				if (CAgCamera.mode == CAcMode_Follow)
 				{
 					ONrCharacter_GetEyePosition(CAgCamera.star, &position);
 					MUmVector_ScaleIncrement(position, 10.0f, facing);
@@ -5789,11 +5789,11 @@ OWrTools_CreateObject(
 					position		= CAgCamera.viewData.location;
 					MUmVector_ScaleIncrement(position, 35.0f, facing);
 				}
-			
+
 				MUmVector_Set(rotation, pitch * M3cRadToDeg, horiz_facing * M3cRadToDeg, 0);
 			}
 			break;
-		
+
 		case OBJcType_Character:
 		case OBJcType_Flag:
 			// appear at the position of the player character if possible
@@ -5802,31 +5802,31 @@ OWrTools_CreateObject(
 				UUmAssert(player_character != NULL);
 
 				position = player_character->location;
-				
+
 				MUmVector_Set(rotation, 0, player_character->facing * M3cRadToDeg, 0);
 				break;
 			}
 
 			// otherwise fall through
-			
+
 		default:
 			// appear in front of the camera
 			position = CArGetLocation();
 			facing = CArGetFacing();
-		
+
 			MUmVector_Scale(facing, 35.0f);
-		
+
 			// put the object in front of the camera
 			position.x += facing.x;
 			position.y += facing.y;
 			position.z += facing.z;
-		
+
 			rotation.x = 0.0f;
 			rotation.y = 0.0f;
 			rotation.z = 0.0f;
 			break;
 	}
-	
+
 	// apply gravity for specific object types
 	switch (inObjectType)
 	{
@@ -5841,9 +5841,9 @@ OWrTools_CreateObject(
 		{
 			UUtBool				result;
 			M3tVector3D			vector;
-			
+
 			MUmVector_Set(vector, 0.0f, -255.0f, 0.0f);
-			
+
 			result =
 				AKrCollision_Point(
 					ONrGameState_GetEnvironment(),
@@ -5859,7 +5859,7 @@ OWrTools_CreateObject(
 		}
 		break;
 	}
-	
+
 	// create the object based on its type and name
 	error =
 		OBJrObject_New(
@@ -5889,7 +5889,7 @@ OWiTools_EnumCategories(
 	OWgCategories[OWgNumCategories].object_type = inObjectType;
 	UUrString_Copy(OWgCategories[OWgNumCategories].name, inName, OBJcMaxNameLength);
 	OWgNumCategories++;
-	
+
 	return UUcTrue;
 }
 
@@ -5900,17 +5900,17 @@ OWrTools_Initialize(
 {
 	UUmAssert(OWgDialog_ObjNew == NULL);
 	UUmAssert(OWgDialog_Prop == NULL);
-	
+
 	// clear the categories
 	UUrMemory_Clear(OWgCategories, sizeof(OWtCategory) * OWcMaxCategories);
 	OWgNumCategories = 0;
-	
+
 	// enumerate the object types
 	OBJrObjectTypes_Enumerate(OWiTools_EnumCategories, 0);
-	
+
 	return UUcError_None;
 }
-	
+
 // ----------------------------------------------------------------------
 void OWrTools_Terminate(void)
 {
@@ -5923,7 +5923,7 @@ void OWrTools_Terminate(void)
 UUtError OWrStringListDialog_Create( OWtStringListDlgInstance* inInstance )
 {
 	UUmAssert( inInstance );
-	
+
 	inInstance->string_array	= UUrMemory_Array_New( OWcStringListDlg_MaxStringLength,  OWcStringListDlg_MaxStringLength, 0, 0 );
 	inInstance->dialog			= NULL;
 	inInstance->selected_index	= -1;
@@ -5937,9 +5937,9 @@ UUtError OWrStringListDialog_Destroy( OWtStringListDlgInstance* inInstance )
 {
 	UUmAssert( inInstance );
 	UUmAssert( inInstance->string_array );
-	
+
 	UUrMemory_Array_Delete( inInstance->string_array );
-	
+
 	inInstance->string_array	= NULL;
 	inInstance->dialog			= NULL;
 
@@ -5974,7 +5974,7 @@ static UUtBool OWiStringListDialog_Callback( WMtDialog *inDialog, WMtMessage inM
 	instance = (OWtStringListDlgInstance*) WMrDialog_GetUserData(inDialog);
 
 	UUmAssert( instance && instance->string_array );
-	
+
 	handled = UUcTrue;
 
 	switch (inMessage)
@@ -5993,7 +5993,7 @@ static UUtBool OWiStringListDialog_Callback( WMtDialog *inDialog, WMtMessage inM
  			{
 					WMrWindow_SetTitle( (WMtWindow*) inDialog, instance->title, OWcStringListDlg_MaxStringLength );
 				}
-				
+
 				// set list title
 				if( instance->list_title[0] )
 				{
@@ -6014,12 +6014,12 @@ static UUtBool OWiStringListDialog_Callback( WMtDialog *inDialog, WMtMessage inM
 				WMrMessage_Send( window, LBcMessage_SetSelection, (UUtUns32) 0, instance->selected_index );
 				WMrWindow_SetFocus( window );
 			}
-		break;		
+		break;
 
 		case WMcMessage_Destroy:
 			UUmAssert( instance->dialog );
 			instance->dialog = NULL;
-		break;			
+		break;
 
 		case WMcMessage_Command:
 			UUmAssert( instance->dialog );
@@ -6052,7 +6052,7 @@ static UUtBool OWiStringListDialog_Callback( WMtDialog *inDialog, WMtMessage inM
 }
 
 UUtError OWrStringListDialog_SetTitle( OWtStringListDlgInstance* inInstance, char* inTitle )
-{	
+{
 	UUmAssert( inInstance && inInstance->string_array );
 
 	UUrString_Copy( inInstance->title, inTitle, OWcStringListDlg_MaxStringLength );
@@ -6066,7 +6066,7 @@ UUtError OWrStringListDialog_SetTitle( OWtStringListDlgInstance* inInstance, cha
 }
 
 UUtError OWrStringListDialog_SetListTitle( OWtStringListDlgInstance* inInstance, char* inTitle )
-{	
+{
 	UUmAssert( inInstance && inInstance->string_array );
 
 	UUrString_Copy( inInstance->list_title, inTitle, OWcStringListDlg_MaxStringLength );

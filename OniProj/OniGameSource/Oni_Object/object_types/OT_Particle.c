@@ -44,12 +44,12 @@ OBJiParticle_UpdateObjectPosition(
 
 	// get a pointer to the particle_osd
 	particle_osd = (OBJtOSD_Particle*)inObject->object_data;
-	
+
 	// convert the rotation to radians
 	rot_x = inObject->rotation.x * M3cDegToRad;
 	rot_y = inObject->rotation.y * M3cDegToRad;
 	rot_z = inObject->rotation.z * M3cDegToRad;
-	
+
 	// update the rotation matrix
 	euler.order = MUcEulerOrderXYZs;
 	euler.x = rot_x;
@@ -65,7 +65,7 @@ OBJiParticle_UpdateObjectPosition(
 	}
 	particle_osd->particle.dynamic_matrix = NULL;
 }
-	
+
 // ======================================================================
 #if 0
 #pragma mark -
@@ -77,7 +77,7 @@ OBJiParticle_Delete(
 	OBJtObject				*inObject)
 {
 	OBJtOSD_Particle *particle_osd = (OBJtOSD_Particle*)inObject->object_data;
-	
+
 	EPrDelete(&particle_osd->particle);
 }
 
@@ -99,7 +99,7 @@ OBJiParticle_Draw(
 		// this changes the way that the user interacts with us
 		particle_osd->is_decal = ((particle_osd->particle.particle_class != NULL) &&
 							(particle_osd->particle.particle_class->definition->flags2 & P3cParticleClassFlag2_Appearance_Decal));
-	
+
 		// setup the matrix stack
 		M3rMatrixStack_Push();
 		M3rMatrixStack_Multiply(&particle_osd->particle.matrix);
@@ -107,7 +107,7 @@ OBJiParticle_Draw(
 
 		OBJrObject_GetBoundingSphere(inObject, &bounding_sphere);
 		OBJrObjectUtil_DrawRotationRings(inObject, &bounding_sphere, inDrawFlags);
-	
+
 		M3rMatrixStack_Pop();
 	}
 #endif
@@ -123,22 +123,22 @@ OBJiParticle_Enumerate(
 	UUtUns32						inUserData)
 {
 	P3tParticleClassIterateState	itr;
-	
+
 	itr = P3cParticleClass_None;
 	while (1)
 	{
 		UUtBool						result;
 		P3tParticleClass			*particle_class;
-		
+
 		// iterate over all particle classes and pass their names to the
 		// callback function (for storage in a listbox)
 		result = P3rIterateClasses(&itr, &particle_class);
 		if (result == UUcFalse) { break; }
-		
+
 		result = inEnumCallback(particle_class->classname, inUserData);
 		if (result == UUcFalse) { break; }
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -160,7 +160,7 @@ OBJiParticle_OSDGetName(
 	UUtUns32				inNameLength)
 {
 	const OBJtOSD_Particle *particle_osd = &inOSD->osd.particle_osd;
-	
+
 	UUrString_Copy(outName, particle_osd->particle.classname, inNameLength);
 	if (particle_osd->particle.tagname[0] != '\0') {
 		UUrString_Cat(outName, "_", inNameLength);
@@ -177,7 +177,7 @@ OBJiParticle_OSDSetName(
 	const char		*inName)
 {
 	OBJtOSD_Particle *particle_osd = &inOSD->osd.particle_osd;
-	
+
 	if (strcmp(particle_osd->particle.classname, inName) != 0) {
 		// set up the new name
 		UUrString_Copy(particle_osd->particle.classname, inName,
@@ -194,9 +194,9 @@ OBJiParticle_GetOSD(
 	OBJtOSD_All				*outOSD)
 {
 	OBJtOSD_Particle		*particle_osd;
-	
+
 	particle_osd = &((OBJtOSD_All *)inObject->object_data)->osd.particle_osd;
-	
+
 	UUrMemory_MoveFast(particle_osd, &outOSD->osd.particle_osd, sizeof(OBJtOSD_Particle));
 }
 
@@ -206,12 +206,12 @@ OBJiParticle_GetOSDWriteSize(
 	const OBJtObject		*inObject)
 {
 	UUtUns32				result;
-	
+
 	result = (P3cParticleClassNameLength + 1);			/* particle class name */
 	result += (EPcParticleTagNameLength + 1);			/* particle tag name */
 	result += sizeof(UUtUns16);							/* flags */
 	result += 2 * sizeof(float);						/* decal x, y scale */
-	
+
 	return result;
 }
 
@@ -225,14 +225,14 @@ OBJiParticle_IntersectsLine(
 	M3tBoundingSphere		sphere;
 
 	UUrMemory_Clear(&sphere, sizeof(M3tBoundingSphere));
-	
+
 	// get the bounding sphere
 	OBJrObject_GetBoundingSphere(inObject, &sphere);
-	
+
 	sphere.center.x += inObject->position.x;
 	sphere.center.y += inObject->position.y;
 	sphere.center.z += inObject->position.z;
-	
+
 	return CLrSphere_Line(inStartPoint, inEndPoint, &sphere);
 }
 
@@ -277,7 +277,7 @@ OBJiParticle_New(
 
 	// set the particle's position
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	if (inOSD != NULL) {
 		// copy the persistent fields from the input OSD; this
 		// is only class, tag and flags.
@@ -296,11 +296,11 @@ OBJiParticle_Read_Version1(
 {
 	OBJtOSD_All				*osd_all;
 	UUtUns32				bytes_read;
-	
+
 	// get a pointer to the object osd
 	osd_all = (OBJtOSD_All*)inObject->object_data;
 	bytes_read = 0;
-	
+
 	// read the Particle data
 	UUrString_Copy(
 		osd_all->osd.particle_osd.particle.classname,
@@ -308,7 +308,7 @@ OBJiParticle_Read_Version1(
 		(P3cParticleClassNameLength + 1));
 	inBuffer += (P3cParticleClassNameLength + 1);
 	bytes_read += (P3cParticleClassNameLength + 1);
-	
+
 	// these values did not exist in version 1
 	osd_all->osd.particle_osd.particle.tagname[0] = '\0';
 	osd_all->osd.particle_osd.particle.flags = 0;
@@ -327,10 +327,10 @@ OBJiParticle_Read_Version6(
 {
 	OBJtOSD_All				*osd_all;
 	UUtUns32				bytes_read, flags;
-	
+
 	// get a pointer to the object osd
 	osd_all = (OBJtOSD_All*)inObject->object_data;
-	
+
 	// read the version 1 data and advance past it
 	bytes_read = OBJiParticle_Read_Version1(inObject, inSwapIt, inBuffer);
 	inBuffer += bytes_read;
@@ -349,7 +349,7 @@ OBJiParticle_Read_Version6(
 		(OBJcParticleTagNameLength + 1));
 	inBuffer += (OBJcParticleTagNameLength + 1);
 	bytes_read += (OBJcParticleTagNameLength + 1);
-	
+
 	// get the flags and convert them from the old 32-bit format to the new 16-bit format
 	bytes_read += OBJmGet4BytesFromBuffer(inBuffer, flags, UUtUns32, inSwapIt);
 
@@ -376,10 +376,10 @@ OBJiParticle_Read_Version13(
 {
 	OBJtOSD_All				*osd_all;
 	UUtUns32				bytes_read;
-	
+
 	// get a pointer to the object osd
 	osd_all = (OBJtOSD_All*)inObject->object_data;
-	
+
 	/*
 	 * read the version 13 data
 	 */
@@ -393,7 +393,7 @@ OBJiParticle_Read_Version13(
 		(P3cParticleClassNameLength + 1));
 	inBuffer += (P3cParticleClassNameLength + 1);
 	bytes_read += (P3cParticleClassNameLength + 1);
-	
+
 	// read the tag name (all 48 chars of it)
 	UUrString_Copy(
 		osd_all->osd.particle_osd.particle.tagname,
@@ -401,7 +401,7 @@ OBJiParticle_Read_Version13(
 		(EPcParticleTagNameLength + 1));
 	inBuffer += (EPcParticleTagNameLength + 1);
 	bytes_read += (EPcParticleTagNameLength + 1);
-	
+
 	// read the 16-bit flags
 	bytes_read += OBJmGet2BytesFromBuffer(inBuffer, osd_all->osd.particle_osd.particle.flags, UUtUns16, inSwapIt);
 
@@ -424,10 +424,10 @@ OBJiParticle_Read_Version32(
 {
 	OBJtOSD_All				*osd_all;
 	UUtUns32				bytes_read;
-	
+
 	// get a pointer to the object osd
 	osd_all = (OBJtOSD_All*)inObject->object_data;
-	
+
 	/*
 	 * read the version 32 data
 	 */
@@ -441,7 +441,7 @@ OBJiParticle_Read_Version32(
 		(P3cParticleClassNameLength + 1));
 	inBuffer += (P3cParticleClassNameLength + 1);
 	bytes_read += (P3cParticleClassNameLength + 1);
-	
+
 	// read the tag name (all 48 chars of it)
 	UUrString_Copy(
 		osd_all->osd.particle_osd.particle.tagname,
@@ -449,7 +449,7 @@ OBJiParticle_Read_Version32(
 		(EPcParticleTagNameLength + 1));
 	inBuffer += (EPcParticleTagNameLength + 1);
 	bytes_read += (EPcParticleTagNameLength + 1);
-	
+
 	// read the 16-bit flags
 	bytes_read += OBJmGet2BytesFromBuffer(inBuffer, osd_all->osd.particle_osd.particle.flags, UUtUns16, inSwapIt);
 
@@ -494,7 +494,7 @@ OBJiParticle_Read(
 
 	// clear flags that don't persist
 	particle_osd->particle.flags &= EPcParticleFlag_PersistentMask;
-	
+
 	// notify the env particle system that this particle exists
 	EPrNew(&particle_osd->particle, 0);
 
@@ -512,19 +512,19 @@ OBJiParticle_SetOSD(
 	const OBJtOSD_All		*inOSD)
 {
 	OBJtOSD_Particle		*particle_osd;
-	
+
 	// get a pointer to the particle_osd
 	particle_osd = (OBJtOSD_Particle*)inObject->object_data;
 	particle_osd->owner = inObject;
-	
-	if (strcmp(particle_osd->particle.classname, inOSD->osd.particle_osd.particle.classname) != 0) {		
+
+	if (strcmp(particle_osd->particle.classname, inOSD->osd.particle_osd.particle.classname) != 0) {
 		// the particle class has changed.
 		UUrString_Copy(particle_osd->particle.classname, inOSD->osd.particle_osd.particle.classname,
 							(P3cParticleClassNameLength + 1));
 
 		EPrNotifyClassChange(&particle_osd->particle, ONrGameState_GetGameTime());
 	}
-	
+
 	if (strcmp(particle_osd->particle.tagname, inOSD->osd.particle_osd.particle.tagname) != 0) {
 		// the tag name has changed.
 		EPrPreNotifyTagChange(&particle_osd->particle);
@@ -574,13 +574,13 @@ OBJiParticle_Write(
 {
 	OBJtOSD_Particle		*particle_osd;
 	UUtUns32				bytes_available;
-		
+
 	// get a pointer to the particle_osd
 	particle_osd = (OBJtOSD_Particle*)inObject->object_data;
-	
+
 	// get the number of bytes available
 	bytes_available = *ioBufferSize;
-			
+
 	// write the data into the buffer
 	UUrString_Copy((char*)ioBuffer, particle_osd->particle.classname, P3cParticleClassNameLength + 1);
 	bytes_available -= (P3cParticleClassNameLength + 1);
@@ -589,7 +589,7 @@ OBJiParticle_Write(
 	UUrString_Copy((char*)ioBuffer, particle_osd->particle.tagname, EPcParticleTagNameLength + 1);
 	bytes_available -= (EPcParticleTagNameLength + 1);
 	ioBuffer += (EPcParticleTagNameLength + 1);
-		
+
 	OBJmWrite2BytesToBuffer(ioBuffer, particle_osd->particle.flags, UUtUns16, bytes_available, OBJcWrite_Little);
 
 	OBJmWrite4BytesToBuffer(ioBuffer, particle_osd->particle.decal_xscale, float, bytes_available, OBJcWrite_Little);
@@ -597,7 +597,7 @@ OBJiParticle_Write(
 
 	// set ioBufferSize to the number of bytes written to the buffer
 	*ioBufferSize = *ioBufferSize - bytes_available;
-	
+
 	return UUcError_None;
 }
 
@@ -644,10 +644,10 @@ OBJrParticle_Initialize(
 {
 	UUtError				error;
 	OBJtMethods				methods;
-	
+
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew				= OBJiParticle_New;
 	methods.rSetDefaults		= OBJiParticle_SetDefaults;
@@ -667,7 +667,7 @@ OBJrParticle_Initialize(
 	methods.rGetClassVisible	= OBJiParticle_GetVisible;
 	methods.rSearch				= OBJiParticle_Search;
 	methods.rSetClassVisible	= OBJiParticle_SetVisible;
-	
+
 	// register the particles methods
 	error =
 		OBJrObjectGroup_Register(
@@ -678,10 +678,10 @@ OBJrParticle_Initialize(
 			&methods,
 			OBJcObjectGroupFlag_CanSetName);
 	UUmError_ReturnOnError(error);
-	
+
 	// particle placement points are not initially visible
 	OBJiParticle_SetVisible(UUcFalse);
-	
+
 	return UUcError_None;
 }
 

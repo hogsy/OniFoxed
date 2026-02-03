@@ -1,17 +1,17 @@
 /*
 	FILE:	BFW_Totoro.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Sept 25, 1997
-	
+
 	PURPOSE: animation engine
-	
+
 	Copyright 1997
 
 */
 
-/* 
+/*
 
   optimzation notes
 
@@ -93,7 +93,7 @@ static void TRrAnimation_Prepare(TRtAnimation *animation);
 static const TRtAttack *TRrAnimation_GetAttack(const TRtAnimation *inAnimation, TRtAnimTime inTime, UUtUns32 inPartIndex);
 
 //
-// Danger, Danger, these tables aren't really sin(pheta) and cos(pheta), 
+// Danger, Danger, these tables aren't really sin(pheta) and cos(pheta),
 // but rather sin(pheta-PI) cos(pheta-PI). This matches the data file
 // format.
 //
@@ -1183,7 +1183,7 @@ static void M3rQuaternion_Uncompress3_Single(M3tCompressedQuaternion3 *inCompres
 	outQuat->x = cos_long * cos_lat * sin_angle;
 	outQuat->y = sin_long * cos_lat * sin_angle;
 	outQuat->z = sin_lat * sin_angle;
- 
+
 
 }
 
@@ -1309,7 +1309,7 @@ TRrInitialize(
 
 	error = TRrRegisterTemplates();
 	UUmError_ReturnOnError(error);
-	
+
 	error = TMrTemplate_PrivateData_New(TRcTemplate_AnimationCollection, 0, TRrTemplateHandler_AnimationCollection, &TRgAnimationCollection_PrivateData);
 	UUmError_ReturnOnError(error);
 
@@ -1318,7 +1318,7 @@ TRrInitialize(
 
 	error = TMrTemplate_PrivateData_New(TRcTemplate_Body, 0, TRrTemplateHandler_Body, &TRgBody_PrivateData);
 	UUmError_ReturnOnError(error);
-	
+
 	error = TRrInitialize_IntersectionTables();
 	UUmError_ReturnOnError(error);
 
@@ -1329,7 +1329,7 @@ TRrInitialize(
 
 	return UUcError_None;
 }
-	
+
 void
 TRrTerminate(
 	void)
@@ -1378,7 +1378,7 @@ void TRrBody_BuildMatricies(
 	const TRtExtraBody*	inExtraBody,
 	M3tQuaternion		*inQuaternions,
 	const M3tMatrix4x3	*inMatrix,
-	UUtUns32			inMask, 
+	UUtUns32			inMask,
 	M3tMatrix4x3*		outMatricies)
 {
 	UUmAssert(NULL != inBody);
@@ -1391,7 +1391,7 @@ void TRrBody_BuildMatricies(
 		// walk the extra list and draw any that need drawing
 		// clean this up later
 		for(extraItr = 0; extraItr < inExtraBody->numParts; extraItr++)
-		{			
+		{
 			const TRtExtraBodyPart *extraPart = inExtraBody->parts + extraItr;
 
 			if (NULL != extraPart->geometry) {
@@ -1422,7 +1422,7 @@ void TRrBody_Draw(
 	UUtUns32			whiteBits)
 {
 	UUtUns16 itr;
-        
+
 	M3rGeom_State_Commit();
 
 	for(itr = 0; itr < inBody->numParts; itr++)
@@ -1453,7 +1453,7 @@ void TRrBody_Draw(
 				}
 			}
 		}
-	
+
 		M3rMatrixStack_Pop();
 	}
 
@@ -1463,7 +1463,7 @@ void TRrBody_Draw(
 		// walk the extra list and draw any that need drawing
 		// clean this up later
 		for(extraItr = 0; extraItr < inExtraBody->numParts; extraItr++)
-		{		
+		{
 			const TRtExtraBodyPart *extraPart = inExtraBody->parts +	extraItr;
 
 			if (NULL == extraPart->geometry) { continue; }
@@ -1487,7 +1487,7 @@ void TRrBody_DrawMagic(
 	const UUtUns8 *			inPartAlpha)
 {
 	UUtUns16 itr;
-	
+
 	M3rGeom_State_Push();
 	M3rGeom_State_Commit();
 
@@ -1509,7 +1509,7 @@ void TRrBody_DrawMagic(
 		}
 
 		geometry->baseMap = old_texture_map;
-	
+
 		M3rMatrixStack_Pop();
 	}
 
@@ -1548,20 +1548,20 @@ void TRrQuatArray_Zero(
 // based. Each quaternion in an animation frame specifies the rotation of
 // some joint on a biped model with respect to it's "parent" joint. IE,
 // a quaternion may specify the orientation of a hand with respect to the
-// arm, or a lower arm with respect to the upper arm. The model is 
+// arm, or a lower arm with respect to the upper arm. The model is
 // hierarchitcal, in the sense that the hand depends on the lower
 // arm, which depends on the upper arm, which depends on the body, etc.
 //
 // This set of subroutines pulls out all of these "body part" quaternions
 // for a particular frame in the animation. In the original Oni code the
-// data is stored in a two dimensional array of quaternions. IE, 
+// data is stored in a two dimensional array of quaternions. IE,
 // quaternion = animation_quaternions[frame][body_part]. All of the
 // quaternions for a particular frame can be passed to a decompression
 // routine which will unpack the quaternion from whatever bit format
 // it's in (I believe 8, 12, 16, and 32 bits are supported right now)
 // into a structure of 4 floats, x,y,z and w. While this gave some
 // compression, I believed it was possible to do at least an order
-// of magnitude better using a lossy compression algorithm. 
+// of magnitude better using a lossy compression algorithm.
 //
 // How the algorithm works:
 //
@@ -1575,11 +1575,11 @@ void TRrQuatArray_Zero(
 // Each Time value represents the number of frames between the two
 // key frames. All 'frames' are assumed to be 60 frames per second
 // right now. Values of intermediate frames are calculated by
-// interpolating between the two key frame values. 
+// interpolating between the two key frame values.
 //
 // Example:
-// 
-// I want to represent 4 unique quaternions, A, B, C, and D, in the 
+//
+// I want to represent 4 unique quaternions, A, B, C, and D, in the
 // animation sequence A A A A B B C D D D
 //
 // If we look at this animation as a signal being sampled, we might
@@ -1589,7 +1589,7 @@ void TRrQuatArray_Zero(
 //
 // Frame 0 		A			A
 //
-// Frame 1		A			
+// Frame 1		A
 //							3
 // Frame 2		A
 //
@@ -1598,11 +1598,11 @@ void TRrQuatArray_Zero(
 // Frame 4		B			B
 //							1
 // Frame 5		B			B
-//							1 
+//							1
 // Frame 6		C			C
 //							1
 // Frame 7		D			D
-// 
+//
 // Frame 8		D			2
 //
 // Frame 9		D			D
@@ -1613,7 +1613,7 @@ void TRrQuatArray_Zero(
 // If I want to compute frame 2 I start at frame 0, I see that the
 // "gap" between frame 0's key frame and frame 3's key frame is 3 frames,
 // I interpolate (lerp) 2/3rds of the way between the key frame quaternions,
-// and I get the value A. If I want the value for frame 3.25 I interpolate 
+// and I get the value A. If I want the value for frame 3.25 I interpolate
 // 25% between the second A keyframe and the first B key frame.
 //
 // The length of each body part's compressed animation sequence now
@@ -1673,7 +1673,7 @@ static void TRrQuatArray_SetAnimationInternal(
 
 		// frame_gap is the gap between the two key-frames.
 		// into-gap is how many "frames" past current quaternion the
-		// key frame was. 
+		// key frame was.
 
 		int frame_gap;
 		int into_gap;
@@ -1700,7 +1700,7 @@ static void TRrQuatArray_SetAnimationInternal(
 			swapped= (((swapped & 0xFF00) >> 8) | ((swapped & 0x00FF) << 8));
 			compressed= ((UUtUns8 *)inAnimation->data) + swapped;
 		}
-	#else 
+	#else
 		compressed=((UUtUns8 *) inAnimation->data) + ((unsigned short *) inAnimation->data)[i];
  	#endif
 		// Set up the initial quaternion. "current quaternion" is the last
@@ -1794,7 +1794,7 @@ static void TRrQuatArray_SetAnimationInternal(
 
 				M3rQuaternion_Uncompress4((void *)tmem, 2, interp);
 				break;
-	
+
 			case TRcAnimationCompression6:
 				memcpy(tmem,last_quaternion,compressionSize);
 				memcpy(tmem+compressionSize,current_quaternion,
@@ -1832,7 +1832,7 @@ static void TRrQuatArray_SetAnimationInternal(
 		}
 		else if (into_gap==frame_gap) {
 			quaternions[i]=interp[1];
-		} 
+		}
 		else {
 			MUrQuat_Lerp(interp,interp+1, ((float) into_gap)/((float) frame_gap), quaternions+i);
 		}
@@ -1893,7 +1893,7 @@ void TRrQuatArray_SetAnimation(
 //	UUmAssert(floatFrameNum >= frameNum);
 //	UUmAssert(floatFrameNum < (frameNum+1));
 
-	// if not 60 fps, we compress to two different internal arrays and LERP to 
+	// if not 60 fps, we compress to two different internal arrays and LERP to
 	UUmAssertReadPtr(inAnimation, sizeof(*inAnimation));
 	UUmAssertWritePtr(inDest, inAnimation->numParts * sizeof(M3tQuaternion));
 	UUmAssert(inTime < inAnimation->numFrames);
@@ -1950,7 +1950,7 @@ void TRrQuatArray_Lerp4(
 	float amt01;
 	float amt23;
 
-	// basic path: 
+	// basic path:
 	// lerp 1 & 2
 	// lerp 3 & 4
 	// lerp (1&2) & (3&4)
@@ -1960,7 +1960,7 @@ void TRrQuatArray_Lerp4(
 
 	if (amt01 > UUcEpsilon) {
 		float lerp01;
-		
+
 		TRrQuatArray_Lerp(inNumParts, amountA, inSrc1, inSrc2, TRgQuatArrayPrivateA);
 		src5 = TRgQuatArrayPrivateA;
 	}
@@ -2084,7 +2084,7 @@ static UUtUns16 TRrCollection_BinarySearch(const TRtAnimationCollection *inColle
 			while(guess > 0) {
 				entry = inCollection->entry + guess - 1;
 				found = lookupTarget == entry->lookupValue;
-		
+
 				if (!found) {
 					result = guess;
 					goto exit;
@@ -2150,20 +2150,20 @@ static const TRtAnimation *TRrCollection_Lookup_Internal(const TRtAnimationColle
 			else { continue; }
 		}
 
-		if ((inType != animation->type) && (inType != 0)) { 
+		if ((inType != animation->type) && (inType != 0)) {
 			if (inType != 0) { break; }
 			else { continue; }
 		}
 
-		if (animation->varient & badVarientFlags) { 
-			continue; 
+		if (animation->varient & badVarientFlags) {
+			continue;
 		}
 
 		if (animation->firstLevel > TRgLevelNumber) {
 			// we need to skip this animation
-			
+
 #if defined(DEBUGGING) && DEBUGGING
-			if ((itr + 1) < inCollection->numAnimations) {			
+			if ((itr + 1) < inCollection->numAnimations) {
 				UUtBool same_from_state = entry->virtualFromState == inCollection->entry[itr + 1].virtualFromState;
 				UUtBool same_type = entry->animation->type == inCollection->entry[itr + 1].animation->type;
 				UUtBool same_varient = entry->animation->varient == inCollection->entry[itr + 1].animation->varient;
@@ -2198,7 +2198,7 @@ static const TRtAnimation *TRrCollection_Lookup_Internal(const TRtAnimationColle
 
 		if (TRcWeight_OnlyEntry == entry->weight)
 		{
-			break; 
+			break;
 		}
 
 		if (!foundFirstValidAnimation)
@@ -2232,12 +2232,12 @@ static const TRtAnimation *TRrCollection_Lookup_Internal(const TRtAnimationColle
 	return result;
 }
 
-void 
+void
 TRrCollection_Lookup_Range(
-		TRtAnimationCollection *inCollection, 
-		TRtAnimType inType, 
-		TRtAnimState inState, 
-		TRtAnimationCollectionPart **outFirst, 
+		TRtAnimationCollection *inCollection,
+		TRtAnimType inType,
+		TRtAnimState inState,
+		TRtAnimationCollectionPart **outFirst,
 		UUtInt32 *outCount)
 {
 	UUtInt32 loop;
@@ -2288,9 +2288,9 @@ const TRtAnimation *TRrCollection_Lookup(const TRtAnimationCollection *inCollect
 
 	lookup_depth++;
 
-	// two steps, 
+	// two steps,
 	UUmAssert(inType != TRcAnimState_Anything);
-	
+
 	// look for a real hit
 	lookupResult = TRrCollection_Lookup_Internal(inCollection, inType, inState, inVarient);
 
@@ -2373,9 +2373,9 @@ static void iAnimationCollection_SortAndWeight(TRtAnimationCollection *ioCollect
 #endif
 
 		// sort the table by type and fromState
-	qsort(	ioCollection->entry, 
-			ioCollection->numAnimations, 
-			sizeof(TRtAnimationCollectionPart), 
+	qsort(	ioCollection->entry,
+			ioCollection->numAnimations,
+			sizeof(TRtAnimationCollectionPart),
 			iCollectionCompare);
 
 #if ANIM_PRINT_TABLE
@@ -2409,7 +2409,7 @@ static void iAnimationCollection_SortAndWeight(TRtAnimationCollection *ioCollect
 
 		thisID = imGetAnimSortID(ioCollection->entry + itr);
 		thisVarient = ioCollection->entry[itr].animation->varient;
-		
+
 		if (((UUtUns32)(itr + 1)) < ioCollection->numAnimations) {
 			nextID = imGetAnimSortID(ioCollection->entry + itr + 1);
 			nextVarient = ioCollection->entry[itr + 1].animation->varient;
@@ -2466,7 +2466,7 @@ static void iAnimationCollection_SortAndWeight(TRtAnimationCollection *ioCollect
 	fprintf(stream, "----------------------------------\n");
 	fflush(stream);
 #endif
-}							 
+}
 
 static void iAnimationCollection_DiskToMemory(TRtAnimationCollection *ioCollection)
 {
@@ -2492,7 +2492,7 @@ static void iAnimationCollection_DiskToMemory(TRtAnimationCollection *ioCollecti
 	for(itr = 0; itr < ioCollection->numAnimations; itr++) {
 		TRtAnimationCollectionPart *part;
 		UUmAssert(ioCollection->entry[itr].animation != NULL);
-		
+
 		part = ioCollection->entry + itr;
 
 		part->virtualFromState = ioCollection->entry[itr].animation->fromState;
@@ -2507,11 +2507,11 @@ static void iAnimationCollection_DiskToMemory(TRtAnimationCollection *ioCollecti
 		TRtAnimation *curAnimation = ioCollection->entry[itr].animation;
 
 		TRrAnimation_Prepare(curAnimation);
-		
-		for(shortcutItr = 0; shortcutItr < curAnimation->numShortcuts; shortcutItr++) {
-			TRtAnimationCollectionPart *recursivePart; 
 
-			recursiveCollection = UUrMemory_Block_Realloc(recursiveCollection, 
+		for(shortcutItr = 0; shortcutItr < curAnimation->numShortcuts; shortcutItr++) {
+			TRtAnimationCollectionPart *recursivePart;
+
+			recursiveCollection = UUrMemory_Block_Realloc(recursiveCollection,
 				sizeof(TRtAnimationCollection) + (recursiveCount * sizeof(TRtAnimationCollectionPart)));
 
 			recursivePart = recursiveCollection->entry + recursiveCount;
@@ -2521,7 +2521,7 @@ static void iAnimationCollection_DiskToMemory(TRtAnimationCollection *ioCollecti
 			recursivePart->animation  = curAnimation;
 			recursivePart->lookupValue = (curAnimation->type << 16) | (recursivePart->virtualFromState << 0);
 
-			recursiveCount += 1;			
+			recursiveCount += 1;
 
 			recursiveCollection->numAnimations = recursiveCount;
 		}
@@ -2563,7 +2563,7 @@ TRrTemplateHandler_AnimationCollection(
 	void*					inPrivateData)
 {
 	TRtAnimationCollection			*collection;
-	
+
 	collection = (TRtAnimationCollection*)(inDataPtr);
 
 	switch(inMessage)
@@ -2571,18 +2571,18 @@ TRrTemplateHandler_AnimationCollection(
 		case TMcTemplateProcMessage_DisposePreProcess:
 			iAnimationCollection_Unload(collection);
 			break;
-		
+
 		case TMcTemplateProcMessage_LoadPostProcess:
 			iAnimationCollection_DiskToMemory(collection);
 			break;
-		
+
 		case TMcTemplateProcMessage_NewPostProcess:
 		case TMcTemplateProcMessage_Update:
 		default:
 			UUmDebugStr("you can't new, update or watchimicallit this template with some more C mister.");
 	}
-		
-	return UUcError_None;	
+
+	return UUcError_None;
 }
 
 static UUtError
@@ -2592,27 +2592,27 @@ TRrTemplateHandler_Body(
 	void*					inPrivateData)
 {
 	TRtBody *body;
-	
+
 	body = (TRtBody*)(inDataPtr);
 
 	switch(inMessage)
 	{
 		case TMcTemplateProcMessage_DisposePreProcess:
 			break;
-		
+
 		case TMcTemplateProcMessage_LoadPostProcess:
 			body->geometries = body->geometryStorage->geometries;
 			body->translations = body->translationStorage->translations;
 			body->indexBlocks = body->indexBlockStorage->indexBlocks;
 			break;
-		
+
 		case TMcTemplateProcMessage_NewPostProcess:
 		case TMcTemplateProcMessage_Update:
 		default:
 			UUmDebugStr("you can't new, update or watchimicallit this template with some more C mister.");
 	}
-		
-	return UUcError_None;	
+
+	return UUcError_None;
 }
 
 
@@ -2705,25 +2705,25 @@ TRrTemplateHandler_Animation(
 	void*					inPrivateData)
 {
 	TRtAnimation			*animation;
-	
+
 	animation = (TRtAnimation*)(inDataPtr);
 
 	switch(inMessage)
 	{
 		case TMcTemplateProcMessage_DisposePreProcess:
 			break;
-		
+
 		case TMcTemplateProcMessage_LoadPostProcess:
 			TRrAnimation_Prepare(animation);
 			break;
-		
+
 		case TMcTemplateProcMessage_NewPostProcess:
 		case TMcTemplateProcMessage_Update:
 			break;
 	}
-		
+
 	return UUcError_None;
-	
+
 }
 
 TRtAnimVarient	TRrAnimation_GetVarient(const TRtAnimation *inAnimation)
@@ -2776,7 +2776,7 @@ void TRrAnimation_GetPosition(const TRtAnimation *inAnimation, TRtAnimTime inTim
 		outPosition->x = inAnimation->positions[(frameNum * 2)];
 		outPosition->z = inAnimation->positions[(frameNum * 2) + 1];
 		outPosition->y = 0.f;
-		
+
 	}
 	else {
 		outPosition->x = 0;
@@ -2794,7 +2794,7 @@ UUtBool TRrAnimation_IsSoundFrame(const TRtAnimation *inAnimation, TRtAnimTime i
 	UUtUns16 frameNum = TRmAnimationTimeToFrame(inAnimation, inTime);
 	UUtBool  isFrame = TRmAnimationTimeIsFrame(inAnimation, inTime);
 	UUtBool  result = UUcFalse;
-	
+
 	UUmAssertReadPtr(inAnimation, sizeof(*inAnimation));
 	UUmAssert(frameNum < inAnimation->numFrames);
 	UUmAssert(inTime < inAnimation->duration);
@@ -2809,7 +2809,7 @@ UUtBool TRrAnimation_IsSoundFrame(const TRtAnimation *inAnimation, TRtAnimTime i
 			result = UUcTrue;
 		}
 	}
-	
+
 	return result;
 }
 
@@ -2824,20 +2824,20 @@ const char* TRrAnimation_GetNewSoundForFrame(const TRtAnimation *inAnimation, TR
 	UUtUns16 frameNum = TRmAnimationTimeToFrame(inAnimation, inTime);
 	UUtBool  isFrame = TRmAnimationTimeIsFrame(inAnimation, inTime);
 	const char *result = NULL;
-	
+
 	UUmAssertReadPtr(inAnimation, sizeof(*inAnimation));
 	UUmAssert(frameNum < inAnimation->numFrames);
 	UUmAssert(inTime < inAnimation->duration);
 
 	if ((isFrame) && (inAnimation->numNewSounds > 0) && (inAnimation->newSounds != NULL)) {
-		UUtUns32 itr;		
+		UUtUns32 itr;
 		for (itr = 0; itr < inAnimation->numNewSounds; itr++) {
 			if (frameNum != inAnimation->newSounds[itr].frameNum) { continue; }
 			result = inAnimation->newSounds[itr].impulseName;
 			break;
 		}
 	}
-	
+
 	return result;
 }
 
@@ -2845,7 +2845,7 @@ const char* TRrAnimation_GetNewSoundForFrame(const TRtAnimation *inAnimation, TR
 void TRrAnimation_SetSoundName(TRtAnimation *inAnimation, const char *inSoundName, UUtUns16 inFrame)
 {
 	UUmAssert(inAnimation);
-	
+
 	inAnimation->soundName = (UUtUns32)inSoundName;
 	inAnimation->soundFrame = inFrame;
 }
@@ -2872,7 +2872,7 @@ float TRrAnimation_GetHeight(const TRtAnimation *inAnimation, TRtAnimTime inTime
 		float from = inAnimation->heights[frameNum];
 		float to = inAnimation->heights[frameNum + 1];
 		float dist = floatFrameNum - frameNum;
-		
+
 		height = (from * (1 - dist)) + (to * dist);
 	}
 
@@ -2943,10 +2943,10 @@ UUtUns32 TRrAnimation_GetMaximumDamage(const TRtAnimation *inAnimation)
 
 	for(attackIndex = 0; attackIndex < inAnimation->numAttacks; attackIndex++) {
 		const TRtAttack *attack = inAnimation->attacks + attackIndex;
-		
+
 		damage = UUmMax(damage, attack->damage);
 	}
-		
+
 	return damage;
 }
 
@@ -2957,7 +2957,7 @@ UUtUns32 TRrAnimation_GetMaximumSelfDamage(const TRtAnimation *inAnimation)
 	for(itr = 0; itr < inAnimation->numTakeDamages; itr++) {
 		damage += inAnimation->takeDamages[itr].damage;
 	}
-		
+
 	return damage;
 }
 
@@ -3088,7 +3088,7 @@ UUtBool		TRrAnimation_IsDirect(const TRtAnimation *inFromAnim, const TRtAnimatio
 UUtUns16	TRrAnimation_GetHardPause(const TRtAnimation *inFromAnim, const TRtAnimation *inToAnim)
 {
 	UUtUns16 hardPause;
-	
+
 	if (TRrAnimation_IsDirect(inFromAnim, inToAnim)) {
 		hardPause = 0;
 	}
@@ -3102,7 +3102,7 @@ UUtUns16	TRrAnimation_GetHardPause(const TRtAnimation *inFromAnim, const TRtAnim
 UUtUns16	TRrAnimation_GetSoftPause(const TRtAnimation *inFromAnim, const TRtAnimation *inToAnim)
 {
 	UUtUns16 softPause;
-	
+
 	if (TRrAnimation_IsDirect(inFromAnim, inToAnim)) {
 		softPause = 0;
 	}
@@ -3232,7 +3232,7 @@ UUtBool TRrAnimation_IsAtomic(const TRtAnimation *inAnimation, TRtAnimTime inTim
 }
 
 UUtUns16	TRrAnimation_GetEndInterpolation(const TRtAnimation *inFromAnim, const TRtAnimation *inToAnim)
-{	
+{
 #define cVarientInterpolation 8
 	UUtUns16 endInterpolation = 0;
 
@@ -3253,7 +3253,7 @@ UUtUns16	TRrAnimation_GetEndInterpolation(const TRtAnimation *inFromAnim, const 
 	}
 
 	UUmAssert(endInterpolation < 60);
-	
+
 	return endInterpolation;
 }
 
@@ -3284,7 +3284,7 @@ void TRrOverlay_Apply(
 	else {
 		interpolate_amount = 1.f;
 	}
-	
+
 	TRrQuatArray_SetAnimation(inAnimation, inTime, TRgQuatArrayPrivate_Aiming_1);
 
 	for (node_index= 0; node_index < inNumParts; ++node_index)
@@ -3409,9 +3409,9 @@ const TRtAimingScreen *TRrAimingScreen_Lookup(
 
 
 void TRrAnimation_GetAttacks(
-		const TRtAnimation *inAnimation, 
-		TRtAnimTime inTime, 
-		UUtUns8 *outNumAttacks, 
+		const TRtAnimation *inAnimation,
+		TRtAnimTime inTime,
+		UUtUns8 *outNumAttacks,
 		TRtAttack *outAttacks,
 		UUtUns8 *outindices)
 {
@@ -3479,7 +3479,7 @@ void TRrVerifyAnimation(const TRtAnimation *inAnimation)
 
 		for(part = 0; part < inAnimation->numParts; part++)
 		{
-			MUmQuat_VerifyUnit(verifyQuatArray + part);			
+			MUmQuat_VerifyUnit(verifyQuatArray + part);
 		}
 	}
 
@@ -3497,7 +3497,7 @@ const TRtAnimation *TRrAnimation_GetFromName(const char *inTemplateName)
 	if (UUcError_None == error) {
 		animation = dataPtr;
 	}
-	
+
 
 	return animation;
 }
@@ -3615,7 +3615,7 @@ void TRrAimingScreen_Clip(
 		*ioDirection = 0.f;
 		*ioElevation = 0.f;
 	}
-	else { 
+	else {
 		float min_direction = -(inAimingScreen->negativeYawDelta * inAimingScreen->negativeYawFrameCount);
 		float max_direction = inAimingScreen->positiveYawDelta * inAimingScreen->positiveYawFrameCount;
 		float min_elevation = -(inAimingScreen->negativePitchDelta * inAimingScreen->negativePitchFrameCount);
@@ -3754,7 +3754,7 @@ void TRrAnimation_SwapFootsteps(TRtAnimation *animation)
 {
 	UUtUns16 itr;
 
-	for(itr = 0; itr < animation->numFootsteps; itr++) 
+	for(itr = 0; itr < animation->numFootsteps; itr++)
 	{
 		TRtFootstep *footstep = animation->footsteps + itr;
 
@@ -3849,11 +3849,11 @@ void TRrAnimation_SwapNewSounds(TRtAnimation *animation)
 {
 	UUtUns32 itr;
 	TRtSound *newSound;
-	
+
 	for (itr = 0, newSound = animation->newSounds; itr < animation->numNewSounds; itr++, newSound++)
 	{
 		UUmSwapLittle_2Byte(&newSound->frameNum);
-		
+
 		UUmAssert(2 == sizeof(newSound->frameNum));
 	}
 }
@@ -3992,7 +3992,7 @@ static void TRrAimingScreen_Prepare(
 			TRrQuatArray_SetAnimation(animation, elevation_index*direction_width + (direction_index+1), frame_d1_e0);
 			TRrQuatArray_SetAnimation(animation, (elevation_index+1)*direction_width + direction_index, frame_d0_e1);
 			TRrQuatArray_SetAnimation(animation, (elevation_index+1)*direction_width + (direction_index+1), frame_d1_e1);
-			
+
 			valid= UUcTrue;
 		}
 	}
@@ -4018,11 +4018,11 @@ static void TRrAimingScreen_Prepare(
 
 			// interpolate rotation
 			//quaternions_interpolate(&frame_d0_e0->nodes[node_index].rotation, &frame_d1_e0->nodes[node_index].rotation, &e0_quaternion, d0);
-			MUrQuat_Lerp(frame_d0_e0 + node_index, frame_d1_e0 + node_index, d0, &e0_quaternion); 
+			MUrQuat_Lerp(frame_d0_e0 + node_index, frame_d1_e0 + node_index, d0, &e0_quaternion);
 			//quaternions_interpolate(&frame_d0_e1->nodes[node_index].rotation, &frame_d1_e1->nodes[node_index].rotation, &e1_quaternion, d0);
-			MUrQuat_Lerp(frame_d0_e1 + node_index, frame_d1_e1 + node_index, d0, &e1_quaternion); 
+			MUrQuat_Lerp(frame_d0_e1 + node_index, frame_d1_e1 + node_index, d0, &e1_quaternion);
 			//quaternions_interpolate(&e0_quaternion, &e1_quaternion, &interpolated_quaternion, e0);
-			MUrQuat_Lerp(&e0_quaternion, &e1_quaternion, e0, &interpolated_quaternion); 
+			MUrQuat_Lerp(&e0_quaternion, &e1_quaternion, e0, &interpolated_quaternion);
 
 			outQuat[node_index] = interpolated_quaternion;
 		}
@@ -4604,7 +4604,7 @@ UUtBool TRrCheckAnimationBounds(TRtAnimIntersectContext *inContext)
 			} else {
 				// get the point in the middle that is the closest on the line (has zero dot product)
 				interp = (0 - start_dot) / dot_delta;
-				
+
 				mid_x = target_pt.x + interp * (end_pt.x - target_pt.x);
 				mid_y = target_pt.y + interp * (end_pt.y - target_pt.y);
 
@@ -4750,7 +4750,7 @@ UUtBool TRrCheckAnimationBounds(TRtAnimIntersectContext *inContext)
 			}
 
 			// neither point touches the line. check to see if the midpoint might.
-			if ((end_y * start_y < 0) && 
+			if ((end_y * start_y < 0) &&
 				!((end_x < -target_radius) && (start_x < -target_radius)) &&
 				!((end_x > line_length + target_radius) && (start_x > line_length + target_radius))) {
 				mid_x = start_x + ((0 - start_y) / (end_y - start_y)) * (end_x - start_x);
@@ -4788,7 +4788,7 @@ UUtBool TRrCheckAnimationBounds(TRtAnimIntersectContext *inContext)
 #endif
 		}
 	}
-	
+
 	// the bounds of the attack animation overlap the target, return true
 #if DEBUG_SHOWINTERSECTIONS
 	if (TRgStoreThisIntersection) {
@@ -4927,7 +4927,7 @@ UUtBool TRrIntersectAnimations(TRtAnimIntersectContext *inContext)
 				exact_pt->attack_dist = cur_extent->attack_distance * TRcPositionGranularity;
 				exact_pt->attack_angle = cur_extent->attack_angle;
 			}
-#endif		
+#endif
 			if (targetspace_maxheight < target_feet + TRcIntersect_MinHeightOverlap) {
 				// this attack is below the target's height bounds
 				num_reject_belowfeet++;
@@ -5169,7 +5169,7 @@ static void TRiDrawCircle(float radius, M3tPoint3D *center_pt, IMtShade shade)
 							center_pt->y + radius * TRgRingDirectionTable[TRcExtentRingSamples - 1][1], center_pt->z);
 	for (itr = 0; itr < TRcExtentRingSamples; itr++) {
 		MUmVector_Set(this_pt, center_pt->x + radius * TRgRingDirectionTable[itr][0],
-								center_pt->y + radius * TRgRingDirectionTable[itr][1], center_pt->z);		
+								center_pt->y + radius * TRgRingDirectionTable[itr][1], center_pt->z);
 		M3rGeom_Line_Light(&last_pt, &this_pt, shade);
 		last_pt = this_pt;
 	}
@@ -5191,7 +5191,7 @@ void TRrDisplayLastIntersection(void)
 	// set up a transformation from targetspace to worldspace
 	M3rMatrixStack_Push();
 	M3rMatrixStack_Translate(gIntersection.last_context.target.position.location.x,
-							gIntersection.last_context.target.position.location.y, 
+							gIntersection.last_context.target.position.location.y,
 							gIntersection.last_context.target.position.location.z);
 	M3rMatrixStack_Rotate(gIntersection.last_context.target.position.facing, 0, 1, 0);
 	M3rMatrixStack_Multiply(&max2oni);
@@ -5209,11 +5209,11 @@ void TRrDisplayLastIntersection(void)
 	pt1.y = gIntersection.last_context.target_velocity_estimate.y;
 	M3rGeom_Line_Light(&pt0, &pt1, IMcShade_Blue);
 	M3rMatrixStack_Pop();
-	
+
 	// set up a transformation from attacker space to worldspace
 	M3rMatrixStack_Push();
 	M3rMatrixStack_Translate(gIntersection.last_context.attacker.position.location.x,
-							gIntersection.last_context.attacker.position.location.y, 
+							gIntersection.last_context.attacker.position.location.y,
 							gIntersection.last_context.attacker.position.location.z);
 	M3rMatrixStack_Rotate(gIntersection.last_context.attacker.position.facing, 0, 1, 0);
 	M3rMatrixStack_Multiply(&max2oni);
@@ -5360,7 +5360,7 @@ void TRrDisplayLastIntersection(void)
 
 			// draw attack extent height bar
 			center_pt = MUrMatrix_GetTranslation(&gIntersection.last_context.current_location_matrix);
-			
+
 			this_pt = center_pt;	last_pt = center_pt;
 			this_pt.z = gIntersection.extentptr->attack_ring.min_height;
 			last_pt.z = gIntersection.extentptr->attack_ring.max_height;
@@ -5396,7 +5396,7 @@ void TRrDisplayLastIntersection(void)
 	// the inverse of the matrix that takes points from targetanimspace into animbase space
 	M3rMatrixStack_Push();
 	M3rMatrixStack_Translate(gIntersection.last_context.target.position.location.x,
-							gIntersection.last_context.target.position.location.y, 
+							gIntersection.last_context.target.position.location.y,
 							gIntersection.last_context.target.position.location.z);
 	M3rMatrixStack_Rotate(gIntersection.last_context.target.position.facing, 0, 1, 0);
 	M3rMatrixStack_Multiply(&max2oni);
@@ -5464,7 +5464,7 @@ void TRrDisplayLastIntersection(void)
 			hit_at = gIntersection.hit_line - gIntersection.start_itr;
 			if (hit_at < 0)
 				hit_at += TRcExtentRingSamples;
-			
+
 			from_hit = hit_at - from_start;
 
 			if (from_hit == 0) {
@@ -5654,7 +5654,7 @@ static void TRrDumpAnimation(FILE *stream, const TRtAnimation *inAnimation)
 
 static void TRrDumpAnimationCollection(FILE *stream, const TRtAnimationCollection *inCollection)
 {
-	
+
 	UUtUns32 itr;
 
 	for(itr = 0; itr < inCollection->numAnimations; itr++)
@@ -5752,7 +5752,7 @@ DumpLookup(
 	SLtParameter_Actual		*ioReturnValue)
 {
 	char file_name[128];
-	
+
 	sprintf(file_name, "%s.txt", inParameterList[0].val.str);
 	gLookupStream = fopen(file_name, "w");
 
@@ -5802,7 +5802,7 @@ void TRrInstallConsoleVariables(void)
 	error = SLrScript_Command_Register_Void("tr_stop_lookup", "bla bla bla", "", StopDumpLookup);
 	UUmAssert(UUcError_None == error);
 
-	
+
 
 	return;
 }

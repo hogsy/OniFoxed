@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_FF_PSD.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -25,7 +25,7 @@ FFrWrite_PSD(
 UUtBool
 FFrType_IsPSD(
 	BFtFileRef*		inFileRef);
-	
+
 UUtError
 FFrRead_PSD(
 	BFtFileRef*		inFileRef,

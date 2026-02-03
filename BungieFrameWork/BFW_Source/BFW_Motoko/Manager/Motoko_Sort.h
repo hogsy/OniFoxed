@@ -1,12 +1,12 @@
 /*
 	FILE:	Motoko_Sort.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Dec 12, 1998
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */
@@ -21,7 +21,7 @@ UUtError
 M3rSort_Frame_End(
 	void);
 
-void 
+void
 M3rSort_Draw_Triangle(
 	M3tTri*	inTri);
 
@@ -29,7 +29,7 @@ void
 M3rSort_Draw_TriSplit(
 	M3tTriSplit*	inTri);
 
-void 
+void
 M3rSort_Draw_Quad(
 	M3tQuad*	inQuad);
 
@@ -37,7 +37,7 @@ void
 M3rSort_Draw_QuadSplit(
 	M3tQuadSplit*	inQuad);
 
-void 
+void
 M3rSort_Draw_Pent(
 	M3tPent*	inPent);
 

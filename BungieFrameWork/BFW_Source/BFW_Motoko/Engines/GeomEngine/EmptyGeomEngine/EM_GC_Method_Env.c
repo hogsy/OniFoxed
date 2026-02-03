@@ -1,12 +1,12 @@
 /*
 	FILE:	EM_GC_Method_Env.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -26,7 +26,7 @@ UUtError
 EGrGeomContext_Method_Env_SetCamera(
 	M3tGeomCamera*		inCamera)
 {
-	
+
 	return UUcError_None;
 }
 

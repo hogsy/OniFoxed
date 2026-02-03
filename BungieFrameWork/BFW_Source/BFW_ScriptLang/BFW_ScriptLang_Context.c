@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_ScriptLang_Context.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -27,12 +27,12 @@ SLrContext_New(
 	SLtContext ** inReferencePtr)
 {
 	SLtContext*	newContext;
-	
+
 	newContext = UUrMemory_Heap_Block_New(SLgDatabaseHeap, sizeof(*newContext));
 	if(newContext == NULL) return NULL;
-	
+
 	UUrMemory_Clear(newContext, sizeof(*newContext));
-	
+
 	if ((newContext->referenceptr = inReferencePtr) != NULL) {
 		// store a reference to this context
 		UUmAssertWritePtr(newContext->referenceptr, sizeof(SLtContext *));

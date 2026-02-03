@@ -9,12 +9,12 @@
 	#if !defined(UUmPlatform) && !defined(UUmPlatform_Win32)
 		#define UUmPlatform_Win32		1
 		#define UUmPlatform				UUmPlatform_Win32
-	
+
 		#include "gl_code_version.h"
-	
+
 		#undef UUmPlatform
 		#undef UUmPlatform_Win32
-	
+
 	#else
 		#include "gl_code_version.h"
 
@@ -26,7 +26,7 @@
 
 	#define USE_PROFILE_MEMDEBUG	0
 	#define UUmDebugDelete			0
-	
+
 	#define _WIN32
 
 

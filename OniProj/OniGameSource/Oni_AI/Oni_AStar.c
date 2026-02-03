@@ -75,7 +75,7 @@ struct AStPathNode
 	UUtUns16				adjacent;	// during pathfinding, points to previous node in the path;
 										// after path is found, points to next node in the path
 	AStGridPoint			loc;		// location in the grid
-	
+
 	float					f;			// g + estimated cost to reach finish
 	float					g;			// actual cost to reach this node
 };
@@ -106,7 +106,7 @@ struct AStPath
 
 	UUtUns16				*index_array;	// stores the index in the node array
 											// of the node that lies at a particular location
-	
+
 	AStGridPoint			start;			// start location in room
 	AStGridPoint			end;			// end location in room
 	AStGridPoint			reachable_end;	// end location of path
@@ -126,9 +126,9 @@ struct AStPath
 	UUtBool					finished;		// true if a path has been found
 	AStPathNode				*node_array;	// an array of nodes
 	UUtUns16				num_allocs;		// num nodes alloced so far
-	
+
 	UUtBool					params_set;		// true if required parameters are set
-	
+
 	UUtUns16				dir_index;		// index of ASgDir to use
 
 	UUtUns32				*obstruction_bv;// bitvector that indicates whether obstructions
@@ -150,11 +150,11 @@ struct AStPath
 // ======================================================================
 AStPath						*ASgAstar_Path;
 
-static UUtUns16				ASgDir[AScNumDirLists][8] = 
+static UUtUns16				ASgDir[AScNumDirLists][8] =
 {
 	{0, 1, 2, 3, 4, 5, 6, 7},
 	{7, 6, 5, 4, 3, 2, 1, 0},
-	{0, 2, 4, 6, 1, 3, 5, 7},			
+	{0, 2, 4, 6, 1, 3, 5, 7},
 	{1, 3, 5, 7, 0, 2, 4, 6}
 };
 
@@ -227,14 +227,14 @@ ASiBuildDebugGridEvaluation(
 static UUtBool
 ASiCollisionTest(
 	AStPath					*inAstar,
-	UUtBool					inStartTest, 
+	UUtBool					inStartTest,
 	AStGridPoint			*inPoint);
 
-static UUtBool 
+static UUtBool
 ASiDetermineEndPoint(
 	AStPath					*inAstar);
 
-static UUtBool 
+static UUtBool
 ASiTryEndPoint(
 	AStPath					*inAstar,
 	UUtInt16				inX,
@@ -251,7 +251,7 @@ ASiAstarHeap_CompareFunc(
 static void
 ASiAstarHeap_NotifyLocation(
 	UUtUns32				inUserData,
-	UUtUns16				inElement, 
+	UUtUns16				inElement,
 	UUtUns16				inHeapLocation);
 
 static void
@@ -310,7 +310,7 @@ ASiDistEstimate(
 static UUtError
 iDetectLoop(
 	UUtUns32				inNodeArraySize,
-	AStPathNode				*inNodeArray, 
+	AStPathNode				*inNodeArray,
 	AStPathNode				*inNode);
 
 // ======================================================================
@@ -338,7 +338,7 @@ ASrInitialize(
 #if PERFORMANCE_TIMER
 	ASgPath_Generate_Timer = UUrPerformanceTimer_New("AS_Path_Generate");
 #endif
-	
+
 	return UUcError_None;
 }
 
@@ -361,12 +361,12 @@ ASrPath_New(
 	void)
 {
 	AStPath			*astar;
-	
+
 	astar = (AStPath *) UUrMemory_Block_NewClear(sizeof(AStPath));
 	if (astar == NULL) {
 		goto fail;
 	}
-	
+
 	// initialize astar
 	astar->room				= NULL;
 	astar->path_start		= NULL;
@@ -383,9 +383,9 @@ ASrPath_New(
 	if (astar->index_array == NULL) {
 		goto fail;
 	}
-		
+
 	astar->dir_index = 0;
-	
+
 	astar->obstruction_bv = UUrBitVector_New(2 * PHcMaxObstructions);
 	if (astar->obstruction_bv == NULL) {
 		goto fail;
@@ -429,17 +429,17 @@ ASrPath_Delete(
 			UUrMemory_Block_Delete((*ioAstar)->node_array);
 			(*ioAstar)->node_array = NULL;
 		}
-		
+
 		if ((*ioAstar)->index_array) {
 			UUrMemory_Block_Delete((*ioAstar)->index_array);
 			(*ioAstar)->index_array = NULL;
 		}
-		
+
 		if ((*ioAstar)->obstruction_bv) {
 			UUrBitVector_Dispose((*ioAstar)->obstruction_bv);
 			(*ioAstar)->obstruction_bv = NULL;
 		}
-		
+
 #if ASTAR_USE_HEAP
 		if ((*ioAstar)->open_heap.heap) {
 			UUrMemory_Block_Delete((*ioAstar)->open_heap.heap);
@@ -476,7 +476,7 @@ ASrPath_Generate(
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Enter(ASgPath_Generate_Timer);
 #endif
-	
+
 	UUmAssert(ioAstar);
 	UUmAssert(ioAstar->params_set != UUcFalse);
 
@@ -504,7 +504,7 @@ ASrPath_Generate(
 	// create a new path
 	path = &ioAstar->node_array[ioAstar->num_allocs];
 	UUmAssert(path != NULL);
-	
+
 	ioAstar->num_allocs++;
 
 	UUrMemory_Clear(path, sizeof(*path));
@@ -532,7 +532,7 @@ ASrPath_Generate(
 		// node is now the last node in the found path
 		ioAstar->path_end = path;
 		ioAstar->finished = UUcTrue;
-		
+
 		// calculate the generated path
 		ASiList_CalcWaypoints(
 			ioAstar,
@@ -593,7 +593,7 @@ ASrPath_Generate(
 		// get the lowest cost node out of the open list
 		path = ASiList_RemoveFirstNode(&ioAstar->open_list);
 #endif
-		
+
 		// try all of the grid locations around the current node, see if they
 		// are possible, and calculate the location and cost if they are.
 		for (i = 0; i < 8; i++) {
@@ -621,7 +621,7 @@ ASrPath_Generate(
 		// we don't insert the children in the same order each time we consider a node.
 		// CB: not really sure why this is necessary, it's ordered by weight anyway... ?
 		ioAstar->dir_index = (ioAstar->dir_index + 1) % AScNumDirLists;
-		
+
 		// insert all children of the current node
 		for (i = 0; i < 8; i++)
 		{
@@ -654,7 +654,7 @@ ASrPath_Generate(
 
 				// allocate the node and set up its entry in the cost array
 				node_index = ioAstar->num_allocs++;
-				node = &ioAstar->node_array[node_index];	
+				node = &ioAstar->node_array[node_index];
 
 				ioAstar->index_array[location_index] = node_index;
 				ASrIndexArray_Use(ioAstar, location_index);
@@ -676,7 +676,7 @@ ASrPath_Generate(
 #endif
 
 				// get a pointer to the node
-				node = &ioAstar->node_array[node_index];				
+				node = &ioAstar->node_array[node_index];
 				if (new_cost[dir] >= node->g) {
 					// the new path is longer than the existing path, don't use it
 					continue;
@@ -713,7 +713,7 @@ ASrPath_Generate(
 					// node is now the last node in the found path
 					ioAstar->path_end = node;
 					ioAstar->finished = UUcTrue;
-					
+
 					// calculate the generated path
 					ASiList_CalcWaypoints(
 						ioAstar,
@@ -741,7 +741,7 @@ ASrPath_Generate(
 			}
 
 			UUmAssert(UUcError_None == iDetectLoop(ioAstar->num_allocs, ioAstar->node_array, node));
-		
+
 #if ASTAR_USE_HEAP
 			if (newly_allocated_node) {
 				ASiHeap_Insert(&ioAstar->open_heap, (UUtUns16) node_index);
@@ -778,7 +778,7 @@ exit:
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Exit(ASgPath_Generate_Timer);
 #endif
-	
+
 	return result;
 }
 
@@ -799,7 +799,7 @@ ASrPath_SetParams(
 	IMtPoint2D end;
 
 	UUmAssert(ioAstar && inRoom && inStart && inEnd);
-	
+
 	ioAstar->roomnode = inNode;
 	ioAstar->room = inRoom;
 	ioAstar->owner = inCharacter;
@@ -831,17 +831,17 @@ ASrPath_SetParams(
 	}
 
 	ioAstar->index_array_used_count = 0;
-	
+
 	// clear the allocated nodes from the node_array
 	ioAstar->num_allocs	= 0;
 
 	// no path has been found
 	ioAstar->path_end = NULL;
 	ioAstar->finished = UUcFalse;
-	
+
 	// the spheretree at the end point will need to be generated
 	ioAstar->spheretree_set = UUcFalse;
-	
+
 	// don't allow the stair region unless we're trying to go there
 	ioAstar->allow_stairs = inAllowStairs;
 
@@ -866,13 +866,13 @@ UUtError ASrGetWorldGridValue(
 	* Returns whether there's a big X in the path grid
 	* at 'inPoint'
 	*/
-	
+
 	AKtBNVNode *node;
 	PHtNode *path_node;
 	UUtUns16 gx,gy;
 	UUtUns32 width;
 	PHtSquare *grid;
-	
+
 	node = AKrNodeFromPoint(inPoint);
 	if (!node) return UUcError_Generic;
 
@@ -880,7 +880,7 @@ UUtError ASrGetWorldGridValue(
 		outValue->weight = PHcClear;
 		return UUcError_None;
 	}
-	
+
 	path_node = PHrAkiraNodeToGraphNode(node, ONrGameState_GetGraph());
 	if (path_node == NULL) {
 		return UUcError_Generic;
@@ -892,13 +892,13 @@ UUtError ASrGetWorldGridValue(
 		outValue->weight = PHcClear;
 	} else {
 		width = ASgAstar_Path->roomnode->gridX;
-		
+
 		PHrWorldToGridSpace(&gx,&gy,inPoint,&node->roomData);
 		*outValue = GetCell(gx,gy);
 	}
 	return UUcError_None;
 }
-					
+
 // ======================================================================
 #if UUmCompiler == UUmCompiler_MWerks
 #pragma mark -
@@ -926,7 +926,7 @@ ASiList_CalcWaypoints(
 	// these values used by GetCell macro
 	grid = ASgAstar_Path->roomnode->static_grid;
 	width = ASgAstar_Path->roomnode->gridX;
-	
+
 	num_waypoints = 1;
 	pointbuf[0] = inAstar->start;
 
@@ -937,7 +937,7 @@ ASiList_CalcWaypoints(
 	current_node = inAstar->path_end;
 	prev_adjacent = (UUtUns16) -1;
 	next_adjacent = current_node->adjacent;
-	
+
 	while (next_adjacent != (UUtUns16) -1) {
 		UUmAssert((next_adjacent >= 0) && (next_adjacent < inAstar->num_allocs));
 
@@ -987,27 +987,27 @@ ASiList_CalcWaypoints(
 			{
 				UUtInt16	diff_x1;
 				UUtInt16	diff_y1;
-				
+
 				UUtInt16	diff_x2;
 				UUtInt16	diff_y2;
 
 				diff_x1 = parent_node->loc.x - current_node->loc.x;
 				diff_y1 = parent_node->loc.y - current_node->loc.y;
-				
+
 				diff_x2 = current_node->loc.x - child_node->loc.x;
 				diff_y2 = current_node->loc.y - child_node->loc.y;
-				
+
 				if ((diff_x1 != diff_x2) || (diff_y1 != diff_y2)) {
 					pointbuf[num_waypoints++] = current_node->loc;
 				}
 			}
-			
+
 			// go to the next child in the list
 			parent_node = current_node;
 			current_node = child_node;
 		}
 	}
-	
+
 	if ((inAstar->reachable_end.x != inAstar->end.x) || (inAstar->reachable_end.y != inAstar->end.y)) {
 		// add a waypoint for the reachable end (where we actually were able to pathfind to)
 		UUmAssert(num_waypoints < AI2cMax_PathPoints);
@@ -1061,7 +1061,7 @@ ASiList_CalcWaypoints(
 			// this point is our destination
 			outWaypoints[(*outNumWaypoints)].point = inAstar->worldEnd;
 		}
-		
+
 		// get the weight at this point
 		if (grid != NULL) {
 			square_val = GetCell(pointbuf[itr].x, pointbuf[itr].y);
@@ -1122,7 +1122,7 @@ ASiBuildDebugPath(
 		}
 
 		UUmAssert(ASgDebugPath[ASgDebugPath_StartIndex].valid);
-		
+
 		// advance the start index along the buffer until we reach the end of the first path
 		UUmAssert(ASgDebugPath_NumPaths > 0);
 		ASgDebugPath_NumPaths--;
@@ -1375,26 +1375,26 @@ ASiDistEstimate(
 		// estimate the distance from this point to the desired destination
 		diff_x = fabs(inEnd->x - inNode->loc.x);
 		diff_y = fabs(inEnd->y - inNode->loc.y);
-		
+
 		return (diff_x > diff_y ? diff_x : diff_y);
 	}
-	
+
 	if (0)  // Euclidian
 	{
 		// estimate the distance from this point to the desired destination
 		diff_x = inEnd->x - inNode->loc.x;
 		diff_y = inEnd->y - inNode->loc.y;
-		
+
 		return (sqrt((diff_x * diff_x) + (diff_y * diff_y)));
 	}
-	
+
 	if (1)  // Manhattan
 	{
 #endif
 		// estimate the distance from this point to the desired destination
 		diff_x = abs(inEnd->x - inNode->loc.x);
 		diff_y = abs(inEnd->y - inNode->loc.y);
-		
+
 		return (float)(diff_x + diff_y);
 #if 0
 	}
@@ -1431,42 +1431,42 @@ ASiPassable(
 			x = inNode->loc.x;
 			y = inNode->loc.y - 1;
 		break;
-		
+
 		case 1:		// up & right
 			x = inNode->loc.x + 1;
 			y = inNode->loc.y - 1;
 		break;
-		
+
 		case 2:		// right
 			x = inNode->loc.x + 1;
 			y = inNode->loc.y;
 		break;
-		
+
 		case 3:		// dn & right
 			x = inNode->loc.x + 1;
 			y = inNode->loc.y + 1;
 		break;
-		
+
 		case 4:		// dn
 			x = inNode->loc.x;
 			y = inNode->loc.y + 1;
 		break;
-		
+
 		case 5:		// dn & left
 			x = inNode->loc.x - 1;
 			y = inNode->loc.y + 1;
 		break;
-		
+
 		case 6:		// left
 			x = inNode->loc.x - 1;
 			y = inNode->loc.y;
 		break;
-		
+
 		case 7:		// up & left
 			x = inNode->loc.x - 1;
 			y = inNode->loc.y - 1;
 		break;
-		
+
 		default:
 			UUmAssert(!"ASiPassable: unknown direction (not in 0..7)");
 		break;
@@ -1483,15 +1483,15 @@ ASiPassable(
 			return UUcFalse;
 		}
 	}
-	
+
 	// set the new location
 	outNewLoc->x = x;
 	outNewLoc->y = y;
-	
+
 	// check to see that the square is passable for us
 	new_flags = 0;
 	if (!PHrSquareIsPassable(inAstar->owner, PHcPathMode_DirectedMovement,
-							inAstar->roomnode, inAstar->room, 
+							inAstar->roomnode, inAstar->room,
 							inAstar->obstruction_bv, x, y, &obstructed, &weight)) {
 		new_flags |= AScStatusFlag_Impassable;
 	}
@@ -1537,7 +1537,7 @@ ASiPassable(
 	// calculate the grid cost
 	UUmAssert((weight >= 0) && (weight < PHcMax));
 	grid_cost = PHcPathWeight[weight];
-	
+
 	// diagonal or orthogonal?
 	if ((inNode->loc.x != outNewLoc->x) && (inNode->loc.y != outNewLoc->y))
 	{
@@ -1549,7 +1549,7 @@ ASiPassable(
 		// movement is orthogonal
 		*outNewCost = (1.0f * grid_cost) + inNode->g;
 	}
-	
+
 	*outNewFlags = new_flags;
 
 	return UUcTrue;
@@ -1560,7 +1560,7 @@ const PHtRoomData *ASrGetCurrentRoom(void)
 	/*********************
 	* Returns current room
 	*/
-	
+
 	return ASgAstar_Path->room;
 }
 
@@ -1591,13 +1591,13 @@ static UUtError iDetectLoop(UUtUns32 inNodeArraySize, AStPathNode *inNodeArray, 
 	AStPathNode *current_node = inNode;
 	UUtUns16 depth;
 	UUtUns16 itr;
-	
+
 	depth = 0;
-	
+
 	while(current_node != NULL)
 	{
 		nodeTable[depth] = current_node;
-		
+
 		if (current_node->adjacent == (UUtUns16) -1) {
 			current_node = NULL;
 		} else {
@@ -1626,11 +1626,11 @@ void ASrDisplayWorkingGrid(void)
 	/**********
 	* Displays 'grid' for debugging
 	*/
-	
+
 	UUtInt32 c,d,width,height;
 	char ch;
 	PHtSquare *grid,cell;
-	
+
 	grid = ASgAstar_Path->roomnode->static_grid;
 
 	if (grid == NULL)
@@ -1638,7 +1638,7 @@ void ASrDisplayWorkingGrid(void)
 
 	width = ASgAstar_Path->roomnode->gridX;
 	height = ASgAstar_Path->roomnode->gridY;
-	
+
 	for (c=0; c<height; c++)
 	{
 		for (d=0; d<width; d++)
@@ -1649,16 +1649,16 @@ void ASrDisplayWorkingGrid(void)
 			} else {
 				ch = PHcPrintChar[cell.weight];
 			}
-			
+
 			// Override with start and end points, if appropriate
 			if (c==ASgAstar_Path->start.x && d==ASgAstar_Path->start.y) ch = 'S';
 			else if (c==ASgAstar_Path->end.x && d==ASgAstar_Path->end.y) ch = 'E';
-			
+
 			printf("%c", ch);
 		}
 		printf(""UUmNL);
 	}
-	
+
 	getchar();
 }
 
@@ -1749,7 +1749,7 @@ static UUtBool ASiDetermineEndPoint(AStPath *inAstar)
 	UUtInt16 v0, v1, test_v;
 
 	// check to see if the endpoint is in fact passable - if so, don't bother with this
-	if (PHrSquareIsPassable(inAstar->owner, PHcPathMode_DirectedMovement, 
+	if (PHrSquareIsPassable(inAstar->owner, PHcPathMode_DirectedMovement,
 							inAstar->roomnode, inAstar->room, inAstar->obstruction_bv,
 							inAstar->end.x, inAstar->end.y, NULL, NULL)) {
 		inAstar->reachable_end = inAstar->end;
@@ -1758,20 +1758,20 @@ static UUtBool ASiDetermineEndPoint(AStPath *inAstar)
 
 	for (radius = 1; radius <= AScMaxDestImpassableRadius; radius++) {
 		// try + and -x
-		v0 = inAstar->end.x - radius; 
+		v0 = inAstar->end.x - radius;
 		v1 = inAstar->end.x + radius;
 		for (test_v = inAstar->end.y - radius; test_v <= inAstar->end.y + radius; test_v++) {
 			if (ASiTryEndPoint(inAstar, v0, test_v)) {
 				return UUcTrue;
 			}
-			
+
 			if (ASiTryEndPoint(inAstar, v1, test_v)) {
 				return UUcTrue;
 			}
 		}
 
 		// try + and -y
-		v0 = inAstar->end.y - radius; 
+		v0 = inAstar->end.y - radius;
 		v1 = inAstar->end.y + radius;
 		for (test_v = inAstar->end.x - (radius - 1); test_v <= inAstar->end.x + (radius - 1); test_v++) {
 			if (ASiTryEndPoint(inAstar, test_v, v0)) {
@@ -1798,8 +1798,8 @@ static UUtBool ASiTryEndPoint(AStPath *inAstar, UUtInt16 inX, UUtInt16 inY)
 	}
 
 	// can only go to passable squares
-	if (!PHrSquareIsPassable(inAstar->owner, PHcPathMode_DirectedMovement, 
-							inAstar->roomnode, inAstar->room, 
+	if (!PHrSquareIsPassable(inAstar->owner, PHcPathMode_DirectedMovement,
+							inAstar->roomnode, inAstar->room,
 							inAstar->obstruction_bv, inX, inY, NULL, NULL)) {
 		return UUcFalse;
 	}
@@ -1955,7 +1955,7 @@ ASiHeap_ReorderElement(
 
 		// check to see whether we need to bubble up
 		parent_location = inHeapLocation >> 1;
-		if (ioHeap->func_compare(ioHeap->heap_userdata, ioHeap->heap[inHeapLocation], 
+		if (ioHeap->func_compare(ioHeap->heap_userdata, ioHeap->heap[inHeapLocation],
 									ioHeap->heap[parent_location]) > 0) {
 			// this element is a higher priority than its parent
 			ASiHeap_BubbleUp(ioHeap, inHeapLocation);
@@ -1994,7 +1994,7 @@ ASiAstarHeap_CompareFunc(
 static void
 ASiAstarHeap_NotifyLocation(
 	UUtUns32				inUserData,
-	UUtUns16				inElement, 
+	UUtUns16				inElement,
 	UUtUns16				inHeapLocation)
 {
 	AStPath *astar = (AStPath *) inUserData;
@@ -2029,7 +2029,7 @@ ASiList_InsertNode(
 
 		temp = *inList;
 		prev = NULL;
-		
+
 		while (temp)
 		{
 			if (temp->f >= inNode->f)
@@ -2038,7 +2038,7 @@ ASiList_InsertNode(
 				inNode->next	= temp;
 				inNode->prev	= temp->prev;
 				temp->prev		= inNode;
-				
+
 				if (inNode->prev)
 				{
 					// set the previous node's next to point to inNode
@@ -2058,7 +2058,7 @@ ASiList_InsertNode(
 				temp = temp->next;
 			}
 		}
-		
+
 		if (temp == NULL)
 		{
 			// insert at the end of the list
@@ -2098,21 +2098,21 @@ ASiList_RemoveFirstNode(
 	 AStPathNode				**inList)
 {
 	 AStPathNode				*return_node;
-	
+
 	if (*inList)
 	{
 		// save the first node in the list
 		return_node = *inList;
-		
+
 		// point list to next node in the list
 		*inList = (*inList)->next;
-		
+
 		// update the prev pointer for the new first node in the list
 		if (*inList)
 		{
 			(*inList)->prev = NULL;
 		}
-		
+
 		// the return_node doesn't point to anything anymore
 		return_node->next = NULL;
 	}
@@ -2120,7 +2120,7 @@ ASiList_RemoveFirstNode(
 	{
 		return_node = NULL;
 	}
-	
+
 	// return the first node in the list
 	return return_node;
 }
@@ -2132,7 +2132,7 @@ ASiList_RemoveNode_Fast(
 	 AStPathNode			*inNode)
 {
 	// remove this node from the list
-	
+
 	// update the next pointer of the prev node in the list
 	if (inNode->prev)
 	{
@@ -2143,13 +2143,13 @@ ASiList_RemoveNode_Fast(
 		// this is the start of the list
 		*inList = inNode->next;
 	}
-	
+
 	// update the prev pointer of the next node in the list
 	if (inNode->next)
 	{
 		inNode->next->prev = inNode->prev;
 	}
-	
+
 	// inNode no longer points to anything
 	inNode->prev = inNode->next = NULL;
 }

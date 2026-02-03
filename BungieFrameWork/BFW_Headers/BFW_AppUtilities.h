@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_AppUtilities.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Feb 27, 1998
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1998
 
 */
@@ -33,7 +33,7 @@ extern "C"
 	(*AUtSharedElemArray_Equal)(
 		void*	inElemA,
 		void*	inElemB);
-		
+
 	AUtSharedElemArray*
 	AUrSharedElemArray_New(
 		UUtUns32					inElemSize,
@@ -75,16 +75,16 @@ extern "C"
 	void*
 	AUrSharedElemArray_GetList(
 		AUtSharedElemArray*	inSharedElemArray);
-	
+
 	UUtUns32*
 	AUrSharedElemArray_GetSortedIndexList(
 		AUtSharedElemArray*	inSharedElemArray);
-		
+
 /*
  * Shared point functions
  */
 	typedef struct AUtSharedPointArray	AUtSharedPointArray;
-	
+
 	AUtSharedPointArray*
 	AUrSharedPointArray_New(
 		void);
@@ -119,25 +119,25 @@ extern "C"
 	UUtUns32
 	AUrSharedPointArray_GetNum(
 		AUtSharedPointArray*	inSharedPointArray);
-	
+
 	void
 	AUrSharedPointArray_Dump(
 		AUtSharedPointArray*	inSharedPointArray,
 		FILE*					inFile);
-	
+
 	UUtError
 	AUrSharedPointArray_CreateTemplate(
 		AUtSharedPointArray*	inSharedPointArray,
 		char*					inName,
 		M3tPoint3DArray*		*outReference);
-			
+
 	UUtError
 	AUrSharedPointArray_InterpolatePoint(
 		AUtSharedPointArray*	inPointArray,
-		float					inA, 
-		float					inB, 
-		float					inC, 
-		float					inD, 
+		float					inA,
+		float					inB,
+		float					inC,
+		float					inD,
 		M3tPoint3D*				inInVertex,
 		M3tPoint3D*				inOutVertex,
 		UUtUns32				*outNewVertexIndex);
@@ -149,7 +149,7 @@ extern "C"
  *  This means that d is always positive in the actual list of plane equations
  */
 	typedef struct AUtSharedPlaneEquArray	AUtSharedPlaneEquArray;
-	
+
 	AUtSharedPlaneEquArray*
 	AUrSharedPlaneEquArray_New(
 		void);
@@ -178,7 +178,7 @@ extern "C"
 	UUtUns32
 	AUrSharedPlaneEquArray_GetNum(
 		AUtSharedPlaneEquArray*	inSharedPlaneEquArray);
-	
+
 	void
 	AUrSharedPlaneEquArray_Dump(
 		AUtSharedPlaneEquArray*	inSharedPlaneEquArray,
@@ -189,7 +189,7 @@ extern "C"
 		AUtSharedPlaneEquArray*	inSharedPlaneEquArray,
 		char*					inName,
 		M3tPlaneEquationArray*	*outReference);
-	
+
 	UUtBool
 	AUrSharedPlaneEquArray_FindPlaneEqu(
 		AUtSharedPlaneEquArray*	inSharedPlaneEquArray,
@@ -198,12 +198,12 @@ extern "C"
 		float					inC,
 		float					inD,
 		UUtUns32				*outPlaneEquIndex);
-		
+
 /*
  * Shared Quad functions
  */
 	typedef struct AUtSharedQuadArray	AUtSharedQuadArray;
-	
+
 	AUtSharedQuadArray*
 	AUrSharedQuadArray_New(
 		void);
@@ -236,23 +236,23 @@ extern "C"
 	UUtUns32
 	AUrSharedQuadArray_GetNum(
 		AUtSharedQuadArray*		inSharedQuadArray);
-		
+
 	void
 	AUrSharedQuadArray_Dump(
 		AUtSharedQuadArray*		inSharedQuadArray,
 		FILE*					inFile);
-	
+
 	UUtError
 	AUrSharedQuadArray_CreateTemplate(
 		AUtSharedQuadArray*		inSharedQuadArray,
 		char*					inName,
 		M3tQuadArray*			*outReference);
-		
+
 /*
  * Shared Vector functions
  */
 	typedef struct AUtSharedVectorArray	AUtSharedVectorArray;
-	
+
 	AUtSharedVectorArray*
 	AUrSharedVectorArray_New(
 		void);
@@ -285,7 +285,7 @@ extern "C"
 	AUrSharedVectorArray_Dump(
 		AUtSharedVectorArray*	inSharedVectorArray,
 		FILE*					inFile);
-	
+
 	UUtError
 	AUrSharedVectorArray_CreateTemplate(
 		AUtSharedVectorArray*	inSharedVectorArray,
@@ -296,7 +296,7 @@ extern "C"
  * Shared TexCoord functions
  */
 	typedef struct AUtSharedTexCoordArray	AUtSharedTexCoordArray;
-	
+
 	AUtSharedTexCoordArray*
 	AUrSharedTexCoordArray_New(
 		void);
@@ -323,7 +323,7 @@ extern "C"
 	UUtUns32
 	AUrSharedTexCoordArray_GetNum(
 		AUtSharedTexCoordArray*	inSharedTexCoordArray);
-	
+
 	UUtError
 	AUrSharedTexCoordArray_CreateTemplate(
 		AUtSharedTexCoordArray*	inSharedTexCoordArray,
@@ -334,15 +334,15 @@ extern "C"
  * Shared edge functions
  */
 	#define AUcMaxQuadsPerEdge	12
-	
+
 	typedef struct AUtSharedEdgeArray	AUtSharedEdgeArray;
 	typedef struct AUtEdge
 	{
 		UUtUns32	vIndex0;
 		UUtUns32	vIndex1;
-		
+
 		UUtUns32	quadIndices[AUcMaxQuadsPerEdge];
-		
+
 	} AUtEdge;
 
 	AUtSharedEdgeArray*
@@ -364,7 +364,7 @@ extern "C"
 		UUtUns32			inEdge1,
 		UUtUns32			inQuadIndex,
 		UUtUns32			*outEdgeIndex);
-	
+
 	UUtError
 	AUrSharedEdgeArray_AddPoly(
 		AUtSharedEdgeArray*	inSharedEdgeArray,
@@ -372,7 +372,7 @@ extern "C"
 		UUtUns32*			inVertices,
 		UUtUns32			inQuadIndex,
 		UUtUns32			*outEdgeIndices);
-		
+
 	AUtEdge*
 	AUrSharedEdgeArray_GetList(
 		AUtSharedEdgeArray*	inSharedEdgeArray);
@@ -380,12 +380,12 @@ extern "C"
 	UUtUns32
 	AUrSharedEdgeArray_GetNum(
 		AUtSharedEdgeArray*	inSharedEdgeArray);
-	
+
 	UUtUns32
 	AUrSharedEdge_FindCommonVertex(
 		AUtEdge*	inEdgeA,
 		AUtEdge*	inEdgeB);
-		
+
 	UUtUns32
 	AUrSharedEdge_FindOtherVertex(
 		AUtEdge*	inEdge,
@@ -407,16 +407,16 @@ extern "C"
  * Shared String functions
  */
 	#define AUcMaxStringLength	128
-	
+
 	typedef struct AUtSharedStringArray	AUtSharedStringArray;
-	
+
 	typedef struct AUtSharedString
 	{
 		char		string[AUcMaxStringLength];
 		UUtUns32	data;
-		
+
 	} AUtSharedString;
-	
+
 	AUtSharedStringArray*
 	AUrSharedStringArray_New(
 		void);
@@ -464,11 +464,11 @@ extern "C"
  * Hash table utilities
  */
 	typedef struct AUtHashTable	AUtHashTable;
-	
+
 	typedef UUtUns32
 	(*AUtHashTable_Hash)(
 		void*	inElement);
-	
+
 	typedef UUtBool
 	(*AUtHashTable_IsEqual)(
 		void*	inElement1,
@@ -488,25 +488,25 @@ extern "C"
 		UUtUns32						inNumBuckets,
 		AUtHashTable_Hash				inHashFunction,
 		AUtHashTable_IsEqual			inCompareFunction);
-	
+
 	void
 	AUrHashTable_Delete(
 		AUtHashTable*	inHashTable);
-	
+
 	void
 	AUrHashTable_Reset(
 		AUtHashTable*	inHashTable);
-		
+
 	void *
 	AUrHashTable_Add(
 		AUtHashTable*	inHashTable,
 		void			*inNewElement);
-		
+
 	void*
 	AUrHashTable_Find(
 		AUtHashTable*	inHashTable,
 		void			*inElement);
-	
+
 /*
  * Some quad utilities
  */
@@ -520,20 +520,20 @@ extern "C"
 		float						*outMaxY,
 		float						*outMinZ,
 		float						*outMaxZ);
-	
+
 	// This assumes they already lie on the same plane
 	UUtBool
 	AUrQuad_QuadOverlapsQuad(
 		const M3tPoint3D*			inPointList,
 		const M3tQuad*			inQuad,
 		const M3tQuad*			inQuadOverlapping);
-		
+
 	UUtBool
 	AUrQuad_QuadWithinQuad(
 		const M3tPoint3D*			inPointList,
 		const M3tQuad*			inQuad,
 		const M3tQuad*			inQuadWithin);
-	
+
 	void
 	AUrQuad_ComputeCenter(
 		const M3tPoint3D*	inPointList,
@@ -541,24 +541,24 @@ extern "C"
 		float				*outCenterX,
 		float				*outCenterY,
 		float				*outCenterZ);
-	
+
 	UUtBool
 	AUrQuad_SharesAnEdge(
 		const M3tQuad*	inQuadA,
 		const M3tQuad*	inQuadB);
-		
+
 	void AUrQuad_LowestPoints(
 		M3tQuad *inQuad,
 		M3tPoint3D *inPointArray,
 		M3tPoint3D **outPointLowest,
 		M3tPoint3D **outPointNextLowest);
-		
+
 	void AUrQuad_HighestPoints(
 		M3tQuad *inQuad,
 		M3tPoint3D *inPointArray,
 		M3tPoint3D **outPointHighest,
 		M3tPoint3D **outPointNextHighest);
-		
+
 /*
  * some text parsing funcs
  */
@@ -584,7 +584,7 @@ extern "C"
 		float		nx,
 		float		ny,
 		float		nz);
-		
+
 	typedef UUtError
 	(*AUtParseGeometry_AddQuadFunc)(
 		void*		inRefCon,
@@ -595,7 +595,7 @@ extern "C"
 		float		nx,
 		float		ny,
 		float		nz);
-	
+
 	typedef UUtError
 	(*AUtParseGeometry_AddEnvTriangleFunc)(
 		void*		inRefCon,
@@ -606,7 +606,7 @@ extern "C"
 		float		nx,
 		float		ny,
 		float		nz);
-		
+
 	typedef UUtError
 	(*AUtParseGeometry_AddEnvQuadFunc)(
 		void*		inRefCon,
@@ -618,7 +618,7 @@ extern "C"
 		float		nx,
 		float		ny,
 		float		nz);
-	
+
 	UUtError
 	AUrParse_CoreGeometry(
 		BFtTextFile*						inTextFile,
@@ -652,34 +652,34 @@ extern "C"
 		M3tPoint3D*					outPoint);
 
 /*
- * 
+ *
  */
 	typedef struct AUtFlagElement
 	{
 		char*		textName;
 		UUtUns32	flagValue;
-		
+
 	} AUtFlagElement;
-	
+
 	const char*
 	AUrFlags_GetTextName(
 		AUtFlagElement		*inFlagList,
 		UUtUns32			inFlagValue);
-	
+
 	UUtError
 	AUrFlags_ParseFromGroupArray(
 		AUtFlagElement*		inFlagList,		// Terminated by a NULL textName
 		GRtElementType		inElementType,
 		void*				inElement,
 		UUtUns32			*outResult);
-	
+
 	UUtError
 	AUrFlags_ParseFromString(
 		char*				inString,		// multiple entries are delimited by "|"
 		UUtBool				inIsBitField,
 		AUtFlagElement*		inFlagList,		// Terminated by a NULL textName
 		UUtUns32			*outResult);
-	
+
 	void
 	AUrFlags_PrintFromValue(
 		FILE*			inFile,
@@ -687,12 +687,12 @@ extern "C"
 		AUtFlagElement*	inFlagList,
 		UUtUns32		inValue);
 /*
- * 
+ *
  */
 	UUtWindow
 	AUrWindow_New(
 		UUtRect*	inRect);
-	
+
 	void
 	AUrWindow_CopyImageInto(
 		UUtWindow		inDstWindow,
@@ -700,7 +700,7 @@ extern "C"
 		UUtUns16		inSrcHeight,
 		IMtPixelType	inSrcPixelType,
 		void*			inSrcData);
-		
+
 	void
 	AUrWindow_EORImage(
 		UUtWindow	inWindow,
@@ -718,11 +718,11 @@ extern "C"
 		UUtWindow	inWindow);
 
 	void AUrBuildArgumentList(
-		char *inString, 
-		UUtUns32 inMaxCount, 
-		UUtUns32 *outCount, 
+		char *inString,
+		UUtUns32 inMaxCount,
+		UUtUns32 *outCount,
 		char **outArguments);
-	
+
 	// dictionary funtions
 	typedef struct AUtDict
 	{
@@ -780,7 +780,7 @@ extern "C"
 	 *
 	 * Takes a string, mapping and ptr to a uns32.
 	 *
-	 * If it finds inString in inMapping sets the result to 1 << n where n is 
+	 * If it finds inString in inMapping sets the result to 1 << n where n is
 	 * the index of the string in inMapping.
 	 *
 	 * Otherwise returns an error

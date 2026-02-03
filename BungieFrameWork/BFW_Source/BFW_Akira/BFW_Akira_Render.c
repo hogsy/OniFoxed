@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Akira_Render.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: October 12, 1998
 
 	PURPOSE: environment engine
-	
+
 	Copyright 1997
 
 */
@@ -32,7 +32,7 @@
 #include "BFW_Object.h"
 #include "BFW_Timer.h"
 
-			
+
 #include "Akira_Private.h"
 
 #include "Oni_GameStatePrivate.h"
@@ -136,7 +136,7 @@ AKiBoundingBox_Draw(
 
 	/*
 		0 - min, 1 - max
-		
+
 		v	X	Y	Z
 		==	=========
 		0	0	0	0
@@ -147,7 +147,7 @@ AKiBoundingBox_Draw(
 		5	1	0	1
 		6	1	1	0
 		7	1	1	1
-		
+
 		Edges
 		=====
 		0 -> 1
@@ -168,7 +168,7 @@ AKiBoundingBox_Draw(
 		aligned[0].x = inMinPoint->x;
 		aligned[0].y = inMinPoint->y;
 		aligned[0].z = inMinPoint->z;
-		
+
 		aligned[1].x = inMinPoint->x;
 		aligned[1].y = inMinPoint->y;
 		aligned[1].z = inMaxPoint->z;
@@ -176,13 +176,13 @@ AKiBoundingBox_Draw(
 			2,
 			aligned,
 			inColor);
-		
-		
+
+
 	// 0 -> 2
 		aligned[0].x = inMinPoint->x;
 		aligned[0].y = inMinPoint->y;
 		aligned[0].z = inMinPoint->z;
-		
+
 		aligned[1].x = inMinPoint->x;
 		aligned[1].y = inMaxPoint->y;
 		aligned[1].z = inMinPoint->z;
@@ -190,13 +190,13 @@ AKiBoundingBox_Draw(
 			2,
 			aligned,
 			inColor);
-		
-		
+
+
 	// 0 -> 4
 		aligned[0].x = inMinPoint->x;
 		aligned[0].y = inMinPoint->y;
 		aligned[0].z = inMinPoint->z;
-		
+
 		aligned[1].x = inMaxPoint->x;
 		aligned[1].y = inMinPoint->y;
 		aligned[1].z = inMinPoint->z;
@@ -204,13 +204,13 @@ AKiBoundingBox_Draw(
 			2,
 			aligned,
 			inColor);
-		
-		
+
+
 	// 1 -> 3
 		aligned[0].x = inMinPoint->x;
 		aligned[0].y = inMinPoint->y;
 		aligned[0].z = inMaxPoint->z;
-		
+
 		aligned[1].x = inMinPoint->x;
 		aligned[1].y = inMaxPoint->y;
 		aligned[1].z = inMaxPoint->z;
@@ -218,13 +218,13 @@ AKiBoundingBox_Draw(
 			2,
 			aligned,
 			inColor);
-		
-		
+
+
 	// 1 -> 5
 		aligned[0].x = inMinPoint->x;
 		aligned[0].y = inMinPoint->y;
 		aligned[0].z = inMaxPoint->z;
-		
+
 		aligned[1].x = inMaxPoint->x;
 		aligned[1].y = inMinPoint->y;
 		aligned[1].z = inMaxPoint->z;
@@ -232,12 +232,12 @@ AKiBoundingBox_Draw(
 			2,
 			aligned,
 			inColor);
-		
+
 	// 2 -> 3
 		aligned[0].x = inMinPoint->x;
 		aligned[0].y = inMaxPoint->y;
 		aligned[0].z = inMinPoint->z;
-		
+
 		aligned[1].x = inMinPoint->x;
 		aligned[1].y = inMaxPoint->y;
 		aligned[1].z = inMaxPoint->z;
@@ -245,13 +245,13 @@ AKiBoundingBox_Draw(
 			2,
 			aligned,
 			inColor);
-		
-		
+
+
 	// 2 -> 6
 		aligned[0].x = inMinPoint->x;
 		aligned[0].y = inMaxPoint->y;
 		aligned[0].z = inMinPoint->z;
-		
+
 		aligned[1].x = inMaxPoint->x;
 		aligned[1].y = inMaxPoint->y;
 		aligned[1].z = inMinPoint->z;
@@ -259,13 +259,13 @@ AKiBoundingBox_Draw(
 			2,
 			aligned,
 			inColor);
-		
-		
+
+
 	// 3 -> 7
 		aligned[0].x = inMinPoint->x;
 		aligned[0].y = inMaxPoint->y;
 		aligned[0].z = inMaxPoint->z;
-		
+
 		aligned[1].x = inMaxPoint->x;
 		aligned[1].y = inMaxPoint->y;
 		aligned[1].z = inMaxPoint->z;
@@ -273,13 +273,13 @@ AKiBoundingBox_Draw(
 			2,
 			aligned,
 			inColor);
-		
-		
+
+
 	// 4 -> 5
 		aligned[0].x = inMaxPoint->x;
 		aligned[0].y = inMinPoint->y;
 		aligned[0].z = inMinPoint->z;
-		
+
 		aligned[1].x = inMaxPoint->x;
 		aligned[1].y = inMinPoint->y;
 		aligned[1].z = inMaxPoint->z;
@@ -287,13 +287,13 @@ AKiBoundingBox_Draw(
 			2,
 			aligned,
 			inColor);
-		
-		
+
+
 	// 4 -> 6
 		aligned[0].x = inMaxPoint->x;
 		aligned[0].y = inMinPoint->y;
 		aligned[0].z = inMinPoint->z;
-		
+
 		aligned[1].x = inMaxPoint->x;
 		aligned[1].y = inMaxPoint->y;
 		aligned[1].z = inMinPoint->z;
@@ -301,13 +301,13 @@ AKiBoundingBox_Draw(
 			2,
 			aligned,
 			inColor);
-		
-		
+
+
 	// 5 -> 7
 		aligned[0].x = inMaxPoint->x;
 		aligned[0].y = inMinPoint->y;
 		aligned[0].z = inMaxPoint->z;
-		
+
 		aligned[1].x = inMaxPoint->x;
 		aligned[1].y = inMaxPoint->y;
 		aligned[1].z = inMaxPoint->z;
@@ -315,13 +315,13 @@ AKiBoundingBox_Draw(
 			2,
 			aligned,
 			inColor);
-		
-		
+
+
 	// 6 -> 7
 		aligned[0].x = inMaxPoint->x;
 		aligned[0].y = inMaxPoint->y;
 		aligned[0].z = inMinPoint->z;
-		
+
 		aligned[1].x = inMaxPoint->x;
 		aligned[1].y = inMaxPoint->y;
 		aligned[1].z = inMaxPoint->z;
@@ -334,29 +334,29 @@ AKiBoundingBox_Draw(
 #define BRENTS_CHEESY_PROFILE_ONLY_FUNC 0
 #define BRENTS_CHEESY_PROFILE 0
 
-	
+
 	UUtUns32	funcTime = 0;
 	UUtUns32	funcNum = 0;
 
 	UUtUns32	funcRayTime = 0;
 	UUtUns32	funcNumRays = 0;
-	
+
 	UUtUns32	funcOctantTime = 0;
 	UUtUns32	funcNumMissOctants = 0;
 	UUtUns32	funcNumHitOctants = 0;
 	UUtUns32	funcNumSkippedOctants = 0;
-	
+
 	UUtUns32	funcMissOctant_QuadTraversalTime = 0;
 	UUtUns32	funcMissOctant_NumQuadTraversals = 0;
 	UUtUns32	funcMissOctant_NumQuadChecks = 0;
-	
+
 	UUtUns32	funcHitOctant_QuadTraversalTime = 0;
 	UUtUns32	funcHitOctant_NumQuadTraversals = 0;
 	UUtUns32	funcHitOctant_NumQuadChecks = 0;
-	
+
 	UUtUns32	funcHitOctant_NumQuadsTillHit = 0;
 
-float	AKgIntToFloatDim[9] = 
+float	AKgIntToFloatDim[9] =
 {
 	AKcMinOTDim,
 	AKcMinOTDim * 2.0f,
@@ -371,133 +371,133 @@ float	AKgIntToFloatDim[9] =
 
 float	AKgIntToFloatXYZ[512] =
 {
-    -255.000000 * AKcMinOTDim,  -254.000000 * AKcMinOTDim,  -253.000000 * AKcMinOTDim,  -252.000000 * AKcMinOTDim, 
-    -251.000000 * AKcMinOTDim,  -250.000000 * AKcMinOTDim,  -249.000000 * AKcMinOTDim,  -248.000000 * AKcMinOTDim, 
-    -247.000000 * AKcMinOTDim,  -246.000000 * AKcMinOTDim,  -245.000000 * AKcMinOTDim,  -244.000000 * AKcMinOTDim, 
-    -243.000000 * AKcMinOTDim,  -242.000000 * AKcMinOTDim,  -241.000000 * AKcMinOTDim,  -240.000000 * AKcMinOTDim, 
-    -239.000000 * AKcMinOTDim,  -238.000000 * AKcMinOTDim,  -237.000000 * AKcMinOTDim,  -236.000000 * AKcMinOTDim, 
-    -235.000000 * AKcMinOTDim,  -234.000000 * AKcMinOTDim,  -233.000000 * AKcMinOTDim,  -232.000000 * AKcMinOTDim, 
-    -231.000000 * AKcMinOTDim,  -230.000000 * AKcMinOTDim,  -229.000000 * AKcMinOTDim,  -228.000000 * AKcMinOTDim, 
-    -227.000000 * AKcMinOTDim,  -226.000000 * AKcMinOTDim,  -225.000000 * AKcMinOTDim,  -224.000000 * AKcMinOTDim, 
-    -223.000000 * AKcMinOTDim,  -222.000000 * AKcMinOTDim,  -221.000000 * AKcMinOTDim,  -220.000000 * AKcMinOTDim, 
-    -219.000000 * AKcMinOTDim,  -218.000000 * AKcMinOTDim,  -217.000000 * AKcMinOTDim,  -216.000000 * AKcMinOTDim, 
-    -215.000000 * AKcMinOTDim,  -214.000000 * AKcMinOTDim,  -213.000000 * AKcMinOTDim,  -212.000000 * AKcMinOTDim, 
-    -211.000000 * AKcMinOTDim,  -210.000000 * AKcMinOTDim,  -209.000000 * AKcMinOTDim,  -208.000000 * AKcMinOTDim, 
-    -207.000000 * AKcMinOTDim,  -206.000000 * AKcMinOTDim,  -205.000000 * AKcMinOTDim,  -204.000000 * AKcMinOTDim, 
-    -203.000000 * AKcMinOTDim,  -202.000000 * AKcMinOTDim,  -201.000000 * AKcMinOTDim,  -200.000000 * AKcMinOTDim, 
-    -199.000000 * AKcMinOTDim,  -198.000000 * AKcMinOTDim,  -197.000000 * AKcMinOTDim,  -196.000000 * AKcMinOTDim, 
-    -195.000000 * AKcMinOTDim,  -194.000000 * AKcMinOTDim,  -193.000000 * AKcMinOTDim,  -192.000000 * AKcMinOTDim, 
-    -191.000000 * AKcMinOTDim,  -190.000000 * AKcMinOTDim,  -189.000000 * AKcMinOTDim,  -188.000000 * AKcMinOTDim, 
-    -187.000000 * AKcMinOTDim,  -186.000000 * AKcMinOTDim,  -185.000000 * AKcMinOTDim,  -184.000000 * AKcMinOTDim, 
-    -183.000000 * AKcMinOTDim,  -182.000000 * AKcMinOTDim,  -181.000000 * AKcMinOTDim,  -180.000000 * AKcMinOTDim, 
-    -179.000000 * AKcMinOTDim,  -178.000000 * AKcMinOTDim,  -177.000000 * AKcMinOTDim,  -176.000000 * AKcMinOTDim, 
-    -175.000000 * AKcMinOTDim,  -174.000000 * AKcMinOTDim,  -173.000000 * AKcMinOTDim,  -172.000000 * AKcMinOTDim, 
-    -171.000000 * AKcMinOTDim,  -170.000000 * AKcMinOTDim,  -169.000000 * AKcMinOTDim,  -168.000000 * AKcMinOTDim, 
-    -167.000000 * AKcMinOTDim,  -166.000000 * AKcMinOTDim,  -165.000000 * AKcMinOTDim,  -164.000000 * AKcMinOTDim, 
-    -163.000000 * AKcMinOTDim,  -162.000000 * AKcMinOTDim,  -161.000000 * AKcMinOTDim,  -160.000000 * AKcMinOTDim, 
-    -159.000000 * AKcMinOTDim,  -158.000000 * AKcMinOTDim,  -157.000000 * AKcMinOTDim,  -156.000000 * AKcMinOTDim, 
-    -155.000000 * AKcMinOTDim,  -154.000000 * AKcMinOTDim,  -153.000000 * AKcMinOTDim,  -152.000000 * AKcMinOTDim, 
-    -151.000000 * AKcMinOTDim,  -150.000000 * AKcMinOTDim,  -149.000000 * AKcMinOTDim,  -148.000000 * AKcMinOTDim, 
-    -147.000000 * AKcMinOTDim,  -146.000000 * AKcMinOTDim,  -145.000000 * AKcMinOTDim,  -144.000000 * AKcMinOTDim, 
-    -143.000000 * AKcMinOTDim,  -142.000000 * AKcMinOTDim,  -141.000000 * AKcMinOTDim,  -140.000000 * AKcMinOTDim, 
-    -139.000000 * AKcMinOTDim,  -138.000000 * AKcMinOTDim,  -137.000000 * AKcMinOTDim,  -136.000000 * AKcMinOTDim, 
-    -135.000000 * AKcMinOTDim,  -134.000000 * AKcMinOTDim,  -133.000000 * AKcMinOTDim,  -132.000000 * AKcMinOTDim, 
-    -131.000000 * AKcMinOTDim,  -130.000000 * AKcMinOTDim,  -129.000000 * AKcMinOTDim,  -128.000000 * AKcMinOTDim, 
-    -127.000000 * AKcMinOTDim,  -126.000000 * AKcMinOTDim,  -125.000000 * AKcMinOTDim,  -124.000000 * AKcMinOTDim, 
-    -123.000000 * AKcMinOTDim,  -122.000000 * AKcMinOTDim,  -121.000000 * AKcMinOTDim,  -120.000000 * AKcMinOTDim, 
-    -119.000000 * AKcMinOTDim,  -118.000000 * AKcMinOTDim,  -117.000000 * AKcMinOTDim,  -116.000000 * AKcMinOTDim, 
-    -115.000000 * AKcMinOTDim,  -114.000000 * AKcMinOTDim,  -113.000000 * AKcMinOTDim,  -112.000000 * AKcMinOTDim, 
-    -111.000000 * AKcMinOTDim,  -110.000000 * AKcMinOTDim,  -109.000000 * AKcMinOTDim,  -108.000000 * AKcMinOTDim, 
-    -107.000000 * AKcMinOTDim,  -106.000000 * AKcMinOTDim,  -105.000000 * AKcMinOTDim,  -104.000000 * AKcMinOTDim, 
-    -103.000000 * AKcMinOTDim,  -102.000000 * AKcMinOTDim,  -101.000000 * AKcMinOTDim,  -100.000000 * AKcMinOTDim, 
-    -99.000000 * AKcMinOTDim,   -98.000000 * AKcMinOTDim,   -97.000000 * AKcMinOTDim,   -96.000000 * AKcMinOTDim, 
-    -95.000000 * AKcMinOTDim,   -94.000000 * AKcMinOTDim,   -93.000000 * AKcMinOTDim,   -92.000000 * AKcMinOTDim, 
-    -91.000000 * AKcMinOTDim,   -90.000000 * AKcMinOTDim,   -89.000000 * AKcMinOTDim,   -88.000000 * AKcMinOTDim, 
-    -87.000000 * AKcMinOTDim,   -86.000000 * AKcMinOTDim,   -85.000000 * AKcMinOTDim,   -84.000000 * AKcMinOTDim, 
-    -83.000000 * AKcMinOTDim,   -82.000000 * AKcMinOTDim,   -81.000000 * AKcMinOTDim,   -80.000000 * AKcMinOTDim, 
-    -79.000000 * AKcMinOTDim,   -78.000000 * AKcMinOTDim,   -77.000000 * AKcMinOTDim,   -76.000000 * AKcMinOTDim, 
-    -75.000000 * AKcMinOTDim,   -74.000000 * AKcMinOTDim,   -73.000000 * AKcMinOTDim,   -72.000000 * AKcMinOTDim, 
-    -71.000000 * AKcMinOTDim,   -70.000000 * AKcMinOTDim,   -69.000000 * AKcMinOTDim,   -68.000000 * AKcMinOTDim, 
-    -67.000000 * AKcMinOTDim,   -66.000000 * AKcMinOTDim,   -65.000000 * AKcMinOTDim,   -64.000000 * AKcMinOTDim, 
-    -63.000000 * AKcMinOTDim,   -62.000000 * AKcMinOTDim,   -61.000000 * AKcMinOTDim,   -60.000000 * AKcMinOTDim, 
-    -59.000000 * AKcMinOTDim,   -58.000000 * AKcMinOTDim,   -57.000000 * AKcMinOTDim,   -56.000000 * AKcMinOTDim, 
-    -55.000000 * AKcMinOTDim,   -54.000000 * AKcMinOTDim,   -53.000000 * AKcMinOTDim,   -52.000000 * AKcMinOTDim, 
-    -51.000000 * AKcMinOTDim,   -50.000000 * AKcMinOTDim,   -49.000000 * AKcMinOTDim,   -48.000000 * AKcMinOTDim, 
-    -47.000000 * AKcMinOTDim,   -46.000000 * AKcMinOTDim,   -45.000000 * AKcMinOTDim,   -44.000000 * AKcMinOTDim, 
-    -43.000000 * AKcMinOTDim,   -42.000000 * AKcMinOTDim,   -41.000000 * AKcMinOTDim,   -40.000000 * AKcMinOTDim, 
-    -39.000000 * AKcMinOTDim,   -38.000000 * AKcMinOTDim,   -37.000000 * AKcMinOTDim,   -36.000000 * AKcMinOTDim, 
-    -35.000000 * AKcMinOTDim,   -34.000000 * AKcMinOTDim,   -33.000000 * AKcMinOTDim,   -32.000000 * AKcMinOTDim, 
-    -31.000000 * AKcMinOTDim,   -30.000000 * AKcMinOTDim,   -29.000000 * AKcMinOTDim,   -28.000000 * AKcMinOTDim, 
-    -27.000000 * AKcMinOTDim,   -26.000000 * AKcMinOTDim,   -25.000000 * AKcMinOTDim,   -24.000000 * AKcMinOTDim, 
-    -23.000000 * AKcMinOTDim,   -22.000000 * AKcMinOTDim,   -21.000000 * AKcMinOTDim,   -20.000000 * AKcMinOTDim, 
-    -19.000000 * AKcMinOTDim,   -18.000000 * AKcMinOTDim,   -17.000000 * AKcMinOTDim,   -16.000000 * AKcMinOTDim, 
-    -15.000000 * AKcMinOTDim,   -14.000000 * AKcMinOTDim,   -13.000000 * AKcMinOTDim,   -12.000000 * AKcMinOTDim, 
-    -11.000000 * AKcMinOTDim,   -10.000000 * AKcMinOTDim,   -9.000000 * AKcMinOTDim,    -8.000000 * AKcMinOTDim, 
-    -7.000000 * AKcMinOTDim,    -6.000000 * AKcMinOTDim,    -5.000000 * AKcMinOTDim,    -4.000000 * AKcMinOTDim, 
-    -3.000000 * AKcMinOTDim,    -2.000000 * AKcMinOTDim,    -1.000000 * AKcMinOTDim,    0.000000 * AKcMinOTDim, 
-    1.000000 * AKcMinOTDim,     2.000000 * AKcMinOTDim,     3.000000 * AKcMinOTDim,     4.000000 * AKcMinOTDim, 
-    5.000000 * AKcMinOTDim,     6.000000 * AKcMinOTDim,     7.000000 * AKcMinOTDim,     8.000000 * AKcMinOTDim, 
-    9.000000 * AKcMinOTDim,     10.000000 * AKcMinOTDim,    11.000000 * AKcMinOTDim,    12.000000 * AKcMinOTDim, 
-    13.000000 * AKcMinOTDim,    14.000000 * AKcMinOTDim,    15.000000 * AKcMinOTDim,    16.000000 * AKcMinOTDim, 
-    17.000000 * AKcMinOTDim,    18.000000 * AKcMinOTDim,    19.000000 * AKcMinOTDim,    20.000000 * AKcMinOTDim, 
-    21.000000 * AKcMinOTDim,    22.000000 * AKcMinOTDim,    23.000000 * AKcMinOTDim,    24.000000 * AKcMinOTDim, 
-    25.000000 * AKcMinOTDim,    26.000000 * AKcMinOTDim,    27.000000 * AKcMinOTDim,    28.000000 * AKcMinOTDim, 
-    29.000000 * AKcMinOTDim,    30.000000 * AKcMinOTDim,    31.000000 * AKcMinOTDim,    32.000000 * AKcMinOTDim, 
-    33.000000 * AKcMinOTDim,    34.000000 * AKcMinOTDim,    35.000000 * AKcMinOTDim,    36.000000 * AKcMinOTDim, 
-    37.000000 * AKcMinOTDim,    38.000000 * AKcMinOTDim,    39.000000 * AKcMinOTDim,    40.000000 * AKcMinOTDim, 
-    41.000000 * AKcMinOTDim,    42.000000 * AKcMinOTDim,    43.000000 * AKcMinOTDim,    44.000000 * AKcMinOTDim, 
-    45.000000 * AKcMinOTDim,    46.000000 * AKcMinOTDim,    47.000000 * AKcMinOTDim,    48.000000 * AKcMinOTDim, 
-    49.000000 * AKcMinOTDim,    50.000000 * AKcMinOTDim,    51.000000 * AKcMinOTDim,    52.000000 * AKcMinOTDim, 
-    53.000000 * AKcMinOTDim,    54.000000 * AKcMinOTDim,    55.000000 * AKcMinOTDim,    56.000000 * AKcMinOTDim, 
-    57.000000 * AKcMinOTDim,    58.000000 * AKcMinOTDim,    59.000000 * AKcMinOTDim,    60.000000 * AKcMinOTDim, 
-    61.000000 * AKcMinOTDim,    62.000000 * AKcMinOTDim,    63.000000 * AKcMinOTDim,    64.000000 * AKcMinOTDim, 
-    65.000000 * AKcMinOTDim,    66.000000 * AKcMinOTDim,    67.000000 * AKcMinOTDim,    68.000000 * AKcMinOTDim, 
-    69.000000 * AKcMinOTDim,    70.000000 * AKcMinOTDim,    71.000000 * AKcMinOTDim,    72.000000 * AKcMinOTDim, 
-    73.000000 * AKcMinOTDim,    74.000000 * AKcMinOTDim,    75.000000 * AKcMinOTDim,    76.000000 * AKcMinOTDim, 
-    77.000000 * AKcMinOTDim,    78.000000 * AKcMinOTDim,    79.000000 * AKcMinOTDim,    80.000000 * AKcMinOTDim, 
-    81.000000 * AKcMinOTDim,    82.000000 * AKcMinOTDim,    83.000000 * AKcMinOTDim,    84.000000 * AKcMinOTDim, 
-    85.000000 * AKcMinOTDim,    86.000000 * AKcMinOTDim,    87.000000 * AKcMinOTDim,    88.000000 * AKcMinOTDim, 
-    89.000000 * AKcMinOTDim,    90.000000 * AKcMinOTDim,    91.000000 * AKcMinOTDim,    92.000000 * AKcMinOTDim, 
-    93.000000 * AKcMinOTDim,    94.000000 * AKcMinOTDim,    95.000000 * AKcMinOTDim,    96.000000 * AKcMinOTDim, 
-    97.000000 * AKcMinOTDim,    98.000000 * AKcMinOTDim,    99.000000 * AKcMinOTDim,    100.000000 * AKcMinOTDim, 
-    101.000000 * AKcMinOTDim,   102.000000 * AKcMinOTDim,   103.000000 * AKcMinOTDim,   104.000000 * AKcMinOTDim, 
-    105.000000 * AKcMinOTDim,   106.000000 * AKcMinOTDim,   107.000000 * AKcMinOTDim,   108.000000 * AKcMinOTDim, 
-    109.000000 * AKcMinOTDim,   110.000000 * AKcMinOTDim,   111.000000 * AKcMinOTDim,   112.000000 * AKcMinOTDim, 
-    113.000000 * AKcMinOTDim,   114.000000 * AKcMinOTDim,   115.000000 * AKcMinOTDim,   116.000000 * AKcMinOTDim, 
-    117.000000 * AKcMinOTDim,   118.000000 * AKcMinOTDim,   119.000000 * AKcMinOTDim,   120.000000 * AKcMinOTDim, 
-    121.000000 * AKcMinOTDim,   122.000000 * AKcMinOTDim,   123.000000 * AKcMinOTDim,   124.000000 * AKcMinOTDim, 
-    125.000000 * AKcMinOTDim,   126.000000 * AKcMinOTDim,   127.000000 * AKcMinOTDim,   128.000000 * AKcMinOTDim, 
-    129.000000 * AKcMinOTDim,   130.000000 * AKcMinOTDim,   131.000000 * AKcMinOTDim,   132.000000 * AKcMinOTDim, 
-    133.000000 * AKcMinOTDim,   134.000000 * AKcMinOTDim,   135.000000 * AKcMinOTDim,   136.000000 * AKcMinOTDim, 
-    137.000000 * AKcMinOTDim,   138.000000 * AKcMinOTDim,   139.000000 * AKcMinOTDim,   140.000000 * AKcMinOTDim, 
-    141.000000 * AKcMinOTDim,   142.000000 * AKcMinOTDim,   143.000000 * AKcMinOTDim,   144.000000 * AKcMinOTDim, 
-    145.000000 * AKcMinOTDim,   146.000000 * AKcMinOTDim,   147.000000 * AKcMinOTDim,   148.000000 * AKcMinOTDim, 
-    149.000000 * AKcMinOTDim,   150.000000 * AKcMinOTDim,   151.000000 * AKcMinOTDim,   152.000000 * AKcMinOTDim, 
-    153.000000 * AKcMinOTDim,   154.000000 * AKcMinOTDim,   155.000000 * AKcMinOTDim,   156.000000 * AKcMinOTDim, 
-    157.000000 * AKcMinOTDim,   158.000000 * AKcMinOTDim,   159.000000 * AKcMinOTDim,   160.000000 * AKcMinOTDim, 
-    161.000000 * AKcMinOTDim,   162.000000 * AKcMinOTDim,   163.000000 * AKcMinOTDim,   164.000000 * AKcMinOTDim, 
-    165.000000 * AKcMinOTDim,   166.000000 * AKcMinOTDim,   167.000000 * AKcMinOTDim,   168.000000 * AKcMinOTDim, 
-    169.000000 * AKcMinOTDim,   170.000000 * AKcMinOTDim,   171.000000 * AKcMinOTDim,   172.000000 * AKcMinOTDim, 
-    173.000000 * AKcMinOTDim,   174.000000 * AKcMinOTDim,   175.000000 * AKcMinOTDim,   176.000000 * AKcMinOTDim, 
-    177.000000 * AKcMinOTDim,   178.000000 * AKcMinOTDim,   179.000000 * AKcMinOTDim,   180.000000 * AKcMinOTDim, 
-    181.000000 * AKcMinOTDim,   182.000000 * AKcMinOTDim,   183.000000 * AKcMinOTDim,   184.000000 * AKcMinOTDim, 
-    185.000000 * AKcMinOTDim,   186.000000 * AKcMinOTDim,   187.000000 * AKcMinOTDim,   188.000000 * AKcMinOTDim, 
-    189.000000 * AKcMinOTDim,   190.000000 * AKcMinOTDim,   191.000000 * AKcMinOTDim,   192.000000 * AKcMinOTDim, 
-    193.000000 * AKcMinOTDim,   194.000000 * AKcMinOTDim,   195.000000 * AKcMinOTDim,   196.000000 * AKcMinOTDim, 
-    197.000000 * AKcMinOTDim,   198.000000 * AKcMinOTDim,   199.000000 * AKcMinOTDim,   200.000000 * AKcMinOTDim, 
-    201.000000 * AKcMinOTDim,   202.000000 * AKcMinOTDim,   203.000000 * AKcMinOTDim,   204.000000 * AKcMinOTDim, 
-    205.000000 * AKcMinOTDim,   206.000000 * AKcMinOTDim,   207.000000 * AKcMinOTDim,   208.000000 * AKcMinOTDim, 
-    209.000000 * AKcMinOTDim,   210.000000 * AKcMinOTDim,   211.000000 * AKcMinOTDim,   212.000000 * AKcMinOTDim, 
-    213.000000 * AKcMinOTDim,   214.000000 * AKcMinOTDim,   215.000000 * AKcMinOTDim,   216.000000 * AKcMinOTDim, 
-    217.000000 * AKcMinOTDim,   218.000000 * AKcMinOTDim,   219.000000 * AKcMinOTDim,   220.000000 * AKcMinOTDim, 
-    221.000000 * AKcMinOTDim,   222.000000 * AKcMinOTDim,   223.000000 * AKcMinOTDim,   224.000000 * AKcMinOTDim, 
-    225.000000 * AKcMinOTDim,   226.000000 * AKcMinOTDim,   227.000000 * AKcMinOTDim,   228.000000 * AKcMinOTDim, 
-    229.000000 * AKcMinOTDim,   230.000000 * AKcMinOTDim,   231.000000 * AKcMinOTDim,   232.000000 * AKcMinOTDim, 
-    233.000000 * AKcMinOTDim,   234.000000 * AKcMinOTDim,   235.000000 * AKcMinOTDim,   236.000000 * AKcMinOTDim, 
-    237.000000 * AKcMinOTDim,   238.000000 * AKcMinOTDim,   239.000000 * AKcMinOTDim,   240.000000 * AKcMinOTDim, 
-    241.000000 * AKcMinOTDim,   242.000000 * AKcMinOTDim,   243.000000 * AKcMinOTDim,   244.000000 * AKcMinOTDim, 
-    245.000000 * AKcMinOTDim,   246.000000 * AKcMinOTDim,   247.000000 * AKcMinOTDim,   248.000000 * AKcMinOTDim, 
-    249.000000 * AKcMinOTDim,   250.000000 * AKcMinOTDim,   251.000000 * AKcMinOTDim,   252.000000 * AKcMinOTDim, 
+    -255.000000 * AKcMinOTDim,  -254.000000 * AKcMinOTDim,  -253.000000 * AKcMinOTDim,  -252.000000 * AKcMinOTDim,
+    -251.000000 * AKcMinOTDim,  -250.000000 * AKcMinOTDim,  -249.000000 * AKcMinOTDim,  -248.000000 * AKcMinOTDim,
+    -247.000000 * AKcMinOTDim,  -246.000000 * AKcMinOTDim,  -245.000000 * AKcMinOTDim,  -244.000000 * AKcMinOTDim,
+    -243.000000 * AKcMinOTDim,  -242.000000 * AKcMinOTDim,  -241.000000 * AKcMinOTDim,  -240.000000 * AKcMinOTDim,
+    -239.000000 * AKcMinOTDim,  -238.000000 * AKcMinOTDim,  -237.000000 * AKcMinOTDim,  -236.000000 * AKcMinOTDim,
+    -235.000000 * AKcMinOTDim,  -234.000000 * AKcMinOTDim,  -233.000000 * AKcMinOTDim,  -232.000000 * AKcMinOTDim,
+    -231.000000 * AKcMinOTDim,  -230.000000 * AKcMinOTDim,  -229.000000 * AKcMinOTDim,  -228.000000 * AKcMinOTDim,
+    -227.000000 * AKcMinOTDim,  -226.000000 * AKcMinOTDim,  -225.000000 * AKcMinOTDim,  -224.000000 * AKcMinOTDim,
+    -223.000000 * AKcMinOTDim,  -222.000000 * AKcMinOTDim,  -221.000000 * AKcMinOTDim,  -220.000000 * AKcMinOTDim,
+    -219.000000 * AKcMinOTDim,  -218.000000 * AKcMinOTDim,  -217.000000 * AKcMinOTDim,  -216.000000 * AKcMinOTDim,
+    -215.000000 * AKcMinOTDim,  -214.000000 * AKcMinOTDim,  -213.000000 * AKcMinOTDim,  -212.000000 * AKcMinOTDim,
+    -211.000000 * AKcMinOTDim,  -210.000000 * AKcMinOTDim,  -209.000000 * AKcMinOTDim,  -208.000000 * AKcMinOTDim,
+    -207.000000 * AKcMinOTDim,  -206.000000 * AKcMinOTDim,  -205.000000 * AKcMinOTDim,  -204.000000 * AKcMinOTDim,
+    -203.000000 * AKcMinOTDim,  -202.000000 * AKcMinOTDim,  -201.000000 * AKcMinOTDim,  -200.000000 * AKcMinOTDim,
+    -199.000000 * AKcMinOTDim,  -198.000000 * AKcMinOTDim,  -197.000000 * AKcMinOTDim,  -196.000000 * AKcMinOTDim,
+    -195.000000 * AKcMinOTDim,  -194.000000 * AKcMinOTDim,  -193.000000 * AKcMinOTDim,  -192.000000 * AKcMinOTDim,
+    -191.000000 * AKcMinOTDim,  -190.000000 * AKcMinOTDim,  -189.000000 * AKcMinOTDim,  -188.000000 * AKcMinOTDim,
+    -187.000000 * AKcMinOTDim,  -186.000000 * AKcMinOTDim,  -185.000000 * AKcMinOTDim,  -184.000000 * AKcMinOTDim,
+    -183.000000 * AKcMinOTDim,  -182.000000 * AKcMinOTDim,  -181.000000 * AKcMinOTDim,  -180.000000 * AKcMinOTDim,
+    -179.000000 * AKcMinOTDim,  -178.000000 * AKcMinOTDim,  -177.000000 * AKcMinOTDim,  -176.000000 * AKcMinOTDim,
+    -175.000000 * AKcMinOTDim,  -174.000000 * AKcMinOTDim,  -173.000000 * AKcMinOTDim,  -172.000000 * AKcMinOTDim,
+    -171.000000 * AKcMinOTDim,  -170.000000 * AKcMinOTDim,  -169.000000 * AKcMinOTDim,  -168.000000 * AKcMinOTDim,
+    -167.000000 * AKcMinOTDim,  -166.000000 * AKcMinOTDim,  -165.000000 * AKcMinOTDim,  -164.000000 * AKcMinOTDim,
+    -163.000000 * AKcMinOTDim,  -162.000000 * AKcMinOTDim,  -161.000000 * AKcMinOTDim,  -160.000000 * AKcMinOTDim,
+    -159.000000 * AKcMinOTDim,  -158.000000 * AKcMinOTDim,  -157.000000 * AKcMinOTDim,  -156.000000 * AKcMinOTDim,
+    -155.000000 * AKcMinOTDim,  -154.000000 * AKcMinOTDim,  -153.000000 * AKcMinOTDim,  -152.000000 * AKcMinOTDim,
+    -151.000000 * AKcMinOTDim,  -150.000000 * AKcMinOTDim,  -149.000000 * AKcMinOTDim,  -148.000000 * AKcMinOTDim,
+    -147.000000 * AKcMinOTDim,  -146.000000 * AKcMinOTDim,  -145.000000 * AKcMinOTDim,  -144.000000 * AKcMinOTDim,
+    -143.000000 * AKcMinOTDim,  -142.000000 * AKcMinOTDim,  -141.000000 * AKcMinOTDim,  -140.000000 * AKcMinOTDim,
+    -139.000000 * AKcMinOTDim,  -138.000000 * AKcMinOTDim,  -137.000000 * AKcMinOTDim,  -136.000000 * AKcMinOTDim,
+    -135.000000 * AKcMinOTDim,  -134.000000 * AKcMinOTDim,  -133.000000 * AKcMinOTDim,  -132.000000 * AKcMinOTDim,
+    -131.000000 * AKcMinOTDim,  -130.000000 * AKcMinOTDim,  -129.000000 * AKcMinOTDim,  -128.000000 * AKcMinOTDim,
+    -127.000000 * AKcMinOTDim,  -126.000000 * AKcMinOTDim,  -125.000000 * AKcMinOTDim,  -124.000000 * AKcMinOTDim,
+    -123.000000 * AKcMinOTDim,  -122.000000 * AKcMinOTDim,  -121.000000 * AKcMinOTDim,  -120.000000 * AKcMinOTDim,
+    -119.000000 * AKcMinOTDim,  -118.000000 * AKcMinOTDim,  -117.000000 * AKcMinOTDim,  -116.000000 * AKcMinOTDim,
+    -115.000000 * AKcMinOTDim,  -114.000000 * AKcMinOTDim,  -113.000000 * AKcMinOTDim,  -112.000000 * AKcMinOTDim,
+    -111.000000 * AKcMinOTDim,  -110.000000 * AKcMinOTDim,  -109.000000 * AKcMinOTDim,  -108.000000 * AKcMinOTDim,
+    -107.000000 * AKcMinOTDim,  -106.000000 * AKcMinOTDim,  -105.000000 * AKcMinOTDim,  -104.000000 * AKcMinOTDim,
+    -103.000000 * AKcMinOTDim,  -102.000000 * AKcMinOTDim,  -101.000000 * AKcMinOTDim,  -100.000000 * AKcMinOTDim,
+    -99.000000 * AKcMinOTDim,   -98.000000 * AKcMinOTDim,   -97.000000 * AKcMinOTDim,   -96.000000 * AKcMinOTDim,
+    -95.000000 * AKcMinOTDim,   -94.000000 * AKcMinOTDim,   -93.000000 * AKcMinOTDim,   -92.000000 * AKcMinOTDim,
+    -91.000000 * AKcMinOTDim,   -90.000000 * AKcMinOTDim,   -89.000000 * AKcMinOTDim,   -88.000000 * AKcMinOTDim,
+    -87.000000 * AKcMinOTDim,   -86.000000 * AKcMinOTDim,   -85.000000 * AKcMinOTDim,   -84.000000 * AKcMinOTDim,
+    -83.000000 * AKcMinOTDim,   -82.000000 * AKcMinOTDim,   -81.000000 * AKcMinOTDim,   -80.000000 * AKcMinOTDim,
+    -79.000000 * AKcMinOTDim,   -78.000000 * AKcMinOTDim,   -77.000000 * AKcMinOTDim,   -76.000000 * AKcMinOTDim,
+    -75.000000 * AKcMinOTDim,   -74.000000 * AKcMinOTDim,   -73.000000 * AKcMinOTDim,   -72.000000 * AKcMinOTDim,
+    -71.000000 * AKcMinOTDim,   -70.000000 * AKcMinOTDim,   -69.000000 * AKcMinOTDim,   -68.000000 * AKcMinOTDim,
+    -67.000000 * AKcMinOTDim,   -66.000000 * AKcMinOTDim,   -65.000000 * AKcMinOTDim,   -64.000000 * AKcMinOTDim,
+    -63.000000 * AKcMinOTDim,   -62.000000 * AKcMinOTDim,   -61.000000 * AKcMinOTDim,   -60.000000 * AKcMinOTDim,
+    -59.000000 * AKcMinOTDim,   -58.000000 * AKcMinOTDim,   -57.000000 * AKcMinOTDim,   -56.000000 * AKcMinOTDim,
+    -55.000000 * AKcMinOTDim,   -54.000000 * AKcMinOTDim,   -53.000000 * AKcMinOTDim,   -52.000000 * AKcMinOTDim,
+    -51.000000 * AKcMinOTDim,   -50.000000 * AKcMinOTDim,   -49.000000 * AKcMinOTDim,   -48.000000 * AKcMinOTDim,
+    -47.000000 * AKcMinOTDim,   -46.000000 * AKcMinOTDim,   -45.000000 * AKcMinOTDim,   -44.000000 * AKcMinOTDim,
+    -43.000000 * AKcMinOTDim,   -42.000000 * AKcMinOTDim,   -41.000000 * AKcMinOTDim,   -40.000000 * AKcMinOTDim,
+    -39.000000 * AKcMinOTDim,   -38.000000 * AKcMinOTDim,   -37.000000 * AKcMinOTDim,   -36.000000 * AKcMinOTDim,
+    -35.000000 * AKcMinOTDim,   -34.000000 * AKcMinOTDim,   -33.000000 * AKcMinOTDim,   -32.000000 * AKcMinOTDim,
+    -31.000000 * AKcMinOTDim,   -30.000000 * AKcMinOTDim,   -29.000000 * AKcMinOTDim,   -28.000000 * AKcMinOTDim,
+    -27.000000 * AKcMinOTDim,   -26.000000 * AKcMinOTDim,   -25.000000 * AKcMinOTDim,   -24.000000 * AKcMinOTDim,
+    -23.000000 * AKcMinOTDim,   -22.000000 * AKcMinOTDim,   -21.000000 * AKcMinOTDim,   -20.000000 * AKcMinOTDim,
+    -19.000000 * AKcMinOTDim,   -18.000000 * AKcMinOTDim,   -17.000000 * AKcMinOTDim,   -16.000000 * AKcMinOTDim,
+    -15.000000 * AKcMinOTDim,   -14.000000 * AKcMinOTDim,   -13.000000 * AKcMinOTDim,   -12.000000 * AKcMinOTDim,
+    -11.000000 * AKcMinOTDim,   -10.000000 * AKcMinOTDim,   -9.000000 * AKcMinOTDim,    -8.000000 * AKcMinOTDim,
+    -7.000000 * AKcMinOTDim,    -6.000000 * AKcMinOTDim,    -5.000000 * AKcMinOTDim,    -4.000000 * AKcMinOTDim,
+    -3.000000 * AKcMinOTDim,    -2.000000 * AKcMinOTDim,    -1.000000 * AKcMinOTDim,    0.000000 * AKcMinOTDim,
+    1.000000 * AKcMinOTDim,     2.000000 * AKcMinOTDim,     3.000000 * AKcMinOTDim,     4.000000 * AKcMinOTDim,
+    5.000000 * AKcMinOTDim,     6.000000 * AKcMinOTDim,     7.000000 * AKcMinOTDim,     8.000000 * AKcMinOTDim,
+    9.000000 * AKcMinOTDim,     10.000000 * AKcMinOTDim,    11.000000 * AKcMinOTDim,    12.000000 * AKcMinOTDim,
+    13.000000 * AKcMinOTDim,    14.000000 * AKcMinOTDim,    15.000000 * AKcMinOTDim,    16.000000 * AKcMinOTDim,
+    17.000000 * AKcMinOTDim,    18.000000 * AKcMinOTDim,    19.000000 * AKcMinOTDim,    20.000000 * AKcMinOTDim,
+    21.000000 * AKcMinOTDim,    22.000000 * AKcMinOTDim,    23.000000 * AKcMinOTDim,    24.000000 * AKcMinOTDim,
+    25.000000 * AKcMinOTDim,    26.000000 * AKcMinOTDim,    27.000000 * AKcMinOTDim,    28.000000 * AKcMinOTDim,
+    29.000000 * AKcMinOTDim,    30.000000 * AKcMinOTDim,    31.000000 * AKcMinOTDim,    32.000000 * AKcMinOTDim,
+    33.000000 * AKcMinOTDim,    34.000000 * AKcMinOTDim,    35.000000 * AKcMinOTDim,    36.000000 * AKcMinOTDim,
+    37.000000 * AKcMinOTDim,    38.000000 * AKcMinOTDim,    39.000000 * AKcMinOTDim,    40.000000 * AKcMinOTDim,
+    41.000000 * AKcMinOTDim,    42.000000 * AKcMinOTDim,    43.000000 * AKcMinOTDim,    44.000000 * AKcMinOTDim,
+    45.000000 * AKcMinOTDim,    46.000000 * AKcMinOTDim,    47.000000 * AKcMinOTDim,    48.000000 * AKcMinOTDim,
+    49.000000 * AKcMinOTDim,    50.000000 * AKcMinOTDim,    51.000000 * AKcMinOTDim,    52.000000 * AKcMinOTDim,
+    53.000000 * AKcMinOTDim,    54.000000 * AKcMinOTDim,    55.000000 * AKcMinOTDim,    56.000000 * AKcMinOTDim,
+    57.000000 * AKcMinOTDim,    58.000000 * AKcMinOTDim,    59.000000 * AKcMinOTDim,    60.000000 * AKcMinOTDim,
+    61.000000 * AKcMinOTDim,    62.000000 * AKcMinOTDim,    63.000000 * AKcMinOTDim,    64.000000 * AKcMinOTDim,
+    65.000000 * AKcMinOTDim,    66.000000 * AKcMinOTDim,    67.000000 * AKcMinOTDim,    68.000000 * AKcMinOTDim,
+    69.000000 * AKcMinOTDim,    70.000000 * AKcMinOTDim,    71.000000 * AKcMinOTDim,    72.000000 * AKcMinOTDim,
+    73.000000 * AKcMinOTDim,    74.000000 * AKcMinOTDim,    75.000000 * AKcMinOTDim,    76.000000 * AKcMinOTDim,
+    77.000000 * AKcMinOTDim,    78.000000 * AKcMinOTDim,    79.000000 * AKcMinOTDim,    80.000000 * AKcMinOTDim,
+    81.000000 * AKcMinOTDim,    82.000000 * AKcMinOTDim,    83.000000 * AKcMinOTDim,    84.000000 * AKcMinOTDim,
+    85.000000 * AKcMinOTDim,    86.000000 * AKcMinOTDim,    87.000000 * AKcMinOTDim,    88.000000 * AKcMinOTDim,
+    89.000000 * AKcMinOTDim,    90.000000 * AKcMinOTDim,    91.000000 * AKcMinOTDim,    92.000000 * AKcMinOTDim,
+    93.000000 * AKcMinOTDim,    94.000000 * AKcMinOTDim,    95.000000 * AKcMinOTDim,    96.000000 * AKcMinOTDim,
+    97.000000 * AKcMinOTDim,    98.000000 * AKcMinOTDim,    99.000000 * AKcMinOTDim,    100.000000 * AKcMinOTDim,
+    101.000000 * AKcMinOTDim,   102.000000 * AKcMinOTDim,   103.000000 * AKcMinOTDim,   104.000000 * AKcMinOTDim,
+    105.000000 * AKcMinOTDim,   106.000000 * AKcMinOTDim,   107.000000 * AKcMinOTDim,   108.000000 * AKcMinOTDim,
+    109.000000 * AKcMinOTDim,   110.000000 * AKcMinOTDim,   111.000000 * AKcMinOTDim,   112.000000 * AKcMinOTDim,
+    113.000000 * AKcMinOTDim,   114.000000 * AKcMinOTDim,   115.000000 * AKcMinOTDim,   116.000000 * AKcMinOTDim,
+    117.000000 * AKcMinOTDim,   118.000000 * AKcMinOTDim,   119.000000 * AKcMinOTDim,   120.000000 * AKcMinOTDim,
+    121.000000 * AKcMinOTDim,   122.000000 * AKcMinOTDim,   123.000000 * AKcMinOTDim,   124.000000 * AKcMinOTDim,
+    125.000000 * AKcMinOTDim,   126.000000 * AKcMinOTDim,   127.000000 * AKcMinOTDim,   128.000000 * AKcMinOTDim,
+    129.000000 * AKcMinOTDim,   130.000000 * AKcMinOTDim,   131.000000 * AKcMinOTDim,   132.000000 * AKcMinOTDim,
+    133.000000 * AKcMinOTDim,   134.000000 * AKcMinOTDim,   135.000000 * AKcMinOTDim,   136.000000 * AKcMinOTDim,
+    137.000000 * AKcMinOTDim,   138.000000 * AKcMinOTDim,   139.000000 * AKcMinOTDim,   140.000000 * AKcMinOTDim,
+    141.000000 * AKcMinOTDim,   142.000000 * AKcMinOTDim,   143.000000 * AKcMinOTDim,   144.000000 * AKcMinOTDim,
+    145.000000 * AKcMinOTDim,   146.000000 * AKcMinOTDim,   147.000000 * AKcMinOTDim,   148.000000 * AKcMinOTDim,
+    149.000000 * AKcMinOTDim,   150.000000 * AKcMinOTDim,   151.000000 * AKcMinOTDim,   152.000000 * AKcMinOTDim,
+    153.000000 * AKcMinOTDim,   154.000000 * AKcMinOTDim,   155.000000 * AKcMinOTDim,   156.000000 * AKcMinOTDim,
+    157.000000 * AKcMinOTDim,   158.000000 * AKcMinOTDim,   159.000000 * AKcMinOTDim,   160.000000 * AKcMinOTDim,
+    161.000000 * AKcMinOTDim,   162.000000 * AKcMinOTDim,   163.000000 * AKcMinOTDim,   164.000000 * AKcMinOTDim,
+    165.000000 * AKcMinOTDim,   166.000000 * AKcMinOTDim,   167.000000 * AKcMinOTDim,   168.000000 * AKcMinOTDim,
+    169.000000 * AKcMinOTDim,   170.000000 * AKcMinOTDim,   171.000000 * AKcMinOTDim,   172.000000 * AKcMinOTDim,
+    173.000000 * AKcMinOTDim,   174.000000 * AKcMinOTDim,   175.000000 * AKcMinOTDim,   176.000000 * AKcMinOTDim,
+    177.000000 * AKcMinOTDim,   178.000000 * AKcMinOTDim,   179.000000 * AKcMinOTDim,   180.000000 * AKcMinOTDim,
+    181.000000 * AKcMinOTDim,   182.000000 * AKcMinOTDim,   183.000000 * AKcMinOTDim,   184.000000 * AKcMinOTDim,
+    185.000000 * AKcMinOTDim,   186.000000 * AKcMinOTDim,   187.000000 * AKcMinOTDim,   188.000000 * AKcMinOTDim,
+    189.000000 * AKcMinOTDim,   190.000000 * AKcMinOTDim,   191.000000 * AKcMinOTDim,   192.000000 * AKcMinOTDim,
+    193.000000 * AKcMinOTDim,   194.000000 * AKcMinOTDim,   195.000000 * AKcMinOTDim,   196.000000 * AKcMinOTDim,
+    197.000000 * AKcMinOTDim,   198.000000 * AKcMinOTDim,   199.000000 * AKcMinOTDim,   200.000000 * AKcMinOTDim,
+    201.000000 * AKcMinOTDim,   202.000000 * AKcMinOTDim,   203.000000 * AKcMinOTDim,   204.000000 * AKcMinOTDim,
+    205.000000 * AKcMinOTDim,   206.000000 * AKcMinOTDim,   207.000000 * AKcMinOTDim,   208.000000 * AKcMinOTDim,
+    209.000000 * AKcMinOTDim,   210.000000 * AKcMinOTDim,   211.000000 * AKcMinOTDim,   212.000000 * AKcMinOTDim,
+    213.000000 * AKcMinOTDim,   214.000000 * AKcMinOTDim,   215.000000 * AKcMinOTDim,   216.000000 * AKcMinOTDim,
+    217.000000 * AKcMinOTDim,   218.000000 * AKcMinOTDim,   219.000000 * AKcMinOTDim,   220.000000 * AKcMinOTDim,
+    221.000000 * AKcMinOTDim,   222.000000 * AKcMinOTDim,   223.000000 * AKcMinOTDim,   224.000000 * AKcMinOTDim,
+    225.000000 * AKcMinOTDim,   226.000000 * AKcMinOTDim,   227.000000 * AKcMinOTDim,   228.000000 * AKcMinOTDim,
+    229.000000 * AKcMinOTDim,   230.000000 * AKcMinOTDim,   231.000000 * AKcMinOTDim,   232.000000 * AKcMinOTDim,
+    233.000000 * AKcMinOTDim,   234.000000 * AKcMinOTDim,   235.000000 * AKcMinOTDim,   236.000000 * AKcMinOTDim,
+    237.000000 * AKcMinOTDim,   238.000000 * AKcMinOTDim,   239.000000 * AKcMinOTDim,   240.000000 * AKcMinOTDim,
+    241.000000 * AKcMinOTDim,   242.000000 * AKcMinOTDim,   243.000000 * AKcMinOTDim,   244.000000 * AKcMinOTDim,
+    245.000000 * AKcMinOTDim,   246.000000 * AKcMinOTDim,   247.000000 * AKcMinOTDim,   248.000000 * AKcMinOTDim,
+    249.000000 * AKcMinOTDim,   250.000000 * AKcMinOTDim,   251.000000 * AKcMinOTDim,   252.000000 * AKcMinOTDim,
     253.000000 * AKcMinOTDim,   254.000000 * AKcMinOTDim,   255.000000 * AKcMinOTDim,   256.000000 * AKcMinOTDim
 };
 
@@ -514,29 +514,29 @@ AKrRayCastCoefficients_Initialize(UUtUns32 inDivs)
 	if (inDivs > MAX_AKIRA_RAYS) {
 		COrConsole_Printf("allocated too many akira rays");
 	}
-	
+
 	inDivs = UUmMin(inDivs, MAX_AKIRA_RAYS);
 
 	{
 		UUtUns16		numTotalRays = 0;
 		AKtRay*			curDestRay;
-			
+
 		UUtUns16	itr;
 		UUtUns32	x,y;
-		
+
 		float		dimOffset = 1.f / ((float) inDivs);
 		UUtUns32	table[4] = { 0,2,1,3 };
 
-		
+
 		AKgFrame.rays = NULL;
-		
+
 		UUmAssert(AKgFrame.rays == NULL);
 		AKgFrame.numRays = inDivs * inDivs;
 		AKgFrame.rays = AKgInternalRayStorage;
 		UUmError_ReturnOnNull(AKgFrame.rays);
-		
+
 		curDestRay = AKgFrame.rays;
-					
+
 		for(x = 0; x < inDivs; x++)
 		{
 			for(y = 0; y < inDivs; y++)
@@ -547,16 +547,16 @@ AKrRayCastCoefficients_Initialize(UUtUns32 inDivs)
 				numTotalRays++;
 			}
 		}
-		
+
 		UUmAssert(numTotalRays == inDivs * inDivs);
-		
+
 		for(itr = 0; itr < AKcNumTemperalFrames; itr++)
 		{
 			AKgRayOffset[itr].u_offset = AKgSourceRayOffset[itr].u_offset * dimOffset;
 			AKgRayOffset[itr].v_offset = AKgSourceRayOffset[itr].v_offset * dimOffset;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -568,11 +568,11 @@ AKrRayCastCoefficients_Terminate(
 	if(AKgFrame.rays != NULL) {
 		AKgFrame.rays = NULL;
 	}
-	
+
 	#if 0//UUmSIMD != UUmSIMD_None
-	
+
 		AKrRayCastCoefficients_Terminate_SIMD();
-	
+
 	#endif
 }
 
@@ -612,7 +612,7 @@ typedef struct raycast_block_type
 	float vX;
 	float vY;
 	float vZ;
-	
+
 	float invVX;
 	float invVY;
 	float invVZ;
@@ -670,7 +670,7 @@ static void traverse_single_ray(raycast_block_type *in_block)
 		UUtBool far_clipped;
 
 		parametric_start = parametric_end;
-		
+
 		UUmAssert(AKmOctTree_IsLeafNode(cur_node_index));
 
 		if(0xFFFFFFFF == cur_node_index) {
@@ -678,31 +678,31 @@ static void traverse_single_ray(raycast_block_type *in_block)
 
 			break;
 		}
-		
+
 		//UUmAssert(oct_tree_leaf_index < inEnvironment->octTree->leafNodeArray->numNodes);
-		
+
 		curOTLeafNode = in_block->leafNodeArray + oct_tree_leaf_index;
-		
+
 		UUr2BitVector_Set(in_block->ot2LeafNodeVisibility, oct_tree_leaf_index);
-		
+
 		//
 		dim_Encode = curOTLeafNode->dim_Encode;
-					
+
 		curFullDim = (float)(1 << ((dim_Encode >> AKcOctTree_Shift_Dim) & AKcOctTree_Mask_Dim));
 		curFullDim *= AKcMinOTDim;
-		
+
 		maxX = (float)((dim_Encode >> AKcOctTree_Shift_X) & AKcOctTree_Mask_X);
 		maxY = (float)((dim_Encode >> AKcOctTree_Shift_Y) & AKcOctTree_Mask_Y);
 		maxZ = (float)((dim_Encode >> AKcOctTree_Shift_Z) & AKcOctTree_Mask_Z);
-		
+
 		maxX -= 255.0f;
 		maxY -= 255.0f;
 		maxZ -= 255.0f;
-		
+
 		maxX *= AKcMinOTDim;
 		maxY *= AKcMinOTDim;
 		maxZ *= AKcMinOTDim;
-		
+
 		minX = maxX - curFullDim;
 		minY = maxY - curFullDim;
 		minZ = maxZ - curFullDim;
@@ -718,18 +718,18 @@ static void traverse_single_ray(raycast_block_type *in_block)
 
 
 		// Find out which plane I cross
-							
+
 		// project onto XY plane
 		xPlane = (in_block->xSideFlag == AKcOctTree_Side_PosX) ? maxX : minX;
 		yPlane = (in_block->ySideFlag == AKcOctTree_Side_PosY) ? maxY : minY;
 		zPlane = (in_block->zSideFlag == AKcOctTree_Side_PosZ) ? maxZ : minZ;
-		
+
 		// calculate sideCrossing
 		{
 			float parametric_distance_to_x_plane = in_block->invVX * (xPlane - in_block->startPointX);
 			float parametric_distance_to_y_plane = in_block->invVY * (yPlane - in_block->startPointY);
 			float parametric_distance_to_z_plane = in_block->invVZ * (zPlane - in_block->startPointZ);
-			
+
 
 			if ((parametric_distance_to_x_plane <= parametric_distance_to_y_plane) && (parametric_distance_to_x_plane <= parametric_distance_to_z_plane)) {
 				sideCrossing = in_block->xSideFlag;
@@ -750,50 +750,50 @@ static void traverse_single_ray(raycast_block_type *in_block)
 			if (far_clipped) {
 				parametric_end = 1.f;
 			}
-		}					
-		
+		}
+
 		#if defined(DEBUG_COLLISION2_TRAVERSAL) && DEBUG_COLLISION2_TRAVERSAL
-			
+
 			bBox.minPoint.x = minX;
 			bBox.minPoint.y = minY;
 			bBox.minPoint.z = minZ;
 			bBox.maxPoint.x = maxX;
 			bBox.maxPoint.y = maxY;
 			bBox.maxPoint.z = maxZ;
-			
+
 			start.x = startPointX;
 			start.y = startPointY;
 			start.z = startPointZ;
 			end.x = endPointX;
 			end.y = endPointY;
 			end.z = endPointZ;
-			
+
 			in = CLrBox_Line(&bBox, &start, &end);
-			
+
 			UUmAssert(in);
 
 		#endif
-		
+
 		stopChecking = UUcFalse;
-		
+
 		if(curOTLeafNode->gqIndirectIndex_Encode == 0)
 		{
 			#if BRENTS_CHEESY_PROFILE && !BRENTS_CHEESY_PROFILE_ONLY_FUNC
-			
+
 				funcNumSkippedOctants++;
-				
+
 			#endif
-			
+
 			goto skip;
 		}
-		
+
 		AKmOctTree_DecodeGQIndIndices(curOTLeafNode->gqIndirectIndex_Encode, startIndirectIndex, length);
-		
+
 		#if BRENTS_CHEESY_PROFILE && !BRENTS_CHEESY_PROFILE_ONLY_FUNC
 			numQuadChecks = 0;
 			funcQuadTraversalStart = UUrMachineTime_High();
 		#endif
-		
+
 		for(curGQIndIndex = 0; curGQIndIndex < length; curGQIndIndex++)
 		{
 			const AKtGQ_General*				curGQGeneral;
@@ -807,19 +807,19 @@ static void traverse_single_ray(raycast_block_type *in_block)
 			UUtUns32 old_uns_32;
 
 			curGQIndex = in_block->octTreeGQIndices[curGQIndIndex + startIndirectIndex];
-			
+
 			//UUmAssert(curGQIndex < inEnvironment->gqGeneralArray->numGQs);
-			
+
 			gotPlaneEqu = UUcFalse;
 			cur_gq_bv_offset = BV_INDEX(curGQIndex);
 			cur_gq_bv_bit_mask = BV_BIT(curGQIndex);
 			curGQGeneral = in_block->gqGeneralArray + curGQIndex;
 			curGQCollision = in_block->gqCollisionArray + curGQIndex;
-			
-			
+
+
 			//Mark this gq as visible
 			old_uns_32 = in_block->gqComputedBackFaceBV[cur_gq_bv_offset];
-			
+
 			if (old_uns_32 & cur_gq_bv_bit_mask)
 			{
 				if (in_block->gqBackFaceBV[cur_gq_bv_offset] & cur_gq_bv_bit_mask)
@@ -828,7 +828,7 @@ static void traverse_single_ray(raycast_block_type *in_block)
 				}
 			}
 
-			
+
 			//Mark this gq as visible
 			//if(UUrBitVector_TestAndSetBit(in_block->gqComputedBackFaceBV, curGQIndex))
 			//{
@@ -856,12 +856,12 @@ static void traverse_single_ray(raycast_block_type *in_block)
 	 					curGQCollision->planeEquIndex,
 						in_block->planeEquArray,
 						a, b, c, d);
-					
+
 					curPoint = in_block->pointArray + curGQGeneral->m3Quad.vertexIndices.indices[0];
 	 				viewVectorX = in_block->startPointX - curPoint->x;
 	 				viewVectorY = in_block->startPointY - curPoint->y;
 	 				viewVectorZ = in_block->startPointZ - curPoint->z;
-	 							 				
+
 					if ((viewVectorX * a + viewVectorY * b + viewVectorZ * c) < 0.0f) {
 						in_block->gqBackFaceBV[cur_gq_bv_offset] |= cur_gq_bv_bit_mask;
 	 					//UUrBitVector_SetBit(in_block->gqBackFaceBV, curGQIndex);
@@ -870,33 +870,33 @@ static void traverse_single_ray(raycast_block_type *in_block)
 	 			}
 			}
 
-			UUr2BitVector_Set(in_block->gq2VisibilityVector, curGQIndex);					
+			UUr2BitVector_Set(in_block->gq2VisibilityVector, curGQIndex);
 
 			if (curGQGeneral->flags & AKcGQ_Flag_Occlude_Skip) continue;
-			
+
 			if(!stopChecking)
 			{
 				#if BRENTS_CHEESY_PROFILE && !BRENTS_CHEESY_PROFILE_ONLY_FUNC
-					
+
 					numQuadChecks++;
-					
+
 				#endif
-				
+
 				if(!gotPlaneEqu) {
 					AKmPlaneEqu_GetComponents(curGQCollision->planeEquIndex, in_block->planeEquArray, a, b, c, d);
 				}
-				
+
 				{
 					float t, num1, denom;
 
 					denom = a * in_block->vX + b * in_block->vY + c * in_block->vZ;
-					
+
 					if(denom == 0.0f) continue;
-					
+
 					num1 = -(a * in_block->startPointX + b * in_block->startPointY + c * in_block->startPointZ + d);
-					
+
 					t = num1 / denom;
-					
+
 					if (t < parametric_start || t > parametric_end) continue;
 
 					in_block->testPoint.x = in_block->vX * t + in_block->startPointX;
@@ -942,12 +942,12 @@ static void traverse_single_ray(raycast_block_type *in_block)
 					}
 
 					stopChecking = always_positive | always_negative;
-				}			
+				}
 			}
 		}
-		
+
 		#if BRENTS_CHEESY_PROFILE && !BRENTS_CHEESY_PROFILE_ONLY_FUNC
-		
+
 			if(stopChecking)
 			{
 				funcHitOctant_QuadTraversalTime += UUrMachineTime_High() - funcQuadTraversalStart;
@@ -963,7 +963,7 @@ static void traverse_single_ray(raycast_block_type *in_block)
 				funcNumMissOctants++;
 			}
 		#endif
-		
+
 	skip:
 
 	#if OCT_TREE_TOOL_SUPPORT
@@ -973,14 +973,14 @@ static void traverse_single_ray(raycast_block_type *in_block)
 		{
 			M3tPoint3D	minPoint;
 			M3tPoint3D	maxPoint;
-			
+
 			minPoint.x = minX + 0.1f;
 			minPoint.y = minY + 0.1f;
 			minPoint.z = minZ + 0.1f;
 			maxPoint.x = maxX - 0.1f;
 			maxPoint.y = maxY - 0.1f;
 			maxPoint.z = maxZ - 0.1f;
-			
+
 			if(/*endNodeIndex == curNodeIndex ||*/ stopChecking)
 			{
 				// CB: hit leaf nodes are red
@@ -1009,7 +1009,7 @@ static void traverse_single_ray(raycast_block_type *in_block)
 
 		// Lets move to the next node
 		cur_node_index = curOTLeafNode->adjInfo[sideCrossing];
-		
+
 		if(!AKmOctTree_IsLeafNode(cur_node_index))
 		{
 			float curCenterPointU;
@@ -1020,9 +1020,9 @@ static void traverse_single_ray(raycast_block_type *in_block)
 			float vc;
 
 			// need to traverse quad tree
-			
+
 			curHalfDim = curFullDim * 0.5f;
-			
+
 			// First compute the intersection point
 			switch(sideCrossing)
 			{
@@ -1034,7 +1034,7 @@ static void traverse_single_ray(raycast_block_type *in_block)
 					uc = in_block->startPointY + in_block->vY * magic_temp;
 					vc = in_block->startPointZ + in_block->vZ * magic_temp;
 					break;
-					
+
 				case AKcOctTree_Side_NegY:
 				case AKcOctTree_Side_PosY:
 					curCenterPointU = minX + curHalfDim;
@@ -1043,7 +1043,7 @@ static void traverse_single_ray(raycast_block_type *in_block)
 					uc = in_block->startPointX + in_block->vX * magic_temp;
 					vc = in_block->startPointZ + in_block->vZ * magic_temp;
 					break;
-					
+
 				case AKcOctTree_Side_NegZ:
 				case AKcOctTree_Side_PosZ:
 					curCenterPointU = minX + curHalfDim;
@@ -1052,25 +1052,25 @@ static void traverse_single_ray(raycast_block_type *in_block)
 					uc = in_block->startPointX + in_block->vX * magic_temp;
 					vc = in_block->startPointY + in_block->vY * magic_temp;
 					break;
-				
+
 				default:
 					UUmAssert(0);
 			}
-				
+
 			// next traverse the tree
 			while(1)
 			{
-				const AKtQuadTree_Node*			curQTIntNode;		
+				const AKtQuadTree_Node*			curQTIntNode;
 				UUtUns32 curOctant;
 
 				curQTIntNode = in_block->qtInteriorNodeArray + cur_node_index;
-				
+
 				curOctant = 0;
 				if(uc > curCenterPointU) curOctant |= AKcQuadTree_SideBV_U;
 				if(vc > curCenterPointV) curOctant |= AKcQuadTree_SideBV_V;
-					
+
 				cur_node_index = curQTIntNode->children[curOctant];
-				
+
 				if(AKmOctTree_IsLeafNode(cur_node_index)) break;
 				curHalfDim *= 0.5f;
 				curCenterPointU += (curOctant & AKcQuadTree_SideBV_U) ? curHalfDim : -curHalfDim;
@@ -1095,25 +1095,25 @@ AKiEnvironment_RayCastOctTree(
 {
 #if BRENTS_CHEESY_PROFILE
 	UUtUns64	funcStart;
-	
+
 	#if !BRENTS_CHEESY_PROFILE_ONLY_FUNC
-	
+
 	UUtUns64	funcRayStart;
 	UUtUns64	funcOctantStart;
 	UUtUns64	funcQuadTraversalStart;
-	
+
 	UUtUns32	numQuadChecks;
-	
+
 	#endif
-	
+
 	UUtUns64	funcEnd;
-	
+
 #endif
 
 
 
-	
-	
+
+
 
 	float						uv_far_initial_x, uv_far_initial_y, uv_far_initial_z;
 	float						u_far_delta_x, u_far_delta_y, u_far_delta_z;
@@ -1121,13 +1121,13 @@ AKiEnvironment_RayCastOctTree(
 	float						uv_near_initial_x, uv_near_initial_y, uv_near_initial_z;
 	float						u_near_delta_x, u_near_delta_y, u_near_delta_z;
 	float						v_near_delta_x, v_near_delta_y, v_near_delta_z;
-	
+
 	UUtUns32					itr, numRays;
 	AKtRay*						curRay;
-	AKtRayOffset				*curRayOffset = AKgRayOffset + (gFrameNum % AKcNumTemperalFrames);				
-	
+	AKtRayOffset				*curRayOffset = AKgRayOffset + (gFrameNum % AKcNumTemperalFrames);
+
 	AKtEnvironment_Private*	environmentPrivate = (AKtEnvironment_Private*)(TMrTemplate_PrivateData_GetDataPtr(AKgTemplate_PrivateData, inEnvironment));
-	
+
 
 	raycast_block_type				raycast_block;
 
@@ -1136,7 +1136,7 @@ AKiEnvironment_RayCastOctTree(
 		M3tPoint3D				start, end;
 		UUtBool					in;
 	#endif
-	
+
 	#if BRENTS_CHEESY_PROFILE
 		funcNum++;
 		funcStart = UUrMachineTime_High();
@@ -1147,7 +1147,7 @@ AKiEnvironment_RayCastOctTree(
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Enter(AKg_RayCastOctTree_Timer);
 #endif
-	
+
 	raycast_block.pointArray = inEnvironment->pointArray->points;
 	raycast_block.planeEquArray = inEnvironment->planeArray->planes;
 	raycast_block.interiorNodeArray = inEnvironment->octTree->interiorNodeArray->nodes;
@@ -1161,9 +1161,9 @@ AKiEnvironment_RayCastOctTree(
 	raycast_block.gqBackFaceBV = environmentPrivate->gqBackFaceBV;
 
 	raycast_block.gq2VisibilityVector = environmentPrivate->gq2VisibilityVector;
-	
+
 	//UUrMemory_Clear(environmentPrivate->gqVisibilityBV, (inEnvironment->gqArray->numGQs + 3) >> 2);
-	
+
 	UUrBitVector_ClearBitAll(
 		environmentPrivate->gqComputedBackFaceBV,
 		inEnvironment->gqGeneralArray->numGQs);
@@ -1183,7 +1183,7 @@ AKiEnvironment_RayCastOctTree(
 			NULL);
 
 
-		raycast_block.startNodeIndex = AKrFindOctTreeNodeIndex(raycast_block.interiorNodeArray, cameraLocation.x, cameraLocation.y, cameraLocation.z, NULL);		
+		raycast_block.startNodeIndex = AKrFindOctTreeNodeIndex(raycast_block.interiorNodeArray, cameraLocation.x, cameraLocation.y, cameraLocation.z, NULL);
 
 		raycast_block.total_min_x = cameraLocation.x;
 		raycast_block.total_min_y = cameraLocation.y;
@@ -1192,7 +1192,7 @@ AKiEnvironment_RayCastOctTree(
 		raycast_block.total_max_x = cameraLocation.x;
 		raycast_block.total_max_y = cameraLocation.y;
 		raycast_block.total_max_z = cameraLocation.z;
-	}	
+	}
 
 	// cache the interpolation bases
 	{
@@ -1201,104 +1201,104 @@ AKiEnvironment_RayCastOctTree(
 
 		M3rCamera_GetWorldFrustum(
 			inCamera,
-			frustumWorldPoints,		
+			frustumWorldPoints,
 			frustumWorldPlanes);
 
 		uv_far_initial_x = frustumWorldPoints[4].x;
 		uv_far_initial_y = frustumWorldPoints[4].y;
 		uv_far_initial_z = frustumWorldPoints[4].z;
-		
+
 		u_far_delta_x = frustumWorldPoints[5].x - uv_far_initial_x;
 		u_far_delta_y = frustumWorldPoints[5].y - uv_far_initial_y;
 		u_far_delta_z = frustumWorldPoints[5].z - uv_far_initial_z;
-		
+
 		v_far_delta_x = frustumWorldPoints[6].x - uv_far_initial_x;
 		v_far_delta_y = frustumWorldPoints[6].y - uv_far_initial_y;
 		v_far_delta_z = frustumWorldPoints[6].z - uv_far_initial_z;
-		
+
 		uv_near_initial_x = frustumWorldPoints[0].x;
 		uv_near_initial_y = frustumWorldPoints[0].y;
 		uv_near_initial_z = frustumWorldPoints[0].z;
-		
+
 		u_near_delta_x = frustumWorldPoints[1].x - uv_near_initial_x;
 		u_near_delta_y = frustumWorldPoints[1].y - uv_near_initial_y;
 		u_near_delta_z = frustumWorldPoints[1].z - uv_near_initial_z;
-		
+
 		v_near_delta_x = frustumWorldPoints[2].x - uv_near_initial_x;
 		v_near_delta_y = frustumWorldPoints[2].y - uv_near_initial_y;
 		v_near_delta_z = frustumWorldPoints[2].z - uv_near_initial_z;
 	}
-		
+
 	// Begin traversing all the rays
 		numRays = AKgFrame.numRays;
 		curRay = AKgFrame.rays;
-		
+
 	#if BRENTS_CHEESY_PROFILE && !BRENTS_CHEESY_PROFILE_ONLY_FUNC
 		funcNumRays += numRays;
 		funcRayStart = UUrMachineTime_High();
 	#endif
-	
+
 		for(itr = 0; itr < numRays; itr++, curRay++)
 		{
 			float u, v;
 
 			u = curRay->u + curRayOffset->u_offset;
 			v = curRay->v + curRayOffset->v_offset;
-			
+
 			raycast_block.endPointX = uv_far_initial_x + u * u_far_delta_x + v * v_far_delta_x;
 			raycast_block.endPointY = uv_far_initial_y + u * u_far_delta_y + v * v_far_delta_y;
 			raycast_block.endPointZ = uv_far_initial_z + u * u_far_delta_z + v * v_far_delta_z;
-			
+
 			raycast_block.startPointX = uv_near_initial_x + u * u_near_delta_x + v * v_near_delta_x;
 			raycast_block.startPointY = uv_near_initial_y + u * u_near_delta_y + v * v_near_delta_y;
 			raycast_block.startPointZ = uv_near_initial_z + u * u_near_delta_z + v * v_near_delta_z;
-			
+
 			//numGQsChecked = 0;
 #if OCT_TREE_TOOL_SUPPORT
 			raycast_block.testPoint.x = raycast_block.endPointX;
 			raycast_block.testPoint.y = raycast_block.endPointY;
 			raycast_block.testPoint.z = raycast_block.endPointZ;
 #endif
-			
+
 			raycast_block.vX = raycast_block.endPointX - raycast_block.startPointX;
 			raycast_block.vY = raycast_block.endPointY - raycast_block.startPointY;
 			raycast_block.vZ = raycast_block.endPointZ - raycast_block.startPointZ;
-			
+
 			//UUmAssert(vX != 0.0f);
 			//UUmAssert(vY != 0.0f);
 			//UUmAssert(vZ != 0.0f);
-			
+
 			raycast_block.invVX = 1.0f / raycast_block.vX;
 			raycast_block.invVY = 1.0f / raycast_block.vY;
 			raycast_block.invVZ = 1.0f / raycast_block.vZ;
-			
+
 			// Compute the side flags
 			raycast_block.xSideFlag = AKcOctTree_Side_NegX + (raycast_block.vX > 0.0f);
 			raycast_block.ySideFlag = AKcOctTree_Side_NegY + (raycast_block.vY > 0.0f);
 			raycast_block.zSideFlag = AKcOctTree_Side_NegZ + (raycast_block.vZ > 0.0f);
-						
+
 			#if BRENTS_CHEESY_PROFILE && !BRENTS_CHEESY_PROFILE_ONLY_FUNC
 				funcOctantStart = UUrMachineTime_High();
 			#endif
-			
+
 			traverse_single_ray(&raycast_block);
-			
+
 			#if BRENTS_CHEESY_PROFILE && !BRENTS_CHEESY_PROFILE_ONLY_FUNC
 				funcOctantTime += UUrMachineTime_High() - funcOctantStart;
 			#endif
-			
+
 #if OCT_TREE_TOOL_SUPPORT
 			if(AKgDebug_ShowRays)
 			{
 				M3tPoint3D	points[2];
 				UUtUns16	colorLine;
-				
+
 				points[0].x = raycast_block.startPointX + 0.01f;
 				points[0].y = raycast_block.startPointY + 0.01f;
 				points[0].z = raycast_block.startPointZ + 0.01f;
-				
+
 				points[1] = raycast_block.testPoint;
-				
+
 				switch(gFrameNum % AKcNumTemperalFrames)
 				{
 					case 0:
@@ -1310,9 +1310,9 @@ AKiEnvironment_RayCastOctTree(
 					case 2:
 						colorLine = 0xff;
 						break;
-						
+
 				}
-				
+
 				M3rGeom_Line_Light(
 					&points[0],
 					&points[1],
@@ -1323,22 +1323,22 @@ AKiEnvironment_RayCastOctTree(
 
 	#if BRENTS_CHEESY_PROFILE
 		funcEnd = UUrMachineTime_High();
-		
+
 		#if !BRENTS_CHEESY_PROFILE_ONLY_FUNC
 			funcRayTime += funcEnd - funcRayStart;
 		#endif
-		
+
 		funcTime += funcEnd - funcStart;
-		
+
 	#endif
 
-	inEnvironment->visible_bbox.minPoint.x = raycast_block.total_min_x; 
-	inEnvironment->visible_bbox.minPoint.y = raycast_block.total_min_y; 
-	inEnvironment->visible_bbox.minPoint.z = raycast_block.total_min_z; 
+	inEnvironment->visible_bbox.minPoint.x = raycast_block.total_min_x;
+	inEnvironment->visible_bbox.minPoint.y = raycast_block.total_min_y;
+	inEnvironment->visible_bbox.minPoint.z = raycast_block.total_min_z;
 
-	inEnvironment->visible_bbox.maxPoint.x = raycast_block.total_max_x; 
-	inEnvironment->visible_bbox.maxPoint.y = raycast_block.total_max_y; 
-	inEnvironment->visible_bbox.maxPoint.z = raycast_block.total_max_z; 
+	inEnvironment->visible_bbox.maxPoint.x = raycast_block.total_max_x;
+	inEnvironment->visible_bbox.maxPoint.y = raycast_block.total_max_y;
+	inEnvironment->visible_bbox.maxPoint.z = raycast_block.total_max_z;
 
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Exit(AKg_RayCastOctTree_Timer);
@@ -1383,11 +1383,11 @@ AKrEnvironment_StartFrame(
 	UUtError				error;
 	AKtEnvironment_Private*	environmentPrivate = (AKtEnvironment_Private*)(TMrTemplate_PrivateData_GetDataPtr(AKgTemplate_PrivateData, inEnvironment));
 	UUtUns32				debugState;
-	
+
 	//return UUcError_None;
-	
+
 	debugState = M3rGeom_State_Get(M3cGeomStateIntType_DebugMode);
-	
+
 	if(AKgDrawGhostGQs)
 	{
 		debugState |= M3cGeomState_DebugMode_DrawGhostGQs;
@@ -1396,7 +1396,7 @@ AKrEnvironment_StartFrame(
 	{
 		debugState &= ~M3cGeomState_DebugMode_DrawGhostGQs;
 	}
-	
+
 	if(AKgDebug_DebugMaps)
 	{
 		debugState |= M3cGeomState_DebugMode_UseEnvDbgTexture;
@@ -1405,16 +1405,16 @@ AKrEnvironment_StartFrame(
 	{
 		debugState &= ~M3cGeomState_DebugMode_UseEnvDbgTexture;
 	}
-	
+
 	M3rGeom_State_Set(M3cGeomStateIntType_DebugMode, debugState);
-		
+
 	if(AKgNoneTexture == NULL) {
 		TMrInstance_GetDataPtr(M3cTemplate_TextureMap, "NONE", (void **) (&AKgNoneTexture));
 	}
-		
+
 	error = M3rEnv_SetCamera(inCamera);
 	UUmError_ReturnOnError(error);
-		
+
 	{
 		UUtBool is_equal;
 		UUtBool cast_rays = UUcTrue;
@@ -1428,7 +1428,7 @@ AKrEnvironment_StartFrame(
 
 		M3rCamera_GetViewData(inCamera, &newCameraLocation, &newCameraViewVector, &newCameraUpVector);
 
-		is_equal = 
+		is_equal =
 			(MUmVector_GetDistanceSquared(newCameraLocation, oldCameraLocation) < UUmSQR(0.1f)) &&
 			(MUmVector_GetDistanceSquared(newCameraViewVector, oldCameraViewVector) < UUmSQR(0.05f)) &&
 			(MUmVector_GetDistanceSquared(newCameraUpVector, oldCameraUpVector) < UUmSQR(0.05f));
@@ -1443,7 +1443,7 @@ AKrEnvironment_StartFrame(
 		else {
 			AKgNumEqualFrames = 0;
 		}
-					
+
 		if (cast_rays) {
 			static UUtUns32 slow_aging = 0;
 			UUtBool sky_is_visible;
@@ -1465,7 +1465,7 @@ AKrEnvironment_StartFrame(
 			}
 
 			sky_is_visible = UUcFalse;
-			
+
 			{
 
 				for(ray_cast_itr = 0; ray_cast_itr < ray_cast_count; ray_cast_itr++)
@@ -1479,7 +1479,7 @@ AKrEnvironment_StartFrame(
 			if (sky_is_visible) {
 				environmentPrivate->sky_visibility = AKcNumTemperalFrames;
 			}
-			
+
 			oldCameraLocation = newCameraLocation;
 			oldCameraViewVector = newCameraViewVector;
 			oldCameraUpVector = newCameraUpVector;
@@ -1488,7 +1488,7 @@ AKrEnvironment_StartFrame(
 			// COrConsole_Printf("environment is still %d", ONgGameState->gameTime);
 		}
 	}
-			
+
 	if(AKgDebug_ShowOctTree == UUcTrue)
 	{
 //		AKiOctTree_Show(inEnvironment);
@@ -1510,28 +1510,28 @@ AKtGQ_Render*			AKgGQRenderArray;
 //
 // Shortly after I started writing a funky hash table bin sort thing I
 // discovered something wonderful. We're sorting on texture ID numbers,
-// which have a limited range, perfect material for a bin sort. 
+// which have a limited range, perfect material for a bin sort.
 //
 // The algorithm makes multiple passes on the visible GQ array. In the
 // first pass it counts the number of times each texture is used.
 // In the second pass it constructs a table of offsets, one offset for
-// each texture bin, into what will be the final visible GQ array. 
+// each texture bin, into what will be the final visible GQ array.
 // In the third pass it uses those offsets to populate a the final
 // visible GQ array.
 //
 // Disadantages over quicksort: More memory use is needed.
 // Advantages: We're running about 30 times faster :)
 //
-// Note that this subroutine assumes we're running with vertex lighting 
-// only. 
+// Note that this subroutine assumes we're running with vertex lighting
+// only.
 //
 
 #define MAX_TEXTURES 0x3780
 #define MAX_BINS 0x1000
 
 //
-// Note to Bungie, I'm grabbing the memory I need for this from 
-// psx2_stack_allocate. The memory should probably be declared inside 
+// Note to Bungie, I'm grabbing the memory I need for this from
+// psx2_stack_allocate. The memory should probably be declared inside
 // AKrEvnvironment_VisibleSort, but I'm trying to keep my stack space under
 // 8k so I can run the game with the stack on the scratch pad.
 //
@@ -1557,7 +1557,7 @@ static void UUcExternal_Call AKgFreeMemory(
 		UUrMemory_Block_Delete(AKgRemapTable);
 		AKgRemapTable= NULL;
 	}
-	
+
 	return;
 }
 
@@ -1597,7 +1597,7 @@ static void AKrEnvironment_VisibleSort(UUtUns32 *visibleArray, UUtUns32 numVisib
 	}
 
 	// Second pass, create a table of offsets. We're going to use these
-	// to figure out where each GQ goes in the new list. 
+	// to figure out where each GQ goes in the new list.
 
 	offset=0;
 
@@ -1638,7 +1638,7 @@ AKiEnvironment_ComputeVis(
 
 	AKtGQ_General*			gqGeneralArray;
 	AKtGQ_General*			curGQGeneral;
-	
+
 	UUtUns32				numGQs;
 
 	UUtUns16				curByteIndex;
@@ -1653,42 +1653,42 @@ AKiEnvironment_ComputeVis(
 	UUtUns32				debugState;
 	UUtUns32*				visibleArray;
 	UUtUns32				exceeded_max_visible_gqs_count = 0;
-	
+
 	numGQs			= inEnvironment->gqGeneralArray->numGQs;
-	
+
 	gqGeneralArray		= inEnvironment->gqGeneralArray->gqGeneral;
 	AKgGQRenderArray	= inEnvironment->gqRenderArray->gqRender;
 
 	debugState		= M3rGeom_State_Get(M3cGeomStateIntType_DebugMode);
 	drawGhostGQs	= (UUtBool)((debugState & M3cGeomState_DebugMode_DrawGhostGQs) != 0);
-	
+
 	visibleArray = environmentPrivate->visGQ_List;
-	
+
 	// Traverse the bit vector
 	for(curByteIndex = 0, curByte = (UUtUns8*)environmentPrivate->gq2VisibilityVector, curGQIndex = 0;
 		curByteIndex < (numGQs + 3) >> 2;
 		curByteIndex++, curByte++)
 	{
 		curByteValue = *curByte;
-		
+
 		if(curByteValue == 0)
 		{
 			curGQIndex += 4;
 			continue;
 		}
-		
+
 		for(cur2BitIndex = 0, cur2BitMask = 3;
 			(cur2BitIndex < 4) && (curGQIndex < numGQs);
 			cur2BitIndex++, curGQIndex++, cur2BitMask <<= 2)
 		{
 			curGQGeneral = gqGeneralArray + curGQIndex;
-			
+
 			if (drawGhostGQs && (curGQGeneral->flags & AKcGQ_Flag_NoTextureMask)) goto forceDraw;
-			
+
 			if (!(curByteValue & cur2BitMask)) continue;
 
 			if (curGQGeneral->flags & AKcGQ_Flag_NoTextureMask) continue;
-			
+
 forceDraw:
 #ifdef ROCKSTAR
 			if((curGQGeneral->flags & AKcGQ_Flag_Invisible)&&(curGQGeneral->flags & AKcGQ_Flag_Furniture))
@@ -1720,7 +1720,7 @@ forceDraw:
 				continue;
 			}
 #endif
-			
+
 			if (numVisible < AKcMaxVisibleGQs) {
 				visibleArray[numVisible++] = curGQIndex;
 			}
@@ -1729,7 +1729,7 @@ forceDraw:
 			}
 		}
 	}
-	
+
 	AKrEnvironment_VisibleSort(visibleArray, numVisible);
 
 	environmentPrivate->visGQ_Num = numVisible;
@@ -1769,14 +1769,14 @@ void AKrEnvironment_EndFrame_Tool(AKtEnvironment *inEnvironment)
 	float					curFullDim;
 
 	leafNodeArray = inEnvironment->octTree->leafNodeArray->nodes;
-	
+
 	if (AKgDebugLeafNodes != NULL)
 	{
 		for(itr = 0; itr < AKgDebugLeafNodes->numPages; itr++)
 		{
 			curLeafIndex = AKgDebugLeafNodes->pages[itr];
 			curLeafNode = leafNodeArray + curLeafIndex;
-			
+
 			dim_Encode = curLeafNode->dim_Encode;
 			curFullDim = AKgIntToFloatDim[(dim_Encode >> AKcOctTree_Shift_Dim) & AKcOctTree_Mask_Dim];
 			maxX = AKgIntToFloatXYZ[(dim_Encode >> AKcOctTree_Shift_X) & AKcOctTree_Mask_X];
@@ -1785,14 +1785,14 @@ void AKrEnvironment_EndFrame_Tool(AKtEnvironment *inEnvironment)
 			minX = maxX - curFullDim;
 			minY = maxY - curFullDim;
 			minZ = maxZ - curFullDim;
-		
+
 			minPoint.x = minX;
 			minPoint.y = minY;
 			minPoint.z = minZ;
 			maxPoint.x = maxX;
 			maxPoint.y = maxY;
 			maxPoint.z = maxZ;
-			
+
 			AKiBoundingBox_Draw(
 				&minPoint,
 				&maxPoint,
@@ -1802,16 +1802,16 @@ void AKrEnvironment_EndFrame_Tool(AKtEnvironment *inEnvironment)
 
 		AUrDict_Clear(AKgDebugLeafNodes);
 	}
-	
+
 	for(itr = 0; itr < AKgNumColDebugEntries; itr++)
 	{
 		M3rGeom_State_Push();
 			M3rGeom_State_Set(M3cGeomStateIntType_Fill, M3cGeomState_Fill_Line);
 			M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor,IMcShade_White);
 			M3rGeom_State_Set(M3cGeomStateIntType_Appearance, M3cGeomState_Appearance_Gouraud);
-	
+
 			ONrDrawSphere(
-				NULL, 
+				NULL,
 				AKgDebugEntry_Sphere[itr].radius,
 				&AKgDebugEntry_Sphere[itr].center);
 		M3rGeom_State_Pop();
@@ -1828,15 +1828,15 @@ AKrEnvironment_EndFrame(
 	UUtError				error;
 
 	gFrameNum++;
-	
+
 	M3rGeom_State_Push();
-	
+
 	M3rGeom_State_Set(
 		M3cGeomStateIntType_Alpha,
 		0xFF);
-		
+
 	M3rGeom_State_Commit();
-	
+
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Enter(AKg_ComputeVis_Timer);
 #endif
@@ -1846,7 +1846,7 @@ AKrEnvironment_EndFrame(
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Exit(AKg_ComputeVis_Timer);
 #endif
-	
+
 	error = M3rEnv_DrawGQList(environmentPrivate->visGQ_Num, environmentPrivate->visGQ_List);
 	UUmError_ReturnOnError(error);
 
@@ -1863,37 +1863,37 @@ void AKrEnvironment_PrintStats(void)
 {
 #if SUPPORT_DEBUG_FILES
 	BFtDebugFile *statsFile = BFrDebugFile_Open("raycastStats.txt");
-		
+
 	BFrDebugFile_Printf(statsFile, "time per func: %f"UUmNL, (float)funcTime / (float)funcNum);
-	
+
 	#if !BRENTS_CHEESY_PROFILE_ONLY_FUNC
 		BFrDebugFile_Printf(statsFile, "time per raycast: %f"UUmNL, (float)funcRayTime / (float)funcNumRays);
-		
+
 		BFrDebugFile_Printf(statsFile, "time per total octant: %f"UUmNL, (float)funcOctantTime / (float)(funcNumMissOctants + funcNumHitOctants + funcNumSkippedOctants));
 		BFrDebugFile_Printf(statsFile, "skipped / total octants: %f"UUmNL, (float)funcNumSkippedOctants / (float)(funcNumMissOctants + funcNumHitOctants + funcNumSkippedOctants));
-		
+
 		BFrDebugFile_Printf(statsFile, "missed octant:"UUmNL);
 			BFrDebugFile_Printf(statsFile, "\ttarversals per: %f"UUmNL, (float)funcMissOctant_NumQuadTraversals / (float)funcNumMissOctants);
 			BFrDebugFile_Printf(statsFile, "\ttime per quadTraversal: %f"UUmNL, (float)funcMissOctant_QuadTraversalTime / (float)funcMissOctant_NumQuadTraversals);
 			BFrDebugFile_Printf(statsFile, "\tchecks / traversal ratio: %f"UUmNL, (float)funcMissOctant_NumQuadChecks / (float)funcMissOctant_NumQuadTraversals);
-		
+
 		BFrDebugFile_Printf(statsFile, "hit octant:"UUmNL);
 			BFrDebugFile_Printf(statsFile, "\ttarversals per: %f"UUmNL, (float)funcHitOctant_NumQuadTraversals / (float)funcNumHitOctants);
 			BFrDebugFile_Printf(statsFile, "\ttime per quadTraversal: %f"UUmNL, (float)funcHitOctant_QuadTraversalTime / (float)funcHitOctant_NumQuadTraversals);
 			BFrDebugFile_Printf(statsFile, "\tchecks / traversal ratio: %f"UUmNL, (float)funcHitOctant_NumQuadChecks / (float)funcHitOctant_NumQuadTraversals);
 			BFrDebugFile_Printf(statsFile, "\tquads till hit: %f"UUmNL, (float)funcHitOctant_NumQuadsTillHit / (float)funcNumHitOctants);
-		
+
 
 		BFrDebugFile_Printf(statsFile, "raycasts per func: %f"UUmNL, (float)funcNumRays / (float)funcNum);
 		BFrDebugFile_Printf(statsFile, "total octants per raycast: %f"UUmNL, (float)(funcNumMissOctants + funcNumHitOctants + funcNumSkippedOctants) / (float)funcNumRays);
 		BFrDebugFile_Printf(statsFile, "missed octants per raycast: %f"UUmNL, (float)funcNumMissOctants / (float)funcNumRays);
 		BFrDebugFile_Printf(statsFile, "hit octants per raycast: %f"UUmNL, (float)funcNumHitOctants / (float)funcNumRays);
 		BFrDebugFile_Printf(statsFile, "skipped octants per raycast: %f"UUmNL, (float)funcNumSkippedOctants / (float)funcNumRays);
-		
+
 		BFrDebugFile_Printf(statsFile, "quadChecks per raycast: %f"UUmNL, (float)(funcMissOctant_NumQuadTraversals + funcHitOctant_NumQuadTraversals) / (float)funcNumRays);
-		
+
 	#endif
-	
+
 	BFrDebugFile_Close(statsFile);
 
 	return;

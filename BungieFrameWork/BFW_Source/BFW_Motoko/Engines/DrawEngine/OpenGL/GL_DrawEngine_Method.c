@@ -1,12 +1,12 @@
 /*
 	FILE:	GL_DrawEngine_Method.c
-	
+
 	AUTHOR:	Kevin Armstrong, Michael Evans
-	
+
 	CREATED: January 5, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1998
 
 */
@@ -48,11 +48,11 @@ UUtUns32	GLgClearColor = 0x00000000;
 
 
 #if 0
-GL_ALPHA, GL_ALPHA4, GL_ALPHA8, GL_ALPHA12, GL_ALPHA16, GL_LUMINANCE, GL_LUMINANCE4, 
-GL_LUMINANCE8, GL_LUMINANCE12, GL_LUMINANCE16, GL_LUMINANCE_ALPHA, GL_LUMINANCE4_ALPHA4, 
-GL_LUMINANCE6_ALPHA2, GL_LUMINANCE8_ALPHA8, GL_LUMINANCE12_ALPHA4, GL_LUMINANCE12_ALPHA12, 
-GL_LUMINANCE16_ALPHA16, GL_INTENSITY, GL_INTENSITY4, GL_INTENSITY8, GL_INTENSITY12, 
-GL_INTENSITY16, GL_RGB, GL_R3_G3_B2, GL_RGB4, GL_RGB5, GL_RGB8, GL_RGB10, GL_RGB12, 
+GL_ALPHA, GL_ALPHA4, GL_ALPHA8, GL_ALPHA12, GL_ALPHA16, GL_LUMINANCE, GL_LUMINANCE4,
+GL_LUMINANCE8, GL_LUMINANCE12, GL_LUMINANCE16, GL_LUMINANCE_ALPHA, GL_LUMINANCE4_ALPHA4,
+GL_LUMINANCE6_ALPHA2, GL_LUMINANCE8_ALPHA8, GL_LUMINANCE12_ALPHA4, GL_LUMINANCE12_ALPHA12,
+GL_LUMINANCE16_ALPHA16, GL_INTENSITY, GL_INTENSITY4, GL_INTENSITY8, GL_INTENSITY12,
+GL_INTENSITY16, GL_RGB, GL_R3_G3_B2, GL_RGB4, GL_RGB5, GL_RGB8, GL_RGB10, GL_RGB12,
 GL_RGB16, GL_RGBA, GL_RGBA2, GL_RGBA4, GL_RGB5_A1, GL_RGBA8, GL_RGB10_A2, GL_RGBA12, or GL_RGBA16.
 #endif
 
@@ -110,15 +110,15 @@ GLrDrawEngine_Method_ContextPrivateNew(
 	UUtUns16				activeDevice;
 	UUtUns16				activeMode;
 	M3tDrawEngineCaps*		drawEngineCaps;
-	
+
 	UUrStartupMessage("creating new opengl context");
-	
+
 	*outAPI = M3cDrawAPI_OpenGL;
 
 	GLgDrawContextPrivate = UUrMemory_Block_NewClear(sizeof(*GLgDrawContextPrivate));
 	UUmError_ReturnOnNull(GLgDrawContextPrivate);
 
-	GLgDrawContextPrivate->compiled_vertex_array = UUrMemory_Block_New(sizeof(float) * 3 * GLcMaxVerticies); 
+	GLgDrawContextPrivate->compiled_vertex_array = UUrMemory_Block_New(sizeof(float) * 3 * GLcMaxVerticies);
 	UUmError_ReturnOnNull(GLgDrawContextPrivate->compiled_vertex_array);
 
 	GLgDrawContextPrivate->constant_r = 1.f;
@@ -126,16 +126,16 @@ GLrDrawEngine_Method_ContextPrivateNew(
 	GLgDrawContextPrivate->constant_b = 1.f;
 	GLgDrawContextPrivate->constant_a = 1.f;
 
-	
+
 	/*
 	 * Get the active draw engine info
 	 */
-	 	
+
 		M3rManager_GetActiveDrawEngine(
 			&activeDrawEngine,
 			&activeDevice,
 			&activeMode);
-	
+
 	 	drawEngineCaps = M3rDrawEngine_GetCaps(activeDrawEngine);
 
 	/*
@@ -155,15 +155,15 @@ GLrDrawEngine_Method_ContextPrivateNew(
 		GLgDrawContextMethods.screenCapture = GLrDrawContext_Method_ScreenCapture;
 		GLgDrawContextMethods.pointVisible = GLrDrawContext_Method_PointVisible;
 		GLgDrawContextMethods.textureFormatAvailable = OGLrCommon_TextureMap_TextureFormatAvailable;
-		
+
 		*outDrawContextFuncs = &GLgDrawContextMethods;
-		
+
 	GLgDrawContextPrivate->contextType = inDrawContextDescriptor->type;
-	
+
 	GLgDrawContextPrivate->width= drawEngineCaps->displayDevices[activeDevice].displayModes[activeMode].width;
 	GLgDrawContextPrivate->height= drawEngineCaps->displayDevices[activeDevice].displayModes[activeMode].height;
 	GLgDrawContextPrivate->bitDepth= drawEngineCaps->displayDevices[activeDevice].displayModes[activeMode].bitDepth;
-		
+
 	// Init some state
 	GLgDrawContextPrivate->vertexList = NULL;
 	GLgDrawContextPrivate->curBaseMap = NULL;
@@ -172,13 +172,13 @@ GLrDrawEngine_Method_ContextPrivateNew(
 
 
 	initialize_opengl();
-	
+
 	return UUcError_None;
-	
+
 //failure:
-	
+
 	GLrDrawEngine_Method_ContextPrivateDelete();
-	
+
 	return errorCode;
 }
 
@@ -193,12 +193,12 @@ static UUtError
 GLrDrawEngine_Method_PrivateState_New(
 	void*	inState_Private)
 {
-	
+
 	return UUcError_None;
 }
 
 // This lets the engine delete a new private state structure
-static void 
+static void
 GLrDrawEngine_Method_PrivateState_Delete(
 	void*	inState_Private)
 {
@@ -243,7 +243,7 @@ GLrDrawEngine_Method_State_Update(
 			}
 		}
 	}
-	
+
 	if( inState_IntFlags & (1 << M3cDrawStateIntType_ZBias ))
 	{
 		UUtInt32	value = inState_Int[M3cDrawStateIntType_ZBias];
@@ -259,16 +259,16 @@ GLrDrawEngine_Method_State_Update(
 
 		OGLrCommon_DepthMode_Set(zread, zwrite);
 	}
-	
-	if((inState_Int[M3cDrawStateIntType_Appearence] != M3cDrawState_Appearence_Gouraud) && 
+
+	if((inState_Int[M3cDrawStateIntType_Appearence] != M3cDrawState_Appearence_Gouraud) &&
 		(inState_Int[M3cDrawStateIntType_Fill] == M3cDrawState_Fill_Solid))
 	{
-		if(inState_PtrFlags & (1 << M3cDrawStatePtrType_BaseTextureMap)) { 
+		if(inState_PtrFlags & (1 << M3cDrawStatePtrType_BaseTextureMap)) {
 
 			M3tTextureMap* textureMap = (M3tTextureMap*)inState_Ptr[M3cDrawStatePtrType_BaseTextureMap];
-			
+
 			GLgDrawContextPrivate->curBaseMap = textureMap;
-			
+
 			if (NULL == textureMap)
 			{
 				OGLrCommon_TextureMap_Select(NULL, GL_TEXTURE0_ARB);
@@ -304,7 +304,7 @@ GLrDrawEngine_Method_State_Update(
 
 		GLgDrawContextPrivate->constant_a = alpha * (1.f / 255.f);
 	}
-	
+
 	if (inState_IntFlags & ((1 << M3cDrawStateIntType_ConstantColor)))
 	{
 		UUtUns32	color = inState_Int[M3cDrawStateIntType_ConstantColor];
@@ -316,7 +316,7 @@ GLrDrawEngine_Method_State_Update(
 		GLgDrawContextPrivate->constant_g = g * (1.f / 255.f);
 		GLgDrawContextPrivate->constant_b = b * (1.f / 255.f);
 	}
-	
+
 	if(inState_IntFlags & ((1 << M3cDrawStateIntType_Alpha) | (1 << M3cDrawStateIntType_ConstantColor)))
 	{
 		glColor4f(
@@ -325,14 +325,14 @@ GLrDrawEngine_Method_State_Update(
 			GLgDrawContextPrivate->constant_b,
 			GLgDrawContextPrivate->constant_a);
 	}
-	
+
 	if(inState_IntFlags & (
 			(1 << M3cDrawStateIntType_Appearence) |
 			(1 << M3cDrawStateIntType_Interpolation) |
 			(1 << M3cDrawStateIntType_Fill)))
 	{
 	}
-			
+
 	switch(inState_Int[M3cDrawStateIntType_Fill])
 	{
 		case M3cDrawState_Fill_Point:
@@ -354,7 +354,7 @@ GLrDrawEngine_Method_State_Update(
 
 				case M3cDrawState_Appearence_Texture_Lit:
 				case M3cDrawState_Appearence_Texture_Lit_EnvMap:
-				case M3cDrawState_Appearence_Texture_Unlit:	
+				case M3cDrawState_Appearence_Texture_Unlit:
 					switch(inState_Int[M3cDrawStateIntType_VertexFormat])
 					{
 						case M3cDrawStateVertex_Unified:
@@ -390,7 +390,7 @@ GLrDrawEngine_Method_State_Update(
 				break;
 			}
 	}
-	
+
 	GLgBufferClear = (UUtBool) inState_Int[M3cDrawStateIntType_BufferClear];
 	GLgClearColor = inState_Int[M3cDrawStateIntType_ClearColor];
 	GLgDoubleBuffer = (UUtBool) inState_Int[M3cDrawStateIntType_DoubleBuffer];
@@ -407,7 +407,7 @@ GLrDrawEngine_Initialize(
 	void)
 {
 	UUtInt32 itr;
-	M3tDisplayMode displayModeList[16] = 
+	M3tDisplayMode displayModeList[16] =
 	{
 		{ 640,		480,	16,		0 },
 		{ 800,		600,	16,		0 },
@@ -430,29 +430,29 @@ GLrDrawEngine_Initialize(
 
 
 	UUtError error;
-	
+
 	if(glGetString == NULL) return;
 
 	GLgDrawEngineMethods.contextPrivateNew = GLrDrawEngine_Method_ContextPrivateNew;
 	GLgDrawEngineMethods.contextPrivateDelete = GLrDrawEngine_Method_ContextPrivateDelete;
 	GLgDrawEngineMethods.textureResetAll = GLrDrawEngine_Method_Texture_ResetAll;
-	
+
 	GLgDrawEngineMethods.privateStateSize = 0;
 	GLgDrawEngineMethods.privateStateNew = GLrDrawEngine_Method_PrivateState_New;
 	GLgDrawEngineMethods.privateStateDelete = GLrDrawEngine_Method_PrivateState_Delete;
 	GLgDrawEngineMethods.privateStateUpdate = GLrDrawEngine_Method_State_Update;
-	
+
 	GLgDrawEngineCaps.engineFlags = M3cDrawEngineFlag_3DOnly;
-	
+
 	UUrString_Copy(GLgDrawEngineCaps.engineName, M3cDrawEngine_OpenGL, M3cMaxNameLen);
 	GLgDrawEngineCaps.engineDriver[0] = 0;
-	
+
 	GLgDrawEngineCaps.engineVersion = 1;
-	
+
 	GLgDrawEngineCaps.numDisplayDevices = 1;
-	
+
 	GLgDrawEngineCaps.displayDevices[0].numDisplayModes = 16;
-	
+
 	for(itr = 0; itr < 16; itr++) {
 		// NOTE: this should be built on the fly at some point
 		GLgDrawEngineCaps.displayDevices[0].displayModes[itr] = displayModeList[itr];
@@ -501,7 +501,7 @@ UUtError initialize_opengl(void)
 
 	error = OGLrCommon_Initialize_OneTime();
 	UUmError_ReturnOnError(error);	// XXX - At some point inform user that open gl did not have needed extensions
-		
+
 	GLgDrawContextPrivate->num_tmu = 1;
 
 	if (OGLgCommon.ext_arb_multitexture) {
@@ -513,7 +513,7 @@ UUtError initialize_opengl(void)
 		GLgDrawContextPrivate->num_tmu = 1;
 	}
 
-	UUrStartupMessage("supports %d texturing units", GLgDrawContextPrivate->num_tmu); 
+	UUrStartupMessage("supports %d texturing units", GLgDrawContextPrivate->num_tmu);
 
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &GLgDrawContextPrivate->max_texture_size);
 	glGetIntegerv(GL_DOUBLEBUFFER, &GLgDrawContextPrivate->has_double_buffer);
@@ -521,25 +521,25 @@ UUtError initialize_opengl(void)
 	glDisable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
+
 	glClearColor(0.f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 	glPixelStorei(GL_PACK_ALIGNMENT,1);
-		
-	
+
+
 	/* the depth range is set by the set_frame_parameters code */
-	
+
 	OGLrCommon_DepthMode_Set(UUcTrue,UUcTrue);
-	
+
 	OGLrCommon_State_Initialize((UUtUns16)GLgDrawContextPrivate->width, (UUtUns16)GLgDrawContextPrivate->height);
-	
+
 	// glFogfv(GL_FOG_COLOR,GLgDrawContextPrivate->fog_color);
-	
-	//set_opengl_texture(NULL);	
+
+	//set_opengl_texture(NULL);
 	/* check for OpenGL Errors here */
-	
+
 	return UUcTrue;
 }
 

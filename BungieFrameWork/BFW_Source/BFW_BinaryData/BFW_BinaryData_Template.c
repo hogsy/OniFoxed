@@ -18,7 +18,7 @@ BDrRegisterTemplates(
 	void)
 {
 	UUtError	error;
-	
+
 	error = TMrTemplate_Register(BDcTemplate_BinaryData, sizeof(BDtBinaryData), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 

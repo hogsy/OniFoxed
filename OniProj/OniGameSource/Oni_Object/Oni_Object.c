@@ -50,7 +50,7 @@ enum
 {
 	OBJcObjectGroupFlag_Dirty			= 0x0001,
 	OBJcObjectGroupFlag_Locked			= 0x0002
-	
+
 };
 
 // ======================================================================
@@ -76,7 +76,7 @@ typedef enum OBJtRotateAxis
 	OBJcRotate_XAxis,
 	OBJcRotate_YAxis,
 	OBJcRotate_ZAxis
-	
+
 } OBJtRotateAxis;
 
 // ======================================================================
@@ -90,7 +90,7 @@ static UUtMemory_Array			*OBJgSelectedObjects;
 
 static OBJtRotateAxis			OBJgRotateAxis;
 
-static AUtFlagElement			OBJgGunkFlags[] = 
+static AUtFlagElement			OBJgGunkFlags[] =
 {
 	{	"ghost",				AKcGQ_Flag_Ghost	},
 	{	"stairsup",				AKcGQ_Flag_SAT_Up	},
@@ -124,17 +124,17 @@ static UUtUns32					OBJgAutoSaveTime;
 static UUtBool
 OBJiObjectGroup_IsLocked(
 	OBJtObjectGroup				*inObjectGroup);
-	
+
 static void
 OBJiObjectGroup_RemoveObject(
 	OBJtObjectGroup				*inObjectGroup,
 	OBJtObject					*inObject);
-	
+
 static void
 OBJiObjectGroup_SetDirty(
 	OBJtObjectGroup				*inObjectGroup,
 	UUtBool						inLocked);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
@@ -148,19 +148,19 @@ OBJiObjectGroup_AddObject(
 	UUtUns32					index;
 	UUtBool						mem_moved;
 	OBJtObject					**object_list;
-	
-	UUmAssert(inObjectGroup);
-	
-	if (OBJiObjectGroup_IsLocked(inObjectGroup)) { 
 
-#if defined(DEBUGGING) && DEBUGGING		
+	UUmAssert(inObjectGroup);
+
+	if (OBJiObjectGroup_IsLocked(inObjectGroup)) {
+
+#if defined(DEBUGGING) && DEBUGGING
 		UUrDebuggerMessage("failed to add object (object group %s was locked)", inObjectGroup->group_name);
 #endif
 
 		UUmAssert(!"blam");
-		return UUcError_Generic; 
+		return UUcError_Generic;
 	}
-	
+
 	// create the object list if it doesn't already exist
 	if (inObjectGroup->object_list == NULL)
 	{
@@ -171,22 +171,22 @@ OBJiObjectGroup_AddObject(
 				0,
 				1);
 	}
-	
+
 	// get a new element in the object group's object list
 	error = UUrMemory_Array_GetNewElement(inObjectGroup->object_list, &index, &mem_moved);
 	UUmAssert(!error);
 	UUmError_ReturnOnError(error);
-	
+
 	// get a pointer to the object list
 	object_list = (OBJtObject**)UUrMemory_Array_GetMemory(inObjectGroup->object_list);
 	UUmAssert(object_list);
-	
+
 	// add the object to the object list
 	object_list[index] = inObject;
-	
+
 	// the object group is now dirty
 	OBJiObjectGroup_SetDirty(inObjectGroup, UUcTrue);
-	
+
 	return UUcError_None;
 }
 
@@ -203,19 +203,19 @@ OBJiObjectGroup_DeleteAllObjects(
 		{
 			OBJtObject		**object_list;
 			OBJtObject		*delete_me;
-			
+
 			object_list = (OBJtObject**)UUrMemory_Array_GetMemory(inObjectGroup->object_list);
 			if (object_list == NULL) { break; }
-			
+
 			delete_me = object_list[0];
 			if (delete_me == NULL) { continue; }
-			
+
 			// remove the object from the object group
 			OBJiObjectGroup_RemoveObject(inObjectGroup, delete_me);
 
 			// delete the object specific data
 			delete_me->methods->rDelete(delete_me);
-			
+
 			// release the memory used by the object
 			UUrMemory_Block_Delete(delete_me);
 		}
@@ -234,10 +234,10 @@ OBJiObjectGroup_Delete(
 	OBJtObjectGroup				**object_group_list;
 	UUtUns32					num_groups;
 	UUtUns32					i;
-	
+
 	// delete the objects
 	OBJiObjectGroup_DeleteAllObjects(inObjectGroup);
-	
+
 	// find the object group in the list
 	object_group_list = (OBJtObjectGroup**)UUrMemory_Array_GetMemory(OBJgObjectGroups);
 	num_groups = UUrMemory_Array_GetUsedElems(OBJgObjectGroups);
@@ -248,7 +248,7 @@ OBJiObjectGroup_Delete(
 			UUrMemory_Array_DeleteElement(OBJgObjectGroups, i);
 		}
 	}
-	
+
 	// delete the object group
 	if( inObjectGroup->mechanics_class )
 		ONrMechanics_DeleteClass( inObjectGroup->mechanics_class );
@@ -263,12 +263,12 @@ OBJiObjectGroup_Draw(
 	UUtUns32					num_objects;
 	UUtUns32					i;
 	OBJtObject					**object_list;
-	
+
 	if (inObjectGroup->object_list == NULL) { return; }
-	
+
 	object_list = (OBJtObject**)UUrMemory_Array_GetMemory(inObjectGroup->object_list);
 	if (object_list == NULL) { return; }
-	
+
 	num_objects = UUrMemory_Array_GetUsedElems(inObjectGroup->object_list);
 	for (i = 0; i < num_objects; i++)
 	{
@@ -286,21 +286,21 @@ OBJiObjectGroup_EnumerateObjects(
 	UUtUns32					num_objects;
 	UUtUns32					i;
 	OBJtObject					**object_list;
-	
+
 	UUmAssert(inObjectGroup);
-	
+
 	if (inObjectGroup->object_list == NULL) { return 0; }
 
 	object_list = (OBJtObject**)UUrMemory_Array_GetMemory(inObjectGroup->object_list);
 	if (object_list == NULL) { return 0; }
-	
+
 	num_objects = UUrMemory_Array_GetUsedElems(inObjectGroup->object_list);
 
 	if (NULL != inEnumCallback) {
 		for (i = 0; i < num_objects; i++)
 		{
 			UUtBool					result;
-			
+
 			result = inEnumCallback(object_list[i], inUserData);
 			if (result == UUcFalse) { break; }
 		}
@@ -316,19 +316,19 @@ OBJiObjectGroup_GetByName(
 {
 	OBJtObjectGroup				*object_group;
 	OBJtObjectGroup				**object_group_list;
-	
+
 	UUmAssert(inGroupName);
-	
+
 	// intialize
 	object_group = NULL;
-	
+
 	// make sure the object group list exists
 	object_group_list = (OBJtObjectGroup**)UUrMemory_Array_GetMemory(OBJgObjectGroups);
 	if (object_group_list)
 	{
 		UUtUns32				num_groups;
 		UUtUns32				i;
-		
+
 		// go through all the groups and find the object group that
 		// has inObjectType associated with it
 		num_groups = UUrMemory_Array_GetUsedElems(OBJgObjectGroups);
@@ -341,7 +341,7 @@ OBJiObjectGroup_GetByName(
 			}
 		}
 	}
-	
+
 	return object_group;
 }
 
@@ -352,17 +352,17 @@ OBJiObjectGroup_GetByType(
 {
 	OBJtObjectGroup				*object_group;
 	OBJtObjectGroup				**object_group_list;
-	
+
 	// intialize
 	object_group = NULL;
-	
+
 	// make sure the object group list exists
 	object_group_list = (OBJtObjectGroup**)UUrMemory_Array_GetMemory(OBJgObjectGroups);
 	if (object_group_list)
 	{
 		UUtUns32				num_groups;
 		UUtUns32				i;
-		
+
 		// go through all the groups and find the object group that
 		// has an object type of inObjectType
 		num_groups = UUrMemory_Array_GetUsedElems(OBJgObjectGroups);
@@ -375,7 +375,7 @@ OBJiObjectGroup_GetByType(
 			}
 		}
 	}
-	
+
 	return object_group;
 }
 
@@ -399,9 +399,9 @@ OBJiObjectGroup_GetNumObjects(
 	OBJtObjectGroup				*inObjectGroup)
 {
 	UUtUns32					num_objects;
-	
+
 	UUmAssert(inObjectGroup);
-	
+
 	if (inObjectGroup->object_list)
 	{
 		num_objects = UUrMemory_Array_GetUsedElems(inObjectGroup->object_list);
@@ -422,15 +422,15 @@ OBJiObjectGroup_GetObject(
 {
 	OBJtObject					**object_list;
 	UUtUns32					num_objects;
-	
+
 	UUmAssert(inObjectGroup);
-	
+
 	num_objects = UUrMemory_Array_GetUsedElems(inObjectGroup->object_list);
 	UUmAssert(inIndex < num_objects);
-	
+
 	object_list = (OBJtObject**)UUrMemory_Array_GetMemory(inObjectGroup->object_list);
 	if (object_list == NULL) { return NULL; }
-	
+
 	return object_list[inIndex];
 }
 
@@ -440,7 +440,7 @@ OBJiObjectGroup_GetOSDSize(
 	OBJtObjectGroup				*inObjectGroup)
 {
 	UUmAssert(inObjectGroup);
-	
+
 	return inObjectGroup->osd_size_in_memory;
 }
 
@@ -452,7 +452,7 @@ OBJiObjectGroup_GetWriteSize(
 	UUtUns32					size;
 	UUtUns32					i;
 	UUtUns32					count;
-	
+
 	size = 0;
 	count = OBJiObjectGroup_GetNumObjects(inObjectGroup);
 	for (i = 0; i < count; i++)
@@ -460,17 +460,17 @@ OBJiObjectGroup_GetWriteSize(
 		OBJtObject				*object;
 		UUtUns32				osd_write_size;
 		UUtUns32				chunk_size;
-		
+
 		object = OBJiObjectGroup_GetObject(inObjectGroup, i);
 		if (object == NULL) { continue; }
-		
+
 		osd_write_size = OBJrObject_GetOSDWriteSize(object);
 		chunk_size = osd_write_size + OBJcObjectGenericWriteSize;
 		chunk_size = UUmMakeMultiple(chunk_size, 4);
-		
+
 		size += chunk_size;
 	}
-	
+
 	return size;
 }
 
@@ -507,7 +507,7 @@ OBJiObjectGroup_VerifyMethods(
 #if defined(DEBUGGING) && DEBUGGING
 	void						**methods;
 	UUtUns32					i;
-	
+
 	UUmAssert(inMethods->rNew);
 	UUmAssert(inMethods->rDelete);
 	UUmAssert(inMethods->rDraw);
@@ -545,39 +545,39 @@ OBJrObjectGroup_Register(
 	UUtBool						mem_moved;
 	OBJtObjectGroup				*object_group;
 	OBJtObjectGroup				**object_group_list;
-	
+
 	UUmAssert(inGroupName);
 	UUmAssert(inGroupName[0] != '\0');
-	
+
 	// see if inObjectType is already in use
 	if (OBJiObjectGroup_GetByType(inObjectType) != NULL)
 	{
 		// this object type has already been registered
 		return UUcError_Generic;
 	}
-	
+
 	// see if inName is already in use
 	if (OBJiObjectGroup_GetByName(inGroupName) != NULL)
 	{
 		// this object type has already been registered
 		return UUcError_Generic;
 	}
-	
+
 	// index must be a single nonzero byte
 	if ((inObjectTypeIndex <= 0) || (inObjectTypeIndex >= 256)) {
 		return UUcError_Generic;
 	}
 
 	OBJiObjectGroup_VerifyMethods(inMethods);
-	
+
 	// create a new group entry in the object groups array
 	error = UUrMemory_Array_GetNewElement(OBJgObjectGroups, &index, &mem_moved);
 	UUmError_ReturnOnError(error);
-	
+
 	// allocate memory for the group
 	object_group = (OBJtObjectGroup*)UUrMemory_Block_New(sizeof(OBJtObjectGroup));
 	UUmError_ReturnOnNull(object_group);
-	
+
 	// initialize this group
 	object_group->object_list = NULL;
 	object_group->object_type = inObjectType;
@@ -587,12 +587,12 @@ OBJrObjectGroup_Register(
 	object_group->methods = *inMethods;
 	object_group->mechanics_class = NULL;
 	UUrString_Copy(object_group->group_name, inGroupName, OBJcMaxNameLength);
-		
+
 	// add the object_group to the object group array
 	object_group_list = (OBJtObjectGroup**)UUrMemory_Array_GetMemory(OBJgObjectGroups);
 	UUmAssert(object_group_list);
 	object_group_list[index] = object_group;
-	
+
 	return UUcError_None;
 }
 
@@ -605,26 +605,26 @@ OBJiObjectGroup_RemoveObject(
 	OBJtObject					**object_list;
 	UUtUns32					i;
 	UUtUns32					num_objects;
-	
+
 	UUmAssert(inObjectGroup);
 	UUmAssert(inObject);
-	
+
 	// get a pointer to the object list
 	object_list = (OBJtObject**)UUrMemory_Array_GetMemory(inObjectGroup->object_list);
 	if (object_list == NULL) { return; }
-	
+
 	// find the object in the object list and delete it
 	num_objects = UUrMemory_Array_GetUsedElems(inObjectGroup->object_list);
 	for (i = 0; i < num_objects; i++)
 	{
 		if (object_list[i] != inObject) { continue; }
-		
+
 		// delete the object from the list
 		UUrMemory_Array_DeleteElement(inObjectGroup->object_list, i);
-		
+
 		// the object group is now dirty
 		OBJiObjectGroup_SetDirty(inObjectGroup, UUcTrue);
-		
+
 		break;
 	}
 }
@@ -674,12 +674,12 @@ OBJiObjectGroups_Draw(
 	UUtUns32					i;
 	UUtUns32					num_groups;
 	OBJtObjectGroup				**object_group_list;
-	
+
 	UUmAssert(OBJgObjectGroups);
 
 	object_group_list = (OBJtObjectGroup**)UUrMemory_Array_GetMemory(OBJgObjectGroups);
 	if (object_group_list == NULL) { return; }
-	
+
 	num_groups = UUrMemory_Array_GetUsedElems(OBJgObjectGroups);
 	for (i = 0; i < num_groups; i++)
 	{
@@ -699,18 +699,18 @@ OBJiObjectGroups_Enumerate(
 	UUtUns32					i;
 	UUtUns32					num_groups;
 	OBJtObjectGroup				**object_group_list;
-	
+
 	UUmAssert(OBJgObjectGroups);
 	UUmAssert(inEnumCallback);
-	
+
 	object_group_list = (OBJtObjectGroup**)UUrMemory_Array_GetMemory(OBJgObjectGroups);
 	if (object_group_list == NULL) { return; }
-	
+
 	num_groups = UUrMemory_Array_GetUsedElems(OBJgObjectGroups);
 	for (i = 0; i < num_groups; i++)
 	{
 		UUtBool					result;
-		
+
 		result =
 			inEnumCallback(
 				object_group_list[i]->object_type,
@@ -727,15 +727,15 @@ OBJiObjectGroups_GetGroupByIndex(
 {
 	OBJtObjectGroup				**object_group_list;
 	UUtUns32					num_groups;
-	
+
 	UUmAssert(OBJgObjectGroups);
-	
+
 	num_groups = UUrMemory_Array_GetUsedElems(OBJgObjectGroups);
 	UUmAssert(inGroupIndex < num_groups);
-	
+
 	object_group_list = (OBJtObjectGroup**)UUrMemory_Array_GetMemory(OBJgObjectGroups);
 	UUmAssert(object_group_list);
-	
+
 	return object_group_list[inGroupIndex];
 }
 
@@ -745,7 +745,7 @@ OBJiObjectGroups_GetNumGroups(
 	void)
 {
 	UUmAssert(OBJgObjectGroups);
-	
+
 	return UUrMemory_Array_GetUsedElems(OBJgObjectGroups);
 }
 
@@ -767,7 +767,7 @@ OBJiObjectGroups_Initialize(
 			0,
 			0);
 	UUmError_ReturnOnNull(OBJgObjectGroups);
-	
+
 	return UUcError_None;
 }
 
@@ -787,9 +787,9 @@ OBJiObjectGroups_LevelUnload(
 	OBJtObjectGroup			**object_group_list;
 	UUtUns32				num_groups;
 	UUtUns32				i;
-	
+
 	if (OBJgObjectGroups == NULL) { return; }
-	
+
 	// delete the objects in the object groups
 	object_group_list = (OBJtObjectGroup**)UUrMemory_Array_GetMemory(OBJgObjectGroups);
 	num_groups = UUrMemory_Array_GetUsedElems(OBJgObjectGroups);
@@ -801,7 +801,7 @@ OBJiObjectGroups_LevelUnload(
 
 		// delete the objects in the object group
 		OBJiObjectGroup_DeleteAllObjects(object_group_list[i]);
-		
+
 		// clear the object groups locked status
 		OBJiObjectGroup_SetLocked(object_group_list[i], UUcFalse);
 	}
@@ -822,7 +822,7 @@ OBJiObjectGroups_Terminate(
 			object_group_list = (OBJtObjectGroup**)UUrMemory_Array_GetMemory(OBJgObjectGroups);
 			OBJiObjectGroup_Delete(object_group_list[0]);
 		}
-		
+
 		// delete the object group array
 		UUrMemory_Array_Delete(OBJgObjectGroups);
 		OBJgObjectGroups = NULL;
@@ -843,7 +843,7 @@ OBJrObjectType_EnumerateObjects(
 {
 	OBJtObjectGroup					*object_group;
 	UUtUns32						num_objects;
-		
+
 	object_group = OBJiObjectGroup_GetByType(inObjectType);
 	if (object_group == NULL) { return 0; }
 	num_objects = OBJiObjectGroup_EnumerateObjects(object_group, inEnumCallback, inUserData);
@@ -859,10 +859,10 @@ OBJtObject *OBJrObjectType_GetObject_ByNumber(
 	OBJtObjectGroup				*object_group;
 //	UUtUns32					num_objects;
 //	OBJtObject					**object_list;
-	
+
 	object_group = OBJiObjectGroup_GetByType(inObjectType);
 	return OBJiObjectGroup_GetObject(object_group, inIndex);
-	
+
 /*	if (NULL == object_group) { return NULL; }
 	if (NULL == object_group->object_list) { return NULL; }
 
@@ -883,7 +883,7 @@ OBJrObjectType_GetName(
 	OBJtObjectType					inObjectType)
 {
 	OBJtObjectGroup					*object_group;
-	
+
 	object_group = OBJiObjectGroup_GetByType(inObjectType);
 
 	if (object_group == NULL) {
@@ -900,10 +900,10 @@ OBJrObjectType_GetUniqueOSD(
 	OBJtOSD_All						*outOSD)
 {
 	OBJtObjectGroup					*object_group;
-	
+
 	object_group = OBJiObjectGroup_GetByType(inObjectType);
 	if (object_group == NULL) { return; }
-	
+
 	object_group->methods.rGetUniqueOSD(outOSD);
 
 	return;
@@ -915,10 +915,10 @@ OBJrObjectType_GetVisible(
 	OBJtObjectType					inObjectType)
 {
 	OBJtObjectGroup					*object_group;
-	
+
 	object_group = OBJiObjectGroup_GetByType(inObjectType);
 	if (object_group == NULL) { return UUcFalse; }
-	
+
 	return object_group->methods.rGetClassVisible();
 }
 
@@ -929,10 +929,10 @@ OBJrObjectType_IsLocked(
 {
 	OBJtObjectGroup					*object_group;
 	UUtBool							is_locked = UUcFalse;
-	
+
 	object_group = OBJiObjectGroup_GetByType(inObjectType);
 	if (object_group == NULL) { goto exit; }
-	
+
 	is_locked = OBJiObjectGroup_IsLocked(object_group);
 
 exit:
@@ -950,10 +950,10 @@ OBJrObjectType_Search(
 	OBJtObject						*found_object;
 	UUtUns32						i;
 	UUtUns32						num_objects;
-	
+
 	object_group = OBJiObjectGroup_GetByType(inObjectType);
 	if (object_group == NULL) { return NULL; }
-	
+
 	// find the object in the list
 	found_object = NULL;
 	num_objects = OBJiObjectGroup_GetNumObjects(object_group);
@@ -961,10 +961,10 @@ OBJrObjectType_Search(
 	{
 		UUtBool						found;
 		OBJtObject					*object;
-		
+
 		object = OBJiObjectGroup_GetObject(object_group, i);
 		if (object == NULL) { continue; }
-		
+
 		found =
 			object_group->methods.rSearch(
 				object,
@@ -976,7 +976,7 @@ OBJrObjectType_Search(
 			break;
 		}
 	}
-	
+
 	return found_object;
 }
 
@@ -987,10 +987,10 @@ OBJrObjectType_SetVisible(
 	UUtBool							inIsVisible)
 {
 	OBJtObjectGroup					*object_group;
-	
+
 	object_group = OBJiObjectGroup_GetByType(inObjectType);
 	if (object_group == NULL) { return; }
-	
+
 	object_group->methods.rSetClassVisible(inIsVisible);
 }
 
@@ -1011,7 +1011,7 @@ OBJrObjectTypes_Enumerate(
 UUtError OBJrObjectType_RegisterMechanics( OBJtObjectType inObjectType, ONtMechanicsClass *inMechanicsClass )
 {
 	OBJtObjectGroup				*object_group;
-	
+
 	if (!(object_group = OBJiObjectGroup_GetByType(inObjectType)))
 		return UUcError_Generic;
 
@@ -1023,7 +1023,7 @@ UUtError OBJrObjectType_RegisterMechanics( OBJtObjectType inObjectType, ONtMecha
 ONtMechanicsClass* OBJrObjectType_GetMechanicsByType( OBJtObjectType inObjectType )
 {
 	OBJtObjectGroup				*object_group;
-	
+
 	if (!(object_group = OBJiObjectGroup_GetByType(inObjectType)))
 		return NULL;
 
@@ -1043,9 +1043,9 @@ OBJiObject_Read_1(
 	UUtUns8					*inBuffer)
 {
 	UUtUns32				num_bytes;
-	
+
 	num_bytes = 0;
-	
+
 	// read the position
 	OBDmGet4BytesFromBuffer(inBuffer, inObject->position.x, float, inSwapIt);
 	OBDmGet4BytesFromBuffer(inBuffer, inObject->position.y, float, inSwapIt);
@@ -1069,12 +1069,12 @@ OBJiObject_Read_3(
 	UUtUns8					*inBuffer)
 {
 	UUtUns32				num_bytes;
-	
+
 	num_bytes = 0;
-	
+
 	// read the flags
 	num_bytes += OBDmGet4BytesFromBuffer(inBuffer, inObject->flags, UUtUns32, inSwapIt);
-	
+
 	// read the position
 	num_bytes += OBDmGet4BytesFromBuffer(inBuffer, inObject->position.x, float, inSwapIt);
 	num_bytes += OBDmGet4BytesFromBuffer(inBuffer, inObject->position.y, float, inSwapIt);
@@ -1096,15 +1096,15 @@ OBJiObject_Read_7(
 	UUtUns8					*inBuffer)
 {
 	UUtUns32				num_bytes;
-	
+
 	num_bytes = 0;
-	
+
 	// read the ID
 	num_bytes += OBDmGet4BytesFromBuffer(inBuffer, inObject->object_id, UUtUns32, inSwapIt);
-	
+
 	// read the flags
 	num_bytes += OBDmGet4BytesFromBuffer(inBuffer, inObject->flags, UUtUns32, inSwapIt);
-	
+
 	// read the position
 	num_bytes += OBDmGet4BytesFromBuffer(inBuffer, inObject->position.x, float, inSwapIt);
 	num_bytes += OBDmGet4BytesFromBuffer(inBuffer, inObject->position.y, float, inSwapIt);
@@ -1127,9 +1127,9 @@ OBJiObject_Read_7(
 UUtError OBJrObject_OSD_SetDefaults(OBJtObjectType inType, OBJtOSD_All *outOSD)
 {
 	OBJtObjectGroup					*object_group;
-	
+
 	object_group = OBJiObjectGroup_GetByType(inType);
-	UUmAssert(object_group != NULL); 
+	UUmAssert(object_group != NULL);
 	if (object_group == NULL) {
 		return UUcError_Generic;
 	}
@@ -1141,9 +1141,9 @@ UUtError OBJrObject_OSD_SetDefaults(OBJtObjectType inType, OBJtOSD_All *outOSD)
 void OBJrObject_OSD_GetName(OBJtObjectType inType, const OBJtOSD_All *inOSD, char *outName, UUtUns32 inNameLength)
 {
 	OBJtObjectGroup					*object_group;
-	
+
 	object_group = OBJiObjectGroup_GetByType(inType);
-	UUmAssert(object_group != NULL); 
+	UUmAssert(object_group != NULL);
 	if (object_group == NULL) { return; }
 
 	object_group->methods.rOSDGetName(inOSD, outName, inNameLength);
@@ -1155,9 +1155,9 @@ void OBJrObject_OSD_GetName(OBJtObjectType inType, const OBJtOSD_All *inOSD, cha
 void OBJrObject_OSD_SetName(OBJtObjectType inType, OBJtOSD_All *inOSD, const char *inName)
 {
 	OBJtObjectGroup					*object_group;
-	
+
 	object_group = OBJiObjectGroup_GetByType(inType);
-	UUmAssert(object_group != NULL); 
+	UUmAssert(object_group != NULL);
 	if (object_group == NULL) { return; }
 
 	object_group->methods.rOSDSetName(inOSD, inName);
@@ -1185,25 +1185,25 @@ OBJrObject_CreateFromBuffer(
 	UUtUns32				num_bytes;
 	UUtUns32				total_bytes;
 	OBJtObjectGroup			*object_group;
-	
+
 	// init the returning values
 	*outNumBytesRead = 0;
 	total_bytes = 0;
-	
+
 	// read the object type
 	OBDmGet4BytesFromBuffer(inBuffer, object_type, OBJtObjectType, inSwapIt);
 	num_bytes = sizeof(OBJtObjectType);
 	total_bytes += num_bytes;
-	
+
 	// make sure the object type is valid
 	object_group = OBJiObjectGroup_GetByType(object_type);
 	if (object_group == NULL) { return UUcError_Generic; }
-	
+
 	// allocate memory for the new object
 	object_size = sizeof(OBJtObject) + OBJiObjectGroup_GetOSDSize(object_group);
 	object = (OBJtObject*)UUrMemory_Block_NewClear(object_size);
 	UUmError_ReturnOnNull(object);
-	
+
 	// set the objects methods
 	object->object_type = object_type;
 	object->methods = &object_group->methods;
@@ -1215,26 +1215,26 @@ OBJrObject_CreateFromBuffer(
 	UUmAssert(inVersion <= OBJcCurrentVersion);
 
 	// process the common object data
-	if (inVersion >= 7) 
+	if (inVersion >= 7)
 	{
 		num_bytes = OBJiObject_Read_7(object, inSwapIt, inBuffer);
-	} 
-	else if (inVersion >= 3) 
+	}
+	else if (inVersion >= 3)
 	{
 		num_bytes = OBJiObject_Read_3(object, inSwapIt, inBuffer);
-	} 
-	else if (inVersion >= 1) 
+	}
+	else if (inVersion >= 1)
 	{
 		num_bytes = OBJiObject_Read_1(object, inSwapIt, inBuffer);
-	} 
-	else 
+	}
+	else
 	{
 		UUmAssert(!"Unknown Version file version");
 	}
 
 	inBuffer += num_bytes;
 	total_bytes += num_bytes;
-	
+
 	// process the object specific data
 	num_bytes = object->methods->rRead(object, inVersion, inSwapIt, inBuffer);
 	num_bytes = UUmMakeMultiple(num_bytes, 4);
@@ -1253,17 +1253,17 @@ OBJrObject_CreateFromBuffer(
 		if( object->object_id >= OBJgNextObjectID )
 			OBJgNextObjectID = object->object_id + 1;
 	}
-	
+
 	// add the object to the object list
 	error = OBJiObjectGroup_AddObject(object_group, object);
 	if (error != UUcError_None) {
 		UUmAssert(!"OBJrObject_CreateFromBuffer failed");
 		UUrDebuggerMessage("OBJrObject_CreateFromBuffer: unable to add object to group %s", object_group->group_name);
 	}
-	
+
 	// return the number of bytes read
 	*outNumBytesRead = total_bytes;
-	
+
 	return UUcError_None;
 }
 
@@ -1273,29 +1273,29 @@ OBJrObject_Delete(
 	OBJtObject					*inObject)
 {
 	OBJtObjectGroup				*object_group;
-	
+
 	UUmAssert(inObject);
-	
+
 	// make sure the object isn't locked
 	if (OBJrObject_IsLocked(inObject)) { return; }
-	
+
 	// get the object group that inObject belongs to
 	object_group = OBJiObjectGroup_GetByType(inObject->object_type);
 	if (object_group == NULL) { return; }
 	if (OBJiObjectGroup_IsLocked(object_group)) { return; }
-	
+
 	// remove the object from the object group
 	OBJiObjectGroup_RemoveObject(object_group, inObject);
-	
+
 	// delete the object specific data
 	inObject->methods->rDelete(inObject);
-	
+
 	// make sure this object isn't selected
 	if (OBJrSelectedObjects_IsObjectSelected(inObject))
 	{
 		OBJrSelectedObjects_Unselect(inObject);
 	}
-	
+
 	// release the memory used by inObject
 	UUrMemory_Block_Delete(inObject);
 	UUrMemory_Block_VerifyList();
@@ -1307,39 +1307,39 @@ OBJrObject_Draw(
 	OBJtObject					*inObject)
 {
 	UUtUns32					draw_flags;
-	
+
 	UUmAssert(inObject);
-	
+
 	draw_flags = 0;
 	if (OBJrSelectedObjects_IsObjectSelected(inObject))
 	{
 		draw_flags |= OBJcDrawFlag_Selected;
 	}
-	
+
 	if (inObject->flags & OBJcObjectFlag_Locked)
 	{
 		draw_flags |= OBJcDrawFlag_Locked;
 	}
-	
+
 	switch (OBJgRotateMode)
 	{
 		case OBJcRotateMode_XYZ:
 			draw_flags |= (OBJcDrawFlag_RingX | OBJcDrawFlag_RingY | OBJcDrawFlag_RingZ);
 		break;
-		
+
 		case OBJcRotateMode_XY:
 			draw_flags |= OBJcDrawFlag_RingZ;
 		break;
-		
+
 		case OBJcRotateMode_XZ:
 			draw_flags |= OBJcDrawFlag_RingY;
 		break;
-		
+
 		case OBJcRotateMode_YZ:
 			draw_flags |= OBJcDrawFlag_RingX;
 		break;
 	}
-	
+
 	inObject->methods->rDraw(inObject, draw_flags);
 }
 
@@ -1351,12 +1351,12 @@ OBJrObject_GetPosition(
 	M3tPoint3D				*outRotation)
 {
 	UUmAssert(inObject);
-	
+
 	if (outPosition)
 	{
 		*outPosition = inObject->position;
 	}
-	
+
 	if (outRotation)
 	{
 		*outRotation = inObject->rotation;
@@ -1399,17 +1399,17 @@ OBJrObject_New(
 	UUtUns32					object_size;
 	OBJtObject					*object;
 	OBJtObjectGroup				*object_group;
-	
+
 	// get the object group that the object will be added to
 	object_group = OBJiObjectGroup_GetByType(inObjectType);
 	if (object_group == NULL) { return UUcError_Generic; }
 	if (OBJiObjectGroup_IsLocked(object_group)) { return UUcError_Generic; }
-	
+
 	// allocate memory for the new object
 	object_size = sizeof(OBJtObject) + OBJiObjectGroup_GetOSDSize(object_group);
 	object = (OBJtObject*)UUrMemory_Block_NewClear(object_size);
 	UUmError_ReturnOnNull(object);
-	
+
 	// initialize the object
 	object->object_type = inObjectType;
 	object->object_id = OBJrObject_GetNextAvailableID();
@@ -1418,19 +1418,19 @@ OBJrObject_New(
 	object->rotation = *inRotation;
 	object->methods = &object_group->methods;
 	object->mechanics_class = object_group->mechanics_class;
-	
+
 	error = object->methods->rNew(object, inObjectSpecificData);
 	UUmError_ReturnOnError(error);
-	
+
 	// add the object to the object group
 	error = OBJiObjectGroup_AddObject(object_group, object);
 	UUmError_ReturnOnError(error);
-	
+
 	// select the newly created object
 	OBJrSelectedObjects_Select(object, UUcFalse);
 
 UUrMemory_Block_VerifyList();
-	
+
 	return UUcError_None;
 }
 
@@ -1443,7 +1443,7 @@ OBJrObject_LevelBegin(
 	UUtUns32				num_groups;
 	UUtUns32				i;
 	UUtError				error;
-	
+
 	UUmAssert( ONgLevel );
 
 	if (OBJgObjectGroups == NULL) { return UUcError_Generic; }
@@ -1455,13 +1455,13 @@ OBJrObject_LevelBegin(
 	UUmAssert(object_group_list);
 
 	for (i = 0; i < num_groups; i++)
-	{	
+	{
 		OBJtObjectGroup				*object_group;
 		UUtUns32					num_objects;
 		UUtUns32					j, tag;
 		OBJtObject					**object_list;
 		OBJtObject					*object;
-		
+
 		object_group = object_group_list[i];
 
 		UUmAssert(object_group);
@@ -1476,7 +1476,7 @@ OBJrObject_LevelBegin(
 
  		object_list = (OBJtObject**)UUrMemory_Array_GetMemory(object_group->object_list);
 		if (object_list == NULL) continue;
-		
+
 		num_objects = UUrMemory_Array_GetUsedElems(object_group->object_list);
 
 		for (j = 0; j < num_objects; j++)
@@ -1502,7 +1502,7 @@ UUtError OBJrObject_LevelEnd(void)
 	UUtUns32				num_groups;
 	UUtUns32				i;
 	UUtError				error;
-	
+
 	UUmAssert( ONgLevel );
 
 	// clear the selected objects
@@ -1518,9 +1518,9 @@ UUtError OBJrObject_LevelEnd(void)
 	UUmAssert(object_group_list);
 
 	for (i = 0; i < num_groups; i++)
-	{	
+	{
 		OBJtObjectGroup				*object_group;
-		
+
 		object_group = object_group_list[i];
 
 		UUmAssert(object_group);
@@ -1549,15 +1549,15 @@ OBJrObject_MouseMove(
 	M3tVector3D				new_object_rotation;
 	float					delta_x;
 	float					delta_y;
-	
+
 	// make sure the object isn't locked
 	if (OBJrObject_IsLocked(inObject)) { return; }
-	
+
 	// make sure the object group isn't locked
 	object_group = OBJiObjectGroup_GetByType(inObject->object_type);
 	if (object_group == NULL) { return; }
 	if (OBJiObjectGroup_IsLocked(object_group)) { return; }
-	
+
 	// make sure the start point and end point aren't the same
 	if ((inStartPoint->x == inEndPoint->x) &&
 		(inStartPoint->y == inEndPoint->y))
@@ -1574,15 +1574,15 @@ OBJrObject_MouseMove(
 
 		last_object = inObject;
 	}
-	
+
 	// calculate the delta between the points
 	delta_x = (float)(inEndPoint->x - inStartPoint->x);
 	delta_y = (float)(inStartPoint->y - inEndPoint->y);
-	
+
 	set_rotation = UUcFalse;
 	new_object_position = inObject->position;
 	new_object_rotation = inObject->rotation;
-	
+
 	// restrict left/right or forward/backward movement
 	if ((OBJgMoveMode & OBJcMoveMode_LR) == 0)
 	{
@@ -1677,7 +1677,7 @@ OBJrObject_MouseMove(
 	else if (OBJgMoveMode & OBJcMoveMode_UD)
 	{
 		M3tVector3D			y_vector;
-		
+
 		// move up and down
 		MUmVector_Set(y_vector, 0.0f, 1.0f, 0.0f);
 		MUmVector_Scale(y_vector, delta_y * 0.1f);
@@ -1688,32 +1688,32 @@ OBJrObject_MouseMove(
 		M3tVector3D			up;
 		M3tVector3D			cross;
 		M3tVector3D			view_vector;
-		
+
 		// get the vector in the direction the camera is looking
 		view_vector = CArGetFacing();
 		MUrNormalize(&view_vector);
-		
+
 		// get the vector which is orthogonal to the view vector and
 		// is in the same xz plane
 		MUmVector_Copy(up, view_vector);
 		up.y += 1.0f;
 		MUrVector_CrossProduct(&up, &view_vector, &cross);
 		MUrNormalize(&cross);
-		
+
 		// no y movement
 		view_vector.y = 0.0f;
 		cross.y = 0.0f;
-		
+
 		// scale the vectors by the movement of the mouse
 		MUmVector_Scale(view_vector, delta_y * 0.2f);
 		MUmVector_Negate(cross);
 		MUmVector_Scale(cross, delta_x * 0.1f);
-		
+
 		// add the movement vectors to the object's position
 		MUmVector_Increment(new_object_position, view_vector);
 		MUmVector_Increment(new_object_position, cross);
 	}
-	
+
 	// set the object's new position
 	OBJrObject_SetPosition(inObject, &new_object_position, (set_rotation) ? &new_object_rotation : NULL);
 }
@@ -1727,122 +1727,122 @@ OBJrObject_MouseRotate_Begin(
 	M3tGeomCamera			*camera;
 	M3tPoint3D				camera_position;
 	M3tPoint3D				start_world_point;
-	
+
 	M3tVector3D				obj_center;
 	M3tVector3D				cam_to_obj;
 	M3tVector3D				cam_to_start;
 	M3tPoint3D				cam_through_start;
-	
+
 	float					cam_to_obj_dist;
-	
+
 	M3tVector3D				origin;
 	M3tVector3D				x_vector;
 	M3tVector3D				y_vector;
 	M3tVector3D				z_vector;
-	
+
 	M3tVector3D				obj_origin;
 	M3tVector3D				obj_x_vector;
 	M3tVector3D				obj_y_vector;
 	M3tVector3D				obj_z_vector;
-	
+
 	M3tPlaneEquation		xy_plane;
 	M3tPlaneEquation		xz_plane;
 	M3tPlaneEquation		yz_plane;
-	
+
 	M3tMatrix4x3			matrix;
-	
+
 	M3tPoint3D				xy_start_intersect;
 	M3tPoint3D				xz_start_intersect;
 	M3tPoint3D				yz_start_intersect;
-	
+
 	M3tBoundingSphere		bounding_sphere;
-	
+
 	M3tVector3D				xy_dist_vector;
 	M3tVector3D				xz_dist_vector;
 	M3tVector3D				yz_dist_vector;
-	
+
 	float					xy_distance;
 	float					xz_distance;
 	float					yz_distance;
-	
+
 	UUtBool					xy_int;
 	UUtBool					xz_int;
 	UUtBool					yz_int;
-	
+
 	OBJtObjectGroup			*object_group;
-	
+
 	// make sure the object isn't locked
 	if (OBJrObject_IsLocked(inObject)) { return; }
-	
+
 	// make sure the object group isn't locked
 	object_group = OBJiObjectGroup_GetByType(inObject->object_type);
 	if (object_group == NULL) { return; }
 	if (OBJiObjectGroup_IsLocked(object_group)) { return; }
-	
+
 	// get the active camera
 	M3rCamera_GetActive(&camera);
 	UUmAssert(camera);
-	
+
 	// get the camera position
 	camera_position = CArGetLocation();
-	
+
 	// get the point on the near clip plane where the user clicked
 	M3rPick_ScreenToWorld(
 		camera,
 		(UUtUns16)inMousePosition->x,
 		(UUtUns16)inMousePosition->y,
 		&start_world_point);
-	
+
 	// get the bounding sphere
 	OBJrObject_GetBoundingSphere(inObject, &bounding_sphere);
-	
-	// calculate the object center	
+
+	// calculate the object center
 	MUmVector_Add(obj_center, bounding_sphere.center, inObject->position);
-	
+
 	// calculate the distance from the camera to the object
-	MUmVector_Subtract(cam_to_obj, obj_center, camera_position); 
+	MUmVector_Subtract(cam_to_obj, obj_center, camera_position);
 	cam_to_obj_dist = MUrVector_Length(&cam_to_obj);
-	
+
 	// get a point on the line from the camera through the start point to a point
 	// that doesn't quite reach the other side of the bounding sphere
 	MUmVector_Subtract(cam_to_start, start_world_point, camera_position);
 	MUrNormalize(&cam_to_start);
 	MUmVector_Scale(cam_to_start, cam_to_obj_dist + (bounding_sphere.radius / 2));
 	MUmVector_Add(cam_through_start, cam_to_start, camera_position);
-		
+
 	// initialize unit vectors
 	MUmVector_Set(origin, 0.0f, 0.0f, 0.0f);
 	MUmVector_Set(x_vector, 1.0f, 0.0f, 0.0f);
 	MUmVector_Set(y_vector, 0.0f, 1.0f, 0.0f);
 	MUmVector_Set(z_vector, 0.0f, 0.0f, 1.0f);
-	
+
 	// rotate the unit vectors
 	MUrMatrix_Identity(&matrix);
 	MUrMatrix_RotateX(&matrix, (inObject->rotation.x * M3cDegToRad));
 	MUrMatrix_RotateY(&matrix, (inObject->rotation.y * M3cDegToRad));
 	MUrMatrix_RotateZ(&matrix, (inObject->rotation.z * M3cDegToRad));
-	
+
 	MUrMatrix_MultiplyPoint(&origin, &matrix, &obj_origin);
 	MUrMatrix_MultiplyPoint(&x_vector, &matrix, &obj_x_vector);
 	MUrMatrix_MultiplyPoint(&y_vector, &matrix, &obj_y_vector);
 	MUrMatrix_MultiplyPoint(&z_vector, &matrix, &obj_z_vector);
-	
+
 	// move the rotated unit vectors to the object center
 	MUmVector_Increment(obj_origin, obj_center);
 	MUmVector_Increment(obj_x_vector, obj_center);
 	MUmVector_Increment(obj_y_vector, obj_center);
 	MUmVector_Increment(obj_z_vector, obj_center);
-	
+
 	// build plane equations
 	MUrVector_PlaneFromEdges(&obj_origin, &obj_x_vector, &obj_origin, &obj_y_vector, &xy_plane);
 	MUrVector_PlaneFromEdges(&obj_origin, &obj_x_vector, &obj_origin, &obj_z_vector, &xz_plane);
 	MUrVector_PlaneFromEdges(&obj_origin, &obj_y_vector, &obj_origin, &obj_z_vector, &yz_plane);
-	
+
 	// intersect points
 	xy_int = CLrLine_Plane(&camera_position, &cam_through_start, &xy_plane, &xy_start_intersect);
 	xz_int = CLrLine_Plane(&camera_position, &cam_through_start, &xz_plane, &xz_start_intersect);
 	yz_int = CLrLine_Plane(&camera_position, &cam_through_start, &yz_plane, &yz_start_intersect);
-	
+
 	// calculate distance from bounding sphere edge to intersecting point
 	xy_distance = UUcFloat_Max;
 	xz_distance = UUcFloat_Max;
@@ -1853,19 +1853,19 @@ OBJrObject_MouseRotate_Begin(
 		MUmVector_Subtract(xy_dist_vector, xy_start_intersect, obj_origin);
 		xy_distance = (float)fabs(MUrVector_Length(&xy_dist_vector) - bounding_sphere.radius);
 	}
-	
+
 	if (xz_int)
 	{
 		MUmVector_Subtract(xz_dist_vector, xz_start_intersect, obj_origin);
 		xz_distance = (float)fabs(MUrVector_Length(&xz_dist_vector) - bounding_sphere.radius);
 	}
-	
+
 	if (yz_int)
 	{
 		MUmVector_Subtract(yz_dist_vector, yz_start_intersect, obj_origin);
 		yz_distance = (float)fabs(MUrVector_Length(&yz_dist_vector) - bounding_sphere.radius);
 	}
-	
+
 	// determine which axis to rotate
 	OBJgRotateAxis = OBJcRotate_None;
 	if ((OBJgRotateMode & OBJcRotateMode_XYZ) == OBJcRotateMode_XYZ)
@@ -1918,15 +1918,15 @@ OBJrObject_MouseRotate_Update(
 	float mouse_units_to_radians = ((float) M3cDegToRad);	// 1 mouse unit = 1 degree works well
 
 	OBJtObjectGroup			*object_group;
-	
+
 	// make sure the object isn't locked
 	if (OBJrObject_IsLocked(inObject)) { return; }
-	
+
 	// make sure the object group isn't locked
 	object_group = OBJiObjectGroup_GetByType(inObject->object_type);
 	if (object_group == NULL) { return; }
 	if (OBJiObjectGroup_IsLocked(object_group)) { return; }
-	
+
 	// get the axis to rotate about
 	axis_for_rotation = MUgZeroPoint;
 
@@ -1935,11 +1935,11 @@ OBJrObject_MouseRotate_Update(
 		case OBJcRotate_ZAxis:
 			axis_for_rotation.z = 1.0f;
 		break;
-		
+
 		case OBJcRotate_YAxis:
 			axis_for_rotation.y = 1.0f;
 		break;
-		
+
 		case OBJcRotate_XAxis:
 			axis_for_rotation.x = 1.0f;
 		break;
@@ -1953,7 +1953,7 @@ OBJrObject_MouseRotate_Update(
 	radians = inPositionDelta->x * mouse_units_to_radians;
 	radians = UUmPin(radians, -M3cPi, M3cPi);	// pinning simplifies the clip
 	UUmTrig_Clip(radians);
-	
+
 	// build the rotation matrix for the amount of rotation this mouse movement caused
 	MUrMatrix_BuildRotate(radians, axis_for_rotation.x, axis_for_rotation.y, axis_for_rotation.z, &delta_rotation_matrix);
 
@@ -1986,7 +1986,7 @@ OBJrObject_SetLocked(
 	object_group = OBJiObjectGroup_GetByType(ioObject->object_type);
 	if (object_group == NULL) { return; }
 	if (OBJiObjectGroup_IsLocked(object_group)) { return; }
-	
+
 	if (inIsLocked)
 	{
 		ioObject->flags |= OBJcObjectFlag_Locked;
@@ -1995,7 +1995,7 @@ OBJrObject_SetLocked(
 	{
 		ioObject->flags &= ~OBJcObjectFlag_Locked;
 	}
-	
+
 	// the object group is now dirty
 	OBJiObjectGroup_SetDirty(object_group, UUcTrue);
 }
@@ -2008,18 +2008,18 @@ OBJrObject_SetObjectSpecificData(
 {
 	UUtError				error;
 	OBJtObjectGroup			*object_group;
-	
+
 	UUmAssert(ioObject);
 	UUmAssert(inObjectSpecificData);
-	
+
 	// make sure the object group isn't locked
 	object_group = OBJiObjectGroup_GetByType(ioObject->object_type);
 	if (object_group == NULL) { return UUcError_Generic; }
 	if (OBJiObjectGroup_IsLocked(object_group)) { return UUcError_Generic; }
-	
+
 	error = ioObject->methods->rSetOSD(ioObject, inObjectSpecificData);
 	UUmError_ReturnOnError(error);
-	
+
 	// the object group is now dirty
 	OBJiObjectGroup_SetDirty(object_group, UUcTrue);
 
@@ -2034,36 +2034,36 @@ OBJrObject_SetPosition(
 	const M3tPoint3D		*inRotation)
 {
 	OBJtObjectGroup			*object_group;
-	
+
 	UUmAssert(ioObject);
-	
+
 	// make sure the object isn't locked
 	if (OBJrObject_IsLocked(ioObject)) { return; }
-	
+
 	// make sure the object group isn't locked
 	object_group = OBJiObjectGroup_GetByType(ioObject->object_type);
 	if (object_group == NULL) { return; }
 	if (OBJiObjectGroup_IsLocked(object_group)) { return; }
-	
+
 	if (inPosition != NULL)
 	{
 		ioObject->position = *inPosition;
 	}
-	
+
 	if (inRotation != NULL)
 	{
 		ioObject->rotation = *inRotation;
-		
+
 		while (ioObject->rotation.x < 0.0f) { ioObject->rotation.x += 360.0f; }
 		while (ioObject->rotation.x >= 360.0f) { ioObject->rotation.x -= 360.0f; }
-		
+
 		while (ioObject->rotation.y < 0.0f) { ioObject->rotation.y += 360.0f; }
 		while (ioObject->rotation.y >= 360.0f) { ioObject->rotation.y -= 360.0f; }
 
 		while (ioObject->rotation.z < 0.0f) { ioObject->rotation.z += 360.0f; }
 		while (ioObject->rotation.z >= 360.0f) { ioObject->rotation.z -= 360.0f; }
 	}
-	
+
 	OBJrObject_UpdatePosition(ioObject);
 
 	// clear the gunk flag
@@ -2084,7 +2084,7 @@ OBJrObject_SetRotationMatrix(
 
 	// make sure the object isn't locked
 	if (OBJrObject_IsLocked(ioObject)) { return; }
-	
+
 	// construct the euler
 	euler.order = MUcEulerOrderXYZs;
 	euler = MUrMatrixToEuler(inMatrix, MUcEulerOrderXYZs);
@@ -2109,10 +2109,10 @@ OBJrObject_Write(
 	UUtUns32				bytes_available;
 	UUtUns32				bytes_used;
 	OBJtObjectGroup			*object_group;
-	
+
 	// get the object group
-	object_group = OBJiObjectGroup_GetByType(inObject->object_type);	
-	
+	object_group = OBJiObjectGroup_GetByType(inObject->object_type);
+
 	// don't write into the buffer if there isn't enough space
 	bytes_available = *ioNumBytes;
 	bytes_used = OBJcObjectGenericWriteSize + OBJrObject_GetOSDWriteSize(inObject);
@@ -2121,38 +2121,38 @@ OBJrObject_Write(
 	{
 		// set the number of bytes written to the buffer
 		*ioNumBytes = 0;
-		
+
 		return;
 	}
-	
+
 	// write the object type
 	OBDmWrite4BytesToBuffer(ioBuffer, inObject->object_type, UUtUns32, bytes_available, OBJcWrite_Little);
-	
+
 	// write the object ID
 	OBDmWrite4BytesToBuffer(ioBuffer, inObject->object_id, UUtUns32, bytes_available, OBJcWrite_Little);
-	
+
 	// write the flag
 	OBDmWrite4BytesToBuffer(ioBuffer, inObject->flags, UUtUns32, bytes_available, OBJcWrite_Little);
-	
+
 	// write the position
 	OBDmWrite4BytesToBuffer(ioBuffer, inObject->position.x, float, bytes_available, OBJcWrite_Little);
 	OBDmWrite4BytesToBuffer(ioBuffer, inObject->position.y, float, bytes_available, OBJcWrite_Little);
 	OBDmWrite4BytesToBuffer(ioBuffer, inObject->position.z, float, bytes_available, OBJcWrite_Little);
-	
+
 	// write the rotation
 	OBDmWrite4BytesToBuffer(ioBuffer, inObject->rotation.x, float, bytes_available, OBJcWrite_Little);
 	OBDmWrite4BytesToBuffer(ioBuffer, inObject->rotation.y, float, bytes_available, OBJcWrite_Little);
 	OBDmWrite4BytesToBuffer(ioBuffer, inObject->rotation.z, float, bytes_available, OBJcWrite_Little);
-	
+
 	// save the number of bytes used so far
 	bytes_used = *ioNumBytes - bytes_available;
-	
+
 	// write the object specific data
 	inObject->methods->rWrite(inObject, ioBuffer, &bytes_available);
-	
+
 	// bytes_available is now the number of bytes written into
 	// the buffer by OBJmObject_Write()
-	
+
 	// return the number of bytes written into the buffer
 	*ioNumBytes = bytes_used + bytes_available;
 }
@@ -2175,10 +2175,10 @@ OBJiBinaryData_Load(
 	UUtUns32				version;
 	UUtUns32				num_bytes;
 	OBJtObjectGroup			*object_group;
-	
+
 	UUmAssert(inIdentifier);
 	UUmAssert(ioBinaryData);
-	
+
 	object_group = OBJiObjectGroup_GetByName(inIdentifier);
 
 	if (NULL == object_group) {
@@ -2186,36 +2186,36 @@ OBJiBinaryData_Load(
 	}
 
 	OBJiObjectGroup_DeleteAllObjects(object_group);
-	
+
 	buffer = ioBinaryData->data;
-	
+
 	// read the version number
 	OBDmGet4BytesFromBuffer(buffer, version, UUtUns32, inSwapIt);
-	
+
 	// get the size of the data chunk
 	OBDmGet4BytesFromBuffer(buffer, num_bytes, UUtUns32, inSwapIt);
 	while (num_bytes > 0)
 	{
 		UUtUns32			read_bytes;
-		
+
 		// process the data chunk
 		OBJrObject_CreateFromBuffer((UUtUns16)version, inSwapIt, buffer, &read_bytes);
-		
+
 		// advance to next data chunk
 		buffer += num_bytes;
-		
+
 		// get the size of the data chunk
 		OBDmGet4BytesFromBuffer(buffer, num_bytes, UUtUns32, inSwapIt);
 	}
-	
+
 	// set the locked and dirty flags
 	OBJiObjectGroup_SetLocked(object_group, inLocked);
 	OBJiObjectGroup_SetDirty(object_group, UUcFalse);
-	
+
 	if (inAllocated) {
 		UUrMemory_Block_Delete(ioBinaryData);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2226,15 +2226,15 @@ OBJiBinaryData_Register(
 {
 	UUtError				error;
 	BDtMethods				methods;
-	
+
 	methods.rLoad = OBJiBinaryData_Load;
-	
+
 	error =
 		BDrRegisterClass(
 			OBJcBinaryDataClass,
 			&methods);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -2251,7 +2251,7 @@ OBJiBinaryData_Save(
 	UUtUns8					*temp_buffer = UUrAlignMemory(block);
 
 	UUrMemory_Block_VerifyList();
-	
+
 	// save the objects
 	for (i = 0; i < OBJiObjectGroups_GetNumGroups(); i++)
 	{
@@ -2262,65 +2262,65 @@ OBJiBinaryData_Save(
 		UUtUns8				*data;
 		UUtUns8				*buffer;
 		UUtUns32			num_bytes;
-		
+
 		object_group = OBJiObjectGroups_GetGroupByIndex(i);
 		if (object_group == NULL)								{ continue; }
 		if (OBJiObjectGroup_IsLocked(object_group) == UUcTrue)	{ continue; }
 		if (OBJiObjectGroup_IsDirty(object_group) == UUcFalse)	{ continue; }
 		if ((inObjectType != OBJcType_None) && (OBJiObjectGroup_GetType(object_group) != inObjectType))
 			{ continue; }
-		
+
 		num_objects = OBJiObjectGroup_GetNumObjects(object_group);
-			
+
 		data_size =
-			sizeof(UUtUns32) +								// version number 
-			(sizeof(UUtUns32) * num_objects) +				// sizes of the object data 
-			OBJiObjectGroup_GetWriteSize(object_group) +	// object data 
-			sizeof(UUtUns32);								// zero at end of file 
-		
+			sizeof(UUtUns32) +								// version number
+			(sizeof(UUtUns32) * num_objects) +				// sizes of the object data
+			OBJiObjectGroup_GetWriteSize(object_group) +	// object data
+			sizeof(UUtUns32);								// zero at end of file
+
 		data = UUrMemory_Block_NewClear(data_size);
 		if (data == NULL) { UUmAssert(!"Unable to allocate memory to save objects"); continue; }
-		
+
 		// set write variables
 		buffer = data;
 		num_bytes = data_size;
-		
+
 		// write the version number into the buffer
 		OBDmWrite4BytesToBuffer(buffer, OBJcCurrentVersion, UUtUns32, num_bytes, OBJcWrite_Little);
-		
+
 		for (j = 0; j < num_objects; j++)
 		{
 			OBJtObject		*object;
 			UUtUns32		temp_num_bytes;
-			
+
 			UUrMemory_Clear(temp_buffer, OBJcMaxBufferSize);
 			UUrMemory_Block_VerifyList();
-				
+
 			object = OBJiObjectGroup_GetObject(object_group, j);
 			if (object == NULL)								continue;
 			if (object->flags & OBJcObjectFlag_Temporary)	continue;
-			
+
 			// write the object into the temp buffer
 			temp_num_bytes = OBJcMaxBufferSize;
 			OBJrObject_Write(object, temp_buffer, &temp_num_bytes);
 			UUmAssert(temp_num_bytes == (OBJcObjectGenericWriteSize + OBJrObject_GetOSDWriteSize(object)));
-			
+
 			// align
 			temp_num_bytes = UUmMakeMultiple(temp_num_bytes, 4);
 
 			// write the number of bytes
 			OBDmWrite4BytesToBuffer(buffer, temp_num_bytes, UUtUns32, num_bytes, OBJcWrite_Little);
 			UUmAssert(temp_num_bytes <= num_bytes);
-			
+
 			// write the temp_buffer
 			UUrMemory_MoveFast(temp_buffer, buffer, temp_num_bytes);
-						
+
 			buffer += temp_num_bytes;
 			num_bytes -= temp_num_bytes;
 
 			UUrMemory_Block_VerifyList();
 		}
-		
+
 /*		for (j = 0; j < num_objects; j++)
 		{
 			OBJtObject		*object;
@@ -2328,7 +2328,7 @@ OBJiBinaryData_Save(
 			UUtUns32		length_of_chunk;
 
 			UUrMemory_Block_VerifyList();
-						
+
 			object = OBJiObjectGroup_GetObject(object_group, j);
 			if (object == NULL) { continue; }
 
@@ -2337,7 +2337,7 @@ OBJiBinaryData_Save(
 			buffer += 4;
 			UUmAssert(num_bytes > 4);
 			num_bytes -= 4;
-			
+
 			// write the object into the buffer
 			length_of_chunk = num_bytes;
 			OBJrObject_Write(object, buffer, &length_of_chunk);
@@ -2355,15 +2355,15 @@ OBJiBinaryData_Save(
 
 			UUrMemory_Block_VerifyList();
 		}*/
-		
+
 		UUrMemory_Block_VerifyList();
 
 		// there are no more objects for this file, write a size of zero, use j to hold the zero
 		j = 0;
 		OBDmWrite4BytesToBuffer(buffer, j, UUtUns32, num_bytes, OBJcWrite_Little);
-		
+
 		UUrMemory_Block_VerifyList();
-		
+
 		level_id = (object_group->flags & OBJcObjectGroupFlag_CommonToAllLevels) ? 0 : ONrLevel_GetCurrentLevel();
 
 		// write the buffer to the binary datafile
@@ -2376,10 +2376,10 @@ OBJiBinaryData_Save(
 			inAutoSave);
 
 		UUrMemory_Block_VerifyList();
-		
+
 		// dispose of the buffer
 		UUrMemory_Block_Delete(data);
-		
+
 		// the object group is no longer dirty if this wasn't an autosave
 		if (inAutoSave == UUcFalse)
 		{
@@ -2402,13 +2402,13 @@ OBJrLevel_Load(
 	UUtUns16				inLevelNumber)
 {
 	UUtError				error;
-	
+
 	// initialize the object list
 	error = OBJiObjectGroups_LevelLoad();
 	UUmError_ReturnOnError(error);
-	
+
 	OBJrSelectedObjects_Select(NULL, UUcFalse);
-	
+
 	return UUcError_None;
 }
 
@@ -2421,7 +2421,7 @@ OBJrLevel_Unload(
 	// save the objects
 	OBJiBinaryData_Save(OBJcType_None, UUcFalse);
 #endif
-	
+
 	OBJiObjectGroups_LevelUnload();
 
 	return;
@@ -2443,24 +2443,24 @@ OBJiENVFile_GetNumNodes(
 	UUtUns32				num_objects;
 	UUtUns32				i;
 	UUtUns32				num_nodes;
-	
+
 	num_nodes = 0;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	//Furniture
 	object_group = OBJiObjectGroup_GetByType(OBJcType_Furniture);
 	if (object_group == NULL) { return 0; }
-	
+
 	num_objects = OBJiObjectGroup_GetNumObjects(object_group);
-	
+
 	for (i = 0; i < num_objects; i++)
 	{
 		OBJtOSD_Furniture	*furniture_osd;
-		
+
 		object = OBJiObjectGroup_GetObject(object_group, i);
 		if( !object )									return 0;
 		if( object->object_type != OBJcType_Furniture) { continue; }
-		
+
 		furniture_osd = (OBJtOSD_Furniture*)object->object_data;
 		num_nodes += (furniture_osd->furn_geom_array != NULL) ? furniture_osd->furn_geom_array->num_furn_geoms : 0;
 	}
@@ -2470,7 +2470,7 @@ OBJiENVFile_GetNumNodes(
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	//Turrets
 	object_group = OBJiObjectGroup_GetByType(OBJcType_Turret);
-	num_objects = OBJiObjectGroup_GetNumObjects(object_group);	
+	num_objects = OBJiObjectGroup_GetNumObjects(object_group);
 
 	for (i = 0; i < num_objects; i++)
 	{
@@ -2487,7 +2487,7 @@ OBJiENVFile_GetNumNodes(
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	//Triggers
 	object_group = OBJiObjectGroup_GetByType(OBJcType_Trigger);
-	num_objects = OBJiObjectGroup_GetNumObjects(object_group);	
+	num_objects = OBJiObjectGroup_GetNumObjects(object_group);
 
 	for (i = 0; i < num_objects; i++)
 	{
@@ -2505,18 +2505,18 @@ OBJiENVFile_GetNumNodes(
 	//Consoles
 	object_group = OBJiObjectGroup_GetByType(OBJcType_Console);
 	if (object_group == NULL) { return 0; }
-	
+
 	num_objects = OBJiObjectGroup_GetNumObjects(object_group);
-	
+
 	for (i = 0; i < num_objects; i++)
 	{
 		OBJtOSD_Console		*console_osd;
-		
+
 		object = OBJiObjectGroup_GetObject(object_group, i);
 		if( !object )										continue;
 		if( object->object_type != OBJcType_Console) { continue; }
 		if( object->flags & OBJcObjectFlag_Temporary )	continue;
-		
+
 		console_osd = (OBJtOSD_Console*) object->object_data;
 		num_nodes += console_osd->console_class->geometry_array->num_furn_geoms;
 	}
@@ -2527,18 +2527,18 @@ OBJiENVFile_GetNumNodes(
 
 	object_group = OBJiObjectGroup_GetByType(OBJcType_Door);
 	if (object_group == NULL) { return 0; }
-	
+
 	num_objects = OBJiObjectGroup_GetNumObjects(object_group);
-	
+
 	for (i = 0; i < num_objects; i++)
 	{
 		OBJtOSD_Door		*door_osd;
-		
+
 		object = OBJiObjectGroup_GetObject(object_group, i);
 		if( !object )									continue;
 		if( object->object_type != OBJcType_Door)		continue;
 		if( object->flags & OBJcObjectFlag_Temporary )	continue;
-		
+
 		door_osd = (OBJtOSD_Door*) object->object_data;
 
 		if (door_osd->door_class != NULL) {
@@ -2556,7 +2556,7 @@ OBJiENVFile_GetNumNodes(
 	}
 	//COrConsole_Printf("doors %d", num_nodes);
 
-	
+
 	return num_nodes;
 }
 
@@ -2577,7 +2577,7 @@ OBJiENVFile_WriteNode_Geometry(
 	BFtFile					*inDebugFile)
 {
 	UUtError				error;
-	char					object_name[255];	
+	char					object_name[255];
 	char					*geom_name;
 	MXtNode					*node;
 	MXtNode					*optimized_node;
@@ -2594,7 +2594,7 @@ OBJiENVFile_WriteNode_Geometry(
 	UUtUns32				tri_faces_size;
 	UUtUns32				materials_size;
 	UUtUns32				markers_size;
-	
+
 	UUtUns32				index0;
 	UUtUns32				index1;
 	UUtUns32				index2;
@@ -2603,14 +2603,14 @@ OBJiENVFile_WriteNode_Geometry(
 	EPtEnvParticle			*particle;
 
 	M3tMatrix4x3			deform_matrix;
-	
+
 	char					user_data[2048];
 	UUtUns32				user_data_length;
 
 	char					*particle_user_data_buf;
 	char					**particle_user_data;
 	UUtUns32				*particle_user_data_length;
-		
+
 	if( inName )
 		UUrString_Copy( object_name, inName, 255 );
 	else
@@ -2625,7 +2625,7 @@ OBJiENVFile_WriteNode_Geometry(
 	{
 		geom_name = object_name;
 	}
-	
+
 	if( inDeformMatrix )
 		deform_matrix = *inDeformMatrix;
 	else
@@ -2639,7 +2639,7 @@ OBJiENVFile_WriteNode_Geometry(
 	if (inGQFlags != 0)
 	{
 		strcat(user_data, "$type = ["UUmNL);
-		
+
 		for (i = 0; i < 32; i++)
 		{
 			if (inGQFlags & (1 << i))
@@ -2652,10 +2652,10 @@ OBJiENVFile_WriteNode_Geometry(
 				}
 			}
 		}
-		
+
 		strcat(user_data, "]"UUmNL);
 	}
-	
+
 	if (inLsData)
 	{
 		OBJtLSData			*ls_data;
@@ -2663,10 +2663,10 @@ OBJiENVFile_WriteNode_Geometry(
 		ls_data = inLsData;
 		// find the ls_data corresponding to this geometry
 		if (ls_data != NULL)
-		{			
+		{
 			// write the light data
 			strcat(user_data, "$ls = {"UUmNL);
-			
+
 			// write the light filter color
 			strcat(user_data, "$filterColor = [ ");
 			sprintf(
@@ -2676,7 +2676,7 @@ OBJiENVFile_WriteNode_Geometry(
 				ls_data->filter_color[1],
 				ls_data->filter_color[2]);
 			strcat(user_data, temp_buffer);
-			
+
 			// write the light type
 			strcat(user_data, "$type = ");
 			if (ls_data->light_flags & OBJcLightFlag_Type_Area)
@@ -2692,7 +2692,7 @@ OBJiENVFile_WriteNode_Geometry(
 				sprintf(temp_buffer, "point"UUmNL);
 			}
 			strcat(user_data, temp_buffer);
-			
+
 			// write the light distribution
 			strcat(user_data, "$distribution = ");
 			if (ls_data->light_flags & OBJcLightFlag_Dist_Diffuse)
@@ -2704,15 +2704,15 @@ OBJiENVFile_WriteNode_Geometry(
 				sprintf(temp_buffer, "spot"UUmNL);
 			}
 			strcat(user_data, temp_buffer);
-			
+
 			// write the light intensity
 			sprintf(temp_buffer, "$intensity = %f"UUmNL, ls_data->light_intensity);
 			strcat(user_data, temp_buffer);
-			
+
 			// write the light beam angle
 			sprintf(temp_buffer, "$beamAngle = %f"UUmNL, ls_data->beam_angle);
 			strcat(user_data, temp_buffer);
-			
+
 			// write the light field angle
 			sprintf(temp_buffer, "$fieldAngle = %f"UUmNL, ls_data->field_angle);
 			strcat(user_data, temp_buffer);
@@ -2727,9 +2727,9 @@ OBJiENVFile_WriteNode_Geometry(
 	if( inUserData )
 		strcat( user_data, inUserData );
 	strcat(user_data, "\0");
-	
+
 	user_data_length = strlen(user_data) + 1;
-	
+
 	// ------------------------------
 	// allocate memory for the node
 	node = (MXtNode*)UUrMemory_Block_NewClear(sizeof(MXtNode));
@@ -2738,7 +2738,7 @@ OBJiENVFile_WriteNode_Geometry(
 	// copy the name and parentName into the node
 	UUrString_Copy(node->name,		 geom_name, MXcMaxName);
 	UUrString_Copy(node->parentName, "",		MXcMaxName);
-	
+
 	// set the node data
 	node->numPoints		= (UUtUns16) geometry->pointArray->numPoints;
 	node->numTriangles	= (UUtUns16) geometry->triNormalIndexArray->numIndices;
@@ -2753,7 +2753,7 @@ OBJiENVFile_WriteNode_Geometry(
 	UUrSwap_2Byte(&node->numMaterials);
 	UUrSwap_2Byte(&node->numMarkers);
 	UUrSwap_4Byte(&node->userDataCount);
-	
+
 	for (i = 0; i < 4; i++)
 	{
 		UUrSwap_4Byte(&node->matrix.m[i][0]);
@@ -2761,13 +2761,13 @@ OBJiENVFile_WriteNode_Geometry(
 		UUrSwap_4Byte(&node->matrix.m[i][2]);
 	}
 #endif
-		
+
 	// ------------------------------
 	// make the points
 	points_size = sizeof(MXtPoint) * geometry->pointArray->numPoints;
 	points = (MXtPoint*)UUrMemory_Block_NewClear(points_size);
 	UUmError_ReturnOnNull(points);
-	
+
 	for (i = 0; i < geometry->pointArray->numPoints; i++)
 	{
 #if 1
@@ -2778,9 +2778,9 @@ OBJiENVFile_WriteNode_Geometry(
 #endif
 		points[i].normal	= geometry->vertexNormalArray->vectors[i];
 		points[i].uv		= geometry->texCoordArray->textureCoords[i];
-		
+
 		points[i].uv.v = 1.0f - points[i].uv.v;
-		
+
 #if (UUmEndian == UUmEndian_Big)
 		UUrSwap_4Byte(&points[i].point.x);
 		UUrSwap_4Byte(&points[i].point.y);
@@ -2792,48 +2792,48 @@ OBJiENVFile_WriteNode_Geometry(
 		UUrSwap_4Byte(&points[i].uv.v);
 #endif
 	}
-	
+
 	// ------------------------------
 	// make the triangles
 	tri_faces_size = sizeof(MXtFace) * geometry->triNormalIndexArray->numIndices;
 	tri_faces = (MXtFace*)UUrMemory_Block_NewClear(tri_faces_size);
 	UUmError_ReturnOnNull(tri_faces);
-	
+
 	curIndexPtr = geometry->triStripArray->indices;
-	
+
 	for (i = 0; i < geometry->triNormalIndexArray->numIndices; i++)
 	{
 		UUtUns32				normal_index;
 		M3tVector3D				v1;
 		M3tVector3D				v2;
-		
+
 		index2 = *curIndexPtr++;
-		
+
 		if (index2 & 0x80000000)
 		{
 			index0 = index2 & 0x7FFFFFFF;
 			index1 = *curIndexPtr++;
 			index2 = *curIndexPtr++;
-			
+
 			UUmAssert((index0 & 0x80000000) != 0x80000000);
 			UUmAssert((index1 & 0x80000000) != 0x80000000);
 			UUmAssert((index2 & 0x80000000) != 0x80000000);
 		}
-		
+
 		normal_index = geometry->triNormalIndexArray->indices[i];
 		UUmAssert((normal_index & 0x80000000) != 0x80000000);
-		
+
 		UUmAssert(index0 < UUcMaxUns16);
 		UUmAssert(index1 < UUcMaxUns16);
 		UUmAssert(index2 < UUcMaxUns16);
-		
+
 		MUmVector_Subtract(v1, geometry->pointArray->points[index1], geometry->pointArray->points[index0]);
 		MUmVector_Subtract(v2, geometry->pointArray->points[index2], geometry->pointArray->points[index0]);
-				
+
 		tri_faces[i].indices[0]	= (UUtUns16) index0;
 		tri_faces[i].indices[1]	= (UUtUns16) index1;
 		tri_faces[i].indices[2]	= (UUtUns16) index2;
-		tri_faces[i].indices[3]	= 0;		
+		tri_faces[i].indices[3]	= 0;
 		tri_faces[i].dont_use_this_normal			= geometry->triNormalArray->vectors[normal_index];
 		tri_faces[i].material		= 0;
 		tri_faces[i].pad			= 0;
@@ -2852,17 +2852,17 @@ OBJiENVFile_WriteNode_Geometry(
 		index0 = index1;
 		index1 = index2;
 	}
-	
+
 	// ------------------------------
 	// make the materials
 	materials_size	= sizeof(MXtMaterial);
 	materials		= (MXtMaterial*)UUrMemory_Block_NewClear(materials_size);
 	UUmError_ReturnOnNull(materials);
-	
+
 	{
 		M3tTextureMap		*texture;
 		char				texture_name[ MXcMaxName];
-				
+
 		if( inTextureMap )
 		{
 			texture = inTextureMap;
@@ -2872,33 +2872,33 @@ OBJiENVFile_WriteNode_Geometry(
 			texture = geometry->baseMap;
 		}
 
-		if( !texture ) 
+		if( !texture )
 		{
 			UUrString_Copy( texture_name, "null_material", MXcMaxName);
-		} 
-		else 
+		}
+		else
 		{
 			UUrString_Copy( texture_name, TMrInstance_GetInstanceName(texture), MXcMaxName);
 		}
 		UUrString_Copy(materials->name, texture_name, MXcMaxName);
 
 		materials->alpha = 1.0f;
-		
+
 		for (i = 0; i < MXcMapping_Count; i++)
 		{
 			UUrString_Copy(materials->maps[i].name, "<none>", MXcMaxName);
 		}
-		
+
 		UUrString_Copy(materials->maps[MXcMapping_DI].name, texture_name, MXcMaxName);
 		materials->maps[MXcMapping_DI].amount = 1.0f;
 	}
-	
+
 #if (UUmEndian == UUmEndian_Big)
 	UUrSwap_4Byte(&materials->alpha);
 	UUrSwap_4Byte(&materials->maps[MXcMapping_DI].amount);
 #endif
-	
-	if (inParticleCount > 0) 
+
+	if (inParticleCount > 0)
 	{
 		char temp_buffer[256];
 
@@ -2978,21 +2978,21 @@ OBJiENVFile_WriteNode_Geometry(
 	// write the node
 	error = BFrFile_Write(inFile, sizeof(MXtNode), node);
 	UUmError_ReturnOnError(error);
-	
+
 	// ------------------------------
 	// write user data
 	BFrFile_Write(inFile, user_data_length, user_data);
-			
+
 	// ------------------------------
 	// write points
 	error = BFrFile_Write(inFile, sizeof(MXtPoint) * node->numPoints, node->points);
 	UUmError_ReturnOnError(error);
-	
+
 	// ------------------------------
 	// write triangles
 	error = BFrFile_Write(inFile, sizeof(MXtFace) * node->numTriangles, node->triangles);
 	UUmError_ReturnOnError(error);
-	
+
 	// ------------------------------
 	// write quads
 	error = BFrFile_Write(inFile, sizeof(MXtFace) * node->numQuads, node->quads);
@@ -3003,7 +3003,7 @@ OBJiENVFile_WriteNode_Geometry(
 	for (i = 0; i < inParticleCount; i++) {
 		error = BFrFile_Write(inFile, sizeof(MXtMarker), &markers[i]);
 		UUmError_ReturnOnError(error);
-	
+
 		error = BFrFile_Write(inFile, particle_user_data_length[i], particle_user_data[i]);
 		UUmError_ReturnOnError(error);
 	}
@@ -3012,7 +3012,7 @@ OBJiENVFile_WriteNode_Geometry(
 	// write materials
 	error = BFrFile_Write(inFile, materials_size, materials);
 	UUmError_ReturnOnError(error);
-	
+
 	// ------------------------------
 	// free the memory
 	UUrMemory_Block_Delete(node);
@@ -3077,11 +3077,11 @@ static UUtError OBJiENVFile_WriteNode_GeometryArray(
 				ls_data = NULL;
 			}
 		}
-		
+
 		sprintf( user_data, "$node_index = %d"UUmNL, g );
 		if( inUserData )
 			strcat( user_data, inUserData );
-		
+
 		new_flags = inFurnGeomArray->furn_geom[g].gq_flags;
 
 		if (((new_flags & inTestFlags_Require) == inTestFlags_Require) &&
@@ -3089,7 +3089,7 @@ static UUtError OBJiENVFile_WriteNode_GeometryArray(
 			new_flags = (new_flags & ~inTestFlags_TurnOff) | inTestFlags_TurnOn;
 		}
 		new_flags = ((new_flags & ~inGQFlags_TurnOff) | inGQFlags_TurnOn);
-		
+
 		error = OBJiENVFile_WriteNode_Geometry( inFile, inMatrix, inFurnGeomArray->furn_geom[g].geometry,
 			new_flags, ls_data, inName, user_data, inDeformMatrix,
 			inParticleCount, inParticleArray, inTextureMap, inDebugFile );
@@ -3121,16 +3121,16 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 	M3tMatrix4x3			m1, m2;
 	M3tMatrix4x3			m1b, m2b;
 	UUtUns32				flags, tag;
-	
+
 	// get the current level number
 	level_num = ONrLevel_GetCurrentLevel();
 	if (level_num == 0) { return UUcError_Generic; }
-	
+
 	// create the env file ref
 	sprintf(filename, "L%d_Gunk.ENV", level_num);
 	error = BFrFileRef_MakeFromName(filename, &env_file_ref);
 	UUmError_ReturnOnError(error);
-	
+
 	// create the .ENV file if it doesn't already exist
 	if (BFrFileRef_FileExists(env_file_ref) == UUcFalse)
 	{
@@ -3138,11 +3138,11 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 		error = BFrFile_Create(env_file_ref);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	// open the object.env file
 	error = BFrFile_Open(env_file_ref, "rw", &env_file);
 	UUmError_ReturnOnError(error);
-	
+
 	// set the position to 0
 	error = BFrFile_SetPos(env_file, 0);
 	UUmError_ReturnOnError(error);
@@ -3152,7 +3152,7 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 		sprintf(filename, "L%d_GunkDebug.txt", level_num);
 		error = BFrFileRef_MakeFromName(filename, &debug_file_ref);
 		UUmError_ReturnOnError(error);
-		
+
 		// create the debug file if it doesn't already exist
 		if (BFrFileRef_FileExists(debug_file_ref) == UUcFalse)
 		{
@@ -3160,22 +3160,22 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 			error = BFrFile_Create(debug_file_ref);
 			UUmError_ReturnOnError(error);
 		}
-		
+
 		// open the debug file
 		error = BFrFile_Open(debug_file_ref, "w", &debug_file);
-		UUmError_ReturnOnError(error);	
-		
+		UUmError_ReturnOnError(error);
+
 		BFrFile_Printf(debug_file, "debug info for level %d gunk file..."UUmNL, level_num);
 		BFrFile_Printf(debug_file, UUmNL);
 	} else {
 		debug_file_ref = NULL;
 		debug_file = NULL;
 	}
-	
+
 	// create the MXtHeader
 	header = (MXtHeader*)UUrMemory_Block_NewClear(sizeof(MXtHeader));
 	UUmError_ReturnOnNull(header);
-	
+
 	UUrString_Copy(header->stringENVF, "ENVF", 5);
 	header->version = 0;
 	header->numNodes = (UUtUns16) OBJiENVFile_GetNumNodes();
@@ -3184,17 +3184,17 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 
 	OBJgNodeCount = OBJiENVFile_GetNumNodes();
 	OBJgNodeActual = 0;
-		
+
 #if (UUmEndian == UUmEndian_Big)
 	UUrSwap_4Byte(&header->version);
 	UUrSwap_2Byte(&header->numNodes);
-	UUrSwap_2Byte(&header->time);	
+	UUrSwap_2Byte(&header->time);
 #endif
-	
+
 	// write the header
 	error = BFrFile_Write(env_file, sizeof(MXtHeader), header);
 	UUmError_ReturnOnError(error);
-	
+
 	// dispose of the memory
 	UUrMemory_Block_Delete(header);
 	header = NULL;
@@ -3217,7 +3217,7 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 		object = OBJiObjectGroup_GetObject(object_group, i);
 		if ((object == NULL) || (object->object_type != OBJcType_Furniture)) { continue; }
 		if( object->flags & OBJcObjectFlag_Temporary )			continue;
-		
+
 		furniture_osd = (OBJtOSD_Furniture*) object->object_data;
 
 		tag = OBJmMakeObjectTag(object_group->object_typeindex, object);
@@ -3229,7 +3229,7 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 		MUrMatrix_Identity(&matrix);
 		MUrMatrixStack_Translate(&matrix, &object->position);
 		MUrMatrixStack_Matrix(&matrix, &m1);
-		
+
 		if (debug_file) {
 			BFrFile_Printf(debug_file, "furniture #%d geom %s furntag %s, typeindex %d objID %d -> tag %d"UUmNL,
 				i, furniture_osd->furn_geom_name, furniture_osd->furn_tag, object_group->object_typeindex, object->object_id, tag);
@@ -3240,8 +3240,8 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 		// make sure that they get tagged as AI impassable.
 		error = OBJiENVFile_WriteNode_GeometryArray(env_file, &matrix, furniture_osd->furn_geom_array, furniture_osd->ls_data_array,
 					object_name, user_data, NULL, furniture_osd->num_particles, furniture_osd->particle,
-					AKcGQ_Flag_No_Occlusion | AKcGQ_Flag_Furniture, 0, 
-					AKcGQ_Flag_No_Object_Collision | AKcGQ_Flag_Invisible, AKcGQ_Flag_No_Collision | AKcGQ_Flag_No_Character_Collision, 
+					AKcGQ_Flag_No_Occlusion | AKcGQ_Flag_Furniture, 0,
+					AKcGQ_Flag_No_Object_Collision | AKcGQ_Flag_Invisible, AKcGQ_Flag_No_Collision | AKcGQ_Flag_No_Character_Collision,
 					AKcGQ_Flag_AIImpassable, 0, NULL, debug_file);
 		if (error != UUcError_None) { break; }
 	}
@@ -3253,7 +3253,7 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 	//Turrets
 	object_group = OBJiObjectGroup_GetByType(OBJcType_Turret);
 	if (object_group == NULL) { return UUcError_Generic; }
-	
+
 	if (debug_file) {
 		BFrFile_Printf(debug_file, "TURRETS"UUmNL);
 		BFrFile_Printf(debug_file, "======="UUmNL);
@@ -3268,7 +3268,7 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 		object = OBJiObjectGroup_GetObject(object_group, i);
 		if ((object == NULL) || (object->object_type != OBJcType_Turret)) { continue; }
 		if( object->flags & OBJcObjectFlag_Temporary )			continue;
-		
+
 		turret_osd = (OBJtOSD_Turret*) object->object_data;
 
 		tag = OBJmMakeObjectTag(object_group->object_typeindex, object);
@@ -3280,10 +3280,10 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
  		MUrMatrix_Identity(&matrix);
 		MUrMatrixStack_Translate(&matrix, &object->position);
 		MUrMatrixStack_Matrix(&matrix, &m1);
-		
+
 		// always set the no occlusion flag
 		flags = (turret_osd->turret_class->base_gq_flags | AKcGQ_Flag_No_Occlusion);
-		
+
 		if (debug_file) {
 			BFrFile_Printf(debug_file, "turret #%d class %s ID %d, typeindex %d objID %d -> tag %d"UUmNL,
 								i, turret_osd->turret_class_name, turret_osd->id, object_group->object_typeindex, object->object_id, tag);
@@ -3299,7 +3299,7 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 	// Triggers
 	object_group = OBJiObjectGroup_GetByType(OBJcType_Trigger);
 	if (object_group == NULL) { return UUcError_Generic; }
-	
+
 	if (debug_file) {
 		BFrFile_Printf(debug_file, "TRIGGERS"UUmNL);
 		BFrFile_Printf(debug_file, "========"UUmNL);
@@ -3314,7 +3314,7 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 		object = OBJiObjectGroup_GetObject(object_group, i);
 		if ((object == NULL) || (object->object_type != OBJcType_Trigger)) { continue; }
 		if( object->flags & OBJcObjectFlag_Temporary )			continue;
-		
+
 		trigger_osd = (OBJtOSD_Trigger*) object->object_data;
 
 		tag = OBJmMakeObjectTag(object_group->object_typeindex, object);
@@ -3329,7 +3329,7 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 
 		// always set the no occlusion flag
 		flags = (trigger_osd->trigger_class->base_gq_flags | AKcGQ_Flag_No_Occlusion);
-		
+
 		if (debug_file) {
 			BFrFile_Printf(debug_file, "trigger #%d class %s ID %d, typeindex %d objID %d -> tag %d"UUmNL,
 				i, trigger_osd->trigger_class_name, trigger_osd->id, object_group->object_typeindex, object->object_id, tag);
@@ -3360,7 +3360,7 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 		object = OBJiObjectGroup_GetObject(object_group, i);
 		if ((object == NULL) || (object->object_type != OBJcType_Console)) { continue; }
 		if( object->flags & OBJcObjectFlag_Temporary )			continue;
-		
+
 		console_osd = (OBJtOSD_Console*) object->object_data;
 
 		OBJrObject_GetRotationMatrix(object, &m1);
@@ -3383,7 +3383,7 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 	}
 
 	//COrConsole_Printf("consoles %d", OBJgNodeActual);
-	
+
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	// The Doors
@@ -3405,9 +3405,9 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 		object = OBJiObjectGroup_GetObject(object_group, i);
 		if( !object || (object->object_type != OBJcType_Door))	continue;
 		if( object->flags & OBJcObjectFlag_Temporary )			continue;
-		
+
 		door_osd = (OBJtOSD_Door*) object->object_data;
-		
+
 		if (door_osd->door_class == NULL)
 			continue;
 
@@ -3454,19 +3454,19 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 				error = OBJiENVFile_WriteNode_GeometryArray(env_file, &m2b, door_osd->door_class->geometry_array[0], NULL, object_name, user_data, NULL, 0, NULL, gq_flags, 0, 0, 0, 0, 0, door_osd->door_texture_ptr[1], debug_file );
 			}
 			if (error != UUcError_None) { break; }
-			
+
 		}
 	}
 
 	//COrConsole_Printf("doors %d", OBJgNodeActual);
-	
+
 	// set the end of the file
 	BFrFile_SetEOF(env_file);
-	
+
 	// close the file
 	BFrFile_Close(env_file);
 	env_file = NULL;
-	
+
 	// delete the file ref
 	BFrFileRef_Dispose(env_file_ref);
 	env_file_ref = NULL;
@@ -3486,7 +3486,7 @@ UUtError OBJrENVFile_Write(UUtBool inDebug)
 	if (OBJgNodeCount != OBJgNodeActual) {
 		COrConsole_Printf("FAILED TO WRITE OUT ENV FILE, predicted %d wrote %d", OBJgNodeCount, OBJgNodeActual);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3509,20 +3509,20 @@ OBJrFlagTXTFile_Write(
 	UUtUns32				i;
 	UUtUns32				num_objects;
 	OBJtObjectGroup			*object_group;
-	
+
 	// get the object group
 	object_group = OBJiObjectGroup_GetByType(OBJcType_Flag);
 	if (object_group == NULL) { return UUcError_Generic; }
-	
+
 	// get the current level number
 	level_num = ONrLevel_GetCurrentLevel();
 	if (level_num == 0) { return UUcError_Generic; }
-	
+
 	// create the env file ref
 	sprintf(filename, "L%d_Flags.txt", level_num);
 	error = BFrFileRef_MakeFromName(filename, &flag_file_ref);
 	UUmError_ReturnOnError(error);
-	
+
 	// create the .TXT file if it doesn't already exist
 	if (BFrFileRef_FileExists(flag_file_ref) == UUcFalse)
 	{
@@ -3530,15 +3530,15 @@ OBJrFlagTXTFile_Write(
 		error = BFrFile_Create(flag_file_ref);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	// open the object.env file
 	error = BFrFile_Open(flag_file_ref, "rw", &flag_file);
 	UUmError_ReturnOnError(error);
-	
+
 	// set the position to 0
 	error = BFrFile_SetPos(flag_file, 0);
 	UUmError_ReturnOnError(error);
-	
+
 	// write the flags
 	num_objects = OBJiObjectGroup_GetNumObjects(object_group);
 	for (i = 0; i < num_objects; i++)
@@ -3546,33 +3546,33 @@ OBJrFlagTXTFile_Write(
 		OBJtObject			*object;
 		OBJtOSD_All			osd_all;
 		char				string[1024];
-		
+
 		object = OBJiObjectGroup_GetObject(object_group, i);
 		if (object == NULL) { continue; }
-		
+
 		OBJrObject_GetObjectSpecificData(object, &osd_all);
-		
+
 		// format each line as:
 		// flag_name <tab> flag_note
 		OBJrObject_GetName(object, string, 1024);
 		strcat(string, "\t");
 		strcat(string, osd_all.osd.flag_osd.note);
 		strcat(string, UUmNL);
-		
+
 		BFrFile_Write(flag_file, strlen(string), string);
 	}
-	
+
 	// set the end of the file
 	BFrFile_SetEOF(flag_file);
-	
+
 	// close the file
 	BFrFile_Close(flag_file);
 	flag_file = NULL;
-	
+
 	// delete the file ref
 	BFrFileRef_Dispose(flag_file_ref);
 	flag_file_ref = NULL;
-	
+
 	return UUcError_None;
 }
 #endif
@@ -3589,21 +3589,21 @@ OBJrSelectedObjects_Delete(
 {
 	UUtUns32				num_objects;
 	UUtUns32				i;
-	
+
 	// delete all of the selected objects pointers
 	num_objects = UUrMemory_Array_GetUsedElems(OBJgSelectedObjects);
 	for (i = 0; i < num_objects; i++)
 	{
 		OBJtObject			*object;
-		
+
 		// get a currently selected object
 		object = OBJrSelectedObjects_GetSelectedObject(0);
 		if (object == NULL) { continue; }
-		
+
 		// delete the object
 		OBJrObject_Delete(object);
 	}
-	
+
 	// there are no longer any objects selected so the selection can't be locked
 	OBJrSelectedObjects_Lock_Set(UUcFalse);
 }
@@ -3614,7 +3614,7 @@ OBJrSelectedObjects_GetNumSelected(
 	void)
 {
 	return UUrMemory_Array_GetUsedElems(OBJgSelectedObjects);
-}	
+}
 
 // ----------------------------------------------------------------------
 OBJtObject*
@@ -3623,15 +3623,15 @@ OBJrSelectedObjects_GetSelectedObject(
 {
 	OBJtObject				**object_list;
 	UUtUns32				num_objects;
-	
+
 	num_objects = OBJrSelectedObjects_GetNumSelected();
 	if ((inIndex >= num_objects) || (num_objects == 0))
 	{
 		return NULL;
 	}
-	
+
 	object_list = (OBJtObject**)UUrMemory_Array_GetMemory(OBJgSelectedObjects);
-	
+
 	return object_list[inIndex];
 }
 
@@ -3648,9 +3648,9 @@ OBJiSelectedObjects_Initialize(
 			0,
 			10);
 	UUmError_ReturnOnNull(OBJgSelectedObjects);
-	
+
 	OBJrSelectedObjects_Lock_Set(UUcFalse);
-	
+
 	return UUcError_None;
 }
 
@@ -3677,7 +3677,7 @@ OBJrSelectedObjects_MoveCameraToSelection(
 		MUmVector_Add(position_sum, position_sum, object->position);
 		num_found++;
 	}
-	
+
 	if (num_found == 0) {
 		return;
 	}
@@ -3704,11 +3704,11 @@ OBJrSelectedObjects_IsObjectSelected(
 	UUtUns32				num_objects;
 	UUtUns32				i;
 	UUtBool					found;
-	
+
 	// find inObject in the selected objects list
 	object_list = (OBJtObject**)UUrMemory_Array_GetMemory(OBJgSelectedObjects);
 	num_objects = OBJrSelectedObjects_GetNumSelected();
-	
+
 	found = UUcFalse;
 	for (i = 0; i < num_objects; i++)
 	{
@@ -3718,7 +3718,7 @@ OBJrSelectedObjects_IsObjectSelected(
 			break;
 		}
 	}
-	
+
 	return found;
 }
 
@@ -3748,22 +3748,22 @@ OBJrSelectedObjects_Select(
 	UUtUns32				index;
 	UUtBool					mem_moved;
 	OBJtObject				**object_list;
-	
+
 	if (OBJgSelectedObjects_Locked == UUcTrue) { return; }
-	
+
 	// clear the list if the item isn't being added to the current list
 	if (inAddToList == UUcFalse)
 	{
 		OBJrSelectedObjects_UnselectAll();
  	}
- 	
+
  	// if inObject is null then there is nothing to add so leave
  	if (inObject == NULL) { return; }
- 	
+
  	// make room in the list for a new element
  	error = UUrMemory_Array_GetNewElement(OBJgSelectedObjects, &index, &mem_moved);
  	if (error != UUcError_None) { return; }
- 	
+
  	// add the element to the list
  	object_list = (OBJtObject**)UUrMemory_Array_GetMemory(OBJgSelectedObjects);
  	object_list[index] = inObject;
@@ -3785,11 +3785,11 @@ OBJrSelectedObjects_Unselect(
 {
 	UUtUns32				i;
 	OBJtObject				**object_list;
-	
+
 	if (OBJgSelectedObjects_Locked == UUcTrue) { return; }
 
 	object_list = (OBJtObject**)UUrMemory_Array_GetMemory(OBJgSelectedObjects);
-	
+
 	for (i = 0; i < OBJrSelectedObjects_GetNumSelected(); i++)
 	{
 		if (object_list[i] == inObject)
@@ -3882,7 +3882,7 @@ OBJrDrawObjects(
 	UUrStallTimer_End(&draw_objects_timer, "OBJrDrawObjects - OBJiObjectGroups_Draw");
 
 	// autosave
-#if TOOL_VERSION	
+#if TOOL_VERSION
 	if (OBJgAutoSaveTime < UUrMachineTime_Sixtieths())
 	{
 		UUrStallTimer_Begin(&draw_objects_timer);
@@ -3909,38 +3909,38 @@ OBJrGetObjectUnderPoint(
 	M3tPoint3D				camera_position;
 	M3tVector3D				intersect_vector;
 	OBJtObject				*closest_to_camera;
-	
+
 	UUtUns32				i;
 	UUtUns32				num_objects;
-	
+
 	float					min_distance;
 	M3tPoint3D				start_point;
 	M3tPoint3D				end_point;
-	
+
 	UUtUns32				j;
 	UUtUns32				num_groups;
-	
+
 	// get the active camera
 	M3rCamera_GetActive(&camera);
 	UUmAssert(camera);
-	
+
 	// get the point on the near clip plane where the user clicked
 	M3rPick_ScreenToWorld(camera, (UUtUns16)inPoint->x, (UUtUns16)inPoint->y, &world_point);
-	
+
 	// get the camera position
 	camera_position = CArGetLocation();
-	
+
 	// build a vector from the camera to the point on the near clip plane
 	intersect_vector.x = world_point.x - camera_position.x;
 	intersect_vector.y = world_point.y - camera_position.y;
 	intersect_vector.z = world_point.z - camera_position.z;
-	
+
 	// normalize
 	MUrNormalize(&intersect_vector);
-	
+
 	// multiply by some large number (5,000) to get a long line
 	MUrVector_SetLength(&intersect_vector, 5000.0f);
-	
+
 	// set up vars for collision detection
 	closest_to_camera = NULL;
 	min_distance = 1000000.0f;
@@ -3948,45 +3948,45 @@ OBJrGetObjectUnderPoint(
 	end_point.x += intersect_vector.x;
 	end_point.y += intersect_vector.y;
 	end_point.z += intersect_vector.z;
-	
+
 	// go through all of the object groups
 	num_groups = OBJiObjectGroups_GetNumGroups();
 	for (j = 0; j < num_groups; j++)
 	{
 		OBJtObjectGroup			*object_group;
-		
+
 		// get the object group
 		object_group = OBJiObjectGroups_GetGroupByIndex(j);
-		
+
 		// don't select objects which aren't visible
 		if (OBJrObjectType_GetVisible(OBJiObjectGroup_GetType(object_group)) == UUcFalse)
 		{
 			continue;
 		}
-		
+
 		// loop through each object and find the one closest to the camera that
 		// collides with the line
 		num_objects = OBJiObjectGroup_GetNumObjects(object_group);
 		for (i = 0; i < num_objects; i++)
 		{
 			OBJtObject				*object;
-			
+
 			object = OBJiObjectGroup_GetObject(object_group, i);
-			
+
 			// if the object collides with the line, see if it is the closest to the camera
 			if (OBJrObject_IntersectsLine(object, &start_point, &end_point))
 			{
 				M3tVector3D			camera_to_object;
 				float				distance_to_object;
-				
+
 				// make the vector from the camera to the object
 				camera_to_object.x = object->position.x - camera_position.x;
 				camera_to_object.y = object->position.y - camera_position.y;
 				camera_to_object.z = object->position.z - camera_position.z;
-				
+
 				// calculate the length from the camera to the object
 				distance_to_object = MUrVector_Length(&camera_to_object);
-				
+
 				if (distance_to_object < min_distance)
 				{
 					// save closest object to camera
@@ -3996,7 +3996,7 @@ OBJrGetObjectUnderPoint(
 			}
 		}
 	}
-	
+
 	return closest_to_camera;
 }
 
@@ -4010,71 +4010,71 @@ OBJrInitialize(
 	// Initialize game Mechanics
 	error = ONrMechanics_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	OBJiSelectedObjects_Initialize();
-	
+
 	// initialize the binary data class
 	error = OBJiBinaryData_Register();
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the object groups
 	error = OBJiObjectGroups_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the object types
 	error = OBJrCharacter_Initialize();
 	UUmError_ReturnOnError(error);
 
 	error = OBJrCombat_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrConsole_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrDoor_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrFlag_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrFurniture_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrMelee_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrNeutral_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrParticle_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrPatrolPath_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrPowerUp_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrSound_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrTrigger_Initialize();
 	UUmError_ReturnOnError(error);
 
 	error = OBJrTriggerVolume_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrTurret_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OBJrWeapon_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// init vars
 	OBJrMoveMode_Set(OBJcMoveMode_All);
 	OBJrRotateMode_Set(OBJcRotateMode_XYZ);
 	OBJgAutoSaveTime = UUrMachineTime_Sixtieths() + OBJcAutoSaveDelta;
-	
+
 	return UUcError_None;
 }
 
@@ -4103,7 +4103,7 @@ OBJrTerminate(
 #endif
 
 	OBJiSelectedObjects_Terminate();
-	
+
 	// terminate the object groups
 	OBJiObjectGroups_Terminate();
 
@@ -4135,7 +4135,7 @@ static UUtBool OWiCompare_Object_By_Name(UUtUns32 inA, UUtUns32 inB)
 
 void OBJrObjectType_BuildListBox(OBJtObjectType inObjectType, WMtWindow *ioListBox, UUtBool inAllowNone)
 {
-	// construct the initial state of the listbox 
+	// construct the initial state of the listbox
 	OBJtObject **list = NULL;
 	UUtUns32 count;
 	UUtUns32 itr, base;
@@ -4207,7 +4207,7 @@ static UUtBool OBJiObject_Enum_ObjectType( OBJtObjectType inObjectType, const ch
 {
 	return UUcTrue;
 }
-	
+
 static UUtBool OBJiObject_Enum_SearchRequest( OBJtObject *inObject, UUtUns32 inUserData )
 {
 	OBJtObjectSearchRequest			*request;
@@ -4228,11 +4228,11 @@ OBJtObject* OBJrObject_FindByID( UUtUns32 inID )
 	OBJtObjectGroup					**object_group_list;
 	UUtUns32						num_groups;
 	UUtUns32						i;
-	
+
 	// intialize
 	request.object = NULL;
 	request.id = inID;
-	
+
 	// make sure the object group list exists
 	object_group_list = (OBJtObjectGroup**)UUrMemory_Array_GetMemory(OBJgObjectGroups);
 	if (object_group_list)
@@ -4245,7 +4245,7 @@ OBJtObject* OBJrObject_FindByID( UUtUns32 inID )
 				return request.object;
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -4257,7 +4257,7 @@ UUtError StringToBitMask( UUtUns32 *ioMask, char* inString )
 	UUtUns32	value;
 	UUtUns32	bit;
 	UUtError	error;
-	
+
 	internal	= NULL;
 	mask		= 0;
 
@@ -4267,7 +4267,7 @@ UUtError StringToBitMask( UUtUns32 *ioMask, char* inString )
 		error = UUrString_To_Uns32( str, &value );
 		if( error != UUcError_None )
 			return error;
-		
+
 		bit = 1 << value;
 		mask = mask | bit;
 
@@ -4318,12 +4318,12 @@ static UUtBool OWrOSD_ChooseName(OBJtObjectType inObjectType, OBJtOSD_All *inOSD
 		OBJrObject_OSD_GetName(inObjectType, inOSD, new_src_string, sizeof(new_src_string));
 
 		gotten_string = WMrDialog_GetString(
-			NULL, 
-			inPrompt, 
-			inPrompt, 
-			new_src_string, 
-			new_dst_string, 
-			SLcScript_MaxNameLength, 
+			NULL,
+			inPrompt,
+			inPrompt,
+			new_src_string,
+			new_dst_string,
+			SLcScript_MaxNameLength,
 			NULL);
 
 		if (gotten_string != NULL) {
@@ -4399,7 +4399,7 @@ OWiChooseObject_Callback(
 
 			rebuild_list_box = UUcTrue;
 		break;
-		
+
 		case WMcMessage_Destroy:
 		break;
 
@@ -4408,7 +4408,7 @@ OWiChooseObject_Callback(
 			{
 			}
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -4430,7 +4430,7 @@ OWiChooseObject_Callback(
 						error = OBJrObject_OSD_SetDefaults(object_type, &new_object_data);
 //						OBJrObjectType_GetUniqueOSD(object_type, &new_object_data);
 						if (error == UUcError_None) {
-							got_new_name = OWrOSD_ChooseName(object_type, &new_object_data, "New Name");					
+							got_new_name = OWrOSD_ChooseName(object_type, &new_object_data, "New Name");
 
 							if (got_new_name) {
 								error = OWrTools_CreateObject(object_type, &new_object_data);
@@ -4438,7 +4438,7 @@ OWiChooseObject_Callback(
 									selected_object = OBJrSelectedObjects_GetSelectedObject(0);
 									rebuild_list_box = UUcTrue;
 								}
-							}					
+							}
 						}
 					}
 				break;
@@ -4458,18 +4458,18 @@ OWiChooseObject_Callback(
 						got_duplicate_name = OWrOSD_ChooseName(object_type, &duplicate_object, "Duplicate's Name");
 
 						if (got_duplicate_name) {
-							OBJrObject_New(object_type, &duplicate_position, &duplicate_rotation, &duplicate_object);							
+							OBJrObject_New(object_type, &duplicate_position, &duplicate_rotation, &duplicate_object);
 							selected_object = OBJrSelectedObjects_GetSelectedObject(0);
 							rebuild_list_box = UUcTrue;
-						}					
-					}					
+						}
+					}
 				break;
 
 				case cChooseObject_Delete:
 					if (NULL != selected_object) {
 						OBJrObject_Delete(selected_object);
 						rebuild_list_box = UUcTrue;
-					}				 
+					}
 				break;
 
 				case cChooseObject_GoTo:
@@ -4490,7 +4490,7 @@ OWiChooseObject_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
@@ -4532,7 +4532,7 @@ OWiChooseObject_Callback(
 
 		WMrDialog_ModalEnd(inDialog, result_object);
 	}
-	
+
 	return handled;
 }
 
@@ -4570,7 +4570,7 @@ UUtError OBJrObjectType_GetObjectList( OBJtObjectType inObjectType, OBJtObject *
 	group = OBJiObjectGroup_GetByType( inObjectType );			UUmAssert( group );
 	UUmError_ReturnOnNull( group );
 
-	if( !group->object_list ) 
+	if( !group->object_list )
 	{
 		*ioObjectCount = 0;
 		*ioList = NULL;

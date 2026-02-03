@@ -4,13 +4,13 @@
 
 
 /*	FILE:	Oni_Character_Animation.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: January 8, 1998
-	
+
 	PURPOSE: animation types for oni
-	
+
 	Copyright 1998 - 1999
 
 */
@@ -28,7 +28,7 @@ enum
 	ONcAnimType_Slide,
 
 	ONcAnimType_Jump,						// 5
-	ONcAnimType_Stand,						
+	ONcAnimType_Stand,
 	ONcAnimType_Standing_Turn_Left,
 	ONcAnimType_Standing_Turn_Right,
 	ONcAnimType_Run_Backwards,
@@ -44,13 +44,13 @@ enum
 	ONcAnimType_Crouch,
 	ONcAnimType_Jump_Forward,
 	ONcAnimType_Jump_Backward,
-	
+
 	ONcAnimType_Jump_Left,					// 20
 	ONcAnimType_Jump_Right,
 	ONcAnimType_Punch,
 	ONcAnimType_Block,
 	ONcAnimType_Land,
-	
+
 	ONcAnimType_Fly,						// 25
 	ONcAnimType_Kick_Forward,
 	ONcAnimType_Kick_Left,
@@ -91,10 +91,10 @@ enum
 	ONcAnimType_Punch_Forward_Heavy,
 	ONcAnimType_Kick_Forward_Heavy,			// 55
 
-	ONcAnimType_Aiming_Overlay,				
-	ONcAnimType_Hit_Overlay,				
+	ONcAnimType_Aiming_Overlay,
+	ONcAnimType_Hit_Overlay,
 
-	ONcAnimType_Crouch_Run,				
+	ONcAnimType_Crouch_Run,
 	ONcAnimType_Crouch_Walk,
 
 	ONcAnimType_Crouch_Run_Backwards,		// 60
@@ -108,7 +108,7 @@ enum
 
 	ONcAnimType_Run_Kick,
 	ONcAnimType_Run_Punch,
-	
+
 	ONcAnimType_Run_Back_Punch,
 	ONcAnimType_Run_Back_Kick,
 
@@ -249,10 +249,10 @@ enum
 
 	ONcAnimType_PL_PL,
 	ONcAnimType_PL_PL_PL,
-	
+
 	ONcAnimType_PR_PR,
 	ONcAnimType_PR_PR_PR,
-	
+
 	ONcAnimType_PB_PB,
 	ONcAnimType_PB_PB_PB,
 
@@ -264,10 +264,10 @@ enum
 
 	ONcAnimType_KL_KL,
 	ONcAnimType_KL_KL_KL,
-	
+
 	ONcAnimType_KR_KR,
 	ONcAnimType_KR_KR_KR,
-	
+
 	ONcAnimType_KB_KB,
 	ONcAnimType_KB_KB_KB,
 
@@ -278,10 +278,10 @@ enum
 	ONcAnimType_Startle_Right,
 	ONcAnimType_Startle_Back,
 	ONcAnimType_Startle_Forward,
-	
+
 	ONcAnimType_Console,					// use a console
 	ONcAnimType_Console_Walk,				// walk up to console
-	
+
 	ONcAnimType_Stagger,
 
 	ONcAnimType_Watch,
@@ -447,9 +447,9 @@ enum
 // this in greater detail and it doesn't make sense to replicate the same info in
 // two places. they are read in from the INS file, but then used to set an animation's
 // moveDirection and zeroed
-enum 
+enum
 {
-	ONcAnimFlag_Invulnerable = 
+	ONcAnimFlag_Invulnerable =
 			TRcAnimFlag_FirstPublic,	// mask = 0x00000002
 
 	ONcAnimFlag_BlockHigh,				// mask = 0x00000004

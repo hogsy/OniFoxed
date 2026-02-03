@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_Persistance.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: June 19, 2000
-	
+
 	PURPOSE: Persistant data storage
-	
+
 	Copyright (c) Microsoft
 
 */
@@ -47,7 +47,7 @@ typedef struct ONtPersistance
 	UUtUns32 item_bit_field;
 	UUtUns32 max_diary_level;
 	UUtUns32 max_diary_page;
-	
+
 	// game options
 	ONtGraphicsQuality quality;
 	float overall_volume;
@@ -58,7 +58,7 @@ typedef struct ONtPersistance
 	ONtPlace place;
 
 	ONtContinue continues[ONcPersist_NumLevels][ONcPersist_NumContinues];			// we save up to 20 levels and 10 continues per level
-	
+
 } ONtPersistance;
 
 static ONtPersistance ONgPersistance;
@@ -99,7 +99,7 @@ void ONrPersistance_Initialize(void)
 	BFtFile *stream;
 	UUtError error;
 	UUtBool invalid_file;
-	
+
 	stream = BFrFile_FOpen(ONcPersistance_FileName, "r");
 	invalid_file = (NULL == stream);
 
@@ -111,7 +111,7 @@ void ONrPersistance_Initialize(void)
 	invalid_file = invalid_file || (UUcError_None != error);
 	invalid_file = invalid_file || (ONcPersistance_Version != ONgPersistance.version);
 	invalid_file = invalid_file || (ONcPersistance_SwapCode != ONgPersistance.swap_code);
-	
+
 	if (invalid_file) {
 		UUrMemory_Clear(&ONgPersistance, sizeof(ONgPersistance));
 		ONgPersistance.version = ONcPersistance_Version;
@@ -242,7 +242,7 @@ void ONrPersist_SetOverallVolume(float inVolume)
 	ONrPersist();
 
 	SS2rVolume_Set(inVolume);
-	
+
 	return;
 }
 
@@ -270,7 +270,7 @@ void ONrPersist_SetInvertMouseOn(UUtBool inOn)
 	}
 
 	ONrPersist();
-	
+
 	return;
 }
 
@@ -468,6 +468,6 @@ void ONrPersist_MarkWonGame(void)
 UUtBool ONrPersist_GetWonGame(void)
 {
 	UUtBool has_won_game = (ONgPersistance.option_flags & ONcOptionFlag_WonGame) > 0;
-	
+
 	return has_won_game;
 }

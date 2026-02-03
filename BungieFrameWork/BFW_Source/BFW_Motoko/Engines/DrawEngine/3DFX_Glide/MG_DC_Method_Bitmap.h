@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_DC_Method_Bitmap.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Nov 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -24,7 +24,7 @@ MGrDrawContext_Method_Sprite(
 	const M3tTextureCoord	*inTextureCoords);		// tl, tr, bl, br
 
 UUtError MGrDrawContext_Method_ScreenCapture(
-	const UUtRect			*inRect, 
+	const UUtRect			*inRect,
 	void					*outBuffer);
 
 UUtBool MGrDrawContext_Method_PointVisible(

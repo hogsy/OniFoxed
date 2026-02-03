@@ -66,9 +66,9 @@ OBJrCharacter_DrawInitialize(
 		UUtError				error;
 		TStFontFamily			*font_family;
 		IMtPixelType			textureFormat;
-		
+
 		M3rDrawEngine_FindGrayscalePixelType(&textureFormat);
-		
+
 		OBJgCharacter_WhiteColor = IMrPixel_FromShade(textureFormat, IMcShade_White);
 
 		error = TSrFontFamily_Get(TScFontFamily_Default, &font_family);
@@ -76,20 +76,20 @@ OBJrCharacter_DrawInitialize(
 		{
 			goto cleanup;
 		}
-		
+
 		error = TSrContext_New(font_family, TScFontSize_Default, TScStyle_Bold, TSc_SingleLine, UUcFalse, &OBJgCharacter_TextContext);
 		if (error != UUcError_None)
 		{
 			goto cleanup;
 		}
-		
+
 		OBJgCharacter_Dest.x = 2;
 		OBJgCharacter_Dest.y =
 			TSrFont_GetLeadingHeight(TSrContext_GetFont(OBJgCharacter_TextContext, TScStyle_InUse)) +
 			TSrFont_GetAscendingHeight(TSrContext_GetFont(OBJgCharacter_TextContext, TScStyle_InUse));
-		
+
 		TSrContext_GetStringRect(OBJgCharacter_TextContext, "maximum_length_of_character_name", &OBJgCharacter_TextureBounds);
-		
+
 		error =
 			M3rTextureMap_New(
 				OBJgCharacter_TextureBounds.right,
@@ -108,10 +108,10 @@ OBJrCharacter_DrawInitialize(
 		M3rTextureRef_GetSize((void *) OBJgCharacter_Texture,
 						(UUtUns16*)&OBJgCharacter_TextureBounds.right,
 						(UUtUns16*)&OBJgCharacter_TextureBounds.bottom);
-		
+
 		OBJgCharacter_TextureWidth = OBJgCharacter_TextureBounds.right;
 		OBJgCharacter_TextureHeight = OBJgCharacter_TextureBounds.bottom;
-		
+
 		OBJgCharacter_WidthRatio = (float)OBJgCharacter_TextureWidth / (float)OBJgCharacter_TextureHeight;
 
 		OBJgCharacter_DrawInitialized = UUcTrue;
@@ -144,14 +144,14 @@ OBJiCharacter_DrawName(
 		UUtUns16				string_width;
 		IMtPoint2D				text_dest;
 		float					sprite_size;
-		
+
 		// erase the texture and set the text contexts shade
 		M3rTextureMap_Fill(OBJgCharacter_Texture, OBJgCharacter_WhiteColor, NULL);
 		TSrContext_SetShade(OBJgCharacter_TextContext, IMcShade_Black);
-		
+
 		// get the character's name
 		OBJrObject_GetName(inObject, name, OBJcMaxNameLength);
-		
+
 		// work out how big the string is going to be
 		TSrContext_GetStringRect(OBJgCharacter_TextContext, name, &string_bounds);
 		string_width = string_bounds.right - string_bounds.left;
@@ -168,7 +168,7 @@ OBJiCharacter_DrawName(
 			name,
 			&OBJgCharacter_TextureBounds,
 			&text_dest);
-		
+
 		// draw the sprite
 		M3rGeom_State_Set(M3cGeomStateIntType_SpriteMode, M3cGeomState_SpriteMode_Normal);
 		M3rGeom_State_Commit();
@@ -186,7 +186,7 @@ OBJiCharacter_DrawName(
 			0,
 			1.0f - sprite_size, 0);
 	}
-	
+
 	return;
 }
 
@@ -231,7 +231,7 @@ OBJiCharacter_Draw(
 	IMtShade				char_shade;
 
 	// KNA: replaced size with OBJcCharacter_DrawSize so that CodeWarrior would compile
-	M3tPoint3D points[8] = 
+	M3tPoint3D points[8] =
 	{
 		{ 0.00f * OBJcCharacter_DrawSize, 0.00f * OBJcCharacter_DrawSize,  0.0f },
 		{ 0.25f * OBJcCharacter_DrawSize, 0.75f * OBJcCharacter_DrawSize,  0.0f },
@@ -242,18 +242,18 @@ OBJiCharacter_Draw(
 		{ 0.05f * OBJcCharacter_DrawSize, 0.75f * OBJcCharacter_DrawSize,  0.4f * OBJcCharacter_DrawSize },
 		{-0.05f * OBJcCharacter_DrawSize, 0.75f * OBJcCharacter_DrawSize,  0.4f * OBJcCharacter_DrawSize }
 	};
-	
+
 	if (OBJgCharacter_DrawPositions == UUcFalse) { return; }
-	
+
 	// get a pointer to the object osd
 	char_osd = (OBJtOSD_Character *)inObject->object_data;
-	
+
 	// set up the matrix stack
 	M3rMatrixStack_Push();
 	M3rMatrixStack_ApplyTranslate(inObject->position);
 	M3rMatrixStack_RotateYAxis(char_osd->facing);
 	M3rGeom_State_Commit();
-	
+
 	// draw the character position marker
 	if (char_osd->team_number < OBJcCharacter_TeamMaxNamed)
 		char_shade = OBJgCharacter_TeamColor[char_osd->team_number];
@@ -268,19 +268,19 @@ OBJiCharacter_Draw(
 	M3rGeom_Line_Light(points + 4, points + 5, char_shade);
 	M3rGeom_Line_Light(points + 5, points + 6, char_shade);
 	M3rGeom_Line_Light(points + 5, points + 7, char_shade);
-	
+
 	// draw the name
 	camera_location = CArGetLocation();
 	if (MUrPoint_Distance(&inObject->position, &camera_location) < OBJgCharacter_DrawNameDistance)
 	{
 		OBJiCharacter_DrawName(inObject, points + 2);
 	}
-	
+
 	// draw the rotation ring if this character is selected
 	if (inDrawFlags & OBJcDrawFlag_Selected)
 	{
 		M3tBoundingSphere	bounding_sphere;
-		
+
 		OBJrObject_GetBoundingSphere(inObject, &bounding_sphere);
 		OBJrObjectUtil_DrawRotationRings(inObject, &bounding_sphere, OBJcDrawFlag_RingY);
 	}
@@ -299,10 +299,10 @@ OBJiCharacter_Enumerate(
 	UUtUns32						inUserData)
 {
 	char							name[OBJcMaxNameLength + 1];
-	
+
 	OBJrObject_GetName(inObject, name, OBJcMaxNameLength);
 	inEnumCallback(name, inUserData);
-	
+
 	return UUcError_None;
 }
 
@@ -326,7 +326,7 @@ OBJiCharacter_OSDGetName(
 	UUtUns32				inNameLength)
 {
 	const OBJtOSD_Character	*char_osd = &inOSD->osd.character_osd;
-	
+
 	UUrString_Copy(outName, char_osd->character_name, inNameLength);
 
 	return;
@@ -340,7 +340,7 @@ OBJiCharacter_OSDSetName(
 	const char				*inName)
 {
 	OBJtOSD_Character		*char_osd = &inOSD->osd.character_osd;
-	
+
 	UUrString_Copy(char_osd->character_name, inName, sizeof(char_osd->character_name));
 
 	return;
@@ -357,7 +357,7 @@ OBJiCharacter_GetOSD(
 
 	// get a pointer to the object osd
 	char_osd = (OBJtOSD_Character *)inObject->object_data;
-	
+
 	outOSD->osd.character_osd = *char_osd;
 }
 
@@ -367,7 +367,7 @@ OBJiCharacter_GetOSDWriteSize(
 	const OBJtObject		*inObject)
 {
 	UUtUns32				size;
-	
+
 	size =
 		sizeof(AI2tAlertStatus) +		// initial alert
 		sizeof(AI2tAlertStatus) +		// minimum alert
@@ -397,7 +397,7 @@ OBJiCharacter_GetOSDWriteSize(
 		sizeof(UUtUns32) +				// alarm groups
 		4*sizeof(AI2tPursuitMode) +		// pursuit modes
 		sizeof(AI2tPursuitLostBehavior);// target lost behavior
-	
+
 	return size;
 }
 
@@ -486,14 +486,14 @@ OBJiCharacter_IntersectsLine(
 	M3tBoundingSphere		sphere;
 
 	UUrMemory_Clear(&sphere, sizeof(M3tBoundingSphere));
-	
+
 	// get the bounding sphere
 	OBJrObject_GetBoundingSphere(inObject, &sphere);
-	
+
 	sphere.center.x += inObject->position.x;
 	sphere.center.y += inObject->position.y;
 	sphere.center.z += inObject->position.z;
-	
+
 	return CLrSphere_Line(inStartPoint, inEndPoint, &sphere);
 }
 
@@ -514,10 +514,10 @@ OBJiCharacter_New(
 {
 	UUtError				error;
 	OBJtOSD_Character		*char_osd;
-	
+
 	// get a pointer to the object osd
 	char_osd = (OBJtOSD_Character *)inObject->object_data;
-	
+
 	if (inOSD == NULL)
 	{
 		error = OBJiCharacter_SetDefaults((OBJtOSD_All *) char_osd);
@@ -527,7 +527,7 @@ OBJiCharacter_New(
 	{
 		*char_osd = inOSD->osd.character_osd;
 	}
-	
+
 	// set the object specific data and position
 	OBJrObject_UpdatePosition(inObject);
 
@@ -547,7 +547,7 @@ OBJiCharacter_Read(
 	OBJtOSD_Character		*character = (OBJtOSD_Character *) inObject->object_data;
 	UUtUns32				num_bytes = 0;
 	UUtUns32				itr, itr2;
-	
+
 	// read the data
 	num_bytes += OBJmGet4BytesFromBuffer(inBuffer, character->flags,				UUtUns32,				inSwapIt);
 	character->flags &= ~OBJcCharFlags_Spawned;		// clear runtime-only flags
@@ -555,29 +555,29 @@ OBJiCharacter_Read(
 	num_bytes += OBJmGetStringFromBuffer(inBuffer, character->character_class,	64,						inSwapIt);
 	num_bytes += OBJmGetStringFromBuffer(inBuffer, character->character_name,		ONcMaxPlayerNameLength,	inSwapIt);
 	num_bytes += OBJmGetStringFromBuffer(inBuffer, character->weapon_class_name,	64,						inSwapIt);
-	num_bytes += OBJmGetStringFromBuffer(inBuffer, character->spawn_script,		SLcScript_MaxNameLength,inSwapIt);	
+	num_bytes += OBJmGetStringFromBuffer(inBuffer, character->spawn_script,		SLcScript_MaxNameLength,inSwapIt);
 	if (inVersion >= OBJcVersion_8) {
-		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->die_script,		SLcScript_MaxNameLength,inSwapIt);	
-		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->combat_script,		SLcScript_MaxNameLength,inSwapIt);	
-		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->alarm_script,		SLcScript_MaxNameLength,inSwapIt);	
+		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->die_script,		SLcScript_MaxNameLength,inSwapIt);
+		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->combat_script,		SLcScript_MaxNameLength,inSwapIt);
+		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->alarm_script,		SLcScript_MaxNameLength,inSwapIt);
 	} else {
 		character->die_script[0] = '\0';
 		character->combat_script[0] = '\0';
 		character->alarm_script[0] = '\0';
 	}
 	if (inVersion >= OBJcVersion_21) {
-		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->hurt_script,		SLcScript_MaxNameLength,inSwapIt);	
+		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->hurt_script,		SLcScript_MaxNameLength,inSwapIt);
 	} else {
 		character->hurt_script[0] = '\0';
 	}
 	if (inVersion >= OBJcVersion_29) {
-		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->defeated_script,		SLcScript_MaxNameLength,inSwapIt);	
+		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->defeated_script,		SLcScript_MaxNameLength,inSwapIt);
 	} else {
 		character->defeated_script[0] = '\0';
 	}
 	if (inVersion >= OBJcVersion_34) {
-		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->outofammo_script,		SLcScript_MaxNameLength,inSwapIt);	
-		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->nopath_script,		SLcScript_MaxNameLength,inSwapIt);	
+		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->outofammo_script,		SLcScript_MaxNameLength,inSwapIt);
+		num_bytes += OBJmGetStringFromBuffer(inBuffer, character->nopath_script,		SLcScript_MaxNameLength,inSwapIt);
 	} else {
 		character->outofammo_script[0] = '\0';
 		character->nopath_script[0] = '\0';
@@ -632,7 +632,7 @@ OBJiCharacter_Read(
 	}
 	num_bytes += OBJmGet4BytesFromBuffer(inBuffer, character->team_number,		UUtUns32,				inSwapIt);
 	num_bytes += OBJmGet4BytesFromBuffer(inBuffer, character->ammo_percentage,	UUtUns32,				inSwapIt);
-		
+
 	if (inVersion >= OBJcVersion_8) {
 		num_bytes += OBJmGet4BytesFromBuffer(inBuffer, character->initial_alert,	AI2tAlertStatus,	inSwapIt);
 		num_bytes += OBJmGet4BytesFromBuffer(inBuffer, character->minimum_alert,	AI2tAlertStatus,	inSwapIt);
@@ -677,7 +677,7 @@ OBJiCharacter_Read(
 
 	// bring the object up to date
 	OBJrObject_UpdatePosition(inObject);
-	
+
 	return num_bytes;
 }
 
@@ -693,7 +693,7 @@ OBJiCharacter_SetOSD(
 	UUtError				error;
 
 	UUmAssert(inOSD);
-	
+
 	// get a pointer to the object osd
 	char_osd = (OBJtOSD_Character *)inObject->object_data;
 
@@ -708,7 +708,7 @@ OBJiCharacter_SetOSD(
 	}
 
 	UUrMemory_MoveFast(&inOSD->osd.character_osd, char_osd, sizeof(OBJtOSD_Character));
-	
+
 	UUrMemory_Block_VerifyList();
 
 	// get the new character class's default combat and melee settings
@@ -734,10 +734,10 @@ OBJiCharacter_UpdatePosition(
 	OBJtObject				*inObject)
 {
 	OBJtOSD_Character		*char_osd;
-	
+
 	// get a pointer to the object osd
 	char_osd = (OBJtOSD_Character *)inObject->object_data;
-	
+
 	// convert the rotation to radians
 	char_osd->facing = inObject->rotation.y * M3cDegToRad;
 }
@@ -754,22 +754,22 @@ OBJiCharacter_Write(
 
 	// get a pointer to the object osd
 	char_osd = (OBJtOSD_Character *)inObject->object_data;
-	
+
 	// set the number of bytes available
 	bytes_available = *ioBufferSize;
-	
+
 	OBJmWrite4BytesToBuffer(ioBuffer, char_osd->flags,				UUtUns32,				bytes_available, OBJcWrite_Little);
 	OBJmWriteStringToBuffer(ioBuffer, char_osd->character_class,	64,						bytes_available, OBJcWrite_Little);
 	OBJmWriteStringToBuffer(ioBuffer, char_osd->character_name,		ONcMaxPlayerNameLength,	bytes_available, OBJcWrite_Little);
 	OBJmWriteStringToBuffer(ioBuffer, char_osd->weapon_class_name,	64,						bytes_available, OBJcWrite_Little);
-	OBJmWriteStringToBuffer(ioBuffer, char_osd->spawn_script,		SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);	
-	OBJmWriteStringToBuffer(ioBuffer, char_osd->die_script,			SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);	
-	OBJmWriteStringToBuffer(ioBuffer, char_osd->combat_script,		SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);	
-	OBJmWriteStringToBuffer(ioBuffer, char_osd->alarm_script,		SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);	
-	OBJmWriteStringToBuffer(ioBuffer, char_osd->hurt_script,		SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);	
-	OBJmWriteStringToBuffer(ioBuffer, char_osd->defeated_script,	SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);	
-	OBJmWriteStringToBuffer(ioBuffer, char_osd->outofammo_script,	SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);	
-	OBJmWriteStringToBuffer(ioBuffer, char_osd->nopath_script,		SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);	
+	OBJmWriteStringToBuffer(ioBuffer, char_osd->spawn_script,		SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);
+	OBJmWriteStringToBuffer(ioBuffer, char_osd->die_script,			SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);
+	OBJmWriteStringToBuffer(ioBuffer, char_osd->combat_script,		SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);
+	OBJmWriteStringToBuffer(ioBuffer, char_osd->alarm_script,		SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);
+	OBJmWriteStringToBuffer(ioBuffer, char_osd->hurt_script,		SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);
+	OBJmWriteStringToBuffer(ioBuffer, char_osd->defeated_script,	SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);
+	OBJmWriteStringToBuffer(ioBuffer, char_osd->outofammo_script,	SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);
+	OBJmWriteStringToBuffer(ioBuffer, char_osd->nopath_script,		SLcScript_MaxNameLength,bytes_available, OBJcWrite_Little);
 	OBJmWrite4BytesToBuffer(ioBuffer, char_osd->hit_points,			UUtInt32,				bytes_available, OBJcWrite_Little);
 
 	OBJmWrite4BytesToBuffer(ioBuffer, char_osd->job,				UUtUns32,				bytes_available, OBJcWrite_Little);
@@ -803,7 +803,7 @@ OBJiCharacter_Write(
 
 	// set ioBufferSize to the number of bytes written to the buffer
 	*ioBufferSize = *ioBufferSize - bytes_available;
-	
+
 	return UUcError_None;
 }
 
@@ -837,10 +837,10 @@ OBJiCharacter_Search(
 {
 	OBJtOSD_Character		*char_osd;
 	UUtBool					found;
-	
+
 	// get a pointer to the object osd
 	char_osd = (OBJtOSD_Character *)inObject->object_data;
-	
+
 	// perform the check
 	found = UUcFalse;
 	switch (inSearchType)
@@ -859,7 +859,7 @@ OBJiCharacter_Search(
 			}
 		break;
 	}
-	
+
 	return found;
 }
 
@@ -875,10 +875,10 @@ OBJrCharacter_Initialize(
 {
 	UUtError				error;
 	OBJtMethods				methods;
-	
+
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew				= OBJiCharacter_New;
 	methods.rSetDefaults		= OBJiCharacter_SetDefaults;
@@ -899,7 +899,7 @@ OBJrCharacter_Initialize(
 	methods.rSearch				= OBJiCharacter_Search;
 	methods.rSetClassVisible	= OBJiCharacter_SetVisible;
 	methods.rGetUniqueOSD		= OBJiCharacter_GetUniqueOSD;
-	
+
 	// register the furniture methods
 	error =
 		OBJrObjectGroup_Register(
@@ -910,7 +910,7 @@ OBJrCharacter_Initialize(
 			&methods,
 			OBJcObjectGroupFlag_CanSetName);
 	UUmError_ReturnOnError(error);
-	
+
 #if CONSOLE_DEBUGGING_COMMANDS
 	error =
 		SLrGlobalVariable_Register_Bool(
@@ -918,7 +918,7 @@ OBJrCharacter_Initialize(
 			"Enables the display of character starting positions",
 			&OBJgCharacter_DrawPositions);
 	UUmError_ReturnOnError(error);
-	
+
 	error =
 		SLrGlobalVariable_Register_Float(
 			"character_name_distance",
@@ -926,10 +926,10 @@ OBJrCharacter_Initialize(
 			&OBJgCharacter_DrawNameDistance);
 	UUmError_ReturnOnError(error);
 #endif
-	
+
 	// intialize the globals
 	OBJgCharacter_DrawNameDistance = OBJcCharacter_DefaultDrawNameDistance;
-	
+
 	return UUcError_None;
 }
 

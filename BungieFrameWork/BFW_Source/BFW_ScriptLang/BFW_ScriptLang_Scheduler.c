@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_ScriptLang_Scheduler.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -33,7 +33,7 @@ typedef enum SLtScheduledTask_Type
 	SLcScheduledTask_Type_Unused,
 	SLcScheduledTask_Type_Script,
 	SLcScheduledTask_Type_Command
-	
+
 } SLtScheduledTask_Type;
 
 typedef struct SLtScheduledTask_Script
@@ -41,25 +41,25 @@ typedef struct SLtScheduledTask_Script
 	SLtContext*	context;
 	UUtUns32	wakeTime;
 	UUtBool		sleeping;
-	
+
 } SLtScheduledTask_Script;
 
 typedef struct SLtScheduledTask_Command
 {
 	SLtEngineCommand	command;
-	
+
 } SLtScheduledTask_Command;
 
 typedef struct SLtScheduledTask
 {
 	SLtScheduledTask_Type	type;
-	
+
 	UUtUns32				count;
 	UUtUns32				delta;
 	UUtUns32				nextGameTime;
-	
+
 	SLtErrorContext			errorContext;
-	
+
 	const char*				name;
 	UUtUns16				numParams;
 	SLtParameter_Actual			params[SLcScript_MaxNumParams];
@@ -68,9 +68,9 @@ typedef struct SLtScheduledTask
 	{
 		SLtScheduledTask_Script		script;
 		SLtScheduledTask_Command	command;
-		
+
 	} u;
-	
+
 } SLtScheduledTask;
 
 SLtScheduledTask	SLgSchedule_Tasks[SLcScheduler_MaxTasks];
@@ -81,7 +81,7 @@ SLiSchedule_Task_Find(
 	SLtContext*	inContext)
 {
 	UUtUns16	itr;
-	
+
 	if(inContext == NULL)
 	{
 		for(itr = 0; itr < SLcScheduler_MaxTasks; itr++)
@@ -100,7 +100,7 @@ SLiSchedule_Task_Find(
 			}
 		}
 	}
-		
+
 	return NULL;
 }
 
@@ -129,7 +129,7 @@ SLiSchedule_Task_Delete(
 	{
 		SLrContext_Delete(inTask->u.script.context);
 	}
-	
+
 	inTask->type = SLcScheduledTask_Type_Unused;
 }
 
@@ -144,7 +144,7 @@ SLiSchedule_Add_Script(
 	UUtUns32			inNumberOfTimes)
 {
 	SLtScheduledTask*	newTask;
-	
+
 	newTask = SLiSchedule_Task_Find(NULL);
 
 	if (NULL == newTask) {
@@ -152,16 +152,16 @@ SLiSchedule_Add_Script(
 	}
 
 	UUmError_ReturnOnNull(newTask);
-	
+
 	newTask->u.script.context = inContext;
 	newTask->u.script.sleeping = UUcFalse;
-	
+
 	newTask->numParams = inNumParams;
 	if(inNumParams > 0)
 	{
 		UUrMemory_MoveFast(inParams, newTask->params, inNumParams * sizeof(*inParams));
 	}
-	
+
 	SLiSchedule_Task_Add(
 		newTask,
 		inErrorContext,
@@ -169,7 +169,7 @@ SLiSchedule_Add_Script(
 		inName,
 		inTimeDelta,
 		inNumberOfTimes);
-	
+
 	return UUcError_None;
 }
 
@@ -184,15 +184,15 @@ SLiSchedule_Add_Command(
 	UUtUns32			inNumberOfTimes)
 {
 	SLtScheduledTask*	newTask;
-	
+
 	newTask = SLiSchedule_Task_Find(NULL);
 	UUmError_ReturnOnNull(newTask);
-	
+
 	newTask->numParams = inNumParams;
 	UUrMemory_MoveFast(inParams, newTask->params, inNumParams * sizeof(*inParams));
-	
+
 	newTask->u.command.command = inCommand;
-	
+
 	SLiSchedule_Task_Add(
 		newTask,
 		inErrorContext,
@@ -218,20 +218,20 @@ SLrSchedule_Function_Script(
 {
 	UUtError			error;
 	SLtContext*			context;
-		
+
 	// create the context
 	context = SLrContext_New(ioReferencePtr);
 	UUmError_ReturnOnNull(context);
-	
-	
-		
-	
+
+
+
+
 	if(inTimeDelta == 0 && inNumberOfTimes == 1)
 	{
 		// run immediately
-		
+
 		// push the initial state on the function stack
-			error = 
+			error =
 				SLrParse_FuncStack_Push(
 					context,
 					inErrorContext,
@@ -239,14 +239,14 @@ SLrSchedule_Function_Script(
 					inPassedInParams,
 					inName);
 			if(error != UUcError_None) return error;
-			
-		error = 
+
+		error =
 			SLrScript_Parse(
 				context,
 				inErrorContext,
 				SLcParseMode_InitialExecution);
 		if(error != UUcError_None) return error;
-		
+
 		if(ioReturnValue != NULL)
 		{
 			// process return value here
@@ -265,7 +265,7 @@ SLrSchedule_Function_Script(
 			SLrScript_Error_Semantic(inErrorContext, "function \"%s\" can be scheduled and return a value", inName);
 			return UUcError_Generic;
 		}
-		
+
 		// schedule this context
 		SLiSchedule_Add_Script(
 			inName,
@@ -292,11 +292,11 @@ SLrSchedule_Function_Engine(
 	UUtUns32				inNumberOfTimes)
 {
 	UUtError	error;
-	
+
 	if(inTimeDelta == 0 && inNumberOfTimes == 1)
 	{
 		// run immediately
-		error = 
+		error =
 			inCommand->command(
 				inErrorContext,
 				inParameterListLength,
@@ -305,12 +305,12 @@ SLrSchedule_Function_Engine(
 				NULL,
 				ioReturnValue);
 		if(error != UUcError_None) return error;
-		
+
 	}
 	else
 	{
 		// schedule
-		error = 
+		error =
 			SLiSchedule_Add_Command(
 				inName,
 				inErrorContext,
@@ -321,11 +321,11 @@ SLrSchedule_Function_Engine(
 				inNumberOfTimes);
 		if(error != UUcError_None) return error;
 	}
-	
+
 	return UUcError_None;
 }
 
-UUtError	
+UUtError
 SLrScheduler_Execute(
 	const char*			inName,
 	SLtErrorContext*	inErrorContext,
@@ -338,25 +338,25 @@ SLrScheduler_Execute(
 {
 	UUtError					error;
 	SLtSymbol*					symbol;
-	
+
 	SLtSymbol_Func_Script*		script;
 	SLtSymbol_Func_Command*		command;
-	
+
 	error = SLrScript_Database_Symbol_Get(NULL, inName, &symbol);
 	if(error != UUcError_None)
 	{
 		SLrScript_Error_Semantic(inErrorContext, "function \"%s\" does not exist", inName);
 		return UUcError_Generic;
 	}
-	
+
 	switch(symbol->kind)
 	{
 		case SLcSymbolKind_Func_Script:
 			script = &symbol->u.funcScript;
-			
+
 			inErrorContext->fileName = symbol->fileName;
-			
-			error = 
+
+			error =
 				SLrSchedule_Function_Script(
 					inName,
 					inErrorContext,
@@ -369,10 +369,10 @@ SLrScheduler_Execute(
 					ioReferencePtr);
 			if(error != UUcError_None) return error;	// someday report something meaningful here
 			break;
-			
+
 		case SLcSymbolKind_Func_Command:
 			command = &symbol->u.funcCommand;
-			
+
 			if(command->numParamListOptions > 0)
 			{
 				error =
@@ -384,8 +384,8 @@ SLrScheduler_Execute(
 						inParameterList);
 				if(error != UUcError_None) return error;
 			}
-			
-			error = 
+
+			error =
 				SLrSchedule_Function_Engine(
 					inName,
 					inErrorContext,
@@ -396,12 +396,12 @@ SLrScheduler_Execute(
 					inTimeDelta,
 					inNumberOfTimes);
 			break;
-		
+
 		default:
 			SLrScript_Error_Semantic(inErrorContext, "identifier is not a function");
 			return UUcError_Generic;
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -413,11 +413,11 @@ SLrScheduler_Schedule(
 {
 	UUtError			error;
 	SLtScheduledTask*	targetTask;
-	
+
 	targetTask = SLiSchedule_Task_Find(inContext);
 	if(targetTask == NULL)
 	{
-		error = 
+		error =
 			SLiSchedule_Add_Script(
 				inContext->funcStack[0].funcName,
 				inContext,
@@ -431,10 +431,10 @@ SLrScheduler_Schedule(
 		UUmAssertReadPtr(targetTask, sizeof(*targetTask));
 	}
 	targetTask->errorContext = *inErrorContext;
-	
+
 	targetTask->u.script.sleeping = UUcTrue;
 	targetTask->u.script.wakeTime = SLgSchedule_GameTime + inTicksTillWake;
-	
+
 	return UUcError_None;
 }
 
@@ -451,7 +451,7 @@ SLrScheduler_Remove(
 	void *		inContext)
 {
 	SLtScheduledTask*	task;
-	
+
 	if (inContext == NULL) {
 		return UUcError_Generic;
 	}
@@ -474,7 +474,7 @@ SLrScheduler_ForceDelete(
 	void *				inContext)
 {
 	SLtScheduledTask*	task;
-	
+
 	task = SLiSchedule_Task_Find((SLtContext *) inContext);
 	if (task != NULL) {
 		SLrContext_Delete((SLtContext *) inContext);
@@ -489,11 +489,11 @@ SLrScheduler_Update(
 	UUtUns16			itr;
 	SLtScheduledTask*	curTask;
 	UUtBool				sleeping;
-	
+
 	sleeping = UUcFalse;
-	
+
 	SLgSchedule_GameTime = inGameTime;
-	
+
 	for(itr = 0, curTask = SLgSchedule_Tasks;
 		itr < SLcScheduler_MaxTasks;
 		itr++, curTask++)
@@ -507,7 +507,7 @@ SLrScheduler_Update(
 					{
 						curTask->u.script.sleeping = UUcFalse;
 						// continue execution
-						error = 
+						error =
 							SLrScript_Parse(
 								curTask->u.script.context,
 								&curTask->errorContext,
@@ -517,7 +517,7 @@ SLrScheduler_Update(
 							SLiSchedule_Task_Delete(curTask);
 							return error;
 						}
-						
+
 						if(!curTask->u.script.sleeping && curTask->count <= 1)
 						{
 							SLiSchedule_Task_Delete(curTask);
@@ -528,8 +528,8 @@ SLrScheduler_Update(
 				{
 					// start execution
 						curTask->u.script.context->funcTOS = 0;
-						
-						error = 
+
+						error =
 							SLrParse_FuncStack_Push(
 								curTask->u.script.context,
 								&curTask->errorContext,
@@ -537,8 +537,8 @@ SLrScheduler_Update(
 								curTask->params,
 								curTask->name);
 						if(error != UUcError_None) return error;
-					
-					error = 
+
+					error =
 						SLrScript_Parse(
 							curTask->u.script.context,
 							&curTask->errorContext,
@@ -549,7 +549,7 @@ SLrScheduler_Update(
 						SLiSchedule_Task_Delete(curTask);
 						return error;
 					}
-					
+
 					if(!curTask->u.script.sleeping)
 					{
 						curTask->count--;
@@ -570,9 +570,9 @@ SLrScheduler_Update(
 				if(curTask->nextGameTime <= inGameTime)
 				{
 					UUtBool	stalled = UUcFalse;
-					
+
 					// start execution
-					error = 
+					error =
 						curTask->u.command.command(
 							&curTask->errorContext,
 							curTask->numParams,
@@ -585,7 +585,7 @@ SLrScheduler_Update(
 						SLiSchedule_Task_Delete(curTask);
 						return error;
 					}
-					
+
 					if(!stalled)
 					{
 						curTask->count--;
@@ -603,7 +603,7 @@ SLrScheduler_Update(
 				break;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -612,12 +612,12 @@ SLrScheduler_Initialize(
 	void)
 {
 	UUtUns16	itr;
-	
+
 	for(itr = 0; itr < SLcScheduler_MaxTasks; itr++)
 	{
 		SLgSchedule_Tasks[itr].type = SLcScheduledTask_Type_Unused;
 	}
-	
+
 	SLgSchedule_GameTime = 0;
 
 	return UUcError_None;
@@ -665,14 +665,14 @@ void SLrScript_Debug_Console(void)
 
 	{
 		UUtUns32 itr;
-	
+
 		for(itr = 0; itr < SLcScheduler_MaxTasks; itr++)
 		{
 			if(SLgSchedule_Tasks[itr].type != SLcScheduledTask_Type_Unused) {
-				COrConsole_Printf("task #%d %s %s %d", 
-					itr, 
-					SLgSchedule_Tasks[itr].errorContext.fileName, 
-					SLgSchedule_Tasks[itr].errorContext.funcName, 
+				COrConsole_Printf("task #%d %s %s %d",
+					itr,
+					SLgSchedule_Tasks[itr].errorContext.fileName,
+					SLgSchedule_Tasks[itr].errorContext.funcName,
 					SLgSchedule_Tasks[itr].errorContext.line);
 			}
 		}

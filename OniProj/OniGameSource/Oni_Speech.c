@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_Speech.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 15, 2000
-	
+
 	PURPOSE: Speech handling for Oni Characters
-	
+
 	Copyright (c) 2000
 
 */
@@ -28,7 +28,7 @@ const char *ONcSpeechTypeName[ONcSpeechType_Max] =
 
 static void ONiSpeech_Play(ONtCharacter *ioCharacter)
 {
-	UUmAssert((ioCharacter->speech.current.speech_type > ONcSpeechType_None) && 
+	UUmAssert((ioCharacter->speech.current.speech_type > ONcSpeechType_None) &&
 			(ioCharacter->speech.current.speech_type < ONcSpeechType_Max));
 	UUmAssert(!ioCharacter->speech.currently_speaking);
 
@@ -113,7 +113,7 @@ UUtBool ONrSpeech_Saying(struct ONtCharacter *ioCharacter)
 ONtSpeech *ONrSpeech_Current(ONtCharacter *ioCharacter)
 {
 	if (ioCharacter->speech.currently_speaking) {
-		UUmAssert((ioCharacter->speech.current.speech_type > ONcSpeechType_None) && 
+		UUmAssert((ioCharacter->speech.current.speech_type > ONcSpeechType_None) &&
 				(ioCharacter->speech.current.speech_type < ONcSpeechType_Max));
 		return &ioCharacter->speech.current;
 	} else {
@@ -168,7 +168,7 @@ void ONrSpeech_Update(ONtCharacter *ioCharacter)
 			ONrCharacter_GetEyePosition(ioCharacter, &speech_location);
 			ioCharacter->speech.playing_sound_id = OSrInGameDialog_Play(ioCharacter->speech.current.sound_name, &speech_location, &duration, &sound_missing);
 			ioCharacter->speech.playing_sound_endtime = current_time + duration;
-			
+
 			if (sound_missing == UUcTrue) {
 				COrConsole_Printf("### %s: can't find sound '%s'", ioCharacter->player_name, ioCharacter->speech.current.sound_name);
 				ioCharacter->speech.finished_sound = UUcTrue;

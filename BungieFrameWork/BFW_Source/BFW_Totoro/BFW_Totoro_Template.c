@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Totoro_Template.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Sept 25, 1997
-	
+
 	PURPOSE: animation engine
-	
+
 	Copyright 1997
 
 */
@@ -23,7 +23,7 @@ TRrRegisterTemplates(
 	void)
 {
 	UUtError	error;
-	
+
 	error = TMrTemplate_Register(TRcTemplate_Body, sizeof(TRtBody), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 
@@ -36,10 +36,10 @@ TRrRegisterTemplates(
 	error = TMrTemplate_Register(TRcTemplate_BodyTextures, sizeof(TRtBodyTextures), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 
-	error = TMrTemplate_Register(TRcTemplate_AnimationCollection, sizeof(TRtAnimationCollection), TMcFolding_Allow);	
+	error = TMrTemplate_Register(TRcTemplate_AnimationCollection, sizeof(TRtAnimationCollection), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 
-	error = TMrTemplate_Register(TRcTemplate_FacingTable, sizeof(TRtFacingTable), TMcFolding_Allow);	
+	error = TMrTemplate_Register(TRcTemplate_FacingTable, sizeof(TRtFacingTable), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 
 	error = TMrTemplate_Register(TRcTemplate_AimingScreen, sizeof(TRtAimingScreen), TMcFolding_Allow);

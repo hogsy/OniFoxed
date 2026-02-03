@@ -17,7 +17,7 @@
 char*
 NMrWS_AddressToString(
 	const NMtNetAddress			*inNetAddress);
-	
+
 UUtError
 NMrWS_UDP_Initialize(
 	void);

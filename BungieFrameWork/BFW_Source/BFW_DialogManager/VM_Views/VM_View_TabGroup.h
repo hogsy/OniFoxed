@@ -16,7 +16,7 @@
 typedef struct VMtView_TabGroup_PrivateData
 {
 	VMtView				*current_tab;
-	
+
 } VMtView_TabGroup_PrivateData;
 
 // ======================================================================

@@ -2,13 +2,13 @@
 
 /*
 	FILE:	Oni_GameStatePrivate.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Jan, 1998
-	
+
 	PURPOSE:
-	
+
 	Copyright 1997, 1998
 
 */
@@ -30,7 +30,7 @@
 
 #define ONcMaxObjects		40
 #define ONcMaxTriggers		32
-	
+
 typedef struct ONtServerState
 {
 	UUtUns32 machineTimeLast;		// machine time last time we did an update
@@ -111,14 +111,14 @@ typedef struct ONtLocalGameState
 	UUtBool			sync_enabled;
 
 	UUtUns32		cutscene_skip_timer;
-	UUtUns32		time_cutscene_started_or_wait_for_key_returned_in_machine_time;		
+	UUtUns32		time_cutscene_started_or_wait_for_key_returned_in_machine_time;
 
 	ONtFadeInfo		fadeInfo;
 
 	CAtCamera		*camera;
-	
+
 	PHtGraph		pathGraph;			// Pathfinding digraph for environment
-	
+
 	ONtCharacter	*playerCharacter;	// active character on local machine
 	ONtActiveCharacter	*playerActiveCharacter;	// active character on local machine
 	ONtInputState	localInput;
@@ -160,14 +160,14 @@ struct ONtGameState
 {
 	ONtLocalGameState	local;			// local data (different on different machines)
 	ONtServerState		server;
-	
+
 	UUtUns32			gameTime;		// time in heartbeats of the game (on our local machine)
 	UUtUns32			serverTime;		// server time (we have gotten all commands up to this time)
 
 	M3tGeometry*		geometryOpacity;
-	
+
 	ONtLevel*			level;
-	
+
 	UUtBool				displayOpacity;
 
 	// motion blurs
@@ -177,7 +177,7 @@ struct ONtGameState
 	// character salt indices
 	UUtUns16			nextCharacterSalt;
 	UUtUns16			nextActiveCharacterSalt;
-	
+
 	// all characters
 	ONtCharacter		characters[ONcMaxCharacters];
 	UUtUns16			numCharacters;
@@ -244,4 +244,4 @@ struct ONtGameState
 
 
 
-#endif 
+#endif

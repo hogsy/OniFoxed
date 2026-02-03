@@ -30,7 +30,7 @@ IMPiIsAIFFFile(
 {
 	char					*extension;
 	const char				*leaf_name;
-	
+
 	leaf_name = BFrFileRef_GetLeafName(inFileRef);
 	extension = strrchr(leaf_name, '.');
 	if (UUrString_Compare_NoCase(extension, ".aiff") == 0)
@@ -45,7 +45,7 @@ IMPiIsAIFFFile(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -56,14 +56,14 @@ IMPiIsWavFile(
 {
 	char					*extension;
 	const char				*leaf_name;
-	
+
 	leaf_name = BFrFileRef_GetLeafName(inFileRef);
 	extension = strrchr(leaf_name, '.');
 	if (UUrString_Compare_NoCase(extension, ".wav") == 0)
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -80,7 +80,7 @@ IMPiLoadCallback_AllocSoundData_ImportTime(
 
 	UUrString_Copy(instance_name, BFrFileRef_GetLeafName(inFileRef), BFcMaxFileNameLength);
 	UUrString_MakeLowerCase(instance_name, BFcMaxFileNameLength);
-	error = 
+	error =
 		TMrConstruction_Instance_Renew(
 			SScTemplate_SoundData,
 			instance_name,
@@ -100,11 +100,11 @@ IMPiLoadCallback_SoundStoreData(
 	UUtError					error;
 	char						instance_name[BFcMaxFileNameLength];
 	SStSoundData				*sound_data;
-	
+
 	// make the instance name
 	UUrString_Copy(instance_name, inSoundName, BFcMaxFileNameLength);
 	UUrString_MakeLowerCase(instance_name, BFcMaxFileNameLength);
-	
+
 	// create the template instance
 	error =
 		TMrConstruction_Instance_Renew(
@@ -113,7 +113,7 @@ IMPiLoadCallback_SoundStoreData(
 			0,
 			&sound_data);
 	UUmError_ReturnOnError(error);
-	
+
 	// copy inSoundData into the sound_data
 	UUrMemory_MoveFast(inSoundData, sound_data, sizeof(SStSoundData));
 
@@ -126,13 +126,13 @@ IMPiLoadCallback_SoundStoreData(
 	if (sound_data->data == NULL) {
 		return UUcError_Generic;
 	}
-	
+
 	// copy inSoundData data into sound_data data
 	UUrMemory_MoveFast(inSoundData->data, sound_data->data, inSoundData->num_bytes);
-	
+
 	// save the sound data
 	sound_data->data = TMrConstruction_Raw_Write(sound_data->data);
-	
+
 	return UUcError_None;
 }
 
@@ -143,9 +143,9 @@ IMPiProcess_SoundData_File(
 {
 	UUtError				error;
 	SStSoundData			*sound_data;
-	
+
 	Imp_PrintMessage(IMPcMsg_Important, "\t\tsoundFileName: %s"UUmNL, BFrFileRef_GetLeafName(inFileRef));
-	
+
 	// load the sound data from file
 	error =
 		SSrSoundData_Load(
@@ -153,7 +153,7 @@ IMPiProcess_SoundData_File(
 			IMPiLoadCallback_SoundStoreData,
 			&sound_data);
 	IMPmError_ReturnOnError(error);
-	
+
 	// dispose of the sound data
 	if (sound_data != NULL)
 	{
@@ -164,7 +164,7 @@ IMPiProcess_SoundData_File(
 		UUrMemory_Block_Delete(sound_data);
 		sound_data = NULL;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -175,22 +175,22 @@ IMPiProcess_SoundData_Directory(
 {
 	UUtError				error;
 	BFtFileIterator			*file_iterator;
-	
+
 	UUmAssert(inDirRef);
-	
+
 	// create a directory iterator
 	error =	BFrDirectory_FileIterator_New(inDirRef, NULL, NULL, &file_iterator);
 	IMPmError_ReturnOnError(error);
-	
+
 	// process all of the files in the directory
 	while (1)
 	{
 		BFtFileRef file_ref;
-		
+
 		// get the next file
 		error = BFrDirectory_FileIterator_Next(file_iterator, &file_ref);
 		if (error != UUcError_None) { break; }
-		
+
 		if (BFrFileRef_IsDirectory(&file_ref) == UUcTrue)
 		{
 			// process the directory
@@ -206,16 +206,16 @@ IMPiProcess_SoundData_Directory(
 			// process the file
 			IMPiProcess_SoundData_File(&file_ref);
 		}
-		
-		
-		IMPmError_ReturnOnError(error);	
+
+
+		IMPmError_ReturnOnError(error);
 		continue;
 	}
-	
+
 	// delete the file iterator
 	BFrDirectory_FileIterator_Delete(file_iterator);
 	file_iterator = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -227,22 +227,22 @@ IMPiProcess_SoundDirectory(
 {
 	UUtError				error;
 	BFtFileIterator			*file_iterator;
-	
+
 	// build a file iterator
 	error = BFrDirectory_FileIterator_New(inDirRef, NULL, NULL, &file_iterator);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to create file iterator for directory");
-	
+
 	// loop over the entire directory
 	while (1)
 	{
 		BFtFileRef				file_ref;
 		UUtBool					result;
 		UUtUns32				index;
-		
+
 		// get a file ref
 		error = BFrDirectory_FileIterator_Next(file_iterator, &file_ref);
 		if (error != UUcError_None) { break; }
-		
+
 		// determine if this is a file or directory
 		if (BFrFileRef_IsDirectory(&file_ref) == UUcTrue)
 		{
@@ -251,20 +251,20 @@ IMPiProcess_SoundDirectory(
 		else if (strcmp(BFrFileRef_GetSuffixName(&file_ref), "aif") == 0)
 		{
 			char					file_name[BFcMaxPathLength];
-			
+
 			// make the name lowercase
 			UUrString_Copy(file_name, BFrFileRef_GetLeafName(&file_ref), BFcMaxPathLength);
 			UUrString_MakeLowerCase(file_name, BFcMaxPathLength);
-			
+
 			// determine if the file is in the list
 			result = AUrSharedStringArray_GetIndex(inFileNameList, file_name, &index);
 			if (result == UUcFalse) { continue; }
-			
+
 			// process the file
 			IMPiProcess_SoundData_File(&file_ref);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -278,18 +278,18 @@ IMPiProcess_FileList(
 	AUtSharedStringArray	*string_array;
 	UUtUns32				num_elements;
 	UUtUns32				itr;
-	
+
 	// build a shared string list from the file list
 	string_array = AUrSharedStringArray_New();
 	UUmError_ReturnOnNull(string_array);
-	
+
 	num_elements = GRrGroup_Array_GetLength(inFileList);
 	for (itr = 0; itr < num_elements; itr++)
 	{
 		UUtUns32				index;
 		char					*string;
 		GRtElementType			element_type;
-		
+
 		// get the element from the array
 		error =
 			GRrGroup_Array_GetElement(
@@ -302,9 +302,9 @@ IMPiProcess_FileList(
 			Imp_PrintWarning("Unable to get element from file list array");
 			continue;
 		}
-		
+
 		UUrString_MakeLowerCase(string, BFcMaxFileNameLength);
-		
+
 		// add the file name to the list
 		error =
 			AUrSharedStringArray_AddString(
@@ -318,11 +318,11 @@ IMPiProcess_FileList(
 			continue;
 		}
 	}
-	
+
 	// process the directory
 	error = IMPiProcess_SoundDirectory(inDirRef, string_array);
-	UUmError_ReturnOnErrorMsg(error, "Unable to process the sound directory");	
-	
+	UUmError_ReturnOnErrorMsg(error, "Unable to process the sound directory");
+
 	return UUcError_None;
 }
 
@@ -338,10 +338,10 @@ IMPrImport_AddSound2(
 	BFtFileRef				*dir_ref;
 	GRtElementArray			*file_list_array;
 	GRtElementType			element_type;
-	
+
 	// don't process sounds
 	if (IMPgNoSound == UUcTrue) { return UUcError_None; }
-	
+
 	// get the file list
 	file_list_array = NULL;
 	error =
@@ -357,15 +357,15 @@ IMPrImport_AddSound2(
 	else if ((file_list_array != NULL) && (element_type == GRcElementType_Array))
 	{
 		char					*dir_name;
-		
+
 		// get the name of the directory the aif's are in.  It can have sub-folders
 		error = GRrGroup_GetString(inGroup, "folder", &dir_name);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to get the directory name");
-		
+
 		// create a dir ref
 		error = BFrFileRef_DuplicateAndReplaceName(inSourceFileRef, dir_name, &dir_ref);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create directory reference.");
-		
+
 		// process the file list
 		error = IMPiProcess_FileList(dir_ref, file_list_array);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to process the aiff list");
@@ -375,15 +375,15 @@ IMPrImport_AddSound2(
 		// create a dir ref
 		error = BFrFileRef_DuplicateAndReplaceName(inSourceFileRef, inInstanceName, &dir_ref);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create directory reference.");
-		
+
 		// process the sound data directory
 		error = IMPiProcess_SoundData_Directory(dir_ref);
 		IMPmError_ReturnOnErrorMsg(error, "Error processing sound data");
 	}
-	
+
 	// delete the directory ref
 	UUrMemory_Block_Delete(dir_ref);
-	
+
 	return UUcError_None;
 }
 
@@ -407,11 +407,11 @@ Imp_Process_SoundBin(
 			&data_length,
 			&data);
 	IMPmError_ReturnOnErrorMsg(error, "Unable to load binary file into memory");
-	
+
 	if (data_length > 0)
 	{
 		OStBinaryData		*binary_data;
-		
+
 		// create an instance of a binary data template
 		error =
 			TMrConstruction_Instance_Renew(
@@ -420,23 +420,23 @@ Imp_Process_SoundBin(
 				0,
 				&binary_data);
 		IMPmError_ReturnOnErrorMsg(error, "Unable to create dialog data instance");
-		
+
 		// copy the file data into the raw template data
 		separate_data = TMrConstruction_Separate_New(data_length, OScTemplate_SoundBinaryData);
 		UUrMemory_MoveFast(data, separate_data, data_length);
-		
+
 		binary_data->data_size = data_length;
 		binary_data->data_index = (TMtSeparateFileOffset) TMrConstruction_Separate_Write(separate_data);
-		
+
 		Imp_PrintMessage(IMPcMsg_Important, "\tsoundBinaryFileName: %s"UUmNL, curFileName);
 	}
-	
+
 	// dispose of the allocated memory
 	if (data != NULL)
 	{
 		UUrMemory_Block_Delete(data);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -451,15 +451,15 @@ IMPiImport_SoundBins(
 	// create a file iterator
 	error = BFrDirectory_FileIterator_New(inDirectoryRef, NULL, NULL, &file_iterator);
 	UUmError_ReturnOnErrorMsg(error, "Unable to make a file iterator.");
-	
+
 	while (1)
 	{
 		BFtFileRef ref;
-		
+
 		// get the next ref
 		error = BFrDirectory_FileIterator_Next(file_iterator, &ref);
 		if (error != UUcError_None) { break; }
-		
+
 		if (BFrFileRef_IsDirectory(&ref) == UUcTrue)
 		{
 			error = IMPiImport_SoundBins(&ref);
@@ -468,7 +468,7 @@ IMPiImport_SoundBins(
 		else
 		{
 			const char			*file_ext;
-			
+
 			file_ext = BFrFileRef_GetSuffixName(&ref);
 			if ((UUrString_Compare_NoCase(file_ext, OScAmbientSuffix) == 0) ||
 				(UUrString_Compare_NoCase(file_ext, OScGroupSuffix) == 0) ||
@@ -479,10 +479,10 @@ IMPiImport_SoundBins(
 			}
 		}
 	}
-	
+
 	BFrDirectory_FileIterator_Delete(file_iterator);
 	file_iterator = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -496,18 +496,18 @@ IMPrImport_AddSoundBin(
 {
 	UUtError				error;
 	BFtFileRef				*dir_ref;
-	
+
 	// get the parent directory
 	error = BFrFileRef_GetParentDirectory(inSourceFileRef, &dir_ref);
 	UUmError_ReturnOnErrorMsg(error, "Unable to get the files parent directory");
 	UUmAssert(BFrFileRef_IsDirectory(dir_ref));
-	
+
 	// import all of the sound bin files in the hierarchy starting at dir_ref
 	IMPiImport_SoundBins(dir_ref);
-	
+
 	BFrFileRef_Dispose(dir_ref);
 	dir_ref = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -534,11 +534,11 @@ IMPrImport_AddSubtitles(
 	// ok read the file
 	{
 		BFtTextFile *text_file;
-		
+
 		error = Imp_Common_GetFileRefAndModDate(inSourceFileRef, inGroup, "file", &file_ref);
 		if (error) { return error; }
 
-		// ok, now we need to read the file, line by line 
+		// ok, now we need to read the file, line by line
 		error = BFrTextFile_MapForRead(file_ref, &text_file);
 		if (error) { return error; }
 
@@ -547,7 +547,7 @@ IMPrImport_AddSubtitles(
 			char *subtitle_instance = BFrTextFile_GetNextStr(text_file);
 			char *subtitle_text = BFrTextFile_GetNextStr(text_file);
 			char *end_marker = BFrTextFile_GetNextStr(text_file);
-			
+
 			if ((NULL == subtitle_instance) ||
 				(NULL == subtitle_text) ||
 				(NULL == end_marker)) {

@@ -24,36 +24,36 @@
 typedef tm_template('V', 'M', 'E', 'F', "VM View EditField")
 VMtView_EditField
 {
-	
+
 	UUtUns16			flags;
 	UUtUns16			max_chars;
-	
+
 	IMtPoint2D			text_location_offset;
-	
+
 	VMtPartSpec			*outline;
-	
+
 } VMtView_EditField;
 
 typedef struct VMtView_EditField_PrivateData
 {
 	TStTextContext		*text_context;
 	char				*string;
-	
+
 	IMtPoint2D			text_location;
-	
+
 	tm_templateref		caret_texture;
 	UUtInt16			caret_width;
 	UUtInt16			caret_height;
 	UUtBool				caret_displayed;
 	UUtUns32			caret_time;
-	
+
 	tm_templateref		string_texture;
 	UUtInt16			string_width;
 	UUtInt16			string_height;
 	IMtPixel			erase_color;
-	
+
 	UUtBool				has_focus;
-	
+
 } VMtView_EditField_PrivateData;
 
 extern TMtPrivateData*	DMgTemplate_EditField_PrivateData;

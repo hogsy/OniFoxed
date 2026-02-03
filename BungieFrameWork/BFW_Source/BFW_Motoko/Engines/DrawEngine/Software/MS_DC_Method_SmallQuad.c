@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_DC_Method_SmallQuad.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 18, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -20,7 +20,7 @@
 #include "MS_DC_Method_Triangle.h"
 #include "MS_DC_Method_SmallQuad.h"
 
-void 
+void
 MSrDrawContext_Method_SmallQuadGouraudInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns32		inIndices)
@@ -37,7 +37,7 @@ MSrDrawContext_Method_SmallQuadGouraudInterpolate(
 		(UUtUns16)(inIndices & 0xFF));
 }
 
-void 
+void
 MSrDrawContext_Method_SmallQuadGouraudFlat(
 	M3tDrawContext*	inDrawContext,
 	UUtUns32		inIndices,
@@ -57,7 +57,7 @@ MSrDrawContext_Method_SmallQuadGouraudFlat(
 		inFaceShade);
 }
 
-void 
+void
 MSrDrawContext_Method_SmallQuadTextureInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns32		inIndices)

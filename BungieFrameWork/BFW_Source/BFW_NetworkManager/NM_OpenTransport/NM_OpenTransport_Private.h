@@ -21,7 +21,7 @@ struct NMtNetContextPrivate
 	InetSvcRef				internet_services;
 	InetHost				host;
 	NMtQueues				queues;
-	
+
 };
 
 // ======================================================================

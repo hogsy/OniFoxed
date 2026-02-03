@@ -201,7 +201,7 @@ static void OWiFillVariableMenu(WMtPopupMenu *inMenu, P3tDataType inType,
 			item_data.flags = WMcMenuItemFlag_Enabled;
 			item_data.id = itr;
 			strcpy(item_data.title, inDefinition->variable[itr].name);
-	
+
 			WMrPopupMenu_AppendItem(inMenu, &item_data);
 
 			if ((select_item != NULL) && (strcmp(select_item, item_data.title) == 0))
@@ -224,19 +224,19 @@ static void OWiDescribeValue(P3tParticleClass *inClass, P3tDataType inDataType, 
 		(inValue->type == P3cValueType_String)) {
 		const char *sound_name;
 		SStAmbient *ambient;
-		
+
 		// get this ambient sound's name
 		sound_name = inValue->u.string_const.val;
-		
+
 		// get the ambient sound
 		ambient = OSrAmbient_GetByName(sound_name);
 		if (ambient == NULL) {
 			sprintf(outString, "ambient sound %s '<no ambient sound>'", sound_name);
 			return;
 		}
-		
+
 		sprintf(outString, "ambient sound '%s'", sound_name);
-		
+
 /*		UUtUns32 sound_id;
 		OStCollection *ambient_collection;
 		OStItem *sound_item;
@@ -279,19 +279,19 @@ static void OWiDescribeValue(P3tParticleClass *inClass, P3tDataType inDataType, 
 		(inValue->type == P3cValueType_String)) {
 		const char *sound_name;
 		SStImpulse *impulse;
-		
+
 		// get this impulse sound's name
 		sound_name = inValue->u.string_const.val;
-		
+
 		// get the impulse sound
 		impulse = OSrImpulse_GetByName(sound_name);
 		if (impulse == NULL) {
 			sprintf(outString, "impulse sound %s '<no impulse sound>'", sound_name);
 			return;
 		}
-		
+
 		sprintf(outString, "impulse sound '%s'", sound_name);
-		
+
 /*		UUtUns32 sound_id;
 		OStCollection *impulse_collection;
 		OStItem *sound_item;
@@ -449,9 +449,9 @@ OWrParticle_Edit_Callback(
 	P3tParticleClass **				classarray;
 	P3tString						oldname;
 	char							newname[32];
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -482,11 +482,11 @@ OWrParticle_Edit_Callback(
 			// delete the temporary array we allocated
 			UUrMemory_Block_Delete(classarray);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			// no destruction necessary
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -512,10 +512,10 @@ OWrParticle_Edit_Callback(
 					// create a new decal class
 					strcpy(newname, "d_newdecal");
 					WMrDialog_ModalBegin(OWcDialog_Particle_DecalTextures, inDialog, OWrParticle_DecalTextures_Callback, (UUtUns32) newname, &modalreturn);
-					if(((UUtBool) modalreturn == UUcTrue))	// && (P3rNewParticleClass(newname) != NULL)) 
+					if(((UUtBool) modalreturn == UUcTrue))	// && (P3rNewParticleClass(newname) != NULL))
 					{
 						listbox = WMrDialog_GetItemByID(inDialog, OWcParticle_Edit_Listbox);
-						if (listbox != NULL) 
+						if (listbox != NULL)
 						{
 							index = WMrMessage_Send(listbox, LBcMessage_AddString, (UUtUns32) newname, 0);
 							WMrMessage_Send(listbox, LBcMessage_SetSelection, (UUtUns32) -1, index);
@@ -564,12 +564,12 @@ OWrParticle_Edit_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -595,7 +595,7 @@ OWrParticle_Variables_Callback(
 	UUtUns32						modaldialog_message;
 
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -620,7 +620,7 @@ OWrParticle_Variables_Callback(
 			// register that we may need to be notified about changes
 			OWiParticle_RegisterOpenWindow(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			// deallocate user data
 			user_data = (OWtParticle_Edit_Data *) WMrDialog_GetUserData(inDialog);
@@ -641,7 +641,7 @@ OWrParticle_Variables_Callback(
 			P3rDescribeVariable(user_data->classptr,
 								&user_data->classptr->definition->variable[inParam1], variablestring);
 			WMrMessage_Send(listbox, LBcMessage_ReplaceString, (UUtUns32) variablestring, (UUtUns32) inParam1);
-			
+
 			break;
 
 		case WMcMessage_Command:
@@ -748,11 +748,11 @@ OWrParticle_Variables_Callback(
 						WMrDialog_Create(OWcDialog_Particle_Value_Shade, NULL,
 										OWrParticle_Value_Shade_Callback, (UUtUns32) val_user_data, &dialog);
 						break;
-					
+
 					case P3cDataType_Sound_Ambient:
 						OWrParticle_Value_Sound_Get(SScType_Ambient, val_user_data);
 						break;
-						
+
 					case P3cDataType_Sound_Impulse:
 						OWrParticle_Value_Sound_Get(SScType_Impulse, val_user_data);
 						break;
@@ -904,12 +904,12 @@ OWrParticle_Variables_Callback(
 					break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -929,7 +929,7 @@ static void OWiParticle_Appearance_UpdateFields(WMtDialog *inDialog)
 		sprintf(textbuf, "Scale: %s", valuebuf);
 		WMrWindow_SetTitle(text_string, textbuf, WMcMaxTitleLength);
 	}
-	
+
 	// set up the X offset
 	text_string = WMrDialog_GetItemByID(inDialog, OWcParticle_Appearance_XOffset);
 	if (text_string != NULL) {
@@ -1072,7 +1072,7 @@ OWrParticle_Appearance_Callback(
 
 	handled = UUcTrue;
 	user_data = (OWtParticle_Edit_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -1216,7 +1216,7 @@ OWrParticle_Appearance_Callback(
 			// register that we are here and may need to be notified about changes
 			OWiParticle_RegisterOpenWindow(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			// deallocate user data
 			UUrMemory_Block_Delete(user_data);
@@ -1227,7 +1227,7 @@ OWrParticle_Appearance_Callback(
 
 		case OWcMessage_Particle_UpdateList:
 			// one of our variables has changed. update all of them.
-			OWiParticle_Appearance_UpdateFields(inDialog);			
+			OWiParticle_Appearance_UpdateFields(inDialog);
 			break;
 
 		case WMcMessage_Command:
@@ -1504,19 +1504,19 @@ OWrParticle_Appearance_Callback(
 					tex_user_data->classptr = user_data->classptr;
 					tex_user_data->texture_name = user_data->classptr->definition->appearance.instance;
 					sprintf(tex_user_data->title, "Select %s ", &user_data->classptr->classname);
-					if (user_data->classptr->definition->flags & P3cParticleClassFlag_Appearance_Geometry) 
+					if (user_data->classptr->definition->flags & P3cParticleClassFlag_Appearance_Geometry)
 					{
 						strcat(tex_user_data->title,	"geometry");
 						strcpy(tex_user_data->editmsg,	"Geometry Instance:");
 						tex_user_data->name_type = OWcParticle_NameType_Geometry;
-					} 
+					}
 					else
 					{
-						if (user_data->classptr->definition->flags2 & P3cParticleClassFlag2_Appearance_Decal) 
+						if (user_data->classptr->definition->flags2 & P3cParticleClassFlag2_Appearance_Decal)
 						{
 							strcat(tex_user_data->title,	"decal");
 						}
-						else 
+						else
 						{
 							strcat(tex_user_data->title,	"sprite");
 						}
@@ -1548,7 +1548,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags = new_flags;
-	
+
 							// we may now need to autosave
 							OBDrMakeDirty();
 						}
@@ -1572,7 +1572,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags = new_flags;
-	
+
 							// we may now need to autosave
 							OBDrMakeDirty();
 						}
@@ -1596,7 +1596,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags2 = new_flags2;
-	
+
 							// we may now need to autosave
 							OBDrMakeDirty();
 						}
@@ -1620,7 +1620,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags2 = new_flags2;
-	
+
 							// we may now need to autosave
 							OBDrMakeDirty();
 						}
@@ -1644,7 +1644,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags2 = new_flags2;
-	
+
 							// we may now need to autosave
 							OBDrMakeDirty();
 						}
@@ -1668,7 +1668,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags = new_flags;
-	
+
 							// we now have to re-pack the variables inside each particle
 							P3rPackVariables(user_data->classptr, UUcTrue);
 
@@ -1695,7 +1695,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags2 = new_flags2;
-	
+
 							// we may now need to autosave
 							OBDrMakeDirty();
 						}
@@ -1719,7 +1719,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags2 = new_flags2;
-	
+
 							// we may now need to autosave
 							OBDrMakeDirty();
 						}
@@ -1743,7 +1743,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags = new_flags;
-	
+
 							// we now have to re-pack the variables inside each particle
 							// because there is or isn't an additional texture index to store
 							P3rPackVariables(user_data->classptr, UUcTrue);
@@ -1771,7 +1771,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags = new_flags;
-	
+
 							// we may now need to autosave
 							OBDrMakeDirty();
 
@@ -1799,7 +1799,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags2 = new_flags2;
-	
+
 							// we may now need to autosave
 							OBDrMakeDirty();
 						}
@@ -1823,7 +1823,7 @@ OWrParticle_Appearance_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags2 = new_flags2;
-	
+
 							// we may now need to autosave
 							OBDrMakeDirty();
 						}
@@ -1831,7 +1831,7 @@ OWrParticle_Appearance_Callback(
 					break;
 			}
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			menu = (WMtMenu *) inParam2;
 			switch (WMrWindow_GetID(menu))
@@ -1843,17 +1843,17 @@ OWrParticle_Appearance_Callback(
 				if (selected_id != (UUtUns16) -1) {
 					// check this is a valid selection
 					UUmAssert((selected_id >= 0) && (selected_id < 8));
-					
+
 					new_flags = user_data->classptr->definition->flags
 						& ~P3cParticleClassFlag_Appearance_SpriteTypeMask;
 					new_flags |= ((UUtUns32) selected_id) << P3cParticleClassFlags_SpriteTypeShift;
-					
+
 					if (new_flags != user_data->classptr->definition->flags) {
 						// this particle class is now dirty. NB: must be called BEFORE we make any changes.
 						P3rMakeDirty(user_data->classptr, UUcTrue);
 
 						user_data->classptr->definition->flags = new_flags;
-						
+
 						// we may now need to autosave
 						OBDrMakeDirty();
 					}
@@ -1869,15 +1869,15 @@ OWrParticle_Appearance_Callback(
 				new_flags2 = user_data->classptr->definition->flags2 &
 					~(P3cParticleClassFlag2_Appearance_Decal | P3cParticleClassFlag2_Appearance_Vector);
 
-				if (selected_id == OWcParticle_DisplayType_Geometry) 
+				if (selected_id == OWcParticle_DisplayType_Geometry)
 				{
 					new_flags |= P3cParticleClassFlag_Appearance_Geometry;
-				} 
-				else if (selected_id == OWcParticle_DisplayType_Vector) 
+				}
+				else if (selected_id == OWcParticle_DisplayType_Vector)
 				{
 					new_flags2 |= P3cParticleClassFlag2_Appearance_Vector;
-				} 
-				else if (selected_id == OWcParticle_DisplayType_Decal) 
+				}
+				else if (selected_id == OWcParticle_DisplayType_Decal)
 				{
 					new_flags  |= P3cParticleClassFlag_HasDecalData | P3cParticleClassFlag_Decorative;
 					new_flags2 |= P3cParticleClassFlag2_Appearance_Decal;
@@ -1890,7 +1890,7 @@ OWrParticle_Appearance_Callback(
 
 					user_data->classptr->definition->flags  = new_flags;
 					user_data->classptr->definition->flags2 = new_flags2;
-						
+
 					// we may now need to autosave
 					OBDrMakeDirty();
 
@@ -1899,12 +1899,12 @@ OWrParticle_Appearance_Callback(
 				}
 				break;
 			}
-			
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -1942,7 +1942,7 @@ static UUtBool OWiParticle_UpdateCheckbox(WMtDialog *inDialog, P3tParticleClass 
 			P3rMakeDirty(inClass, UUcTrue);
 
 			*flagptr = new_flags;
-	
+
 			// we may now need to autosave
 			OBDrMakeDirty();
 
@@ -1974,7 +1974,7 @@ static void OWiParticle_Attractor_UpdateFields(WMtDialog *inDialog)
 		sprintf(textbuf, "Class/Tag Name: %s", user_data->classptr->definition->attractor.attractor_name);
 		WMrWindow_SetTitle(text_string, textbuf, WMcMaxTitleLength);
 	}
-	
+
 	// set up the max distance
 	text_string = WMrDialog_GetItemByID(inDialog, OWcParticle_Attractor_Max_Distance);
 	if (text_string != NULL) {
@@ -2038,7 +2038,7 @@ OWrParticle_Attractor_Callback(
 
 	handled = UUcTrue;
 	user_data = (OWtParticle_Edit_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -2070,7 +2070,7 @@ OWrParticle_Attractor_Callback(
 			// register that we are here and may need to be notified about changes
 			OWiParticle_RegisterOpenWindow(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			// deallocate user data
 			UUrMemory_Block_Delete(user_data);
@@ -2081,7 +2081,7 @@ OWrParticle_Attractor_Callback(
 
 		case OWcMessage_Particle_UpdateList:
 			// one of our variables has changed. update all of them.
-			OWiParticle_Attractor_UpdateFields(inDialog);			
+			OWiParticle_Attractor_UpdateFields(inDialog);
 			break;
 
 		case WMcMessage_Command:
@@ -2183,7 +2183,7 @@ OWrParticle_Attractor_Callback(
 						strcat(tex_user_data->title,	"class");
 						strcpy(tex_user_data->editmsg,	"Class Name:");
 						tex_user_data->name_type = OWcParticle_NameType_ParticleClass;
-					} 
+					}
 					else if (user_data->classptr->definition->attractor.iterator_type == P3cAttractorIterator_ParticleTag)
 					{
 						strcat(tex_user_data->title,	"tag");
@@ -2221,7 +2221,7 @@ OWrParticle_Attractor_Callback(
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
 							user_data->classptr->definition->flags2 = new_flags2;
-	
+
 							// we may now need to autosave
 							OBDrMakeDirty();
 						}
@@ -2229,7 +2229,7 @@ OWrParticle_Attractor_Callback(
 					break;
 			}
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			menu = (WMtMenu *) inParam2;
 			switch (WMrWindow_GetID(menu))
@@ -2241,13 +2241,13 @@ OWrParticle_Attractor_Callback(
 				if (selected_id != (UUtUns16) -1) {
 					// check this is a valid selection
 					UUmAssert((selected_id >= 0) && (selected_id < P3cAttractorIterator_Max));
-					
+
 					if (selected_id != user_data->classptr->definition->attractor.iterator_type) {
 						// this particle class is now dirty. NB: must be called BEFORE we make any changes.
 						P3rMakeDirty(user_data->classptr, UUcTrue);
 
 						user_data->classptr->definition->attractor.iterator_type = selected_id;
-						
+
 						// we may now need to autosave
 						OBDrMakeDirty();
 					}
@@ -2261,25 +2261,25 @@ OWrParticle_Attractor_Callback(
 				if (selected_id != (UUtUns16) -1) {
 					// check this is a valid selection
 					UUmAssert((selected_id >= 0) && (selected_id < P3cAttractorSelector_Max));
-					
+
 					if (selected_id != user_data->classptr->definition->attractor.selector_type) {
 						// this particle class is now dirty. NB: must be called BEFORE we make any changes.
 						P3rMakeDirty(user_data->classptr, UUcTrue);
 
 						user_data->classptr->definition->attractor.selector_type = selected_id;
-						
+
 						// we may now need to autosave
 						OBDrMakeDirty();
 					}
 				}
 				break;
 			}
-			
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -2305,7 +2305,7 @@ OWrParticle_Class_Callback(
 
 	handled = UUcTrue;
 	user_data = (OWtParticle_Edit_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -2384,14 +2384,14 @@ OWrParticle_Class_Callback(
 			// register that we are here and may need to be notified about changes
 			OWiParticle_RegisterOpenWindow(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 
 			// register that we are going away and shouldn't be notified about any further changes
 			OWiParticle_RegisterCloseWindow(inDialog);
 		break;
-		
+
 		case OWcMessage_Particle_UpdateList:
 			// set the lifetime description text
 			text = WMrDialog_GetItemByID(inDialog, OWcParticle_Class_LifetimeText);
@@ -2534,7 +2534,7 @@ OWrParticle_Class_Callback(
 				case OWcParticle_Class_CollideEnv:
 					// CB: note that environment collision now requires an environment cache
 					OWiParticle_UpdateCheckbox(inDialog, user_data->classptr, OWcParticle_Class_CollideEnv,		1,
-												(P3cParticleClassFlag_Physics_CollideEnv | P3cParticleClassFlag_HasEnvironmentCache), UUcTrue);						
+												(P3cParticleClassFlag_Physics_CollideEnv | P3cParticleClassFlag_HasEnvironmentCache), UUcTrue);
 					break;
 
 				case OWcParticle_Class_CollideChar:
@@ -2638,7 +2638,7 @@ OWrParticle_Class_Callback(
 				case OWcParticle_Class_FlybyButton:
 				{
 					OWtSelectResult	result;
-					
+
 					// select the impulse sound
 					result = OWrSelect_ImpulseSound(&impulse_sound);
 					if (result == OWcSelectResult_Cancel) {
@@ -2668,7 +2668,7 @@ OWrParticle_Class_Callback(
 				}
 			}
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			switch (WMrWindow_GetID((WMtWindow *) inParam2))
 			{
@@ -2685,14 +2685,14 @@ OWrParticle_Class_Callback(
 					new_flags2 = user_data->classptr->definition->flags2 &
 						~(P3cParticleClassFlag2_MediumDetailDisable | P3cParticleClassFlag2_LowDetailDisable);
 
-					if (selection == OWcParticle_Disable_MediumDetail) 
+					if (selection == OWcParticle_Disable_MediumDetail)
 					{
 						new_flags2 |= (P3cParticleClassFlag2_MediumDetailDisable | P3cParticleClassFlag2_LowDetailDisable);
-					} 
-					else if (selection == OWcParticle_Disable_LowDetail) 
+					}
+					else if (selection == OWcParticle_Disable_LowDetail)
 					{
 						new_flags2 |= P3cParticleClassFlag2_LowDetailDisable;
-					} 
+					}
 
 					if (new_flags2 != user_data->classptr->definition->flags2)
 					{
@@ -2700,7 +2700,7 @@ OWrParticle_Class_Callback(
 						P3rMakeDirty(user_data->classptr, UUcTrue);
 
 						user_data->classptr->definition->flags2 = new_flags2;
-							
+
 						// we may now need to autosave
 						OBDrMakeDirty();
 					}
@@ -2715,7 +2715,7 @@ OWrParticle_Class_Callback(
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -2792,7 +2792,7 @@ static void OWiParticle_Value_Int_UpdateParameters(WMtDialog *inDialog)
 	// read which radio button is selected
 	user_data = (OWtParticle_Value_Data *) WMrDialog_GetUserData(inDialog);
 	active_radio = 0;
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Int_Const);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -2801,7 +2801,7 @@ static void OWiParticle_Value_Int_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_Integer;
 		}
 	}
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Int_Range);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -2810,7 +2810,7 @@ static void OWiParticle_Value_Int_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_IntegerRange;
 		}
 	}
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Int_Variable);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -2821,10 +2821,10 @@ static void OWiParticle_Value_Int_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_Variable;
 		}
 	}
-	
+
 	// is this a different type to the initial one?
 	val_changed = (new_val.type != user_data->valptr->type);
-	
+
 	// read the modified value from whichever field is selected
 	switch(active_radio) {
 	case OWcParticle_Value_Int_Const:
@@ -2837,7 +2837,7 @@ static void OWiParticle_Value_Int_UpdateParameters(WMtDialog *inDialog)
 			val_changed = (new_val.u.integer_const.val != user_data->valptr->u.integer_const.val);
 		}
 		break;
-		
+
 	case OWcParticle_Value_Int_Range:
 		new_val.u.integer_range.val_low = 0;
 		new_val.u.integer_range.val_hi	= 0;
@@ -2984,7 +2984,7 @@ static void OWiParticle_Value_Float_UpdateParameters(WMtDialog *inDialog)
 	// read which radio button is selected
 	user_data = (OWtParticle_Value_Data *) WMrDialog_GetUserData(inDialog);
 	active_radio = 0;
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Float_Const);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -2993,7 +2993,7 @@ static void OWiParticle_Value_Float_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_Float;
 		}
 	}
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Float_Range);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3002,7 +3002,7 @@ static void OWiParticle_Value_Float_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_FloatRange;
 		}
 	}
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Float_Bellcurve);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3011,7 +3011,7 @@ static void OWiParticle_Value_Float_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_FloatBellcurve;
 		}
 	}
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Float_Cycle);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3020,7 +3020,7 @@ static void OWiParticle_Value_Float_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_FloatTimeBased;
 		}
 	}
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Float_Variable);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3031,10 +3031,10 @@ static void OWiParticle_Value_Float_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_Variable;
 		}
 	}
-	
+
 	// is this a different type to the initial one?
 	val_changed = (new_val.type != user_data->valptr->type);
-	
+
 	// read the modified value from whichever field is selected
 	switch(active_radio) {
 	case OWcParticle_Value_Float_Const:
@@ -3048,7 +3048,7 @@ static void OWiParticle_Value_Float_UpdateParameters(WMtDialog *inDialog)
 			val_changed = (fabs(delta_val) > 1e-06f);
 		}
 		break;
-		
+
 	case OWcParticle_Value_Float_Range:
 		new_val.u.float_range.val_low	= 0;
 		new_val.u.float_range.val_hi	= 0;
@@ -3199,7 +3199,7 @@ static void OWiParticle_Value_String_UpdateParameters(WMtDialog *inDialog)
 	// read which radio button is selected
 	user_data = (OWtParticle_Value_Data *) WMrDialog_GetUserData(inDialog);
 	active_radio = 0;
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_String_Const);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3208,7 +3208,7 @@ static void OWiParticle_Value_String_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_String;
 		}
 	}
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_String_Variable);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3219,10 +3219,10 @@ static void OWiParticle_Value_String_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_Variable;
 		}
 	}
-	
+
 	// is this a different type to the initial one?
 	val_changed = (new_val.type != user_data->valptr->type);
-	
+
 	// read the modified value from whichever field is selected
 	switch(active_radio) {
 	case OWcParticle_Value_String_Const:
@@ -3234,7 +3234,7 @@ static void OWiParticle_Value_String_UpdateParameters(WMtDialog *inDialog)
 						user_data->valptr->u.string_const.val);
 		}
 		break;
-		
+
 	case OWcParticle_Value_String_Variable:
 		menu = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_String_VarPopup);
 		UUmAssert(menu != NULL);
@@ -3347,7 +3347,7 @@ static UUtBool OWiParticle_Value_Shade_UpdateParameters(WMtDialog *inDialog, cha
 	// read which radio button is selected
 	user_data = (OWtParticle_Value_Data *) WMrDialog_GetUserData(inDialog);
 	active_radio = 0;
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Shade_Const);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3356,7 +3356,7 @@ static UUtBool OWiParticle_Value_Shade_UpdateParameters(WMtDialog *inDialog, cha
 			new_val.type = P3cValueType_Shade;
 		}
 	}
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Shade_Range);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3365,7 +3365,7 @@ static UUtBool OWiParticle_Value_Shade_UpdateParameters(WMtDialog *inDialog, cha
 			new_val.type = P3cValueType_ShadeRange;
 		}
 	}
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Shade_Bellcurve);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3374,7 +3374,7 @@ static UUtBool OWiParticle_Value_Shade_UpdateParameters(WMtDialog *inDialog, cha
 			new_val.type = P3cValueType_ShadeBellcurve;
 		}
 	}
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Shade_Variable);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3385,10 +3385,10 @@ static UUtBool OWiParticle_Value_Shade_UpdateParameters(WMtDialog *inDialog, cha
 			new_val.type = P3cValueType_Variable;
 		}
 	}
-	
+
 	// is this a different type to the initial one?
 	val_changed = (new_val.type != user_data->valptr->type);
-	
+
 	// read the modified value from whichever field is selected
 	switch(active_radio) {
 	case OWcParticle_Value_Shade_Const:
@@ -3404,7 +3404,7 @@ static UUtBool OWiParticle_Value_Shade_UpdateParameters(WMtDialog *inDialog, cha
 			val_changed = (new_val.u.shade_const.val != user_data->valptr->u.shade_const.val);
 		}
 		break;
-		
+
 	case OWcParticle_Value_Shade_Range:
 		edit_field = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Shade_RangeLow);
 		UUmAssert(edit_field != NULL);
@@ -3552,7 +3552,7 @@ static void OWiParticle_Value_Enum_UpdateParameters(WMtDialog *inDialog)
 	// read which radio button is selected
 	user_data = (OWtParticle_Value_Data *) WMrDialog_GetUserData(inDialog);
 	active_radio = 0;
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Enum_Const);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3561,7 +3561,7 @@ static void OWiParticle_Value_Enum_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_Enum;
 		}
 	}
-	
+
 	radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_Enum_Variable);
 	if (radio_button != NULL) {
 		if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -3572,10 +3572,10 @@ static void OWiParticle_Value_Enum_UpdateParameters(WMtDialog *inDialog)
 			new_val.type = P3cValueType_Variable;
 		}
 	}
-	
+
 	// is this a different type to the initial one?
 	val_changed = (new_val.type != user_data->valptr->type);
-	
+
 	enumtype_index = (UUtUns16) (user_data->enum_info.type >> P3cEnumShift);
 
 	UUmAssert((enumtype_index >= 0) && (enumtype_index < (P3cEnumType_Max >> P3cEnumShift)));
@@ -3598,7 +3598,7 @@ static void OWiParticle_Value_Enum_UpdateParameters(WMtDialog *inDialog)
 			val_changed = (new_val.u.enum_const.val != user_data->valptr->u.enum_const.val);
 		}
 		break;
-		
+
 	case OWcParticle_Value_Enum_Variable:
 		varmenu = WMrDialog_GetItemByID(inDialog, OWcParticle_Value_String_VarPopup);
 		UUmAssert(varmenu != NULL);
@@ -3636,20 +3636,20 @@ OWrParticle_Value_Int_Callback(
 	UUtBool							handled;
 	OWtParticle_Value_Data *		user_data;
 	UUtUns16						active_radio;
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_Value_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiParticle_Value_Int_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -3681,12 +3681,12 @@ OWrParticle_Value_Int_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -3700,20 +3700,20 @@ OWrParticle_Value_Float_Callback(
 	UUtBool							handled;
 	OWtParticle_Value_Data *		user_data;
 	UUtUns16						active_radio;
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_Value_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiParticle_Value_Float_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -3747,12 +3747,12 @@ OWrParticle_Value_Float_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -3766,20 +3766,20 @@ OWrParticle_Value_String_Callback(
 	UUtBool							handled;
 	OWtParticle_Value_Data *		user_data;
 	UUtUns16						active_radio;
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_Value_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiParticle_Value_String_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -3810,12 +3810,12 @@ OWrParticle_Value_String_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -3829,20 +3829,20 @@ OWrParticle_Value_Enum_Callback(
 	UUtBool							handled;
 	OWtParticle_Value_Data *		user_data;
 	UUtUns16						active_radio;
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_Value_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiParticle_Value_Enum_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -3873,12 +3873,12 @@ OWrParticle_Value_Enum_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -3894,20 +3894,20 @@ OWrParticle_Value_Shade_Callback(
 	UUtUns16						active_radio;
 	char							value_error[64];
 	char							errormsg[256];
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_Value_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiParticle_Value_Shade_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -3956,12 +3956,12 @@ OWrParticle_Value_Shade_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -3981,9 +3981,9 @@ OWrParticle_NewVar_Callback(
 	char							typedname[64];
 	char							messageboxstring[128];
 	WMtMenuItemData					item_data;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -3996,14 +3996,14 @@ OWrParticle_NewVar_Callback(
 				item_data.flags = WMcMenuItemFlag_Enabled;
 				item_data.id = P3gEnumTypeInfo[itr].type;
 				strcpy(item_data.title, P3gEnumTypeInfo[itr].name);
-	
+
 				WMrPopupMenu_AppendItem(enum_popup, &item_data);
 			}
 		break;
-		
+
 		case WMcMessage_Destroy:
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -4028,7 +4028,7 @@ OWrParticle_NewVar_Callback(
 						break;
 					}
 					strcpy(user_data->name, typedname);
-				
+
 					// find the selected data type
 					user_data->type = P3cDataType_Integer;
 
@@ -4039,7 +4039,7 @@ OWrParticle_NewVar_Callback(
 							user_data->type = P3cDataType_Integer;
 						}
 					}
-	
+
 					radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_NewVar_Float);
 					if (radio_button != NULL) {
 						if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -4047,7 +4047,7 @@ OWrParticle_NewVar_Callback(
 							user_data->type = P3cDataType_Float;
 						}
 					}
-	
+
 					radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_NewVar_String);
 					if (radio_button != NULL) {
 						if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -4055,7 +4055,7 @@ OWrParticle_NewVar_Callback(
 							user_data->type = P3cDataType_String;
 						}
 					}
-	
+
 					radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_NewVar_Shade);
 					if (radio_button != NULL) {
 						if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -4063,7 +4063,7 @@ OWrParticle_NewVar_Callback(
 							user_data->type = P3cDataType_Shade;
 						}
 					}
-	
+
 					radio_button = WMrDialog_GetItemByID(inDialog, OWcParticle_NewVar_Enum);
 					if (radio_button != NULL) {
 						if (WMrMessage_Send(radio_button, WMcMessage_GetValue,
@@ -4078,7 +4078,7 @@ OWrParticle_NewVar_Callback(
 							user_data->type |= selected_enumtype;
 						}
 					}
-						
+
 					WMrDialog_ModalEnd(inDialog, (UUtUns32) UUcTrue);
 					break;
 
@@ -4097,12 +4097,12 @@ OWrParticle_NewVar_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -4118,10 +4118,10 @@ OWrParticle_RenameVar_Callback(
 	char *			newvar_name;
 	char			messageboxstring[64];
 	WMtWindow *		edit_field;
-	
+
 	handled = UUcTrue;
 	newvar_name = (char *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -4130,10 +4130,10 @@ OWrParticle_RenameVar_Callback(
 			UUmAssert(edit_field != NULL);
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32) newvar_name, 0);
 		break;
-		
+
 		case WMcMessage_Destroy:
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -4160,12 +4160,12 @@ OWrParticle_RenameVar_Callback(
 					break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -4184,10 +4184,10 @@ OWrParticle_Texture_Callback(
 	M3tGeometry *				geomptr;
 	P3tParticleClass *			classptr;
 	UUtError					error;
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_Texture_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -4205,11 +4205,11 @@ OWrParticle_Texture_Callback(
 			UUmAssert(edit_field != NULL);
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32) user_data->texture_name, 0);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -4295,12 +4295,12 @@ OWrParticle_Texture_Callback(
 					break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -4317,10 +4317,10 @@ OWrParticle_Number_Callback(
 	OWtParticle_Number_Data *	user_data;
 	UUtUns16					new_number;
 	float						new_float;
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_Number_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -4343,11 +4343,11 @@ OWrParticle_Number_Callback(
 			}
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32) input_text, 0);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -4413,12 +4413,12 @@ OWrParticle_Number_Callback(
 					break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -4434,9 +4434,9 @@ OWrParticle_NewAction_Callback(
 	WMtMenuItemData					item_data;
 	P3tActionTemplate **			output_template;
 	UUtUns16						itr, act_index;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -4458,15 +4458,15 @@ OWrParticle_NewAction_Callback(
 					item_data.flags = WMcMenuItemFlag_Enabled;
 					item_data.id = itr;
 				}
-	
+
 				WMrPopupMenu_AppendItem(menu, &item_data);
 			}
 			WMrPopupMenu_SetSelection(menu, 0);
 		break;
-		
+
 		case WMcMessage_Destroy:
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -4489,12 +4489,12 @@ OWrParticle_NewAction_Callback(
 					break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -4510,11 +4510,11 @@ OWrParticle_VarRef_Callback(
 	char *							selected_var;
 	UUtUns16						old_offset;
 	WMtWindow *						menu;
-	
+
 	kill_window = UUcFalse;
 	handled = UUcTrue;
 	user_data = (OWtParticle_VarRef_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -4530,12 +4530,12 @@ OWrParticle_VarRef_Callback(
 			// set the title
 			WMrWindow_SetTitle(inDialog, user_data->title, WMcMaxTitleLength);
 		break;
-		
+
 		case WMcMessage_Destroy:
 
 			UUrMemory_Block_Delete(user_data);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -4573,12 +4573,12 @@ OWrParticle_VarRef_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -4594,10 +4594,10 @@ OWrParticle_ActionList_Callback(
 	UUtUns16						orig_val;
 	WMtWindow *						edit_field;
 	char							editstring[64];
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_ActionList_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -4616,10 +4616,10 @@ OWrParticle_ActionList_Callback(
 			// set the title
 			WMrWindow_SetTitle(inDialog, user_data->title, WMcMaxTitleLength);
 		break;
-		
+
 		case WMcMessage_Destroy:
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -4678,12 +4678,12 @@ OWrParticle_ActionList_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -4693,7 +4693,7 @@ void OWrParticle_Value_Sound_Get(SStType inType, OWtParticle_Value_Data *inValUs
 	OWtSelectResult					result;
 
 	UUrString_Copy(name, "", P3cStringVarSize + 1);
-	
+
 	switch(inType)
 	{
 		case SScType_Ambient:
@@ -4737,9 +4737,9 @@ void OWrParticle_Value_Sound_Get(SStType inType, OWtParticle_Value_Data *inValUs
 			break;
 		}
 	}
-	
+
 	inValUserData->valptr->type = P3cValueType_String;
-	
+
 	OWiParticle_NotifyParent(inValUserData->notify_struct.notify_window,
 				(UUtUns32) inValUserData->notify_struct.line_to_notify);
 }
@@ -4776,7 +4776,7 @@ UUtError OWrSave_Particles(UUtBool inAutosave)
 
 		if (!needs_saving)
 			continue;
-		
+
 		// save the particle as a binary file
 		binaryClass = P3rBuildBinaryData(swapbytes, classptr->definition, &binarySize);
 		error = OBDrBinaryData_Save(P3cBinaryDataClass, classptr->classname,
@@ -4822,7 +4822,7 @@ UUtError OWrSave_Particle(P3tParticleClass *inClassPtr)
 	// save the particle as a binary file. note that this is not an autosave
 	// (autosaves save all particles at once)
 	binaryClass = P3rBuildBinaryData(swapbytes, inClassPtr->definition, &binarySize);
-	error = OBDrBinaryData_Save(P3cBinaryDataClass, inClassPtr->classname, 
+	error = OBDrBinaryData_Save(P3cBinaryDataClass, inClassPtr->classname,
 								binaryClass, binarySize, 0, UUcFalse);
 	if (error) {
 		COrConsole_Printf("can't save particle as binary data file");
@@ -4953,7 +4953,7 @@ static void OWiSetup_Listbox_Actions(WMtWindow *inListbox, OWtParticle_Action_Da
 		/*
 		 * write the description into the inListbox
  		 */
-		
+
 		// action's name
 		sprintf(actionstring, "%s", act_template->name);
 		if (can_disable) {
@@ -4963,7 +4963,7 @@ static void OWiSetup_Listbox_Actions(WMtWindow *inListbox, OWtParticle_Action_Da
 
 		WMrMessage_Send(inListbox, LBcMessage_AddString, (UUtUns32) actionstring, 0);
 		listpos++;
-		
+
 		// action's variables
 		for (itr2 = 0; itr2 < act_template->num_variables; itr2++) {
 			if (act->action_var[itr2].name[0] == '\0') {
@@ -4971,13 +4971,13 @@ static void OWiSetup_Listbox_Actions(WMtWindow *inListbox, OWtParticle_Action_Da
 				sprintf(actionstring, "  %s: NONE",
 					act_template->info[itr2].name);
 			} else {
-				sprintf(actionstring, "  %s: %s", 
+				sprintf(actionstring, "  %s: %s",
 					act_template->info[itr2].name, act->action_var[itr2].name);
 			}
 			WMrMessage_Send(inListbox, LBcMessage_AddString, (UUtUns32) actionstring, 0);
 			listpos++;
 		}
-		
+
 		// action's parameters
 		for (itr2 = 0; itr2 < act_template->num_parameters; itr2++) {
 			OWiDescribeValue(inUserData->classptr,
@@ -5017,7 +5017,7 @@ OWrParticle_Actions_Callback(
 	P3tActionList *					actionlist;
 
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -5048,7 +5048,7 @@ OWrParticle_Actions_Callback(
 			// register that we are here and may need to be notified about changes
 			OWiParticle_RegisterOpenWindow(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			// deallocate user data
 			user_data = (OWtParticle_Action_Data *) WMrDialog_GetUserData(inDialog);
@@ -5089,7 +5089,7 @@ OWrParticle_Actions_Callback(
 								act_entry->actiontemplate->num_variables].datatype;
 				OWiDescribeValue(user_data->classptr, datatype, &act->action_value[item_index], tempstring);
 
-				sprintf(actionstring, "  %s: %s", 
+				sprintf(actionstring, "  %s: %s",
 						act_entry->actiontemplate->info[act_entry->actiontemplate->num_variables
 														+ item_index].name, tempstring);
 
@@ -5227,7 +5227,7 @@ OWrParticle_Actions_Callback(
 						val_user_data->classptr = user_data->classptr;
 						val_user_data->valptr = &act->action_value[item_index];
 						val_user_data->variable_allowed = UUcTrue;
-						sprintf(val_user_data->title, "%s: parameter '%s'", 
+						sprintf(val_user_data->title, "%s: parameter '%s'",
 								act_template->name, act_template->info[act_template->num_variables
 																		+ item_index].name);
 
@@ -5255,15 +5255,15 @@ OWrParticle_Actions_Callback(
 							WMrDialog_Create(OWcDialog_Particle_Value_Shade, NULL,
 											OWrParticle_Value_Shade_Callback, (UUtUns32) val_user_data, &dialog);
 							break;
-						
+
 						case P3cDataType_Sound_Ambient:
 							OWrParticle_Value_Sound_Get(SScType_Ambient, val_user_data);
 							break;
-							
+
 						case P3cDataType_Sound_Impulse:
 							OWrParticle_Value_Sound_Get(SScType_Impulse, val_user_data);
 							break;
-						
+
 						default:
 							if (datatype & P3cDataType_Enum) {
 								P3rGetEnumInfo(user_data->classptr, datatype, &val_user_data->enum_info);
@@ -5320,7 +5320,7 @@ OWrParticle_Actions_Callback(
 							UUrMemory_Block_New(sizeof(OWtParticle_VarRef_Data));
 						var_user_data->classptr = user_data->classptr;
 						var_user_data->varptr = &act->action_var[item_index];
-						sprintf(var_user_data->title, "%s: variable '%s'", 
+						sprintf(var_user_data->title, "%s: variable '%s'",
 								act_template->name, act_template->info[item_index].name);
 						var_user_data->allowed_types = act_template->info[item_index].datatype;
 
@@ -5401,7 +5401,7 @@ OWrParticle_Actions_Callback(
 					// swap the actions in the particle class
 					start_index = user_data->classptr->definition->eventlist[user_data->listindex].start_index;
 					P3rSwapTwoActions(user_data->classptr, start_index + act_index - 1, start_index + act_index);
-					
+
 					// re-set up our listbox
 					if (listbox != NULL)
 						OWiSetup_Listbox_Actions(listbox, user_data);
@@ -5438,7 +5438,7 @@ OWrParticle_Actions_Callback(
 					// swap the actions in the particle class
 					start_index = user_data->classptr->definition->eventlist[user_data->listindex].start_index;
 					P3rSwapTwoActions(user_data->classptr, start_index + act_index + 1, start_index + act_index);
-					
+
 					// re-set up our listbox
 					if (listbox != NULL)
 						OWiSetup_Listbox_Actions(listbox, user_data);
@@ -5484,12 +5484,12 @@ OWrParticle_Actions_Callback(
 					break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -5523,7 +5523,7 @@ static void OWiSetup_Listbox_Emitters(WMtWindow *inListbox, OWtParticle_Emitter_
 		/*
 		 * write the description into the inListbox
  		 */
-		
+
 		// first line: particle class, flags, etc
 		sprintf(listbox_line, "#%d: emits '%s' [", itr, emitter->classname);
 
@@ -5655,7 +5655,7 @@ OWrParticle_Emitters_Callback(
 	UUtUns32						modaldialog_message;
 
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -5675,7 +5675,7 @@ OWrParticle_Emitters_Callback(
 			// register that we are here and may need to be notified about changes
 			OWiParticle_RegisterOpenWindow(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			// deallocate allocated array and user data
 			user_data = (OWtParticle_Emitter_Data *) WMrDialog_GetUserData(inDialog);
@@ -5695,7 +5695,7 @@ OWrParticle_Emitters_Callback(
 
 			if (user_data->set_percentage_chance) {
 				UUmAssert(user_data->store_percentage_chance != NULL);
-				*(user_data->store_percentage_chance) = (UUtUns16) 
+				*(user_data->store_percentage_chance) = (UUtUns16)
 					MUrUnsignedSmallFloat_To_Uns_Round(UUcMaxUns16 * user_data->temp_percentage_chance / 100.0f);
 			}
 
@@ -5928,7 +5928,7 @@ OWrParticle_Emitters_Callback(
 								// no changes were made
 								break;
 							}
-	
+
 							// this particle class is now dirty. NB: must be called BEFORE we make any changes.
 							P3rMakeDirty(user_data->classptr, UUcTrue);
 
@@ -5962,9 +5962,9 @@ OWrParticle_Emitters_Callback(
 							val_user_data = (OWtParticle_Value_Data *)
 								UUrMemory_Block_New(sizeof(OWtParticle_Value_Data));
 							val_user_data->classptr = user_data->classptr;
-							val_user_data->valptr = &emitter->emitter_value[offset_index + value_offset];							
+							val_user_data->valptr = &emitter->emitter_value[offset_index + value_offset];
 							val_user_data->variable_allowed = UUcTrue;
-							sprintf(val_user_data->title, "emitter #%d %s (%s): parameter '%s'", 
+							sprintf(val_user_data->title, "emitter #%d %s (%s): parameter '%s'",
 									emitter_index, section_name, class_desc[*current_param].setting_name,
 									class_desc[*current_param].param_desc[offset_index].param_name);
 
@@ -5978,34 +5978,34 @@ OWrParticle_Emitters_Callback(
 								WMrDialog_Create(OWcDialog_Particle_Value_Int, NULL,
 									OWrParticle_Value_Int_Callback, (UUtUns32) val_user_data, &dialog);
 								break;
-								
+
 							case P3cDataType_Float:
 								WMrDialog_Create(OWcDialog_Particle_Value_Float, NULL,
 									OWrParticle_Value_Float_Callback, (UUtUns32) val_user_data, &dialog);
 								break;
-								
+
 							case P3cDataType_String:
 								WMrDialog_Create(OWcDialog_Particle_Value_String, NULL,
 									OWrParticle_Value_String_Callback, (UUtUns32) val_user_data, &dialog);
 								break;
-								
+
 							case P3cDataType_Shade:
 								WMrDialog_Create(OWcDialog_Particle_Value_Shade, NULL,
 									OWrParticle_Value_Shade_Callback, (UUtUns32) val_user_data, &dialog);
 								break;
-						
+
 							case P3cDataType_Sound_Ambient:
 								OWrParticle_Value_Sound_Get(SScType_Ambient, val_user_data);
 								break;
-								
+
 							case P3cDataType_Sound_Impulse:
 								OWrParticle_Value_Sound_Get(SScType_Impulse, val_user_data);
 								break;
-							
+
 							default:
 								if (datatype & P3cDataType_Enum) {
 									P3rGetEnumInfo(user_data->classptr, datatype, &val_user_data->enum_info);
-									
+
 									if (val_user_data->enum_info.not_handled) {
 /*										switch(val_user_data->enum_info.type) {
 											case P3cEnumType_AmbientSoundID:
@@ -6104,12 +6104,12 @@ OWrParticle_Emitters_Callback(
 					break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -6126,10 +6126,10 @@ OWrParticle_EmitterFlags_Callback(
 	OWtParticle_EmitterFlags_Data *		user_data;
 	P3tParticleClass *					new_classptr;
 	UUtUns32							new_flags;
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_EmitterFlags_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -6143,84 +6143,84 @@ OWrParticle_EmitterFlags_Callback(
 			if (checkbox != NULL) {
 				checked = (user_data->emitter->flags & P3cEmitterFlag_InitiallyActive) ? UUcTrue : UUcFalse;
 
-				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);				
+				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);
 			}
 
 			checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_IncreaseCount);
 			if (checkbox != NULL) {
 				checked = (user_data->emitter->flags & P3cEmitterFlag_IncreaseEmitCount) ? UUcTrue : UUcFalse;
 
-				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);				
+				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);
 			}
 
 			checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_OffAtThreshold);
 			if (checkbox != NULL) {
 				checked = (user_data->emitter->flags & P3cEmitterFlag_DeactivateWhenEmitCountThreshold) ? UUcTrue : UUcFalse;
 
-				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);				
+				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);
 			}
 
 			checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_OnAtThreshold);
 			if (checkbox != NULL) {
 				checked = (user_data->emitter->flags & P3cEmitterFlag_ActivateWhenEmitCountThreshold) ? UUcTrue : UUcFalse;
 
-				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);				
+				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);
 			}
 
 			checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_ParentVelocity);
 			if (checkbox != NULL) {
 				checked = (user_data->emitter->flags & P3cEmitterFlag_AddParentVelocity) ? UUcTrue : UUcFalse;
 
-				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);				
+				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);
 			}
 
 			checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_DynamicMatrix);
 			if (checkbox != NULL) {
 				checked = (user_data->emitter->flags & P3cEmitterFlag_SameDynamicMatrix) ? UUcTrue : UUcFalse;
 
-				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);				
+				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);
 			}
 
 			checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_OrientToVelocity);
 			if (checkbox != NULL) {
 				checked = (user_data->emitter->flags & P3cEmitterFlag_OrientToVelocity) ? UUcTrue : UUcFalse;
 
-				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);				
+				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);
 			}
 
 			checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_InheritTint);
 			if (checkbox != NULL) {
 				checked = (user_data->emitter->flags & P3cEmitterFlag_InheritTint) ? UUcTrue : UUcFalse;
 
-				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);				
+				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);
 			}
 
 			checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_OnePerAttractor);
 			if (checkbox != NULL) {
 				checked = (user_data->emitter->flags & P3cEmitterFlag_OnePerAttractor) ? UUcTrue : UUcFalse;
 
-				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);				
+				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);
 			}
 
 			checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_AtLeastOne);
 			if (checkbox != NULL) {
 				checked = (user_data->emitter->flags & P3cEmitterFlag_AtLeastOne) ? UUcTrue : UUcFalse;
 
-				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);				
+				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);
 			}
 
 			checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_RotateAttractors);
 			if (checkbox != NULL) {
 				checked = (user_data->emitter->flags & P3cEmitterFlag_RotateAttractors) ? UUcTrue : UUcFalse;
 
-				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);				
+				WMrMessage_Send(checkbox, CBcMessage_SetCheck, (UUtUns32) checked, (UUtUns32) -1);
 			}
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 		break;
-		
+
 		case WMcMessage_Command:
 			close_window = UUcFalse;
 
@@ -6274,7 +6274,7 @@ OWrParticle_EmitterFlags_Callback(
 						if (checked)
 							new_flags |= P3cEmitterFlag_InitiallyActive;
 					}
-					
+
 					checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_IncreaseCount);
 					if (checkbox != NULL) {
 						checked = (UUtBool) WMrMessage_Send(checkbox, WMcMessage_GetValue,
@@ -6282,7 +6282,7 @@ OWrParticle_EmitterFlags_Callback(
 						if (checked)
 							new_flags |= P3cEmitterFlag_IncreaseEmitCount;
 					}
-					
+
 					checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_OffAtThreshold);
 					if (checkbox != NULL) {
 						checked = (UUtBool) WMrMessage_Send(checkbox, WMcMessage_GetValue,
@@ -6290,7 +6290,7 @@ OWrParticle_EmitterFlags_Callback(
 						if (checked)
 							new_flags |= P3cEmitterFlag_DeactivateWhenEmitCountThreshold;
 					}
-					
+
 					checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_OnAtThreshold);
 					if (checkbox != NULL) {
 						checked = (UUtBool) WMrMessage_Send(checkbox, WMcMessage_GetValue,
@@ -6298,7 +6298,7 @@ OWrParticle_EmitterFlags_Callback(
 						if (checked)
 							new_flags |= P3cEmitterFlag_ActivateWhenEmitCountThreshold;
 					}
-					
+
 					checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_ParentVelocity);
 					if (checkbox != NULL) {
 						checked = (UUtBool) WMrMessage_Send(checkbox, WMcMessage_GetValue,
@@ -6306,7 +6306,7 @@ OWrParticle_EmitterFlags_Callback(
 						if (checked)
 							new_flags |= P3cEmitterFlag_AddParentVelocity;
 					}
-					
+
 					checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_DynamicMatrix);
 					if (checkbox != NULL) {
 						checked = (UUtBool) WMrMessage_Send(checkbox, WMcMessage_GetValue,
@@ -6314,7 +6314,7 @@ OWrParticle_EmitterFlags_Callback(
 						if (checked)
 							new_flags |= P3cEmitterFlag_SameDynamicMatrix;
 					}
-					
+
 					checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_OrientToVelocity);
 					if (checkbox != NULL) {
 						checked = (UUtBool) WMrMessage_Send(checkbox, WMcMessage_GetValue,
@@ -6322,7 +6322,7 @@ OWrParticle_EmitterFlags_Callback(
 						if (checked)
 							new_flags |= P3cEmitterFlag_OrientToVelocity;
 					}
-					
+
 					checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_InheritTint);
 					if (checkbox != NULL) {
 						checked = (UUtBool) WMrMessage_Send(checkbox, WMcMessage_GetValue,
@@ -6330,7 +6330,7 @@ OWrParticle_EmitterFlags_Callback(
 						if (checked)
 							new_flags |= P3cEmitterFlag_InheritTint;
 					}
-					
+
 					checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_OnePerAttractor);
 					if (checkbox != NULL) {
 						checked = (UUtBool) WMrMessage_Send(checkbox, WMcMessage_GetValue,
@@ -6338,7 +6338,7 @@ OWrParticle_EmitterFlags_Callback(
 						if (checked)
 							new_flags |= P3cEmitterFlag_OnePerAttractor;
 					}
-					
+
 					checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_AtLeastOne);
 					if (checkbox != NULL) {
 						checked = (UUtBool) WMrMessage_Send(checkbox, WMcMessage_GetValue,
@@ -6346,7 +6346,7 @@ OWrParticle_EmitterFlags_Callback(
 						if (checked)
 							new_flags |= P3cEmitterFlag_AtLeastOne;
 					}
-					
+
 					checkbox = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterFlags_RotateAttractors);
 					if (checkbox != NULL) {
 						checked = (UUtBool) WMrMessage_Send(checkbox, WMcMessage_GetValue,
@@ -6354,7 +6354,7 @@ OWrParticle_EmitterFlags_Callback(
 						if (checked)
 							new_flags |= P3cEmitterFlag_RotateAttractors;
 					}
-					
+
 					// do we need to update the emitter?
 					if (new_flags != user_data->emitter->flags) {
 						if (!has_changed) {
@@ -6380,12 +6380,12 @@ OWrParticle_EmitterFlags_Callback(
 					break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -6403,10 +6403,10 @@ OWrParticle_LinkType_Callback(
 	OWtParticle_LinkType_Data *	user_data;
 	UUtUns32					itr;
 	UUtUns16					new_linktype;
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_LinkType_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -6435,13 +6435,13 @@ OWrParticle_LinkType_Callback(
 				}
 			}
 
-			WMrPopupMenu_SetSelection(menu, (UUtUns16) user_data->emitter->link_type);			
+			WMrPopupMenu_SetSelection(menu, (UUtUns16) user_data->emitter->link_type);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -6475,12 +6475,12 @@ OWrParticle_LinkType_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -6499,10 +6499,10 @@ OWrParticle_EmitterChoice_Callback(
 	char								tempstring[64];
 	UUtUns16							itr, selected_id;
 	WMtMenuItemData						item_data;
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_EmitterChoice_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -6510,7 +6510,7 @@ OWrParticle_EmitterChoice_Callback(
 			sprintf(tempstring, "Set Emitter #%d %s",
 						(user_data->emitter - user_data->classptr->definition->emitter), user_data->classname);
 			WMrWindow_SetTitle(inDialog, tempstring, WMcMaxTitleLength);
-			
+
 			// set up the static text item
 			text_field = WMrDialog_GetItemByID(inDialog, OWcParticle_EmitterChoice_Text);
 			if (text_field != NULL) {
@@ -6536,13 +6536,13 @@ OWrParticle_EmitterChoice_Callback(
 				}
 			}
 
-			WMrPopupMenu_SetSelection(menu, (UUtUns16) user_data->current_choice);			
+			WMrPopupMenu_SetSelection(menu, (UUtUns16) user_data->current_choice);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -6562,12 +6562,12 @@ OWrParticle_EmitterChoice_Callback(
 					break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -6586,10 +6586,10 @@ OWrParticle_EventList_Callback(
 	char							title[64];
 	UUtUns16						itr, num_actions;
 	P3tActionList *					actionlist;
-	
+
 	handled = UUcTrue;
 	user_data = (OWtParticle_Edit_Data *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -6622,14 +6622,14 @@ OWrParticle_EventList_Callback(
 			// register that we are here and may need to be notified about changes
 			OWiParticle_RegisterOpenWindow(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			UUrMemory_Block_Delete(user_data);
 
 			// register that we are going away and shouldn't be notified about any further changes
 			OWiParticle_RegisterCloseWindow(inDialog);
 		break;
-		
+
 		case OWcMessage_Particle_UpdateList:
 			// set the event description text for whichever event has been updated
 			text = WMrDialog_GetItemByID(inDialog, OWcParticle_EventList_DescBase + (UUtUns16) inParam1);
@@ -6671,12 +6671,12 @@ OWrParticle_EventList_Callback(
 
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -6690,10 +6690,10 @@ OWrParticle_ClassName_Callback(
 	UUtBool						handled;
 	char						errormsg[256], *classname;
 	WMtWindow *					edit_field;
-	
+
 	handled = UUcTrue;
 	classname = (char *) WMrDialog_GetUserData(inDialog);
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -6702,11 +6702,11 @@ OWrParticle_ClassName_Callback(
 			UUmAssert(edit_field != NULL);
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32) classname, 0);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			// nothing to delete
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -6741,18 +6741,18 @@ OWrParticle_ClassName_Callback(
 					break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
 
 //================================================================================================================
-// decal textures 
+// decal textures
 //================================================================================================================
 
 static char			*OWgParticle_DecalTexture_Name;
@@ -6764,38 +6764,38 @@ static UUtError OWrParticle_DecalTextures_InitDialog( WMtDialog *inDialog )
 	UUtError					error;
 	UUtUns32					i;
 	WMtWindow					*listbox;
-	
+
 	// get the number of textures
 	num_textures = TMrInstance_GetTagCount(M3cTemplate_TextureMap);
 	if (num_textures == 0) { return UUcError_Generic; }
-	
+
 	// allocate memory to hold the list of textures
 	texture_list = (M3tTextureMap**)UUrMemory_Block_New(sizeof(M3tTextureMap*) * num_textures);
 	if (texture_list == NULL) { return UUcError_Generic; }
-	
+
 	OWgParticle_DecalTexture_Name = (char*) WMrDialog_GetUserData(inDialog);
 
 	UUmAssert( OWgParticle_DecalTexture_Name );
 
 	WMrDialog_SetUserData(inDialog, (UUtUns32)texture_list);
-	
+
 	// get a list of the textures
 	error = TMrInstance_GetDataPtr_List( M3cTemplate_TextureMap, num_textures, &num_textures, texture_list );
 	UUmError_ReturnOnError(error);
-	
+
 	// put the textures into the listbox
 	listbox = WMrDialog_GetItemByID(inDialog, OWcParticle_Decal_Textures);
 	for (i = 0; i < num_textures; i++)
 	{
 		WMrMessage_Send(listbox, LBcMessage_AddString, i, 0);
 	}
-	
+
 	// select the first item in the list
 	WMrListBox_SetSelection(listbox, UUcTrue, 0);
-	
+
 	// set the focus
 	WMrWindow_SetFocus(listbox);
-	
+
 	return UUcError_None;
 }
 
@@ -6803,9 +6803,9 @@ static UUtError OWrParticle_DecalTextures_InitDialog( WMtDialog *inDialog )
 static void OWrParticle_DecalTextures_Destroy( WMtDialog *inDialog )
 {
 	M3tTextureMap				**texture_list;
-	
+
 	texture_list = (M3tTextureMap**)WMrDialog_GetUserData(inDialog);
-	
+
 	// delete the texture list
 	UUrMemory_Block_Delete(texture_list);
 	texture_list = NULL;
@@ -6821,14 +6821,14 @@ static UUtError OWrParticle_DecalTextures_HandleCommand( WMtDialog *inDialog, UU
 			M3tTextureMap		**texture_list;
 			UUtUns32			index;
 			M3tTextureMap		*texture;
-			
+
 			if (UUmHighWord(inParam1) != LBcNotify_SelectionChanged) { break; }
-			
+
 			// get a pointer to the texture
 			texture_list	= (M3tTextureMap**)WMrDialog_GetUserData(inDialog);
 			index			= WMrListBox_GetSelection(inControl);
 			texture			= texture_list[index];
-			
+
 			WMrPicture_SetPicture(WMrDialog_GetItemByID(inDialog, OWcParticle_Decal_Picture),texture);
 		}
 		break;
@@ -6844,7 +6844,7 @@ static UUtError OWrParticle_DecalTextures_HandleCommand( WMtDialog *inDialog, UU
 				char				class_name[256];
 				char				texture_name[256];
 				UUtUns32			modalreturn;
-				
+
 				listbox			= WMrDialog_GetItemByID(inDialog, OWcParticle_Decal_Textures);
 				texture_list	= (M3tTextureMap**)WMrDialog_GetUserData(inDialog);
 				index			= WMrListBox_GetSelection(listbox);
@@ -6856,14 +6856,14 @@ static UUtError OWrParticle_DecalTextures_HandleCommand( WMtDialog *inDialog, UU
 
 				if( strlen(class_name) > P3cStringVarSize )
 					class_name[P3cStringVarSize+1] = 0;
-				
-				WMrDialog_ModalBegin(OWcDialog_Particle_ClassName, inDialog, OWrParticle_ClassName_Callback, (UUtUns32) class_name, &modalreturn );			
-				if( (UUtBool) modalreturn == UUcTrue ) 
+
+				WMrDialog_ModalBegin(OWcDialog_Particle_ClassName, inDialog, OWrParticle_ClassName_Callback, (UUtUns32) class_name, &modalreturn );
+				if( (UUtBool) modalreturn == UUcTrue )
 				{
 					new_class = P3rNewParticleClass(class_name,UUcTrue);
 
 					UUmAssert( new_class );
-					
+
 					if( new_class )
 					{
 						new_class->definition->flags								|= P3cParticleClassFlag_HasDecalData | P3cParticleClassFlag_Decorative;
@@ -6888,11 +6888,11 @@ static UUtError OWrParticle_DecalTextures_HandleCommand( WMtDialog *inDialog, UU
 				// otherwise fall through to cancel....
 			}
 		case OWcParticle_Decal_Cancel:
-			OWgParticle_DecalTexture_Name[0]	= 0;					
+			OWgParticle_DecalTexture_Name[0]	= 0;
 			WMrDialog_ModalEnd(inDialog, 0);
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -6903,13 +6903,13 @@ static UUtError OWrParticle_DecalTextures_HandleMenuCommand( WMtDialog *inDialog
 	M3tTextureMap				**texture_list;
 	UUtUns32					index;
 	M3tTextureMap				*texture;
-	
+
 	// get a pointer to the texture
 	listbox			= WMrDialog_GetItemByID(inDialog, OWcParticle_Decal_Textures);
 	texture_list	= (M3tTextureMap**)WMrDialog_GetUserData(inDialog);
 	index			= WMrListBox_GetSelection(listbox);
 	texture			= texture_list[index];
-	
+
 	// set the focus
 	WMrWindow_SetFocus(listbox);
 
@@ -6925,20 +6925,20 @@ static void OWrParticle_DecalTextures_HandleDrawItem( WMtDialog *inDialog, WMtDr
 	UUtInt16					line_height;
 	M3tTextureMap				**texture_list;
 	M3tTextureMap				*texture;
-	
+
 	texture_list = (M3tTextureMap**)WMrDialog_GetUserData(inDialog);
 	UUmAssert(texture_list);
-	
+
 	// set the dest
 	dest.x = inDrawItem->rect.left;
 	dest.y = inDrawItem->rect.top;
-	
+
 	// calc the width and height of the line
 	line_width	= inDrawItem->rect.right  - inDrawItem->rect.left;
 	line_height = inDrawItem->rect.bottom - inDrawItem->rect.top;
-		
+
 	dest.x = 5;
-	
+
 	// draw the texture name
 	texture = texture_list[inDrawItem->data];
 
@@ -6950,36 +6950,36 @@ static void OWrParticle_DecalTextures_HandleDrawItem( WMtDialog *inDialog, WMtDr
 static UUtBool OWrParticle_DecalTextures_Callback( WMtDialog *inDialog, WMtMessage inMessage, UUtUns32 inParam1, UUtUns32 inParam2)
 {
 	UUtBool						handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWrParticle_DecalTextures_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			OWrParticle_DecalTextures_Destroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			OWrParticle_DecalTextures_HandleCommand(inDialog, inParam1, (WMtWindow*)inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWrParticle_DecalTextures_HandleMenuCommand(inDialog, (WMtWindow*)inParam2, UUmLowWord(inParam1));
 		break;
-		
+
 		case WMcMessage_DrawItem:
 			OWrParticle_DecalTextures_HandleDrawItem(inDialog, (WMtDrawItem*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 

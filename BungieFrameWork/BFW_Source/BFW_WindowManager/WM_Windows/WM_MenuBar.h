@@ -32,12 +32,12 @@ typedef tm_template('W', 'M', 'M', 'B', "WM Menu Bar")
 WMtMenuBarData
 {
 	tm_pad								pad[18];
-	
+
 	UUtUns16							id;
-	
+
 	tm_varindex UUtUns32				num_menus;
 	tm_vararray WMtMenuData				*menus[1];
-	
+
 } WMtMenuBarData;
 
 // ======================================================================
@@ -52,12 +52,12 @@ WMtMenuBar*
 WMrMenuBar_Create(
 	WMtWindow				*inParent,
 	char					*inMenuBarName);
-	
+
 WMtMenu*
 WMrMenuBar_GetMenu(
 	WMtMenuBar				*inMenuBar,
 	UUtUns16				inMenuID);
-	
+
 UUtError
 WMrMenuBar_Initialize(
 	void);

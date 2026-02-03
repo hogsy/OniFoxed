@@ -24,23 +24,23 @@ typedef UUtBool
 typedef tm_template('V', 'M', 'T', 'B', "VM View Tab")
 VMtView_Tab
 {
-	
+
 	VMtPartSpec			*tab_button;
 	VMtPartSpec			*outline;
-	
+
 } VMtView_Tab;
 
 typedef struct VMtView_Tab_PrivateData
 {
 	VMtView					*focused_view;
 	VMtTabCallback			tab_callback;
-	
+
 	IMtPoint2D				outline_location;
 	UUtUns16				outline_width;
 	UUtUns16				outline_height;
-	
+
 	IMtPoint2D				tab_button_location;
-	
+
 } VMtView_Tab_PrivateData;
 
 extern TMtPrivateData*	DMgTemplate_Tab_PrivateData;
@@ -52,14 +52,14 @@ UUtBool
 VMrView_Tab_SetTabCallback(
 	VMtView				*inView,
 	VMtTabCallback		inTabCallback);
-	
+
 UUtUns32
 VMrView_Tab_Callback(
 	VMtView				*inView,
 	VMtMessage			inMessage,
 	UUtUns32			inParam1,
 	UUtUns32			inParam2);
-	
+
 UUtError
 VMrView_Tab_ProcHandler(
 	TMtTemplateProc_Message	inMessage,

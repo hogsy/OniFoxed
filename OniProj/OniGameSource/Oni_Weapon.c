@@ -1,11 +1,11 @@
 /*	FILE:	Oni_Weapon.c
-	
+
 	AUTHOR:	Quinn Dunki, Michael Evans, Chris Butcher
-	
+
 	CREATED: April 2, 1999
-	
+
 	PURPOSE: control of weapons in ONI
-	
+
 	Copyright 1998, 2000
 
 */
@@ -80,7 +80,7 @@ struct WPtWeapon
 	UUtUns16			fadeTime;
 	UUtUns16			freeTime;
 	UUtUns32			birthDate;
-	
+
 	// state variables
 	UUtUns16			chamber_time;
 	UUtUns16			chamber_time_total;
@@ -144,7 +144,7 @@ WPiCommand_GivePowerup(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue);
 
 static void WPrPowerup_AddPhysics(
@@ -186,7 +186,7 @@ static void FaceKnockdown(ONtCharacter *ioCharacter, M3tVector3D *inDirection, T
 	return;
 }
 
-static UUtBool InflictDamage(ONtCharacter *inCharacter, float inRadius, M3tPoint3D *inHitPoint, M3tVector3D *inDirection, 
+static UUtBool InflictDamage(ONtCharacter *inCharacter, float inRadius, M3tPoint3D *inHitPoint, M3tVector3D *inDirection,
 						  P3tEnumDamageType inDamageType, UUtUns32 inDamage, UUtUns32 inStun, float inKnockback,
 						  P3tParticleReference inParticleRef, UUtUns32 inOwner)
 {
@@ -200,7 +200,7 @@ static UUtBool InflictDamage(ONtCharacter *inCharacter, float inRadius, M3tPoint
 
 		return UUcFalse;
 	}
-	
+
 	if (inParticleRef != P3cParticleReference_Null) {
 		if (active_character->lastParticleDamageRef == inParticleRef) {
 			// this particle cannot collide twice with the same character,
@@ -222,7 +222,7 @@ static UUtBool InflictDamage(ONtCharacter *inCharacter, float inRadius, M3tPoint
 		// this character is totally immune to weapon damage
 	}
 	else if (inCharacter->inventory.shieldRemaining > 0) {
-		if (inCharacter->inventory.shieldRemaining >= inDamage) {	
+		if (inCharacter->inventory.shieldRemaining >= inDamage) {
 			inCharacter->inventory.shieldRemaining -= (UUtUns16) inDamage;
 		}
 		else {
@@ -377,7 +377,7 @@ UUtBool WPrHitChar(void *inHitChar, M3tPoint3D *inHitPoint, M3tVector3D *inDirec
 	}
 
 
-	UUmAssert((character >= ONgGameState->characters) && 
+	UUmAssert((character >= ONgGameState->characters) &&
 			  (character < &ONgGameState->characters[ONgGameState->numCharacters]));
 
 	MUmVector_Copy(hit_dir, *inDirection);
@@ -386,7 +386,7 @@ UUtBool WPrHitChar(void *inHitChar, M3tPoint3D *inHitPoint, M3tVector3D *inDirec
 		ONrCharacter_GetPelvisPosition(character, &pelvis_pt);
 		MUmVector_Subtract(hit_dir, pelvis_pt, *inHitPoint);
 		if (MUrVector_Normalize_ZeroTest(&hit_dir)) {
-			// we have been hit exactly at our pelvis, no hit direction is available - 
+			// we have been hit exactly at our pelvis, no hit direction is available -
 			// build a hit direction from our front
 			MUmVector_Set(hit_dir, -MUrSin(character->facing), 0, -MUrCos(character->facing));
 		}
@@ -453,12 +453,12 @@ void WPrBlast(M3tPoint3D *inLocation, P3tEnumDamageType inDamageType, float inDa
 				continue;
 			}
 
-			switch(inFalloffType) 
+			switch(inFalloffType)
 			{
 				case P3cEnumFalloff_None:
 					percent_effect = 1.0f;
 				break;
-					
+
 				case P3cEnumFalloff_Linear:
 					percent_effect = 1.0f - distance;
 				break;
@@ -471,7 +471,7 @@ void WPrBlast(M3tPoint3D *inLocation, P3tEnumDamageType inDamageType, float inDa
 				default:
 					percent_effect = 1.0f;
 			}
-			
+
 			MUrNormalize(&blast_vector);
 
 			damage_integer = MUrUnsignedSmallFloat_To_Uns_Round(percent_effect * inDamage);
@@ -550,7 +550,7 @@ static void WPiWeaponPhysics_PostCollision_Callback(
 	PHtCollider *collider;
 	PHtPhysicsContext *otherContext = NULL;
 	WPtWeapon *weapon = (WPtWeapon *)ioContext->callbackData;
-	
+
 	UUmAssert(ioContext->callback->type == PHcCallback_Weapon);
 	UUmAssert(ioContext->flags & PHcFlags_Physics_InUse);
 	UUmAssert(!ioContext->sphereTree->child);
@@ -559,13 +559,13 @@ static void WPiWeaponPhysics_PostCollision_Callback(
 	for (i=0; i<*ioNumColliders; i++)
 	{
 		collider = ioColliders + i;
-	
+
 		// Determine what we hit
 		switch (collider->type)
 		{
 			case PHcCollider_Env:
-				if ((float)fabs(ioContext->velocity.x * collider->plane.a + 
-							ioContext->velocity.y * collider->plane.b + 
+				if ((float)fabs(ioContext->velocity.x * collider->plane.a +
+							ioContext->velocity.y * collider->plane.b +
 							ioContext->velocity.z * collider->plane.c) > WPcImpact_MinVelocity) {
 					WPiGenerateFallImpact(collider, WPgWeaponImpactType);
 				}
@@ -635,7 +635,7 @@ static void WPiPowerupPhysics_PostCollision_Callback(
 	PHtCollider *collider;
 	PHtPhysicsContext *otherContext = NULL;
 	WPtPowerup *powerup = (WPtPowerup *)ioContext->callbackData;
-	
+
 	UUmAssert(ioContext->callback->type == PHcCallback_Powerup);
 	UUmAssert(ioContext->flags & PHcFlags_Physics_InUse);
 	UUmAssert(!ioContext->sphereTree->child);
@@ -657,8 +657,8 @@ static void WPiPowerupPhysics_PostCollision_Callback(
 
 		} else if (collider->type == PHcCollider_Env) {
 			if ((!played_impact) &&
-				((float)fabs(ioContext->velocity.x * collider->plane.a + 
-				 		ioContext->velocity.y * collider->plane.b + 
+				((float)fabs(ioContext->velocity.x * collider->plane.a +
+				 		ioContext->velocity.y * collider->plane.b +
 				 		ioContext->velocity.z * collider->plane.c) > WPcImpact_MinVelocity)) {
 				WPiGenerateFallImpact(collider, WPgPowerupImpactType);
 				played_impact = UUcTrue;
@@ -682,7 +682,7 @@ UUtError WPrRegisterTemplates(
 
 	error = TMrTemplate_Register(WPcTemplate_WeaponClass, sizeof(WPtWeaponClass), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -786,7 +786,7 @@ static void WPiWeaponPhysics_Callback_ReceiveForce(
 	}
 
 	PHrPhysics_Accelerate(ioContext, inForce);
-	
+
 	return;
 }
 
@@ -817,7 +817,7 @@ static void WPiFindParticleClasses(WPtWeaponClass *inClass)
 	for (itr = 0, attachment = inClass->attachment; itr < inClass->attachment_count; itr++, attachment++) {
 		attachment->classptr = P3rGetParticleClass(attachment->classname);
 	}
-	
+
 	inClass->flags |= WPcWeaponClassFlag_ParticlesFound;
 }
 
@@ -850,7 +850,7 @@ static void WPiNewParticles(WPtWeaponClass *inClass, WPtWeapon *ioWeapon)
 			ioWeapon->particle_ref[itr] = P3cParticleReference_Null;
 			continue;
 		}
-		
+
 		particle = P3rCreateParticle(attachment->classptr, creation_time);
 		if (particle == NULL) {
 			ioWeapon->particle[itr] = NULL;
@@ -1024,7 +1024,7 @@ static void WPiInit(
 	{
 		static UUtBool once = UUcTrue;
 
-		if (once) { 
+		if (once) {
 			WPrSetupCallbacks();
 
 			once = UUcFalse;
@@ -1108,7 +1108,7 @@ static WPtWeapon *WPiFindOldest(
 	for (i=0; i<WPcMaxWeapons; i++)
 	{
 		weapon = WPgWeapons + i;
-		
+
 		if (!inCountUsed && (weapon->flags & WPcWeaponFlag_InUse)) { continue; }
 		if (weapon->flags & WPcWeaponFlag_Untouchable) continue;
 
@@ -1165,7 +1165,7 @@ WPrGetPosition(
 	*outPosition = MUrMatrix_GetTranslation(&inWeapon->matrix);
 
 	return;
-}	
+}
 
 void
 WPrGetPickupPosition(
@@ -1179,7 +1179,7 @@ WPrGetPickupPosition(
 	MUmVector_Add(*outPosition, inWeapon->weaponClass->pickup_offset, MUrMatrix_GetTranslation(&inWeapon->matrix));
 
 	return;
-}	
+}
 
 M3tGeometry*
 WPrGetGeometry(
@@ -1202,12 +1202,12 @@ WPrInUse(
 	const WPtWeapon			*inWeapon)
 {
 	UUtBool					result = UUcFalse;
-	
+
 	if (inWeapon)
 	{
 		result = ((inWeapon->flags & WPcWeaponFlag_InUse) != 0);
 	}
-	
+
 	return result;
 }
 
@@ -1238,7 +1238,7 @@ WPtWeapon *WPrNew(WPtWeaponClass *inClass, WPtPlacedWeapon inPlacedWeapon)
 	}
 
 	WPiInit(inClass, weapon, inPlacedWeapon);
-	
+
 	return weapon;
 }
 
@@ -1267,12 +1267,12 @@ void WPrDelete(
 	/*****************
 	* Deletes a weapon
 	*/
-	
+
 	UUtUns16 itr;
 	P3tParticleClass *this_class;
 
 	if ((inWeapon->flags & WPcWeaponFlag_InUse) == 0) { return; }
-	
+
 	// shut down the weapon
 	WPrReleaseTrigger(inWeapon, UUcTrue);
 	WPrStopChamberDelay(inWeapon);
@@ -1287,13 +1287,13 @@ void WPrDelete(
 			}
 		}
 	}
-	
+
 	// release the physics context
 	if (inWeapon->physics) {
 		PHrPhysicsContext_Remove(inWeapon->physics);
 		inWeapon->physics = NULL;
 	}
-	
+
 	// tell the AI that we've stopped firing
 	if (inWeapon->ai_firingspread_index != (UUtUns32) -1) {
 		AI2rKnowledge_DeleteDodgeFiringSpread(inWeapon->ai_firingspread_index);
@@ -1392,7 +1392,7 @@ static void WPiUpdate(WPtWeapon *ioWeapon)
 			if (matrixptr == NULL) {
 				MUrMatrix_SetTranslation(&ioWeapon->matrix, &ioWeapon->owner->actual_position);
 				ioWeapon->matrix.m[3][1] += ioWeapon->owner->heightThisFrame;
-			} 
+			}
 			else {
 				ioWeapon->matrix = *matrixptr;
 			}
@@ -1573,11 +1573,11 @@ void WPrDisplay(
 	M3tPoint3D glow_center;
 	UUtUns32 alpha_i;
 	UUtBool is_visible;
-	M3tMatrix4x3 weapon_matrix;	
+	M3tMatrix4x3 weapon_matrix;
 	M3tBoundingBox_MinMax bbox;
 
 	M3rGeom_State_Push();
-			
+
 	// powerup glow sprite alpha is unsorted
 	M3rGeom_State_Set(M3cGeomStateIntType_SubmitMode, M3cGeomState_SubmitMode_Normal);
 	M3rGeom_State_Set(M3cGeomStateIntType_SpriteMode, M3cGeomState_SpriteMode_Flat);
@@ -1591,7 +1591,7 @@ void WPrDisplay(
 		if (!(weapon->flags & WPcWeaponFlag_InUse)) continue;
 
 		UUmAssert(weaponClass->geometry);
-	
+
 		// Note: owned weapons are displayed as an extra body part
 		if (!weapon->owner)
 		{
@@ -1635,10 +1635,10 @@ void WPrDisplay(
 					AKrEnvironment_NodeList_Get(&bbox, WPcWeaponNodeCount, weapon->oct_tree_node_index, 0);
 					weapon->last_position= center;
 				}
-		
+
 				is_visible= AKrEnvironment_NodeList_Visible(weapon->oct_tree_node_index);
 			}
-	
+
 			if (is_visible) {
 				M3rGeom_State_Push();
 
@@ -1763,7 +1763,7 @@ static void WPiPulseShooter(WPtWeapon *inWeapon, UUtUns16 inIndex, WPtParticleAt
 
 	// pulse all particles attached to this shooter
 	WPrSendEvent(inWeapon, P3cEvent_Pulse, inShooter->shooter_index);
-	
+
 	// this is the shooter and it's being started - i.e. the weapon is actually firing.
 	if ((owner->flags & ONcCharacterFlag_InfiniteAmmo) == 0) {
 		// use ammo
@@ -1796,18 +1796,18 @@ static void WPiPulseShooter(WPtWeapon *inWeapon, UUtUns16 inIndex, WPtParticleAt
 		TRtAnimType recoil_anim_type = inWeapon->weaponClass->recoilAnimType;
 		const WPtRecoil *recoil_info = WPrClass_GetRecoilInfo(inWeapon->weaponClass);
 		const TRtAnimation *recoil;
-	
+
 		recoil =
 			TRrCollection_Lookup(
-			owner->characterClass->animations, 
-			recoil_anim_type, 
-			ONcAnimState_Anything, 
+			owner->characterClass->animations,
+			recoil_anim_type,
+			ONcAnimState_Anything,
 			active_character->animVarient);
-		
+
 		if (NULL != recoil) {
 			ONrOverlay_Set(active_character->overlay + ONcOverlayIndex_Recoil, recoil, 0);
 		}
-		
+
 		recoil_amount = recoil_info->base;
 		if (WPgGatlingCheat && (owner->charType == ONcChar_Player)) {
 			recoil_amount = (recoil_amount * inShooter->cheat_chamber_time) / inShooter->chamber_time;
@@ -1823,7 +1823,7 @@ static void WPiPulseShooter(WPtWeapon *inWeapon, UUtUns16 inIndex, WPtParticleAt
 
 			recoil_amount *= (1.0f - shooting_skill->recoil_compensation);
 		}
-			
+
 		owner->recoilSpeed += recoil_amount;
 	}
 
@@ -2072,14 +2072,14 @@ void WPrReleaseTrigger(WPtWeapon *ioWeapon, UUtBool inForceImmediate)
 			return;
 		}
 
-		if ((ioWeapon->weaponClass->flags & WPcWeaponClassFlag_DontStopWhileFiring) && 
+		if ((ioWeapon->weaponClass->flags & WPcWeaponClassFlag_DontStopWhileFiring) &&
 			(ioWeapon->chamber_time > ioWeapon->weaponClass->stopChamberThreshold)) {
 			// delay the release of the trigger until the chamber time is finished
 			ioWeapon->flags |= WPcWeaponFlag_DelayRelease;
 			return;
 		}
 	}
-	
+
 	// stop firing
 	ioWeapon->flags &= ~WPcWeaponFlag_DelayRelease;
 	ioWeapon->must_fire_time = 0;
@@ -2130,9 +2130,9 @@ void WPrAssign(
 	/**************
 	* Assigns a weapon to a character
 	*/
-	
+
 	if ((inWeapon->flags & WPcWeaponFlag_InUse) == 0) { return; }
-	
+
 	// Assign owner
 	inWeapon->owner = inOwner;
 	inWeapon->reloadTime = 0;
@@ -2146,7 +2146,7 @@ void WPrAssign(
 	// Setup timers
 	inWeapon->freeTime = 0;
 	inWeapon->fadeTime = 0;
-	
+
 	inWeapon->flags |= WPcWeaponFlag_InHand;
 
 	// don't go inactive, since we have been picked up
@@ -2268,7 +2268,7 @@ void WPrGetMarker(
 
 	MUmVector_Add(worldMuzzle[1], inMarker->position, inMarker->vector);
 	worldMuzzle[0] = inMarker->position;
-	
+
 	MUrMatrix_MultiplyPoints(2, (M3tMatrix4x3 *)&inWeapon->matrix, worldMuzzle, worldMuzzle);
 
 	// velocity and position
@@ -2348,13 +2348,13 @@ WPiCreateWeapon_Callback(
 	UUtError				error;
 	OBJtOSD_Weapon			*weapon_osd;
 	WPtWeaponClass			*weapon_class;
-	
+
 	weapon_osd = (OBJtOSD_Weapon*)inObject->object_data;
 
 	error =
 		TMrInstance_GetDataPtr(
 			WPcTemplate_WeaponClass,
-			weapon_osd->weapon_class_name, 
+			weapon_osd->weapon_class_name,
 			&weapon_class);
 	if (error == UUcError_None)
 	{
@@ -2368,7 +2368,7 @@ WPiCreateWeapon_Callback(
 		WPrSetPosition(weapon, &position, inObject->rotation.x * M3cDegToRad);
 		weapon->flags |= WPcWeaponFlag_Object;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -2381,7 +2381,7 @@ WPiCreateWeaponsFromObjects(
 		WPiCreateWeapon_Callback,
 		0);
 }
-	
+
 static UUtError
 WPiWeapons_Reset(
 	SLtErrorContext*		inErrorContext,
@@ -2393,13 +2393,13 @@ WPiWeapons_Reset(
 {
 	WPtWeapon				*weapon;
 	UUtUns32				itr;
-	
+
 	// delete the unheld weapons currently in use
 	for (itr = 0, weapon = WPgWeapons; itr < WPcMaxWeapons; itr++, weapon++)
 	{
 		if ((weapon->flags & WPcWeaponFlag_InUse) == 0) { continue; }
 		if (weapon->owner != NULL) { continue; }
-		
+
 		// delete the weapon
 		WPrDelete(weapon);
 	}
@@ -2422,13 +2422,13 @@ WPiCreatePowerup_Callback(
 
 	if (powerup_osd->powerup != NULL) {
 		powerup_osd->powerup->flags |= WPcPowerupFlag_PlacedAsObject;
-		
+
 		if (powerup_osd->powerup->geometry != NULL) {
 			// don't create powerups embedded in floor
 			powerup_osd->powerup->position.y -= powerup_osd->powerup->geometry->pointArray->minmax_boundingBox.minPoint.y;
 		}
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -2453,7 +2453,7 @@ WPiPowerups_Reset(
 {
 	WPtPowerup				*powerup;
 	UUtUns32				itr;
-	
+
 	// delete all powerups... note that we must do this from the end of the array
 	// because the delete operation moves the last powerup up to fill the hole made by
 	// deleting one
@@ -2461,9 +2461,9 @@ WPiPowerups_Reset(
 		// delete the powerup
 		WPrPowerup_Delete(powerup);
 	}
-	
+
 	WPiCreatePowerupsFromObjects();
-	
+
 	return UUcError_None;
 }
 
@@ -2487,10 +2487,10 @@ UUtError WPrInitialize(
 	error = SLrGlobalVariable_Register_Float("recoil_max", "max", &WPgRecoil_Edited.max);
 	error = SLrGlobalVariable_Register_Float("recoil_factor", "factor", &WPgRecoil_Edited.factor);
 	error = SLrGlobalVariable_Register_Float("recoil_return_speed", "return speed", &WPgRecoil_Edited.returnSpeed);
-	
+
 	error = SLrGlobalVariable_Register_Int32("wp_hypostrength", "Sets strength of hypo spray", &WPgHypoStrength);
 	UUmError_ReturnOnError(error);
-	
+
 	error = SLrGlobalVariable_Register_Int32("wp_fadetime", "Sets free time for powerups", &WPgFadeTime);
 	UUmError_ReturnOnError(error);
 #endif
@@ -2502,16 +2502,16 @@ UUtError WPrInitialize(
 	error = SLrGlobalVariable_Register_Bool("wp_disable_fade", "Disables weapon fading", &WPgDisableFade);
 	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 	SLrScript_Command_Register_Void(
 		"give_powerup",
 		"Gives a powerup to a character",
 		"powerup_name:string [amount:int | ] [character:int | ]",
 		WPiCommand_GivePowerup);
-	UUmError_ReturnOnError(error);	
+	UUmError_ReturnOnError(error);
 
 #if CONSOLE_DEBUGGING_COMMANDS
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"weapon_reset",
 			"resets all unheld weapons to their starting state",
@@ -2519,7 +2519,7 @@ UUtError WPrInitialize(
 			WPiWeapons_Reset);
 	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"powerup_reset",
 			"resets all placed powerups to their starting points",
@@ -2530,12 +2530,12 @@ UUtError WPrInitialize(
 
 	// clear the weapon array
 	UUrMemory_Clear(WPgWeapons, sizeof(WPtWeapon) * WPcMaxWeapons);
-	
+
 	for (i = 0, weapon = WPgWeapons; i < WPcMaxWeapons; i++, weapon++)
 	{
 		weapon->index = i;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2553,23 +2553,23 @@ UUtError WPrLevel_Begin(void)
 	WPgPowerupImpactType = MArImpactType_GetByName("Powerup");
 
 	WPgNumPowerups = 0;
-	
+
 	WPiCreateWeaponsFromObjects();
 	WPiCreatePowerupsFromObjects();
-	
+
 	return UUcError_None;
 }
 
 void WPrLevel_End(void)
 {
 	UUtUns16 i;
-	
+
 	// Delete weapons
 	for (i=0; i<WPcMaxWeapons; i++)
 	{
 		WPtWeapon *curWeapon = WPgWeapons + i;
 		if (!(curWeapon->flags & WPcWeaponFlag_InUse)) continue;
-		
+
 		WPrDelete(curWeapon);
 	}
 
@@ -2671,7 +2671,7 @@ UUtUns32 WPrLocateNearbyWeapons(const M3tPoint3D *inLocation, float inMaxRadius)
 
 		if (!WPrCanBePickedUp(weapon))
 			continue;
-		
+
 		WPrGetPickupPosition(weapon, &pickup_position);
 
 		weapon->nearby_distance_squared = MUrPoint_Distance_Squared(inLocation, &pickup_position);
@@ -2754,8 +2754,8 @@ WPtPowerup *WPrFind_Powerup_XZ_Squared(
 		WPtPowerup *powerup = WPgPowerups + i;
 		float distance_squared;
 
-		if ((NULL != inPowerup) && (inPowerup != powerup)) continue; 
-		
+		if ((NULL != inPowerup) && (inPowerup != powerup)) continue;
+
 		if ((powerup->position.y < inMinY) || (powerup->position.y > inMaxY)) {
 			continue;
 		}
@@ -2811,7 +2811,7 @@ void WPrSlot_Drop(
 		// want to delete our particles.
 		weapon->flags |= (WPcWeaponFlag_DeferUpdate_GoInactive | WPcWeaponFlag_DeferUpdate_StopFiring);
 		weapon->flags &= ~WPcWeaponFlag_InHand;
-	} 
+	}
 	else {
 		// we are dropping a weapon directly from inventory... update its position before
 		// we drop it. also note that weapon_index won't be being updated because we don't have
@@ -2909,7 +2909,7 @@ void WPrMagicDrop(ONtCharacter *inCharacter, WPtWeapon *inWeapon, UUtBool inWant
 			// character is inactive, choose approximate location
 			MUrMatrix_SetTranslation(&inWeapon->matrix, &inCharacter->actual_position);
 			inWeapon->matrix.m[3][1] += inCharacter->heightThisFrame;
-		} 
+		}
 		else {
 			inWeapon->matrix = *matrix_ptr;
 		}
@@ -3050,7 +3050,7 @@ UUtBool WPrSlot_FindEmpty(
 	if ((inAllowMagic) && (NULL == inInventory->weapons[WPcMagicSlot])) {
 		did_find_slot = UUcTrue;
 		result_slot = WPcMagicSlot;
-		
+
 		goto exit;
 	}
 
@@ -3100,7 +3100,7 @@ WPtWeapon *WPrSlot_FindLastStowed(
 			*outSlotNum = WPcMagicSlot;
 		}
 
-		return inInventory->weapons[WPcMagicSlot];		
+		return inInventory->weapons[WPcMagicSlot];
 	}
 
 	for (i=WPcMaxSlots-1; i>=0; i--)
@@ -3338,11 +3338,11 @@ WPtPowerup *WPrPowerup_New(
 		powerup = WPgPowerups + WPgNumPowerups;
 		reusing = UUcFalse;
 	}
-		
+
 	UUrMemory_Clear(powerup,sizeof(WPtPowerup));
 	error = WPrPowerup_SetType(powerup, inType);
 	if (error != UUcError_None) return NULL;
-	
+
 	pos = *inPosition;
 	powerup->flags = 0;
 	powerup->amount = inAmount;
@@ -3367,7 +3367,7 @@ WPtPowerup *WPrPowerup_SpawnAtFlag(
 		return NULL;
 	}
 
-	powerup->flags |= WPcPowerupFlag_PlacedAsObject;	
+	powerup->flags |= WPcPowerupFlag_PlacedAsObject;
 	if (powerup->geometry != NULL) {
 		// don't create powerups embedded in floor
 		powerup->position.y -= powerup->geometry->pointArray->minmax_boundingBox.minPoint.y;
@@ -3375,7 +3375,7 @@ WPtPowerup *WPrPowerup_SpawnAtFlag(
 
 	return powerup;
 }
-		
+
 void WPrPowerup_Display(
 	void)
 {
@@ -3408,7 +3408,7 @@ void WPrPowerup_Display(
 	// level is 0..31
 //	float_level = level * (1.0f / 31.0f);
 //	ONrGameState_ConstantColorLighting(float_level, float_level, float_level);
-	
+
 	M3rGeom_State_Set(M3cGeomStateIntType_SpriteMode, M3cGeomState_SpriteMode_Flat);
 	M3rGeom_State_Commit();
 
@@ -3423,16 +3423,16 @@ void WPrPowerup_Display(
 		{
 			// draw debugging physics collision
 			UUtUns32 index = powerup->physics - PHgPhysicsContextArray->contexts;
-			
+
 			M3rGeom_State_Push();
-			
+
 			// Draw bounding spheres and boxes
 			M3rGeom_State_Set(M3cGeomStateIntType_Fill, M3cGeomState_Fill_Line);
 			M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor,IMcShade_White);
 			M3rGeom_State_Set(M3cGeomStateIntType_Appearance, M3cGeomState_Appearance_Gouraud);
-			
+
 			if (powerup->physics->sphereTree) PHrSphereTree_Draw(powerup->physics->sphereTree);
-			
+
 			M3rGeom_State_Pop();
 		}
 
@@ -3444,7 +3444,7 @@ void WPrPowerup_Display(
 			alpha_i = (UUtUns32)(255.0f * alpha_f);
 			M3rGeom_State_Set(M3cGeomStateIntType_Alpha, alpha_i);
 		}
-		
+
 		M3rGeom_State_Set(M3cGeomStateIntType_Alpha, alpha_i);
 		M3rGeom_State_Commit();*/
 
@@ -3474,7 +3474,7 @@ void WPrPowerup_Display(
 				AKrEnvironment_NodeList_Get(&bbox, WPcPowerupNodeCount, powerup->oct_tree_node_index, 0);
 				powerup->last_position= powerup->position;
 			}
-	
+
 			is_visible= AKrEnvironment_NodeList_Visible(powerup->oct_tree_node_index);
 		}
 
@@ -3604,11 +3604,11 @@ UUtBool WPrTryReload(ONtCharacter *inCharacter, WPtWeapon *inWeapon, UUtBool *ou
 	// we use the powerup here and start the reload animation
 	{
 		const TRtAnimation *reload_animation;
-			
+
 		reload_animation = TRrCollection_Lookup(
-			inCharacter->characterClass->animations, 
-			WPrGetClass(inCharacter->inventory.weapons[0])->reloadAnimType, 	
-			ONcAnimState_Standing, 
+			inCharacter->characterClass->animations,
+			WPrGetClass(inCharacter->inventory.weapons[0])->reloadAnimType,
+			ONcAnimState_Standing,
 			active_character->animVarient);
 
 		if (NULL == reload_animation) {
@@ -3706,7 +3706,7 @@ UUtBool WPrPowerup_Use(ONtCharacter *inCharacter,
 					// once we reach max
 					amount_remaining = 1.0f - (inCharacter->maxHitPoints - targetHitPoints) / ((float) hypoAmount);
 					hypoAmount = MUrUnsignedSmallFloat_To_Uns_Round(amount_remaining * inCharacter->maxHitPoints
-																				* ONgGameSettings->hypo_boost_amount); 
+																				* ONgGameSettings->hypo_boost_amount);
 					targetHitPoints = inCharacter->maxHitPoints + hypoAmount;
 				} else {
 					// this hypo does not take us past the character's max hit points
@@ -3724,7 +3724,7 @@ UUtBool WPrPowerup_Use(ONtCharacter *inCharacter,
 			inCharacter->inventory.hypo--;
 			return UUcTrue;
 		}
-		
+
 		case WPcPowerup_None:
 			return UUcFalse;
 
@@ -3740,7 +3740,7 @@ WPiCommand_GivePowerup(
 	UUtUns32			inParameterListLength,
 	SLtParameter_Actual*		inParameterList,
 	UUtUns32			*outTicksTillCompletion,
-	UUtBool				*outStall,				
+	UUtBool				*outStall,
 	SLtParameter_Actual		*ioReturnValue)
 {
 	WPtPowerupType p_type;
@@ -3768,7 +3768,7 @@ WPiCommand_GivePowerup(
 
 	if (inParameterListLength < 2) {
 		amount = WPrPowerup_DefaultAmount(p_type);
-	} 
+	}
 	else {
 		amount = (UUtUns16) inParameterList[1].val.i;
 	}
@@ -3784,7 +3784,7 @@ WPiCommand_GivePowerup(
 		UUtUns32 itr;
 		UUtUns32 count = ONrGameState_LivingCharacterList_Count();
 		ONtCharacter **list = ONrGameState_LivingCharacterList_Get();
-		
+
 		for(itr = 0; itr < count; itr++) {
 			index = ONrCharacter_GetIndex(list[itr]);
 
@@ -3834,7 +3834,7 @@ UUtUns16 WPrPowerup_CouldReceive(ONtCharacter *inCharacter, WPtPowerupType inTyp
 
 		case WPcPowerup_Hypo:
 			return WPrPowerup_BoundsCheck(inCharacter->inventory.hypo, WPcMaxHypos, inAmount, UUcTrue);
-		
+
 		case WPcPowerup_ShieldBelt:
 			return WPrPowerup_BoundsCheck(inCharacter->inventory.shieldRemaining, WPcMaxShields, inAmount, UUcFalse);
 
@@ -3891,7 +3891,7 @@ UUtUns16 WPrPowerup_Give(ONtCharacter *inCharacter, WPtPowerupType inType, UUtUn
 					ONrGameState_EventSound_Play(ONcEventSound_ReceiveHypo, NULL);
 				}
 			break;
-			
+
 			case WPcPowerup_ShieldBelt:
 				inCharacter->inventory.shieldRemaining += give_amount;
 			break;
@@ -3929,17 +3929,17 @@ UUtUns16 WPrPowerup_Give(ONtCharacter *inCharacter, WPtPowerupType inType, UUtUn
 			}
 		}
 	}
-	
+
 	return give_amount;
 }
 
-UUtError 
+UUtError
 WPrPowerup_SetType(
 	WPtPowerup			*ioPowerup,
 	WPtPowerupType		inPowerupType)
 {
 	UUmAssert(ioPowerup);
-	
+
 	ioPowerup->type = inPowerupType;
 	ioPowerup->geometry = NULL;
 	ioPowerup->glow_texture = NULL;
@@ -4057,7 +4057,7 @@ const WPtRecoil *WPrClass_GetRecoilInfo(
 }
 
 void WPrRecoil_UserTo_Internal(
-	const WPtRecoil *inUserRecoil, 
+	const WPtRecoil *inUserRecoil,
 	WPtRecoil *outInternalRecoil)
 {
 	outInternalRecoil->base = inUserRecoil->base * (M3c2Pi / 360.f);

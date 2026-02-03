@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Shared_Clip.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 23, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -26,7 +26,7 @@ MSiVerifyPoint4D(
 	UUmAssert(inPoint4D->y > -1e13f && inPoint4D->y < 1e13f);
 	UUmAssert(inPoint4D->z > -1e13f && inPoint4D->z < 1e13f);
 	UUmAssert(inPoint4D->w > -1e13f && inPoint4D->w < 1e13f);
-	
+
 }
 
 void
@@ -52,7 +52,7 @@ MSrClipCode_ValidateFrustum(
 	{
 		UUmAssert(inFrustumPoint->x <= inFrustumPoint->w);
 	}
-	
+
 	if(inClipCode & MScClipCode_NegX)
 	{
 		UUmAssert(inFrustumPoint->x < -inFrustumPoint->w);
@@ -61,7 +61,7 @@ MSrClipCode_ValidateFrustum(
 	{
 		UUmAssert(inFrustumPoint->x >= -inFrustumPoint->w);
 	}
-	
+
 	if(inClipCode & MScClipCode_PosY)
 	{
 		UUmAssert(inFrustumPoint->y > inFrustumPoint->w);
@@ -70,7 +70,7 @@ MSrClipCode_ValidateFrustum(
 	{
 		UUmAssert(inFrustumPoint->y <= inFrustumPoint->w);
 	}
-	
+
 	if(inClipCode & MScClipCode_NegY)
 	{
 		UUmAssert(inFrustumPoint->y < -inFrustumPoint->w);
@@ -79,7 +79,7 @@ MSrClipCode_ValidateFrustum(
 	{
 		UUmAssert(inFrustumPoint->y >= -inFrustumPoint->w);
 	}
-	
+
 	if(inClipCode & MScClipCode_PosZ)
 	{
 		UUmAssert(inFrustumPoint->z > inFrustumPoint->w);
@@ -88,7 +88,7 @@ MSrClipCode_ValidateFrustum(
 	{
 		UUmAssert(inFrustumPoint->z <= inFrustumPoint->w);
 	}
-	
+
 	if(inClipCode & MScClipCode_NegZ)
 	{
 		UUmAssert(inFrustumPoint->z < 0.0f);
@@ -114,7 +114,7 @@ MSrClipCode_ValidateScreen(
 	{
 		UUmAssert(inScreenPoint->x < inScreenWidth);
 	}
-	
+
 	if(inClipCode & MScClipCode_NegX)
 	{
 		UUmAssert(inScreenPoint->x < 0.0f);
@@ -123,7 +123,7 @@ MSrClipCode_ValidateScreen(
 	{
 		UUmAssert(inScreenPoint->x >= 0.0f);
 	}
-	
+
 	if(inClipCode & MScClipCode_PosY)
 	{
 		UUmAssert(inScreenPoint->y < 0.0f);
@@ -132,7 +132,7 @@ MSrClipCode_ValidateScreen(
 	{
 		UUmAssert(inScreenPoint->y >= 0.0f);
 	}
-	
+
 	if(inClipCode & MScClipCode_NegY)
 	{
 		UUmAssert(inScreenPoint->y >= inScreenHeight);
@@ -141,7 +141,7 @@ MSrClipCode_ValidateScreen(
 	{
 		UUmAssert(inScreenPoint->y < inScreenHeight);
 	}
-	
+
 	if(inClipCode & MScClipCode_PosZ)
 	{
 		UUmAssert(inScreenPoint->z >= 1.0f);
@@ -150,7 +150,7 @@ MSrClipCode_ValidateScreen(
 	{
 		UUmAssert(inScreenPoint->z < 1.0f);
 	}
-	
+
 	if(inClipCode & MScClipCode_NegZ)
 	{
 		UUmAssert(inScreenPoint->z < 0.0f);

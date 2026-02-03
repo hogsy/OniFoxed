@@ -77,7 +77,7 @@ static void OBJiTurret_StopActiveSound(OBJtObject *inObject, OBJtOSD_Turret *ioT
 static void OBJiTurret_VisibleNodeList_Invalidate(OBJtOSD_Turret *turret_osd);
 static void OBJiTurret_VisibleNodeList_Build(OBJtOSD_Turret *turret_osd);
 
-AI2tTargetingCallbacks OBJgTurret_TargetingCallbacks = 
+AI2tTargetingCallbacks OBJgTurret_TargetingCallbacks =
 {
 	OBJiTurret_TargetingCallback_Fire,
 	NULL,	//OBJiTurret_TargetingCallback_SetAimSpeed,
@@ -103,7 +103,7 @@ static void OBJiTurret_StartActiveSound(OBJtObject *inObject, OBJtOSD_Turret *io
 		} else {
 			ioTurretOSD->playing_sound = SScInvalidID;
 		}
-		
+
 		ioTurretOSD->flags |= OBJcTurretFlag_PlayingSound;
 	}
 }
@@ -134,7 +134,7 @@ static void OBJrTurret_LookAtPoint(OBJtObject *inObject, M3tVector3D* inPoint)
 	M3tMatrix4x3			inverse_matrix;
 	M3tVector3D				neg_position;
 
-		
+
  	UUmAssert( inObject->object_type == OBJcType_Turret );
 
 	turret_osd = (OBJtOSD_Turret*) inObject->object_data;
@@ -186,46 +186,46 @@ static void OBJiTurret_CreateBoundingSphere( OBJtObject *inObject, OBJtOSD_Turre
 	M3tBoundingSphere		*sphere;
 	M3tPoint3D				new_center;
 	float					new_radius;
-	
+
 	new_center.x = 0.0f;
 	new_center.y = 0.0f;
 	new_center.z = 0.0f;
-	
+
 	if( !inOSD->turret_class )
 		return;
 
 	// calculate the center of the sphere
 	sphere = &inOSD->turret_class->base_geometry->pointArray->boundingSphere;
 	MUmVector_Increment(new_center, sphere->center);
-	
+
 	sphere = &inOSD->turret_class->turret_geometry->pointArray->boundingSphere;
 	MUmVector_Increment(new_center, sphere->center);
-	
+
 	sphere = &inOSD->turret_class->barrel_geometry->pointArray->boundingSphere;
 	MUmVector_Increment(new_center, sphere->center);
-	
+
 	new_center.x /= 3;
 	new_center.y /= 3;
 	new_center.z /= 3;
-	
+
 	// caculate the new radius
 	new_radius = 0.0f;
 	//for (i = 0; i < inOSD->furn_geom_array->num_furn_geoms; i++)
 	{
 //		M3tVector3D			vector;
 //		float				temp_radius;
-/*		
+/*
 		sphere = &inOSD->furn_geom_array->furn_geom[i].geometry->pointArray->boundingSphere;
 		MUmVector_Subtract(vector, new_center, sphere->center);
 		temp_radius = MUrVector_Length(&vector) + sphere->radius;
 		*/
 //		new_radius = UUmMax(new_radius, temp_radius);
 	}
-	
+
 	// set the bounding sphere
 	inOSD->bounding_sphere.center = new_center;
 	inOSD->bounding_sphere.radius = new_radius;
-	
+
 	//inOSD->bounding_sphere.center = sphere->center;
 	inOSD->bounding_sphere.center = inOSD->turret_class->turret_position;
 	inOSD->bounding_sphere.radius = (float) ( sphere->radius * 2.0 );
@@ -332,7 +332,7 @@ static void OBJiTurret_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 	if (OBJgTurret_DrawTurrets == UUcFalse) { return; }
 	// don't draw when the non-occluding geometry is hidden
 	if (AKgDraw_Occl == UUcTrue) { return; }
-		
+
 	turret_osd = (OBJtOSD_Turret*)inObject->object_data;
 
 	if( !turret_osd->turret_class )
@@ -342,7 +342,7 @@ static void OBJiTurret_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 	OBJiTurret_BuildMatricies( inObject );
 
 	OBJiTurret_VisibleNodeList_Build(turret_osd);
-	
+
 	if (AKrEnvironment_NodeList_Visible(turret_osd->visible_node_list))
 	{
 		M3tMatrix4x3 draw_matrix;
@@ -350,7 +350,7 @@ static void OBJiTurret_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 
 		// apply position and orientation matrix
 		draw_matrix = turret_osd->matrix;
-		
+
 #if TOOL_VERSION
 		if(!(inObject->flags & OBJcObjectFlag_Gunk)) {
 			M3rGeometry_MultiplyAndDraw(turret_osd->turret_class->base_geometry, &draw_matrix);
@@ -358,10 +358,10 @@ static void OBJiTurret_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 #endif
 		// apply turret matrix
 		MUrMatrixStack_Matrix(&draw_matrix, &turret_osd->turret_matrix);
-	
+
 		// draw the turret geometry
 		M3rGeometry_MultiplyAndDraw(turret_osd->turret_class->turret_geometry, &draw_matrix);
-	
+
 		// apply barrel matrix
 		MUrMatrixStack_Matrix(&draw_matrix, &turret_osd->barrel_matrix);
 
@@ -397,27 +397,27 @@ static void OBJiTurret_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 			M3rMatrixStack_Multiply(&turret_osd->matrix);
 
 			// base box and object rotation rings
-			M3rMinMaxBBox_To_BBox( &turret_osd->turret_class->base_geometry->pointArray->minmax_boundingBox, &bBox);		
-			M3rBBox_Draw_Line(&bBox, IMcShade_White);			
+			M3rMinMaxBBox_To_BBox( &turret_osd->turret_class->base_geometry->pointArray->minmax_boundingBox, &bBox);
+			M3rBBox_Draw_Line(&bBox, IMcShade_White);
 			OBJrObjectUtil_DrawRotationRings(inObject, &turret_osd->bounding_sphere, inDrawFlags);
 
 			// apply turret matrix
-			M3rMatrixStack_Multiply(&turret_osd->turret_matrix);		
-			
+			M3rMatrixStack_Multiply(&turret_osd->turret_matrix);
+
 			// turret box
-			M3rMinMaxBBox_To_BBox( &turret_osd->turret_class->turret_geometry->pointArray->minmax_boundingBox, &bBox);		
+			M3rMinMaxBBox_To_BBox( &turret_osd->turret_class->turret_geometry->pointArray->minmax_boundingBox, &bBox);
 			M3rBBox_Draw_Line(&bBox, IMcShade_White);
 
 			// apply barrel matrix
-			M3rMatrixStack_Multiply(&turret_osd->barrel_matrix);		
+			M3rMatrixStack_Multiply(&turret_osd->barrel_matrix);
 
 			// barrel box
-			M3rMinMaxBBox_To_BBox( &turret_osd->turret_class->barrel_geometry->pointArray->minmax_boundingBox, &bBox);		
+			M3rMinMaxBBox_To_BBox( &turret_osd->turret_class->barrel_geometry->pointArray->minmax_boundingBox, &bBox);
 			M3rBBox_Draw_Line(&bBox, IMcShade_White);
 		}
 		M3rMatrixStack_Pop();
 	}
-	
+
 	if( OBJgTurret_DrawTurretDebugInfo )
 		OBJrTurretDisplayDebuggingInfo(inObject);
 #endif
@@ -433,7 +433,7 @@ static UUtError OBJiTurret_Enumerate( OBJtObject *inObject, OBJtEnumCallback_Obj
 static void OBJiTurret_GetBoundingSphere( const OBJtObject *inObject, M3tBoundingSphere *outBoundingSphere )
 {
 	OBJtOSD_Turret		*Turret_osd;
-	
+
 	Turret_osd = (OBJtOSD_Turret*)inObject->object_data;
 
 	*outBoundingSphere = Turret_osd->bounding_sphere;
@@ -443,7 +443,7 @@ static void OBJiTurret_GetBoundingSphere( const OBJtObject *inObject, M3tBoundin
 static void OBJiTurret_OSDGetName( const OBJtOSD_All *inOSD,	char *outName, UUtUns32 inNameLength )
 {
 	const OBJtOSD_Turret			*turret_osd = &inOSD->osd.turret_osd;
-	
+
 	sprintf(outName, "%s_%d", turret_osd->turret_class_name, turret_osd->id);
 }
 
@@ -453,7 +453,7 @@ static void OBJiTurret_GetOSD( const OBJtObject *inObject, OBJtOSD_All *outOSD )
 	OBJtOSD_Turret			*Turret_osd;
 
 	Turret_osd = (OBJtOSD_Turret*)inObject->object_data;
-	
+
 	outOSD->osd.turret_osd = *Turret_osd;
 }
 
@@ -470,14 +470,14 @@ static UUtBool OBJiTurret_IntersectsLine( const OBJtObject *inObject, const M3tP
 
 	if( !turret_osd->turret_class )
 		return UUcFalse;
-	
+
 	// get the bounding sphere
 	OBJiTurret_GetBoundingSphere(inObject, &sphere);
-	
+
 	sphere.center.x += inObject->position.x;
 	sphere.center.y += inObject->position.y;
 	sphere.center.z += inObject->position.z;
-	
+
 	// do the fast test to see if the line is colliding with the bounding sphere
 	result = CLrSphere_Line(inStartPoint, inEndPoint, &sphere);
 	//if (result == UUcTrue)
@@ -486,13 +486,13 @@ static UUtBool OBJiTurret_IntersectsLine( const OBJtObject *inObject, const M3tP
 		M3tPoint3D				end_point;
 		M3tMatrix4x3			inverse_matrix;
 		M3tVector3D				neg_position;
-		
+
 		result = UUcFalse;
-		
+
 		// because the line collided with the bounding sphere, test to see if the line
 		// collides with the bounding box of the geometries
-		
-		// move 
+
+		// move
 		MUrMatrix_Inverse(&turret_osd->rotation_matrix, &inverse_matrix);
 		neg_position = inObject->position;
 		MUmVector_Negate(neg_position);
@@ -503,7 +503,7 @@ static UUtBool OBJiTurret_IntersectsLine( const OBJtObject *inObject, const M3tP
 
 
 		// base
-		{ 
+		{
 			result = CLrBox_Line( &turret_osd->turret_class->base_geometry->pointArray->minmax_boundingBox, &start_point, &end_point );
 			if (result)		return UUcTrue;
 		}
@@ -530,10 +530,10 @@ static UUtBool OBJiTurret_IntersectsLine( const OBJtObject *inObject, const M3tP
 		{
 			result = CLrBox_Line( &turret_osd->turret_class->barrel_geometry->pointArray->minmax_boundingBox, &start_point, &end_point );
 			if (result)		return UUcTrue;
-		}		
+		}
 		return result;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -547,7 +547,7 @@ static UUtError OBJiTurret_SetDefaults(OBJtOSD_All *outOSD)
 
 	// clear the osd
 	UUrMemory_Clear(&outOSD->osd.turret_osd, sizeof(OBJtOSD_Turret));
-		
+
 	// setup default properties
 	outOSD->osd.turret_osd.id				= ONrMechanics_GetNextID( OBJcType_Turret );
 	outOSD->osd.turret_osd.target_teams		= 1;									// team 0
@@ -557,15 +557,15 @@ static UUtError OBJiTurret_SetDefaults(OBJtOSD_All *outOSD)
 	outOSD->osd.turret_osd.flags			= OBJcTurretFlag_None;
 	outOSD->osd.turret_osd.state			= OBJcTurretState_Inactive;
 	outOSD->osd.turret_osd.playing_sound	= SScInvalidID;
-	
+
 	// get a list of instances of the class
 	error = TMrInstance_GetDataPtr_List( OBJcTemplate_TurretClass, OBJcMaxInstances, &num_instances, instances);
 	UUmError_ReturnOnError(error);
 
-	// copy the name of the first turret instance into the osd_all.		
+	// copy the name of the first turret instance into the osd_all.
 	instance_name	= TMrInstance_GetInstanceName(instances[0]);
 	instance_name	= (instance_name != NULL) ? instance_name : "";
-		
+
 	UUrString_Copy( outOSD->osd.turret_osd.turret_class_name, (instance_name ), OBJcMaxNameLength);
 
 
@@ -578,7 +578,7 @@ static UUtError OBJiTurret_New( OBJtObject *inObject, const OBJtOSD_All *inOSD)
 
 	OBJtOSD_All				osd_all;
 	UUtError				error;
-	
+
 	if (inOSD == NULL)
 	{
 		error = OBJiTurret_SetDefaults(&osd_all);
@@ -598,7 +598,7 @@ static UUtError OBJiTurret_New( OBJtObject *inObject, const OBJtOSD_All *inOSD)
 	// set the object specific data and position
 	error = OBJiTurret_SetOSD(inObject, &osd_all);
 	UUmError_ReturnOnError(error);
-	
+
 	OBJiTurret_UpdatePosition(inObject);
 
 	UUrMemory_Block_VerifyList();
@@ -643,10 +643,10 @@ static UUtUns32 OBJiTurret_Read( OBJtObject *inObject, UUtUns16 inVersion, UUtBo
 
 	osd->flags &= OBJcTurretFlag_Persist;
 
-	num_bytes = OBJcMaxNameLength + 
-		sizeof(UUtUns16) + 
-		sizeof(UUtUns16) + 
-		sizeof(UUtUns32) + 
+	num_bytes = OBJcMaxNameLength +
+		sizeof(UUtUns16) +
+		sizeof(UUtUns16) +
+		sizeof(UUtUns32) +
 		( sizeof( float ) * 8 ) +
 		sizeof(UUtUns32);
 
@@ -654,13 +654,13 @@ static UUtUns32 OBJiTurret_Read( OBJtObject *inObject, UUtUns16 inVersion, UUtBo
 
 	// bring the object up to date
 	OBJiTurret_SetOSD(inObject, &osd_all);
-	
+
 	return num_bytes;
 }
 // ----------------------------------------------------------------------
 static UUtError OBJiTurret_Write( OBJtObject *inObject, UUtUns8 *ioBuffer, UUtUns32 *ioBufferSize)
 {
-	
+
 	OBJtOSD_Turret			*turret_osd;
 	UUtUns32				bytes_available;
 
@@ -677,7 +677,7 @@ static UUtError OBJiTurret_Write( OBJtObject *inObject, UUtUns8 *ioBuffer, UUtUn
 
 	// get a pointer to the object osd
 	turret_osd = (OBJtOSD_Turret*)inObject->object_data;
-	
+
 	// set the number of bytes available
 	bytes_available = *ioBufferSize;
 
@@ -697,7 +697,7 @@ static UUtError OBJiTurret_Write( OBJtObject *inObject, UUtUns8 *ioBuffer, UUtUn
 
 	// set ioBufferSize to the number of bytes written to the buffer
 	*ioBufferSize = *ioBufferSize - bytes_available;
-	
+
 	return UUcError_None;
 }
 
@@ -705,14 +705,14 @@ static UUtError OBJiTurret_Write( OBJtObject *inObject, UUtUns8 *ioBuffer, UUtUn
 static UUtUns32 OBJiTurret_GetOSDWriteSize( const OBJtObject *inObject )
 {
 	UUtUns32				size;
-	
-	size = OBJcMaxNameLength + 
-		sizeof(UUtUns16) + 
-		sizeof(UUtUns16) + 
-		sizeof(UUtUns32) + 
+
+	size = OBJcMaxNameLength +
+		sizeof(UUtUns16) +
+		sizeof(UUtUns16) +
+		sizeof(UUtUns32) +
 		( sizeof( float ) * 8 ) +
 		sizeof(UUtUns32);
-	
+
 	return size;
 }
 
@@ -723,7 +723,7 @@ static void OBJiTurret_FindParticleClasses(OBJtTurretClass *inTurret)
 	UUtUns16 itr;
 	OBJtTurretParticleAttachment *attachment;
 
-	for (itr = 0, attachment = inTurret->attachment; itr < inTurret->attachment_count; itr++, attachment++) 
+	for (itr = 0, attachment = inTurret->attachment; itr < inTurret->attachment_count; itr++, attachment++)
 	{
 		attachment->particle_class = P3rGetParticleClass(attachment->particle_class_name);
 	}
@@ -752,9 +752,9 @@ static UUtError OBJiTurret_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inOS
 	UUtError				error;
 	OBJtTurretClass			*turret_class;
 	OBJtOSD_Turret			*turret_osd;
-	
+
 	UUmAssert(inOSD);
-	
+
 	OBJiTurret_Shutdown( inObject );
 
 	// get a pointer to the object osd
@@ -767,7 +767,7 @@ static UUtError OBJiTurret_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inOS
 	turret_osd->id					= inOSD->osd.turret_osd.id;
 	turret_osd->flags				= (turret_osd->flags & ~OBJcTurretFlag_Persist) | (inOSD->osd.turret_osd.flags & OBJcTurretFlag_Persist);
 	turret_osd->target_teams 		= inOSD->osd.turret_osd.target_teams;
-	
+
 	error = TMrInstance_GetDataPtr( OBJcTemplate_TurretClass, turret_osd->turret_class_name, &turret_class );
 	if( error != UUcError_None )
 	{
@@ -782,14 +782,14 @@ static UUtError OBJiTurret_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inOS
 	}
 
 
-	turret_osd->turret_class		= turret_class;		
+	turret_osd->turret_class		= turret_class;
 
 	// setup internals
 	MUrMatrix_Identity(&turret_osd->matrix);
 	MUrMatrix_Identity(&turret_osd->turret_matrix);
 	MUrMatrix_Identity(&turret_osd->barrel_matrix);
 	turret_osd->notvisible_time = 0;
-	
+
 	if( ONgLevel )
 	{
 		OBJrTurret_SetupParticles( inObject );
@@ -801,7 +801,7 @@ static UUtError OBJiTurret_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inOS
 	// create the bounding sphere
 	OBJiTurret_CreateBoundingSphere(inObject, turret_osd);
 
-	// set active state	
+	// set active state
 	if( inOSD->osd.turret_osd.state == OBJcTurretState_Active )
 		OBJrTurret_Activate( inObject );
 
@@ -813,16 +813,16 @@ static UUtError OBJiTurret_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inOS
 // ----------------------------------------------------------------------
 static void OBJiTurret_UpdatePosition(OBJtObject *inObject)
 {
-	
+
 	OBJtOSD_Turret			*Turret_osd;
 	float					rot_x;
 	float					rot_y;
 	float					rot_z;
 	MUtEuler				euler;
-	
+
 	// get a pointer to the object osd
 	Turret_osd = (OBJtOSD_Turret*)inObject->object_data;
-	
+
 	// convert the rotation to radians
 	rot_x = inObject->rotation.x * M3cDegToRad;
 	rot_y = inObject->rotation.y * M3cDegToRad;
@@ -857,15 +857,15 @@ static UUtBool OBJiTurret_GetVisible( void)
 // ----------------------------------------------------------------------
 static UUtBool OBJiTurret_Search( const OBJtObject *inObject, const UUtUns32 inSearchType, const OBJtOSD_All *inSearchParams)
 {
-	
+
 	OBJtOSD_Turret			*Turret_osd;
 	UUtBool					found;
-	
+
 	// get a pointer to the object osd
 	Turret_osd = (OBJtOSD_Turret*)inObject->object_data;
 
 	found = UUcFalse;
-/*	
+/*
 	// perform the check
 	switch (inSearchType)
 	{
@@ -916,16 +916,16 @@ static void OBJiTurret_CreateParticles( OBJtOSD_Turret *inTurret_osd )
 		return;
 
 	// loop through each attachment on the turret template and create a particle for the turret osd
-	for (itr = 0, attachment = turret->attachment; itr < turret->attachment_count; itr++, attachment++) 
+	for (itr = 0, attachment = turret->attachment; itr < turret->attachment_count; itr++, attachment++)
 	{
-		if (!attachment->particle_class) 
+		if (!attachment->particle_class)
 		{
 			inTurret_osd->particle[itr] = NULL;
 			continue;
 		}
-		
+
 		particle = P3rCreateParticle(attachment->particle_class, creation_time);
-		if (particle == NULL) 
+		if (particle == NULL)
 		{
 			inTurret_osd->particle[itr] = NULL;
 			continue;
@@ -940,31 +940,31 @@ static void OBJiTurret_CreateParticles( OBJtOSD_Turret *inTurret_osd )
 
 		// orientation is the 3x3 matrix part of attachment->matrix
 		p_orientation = P3rGetOrientationPtr(attachment->particle_class, particle);
-		if (p_orientation != NULL) 
+		if (p_orientation != NULL)
 		{
 			UUrMemory_MoveFast(&attachment->matrix, p_orientation, sizeof(M3tMatrix3x3));
 		}
 
 		// velocity and offset are zero if they exist
 		p_velocity = P3rGetVelocityPtr(attachment->particle_class, particle);
-		if (p_velocity != NULL) 
+		if (p_velocity != NULL)
 		{
 			MUmVector_Set(*p_velocity, 0, 0, 0);
 		}
 		p_offset = P3rGetOffsetPosPtr(attachment->particle_class, particle);
-		if (p_offset != NULL) 
+		if (p_offset != NULL)
 		{
 			MUmVector_Set(*p_offset, 0, 0, 0);
 		}
 
 		// dynamic matrix ensures that the particles stay attached to the weapon
 		p_dynamicmatrix = P3rGetDynamicMatrixPtr(attachment->particle_class, particle);
-		if (p_dynamicmatrix != NULL) 
+		if (p_dynamicmatrix != NULL)
 		{
 			*p_dynamicmatrix = &inTurret_osd->projectile_matrix;
 			particle->header.flags |= P3cParticleFlag_AlwaysUpdatePosition;
-		} 
-		else 
+		}
+		else
 		{
 			COrConsole_Printf("### particle class '%s' attached to turret but no dynamic matrix", attachment->particle_class_name);
 		}
@@ -972,21 +972,21 @@ static void OBJiTurret_CreateParticles( OBJtOSD_Turret *inTurret_osd )
 		// the particle's owner is our owner pointer. note that since our owner may change
 		// the particles need to refer to our pointer rather than taking a copy of it
 		p_owner = P3rGetOwnerPtr(attachment->particle_class, particle);
-		if (p_owner != NULL) 
+		if (p_owner != NULL)
 		{
 			*p_owner = WPrOwner_MakeFromTurret(inTurret_osd);
 		}
 
 		// randomise texture start index
 		p_texture = P3rGetTextureIndexPtr(attachment->particle_class, particle);
-		if (p_texture != NULL) 
+		if (p_texture != NULL)
 		{
 			*p_texture = (UUtUns32) UUrLocalRandom();
 		}
 
 		// set texture time index to be now
 		p_texture = P3rGetTextureTimePtr(attachment->particle_class, particle);
-		if (p_texture != NULL) 
+		if (p_texture != NULL)
 		{
 			*p_texture = creation_time;
 		}
@@ -1039,7 +1039,7 @@ static void OBJiTurret_SendParticleEvent( OBJtObject *inObject, UUtUns16 inEvent
 	if( !turret_osd->turret_class )
 		return;
 
-	for (itr = 0, attachment = turret_osd->turret_class->attachment; itr < turret_osd->turret_class->attachment_count; itr++, attachment++) 
+	for (itr = 0, attachment = turret_osd->turret_class->attachment; itr < turret_osd->turret_class->attachment_count; itr++, attachment++)
 	{
 		// only send the event to attachments with the correct shooter index - this
 		// check is bypassed if either index is -1, which matches everything
@@ -1048,7 +1048,7 @@ static void OBJiTurret_SendParticleEvent( OBJtObject *inObject, UUtUns16 inEvent
 
 		particle = turret_osd->particle[itr];
 
-		if ((particle == NULL) || (particle->header.self_ref != turret_osd->particle_ref[itr])) 
+		if ((particle == NULL) || (particle->header.self_ref != turret_osd->particle_ref[itr]))
 		{
 			// this particle has died!
 			turret_osd->particle[itr]		= NULL;
@@ -1060,7 +1060,7 @@ static void OBJiTurret_SendParticleEvent( OBJtObject *inObject, UUtUns16 inEvent
 		{
 			// we must set up this particle's velocity as equal to the owner's so that emitters which are tagged as "emit parent's velocity" have something to use
 			p_velocity = P3rGetVelocityPtr(attachment->particle_class, particle);
-			if (p_velocity != NULL) 
+			if (p_velocity != NULL)
 			{
 				p_velocity->x = 0;
 				p_velocity->y = 0;
@@ -1090,17 +1090,17 @@ UUtBool OBJiTurret_FireProjectile( OBJtObject *inObject, UUtUns16 shooter_index 
 
 	if( !turret_osd->turret_class )
 		return UUcFalse;
-	
+
 	// only active turrets should be firing!
 	UUmAssert(turret_osd->state == OBJcTurretState_Active );
 	UUmAssert((shooter_index >= 0) && (shooter_index < turret_osd->turret_class->shooter_count));
-	
+
 	// wait for chamber delay
 	if (turret_osd->chamber_time)
 		return UUcFalse;
 
 	// find the shooter's attachment
-	for (attachment_index = 0, shooter = turret_osd->turret_class->attachment; attachment_index < turret_osd->turret_class->attachment_count; attachment_index++, shooter++) 
+	for (attachment_index = 0, shooter = turret_osd->turret_class->attachment; attachment_index < turret_osd->turret_class->attachment_count; attachment_index++, shooter++)
 	{
 		if( shooter->shooter_index == shooter_index )
 		break;
@@ -1111,7 +1111,7 @@ UUtBool OBJiTurret_FireProjectile( OBJtObject *inObject, UUtUns16 shooter_index 
 		return UUcFalse;
 
 	// we will now fire.
-	if((turret_osd->flags & OBJcTurretFlag_IsFiring) == 0) 
+	if((turret_osd->flags & OBJcTurretFlag_IsFiring) == 0)
 	{
 		turret_osd->flags |= OBJcTurretFlag_IsFiring;
 		OBJiTurret_SendParticleEvent(inObject, P3cEvent_Start, shooter_index);
@@ -1135,7 +1135,7 @@ void OBJrTurret_RecreateParticles(void)
 
 	OBJrObjectType_GetObjectList( OBJcType_Turret, &object_list, &object_count );
 
-	for(i = 0; i < object_count; i++) 
+	for(i = 0; i < object_count; i++)
 	{
 		object = object_list[i];
 		UUmAssert( object );
@@ -1164,8 +1164,8 @@ UUtError OBJrTurret_DestroyParticles( OBJtObject *inObject )
 
 	if( !turret )
 		return UUcError_None;
-	
-	for (itr = 0; itr < turret->attachment_count; itr++ ) 
+
+	for (itr = 0; itr < turret->attachment_count; itr++ )
 	{
 		if( !turret_osd->particle[itr] )
 			continue;
@@ -1191,7 +1191,7 @@ UUtError OBJrTurret_SetupParticles( OBJtObject *inObject )
 	OBJiTurret_FindParticleClasses( turret_osd->turret_class );
 
 	OBJiTurret_CreateParticles( turret_osd );
-		
+
 	// FIXME: make sure weapons cant fire for a second..... (particles crash otherwise!)
 	turret_osd->chamber_time	= 60;
 
@@ -1242,7 +1242,7 @@ void OBJrTurret_Deactivate( OBJtObject *inObject )
 	// end the combat AI
 	OBJiTurretCombat_Exit((OBJtObject*) inObject);
 
-	if( turret_osd->flags & OBJcTurretFlag_IsFiring ) 
+	if( turret_osd->flags & OBJcTurretFlag_IsFiring )
 	{
 		turret_osd->flags |= ~OBJcTurretFlag_IsFiring;
 		OBJiTurret_SendParticleEvent( inObject, P3cEvent_Stop, -1 );
@@ -1265,7 +1265,7 @@ static UUtBool OBJrTurret_Activate_ID_Enum(OBJtObject *inObject, UUtUns32 inUser
 	UUmAssert( inObject->object_type == OBJcType_Turret );
 
 	turret_osd = (OBJtOSD_Turret*) inObject->object_data;
-	
+
 	if( inUserData == OBJcTurretSelectAll || turret_osd->id == inUserData )
 	{
 		OBJrTurret_Activate( (OBJtObject*) inObject );
@@ -1278,7 +1278,7 @@ UUtError OBJrTurret_Activate_ID( UUtUns16 inID )
 {
 	if( inID == (UUtUns16) -1 )
 		inID = OBJcTurretSelectAll;
-	OBJrObjectType_EnumerateObjects( OBJcType_Turret, OBJrTurret_Activate_ID_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Turret, OBJrTurret_Activate_ID_Enum, (UUtUns32) inID );
 	return UUcError_None;
 }
 
@@ -1302,7 +1302,7 @@ UUtError OBJrTurret_Deactivate_ID( UUtUns16 inID )
 {
 	if( inID == (UUtUns16) -1 )
 		inID = OBJcTurretSelectAll;
-	OBJrObjectType_EnumerateObjects( OBJcType_Turret, OBJrTurret_Deactivate_ID_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Turret, OBJrTurret_Deactivate_ID_Enum, (UUtUns32) inID );
 	return UUcError_None;
 }
 
@@ -1326,7 +1326,7 @@ UUtError OBJrTurret_Reset_ID( UUtUns16 inID )
 {
 	if( inID == (UUtUns16) -1 )
 		inID = OBJcTurretSelectAll;
-	OBJrObjectType_EnumerateObjects( OBJcType_Turret, OBJrTurret_Reset_ID_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Turret, OBJrTurret_Reset_ID_Enum, (UUtUns32) inID );
 	return UUcError_None;
 }
 
@@ -1350,7 +1350,7 @@ void OBJiTurretCombat_Enter(OBJtObject *ioObject)
 	// set up our targeting
 	targeting_owner.type		= AI2cTargetingOwnerType_Turret;
 	targeting_owner.owner.turret	= ioObject;
-	
+
 	// init the targeting
 	AI2rTargeting_Initialize(targeting_owner, &turret_osd->targeting, &OBJgTurret_TargetingCallbacks, &turret_osd->turret_class->ai_params, &turret_osd->projectile_matrix, &turret_osd->turret_class->targeting_params, &turret_osd->turret_class->shooting_skill);
 }
@@ -1361,7 +1361,7 @@ void OBJiTurretCombat_Enter(OBJtObject *ioObject)
 static UUtBool OBJrTurret_PerformLOS(OBJtObject *inObject)
 {
 	OBJtOSD_Turret			*turret_osd;
-	
+
 
 	UUmAssert( inObject->object_type == OBJcType_Turret );
 
@@ -1370,7 +1370,7 @@ static UUtBool OBJrTurret_PerformLOS(OBJtObject *inObject)
 	if( !turret_osd->turret_class )
 		return UUcFalse;
 
-/*	if(turret_osd->targeting.miss_enable) 
+/*	if(turret_osd->targeting.miss_enable)
 	{
 		// we don't care about LOS for the time being
 		return UUcFalse;
@@ -1434,7 +1434,7 @@ static ONtCharacter* OBJiTurretCombat_FindClosestTarget( OBJtObject *ioObject )
 	for( i = 0; i < character_count; i++ )
 	{
 		character	= character_list[i];
-		
+
 		team_mask	= 1 << character->teamNumber;
 
 		if(!(turret_osd->target_teams & team_mask))
@@ -1463,11 +1463,11 @@ static UUtBool OBJiTurretCombat_CheckTarget(OBJtObject *ioObject)
 	{
 		target_currently_dead = (UUtBool) (turret_osd->targeting.target->flags & ONcCharacterFlag_Dead);
 	}
-	
+
 	turret_osd->check_target_time = (UUtUns32) ( UUcFramesPerSecond / 4.0 );
 
 	turret_osd->targeting.target = OBJiTurretCombat_FindClosestTarget( ioObject );
-	
+
 	return ( turret_osd->targeting.target != NULL );
 }
 
@@ -1524,7 +1524,7 @@ void OBJiTurretCombat_Update(OBJtObject *ioObject)
 	current_time = ONrGameState_GetGameTime();
 
 	this_turret_has_a_target	= (turret_osd->targeting.target != NULL) ? UUcTrue : UUcFalse;
-	
+
 	if( turret_osd->check_target_time ) {
 		turret_osd->check_target_time--;
 	}
@@ -1563,7 +1563,7 @@ void OBJiTurretCombat_Exit(OBJtObject *ioObject)
 	UUmAssert(ioObject->object_data);
 
 	turret_osd = (OBJtOSD_Turret*) ioObject->object_data;
-	
+
 	turret_osd->targeting.target = NULL;
 
 	AI2rTargeting_Terminate(&turret_osd->targeting);
@@ -1595,7 +1595,7 @@ static void OBJiTurret_TargetingCallback_GetPosition(AI2tTargetingState *inTarge
 	OBJtObject*				object;
 
 	UUmAssert(inTargetingState->owner.type == AI2cTargetingOwnerType_Turret);
-	
+
 	object = (OBJtObject*) inTargetingState->owner.owner.turret;
 
 	UUmAssert(object->object_type == OBJcType_Turret);
@@ -1640,7 +1640,7 @@ static void OBJiTurret_TargetingCallback_AimVector(AI2tTargetingState *inTargeti
 	OBJtObject*			object;
 
 	UUmAssert(inTargetingState->owner.type == AI2cTargetingOwnerType_Turret);
-	
+
 	object = (OBJtObject*) inTargetingState->owner.owner.turret;
 
 	UUmAssert(object->object_type == OBJcType_Turret);
@@ -1700,7 +1700,7 @@ void OBJrTurretDisplayDebuggingInfo(OBJtObject *inObject)
 		laserTo.x = 0;
 		laserTo.y = 0;
 		laserTo.z = dist;
-		
+
 		MUrPoint_RotateXAxis( &laserTo, turret_osd->vert_angle , &laserTo );
 		MUrPoint_RotateYAxis( &laserTo, turret_osd->horiz_angle , &laserTo );
 
@@ -1712,7 +1712,7 @@ void OBJrTurretDisplayDebuggingInfo(OBJtObject *inObject)
 	}
 #endif
 	// display combat debugging info
-	if ( targeting_state->last_computation_success) 
+	if ( targeting_state->last_computation_success)
 	{
 		M3tMatrix3x3 shooter_matrix, worldmatrix;
 		M3tPoint3D weapon_dir, shoot_at;
@@ -1720,22 +1720,22 @@ void OBJrTurretDisplayDebuggingInfo(OBJtObject *inObject)
 		/*
 		 * draw debugging info about our targeting vectors
 		 */
-		
+
 		shade = (targeting_state->last_computed_ontarget) ? IMcShade_Green : IMcShade_Red;
 
 		MUmVector_Copy(p0, targeting_state->current_aim_pt);
 		MUmVector_Copy(p1, p0);
-		
+
 		p0.x += 3.0f;
 		p1.x -= 3.0f;
 		M3rGeom_Line_Light(&p0, &p1, IMcShade_Blue);
-		
+
 		p0.x -= 3.0f;
 		p1.x += 3.0f;
 		p0.y += 3.0f;
 		p1.y -= 3.0f;
 		M3rGeom_Line_Light(&p0, &p1, IMcShade_Blue);
-		
+
 		p0.y -= 3.0f;
 		p1.y += 3.0f;
 		p0.z += 3.0f;
@@ -1797,38 +1797,38 @@ void OBJrTurretDisplayDebuggingInfo(OBJtObject *inObject)
 			M3rGeom_Line_Light(&p0, &p1, IMcShade_Blue);
 		}
 	}
-	
+
 	if ( (targeting_state->predictionbuf != NULL)) {
 		/*
 		 * draw debugging info about our prediction vectors
 		 */
-		
+
 		UUtUns32 itr, sample_trend, sample_vel, sample_now;
-		UUtUns32 trend_frames, velocity_frames, delay_frames;			
-		
+		UUtUns32 trend_frames, velocity_frames, delay_frames;
+
 		trend_frames = targeting_state->targeting_params->predict_trendframes;
 		velocity_frames = targeting_state->targeting_params->predict_velocityframes;
 		delay_frames = targeting_state->targeting_params->predict_delayframes;
-		
+
 		// draw our prediction buffer
 		for (itr = 0; itr < trend_frames; itr++) {
 			// work out which indices we're using to build the current motion estimate
 			sample_trend = targeting_state->next_sample + UUmMin(targeting_state->num_samples_taken, trend_frames);
 			sample_vel   = targeting_state->next_sample + UUmMin(targeting_state->num_samples_taken, velocity_frames);
 			sample_now   = targeting_state->next_sample + UUmMin(targeting_state->num_samples_taken, delay_frames);
-			
+
 			// the buffer is predict_trendframes long
 			sample_trend %= trend_frames;
 			sample_vel   %= trend_frames;
 			sample_now   %= trend_frames;
-			
+
 			if ((targeting_state->num_samples_taken >= trend_frames) ||
 				(itr > targeting_state->next_sample)) {
 				MUmVector_Copy(p0, targeting_state->predictionbuf[itr]);
 				MUmVector_Copy(p1, targeting_state->predictionbuf[itr]);
 				p0.y += 5.0f;
 				p1.y -= 5.0f;
-				
+
 				if (itr == sample_now) {
 					shade = IMcShade_Yellow;
 				} else if (itr == sample_vel) {
@@ -1838,7 +1838,7 @@ void OBJrTurretDisplayDebuggingInfo(OBJtObject *inObject)
 				} else {
 					shade = IMcShade_White;
 				}
-				
+
 				M3rGeom_Line_Light(&p0, &p1, shade);
 			}
 		}
@@ -1847,36 +1847,36 @@ void OBJrTurretDisplayDebuggingInfo(OBJtObject *inObject)
 			// draw our target point
 			MUmVector_Copy(p0, targeting_state->target_pt);
 			MUmVector_Copy(p1, p0);
-			
+
 			p0.x += 3.0f;
 			p1.x -= 3.0f;
 			M3rGeom_Line_Light(&p0, &p1, IMcShade_Purple);
-			
+
 			p0.x -= 3.0f;
 			p1.x += 3.0f;
 			p0.y += 3.0f;
 			p1.y -= 3.0f;
 			M3rGeom_Line_Light(&p0, &p1, IMcShade_Purple);
-			
+
 			p0.y -= 3.0f;
 			p1.y += 3.0f;
 			p0.z += 3.0f;
 			p1.z -= 3.0f;
 			M3rGeom_Line_Light(&p0, &p1, IMcShade_Purple);
 		}
-		
-		if (targeting_state->target != NULL) 
+
+		if (targeting_state->target != NULL)
 		{
 			// draw the target's predicted velocity and trend vectors
 			MUmVector_Copy(p0, targeting_state->target->location);
 			p0.y += targeting_state->target->heightThisFrame;
-			
+
 			MUmVector_Add(p1, p0, targeting_state->predicted_trend);
 			M3rGeom_Line_Light(&p0, &p1, IMcShade_LightBlue);
-			
+
 			MUmVector_Add(p1, p0, targeting_state->predicted_velocity);
 			M3rGeom_Line_Light(&p0, &p1, IMcShade_Blue);
-			
+
 			// draw a little tick on the velocity vector
 			MUmVector_ScaleIncrement(p0, targeting_state->current_prediction_accuracy, targeting_state->predicted_velocity);
 			MUmVector_Copy(p1, p0);
@@ -1983,7 +1983,7 @@ static void OBJiTurret_Update( OBJtObject *inObject )
 	}
 
 	// if we are active...
-	if( turret_osd->state == OBJcTurretState_Active ) 
+	if( turret_osd->state == OBJcTurretState_Active )
 	{
 		// check for timeout
 		if (turret_osd->turret_class->timeout && turret_osd->active_time > turret_osd->turret_class->timeout) {
@@ -2003,7 +2003,7 @@ static void OBJiTurret_Update( OBJtObject *inObject )
 	{
 		turret_osd->fire_weapon = UUcFalse;
 	}
-	
+
 	// clip desired angle to limits
 	turret_osd->desired_vert_angle = OBJiTurret_ClipAngle( turret_osd->desired_vert_angle, turret_osd->turret_class->min_vert_angle, turret_osd->turret_class->max_vert_angle );
 	turret_osd->desired_horiz_angle = OBJiTurret_ClipAngle( turret_osd->desired_horiz_angle, turret_osd->turret_class->min_horiz_angle, turret_osd->turret_class->max_horiz_angle );
@@ -2067,14 +2067,14 @@ UUtError OBJrTurret_Initialize(void)
 	UUtError							error;
 	OBJtMethods							methods;
 	ONtMechanicsMethods					mechanics_methods;
-	
+
 	// intialize the globals
 	OBJgTurret_DrawTurretDebugInfo		= UUcFalse;
 	OBJgTurret_DrawTurrets				= UUcTrue;
 
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew						= OBJiTurret_New;
 	methods.rSetDefaults				= OBJiTurret_SetDefaults;
@@ -2090,12 +2090,12 @@ UUtError OBJrTurret_Initialize(void)
 	methods.rSetOSD						= OBJiTurret_SetOSD;
 	methods.rRead						= OBJiTurret_Read;
 	methods.rWrite						= OBJiTurret_Write;
-	
+
 	// set up the type methods
 	methods.rGetClassVisible			= OBJiTurret_GetVisible;
 	methods.rSetClassVisible			= OBJiTurret_SetVisible;
 	methods.rSearch						= OBJiTurret_Search;
-	
+
 	// set up the mechanics methods
 	mechanics_methods.rInitialize		= OBJiTurret_LevelBegin;
 	mechanics_methods.rTerminate		= OBJiTurret_LevelEnd;
@@ -2107,11 +2107,11 @@ UUtError OBJrTurret_Initialize(void)
 	mechanics_methods.rClassLevelEnd	= NULL;
 	mechanics_methods.rClassReset		= NULL;
 	mechanics_methods.rClassUpdate		= NULL;
-	
+
 	// register the methods
 	error = ONrMechanics_Register( OBJcType_Turret, OBJcTypeIndex_Turret, "Turret", sizeof(OBJtOSD_Turret), &methods, 0, &mechanics_methods );
 	UUmError_ReturnOnError(error);
-	
+
 #if CONSOLE_DEBUGGING_COMMANDS
 	// register the id set function
 	error = SLrGlobalVariable_Register_Bool( "turret_show_debug", "Enables the display of turret debug lines",  &OBJgTurret_DrawTurretDebugInfo);
@@ -2121,7 +2121,7 @@ UUtError OBJrTurret_Initialize(void)
 	error = SLrGlobalVariable_Register_Bool( "show_turrets", "Enables the display of turrets", &OBJgTurret_DrawTurrets);
 	UUmError_ReturnOnError(error);
 #endif
-	
+
 	return UUcError_None;
 }
 

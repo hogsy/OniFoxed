@@ -5,13 +5,13 @@
 
 /*
 	FILE:	BFW_Physics.h
-	
+
 	AUTHOR:	Quinn Dunki
-	
+
 	CREATED: 4/8/98
-	
+
 	PURPOSE: Physics engine
-	
+
 	Copyright 1998
 
 */
@@ -55,13 +55,13 @@ enum
 {
 	PHcUpdateFlag_None				= 0x0000,
 	PHcUpdateFlag_Position			= 0x0001
-	
+
 };
 
 typedef enum PHtColliderType
 {
 	PHcCollider_Env,
-	PHcCollider_Phy			
+	PHcCollider_Phy
 } PHtColliderType;
 
 typedef enum PHtPhysicsLevel
@@ -101,7 +101,7 @@ typedef struct PHtSphereTree
 typedef struct PHtCollider
 {
 	PHtColliderType type;
-	void *data;					// * PHcCollider_Env = gq, PHcCollider_Phy, physics context 
+	void *data;					// * PHcCollider_Env = gq, PHcCollider_Phy, physics context
 
 	M3tPlaneEquation plane;		// * Plane of collision (computed by called)
 	M3tPoint3D planePoint;		// * Point on plane first touched (computed by called)
@@ -133,13 +133,13 @@ typedef void
 	PHtPhysicsContext *ioContext,
 	M3tVector3D *inVelocityThisFrame);
 
-typedef void 
+typedef void
 (*PHtCallback_ReceiveForce)(
 	PHtPhysicsContext *ioContext,
 	const PHtPhysicsContext *inPushingContext,
 	const M3tVector3D *inForce);
 
-typedef void 
+typedef void
 (*PHtCallback_ApplyForce)(
 	PHtPhysicsContext *ioContext,
 	PHtCollider *inCollider);
@@ -225,7 +225,7 @@ struct PHtPhysicsContext
 	PHtSphereTree			*sphereTree;
 	M3tBoundingBox			axisBox;			// Must be a M3tBoundingBox
 	M3tBoundingVolume		*worldAlignedBounds;	// axisBox * matrix
-	
+
 	// Physical data
 	M3tVector3D				velocity;
 	M3tQuaternion			rotationalVelocity;
@@ -245,7 +245,7 @@ struct PHtPhysicsContext
 
 	// status info
 	M3tVector3D				acceleration;
-	
+
 	// Status info
 	UUtUns32				flags;
 	PHtPhysicsLevel			level;
@@ -325,7 +325,7 @@ UUtBool PHrCollision_Volume_SphereTree(
 
 UUtBool PHrCollision_Volume_Ray(
 	const M3tBoundingVolume *inA,
-	const M3tPoint3D *inPoint, 
+	const M3tPoint3D *inPoint,
 	const M3tVector3D *inV,
 	M3tPlaneEquation *outPlane,	// optional
 	M3tPoint3D *outPoint);		// optional
@@ -353,7 +353,7 @@ void PHrPhysics_Delete(
 	PHtPhysicsContext *ioPhysics);
 
 void PHrPhysics_Accelerate(
-	PHtPhysicsContext *physics, 
+	PHtPhysicsContext *physics,
 	const M3tVector3D *inAcceleration);
 
 UUtBool PHrPhysics_Update_Animation(
@@ -371,7 +371,7 @@ PHrPhysics_Colliders_GetFromSphere(
 	M3tVector3D*			inVector,
 	UUtUns16				*outNumColliders,
 	PHtCollider				*outColliders);
-	
+
 void PHrPhysics_Pause_Animation(OBtAnimationContext *ioAnimContext);
 void PHrPhysics_Unpause_Animation(OBtAnimationContext *ioAnimContext);
 

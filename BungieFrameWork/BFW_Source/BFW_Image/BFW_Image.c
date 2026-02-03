@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Image.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Nov 27, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 */
 
@@ -28,12 +28,12 @@ typedef struct IMtPixelTypeInfo_Lookup
 	UUtUns32		rMask;
 	UUtUns32		gMask;
 	UUtUns32		bMask;
-	
+
 } IMtPixelTypeInfo_Lookup;
 
 // table must be in order
 const IMtPixelTypeInfo_Lookup
-IMgPixelTypeInfoTable[] = 
+IMgPixelTypeInfoTable[] =
 {
 	{ IMcPixelType_ARGB4444,		UUcTrue,	2,     0xf000,     0x0f00,     0x00f0,     0x000f },
 	{ IMcPixelType_RGB555,			UUcTrue,	2,     0x0000,     0x7c00,     0x03e0,     0x001f },
@@ -47,8 +47,8 @@ IMgPixelTypeInfoTable[] =
 	{ IMcPixelType_DXT1,			UUcFalse,	0,			0,			0,			0,			0 },
 	{ IMcPixelType_RGB_Bytes,		UUcFalse,	3,			3,			0,			0,			0 },
 	{ IMcPixelType_RGBA_Bytes,		UUcFalse,	4,			4,			0,			0,			0 },
-	{ IMcPixelType_RGBA5551,		UUcTrue,	2,     0x0001,     0xf800,     0x07c0,     0x003e }, 
-	{ IMcPixelType_RGBA4444,		UUcTrue,	2,     0x000f,     0xf000,     0x0f00,     0x00f0 }, 
+	{ IMcPixelType_RGBA5551,		UUcTrue,	2,     0x0001,     0xf800,     0x07c0,     0x003e },
+	{ IMcPixelType_RGBA4444,		UUcTrue,	2,     0x000f,     0xf000,     0x0f00,     0x00f0 },
 	{ IMcPixelType_RGB565,			UUcTrue,	2,     0x0000,     0xf800,     0x07e0,     0x001f },
 	{ IMcPixelType_ABGR1555,		UUcTrue,	2,     0x8000,     0x001f,     0x03e0,     0x7c00 }
 };
@@ -116,7 +116,7 @@ static UUtUns32 IMiComponentToBits(float component, UUtUns32 mask)
 	UUtUns32 shiftedMask = mask >> shift;
 	UUtUns32 result;
 
-	if (0 == mask) 
+	if (0 == mask)
 	{
 		return 0;
 	}
@@ -134,7 +134,7 @@ static float IMiBitsToComponent(UUtUns32 bits, UUtUns32 mask)
 	UUtUns32 shift = IMiMaskToShift(mask);
 	float result;
 
-	if (0 == mask) 
+	if (0 == mask)
 	{
 		return 1.f;
 	}
@@ -158,35 +158,35 @@ IMiImage_Scale_High(
 	{
 		case IMcPixelType_ARGB4444:
 			break;
-			
+
 		case IMcPixelType_RGB555:
 			break;
-			
+
 		case IMcPixelType_ARGB1555:
 			break;
-			
+
 		case IMcPixelType_I8:
 			break;
-			
+
 		case IMcPixelType_I1:
 			break;
-			
+
 		case IMcPixelType_A8:
 			break;
-			
+
 		case IMcPixelType_A4I4:
 			break;
-			
+
 		case IMcPixelType_ARGB8888:
 			break;
-			
+
 		case IMcPixelType_RGB888:
 			break;
-		
+
 		default:
 			UUmError_ReturnOnError(UUcError_Generic);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -232,7 +232,7 @@ IMrImage_Scale(
 
 	if(inScaleMode & IMcScaleMode_High)
 	{
-		return 
+		return
 			IMiImage_Scale_High(
 				inSrcWidth,
 				inSrcHeight,
@@ -246,7 +246,7 @@ IMrImage_Scale(
 	{
 		if(inScaleMode & IMcScaleMode_IndependantAlpha)
 		{
-			return 
+			return
 				IMrImage_Scale_Box_IndependantAlpha(
 					inSrcWidth,
 					inSrcHeight,
@@ -258,7 +258,7 @@ IMrImage_Scale(
 		}
 		else
 		{
-			return 
+			return
 				IMrImage_Scale_Box(
 					inSrcWidth,
 					inSrcHeight,
@@ -269,7 +269,7 @@ IMrImage_Scale(
 					outDstData);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -294,17 +294,17 @@ IMrImage_Copy(
 	UUtRect			src_bounds;
 	UUtRect			src_rect;
 	UUtUns32		src_read;
-	
+
 	UUtUns16		dst_rowbytes;
 	UUtUns16		dst_pixel_size;
 	UUtUns32		dst;
 	UUtRect			dst_bounds;
 	UUtRect			dst_rect;
 	UUtUns32		dst_write;
-	
+
 	UUtRect			temp;
 	UUtUns16 		width;
-	
+
 	// clip src_rect to the image
 	temp.left = inSrcLocation->x;
 	temp.top = inSrcLocation->y;
@@ -326,25 +326,25 @@ IMrImage_Copy(
 	dst_bounds.right = inDstWidth;
 	dst_bounds.bottom = inDstHeight;
 	IMrRect_Intersect(&temp, &dst_bounds, &dst_rect);
-	
+
 	// get the pixel sizes
 	src_pixel_size = IMrPixel_GetSize(inSrcPixelType);
 	dst_pixel_size = IMrPixel_GetSize(inDstPixelType);
-	
+
 	// calculate the src start
 	src_rowbytes = IMrImage_ComputeRowBytes(inSrcPixelType, inSrcWidth);
 	src =
 		(UUtUns32)inSrcData +
 		(src_rect.left * src_pixel_size) +
 		(src_rect.top * src_rowbytes);
-	
+
 	// calculate the dst start
 	dst_rowbytes = IMrImage_ComputeRowBytes(inDstPixelType, inDstWidth);
 	dst =
 		(UUtUns32)inDstData +
 		(dst_rect.left * dst_pixel_size) +
 		(dst_rect.top * dst_rowbytes);
-	
+
 	// if the pixel types are the same, the pixel doesn't have to
 	// be converted between copy and past
 	if (inSrcPixelType == inDstPixelType)
@@ -357,7 +357,7 @@ IMrImage_Copy(
 					width = inCopyWidth;
 					src_read = src;
 					dst_write = dst;
-					
+
 					while (width--)
  					{
  						*((UUtUns8*)dst_write) = *((UUtUns8*)src_read);
@@ -368,14 +368,14 @@ IMrImage_Copy(
  					dst += dst_rowbytes;
 				}
 			break;
-			
+
 			case 2:
 				while (inCopyHeight--)
 				{
 					width = inCopyWidth;
 					src_read = src;
 					dst_write = dst;
-					
+
 					while (width--)
  					{
  						*((UUtUns16*)dst_write) = *((UUtUns16*)src_read);
@@ -386,14 +386,14 @@ IMrImage_Copy(
  					dst += dst_rowbytes;
 				}
 			break;
-			
+
 			case 4:
 				while (inCopyHeight--)
 				{
 					width = inCopyWidth;
 					src_read = src;
 					dst_write = dst;
-					
+
 					while (width--)
  					{
  						*((UUtUns32*)dst_write) = *((UUtUns32*)src_read);
@@ -419,7 +419,7 @@ IMrImage_Copy(
 					width = inCopyWidth;
 					src_read = src;
 					dst_write = dst;
-					
+
 					while (width--)
  					{
  						src_pixel.value = *((UUtUns8*)src_read);
@@ -436,14 +436,14 @@ IMrImage_Copy(
  					dst += dst_rowbytes;
 				}
 			break;
-			
+
 			case 2:
 				while (inCopyHeight--)
 				{
 					width = inCopyWidth;
 					src_read = src;
 					dst_write = dst;
-					
+
 					while (width--)
  					{
  						src_pixel.value = *((UUtUns16*)src_read);
@@ -460,14 +460,14 @@ IMrImage_Copy(
  					dst += dst_rowbytes;
 				}
 			break;
-			
+
 			case 4:
 				while (inCopyHeight--)
 				{
 					width = inCopyWidth;
 					src_read = src;
 					dst_write = dst;
-					
+
 					while (width--)
  					{
  						src_pixel.value = *((UUtUns32*)src_read);
@@ -509,7 +509,7 @@ IMrImage_GeneralManipulation(
 	void*		newSrcData;
 	IMtPoint2D	srcLocation;
 	IMtPoint2D	newSrcLocation;
-	
+
 	UUtUns16	dstWidth;
 	UUtUns16	dstHeight;
 	UUtUns16	unconvertedDstRowBytes;
@@ -517,7 +517,7 @@ IMrImage_GeneralManipulation(
 	UUtUns16	convertedDstRowBytes;
 	void*		convertedDstData;
 	IMtPoint2D	dstLocation;
-	
+
 	newSrcWidth = inSrcRect->right - inSrcRect->left;
 	newSrcHeight = inSrcRect->bottom - inSrcRect->top;
 	newSrcRowBytes = IMrImage_ComputeRowBytes(inSrcPixelType, newSrcWidth);
@@ -527,18 +527,18 @@ IMrImage_GeneralManipulation(
 	newSrcLocation.y = 0;
 
 	newSrcData = UUrMemory_Block_New(newSrcRowBytes * newSrcHeight);
-	UUmError_ReturnOnNull(newSrcData);	
-	
+	UUmError_ReturnOnNull(newSrcData);
+
 	dstWidth = inDstRect->right - inDstRect->left;
 	dstHeight = inDstRect->bottom - inDstRect->top;
 	unconvertedDstRowBytes = IMrImage_ComputeRowBytes(inSrcPixelType, dstWidth);
 	convertedDstRowBytes = IMrImage_ComputeRowBytes(inDstPixelType, dstWidth);
 	dstLocation.x = inDstRect->left;
 	dstLocation.y = inDstRect->top;
-	
+
 	unconvertedDstData = UUrMemory_Block_New(unconvertedDstRowBytes * dstHeight);
-	UUmError_ReturnOnNull(unconvertedDstData);	
-	
+	UUmError_ReturnOnNull(unconvertedDstData);
+
 	// Step 1. Copy srcRect out of the source image into its own image
 		IMrImage_Copy(
 			newSrcWidth,
@@ -553,7 +553,7 @@ IMrImage_GeneralManipulation(
 			inSrcPixelType,
 			newSrcData,
 			&newSrcLocation);
-	
+
 	// Step 2. Scale new source image into the proper dimensions
 		IMrImage_Scale(
 			IMcScaleMode_Box,
@@ -564,12 +564,12 @@ IMrImage_GeneralManipulation(
 			dstWidth,
 			dstHeight,
 			unconvertedDstData);
-			
+
 	// Step 3. Convert to dst pixel type
 		if(inSrcPixelType != inDstPixelType)
-		{			
+		{
 			convertedDstData = UUrMemory_Block_New(convertedDstRowBytes * dstHeight);
-			
+
 			IMrImage_ConvertPixelType(
 				inDitherMode,
 				dstWidth,
@@ -584,7 +584,7 @@ IMrImage_GeneralManipulation(
 		{
 			convertedDstData = unconvertedDstData;
 		}
-		
+
 	// Step 3. Copy scaled image into the dst rect
 		IMrImage_Copy(
 			dstWidth,
@@ -599,15 +599,15 @@ IMrImage_GeneralManipulation(
 			inDstPixelType,
 			outDstData,
 			&dstLocation);
-			
+
 	UUrMemory_Block_Delete(newSrcData);
 	UUrMemory_Block_Delete(unconvertedDstData);
-	
+
 	if(convertedDstData != unconvertedDstData)
 	{
 		UUrMemory_Block_Delete(convertedDstData);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -623,32 +623,32 @@ IMrImage_GetPixel(
 	IMtPixel		*outDstPixel)
 {
 	IMtPixel		temp_pixel;
-	
+
 	UUmAssert((inPixelX >= 0) && (inPixelX < inSrcWidth));
 	UUmAssert((inPixelY >= 0) && (inPixelY < inSrcHeight));
 	UUmAssert(inSrcData);
 	UUmAssert(outDstPixel);
-	
+
 	// get the pixel from the the bitmap
 	switch (IMrPixel_GetSize(inSrcPixelType))
 	{
 		case 1:
 			temp_pixel.value = *((UUtUns8*)(inSrcData) + inPixelX + inPixelY);
 		break;
-		
+
 		case 2:
 			temp_pixel.value = *((UUtUns16*)(inSrcData) + inPixelX + (inPixelY * inSrcWidth));
 		break;
-		
+
 		case 4:
 			temp_pixel.value = *((UUtUns32*)(inSrcData) + inPixelX + (inPixelY * inSrcWidth));
 		break;
-		
+
 		default:
 			UUmAssert(!"bad pixel type");
 		break;
 	}
-	
+
 	// convert the pixel to the desired pixel type
 	IMrPixel_Convert(
 		inSrcPixelType,
@@ -683,15 +683,15 @@ IMrImage_Fill(
 		switch(IMrPixel_GetSize(inPixelType))
 		{
 			case 1:
-				UUrMemory_Set8(inDstData, (UUtUns8) inPixel.value, numBytes);  
+				UUrMemory_Set8(inDstData, (UUtUns8) inPixel.value, numBytes);
 			break;
 
 			case 2:
-				UUrMemory_Set16(inDstData, (UUtUns16) inPixel.value, numBytes);  
+				UUrMemory_Set16(inDstData, (UUtUns16) inPixel.value, numBytes);
 			break;
 
 			case 4:
-				UUrMemory_Set32(inDstData, (UUtUns32) inPixel.value, numBytes);  
+				UUrMemory_Set32(inDstData, (UUtUns32) inPixel.value, numBytes);
 			break;
 
 			default:
@@ -701,21 +701,21 @@ IMrImage_Fill(
 	}
 
 	UUmAssertReadPtr(inDstRect, sizeof(*inDstRect));
-	
+
 	// set the texture_rect
 	texture_rect.left = 0;
 	texture_rect.top = 0;
 	texture_rect.right = inDstWidth;
 	texture_rect.bottom = inDstHeight;
-	
+
 	// set the clip info
 	IMrRect_ComputeClipInfo(&texture_rect, inDstRect, &dest_x, &dest_y, &width, &height);
-	
+
 	if ((width <= 0) || (height <= 0))
 		return;
 
 	texel_size = IMrPixel_GetSize(inPixelType);
-	
+
 	// fill in the bounds area of the texture map with inColor
 	switch (texel_size)
 	{
@@ -723,68 +723,68 @@ IMrImage_Fill(
 		{
 			UUtUns16			*dest_16_line_start;
 			UUtUns32			dest_16_row_texels;
-			
+
 			dest_16_row_texels =	inDstWidth;
 			dest_16_line_start =	(UUtUns16*)inDstData +
 									dest_x +
 									(dest_16_row_texels * dest_y);
-			
+
 			for (i = 0; i < height; i++)
 			{
 				UUrMemory_Set16(
-					dest_16_line_start, 
-					(UUtUns16) inPixel.value, 
+					dest_16_line_start,
+					(UUtUns16) inPixel.value,
 					width * texel_size);
-				
+
 				dest_16_line_start += dest_16_row_texels;
 			}
 		}
 		break;
-			
+
 		case 1:
 		{
 			UUtUns8				*dest_8_line_start;
 			UUtUns32			dest_8_row_texels;
-			
+
 			dest_8_row_texels = inDstWidth;
 			dest_8_line_start =	(UUtUns8*)inDstData +
 								dest_x +
 								(dest_8_row_texels * dest_y);
-			
+
 			for (i = 0; i < height; i++)
 			{
 				UUrMemory_Set8(
-					dest_8_line_start, 
-					(UUtUns8) inPixel.value, 
+					dest_8_line_start,
+					(UUtUns8) inPixel.value,
 					width * texel_size);
-				
+
 				dest_8_line_start += dest_8_row_texels;
 			}
 		}
 		break;
-			
+
 		case 4:
 		{
 			UUtUns32			*dest_32_line_start;
 			UUtUns32			dest_32_row_texels;
-			
+
 			dest_32_row_texels =	inDstWidth;
 			dest_32_line_start =	(UUtUns32*)inDstData +
 									dest_x +
 									(dest_32_row_texels * dest_y);
-			
+
 			for (i = 0; i < height; i++)
 			{
 				UUrMemory_Set32(
-					dest_32_line_start, 
-					inPixel.value, 
+					dest_32_line_start,
+					inPixel.value,
 					width * texel_size);
-				
+
 				dest_32_line_start += dest_32_row_texels;
 			}
 		}
 		break;
-		
+
 		default:
 			UUmAssert(!"Unknown TexelSize");
 	}
@@ -808,7 +808,7 @@ IMrImage_ComputeRowBytes(
 		case 2:
 			UUmAssert(inWidth <= (UUcMaxUns16 / 2));
 			return inWidth * 2;
-		
+
 		case 1:
 			return (inWidth + 1) & ~1;
 		}
@@ -823,8 +823,8 @@ IMrImage_ComputeRowBytes(
 			default:
 				UUmAssert(!"unknown pixel type");
 		}
-	}	
-	
+	}
+
 	return 0;
 }
 
@@ -962,7 +962,7 @@ IMrImage_ComputeSize(
 				UUmAssert(inWidth <= (UUcMaxUns16 / 2));
 				size =  inWidth * inHeight * 2;
 				break;
-			
+
 			case 1:
 				size =  ((inWidth + 1) & ~1) * inHeight * 1;
 				break;
@@ -986,7 +986,7 @@ IMrImage_ComputeSize(
 				UUmAssert(!"unknown pixel type");
 		}
 	}
-	
+
 	if (IMcHasMipMap == inHasMipMap)
 	{
 		// S.S. UUtUns16 newWidth = inWidth / 2;
@@ -1001,7 +1001,7 @@ IMrImage_ComputeSize(
 
 		size += IMrImage_ComputeSize(inPixelType, inHasMipMap, newWidth, newHeight);
 	}
-	
+
 	return size;
 }
 
@@ -1009,7 +1009,7 @@ IMrImage_ComputeSize(
 IMtPixel
 IMrPixel_FromARGB(
 	IMtPixelType	inPixelType,
-	float			inA,									 
+	float			inA,
 	float			inR,
 	float			inG,
 	float			inB)
@@ -1060,7 +1060,7 @@ IMrShade_FromPixel(
 {
 	float a,r,g,b;
 	IMtShade shade_a, shade_r, shade_g, shade_b;
-	IMtShade shade; 
+	IMtShade shade;
 
 	IMrPixel_Decompose(inPixel, inPixelType, &a, &r, &g, &b);
 
@@ -1082,9 +1082,9 @@ IMrShade_Interpolate_Integer(
 	float			inInterp)
 {
 	IMtShade		result;
-	IMtShade		dst_a;		
-	IMtShade		dst_r;		
-	IMtShade		dst_g;		
+	IMtShade		dst_a;
+	IMtShade		dst_r;
+	IMtShade		dst_g;
 	IMtShade		dst_b;
 	UUtUns32		to_amount = MUrUnsignedSmallFloat_ShiftLeft_To_Uns_Round(inInterp, 8);
 	UUtUns32		from_amount = 256 - to_amount;
@@ -1145,7 +1145,7 @@ IMrShade_Interpolate(
 
 #if defined(DEBUGGING) && DEBUGGING
 	{
-		IMtShade result_float = IMrShade_Interpolate_Float(inShade1, inShade2, inInterp);	
+		IMtShade result_float = IMrShade_Interpolate_Float(inShade1, inShade2, inInterp);
 		UUmAssert(IMrShade_IsEqual(result_integer, result_float));
 	}
 #endif
@@ -1154,7 +1154,7 @@ IMrShade_Interpolate(
 }
 
 UUtBool IMrShade_IsEqual(IMtShade src, IMtShade dst)
-{	
+{
 	UUtInt32 max_delta = 2;
 	UUtInt32 delta = 0;
 	UUtBool is_equal = UUcTrue;
@@ -1222,7 +1222,7 @@ IMrPixel_Get(
 
 void
 IMrPixel_Decompose(
-	IMtPixel		inPixel, 
+	IMtPixel		inPixel,
 	IMtPixelType	inPixelType,
 	float			*outA,
 	float			*outR,
@@ -1277,7 +1277,7 @@ IMrInitialize(
 	static const float one_over_255= 1.f/255.f;
 
 	UUrStartupMessage("initializing image system...");
-	
+
 	// initialize alpha blend table
 	for(itr = 0; itr < 0xFF; itr++)
 	{
@@ -1287,21 +1287,21 @@ IMrInitialize(
 		dstA = (UUtUns16)(itr & 0xF);
 
 		test_alpha = IMr4BitAlphaBlendTable(srcA, dstA);
-		
+
 		srcA |= (UUtUns16)(srcA << 4);
 		dstA |= (UUtUns16)(dstA << 4);
-		
+
 		/* S.S. srcA_float = srcA / 255.0f;
 		dstA_float = dstA / 255.0f;*/
 		srcA_float= srcA * one_over_255;
 		dstA_float= dstA * one_over_255;
-		
+
 		newA_float = 1.0f - (1.0f - dstA_float) * (1.0f - srcA_float);
 		newA = (UUtUns16)(newA_float * 15.0f);
 
 		UUmAssert(UUmABS(test_alpha - newA) <= 1);
 	}
-	
+
 	// verify the rgb blend table
 	for(itr = 0; itr < 0xFFFF; itr++)
 	{
@@ -1315,12 +1315,12 @@ IMrInitialize(
 		if (0 == (srcA+dstA)) { continue; }
 
 		function_result = IMr4BitRGBBlendTable(srcA, dstA, srcC, dstC);
-		
+
 		srcA |= srcA << 4;
 		dstA |= dstA << 4;
 		srcC |= srcC << 4;
 		dstC |= dstC << 4;
-		
+
 		/* S.S. srcA_float = srcA / 255.0f;
 		dstA_float = dstA / 255.0f;
 		srcC_float = srcC / 255.0f;
@@ -1331,7 +1331,7 @@ IMrInitialize(
 		dstC_float = dstC * one_over_255;
 
 		newC_float = (srcC_float * srcA_float + dstC_float * dstA_float) / (srcA_float + dstA_float);
-		
+
 		newC = (UUtUns16)(newC_float * 15.0f);
 		UUmAssert(UUmABS(function_result == newC) <= 1);
 	}
@@ -1348,7 +1348,7 @@ IMrInitialize(
 		IMrShade_Interpolate(shade1, shade2, t);
 	}
 #endif
-	
+
 
 	return UUcError_None;
 }
@@ -1369,7 +1369,7 @@ IMrPixel_BlendARGB4444(
 	UUtUns32	srcG, dstG, newG;
 	UUtUns32	srcB, dstB, newB;
 	UUtUns32	result;
-	
+
 	srcA = (inSrcPixel >> 12) & 0xF;
 	dstA = (inDstPixel >> 12) & 0xF;
 
@@ -1378,19 +1378,19 @@ IMrPixel_BlendARGB4444(
 	}
 
 	newA = IMr4BitAlphaBlendTable(srcA, dstA);
-	
+
 	srcR = (inSrcPixel >> 8) & 0xF;
 	dstR = (inDstPixel >> 8) & 0xF;
 	newR = IMr4BitRGBBlendTable(srcA, dstA, srcR, dstR);
-	
+
 	srcG = (inSrcPixel >> 4) & 0xF;
 	dstG = (inDstPixel >> 4) & 0xF;
 	newG = IMr4BitRGBBlendTable(srcA, dstA, srcG, dstG);
-	
+
 	srcB = (inSrcPixel >> 0) & 0xF;
 	dstB = (inDstPixel >> 0) & 0xF;
 	newB = IMr4BitRGBBlendTable(srcA, dstA, srcB, dstB);
-	
+
 	result = (newA << 12) | (newR << 8) | (newG << 4) | (newB);
 
 	return (UUtUns16) result;
@@ -1405,7 +1405,7 @@ IMrRect_Inset(
 	const UUtInt16	inDeltaY)
 {
 	UUmAssert(ioRect);
-	
+
 	ioRect->left +=		inDeltaX;
 	ioRect->top +=		inDeltaY;
 	ioRect->right -=	inDeltaX;
@@ -1423,28 +1423,28 @@ IMrRect_Intersect(
 	UUtInt16			right;
 	UUtInt16			top;
 	UUtInt16			bottom;
-	
+
 	UUmAssert(inRect1);
 	UUmAssert(inRect2);
 	UUmAssert(outRect);
-	
+
 	// calculate the left, right, top, and bottom of the out rect
 	left = UUmMin(inRect1->left, inRect2->right);
 	left = UUmMax(left, inRect2->left);
-	
+
 	right = UUmMax(inRect1->right, inRect2->left);
 	right = UUmMin(right, inRect2->right);
-	
+
 	top = UUmMin(inRect1->top, inRect2->bottom);
 	top = UUmMax(top, inRect2->top);
-	
+
 	bottom = UUmMax(inRect1->bottom, inRect2->top);
 	bottom = UUmMin(bottom, inRect2->bottom);
-	
+
 	// if they don't intersect, set the params to zero
 	if (left > right) left = right = 0;
 	if (top > bottom) top = bottom = 0;
-	
+
 	// set the out rect
 	outRect->left = left;
 	outRect->right = right;
@@ -1460,10 +1460,10 @@ IMrRect_Offset(
 	const UUtInt16	inOffsetY)
 {
 	UUmAssert(ioRect);
-	
+
 	ioRect->left = ioRect->left + inOffsetX;
 	ioRect->right = ioRect->right + inOffsetX;
-	
+
 	ioRect->top  = ioRect->top + inOffsetY;
 	ioRect->bottom = ioRect->bottom + inOffsetY;
 }
@@ -1481,7 +1481,7 @@ IMrRect_PointIn(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -1499,7 +1499,7 @@ IMrRect_ComputeClipInfo(
 	UUtInt16			right;
 	UUtInt16			top;
 	UUtInt16			bottom;
-	
+
 	UUmAssertReadPtr(inRect1, sizeof(*inRect1));
 	UUmAssertReadPtr(inRect2, sizeof(*inRect2));
 	UUmAssertWritePtr(outDestX, sizeof(*outDestX));
@@ -1509,19 +1509,19 @@ IMrRect_ComputeClipInfo(
 
 	left = UUmMin(inRect1->left, inRect2->right);
 	left = UUmMax(left, inRect2->left);
-	
+
 	right = UUmMax(inRect1->right, inRect2->left);
 	right = UUmMin(right, inRect2->right);
-	
+
 	top = UUmMin(inRect1->top, inRect2->bottom);
 	top = UUmMax(top, inRect2->top);
-	
+
 	bottom = UUmMax(inRect1->bottom, inRect2->top);
 	bottom = UUmMin(bottom, inRect2->bottom);
-	
+
 	*outDestX = left;
 	*outDestY = top;
-	*outWidth = right - left; 
+	*outWidth = right - left;
 	*outHeight = bottom - top;
 }
 
@@ -1533,16 +1533,16 @@ IMrRect_Union(
 	UUtRect				*outRect)
 {
 	UUtRect				temp;
-	
+
 	UUmAssertReadPtr(inRect1, sizeof(*inRect1));
 	UUmAssertReadPtr(inRect2, sizeof(*inRect2));
 	UUmAssertWritePtr(outRect, sizeof(*outRect));
-	
+
 	temp.left	= UUmMin(inRect1->left, inRect2->left);
 	temp.top	= UUmMin(inRect1->top, inRect2->top);
 	temp.right	= UUmMax(inRect1->right, inRect2->right);
 	temp.bottom	= UUmMax(inRect1->bottom, inRect2->bottom);
-	
+
 	*outRect = temp;
 }
 
@@ -1553,11 +1553,11 @@ IMrPoint2D_Distance(
 	const IMtPoint2D	*inPoint2)
 {
 	M3tPoint3D delta;
-	
+
 	delta.x = (float)(inPoint2->x - inPoint1->x);
 	delta.y = (float)(inPoint2->y - inPoint1->y);
 	delta.z = 0.0f;
-	
+
 	return (UUtInt16)MUrPoint_Length(&delta);
 }
 
@@ -1592,7 +1592,7 @@ AUiImage_GetRow(
 	{
 		return;
 	}
-	
+
 	UUrMemory_MoveFast(
 		(char*)inImage->baseAddr + (inRowIndex * inImage->rowBytes),
 		inRowMem,
@@ -1614,7 +1614,7 @@ AUiImage_PutPixel(
 	{
 		return;
 	}
-	
+
 	p = (UUtUns32*)((char*)inImage->baseAddr + (inY * inImage->rowBytes));
 
 	p[inX] = (inR << 16) | (inG << 8) | (inB << 0);
@@ -1633,9 +1633,9 @@ AUiImage_GetColumn(
 	{
 		return;
 	}
-	
+
 	d = inImage->rowBytes >> 2;
-	
+
 	for(i = inImage->height, p = inImage->baseAddr + inColumnIndex;
 		i-- > 0;
 		p += d)
@@ -1657,9 +1657,9 @@ AUrImage_Scale(
 	double		width, fscale, weight;	/* filter calculation variables */
 	UUtUns32*	raster;					/* a row or column of pixels */
 	double		r, g, b;
-	
+
 	CLIST*		contrib;				/* array of contribution lists */
-	
+
 	float		fWidth = 2.0;
 	/* create intermediate image to hold horizontal zoom */
 		tmp = AUiImage_New(inDst->width, inSrc->height);
@@ -1667,24 +1667,24 @@ AUrImage_Scale(
 		{
 			UUmError_ReturnOnError(UUcError_OutOfMemory);
 		}
-		
+
 	xscale = (double) inDst->width / (double) inSrc->width;
 	yscale = (double) inDst->height / (double) inSrc->height;
 
 	/* pre-calculate filter contributions for a row */
 		contrib = (CLIST *)UUrMemory_Block_NewClear(inDst->width * sizeof(CLIST));
-		
+
 		if(xscale < 1.0)
 		{
 			width = fWidth / xscale;
 			fscale = 1.0 / xscale;
-			
+
 			for(i = 0; i < inDst->width; ++i)
 			{
 				contrib[i].n = 0;
 				contrib[i].p = (CONTRIB *)
 					UUrMemory_Block_NewClear((int) (width * 2 + 1) * sizeof(CONTRIB));
-				
+
 				center = (double) i / xscale;
 				left = ceil(center - width);
 				right = floor(center + width);
@@ -1724,7 +1724,7 @@ AUrImage_Scale(
 				{
 					weight = center - (double) j;
 					weight = Lanczos3_filter(weight);
-					
+
 					if(j < 0)
 					{
 						n = -j;
@@ -1737,7 +1737,7 @@ AUrImage_Scale(
 					{
 						n = j;
 					}
-					
+
 					k = contrib[i].n++;
 					contrib[i].p[k].pixel = n;
 					contrib[i].p[k].weight = weight;
@@ -1768,7 +1768,7 @@ AUrImage_Scale(
 					(UUtUns32)UUmPin(b, 0.0f, 255.999f));
 			}
 		}
-		
+
 		UUrMemory_Block_Delete(raster);
 
 	/* free the memory allocated for horizontal filter weights */
@@ -1875,11 +1875,11 @@ AUrImage_Scale(
 		{
 			UUrMemory_Block_Delete(contrib[i].p);
 		}
-		
+
 		UUrMemory_Block_Delete(contrib);
 
 	AUiImage_Delete(tmp);
-	
+
 	return UUcError_None;
 }
 
@@ -1890,10 +1890,10 @@ const char *IMrPixelTypeToString(IMtPixelType inPixelType)
 	typedef struct IMtPixelTypeToStringTable
 	{
 		IMtPixelType type;
-		const char *string;	
+		const char *string;
 	} IMtPixelTypeToStringTable;
 
-	IMtPixelTypeToStringTable table[IMcNumPixelTypes] = 
+	IMtPixelTypeToStringTable table[IMcNumPixelTypes] =
 	{
 		{ IMcPixelType_ARGB4444, "argb4444" },
 		{ IMcPixelType_RGB555, "rgb555" },
@@ -1912,14 +1912,14 @@ const char *IMrPixelTypeToString(IMtPixelType inPixelType)
 		{ IMcPixelType_RGB565, "rgb565" },
 		{ IMcPixelType_ABGR1555, "abgr1555" },
 	};
-	
+
 	const char *pixel_type_string;
 
 	// verify the table
 	{
 		IMtPixelType itr;
 
-		for(itr = 0; itr < IMcNumPixelTypes; itr++) 
+		for(itr = 0; itr < IMcNumPixelTypes; itr++)
 		{
 			UUmAssert(table[itr].type == itr);
 			UUmAssert(table[itr].string != NULL);

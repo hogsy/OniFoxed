@@ -2,13 +2,13 @@
 
 /*
 	FILE:	BFW_FileFormat.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1998
-	
+
 	PURPOSE: Interface to various graphical file formats
-	
+
 	Copyright 1998
 
 */

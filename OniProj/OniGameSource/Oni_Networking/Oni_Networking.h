@@ -39,7 +39,7 @@ typedef enum ONtNetType
 	ONcNetType_Server			= 0x0001,		// server only
 	ONcNetType_Client			= 0x0002,		// client only
 	ONcNetType_ServerClient		= 0x0003		// server and client
-	
+
 } ONtNetType;
 
 typedef enum ONtNetGameParams
@@ -48,7 +48,7 @@ typedef enum ONtNetGameParams
 	ONcNetGameParam_TimeLimit	= 0x0001,
 	ONcNetGameParam_KillLimit	= 0x0002,
 	ONcNetGameParam_HasAIs		= 0x0004
-	
+
 } ONtNetGameParams;
 
 // ======================================================================
@@ -62,7 +62,7 @@ typedef struct ONtNetGameOptions
 	UUtUns32				time_limit;
 	UUtUns16				kill_limit;
 	UUtUns16				num_AIs;
-	
+
 } ONtNetGameOptions;
 
 typedef struct ONtNet_ServerInfo
@@ -71,7 +71,7 @@ typedef struct ONtNet_ServerInfo
 	UUtUns16				num_players;
 	UUtUns16				level_number;
 	char					server_name[ONcMaxHostNameLength];
-	
+
 } ONtNet_ServerInfo;
 
 typedef
@@ -90,7 +90,7 @@ ONrNet_Client_Join(
 	char					*inCharacterClass,
 	char					*inPlayerName,
 	char					*inTeamName);
-	
+
 UUtError
 ONrNet_Client_Start(
 	UUtUns16				inClientPortNumber);
@@ -103,7 +103,7 @@ ONrNet_Client_Stop(
 char*
 ONrNet_Server_GetAddress(
 	void);
-	
+
 UUtError
 ONrNet_Server_Start(
 	UUtUns16				inServerPortNumber,
@@ -114,7 +114,7 @@ ONrNet_Server_Start(
 UUtError
 ONrNet_Server_Stop(
 	void);
-	
+
 // ======================================================================
 typedef
 void
@@ -131,16 +131,16 @@ ONrNet_FindServers_Start(
 UUtError
 ONrNet_FindServers_Stop(
 	void);
-	
+
 void
 ONrNet_FindServers_Update(
 	void);
-	
+
 // ======================================================================
 void
 ONrNet_Performance_Display(
 	void);
-	
+
 // ======================================================================
 UUtError
 ONrNet_Initialize(
@@ -153,11 +153,11 @@ ONrNet_IsActive(
 UUtBool
 ONrNet_IsClient(
 	void);
-	
+
 UUtBool
 ONrNet_IsServer(
 	void);
-	
+
 UUtError
 ONrNet_Level_Begin(
 	UUtUns16				inLevelNumber);
@@ -165,11 +165,11 @@ ONrNet_Level_Begin(
 void
 ONrNet_Level_Callback_Register(
 	ONtNet_Level_Callback	inLevelCallback);
-	
+
 void
 ONrNet_Level_Callback_Unregister(
 	void);
-	
+
 void
 ONrNet_Level_End(
 	void);
@@ -185,10 +185,10 @@ ONrNet_Terminate(
 void
 ONrNet_Update_Receive(
 	void);
-	
+
 void
 ONrNet_Update_Send(
 	void);
-	
+
 // ======================================================================
 #endif /* ONI_NETWORKING_H */

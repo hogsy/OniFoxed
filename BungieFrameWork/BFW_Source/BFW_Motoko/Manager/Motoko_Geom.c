@@ -1,12 +1,12 @@
 /*
 	FILE:	Motoko_Geom.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Dec 8, 1999
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997-1999
 
 */
@@ -35,7 +35,7 @@ typedef enum M3tGeom_Alpha_Kind
 {
 	M3cGeomAlphaKind_Sprite,
 	M3cGeomAlphaKind_Object
-	
+
 } M3tGeom_Alpha_Kind;
 
 typedef struct M3tGeom_Alpha_Sprite
@@ -46,13 +46,13 @@ typedef struct M3tGeom_Alpha_Sprite
 	float			vertScale;
 	UUtUns32		shade;
 	UUtUns16		alpha;
-	
+
 } M3tGeom_Alpha_Sprite;
 
 typedef struct M3tGeom_Alpha_Geom
 {
 	M3tGeometry*	geom;
-	
+
 } M3tGeom_Alpha_Geom;
 
 
@@ -61,16 +61,16 @@ typedef struct M3tGeom_Alpha_Object
 	M3tGeom_Alpha_Kind	kind;
 	UUtUns16			bspNodeIndex;
 	float				distanceToCamera;
-	
+
 	M3tMatrix4x3		localToWorld;
-	
+
 	union
 	{
 		M3tGeom_Alpha_Geom		geom;
 		M3tGeom_Alpha_Sprite	sprite;
-		
+
 	} u;
-	
+
 } M3tGeom_Alpha_Object;
 #endif
 
@@ -78,23 +78,23 @@ typedef struct M3tGeom_Alpha_Object
 typedef struct M3tGeomGlobals
 {
 	AKtEnvironment*	environment;
-	
+
 	UUtUns32	numSolidGQs;
 	UUtUns32	solidGQs[AKcMaxVisibleGQs];
-	
+
 	UUtUns32	numJelloGQs;
 	UUtUns32	jelloGQs[AKcMaxTransparentGQs];
-	
+
 	UUtUns32	numTransparentGQs;
 	UUtUns32	transparentGQs[AKcMaxTransparentGQs];
-	
+
 	UUtUns32*	alphaGQBV;
-	
+
 #if UNUSED_ALPHASORTING
 	UUtUns16				numAlphaObjects;
 	M3tGeom_Alpha_Object	alphaObjects[M3cGeom_Alpha_MaxNumbers];
 #endif
-	
+
 } M3tGeomGlobals;
 
 M3tGeomGlobals	M3gGeomGlobals;
@@ -105,7 +105,7 @@ M3iGeom_AlphaObject_Get(
 	void)
 {
 	if(M3gGeomGlobals.numAlphaObjects >= M3cGeom_Alpha_MaxNumbers) return NULL;
-	
+
 	return M3gGeomGlobals.alphaObjects + M3gGeomGlobals.numAlphaObjects++;
 }
 #endif
@@ -116,47 +116,47 @@ M3iGeom_TraverseBSP(
 	UUtUns32				inNodeIndex)
 {
 	AKtAlphaBSPTree_Node*	bspNode;
-	AKtGQ_Collision*		gqCollision;	
+	AKtGQ_Collision*		gqCollision;
 	float					a, b, c, d;
-	
+
 	if (0xFFFFFFFF == inNodeIndex) return;
-	
+
 	bspNode = M3gGeomGlobals.environment->alphaBSPNodeArray->nodes + inNodeIndex;
-	
+
 	UUmAssert(bspNode->gqIndex < M3gGeomGlobals.environment->gqCollisionArray->numGQs);
-	
+
 	gqCollision = M3gGeomGlobals.environment->gqCollisionArray->gqCollision + bspNode->gqIndex;
-	
+
 	// get the plane equation
 		AKmPlaneEqu_GetComponents(
 			gqCollision->planeEquIndex,
 			M3gGeomGlobals.environment->planeArray->planes,
 			a, b, c, d);
-	
+
 	if(a * inCameraLoc->x + b * inCameraLoc->y + c * inCameraLoc->z + d <= 0.0f)
 	{
 		// "Pos" side
-		
+
 		M3iGeom_TraverseBSP(inCameraLoc, bspNode->negNodeIndex);
-		
+
 		// process this quad
-		if(UUrBitVector_TestAndClearBit(M3gGeomGlobals.alphaGQBV, bspNode->gqIndex)) {		
+		if(UUrBitVector_TestAndClearBit(M3gGeomGlobals.alphaGQBV, bspNode->gqIndex)) {
 			M3gGeomGlobals.transparentGQs[M3gGeomGlobals.numTransparentGQs++] = bspNode->gqIndex;
 		}
-		
+
 		M3iGeom_TraverseBSP(inCameraLoc, bspNode->posNodeIndex);
 	}
 	else
 	{
 		// "Neg" side
-	
+
 		M3iGeom_TraverseBSP(inCameraLoc, bspNode->posNodeIndex);
-		
+
 		// process this quad
-		if(UUrBitVector_TestAndClearBit(M3gGeomGlobals.alphaGQBV, bspNode->gqIndex)) {		
+		if(UUrBitVector_TestAndClearBit(M3gGeomGlobals.alphaGQBV, bspNode->gqIndex)) {
 			M3gGeomGlobals.transparentGQs[M3gGeomGlobals.numTransparentGQs++] = bspNode->gqIndex;
 		}
-		
+
 		M3iGeom_TraverseBSP(inCameraLoc, bspNode->negNodeIndex);
 	}
 
@@ -175,12 +175,12 @@ M3rGeomContext_SetEnvironment(
 		UUrBitVector_Dispose(M3gGeomGlobals.alphaGQBV);
 		M3gGeomGlobals.alphaGQBV = NULL;
 	}
-	
+
 	if(inEnvironment != NULL) {
 		M3gGeomGlobals.alphaGQBV = UUrBitVector_New(inEnvironment->gqGeneralArray->numGQs);
 		UUmError_ReturnOnNull(M3gGeomGlobals.alphaGQBV);
 	}
-	
+
 	M3gGeomGlobals.numJelloGQs = 0;
 	M3gGeomGlobals.numSolidGQs = 0;
 	M3gGeomGlobals.numTransparentGQs = 0;
@@ -208,7 +208,7 @@ M3rGeometry_Draw(
 		}
 
 		multitextured= ((inGeometryObject->baseMap != NULL) && (inGeometryObject->baseMap->envMap != NULL)) ? UUcTrue : UUcFalse;
-		
+
 		// determine how many passes to use for rendering this object
 		if ((multitextured == UUcFalse) ||
 			M3rSinglePassMultitexturingAvailable() ||
@@ -241,7 +241,7 @@ M3rGeometry_Draw(
 			gl_finish_multipass();
 		}
 	}
-	
+
 	return error;
 }
 
@@ -283,49 +283,49 @@ M3rSprite_Draw(
 	M3tPoint3D				worldPoint;
 	M3tPoint3D				cameraLocation;
 	float					dx, dy, dz;
-	
+
 	alphaObject = M3iGeom_AlphaObject_Get();
 	if(alphaObject == NULL) return UUcError_None;
-	
+
 	// get the active camera and location
 		M3rCamera_GetActive(&activeCamera);
-		
+
 		M3rCamera_GetViewData(activeCamera, &cameraLocation, NULL, NULL);
-		
+
 	// compute the world point
 		error = M3rMatrixStack_Get(&matrix);
 		UUmError_ReturnOnError(error);
-		
+
 		MUrMatrix_MultiplyPoint(inPoint, matrix, &worldPoint);
-		
+
 	// compute the distance to the camera
 		dx = cameraLocation.x - worldPoint.x;
 		dy = cameraLocation.y - worldPoint.y;
 		dz = cameraLocation.z - worldPoint.z;
-		
+
 		alphaObject->distanceToCamera = MUrSqrt(dx * dx + dy * dy + dz * dz);
-		
+
 	// save the matrix
 		alphaObject->localToWorld = *matrix;
-		
+
 	// save the object
-		
+
 
 	// add it to the tree
 #endif
-		
+
 	return (M3gGeomContext)->spriteDraw(inTextureMap, inPoint, horizSize, vertSize, inShade, inAlpha, inRotation, inDirection, inOrientation, inXOffset, inXShortening, inXChop);
 }
 
 UUtError
 M3rSpriteArray_Draw(
 	M3tSpriteArray*		inSpriteArray )
-{		
+{
 	return (M3gGeomContext)->spriteArrayDraw(inSpriteArray);
 }
 
-UUtError 
-M3rDraw_Skybox( 
+UUtError
+M3rDraw_Skybox(
 	M3tSkyboxData		*inSkybox )
 {
 	UUtUns32 is_fast_mode = M3rGeom_State_Get(M3cGeomStateIntType_FastMode);
@@ -354,7 +354,7 @@ M3rDraw_DestroySkybox(
 }
 
 UUtError
-M3rDecal_Draw( 
+M3rDecal_Draw(
 	M3tDecalHeader*		inDecal,
 	UUtUns16			inAlpha )
 {
@@ -368,7 +368,7 @@ M3rContrail_Draw(
 	float				inV1,
 	M3tContrailData*	inPoint0,
 	M3tContrailData*	inPoint1)
-{		
+{
 	return (M3gGeomContext)->contrailDraw(inTextureMap, inV0, inV1, inPoint0, inPoint1);
 }
 
@@ -403,25 +403,25 @@ M3rEnv_DrawGQList(
 
 	UUtUns32		gqItr;
 	AKtGQ_General*	gqGeneralArray;
-	
+
 	AKtGQ_General*	curGQGeneral;
 	UUtUns32 is_fast_mode = M3rGeom_State_Get(M3cGeomStateIntType_FastMode);
 
 	if (is_fast_mode) {
 		return UUcError_None;
 	}
-		
+
 	gqGeneralArray	= M3gGeomGlobals.environment->gqGeneralArray->gqGeneral;
-	
+
 	// traverse the list and seperate out the solid quads from the transparent quads
 	M3gGeomGlobals.numTransparentGQs	= 0;
 	M3gGeomGlobals.numJelloGQs			= 0;
 	M3gGeomGlobals.numSolidGQs			= 0;
-	
+
 	for(gqItr = 0; gqItr < inNumGQs; gqItr++)
 	{
 		curGQGeneral = gqGeneralArray + inGQIndices[gqItr];
-		
+
 		if (curGQGeneral->flags & AKcGQ_Flag_Jello) {
 			M3gGeomGlobals.jelloGQs[M3gGeomGlobals.numJelloGQs++] = inGQIndices[gqItr];
 		}
@@ -432,7 +432,7 @@ M3rEnv_DrawGQList(
 			M3gGeomGlobals.solidGQs[M3gGeomGlobals.numSolidGQs++] = inGQIndices[gqItr];
 		}
 	}
-	
+
 	error = (M3gGeomContext)->envDrawGQList(M3gGeomGlobals.numSolidGQs, M3gGeomGlobals.solidGQs, UUcFalse);
 	UUmError_ReturnOnErrorMsg(error, "failed to draw the solid GQs");
 
@@ -456,14 +456,14 @@ M3rGeom_Clear_Jello(
 	}
 }
 
-UUtError 
+UUtError
 M3rGeom_Frame_Start(
 	UUtUns32			inGameTicksElapsed)
 {
 #if UNUSED_ALPHASORTING
 	M3gGeomGlobals.numAlphaObjects = 0;
 #endif
-	
+
 	return (M3gGeomContext)->frameStart(inGameTicksElapsed);
 }
 
@@ -479,28 +479,28 @@ M3rGeom_Draw_Environment_Alpha(
 	if (is_fast_mode) {
 		return UUcError_None;
 	}
-	
+
 	if(M3gGeomGlobals.environment != NULL)
 	{
 		// get the camera location
 		M3rCamera_GetActive(&activeCamera);
-		
+
 		M3rCamera_GetViewData(
 			activeCamera,
 			&cameraLocation,
 			NULL,
 			NULL);
-	
+
 		if (M3gGeomGlobals.environment->alphaBSPNodeArray->numNodes > 0) {
 			M3iGeom_TraverseBSP(
 				&cameraLocation,
 				0);
 		}
-			
+
 		M3rDraw_State_SetInt(M3cDrawStateIntType_ZWrite, M3cDrawState_ZWrite_Off);
-		
+
 		M3rDraw_State_Commit();
-		
+
 		error = (M3gGeomContext)->envDrawGQList(M3gGeomGlobals.numTransparentGQs, M3gGeomGlobals.transparentGQs, UUcFalse);
 		UUmError_ReturnOnError(error);
 	}
@@ -508,15 +508,15 @@ M3rGeom_Draw_Environment_Alpha(
 	return UUcError_None;
 }
 
-	
-UUtError 
+
+UUtError
 M3rGeom_Frame_End(
 	void)
 {
 	UUtError		error;
-	
+
 	error = (M3gGeomContext)->frameEnd();
-	
+
 	return error;
 }
 
@@ -534,21 +534,21 @@ M3rGeom_Draw_DebugSphere(
 	M3tPoint3D				*ring_XY = UUrAlignMemory(block_XY);
 	M3tPoint3D				*ring_YZ = UUrAlignMemory(block_YZ);
 	UUtUns32				itr;
-	
+
 	for(itr = 0; itr < M3cGeom_Debug_RingPoints; itr++)
 	{
 		float		theta;
 		float		cos_theta_radius;
 		float		sin_theta_radius;
-		
+
 		theta = M3c2Pi * (((float) itr) / M3cGeom_Debug_RingPoints);
 		cos_theta_radius = MUrCos(theta) * inRadius;
 		sin_theta_radius = MUrSin(theta) * inRadius;
-		
+
 		ring_XZ[itr].x = cos_theta_radius + inPoint->x;
 		ring_XZ[itr].y = inPoint->y;
 		ring_XZ[itr].z = sin_theta_radius + inPoint->z;
-		
+
 		ring_XY[itr].x = cos_theta_radius + inPoint->x;
 		ring_XY[itr].y = sin_theta_radius + inPoint->y;
 		ring_XY[itr].z = inPoint->z;
@@ -562,7 +562,7 @@ M3rGeom_Draw_DebugSphere(
 	ring_XZ[M3cGeom_Debug_RingPoints] = ring_XZ[0];
 	ring_XY[M3cGeom_Debug_RingPoints] = ring_XY[0];
 	ring_YZ[M3cGeom_Debug_RingPoints] = ring_YZ[0];
-	
+
 	// draw the rings
 	M3rGeometry_LineDraw((M3cGeom_Debug_RingPoints + 1), ring_XZ, inShade);
 	M3rGeometry_LineDraw((M3cGeom_Debug_RingPoints + 1), ring_XY, inShade);

@@ -1,26 +1,26 @@
 /*
 	FILE:	MS_DC_Method_Triangle.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 18, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
 #ifndef MS_DC_METHOD_TRIANGLE_H
 #define MS_DC_METHOD_TRIANGLE_H
 
-void 
+void
 MSrDrawContext_Method_TriGouraudInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
 	UUtUns16		inVIndex1,
 	UUtUns16		inVIndex2);
 
-void 
+void
 MSrDrawContext_Method_TriGouraudFlat(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -28,7 +28,7 @@ MSrDrawContext_Method_TriGouraudFlat(
 	UUtUns16		inVIndex2,
 	UUtUns16		inFaceShade);
 
-void 
+void
 MSrDrawContext_Method_TriTextureInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,

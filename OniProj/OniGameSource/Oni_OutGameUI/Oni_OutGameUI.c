@@ -108,21 +108,21 @@ ONiOGU_ChangeRestart_Callback(
 	UUtUns32				inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_Command:
 			if (UUmHighWord(inParam1) != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, UUmLowWord(inParam1));
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -134,14 +134,14 @@ ONiOutGameUI_ChangeRestart_Display(
 	PStPartSpecUI			*partspec_ui;
 	PStPartSpecUI			*temp_ui;
 	UUtUns32				message;
-	
+
 	// save the current ui
 	partspec_ui = PSrPartSpecUI_GetActive();
-	
+
 	// set the ui to the out of game ui
 	temp_ui = PSrPartSpecUI_GetByName(ONcOutGameUIName);
 	if (temp_ui != NULL) { PSrPartSpecUI_SetActive(temp_ui); }
-	
+
 	// display the dialog
 	WMrDialog_ModalBegin(
 		ONcOGU_ChangeRestart,
@@ -149,10 +149,10 @@ ONiOutGameUI_ChangeRestart_Display(
 		ONiOGU_ChangeRestart_Callback,
 		0,
 		&message);
-	
+
 	// reset the active ui
 	PSrPartSpecUI_SetActive(partspec_ui);
-	
+
 	return message;
 }
 
@@ -170,21 +170,21 @@ ONiOGU_QuitYesNo_Callback(
 	UUtUns32				inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_Command:
 			if (UUmHighWord(inParam1) != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, UUmLowWord(inParam1));
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -196,14 +196,14 @@ ONrOutGameUI_QuitYesNo_Display(
 	PStPartSpecUI			*partspec_ui;
 	PStPartSpecUI			*temp_ui;
 	UUtUns32				message;
-	
+
 	// save the current ui
 	partspec_ui = PSrPartSpecUI_GetActive();
-	
+
 	// set the ui to the out of game ui
 	temp_ui = PSrPartSpecUI_GetByName(ONcOutGameUIName);
 	if (temp_ui != NULL) { PSrPartSpecUI_SetActive(temp_ui); }
-	
+
 	// display the dialog
 	WMrDialog_ModalBegin(
 		ONcOGU_QuitYesNoID,
@@ -211,10 +211,10 @@ ONrOutGameUI_QuitYesNo_Display(
 		ONiOGU_QuitYesNo_Callback,
 		0,
 		&message);
-	
+
 	// reset the active ui
 	PSrPartSpecUI_SetActive(partspec_ui);
-	
+
 	return message;
 }
 
@@ -248,9 +248,9 @@ ONiResolution_Switch(
 	// get a pointer to the current draw engine's caps
 	current_draw_engine_caps = M3rDrawEngine_GetCaps(activeDrawEngine);
 	if (current_draw_engine_caps == NULL) { return; }
-	
+
         new_resolution = current_draw_engine_caps->displayDevices[activeDevice].displayModes[inMode];
-	
+
 	restart = UUcFalse;
 
 	voodoo_fullscreen= gl_voodoo_card_full_screen();
@@ -261,12 +261,12 @@ ONiResolution_Switch(
 		// so we force a restart
 		OSErr err;
 		unsigned long value;
-	
+
 		err= Gestalt(gestaltSystemVersion, &value);
 		if (err == noErr)
 		{
 			unsigned long major_version;
-			
+
 			// value will look like this: 0x00000904 (OS 9.0.4)
 			major_version= (value & 0x0000FF00)>>8;
 			if (major_version >= 10)
@@ -300,13 +300,13 @@ ONiResolution_Switch(
 	if (voodoo_fullscreen || s3_crappy_card_fullscreen || osx)
 	{
 		extern void OniExit(void); // Oni.c
-                
+
 		// alert won't be visible afterwards
 		AUrMessageBox(AUcMBType_OK, "You must restart Oni for your changes to take effect; Oni will now exit.");
 		OniExit();
 		exit(0);
 	}
-	
+
 	if (restart == UUcTrue)
 	{
 		// tell the user they have to restart the game
@@ -353,7 +353,7 @@ OWiResolution_Switch(
 			options_y= UUmMax(((new_resolution.height - dialog_height)/2), 0);
 
 			// center main menu in main window
-			if ((main_game_menu != NULL) && 
+			if ((main_game_menu != NULL) &&
 				WMrWindow_GetSize(main_game_menu, &main_menu_width, &main_menu_height))
 			{
 
@@ -397,30 +397,30 @@ ONiResolutions_AddToPopup(
 	UUtUns16				activeMode;
 	UUtUns16				i;
 	UUtUns16				num_modes;
-	
+
 	// reset the popup
 	WMrPopupMenu_Reset(inPopupMenu);
-	
+
 	// get the index of the active draw engine
 	M3rManager_GetActiveDrawEngine(&activeDrawEngine, &activeDevice, &activeMode);
 
 	// get a pointer to the current draw engine's caps
 	current_draw_engine_caps = M3rDrawEngine_GetCaps(activeDrawEngine);
 	if (current_draw_engine_caps == NULL) { return; }
-	
+
 	// add a list of all of the available
 	num_modes = current_draw_engine_caps->displayDevices[activeDevice].numDisplayModes;
 	for (i = 0; i < num_modes; i++)
 	{
 		M3tDisplayMode			*mode;
 		char					title[128];
-		
+
 		mode = &current_draw_engine_caps->displayDevices[activeDevice].displayModes[i];
-		
+
 		sprintf(title, "%d x %d x %d bit", mode->width, mode->height, mode->bitDepth);
 		WMrPopupMenu_AppendItem_Light(inPopupMenu, i, title);
 	}
-	
+
 	// select the current item
 	WMrPopupMenu_SetSelection(inPopupMenu, activeMode);
 }
@@ -433,7 +433,7 @@ ONiOBU_Options_SetControls(
 	WMtWindow				*slider;
 	WMtWindow				*popup;
 	WMtWindow				*checkbox;
-	
+
 	// set the sliders
 	slider = WMrDialog_GetItemByID(inDialog, ONcOptions_Sldr_Quality);
 	WMrSlider_SetPosition(slider, (UUtInt32)ONrPersist_GetGraphicsQuality());
@@ -442,16 +442,16 @@ ONiOBU_Options_SetControls(
 	if (slider != NULL) {
 		WMrSlider_SetPosition(slider, MUrFloat_Round_To_Int(100 * ONrPersist_GetGamma()));
 	}
-	
+
 	slider = WMrDialog_GetItemByID(inDialog, ONcOptions_Sldr_OverallVol);
 	WMrSlider_SetPosition(slider, (UUtInt32)(ONrPersist_GetOverallVolume() * 100.0f));
-	
+
 //	slider = WMrDialog_GetItemByID(inDialog, ONcOptions_Sldr_DialogVol);
 //	WMrSlider_SetPosition(slider, (UUtInt32)(ONrPersist_GetDialogVolume() * 100.0f));
-	
+
 //	slider = WMrDialog_GetItemByID(inDialog, ONcOptions_Sldr_MusicVol);
 //	WMrSlider_SetPosition(slider, (UUtInt32)(ONrPersist_GetMusicVolume() * 100.0f));
-	
+
 	// set the checkbox
 //	checkbox = WMrDialog_GetItemByID(inDialog, ONcOptions_CB_DialogOn);
 //	WMrCheckBox_SetCheck(checkbox, ONrPersist_IsDialogOn());
@@ -461,10 +461,10 @@ ONiOBU_Options_SetControls(
 
 	checkbox = WMrDialog_GetItemByID(inDialog, ONcOptions_CB_SubtitlesOn);
 	WMrCheckBox_SetCheck(checkbox, ONrPersist_AreSubtitlesOn());
-	
+
 	checkbox = WMrDialog_GetItemByID(inDialog, ONcOptions_CB_InvertMouseOn);
 	WMrCheckBox_SetCheck(checkbox, ONrPersist_IsInvertMouseOn());
-	
+
 	// set the popup menu
 	popup = WMrDialog_GetItemByID(inDialog, ONcOptions_PM_Difficulty);
 	WMrPopupMenu_SetSelection(popup, (UUtInt16)ONrPersist_GetDifficulty());
@@ -477,7 +477,7 @@ ONiOGU_Options_InitDialog(
 {
 	WMtWindow				*slider;
 	WMtWindow				*popup;
-	
+
 	// set the range on the sliders
 	slider = WMrDialog_GetItemByID(inDialog, ONcOptions_Sldr_Quality);
 	WMrSlider_SetRange(
@@ -489,20 +489,20 @@ ONiOGU_Options_InitDialog(
 	if (slider != NULL) {
 		WMrSlider_SetRange(slider, 0, 100);
 	}
-	
+
 	slider = WMrDialog_GetItemByID(inDialog, ONcOptions_Sldr_OverallVol);
 	WMrSlider_SetRange(slider, 0, 100);
-	
+
 //	slider = WMrDialog_GetItemByID(inDialog, ONcOptions_Sldr_DialogVol);
 //	WMrSlider_SetRange(slider, 0, 100);
-	
+
 //	slider = WMrDialog_GetItemByID(inDialog, ONcOptions_Sldr_MusicVol);
 //	WMrSlider_SetRange(slider, 0, 100);
-	
+
 	// build the popup menu
 	popup = WMrDialog_GetItemByID(inDialog, ONcOptions_PM_Resolution);
 	ONiResolutions_AddToPopup(popup);
-	
+
 	// set the fields
 	ONiOBU_Options_SetControls(inDialog);
 }
@@ -517,10 +517,10 @@ ONiOGU_Options_HandleCommand(
 	UUtUns16				control_id;
 	UUtUns16				command_type;
 	float					volume;
-	
+
 	control_id = UUmLowWord(inParam1);
 	command_type = UUmHighWord(inParam1);
-	
+
 	switch (control_id)
 	{
 		case ONcOptions_Sldr_Gamma:
@@ -536,45 +536,45 @@ ONiOGU_Options_HandleCommand(
 			if (command_type == SLcNotify_NewPosition)
 			{
 				ONtGraphicsQuality		quality;
-				
+
 				quality = (ONtGraphicsQuality)WMrSlider_GetPosition(inControl);
 				ONrPersist_SetGraphicsQuality(quality);
 			}
 		break;
-		
+
 		case ONcOptions_Sldr_OverallVol:
 			if (command_type != SLcNotify_NewPosition) { break; }
 			volume = ((float)WMrSlider_GetPosition(inControl)) / 100.0f;
 			ONrPersist_SetOverallVolume(volume);
 		break;
-		
+
 /*		case ONcOptions_CB_DialogOn:
 			if (command_type != WMcNotify_Click) { break; }
 			ONrPersist_SetDialogOn(WMrCheckBox_GetCheck(inControl));
 		break;
-		
+
 		case ONcOptions_Sldr_DialogVol:
 			if (command_type != SLcNotify_NewPosition) { break; }
 			volume = ((float)WMrSlider_GetPosition(inControl)) / 100.0f;
 			ONrPersist_SetDialogVolume(volume);
 		break;
-		
+
 		case ONcOptions_CB_MusicOn:
 			if (command_type != WMcNotify_Click) { break; }
 			ONrPersist_SetMusicOn(WMrCheckBox_GetCheck(inControl));
 		break;
-		
+
 		case ONcOptions_Sldr_MusicVol:
 			if (command_type != SLcNotify_NewPosition) { break; }
 			volume = ((float)WMrSlider_GetPosition(inControl)) / 100.0f;
 			ONrPersist_SetMusicVolume(volume);
 		break;*/
-		
+
 		case ONcOptions_CB_SubtitlesOn:
 			if (command_type != WMcNotify_Click) { break; }
 			ONrPersist_SetSubtitlesOn(WMrCheckBox_GetCheck(inControl));
 		break;
-		
+
 		case ONcOptions_CB_InvertMouseOn:
 			if (command_type != WMcNotify_Click) { break; }
 			ONrPersist_SetInvertMouseOn(WMrCheckBox_GetCheck(inControl));
@@ -595,15 +595,15 @@ ONiOGU_Options_HandleMenuCommand(
 	WMtWindow				*inMenu)
 {
 	UUtUns16				item_id;
-	
+
 	item_id = UUmLowWord(inParam1);
-	
+
 	switch (WMrWindow_GetID(inMenu))
 	{
 		case ONcOptions_PM_Resolution:
 			ONiResolution_Switch(inDialog, inMenu, item_id);
 		break;
-		
+
 		case ONcOptions_PM_Difficulty:
 			ONrPersist_SetDifficulty((ONtDifficultyLevel)item_id);
 		break;
@@ -619,28 +619,28 @@ ONiOGU_Options_Callback(
 	UUtUns32				inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			ONiOGU_Options_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			ONiOGU_Options_HandleCommand(inDialog, inParam1, (WMtWindow*)inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			ONiOGU_Options_HandleMenuCommand(inDialog, inParam1, (WMtWindow*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -656,7 +656,7 @@ ONrOutGameUI_Options_Display(
 
 	// save the current ui
 	partspec_ui = PSrPartSpecUI_GetActive();
-	
+
 	// set the ui to the out of game ui
 	temp_ui = PSrPartSpecUI_GetByName(ONcOutGameUIName);
 	if (temp_ui != NULL) { PSrPartSpecUI_SetActive(temp_ui); }
@@ -675,10 +675,10 @@ ONrOutGameUI_Options_Display(
 		ONiOGU_Options_Callback,
 		0,
 		&message);
-	
+
 	// reset the active ui
 	PSrPartSpecUI_SetActive(partspec_ui);
-	
+
 	return message;
 }
 
@@ -706,10 +706,10 @@ ONiOGU_LoadGame_HandleCommand(
 	UUtUns16				control_id;
 	UUtUns16				command_type;
 	UUtUns32				level;
-	
+
 	control_id = UUmLowWord(inParam1);
 	command_type = UUmHighWord(inParam1);
-	
+
 	switch (control_id)
 	{
 		case ONcLoadGame_LB_Levels:
@@ -720,7 +720,7 @@ ONiOGU_LoadGame_HandleCommand(
 				WMrDialog_ModalEnd(inDialog, level);
 			}
 		break;
-		
+
 		case ONcLoadGame_Btn_Load:
 			if (command_type != WMcNotify_Click) { break; }
 			level = OWrLevelList_GetLevelNumber(inDialog, ONcLoadGame_LB_Levels);
@@ -729,7 +729,7 @@ ONiOGU_LoadGame_HandleCommand(
 				WMrDialog_ModalEnd(inDialog, level);
 			}
 		break;
-		
+
 		case ONcLoadGame_Btn_Cancel:
 			if (command_type != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, 0);
@@ -746,24 +746,24 @@ ONiOGU_LoadGame_Callback(
 	UUtUns32				inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			ONiOGU_LoadGame_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			ONiOGU_LoadGame_HandleCommand(inDialog, inParam1, (WMtWindow*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -775,14 +775,14 @@ ONrOutGameUI_LoadGame_Display(
 	PStPartSpecUI			*partspec_ui;
 	PStPartSpecUI			*temp_ui;
 	UUtUns32				message;
-	
+
 	// save the current ui
 	partspec_ui = PSrPartSpecUI_GetActive();
-	
+
 	// set the ui to the out of game ui
 	temp_ui = PSrPartSpecUI_GetByName(ONcOutGameUIName);
 	if (temp_ui != NULL) { PSrPartSpecUI_SetActive(temp_ui); }
-	
+
 	// display the dialog
 	WMrDialog_ModalBegin(
 		ONcOGU_LoadGameID,
@@ -790,10 +790,10 @@ ONrOutGameUI_LoadGame_Display(
 		ONiOGU_LoadGame_Callback,
 		0,
 		&message);
-	
+
 	// reset the active ui
 	PSrPartSpecUI_SetActive(partspec_ui);
-	
+
 	return message;
 }
 
@@ -811,21 +811,21 @@ ONiOGU_NewGame_Callback(
 	UUtUns32				inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_Command:
 			if (UUmHighWord(inParam1) != WMcNotify_Click) { break; }
 			WMrDialog_ModalEnd(inDialog, UUmLowWord(inParam1));
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -837,14 +837,14 @@ ONrOutGameUI_NewGame_Display(
 	PStPartSpecUI			*partspec_ui;
 	PStPartSpecUI			*temp_ui;
 	UUtUns32				message;
-	
+
 	// save the current ui
 	partspec_ui = PSrPartSpecUI_GetActive();
-	
+
 	// set the ui to the out of game ui
 	temp_ui = PSrPartSpecUI_GetByName(ONcOutGameUIName);
 	if (temp_ui != NULL) { PSrPartSpecUI_SetActive(temp_ui); }
-	
+
 	// display the dialog
 	WMrDialog_ModalBegin(
 		ONcOGU_NewGameID,
@@ -852,10 +852,10 @@ ONrOutGameUI_NewGame_Display(
 		ONiOGU_NewGame_Callback,
 		0,
 		&message);
-	
+
 	// reset the active ui
 	PSrPartSpecUI_SetActive(partspec_ui);
-	
+
 	return message;
 }
 
@@ -875,13 +875,13 @@ ONiOGU_MainMenu_FadeMusic(
 		M3tPoint3D position;
 		M3tVector3D facing;
 		UUtUns32 count;
-		
+
 		MUmVector_Set(position, 0.0f, 0.0f, 0.0f);
 		MUmVector_Set(facing, 0.0f, 0.0f, 0.0f);
-		
+
 		OSrMusic_SetVolume(0.0f, OScMainMusic_FadeOutTime);
 		OSrMusic_Stop();
-		
+
 		count = UUrMachineTime_Sixtieths() + (UUtUns32)(60.0f * OScMainMusic_FadeOutTime);
 		do
 		{
@@ -889,11 +889,11 @@ ONiOGU_MainMenu_FadeMusic(
 			SS2rUpdate();
 		}
 		while (count > UUrMachineTime_Sixtieths());
-		
+
 		OSrMusic_Halt();
 	}
 }
-		
+
 // ----------------------------------------------------------------------
 static void
 ONiOGU_MainMenu_InitDialog(
@@ -901,10 +901,10 @@ ONiOGU_MainMenu_InitDialog(
 {
 	WMtWindow				*options;
 	WMtWindow				*resume;
-	
+
 	options = WMrDialog_GetItemByID(inDialog, ONcMainMenu_Btn_Options);
 	resume = WMrDialog_GetItemByID(inDialog, ONcMainMenu_Btn_Resume);
-	
+
 	if (ONrLevel_GetCurrentLevel() > 0)
 	{
 		WMrWindow_SetVisible(options, UUcFalse);
@@ -915,11 +915,11 @@ ONiOGU_MainMenu_InitDialog(
 		WMrWindow_SetVisible(options, UUcTrue);
 		WMrWindow_SetVisible(resume, UUcFalse);
 	}
-	
+
 	// stop all currently playing sounds, only allow music
 	OSrSetScriptOnly(UUcTrue);
 	SSrPlayingChannels_Pause();
-	
+
 	OSrMusic_Start(OScMusicScore_Win, 0.0f);
 	OSrMusic_SetVolume(1.0f, OScMainMusic_FadeInTime);
 }
@@ -934,7 +934,7 @@ ONiOGU_MainMenu_Destroy(
 		OSrMusic_SetVolume(0.0f, 0.5f);
 		OSrMusic_Stop();
 	}
-	
+
 	// allow more than just music
 	OSrSetScriptOnly(UUcFalse);
 	SSrPlayingChannels_Resume();
@@ -946,21 +946,21 @@ ONiOGU_MainMenu_HandleNewGame(
 	WMtDialog				*inDialog)
 {
 	UUtUns32				result;
-	
+
 	// display the new game dialog
 	result = ONrOutGameUI_NewGame_Display();
 	if (result == ONcNewGame_Btn_Yes)
 	{
 		// fade out the music first
 		ONiOGU_MainMenu_FadeMusic();
-		
+
 		// if the user selects start, then close the main menu
 		WMrDialog_ModalEnd(inDialog, 0);
 
 		// update the screen
 		WMrUpdate();
 		WMrDisplay();
-		
+
 		// load the level
 		OWrLevelLoad_StartLevel(1);
 	}
@@ -972,21 +972,21 @@ ONiOGU_MainMenu_HandleLoadGame(
 	WMtDialog				*inDialog)
 {
 	UUtUns16				result;
-	
+
 	// display the load game dialog
 	result = (UUtUns16)ONrOutGameUI_LoadGame_Display();
 	if (result != 0)
 	{
 		// fade out the music first
 		ONiOGU_MainMenu_FadeMusic();
-		
+
 		// if the user selects load, then close the main menu
 		WMrDialog_ModalEnd(inDialog, 0);
 
 		// update the screen
 		WMrUpdate();
 		WMrDisplay();
-				
+
 		// load the level
 		OWrLevelLoad_StartLevel(result);
 	}
@@ -1006,7 +1006,7 @@ ONiOGU_MainMenu_HandleQuit(
 	WMtDialog				*inDialog)
 {
 	UUtUns32				result;
-	
+
 	// display the Are you sure you want to quit dialog
 	result = ONrOutGameUI_QuitYesNo_Display();
 	if (result == ONcQuitYesNo_Btn_Yes)
@@ -1016,7 +1016,7 @@ ONiOGU_MainMenu_HandleQuit(
 
 		// if the user selects load, then close the main menu
 		WMrDialog_ModalEnd(inDialog, 0);
-		
+
 		WMrMessage_Post(NULL, WMcMessage_Quit, 0, 0);
 
 		// end the game
@@ -1033,10 +1033,10 @@ ONiOGU_MainMenu_HandleCommand(
 {
 	UUtUns16				control_id;
 	UUtUns16				command_type;
-	
+
 	control_id = UUmLowWord(inParam1);
 	command_type = UUmHighWord(inParam1);
-	
+
 	if (command_type != WMcNotify_Click) { return; }
 
 	switch (control_id)
@@ -1044,23 +1044,23 @@ ONiOGU_MainMenu_HandleCommand(
 		case ONcMainMenu_Btn_NewGame:
 			ONiOGU_MainMenu_HandleNewGame(inDialog);
 		break;
-		
+
 		case ONcMainMenu_Btn_LoadGame:
 			ONiOGU_MainMenu_HandleLoadGame(inDialog);
 		break;
-		
+
 		case ONcMainMenu_Btn_Options:
 			ONiOGU_MainMenu_HandleOptions(inDialog);
 		break;
-		
+
 		case ONcMainMenu_Btn_Quit:
 			ONiOGU_MainMenu_HandleQuit(inDialog);
 		break;
-		
+
 		case ONcMainMenu_Btn_Resume:
 			WMrDialog_ModalEnd(inDialog, 0);
 		break;
-		
+
 		case WMcDialogItem_Cancel:
 			if (ONrLevel_GetCurrentLevel() != 0)
 			{
@@ -1079,31 +1079,31 @@ ONiOGU_MainMenu_Callback(
 	UUtUns32				inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			ONiOGU_MainMenu_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Destroy:
 			ONiOGU_MainMenu_Destroy(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			ONiOGU_MainMenu_HandleCommand(
 				inDialog,
 				inParam1,
 				(WMtWindow*)inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -1114,17 +1114,17 @@ ONrOutGameUI_MainMenu_Display(
 {
 	PStPartSpecUI				*partspec_ui;
 	PStPartSpecUI				*temp_ui;
-	
+
 	// save the current ui
 	partspec_ui = PSrPartSpecUI_GetActive();
-	
+
 	// set the ui to the out of game ui
 	temp_ui = PSrPartSpecUI_GetByName(ONcOutGameUIName);
 	if (temp_ui != NULL) { PSrPartSpecUI_SetActive(temp_ui); }
-	
+
 	// set the background to black
 	WMrSetDesktopBackground(PSrPartSpec_LoadByType(PScPartSpecType_BackgroundColor_Black));
-	
+
 	// display the dialog
 	WMrDialog_ModalBegin(
 		ONcOGU_MainMenuID,
@@ -1132,12 +1132,12 @@ ONrOutGameUI_MainMenu_Display(
 		ONiOGU_MainMenu_Callback,
 		0,
 		NULL);
-	
+
 	// set the desktop background to none
 	WMrSetDesktopBackground(PSrPartSpec_LoadByType(PScPartSpecType_BackgroundColor_None));
 
 	// reset the active ui
 	PSrPartSpecUI_SetActive(partspec_ui);
-	
+
 	return UUcError_None;
 }

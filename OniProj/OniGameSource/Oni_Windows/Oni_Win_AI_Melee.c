@@ -1,13 +1,13 @@
 #if TOOL_VERSION
 /*
 	FILE:	Oni_Win_AI_Melee.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: May 20, 2000
-	
+
 	PURPOSE: AI Melee Profile Editor
-	
+
 	Copyright (c) Bungie Software 2000
 
 */
@@ -88,7 +88,7 @@ enum
 
 typedef struct OWtEditMelee_UserData {
 	OBJtObject				*object;
-	
+
 	// pointers to all of the child windows
 	WMtEditField			*ef_id;
 	WMtEditField			*ef_name;
@@ -201,7 +201,7 @@ OWiEditMelee_FillMoveList(WMtDialog *inDialog,
 			// this is the first move of the technique
 			current_state = AI2cMeleeMoveState_None;
 		}
-		
+
 		// check to see if this would be a viable move here
 		move_valid = AI2rMelee_MoveIsValid(inUserData->profile->char_class->animations, iterated_move,
 											NULL, NULL, &current_state, NULL, &test_animation, &test_target, NULL);
@@ -525,7 +525,7 @@ OWiEditMelee_FillTechniqueList(WMtDialog *inDialog, OWtEditMelee_UserData *inUse
 
 		string_index = WMrListBox_AddString(inUserData->lb_techniquelist, item_text);
 
-		if (technique == inUserData->technique) 
+		if (technique == inUserData->technique)
 			selected_index = string_index;
 	}
 
@@ -543,7 +543,7 @@ OWiEditMelee_InitDialog(WMtDialog *inDialog)
 	UUtError error;
 	char *class_name;
 	WMtMenuItemData menu_item;
-	
+
 	user_data = UUrMemory_Block_NewClear(sizeof(OWtEditMelee_UserData));
 	if (user_data == NULL) {
 		// can't allocate space for user data, bail out
@@ -626,7 +626,7 @@ OWiEditMelee_InitDialog(WMtDialog *inDialog)
 		}
 	}
 	WMrListBox_SetSelection(user_data->lb_classlist, UUcFalse, class_index);
-		
+
 	// fill the move-type menu
 	for (itr = 0; itr < AI2cMeleeNumMoveTypes; itr++) {
 		menu_item.flags = WMcMenuItemFlag_Enabled;
@@ -640,7 +640,7 @@ OWiEditMelee_InitDialog(WMtDialog *inDialog)
 	// *** set up technique parameters
 	WMrEditField_SetText(user_data->ef_name, user_data->profile->name);
 	WMrEditField_SetInt32(user_data->ef_id, user_data->profile->id);
-	
+
 	WMrEditField_SetInt32(user_data->ef_notice, user_data->profile->attacknotice_percentage);
 	WMrEditField_SetInt32(user_data->ef_dodgebase, user_data->profile->dodge_base_percentage);
 	WMrEditField_SetInt32(user_data->ef_dmgamount, user_data->profile->dodge_damage_threshold);
@@ -720,7 +720,7 @@ OWiEditMelee_MenuCommand(WMtDialog *inDialog,
 				// switch to the new move type
 				inUserData->current_movetype = inItemID;
 
-				// fill the move list with all moves of the new type that are 
+				// fill the move list with all moves of the new type that are
 				// valid considering our previous move
 				OWiEditMelee_FillMoveList(inDialog, inUserData, prev_move);
 			}
@@ -878,7 +878,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 				OWiEditMelee_FillTechniqueList(inDialog, inUserData);
 			}
 		break;
-		
+
 		case OWcEditMelee_TechniqueDelay:
 			if (inUserData->technique != NULL) {
 				inUserData->technique->delay_frames = WMrEditField_GetInt32(inUserData->ef_techniquedelay);
@@ -966,7 +966,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 					new_technique = &inUserData->profile->technique[inUserData->profile->num_actions + inUserData->profile->num_reactions];
 
 					// move all of the spacing behaviors down the array by one element
-					UUrMemory_MoveOverlap(new_technique, new_technique + 1, 
+					UUrMemory_MoveOverlap(new_technique, new_technique + 1,
 							inUserData->profile->num_spacing * sizeof(AI2tMeleeTechnique));
 
 					inUserData->profile->num_reactions++;
@@ -974,7 +974,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 					if (inUserData->profile->num_reactions > AI2cMeleeMaxTechniques) {
 						char msg[200];
 
-						sprintf(msg, "Melee profiles can currently only have %d techniques of a given category.", 
+						sprintf(msg, "Melee profiles can currently only have %d techniques of a given category.",
 								AI2cMeleeMaxTechniques);
 						WMrDialog_MessageBox(inDialog, "Too many reactions", msg, WMcMessageBoxStyle_OK);
 					}
@@ -984,7 +984,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 					new_technique = &inUserData->profile->technique[inUserData->profile->num_actions];
 
 					// move all of the reactions and spacing behaviors down the array by one element
-					UUrMemory_MoveOverlap(new_technique, new_technique + 1, 
+					UUrMemory_MoveOverlap(new_technique, new_technique + 1,
 							(inUserData->profile->num_reactions + inUserData->profile->num_spacing) * sizeof(AI2tMeleeTechnique));
 
 					inUserData->profile->num_actions++;
@@ -992,7 +992,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 					if (inUserData->profile->num_actions > AI2cMeleeMaxTechniques) {
 						char msg[200];
 
-						sprintf(msg, "Melee profiles can currently only have %d techniques of a given category.", 
+						sprintf(msg, "Melee profiles can currently only have %d techniques of a given category.",
 								AI2cMeleeMaxTechniques);
 						WMrDialog_MessageBox(inDialog, "Too many actions", msg, WMcMessageBoxStyle_OK);
 					}
@@ -1020,7 +1020,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 					WMrDialog_ModalEnd(inDialog, UUcFalse);
 					return UUcTrue;
 				}
-				
+
 				// display the new technique
 				inUserData->technique = new_technique;
 				OWiEditMelee_FillTechniqueList(inDialog, inUserData);
@@ -1045,7 +1045,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 				move_end = move_start + del_technique->num_moves;
 				if ((move_end > move_start) && (move_end < inUserData->profile->num_moves)) {
 					// we have to move all of the following moves up the array to pack them in
-					UUrMemory_MoveOverlap(inUserData->profile->move + move_end, inUserData->profile->move + move_start, 
+					UUrMemory_MoveOverlap(inUserData->profile->move + move_end, inUserData->profile->move + move_start,
 							(inUserData->profile->num_moves - move_end) * sizeof(AI2tMeleeMove));
 
 					// alter all of the techniques' stored move indices so that they still
@@ -1069,7 +1069,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 
 				if (technique_index < total_techniques - 1) {
 					// move all of the techniques after this one up the array by one element
-					UUrMemory_MoveOverlap(del_technique + 1, del_technique, 
+					UUrMemory_MoveOverlap(del_technique + 1, del_technique,
 							(total_techniques - (technique_index + 1)) * sizeof(AI2tMeleeTechnique));
 				}
 
@@ -1115,7 +1115,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 				} else {
 					UUmAssert(0);
 				}
-			
+
 				// our techniques have changed - must re-prepare the profile for use and check
 				// anim states
 				error = AI2rMelee_PrepareForUse(inUserData->profile);
@@ -1124,7 +1124,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 					WMrDialog_ModalEnd(inDialog, UUcFalse);
 					return UUcTrue;
 				}
-				
+
 				// clear the technique pane
 				inUserData->technique = NULL;
 				OWiEditMelee_FillTechniqueList(inDialog, inUserData);
@@ -1148,14 +1148,14 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 					// we are already at the top of one of the arrays
 					break;
 				}
-				
+
 				new_technique = inUserData->technique - 1;
 
 				// swap the techniques in the array
 				swap_technique = *(inUserData->technique);
 				*(inUserData->technique) = *new_technique;
 				*new_technique = swap_technique;
-			
+
 				// our techniques have changed - must re-prepare the profile for use and check
 				// anim states
 				error = AI2rMelee_PrepareForUse(inUserData->profile);
@@ -1164,7 +1164,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 					WMrDialog_ModalEnd(inDialog, UUcFalse);
 					return UUcTrue;
 				}
-				
+
 				// redraw the technique list
 				inUserData->technique = new_technique;
 				OWiEditMelee_FillTechniqueList(inDialog, inUserData);
@@ -1188,14 +1188,14 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 					// we are already at the bottom of one of the arrays
 					break;
 				}
-				
+
 				new_technique = inUserData->technique + 1;
 
 				// swap the techniques in the array
 				swap_technique = *(inUserData->technique);
 				*(inUserData->technique) = *new_technique;
 				*new_technique = swap_technique;
-			
+
 				// our techniques have changed - must re-prepare the profile for use and check
 				// anim states
 				error = AI2rMelee_PrepareForUse(inUserData->profile);
@@ -1204,7 +1204,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 					WMrDialog_ModalEnd(inDialog, UUcFalse);
 					return UUcTrue;
 				}
-				
+
 				// redraw the technique list
 				inUserData->technique = new_technique;
 				OWiEditMelee_FillTechniqueList(inDialog, inUserData);
@@ -1250,7 +1250,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 				if (move_index < inUserData->profile->num_moves) {
 					// this move is inserted in the middle of the move array - we must move all moves
 					// following the insertion location down by one.
-					UUrMemory_MoveOverlap(new_move, new_move + 1, 
+					UUrMemory_MoveOverlap(new_move, new_move + 1,
 							(inUserData->profile->num_moves - move_index) * sizeof(AI2tMeleeMove));
 
 					// any techniques that stored their moves in this section of the array must have
@@ -1294,7 +1294,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 					WMrDialog_ModalEnd(inDialog, UUcFalse);
 					return UUcTrue;
 				}
-				
+
 				// display the new move - the technique may also be broken so redisplay its list
 				OWiEditMelee_FillTechniqueList(inDialog, inUserData);
 				OWiEditMelee_FillTechniqueMoveList(inDialog, inUserData);
@@ -1323,7 +1323,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 				if (move_index < inUserData->profile->num_moves - 1) {
 					// this move is deleted from the middle of the move array - we must move all moves
 					// following the insertion location up by one.
-					UUrMemory_MoveOverlap(inUserData->move + 1, inUserData->move, 
+					UUrMemory_MoveOverlap(inUserData->move + 1, inUserData->move,
 							(inUserData->profile->num_moves - (move_index + 1)) * sizeof(AI2tMeleeMove));
 
 					// any techniques that stored their moves in this section of the array must have
@@ -1386,7 +1386,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 
 				if (move_index == inUserData->technique->start_index)
 					break;
-				
+
 				UUmAssert(move_index > 0);
 				new_move = inUserData->move - 1;
 
@@ -1394,7 +1394,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 				swap_move = *(inUserData->move);
 				*(inUserData->move) = *new_move;
 				*new_move = swap_move;
-			
+
 				inUserData->move = new_move;
 
 				// our moves have changed - must re-prepare the profile for use and check
@@ -1433,7 +1433,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 
 				if (move_index == inUserData->technique->start_index + inUserData->technique->num_moves - 1)
 					break;
-				
+
 				UUmAssert(move_index < inUserData->profile->num_moves - 1);
 				new_move = inUserData->move + 1;
 
@@ -1441,7 +1441,7 @@ OWiEditMelee_Command(WMtDialog *inDialog,
 				swap_move = *(inUserData->move);
 				*(inUserData->move) = *new_move;
 				*new_move = swap_move;
-			
+
 				inUserData->move = new_move;
 
 				// our moves have changed - must re-prepare the profile for use and check
@@ -1590,7 +1590,7 @@ OWrEditMelee_Callback(
 	return handled;
 }
 
-	
+
 
 
 
@@ -1604,7 +1604,7 @@ UUtUns16 OWrChooseMelee(UUtUns16 inProfileID)
 
 	object_specific_data.osd.melee_osd.id = inProfileID;
 	object = OBJrObjectType_Search(OBJcType_Melee, OBJcSearch_MeleeID, &object_specific_data);
-	
+
 	object = OWrSelectObject(OBJcType_Melee, object, UUcTrue, UUcFalse);
 
 	if (NULL != object) {

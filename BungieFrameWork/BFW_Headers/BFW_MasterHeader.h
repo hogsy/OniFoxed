@@ -6,13 +6,13 @@
 
 /*
 	FILE:	BFW.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Oct 13, 1999
-	
+
 	PURPOSE: Master Include File
-	
+
 	Copyright 1999
 
 */

@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: January 2, 2000
-	
+
 	PURPOSE: Timing utilities
-	
+
 	Copyright 2000
 
 */
@@ -34,7 +34,7 @@ double UUrMachineTime_High_To_Seconds(UUtInt64 time);
 
 /*
  * stall timer
- * 
+ *
  */
 
 typedef UUtUns32 UUtStallTimer;
@@ -124,7 +124,7 @@ void UUrPerformanceTimer_SetPrefix(char *inPrefix);
 11. MUrQuat_Lerp
 20. MUrMatrix_Multiply
 
-12. SSiPlatform_UpdateSoundBuffer_MSADPCM	
+12. SSiPlatform_UpdateSoundBuffer_MSADPCM
 
 16. M3iGeom_TraverseBSP
 

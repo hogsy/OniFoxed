@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_DC_Platform_Mac.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 19, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */
@@ -26,32 +26,32 @@ MSrDrawContext_Method_Frame_Start(
 {
 	MStDrawContextPrivate*	drawContextPrivate = (MStDrawContextPrivate*)inDrawContext->privateContext;
 	MStPlatformSpecific*	platformSpecific;
-	
+
 	platformSpecific = &drawContextPrivate->platformSpecific;
-	
+
 	#if defined(MSmPixelTouch) && MSmPixelTouch
-	
+
 	{
 		UUtUns16 x, y;
 		double	*p;
-		
+
 		double	zero;
 		UUtUns32	clearValue[2];
-		
+
 		clearValue[0] = 0;
 		clearValue[1] = 0;
-		
+
 		zero = *(double *)(clearValue);
-		
+
 		for(y = 0; y < drawContextPrivate->height; y++)
 		{
-			
+
 			p = (double *)((char *)drawContextPrivate->pixelTouchBaseAddr + drawContextPrivate->pixelTouchRowBytes * y);
-			
+
 			for(x = 0; x < drawContextPrivate->pixelTouchRowBytes >> 5; x++)
 			{
 				UUrProcessor_ZeroCacheLine(p, 0);
-				
+
 				*p++ = zero;
 				*p++ = zero;
 				*p++ = zero;
@@ -59,24 +59,24 @@ MSrDrawContext_Method_Frame_Start(
 			}
 		}
 	}
-	
+
 	#else
-	
+
 		if(!(drawContextPrivate->screenFlags & M3cDrawContextScreenFlags_DoubleBuffer))
 		{
 			MSrPPCAsm_CallProc(
 				platformSpecific->zBufferClearProc,
 				drawContextPrivate,
 				(long)&platformSpecific->zClearValue0);
-		
+
 			MSrPPCAsm_CallProc(
 				platformSpecific->imageBufferClearProc,
 				drawContextPrivate,
 				(long)&platformSpecific->imageClearValue0);
 		}
-	
+
 	#endif
-	
+
 	return UUcError_None;
 }
 
@@ -86,9 +86,9 @@ MSrDrawContext_Method_Frame_End(
 {
 	MStDrawContextPrivate*	drawContextPrivate = (MStDrawContextPrivate*)inDrawContext->privateContext;
 	MStPlatformSpecific	*platformSpecific;
-	
+
 	platformSpecific = &drawContextPrivate->platformSpecific;
-	
+
 	#if defined(MSmPixelTouch) && MSmPixelTouch
 
 	{
@@ -99,7 +99,7 @@ MSrDrawContext_Method_Frame_End(
 		UUtUns16*	curDstImagePtr;
 		double		imageClearValue;
 		UUtInt16	i;
-		
+
 		imageClearValue = *(double *)&drawContextPrivate->platformSpecific.imageClearValue0;
 
 		for(y = 0; y < drawContextPrivate->height; y++)
@@ -107,11 +107,11 @@ MSrDrawContext_Method_Frame_End(
 			curPixelTouch = (UUtUns16 *)((char *)drawContextPrivate->pixelTouchBaseAddr + drawContextPrivate->pixelTouchRowBytes * y);
 			curSrcImagePtr = (UUtUns16 *)((char *)drawContextPrivate->imageBufferBaseAddr + drawContextPrivate->imageBufferRowBytes * y);
 			curDstImagePtr = (UUtUns16 *)((char *)platformSpecific->frontImageBaseAddr + platformSpecific->frontImageRowBytes * y);
-			
+
 			for(x = 0; x < drawContextPrivate->width >> 4; x++)
 			{
 				pixelTouchVal = *curPixelTouch++;
-				
+
 				if(pixelTouchVal == 0)
 				{
 					*(double *)(curDstImagePtr) = imageClearValue;
@@ -147,14 +147,14 @@ MSrDrawContext_Method_Frame_End(
 					}
 				}
 			}
-			
+
 			//XXX - someday handle extra pixels
 		}
-	
+
 	}
-		
+
 	#else
-	
+
 		if(drawContextPrivate->screenFlags & M3cDrawContextScreenFlags_DoubleBuffer)
 		{
 			MSrPPCAsm_CallProc(
@@ -166,11 +166,11 @@ MSrDrawContext_Method_Frame_End(
 				platformSpecific->zBufferClearProc,
 				drawContextPrivate,
 				(long)&platformSpecific->zClearValue0);
-			
+
 		}
-	
+
 	#endif
-	
+
 	return UUcError_None;
 }
 
@@ -178,6 +178,6 @@ UUtError
 MSrDrawContext_Method_Frame_Sync(
 	M3tDrawContext		*drawContext)
 {
-	
+
 	return UUcError_None;
 }

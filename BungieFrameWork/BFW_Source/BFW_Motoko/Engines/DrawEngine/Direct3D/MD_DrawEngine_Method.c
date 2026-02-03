@@ -1,12 +1,12 @@
 /*
 	FILE:	MD_DrawEngine_Method.c
-	
+
 	AUTHOR:	Kevin Armstrong
-	
+
 	CREATED: January 5, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1998
 
 */
@@ -52,15 +52,15 @@
 typedef struct MDtD3D_device_info
 {
 	GUID					d3d_guid;
-	
+
 	char					device_desc[MDcMaxDescChars];
-	
+
 	D3DDEVICEDESC			HAL_desc;
 	D3DDEVICEDESC			HEL_desc;
-	
+
 	UUtUns16				num_texture_formats;
 	DDSURFACEDESC			texture_format[MDcMaxTextureDesc];
-	
+
 } MDtD3D_device_info;
 
 typedef struct MDtPlatform
@@ -70,7 +70,7 @@ typedef struct MDtPlatform
 
 	UUtUns16				num_d3d_devices;
 	MDtD3D_device_info		d3d_devices[MDcMaxD3DDevices];
-	
+
 } MDtPlatform;
 
 // ======================================================================
@@ -85,7 +85,7 @@ MDiInitBuffers(
 	MDtDrawContextPrivate		*inDrawContextPrivate,
 	M3tDisplayDevice			*inDisplayDevice,
 	UUtUns32					inD3DDevice);
-	
+
 UUtError
 MDiInitD3D(
 	MDtDrawContextPrivate		*inDrawContextPrivate,
@@ -99,7 +99,7 @@ MDrDrawContext_Method_Frame_Start(
 UUtError
 MDrDrawContext_Method_Frame_End(
 	M3tDrawContext				*inDrawContext);
-	
+
 UUtError
 MDrDrawContext_Method_Frame_Sync(
 	M3tDrawContext				*drawContext);
@@ -170,26 +170,26 @@ static UUtError MDrDrawEngine_SetupDrawContextPrivate(
 
 	// get a pointer to onScreen
 	onScreen = &inDrawContextDescriptor->drawContext.onScreen;
-		
+
 	// ----------------------------------------
 	// Create the direct draw object
 	// ----------------------------------------
 
 	// get a pointer to the draw engine caps list
 	draw_engine_caps_list = M3rDrawEngine_GetCapList();
-	
+
 	UUmAssert(draw_engine_caps_list);
-	
+
 	// get the index of the active draw engine
 	M3rManager_GetActiveDrawEngine(&activeDrawEngine, &activeDevice, &activeMode);
-	
+
 	// get a pointer to the current draw engine's caps
 	current_draw_engine_caps = &draw_engine_caps_list->drawEngines[activeDrawEngine];
-	
+
 	// get a pointer to the platform_data
-	platform_data = 
+	platform_data =
 		(MDtPlatform*)current_draw_engine_caps->displayDevices[activeDevice].platformDevice;
-	
+
 	// create the DirectDraw object
 	if (platform_data->primary)
 	{
@@ -211,7 +211,7 @@ static UUtError MDrDrawEngine_SetupDrawContextPrivate(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 	}
-	
+
 	// get the DirectDraw2 object
 	result =
 		IDirectDraw_QueryInterface(
@@ -222,11 +222,11 @@ static UUtError MDrDrawEngine_SetupDrawContextPrivate(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 	}
-	
+
 	// ----------------------------------------
 	// Setup the connection to the window
 	// ----------------------------------------
-	
+
 	// set the flags for the window
 	if (inFullScreen == UUcTrue)
 	{
@@ -236,7 +236,7 @@ static UUtError MDrDrawEngine_SetupDrawContextPrivate(
 	{
 		win_flags = DDSCL_NOWINDOWCHANGES | DDSCL_NORMAL;
 	}
-	
+
 	// set the cooperative level
 	result =
 		IDirectDraw2_SetCooperativeLevel(
@@ -247,11 +247,11 @@ static UUtError MDrDrawEngine_SetupDrawContextPrivate(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 	}
-	
+
 	// ----------------------------------------
 	// create the Direct3D interface
 	// ----------------------------------------
-	
+
 	// get the d3d2 interface from DirectDraw
 	result =
 		IDirectDraw2_QueryInterface(
@@ -266,10 +266,10 @@ static UUtError MDrDrawEngine_SetupDrawContextPrivate(
 	// ----------------------------------------
 	// setup the buffers and whatnots
 	// ----------------------------------------
-	
+
 	// get the d3d_device index
 	d3d_device_index = MDiGetD3DDeviceIndex();
-	
+
 	if (inDrawContextDescriptor->type == M3cDrawContextType_OnScreen)
 	{
 		// XXX - this may need to change to better reflect the activeMode
@@ -298,7 +298,7 @@ static UUtError MDrDrawEngine_SetupDrawContextPrivate(
 				&current_draw_engine_caps->displayDevices[activeDevice],
 				d3d_device_index);
 		UUmError_ReturnOnErrorMsg(error, "Unable to init the buffers.");
-	
+
 		// Initialize Direct3D
 		error =
 			MDiInitD3D(
@@ -315,7 +315,7 @@ static UUtError MDrDrawEngine_SetupDrawContextPrivate(
 	// ----------------------------------------
 	// Set the display mode
 	// ----------------------------------------
-	
+
 	result =
 		IDirectDraw2_SetDisplayMode(
 			inDrawContextPrivate->dd2,
@@ -325,8 +325,8 @@ static UUtError MDrDrawEngine_SetupDrawContextPrivate(
 			60,
 			0);
 	UUmError_ReturnOnErrorMsg(error, "Unable to set the display mode.");
-	
-	
+
+
 	return UUcError_None;
 }
 
@@ -353,11 +353,11 @@ MDrDrawEngine_Method_ContextPrivateDelete(
 	M3tDrawContextPrivate		*inDrawContextPrivate)
 {
 	MDtDrawContextPrivate		*contextPrivate;
-	
+
 	contextPrivate = (MDtDrawContextPrivate *)inDrawContextPrivate;
 
 	MDrDrawEngine_DestroyDrawContextPrivate(contextPrivate);
-	
+
 	UUrMemory_Block_Delete(inDrawContextPrivate);
 }
 
@@ -371,7 +371,7 @@ MDrDrawEngine_Method_ContextPrivateNew(
 {
 	UUtError					errorCode;
 	MDtDrawContextPrivate		*newDrawContextPrivate;
-	
+
 	*outDrawContextPrivate = NULL;
 	*outAPI = M3cDrawAPI_D3D;
 
@@ -381,13 +381,13 @@ MDrDrawEngine_Method_ContextPrivateNew(
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Could not allocate private draw context");
 	}
-	
+
 	// clear the structure
 	UUrMemory_Clear(newDrawContextPrivate, sizeof(MDtDrawContextPrivate));
-	
+
 	// set the contextType
 	newDrawContextPrivate->contextType = inDrawContextDescriptor->type;
-	
+
 	// set the screenFlags
 	if (inDrawContextDescriptor->type == M3cDrawContextType_OnScreen)
 	{
@@ -398,7 +398,7 @@ MDrDrawEngine_Method_ContextPrivateNew(
 	{
 		newDrawContextPrivate->screenFlags = M3cDrawContextScreenFlags_None;
 	}
-	
+
 	// Setup the platform specific data
 	errorCode =
 		MDrDrawEngine_SetupDrawContextPrivate(
@@ -409,17 +409,17 @@ MDrDrawEngine_Method_ContextPrivateNew(
 	{
 		goto failure;
 	}
-	
+
 	// return the new draw context
 	*outDrawContextPrivate = (M3tDrawContextPrivate*)newDrawContextPrivate;
-	
+
 	return UUcError_None;
-	
+
 failure:
-	
+
 	MDrDrawEngine_Method_ContextPrivateDelete(
 		(M3tDrawContextPrivate *)newDrawContextPrivate);
-	
+
 	return errorCode;
 }
 
@@ -431,220 +431,220 @@ MDrDrawEngine_Method_ContextMetaHandler(
 	M3tDrawContextMethod*		inMethod)
 {
 	MDtDrawContextPrivate	*drawContextPrivate;
-	
+
 	// get a pointer shortcut
 	drawContextPrivate = (MDtDrawContextPrivate *)inDrawContext->privateContext;
-	
+
 	switch (inMethodType)
 	{
 		case M3cDrawContextMethodType_Frame_Start:
 			inMethod->frameStart = MDrDrawContext_Method_Frame_Start;
 			break;
-			
+
 		case M3cDrawContextMethodType_Frame_End:
 			inMethod->frameEnd = MDrDrawContext_Method_Frame_End;
 			break;
-			
+
 		case M3cDrawContextMethodType_Frame_Sync:
 			inMethod->frameSync = MDrDrawContext_Method_Frame_Sync;
 			break;
-			
+
 		case M3cDrawContextMethodType_State_SetInt:
 			inMethod->stateSetInt = MDrDrawContext_Method_State_SetInt;
 			break;
-			
+
 		case M3cDrawContextMethodType_State_GetInt:
 			inMethod->stateGetInt = MDrDrawContext_Method_State_GetInt;
 			break;
-			
+
 		case M3cDrawContextMethodType_State_SetPtr:
 			inMethod->stateSetPtr = MDrDrawContext_Method_State_SetPtr;
 			break;
-			
+
 		case M3cDrawContextMethodType_State_GetPtr:
 			inMethod->stateGetPtr = MDrDrawContext_Method_State_GetPtr;
 			break;
-			
+
 		case M3cDrawContextMethodType_TriInterpolate:
 			switch (drawContextPrivate->stateInt[M3cDrawStateIntType_Appearence])
 			{
 				case M3cDrawState_Appearence_Gouraud:
 					inMethod->triInterpolate = MDrDrawContext_Method_TriGouraudInterpolate;
 					break;
-					
+
 				case M3cDrawState_Appearence_Texture_Lit:
 				case M3cDrawState_Appearence_Texture_Unlit:
 					inMethod->triInterpolate = MDrDrawContext_Method_TriTextureInterpolate;
 					break;
-					
+
 				default:
 					UUmAssert(!"Unkown appearence type");
 			}
 			break;
-			
+
 		case M3cDrawContextMethodType_TriFlat:
 			switch (drawContextPrivate->stateInt[M3cDrawStateIntType_Appearence])
 			{
 				case M3cDrawState_Appearence_Gouraud:
 					inMethod->triFlat = MDrDrawContext_Method_TriGouraudFlat;
 					break;
-					
+
 				case M3cDrawState_Appearence_Texture_Lit:
 				case M3cDrawState_Appearence_Texture_Unlit:
 					inMethod->triFlat = MDrDrawContext_Method_TriTextureFlat;
 					break;
-					
+
 				default:
 					UUmAssert(!"Unkown appearence type");
 			}
 			break;
-			
+
 		case M3cDrawContextMethodType_TriSplit:
 			inMethod->triSplit = MDrDrawContext_Method_TriTextureSplit;
 			break;
-			
+
 		case M3cDrawContextMethodType_QuadInterpolate:
 			switch (drawContextPrivate->stateInt[M3cDrawStateIntType_Appearence])
 			{
 				case M3cDrawState_Appearence_Gouraud:
 					inMethod->quadInterpolate = MDrDrawContext_Method_QuadGouraudInterpolate;
 					break;
-					
+
 				case M3cDrawState_Appearence_Texture_Lit:
 				case M3cDrawState_Appearence_Texture_Unlit:
 					inMethod->quadInterpolate = MDrDrawContext_Method_QuadTextureInterpolate;
 					break;
-					
+
 				default:
 					UUmAssert(!"Unkown appearence type");
 			}
 			break;
-			
+
 		case M3cDrawContextMethodType_QuadFlat:
 			switch (drawContextPrivate->stateInt[M3cDrawStateIntType_Appearence])
 			{
 				case M3cDrawState_Appearence_Gouraud:
 					inMethod->quadFlat = MDrDrawContext_Method_QuadGouraudFlat;
 					break;
-					
+
 				case M3cDrawState_Appearence_Texture_Lit:
 				case M3cDrawState_Appearence_Texture_Unlit:
 					inMethod->quadFlat = MDrDrawContext_Method_QuadTextureFlat;
 					break;
-					
+
 				default:
 					UUmAssert(!"Unkown appearence type");
 			}
 			break;
-			
+
 		case M3cDrawContextMethodType_QuadSplit:
 			inMethod->quadSplit = MDrDrawContext_Method_QuadTextureSplit;
 			break;
-			
+
 		case M3cDrawContextMethodType_SmallQuadInterpolate:
 			switch (drawContextPrivate->stateInt[M3cDrawStateIntType_Appearence])
 			{
 				case M3cDrawState_Appearence_Gouraud:
 					inMethod->smallQuadInterpolate = MDrDrawContext_Method_SmallQuadGouraudInterpolate;
 					break;
-				
+
 				case M3cDrawState_Appearence_Texture_Lit:
 				case M3cDrawState_Appearence_Texture_Unlit:
 					inMethod->smallQuadInterpolate = MDrDrawContext_Method_SmallQuadTextureInterpolate;
 					break;
-					
+
 				default:
 					UUmAssert(!"Unkown appearence type");
 			}
 			break;
-			
+
 		case M3cDrawContextMethodType_SmallQuadFlat:
 			switch (drawContextPrivate->stateInt[M3cDrawStateIntType_Appearence])
 			{
 				case M3cDrawState_Appearence_Gouraud:
 					inMethod->smallQuadFlat = MDrDrawContext_Method_SmallQuadGouraudFlat;
 					break;
-					
+
 				case M3cDrawState_Appearence_Texture_Lit:
 				case M3cDrawState_Appearence_Texture_Unlit:
 					inMethod->smallQuadFlat = MDrDrawContext_Method_SmallQuadTextureFlat;
 					break;
-					
+
 				default:
 					UUmAssert(!"Unkown appearence type");
 			}
 			break;
-			
+
 		case M3cDrawContextMethodType_PentInterpolate:
 			switch (drawContextPrivate->stateInt[M3cDrawStateIntType_Appearence])
 			{
 				case M3cDrawState_Appearence_Gouraud:
 					inMethod->pentInterpolate = MDrDrawContext_Method_PentGouraudInterpolate;
 					break;
-					
+
 				case M3cDrawState_Appearence_Texture_Lit:
 				case M3cDrawState_Appearence_Texture_Unlit:
 					inMethod->pentInterpolate = MDrDrawContext_Method_PentTextureInterpolate;
 					break;
-					
+
 				default:
 					UUmAssert(!"Unkown appearence type");
 			}
 			break;
-			
+
 		case M3cDrawContextMethodType_PentFlat:
 			switch (drawContextPrivate->stateInt[M3cDrawStateIntType_Appearence])
 			{
 				case M3cDrawState_Appearence_Gouraud:
 					inMethod->pentFlat = MDrDrawContext_Method_PentGouraudFlat;
 					break;
-					
+
 				case M3cDrawState_Appearence_Texture_Lit:
 				case M3cDrawState_Appearence_Texture_Unlit:
 					inMethod->pentFlat = MDrDrawContext_Method_PentTextureFlat;
 					break;
-					
+
 				default:
 					UUmAssert(!"Unkown appearence type");
 			}
 			break;
-			
+
 		case M3cDrawContextMethodType_PentSplit:
 			inMethod->pentSplit = MDrDrawContext_Method_PentTextureSplit;
 			break;
-			
+
 		case M3cDrawContextMethodType_Line_Interpolate:
 			inMethod->lineInterpolate = MDrDrawContext_Method_Line_Interpolate;
 			break;
-			
+
 		case M3cDrawContextMethodType_Line_Flat:
 			inMethod->lineFlat = MDrDrawContext_Method_Line_Flat;
 			break;
-			
+
 		case M3cDrawContextMethodType_Point:
 			inMethod->point = MDrDrawContext_Method_Point;
 			break;
-		
+
 		case M3cDrawContextMethodType_Bitmap:
 			inMethod->bitmap = MDrDrawContext_Method_Bitmap;
 			break;
-		
+
 		case M3cDrawContextMethodType_TextureFormatAvailable:
 			inMethod->textureFormatAvailable = MDrDrawContext_TextureFormatAvailable;
 			break;
-		
+
 		case M3cDrawContextMethodType_GetWidth:
 			inMethod->getWidth = MDrDrawContext_GetWidth;
 			break;
-		
+
 		case M3cDrawContextMethodType_GetHeight:
 			inMethod->getHeight = MDrDrawContext_GetHeight;
 			break;
-		
+
 		default:
 			UUmDebugStr("MDrDrawEngine_Method_ContextMetaHandler: invalid case");
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -662,30 +662,30 @@ MDrTextureFormatAvailable(
 	UUtUns16						activeMode;
 	UUtUns32						d3d_device_index;
 	UUtUns32						i;
-	
+
 	// get a pointer to the draw engine caps list
 	draw_engine_caps_list = M3rDrawEngine_GetCapList();
-	
+
 	UUmAssert(draw_engine_caps_list);
-	
+
 	// get the index of the active draw engine
 	M3rManager_GetActiveDrawEngine(&activeDrawEngine, &activeDevice, &activeMode);
-	
+
 	// get a pointer to the current draw engine's caps
 	current_draw_engine_caps = &draw_engine_caps_list->drawEngines[activeDrawEngine];
-	
+
 	// get a pointer to the platform_data
-	platform_data = 
+	platform_data =
 		(MDtPlatform*)current_draw_engine_caps->displayDevices[activeDevice].platformDevice;
 
 	// get the d3d_device index
 	d3d_device_index = MDiGetD3DDeviceIndex();
-	
+
 	for (i = 0; i < platform_data->d3d_devices[d3d_device_index].num_texture_formats; i++)
 	{
 		// get a pointer to the pixel format
 		ddpf = &platform_data->d3d_devices[d3d_device_index].texture_format[i].ddpfPixelFormat;
-	
+
 		// check to see that the important parts are the same
 		if ((ddpf->dwFlags & DDPF_RGB) == (inDDPixelFormat->dwFlags & DDPF_RGB))
 		{
@@ -706,7 +706,7 @@ MDrTextureFormatAvailable(
 			}
 		}
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -721,14 +721,14 @@ MDrDrawEngine_Method_Texture_Init(
 	M3tTextureMap*				inTextureMap)
 {
 	MDtTextureMapPrivate*	privateData;
-		
+
 	// get a pointer to the texturemaps private data
 	privateData =
 		(MDtTextureMapPrivate*)M3rManager_Texture_GetEnginePrivate(
 			inTextureMap);
-	
+
 	UUmAssert(privateData != NULL);
-	
+
 	if(inTextureMap->numLongs > 1 && inTextureMap->width > 0 && inTextureMap->height > 0)
 	{
 		// clear the variables
@@ -737,7 +737,7 @@ MDrDrawEngine_Method_Texture_Init(
 		privateData->memory_surface = NULL;
 		privateData->device_surface = NULL;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -746,7 +746,7 @@ static UUtError
 MDrDrawEngine_Method_Texture_Load(
 	M3tTextureMap*				inTextureMap)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -755,7 +755,7 @@ static UUtError
 MDrDrawEngine_Method_Texture_Unload(
 	M3tTextureMap*				inTextureMap)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -765,26 +765,26 @@ MDrDrawEngine_Method_Texture_Delete(
 	M3tTextureMap*				inTextureMap)
 {
 	MDtTextureMapPrivate*	privateData;
-		
+
 	// get a pointer to the texturemaps private data
 	privateData =
 		(MDtTextureMapPrivate*)M3rManager_Texture_GetEnginePrivate(
 			inTextureMap);
-	
+
 	UUmAssert(privateData != NULL);
-	
+
 	if (privateData->memory_surface)
 	{
 		IDirectDrawSurface3_Release(privateData->memory_surface);
 		privateData->memory_surface = NULL;
 	}
-	
+
 	if (privateData->device_surface)
 	{
 		IDirectDrawSurface3_Release(privateData->device_surface);
 		privateData->device_surface = NULL;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -793,7 +793,7 @@ static UUtError
 MDrDrawEngine_Method_Texture_Update(
 	M3tTextureMap*				inTextureMap)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -811,7 +811,7 @@ MDrDrawEngine_Initialize(
 	OSVERSIONINFO			info;
 	M3tDrawEngineCaps		drawEngineCaps;
 	M3tDrawEngineMethods	drawEngineMethods;
-	
+
 	// find out which OS the game is running under
 	info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 	if (GetVersionEx(&info))
@@ -825,21 +825,21 @@ MDrDrawEngine_Initialize(
 	drawEngineMethods.contextPrivateNew = MDrDrawEngine_Method_ContextPrivateNew;
 	drawEngineMethods.contextPrivateDelete = MDrDrawEngine_Method_ContextPrivateDelete;
 	drawEngineMethods.contextMetaHandler = MDrDrawEngine_Method_ContextMetaHandler;
-	
+
 	drawEngineMethods.textureInit = MDrDrawEngine_Method_Texture_Init;
 	drawEngineMethods.textureLoad = MDrDrawEngine_Method_Texture_Load;
 	drawEngineMethods.textureUnload = MDrDrawEngine_Method_Texture_Unload;
 	drawEngineMethods.textureDelete = MDrDrawEngine_Method_Texture_Delete;
 	drawEngineMethods.textureUpdate = MDrDrawEngine_Method_Texture_Update;
-	
+
 	// Setup engine caps
 	UUrMemory_Clear(&drawEngineCaps, sizeof(M3tDrawEngineCaps));
-	
+
 	drawEngineCaps.engineFlags = M3cDrawEngineFlag_3DOnly;
-	
+
 	UUrString_Copy(drawEngineCaps.engineName, M3cDrawEngine_D3D, M3cMaxNameLen);
 	drawEngineCaps.engineDriver[0] = 0;
-	
+
 	drawEngineCaps.engineVersion = MDcD3D_Version;
 
 	// Setup engine caps
@@ -849,7 +849,7 @@ MDrDrawEngine_Initialize(
 		UUrError_Report(UUcError_Generic, "Could not setup engine caps");
 		return;
 	}
-		
+
 	// register the Direct3D draw engine
 	error =
 		M3rManager_Register_DrawEngine(
@@ -882,7 +882,7 @@ MDrUseTexture(
 
 	UUmAssert(inDrawContextPrivate);
 	UUmAssert(inTextureMap);
-	
+
 	textureMapPrivate =
 		(MDtTextureMapPrivate*)(TMmInstance_GetDynamicData(inTextureMap));
 
@@ -894,7 +894,7 @@ MDrUseTexture(
 			DDSURFACEDESC			ddsd;
 			LPDIRECTDRAWSURFACE		temp_surface;
 			LPDIRECT3DTEXTURE2		texture;
-			
+
 			// --------------------------------------------------
 			// setup the surface description
 			UUrMemory_Clear(&ddsd, sizeof(DDSURFACEDESC));
@@ -907,10 +907,10 @@ MDrUseTexture(
 			ddsd.dwWidth 			= inTextureMap->width;
 			ddsd.dwHeight			= inTextureMap->height;
 			ddsd.lPitch				= inTextureMap->rowBytes;
-			
+
 			ddsd.ddpfPixelFormat.dwSize				= sizeof(DDPIXELFORMAT);
 			ddsd.ddpfPixelFormat.dwFlags			= DDPF_RGB;
-			
+
 			switch (inTextureMap->texelType)
 			{
 				case M3cTextureType_ARGB4444:
@@ -921,7 +921,7 @@ MDrUseTexture(
 					ddsd.ddpfPixelFormat.dwBBitMask			= 0x0000000F;
 					ddsd.ddpfPixelFormat.dwRGBAlphaBitMask	= 0x0000F000;
 					break;
-					
+
 				case M3cTextureType_RGB555:
 					ddsd.ddpfPixelFormat.dwRGBBitCount		= 16;
 					ddsd.ddpfPixelFormat.dwRBitMask			= 0x00007C00;
@@ -929,7 +929,7 @@ MDrUseTexture(
 					ddsd.ddpfPixelFormat.dwBBitMask			= 0x0000001F;
 					ddsd.ddpfPixelFormat.dwRGBAlphaBitMask	= 0x00000000;
 					break;
-					
+
 				case M3cTextureType_ARGB1555:
 					ddsd.ddpfPixelFormat.dwRGBBitCount		= 16;
 					ddsd.ddpfPixelFormat.dwFlags			|= DDPF_ALPHAPIXELS;
@@ -938,7 +938,7 @@ MDrUseTexture(
 					ddsd.ddpfPixelFormat.dwBBitMask			= 0x0000001F;
 					ddsd.ddpfPixelFormat.dwRGBAlphaBitMask	= 0x00008000;
 					break;
-					
+
 				case M3cTextureType_ARGB8888:
 					ddsd.ddpfPixelFormat.dwRGBBitCount		= 32;
 					ddsd.ddpfPixelFormat.dwFlags			|= DDPF_ALPHAPIXELS;
@@ -947,11 +947,11 @@ MDrUseTexture(
 					ddsd.ddpfPixelFormat.dwBBitMask			= 0x000000FF;
 					ddsd.ddpfPixelFormat.dwRGBAlphaBitMask	= 0xFF000000;
 					break;
-				
+
 				default:
 					UUmAssert(!"Unknown texture format.");
 			}
-			
+
 			if (inDrawContextPrivate->isHardware)
 			{
 				ddsd.ddsCaps.dwCaps |= DDSCAPS_VIDEOMEMORY | DDSCAPS_ALLOCONLOAD;
@@ -960,7 +960,7 @@ MDrUseTexture(
 			{
 				ddsd.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
 			}
-			
+
 			// create the device surface
 			result =
 				IDirectDraw2_CreateSurface(
@@ -973,21 +973,21 @@ MDrUseTexture(
 				UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 				return;
 			}
-			
+
 			// get the DirectDrawSurface3 interface
 			result =
 				IDirectDrawSurface_QueryInterface(
 					temp_surface,
 					&IID_IDirectDrawSurface3,
 					(void**)&textureMapPrivate->device_surface);
-			
+
 			// --------------------------------------------------
 			// create the memory surface -- this one will actually hold the
 			// data and it does not get lost.
 			if (inDrawContextPrivate->isHardware)
 			{
 				ddsd.ddsCaps.dwCaps 	= DDSCAPS_SYSTEMMEMORY | DDSCAPS_TEXTURE;
-				
+
 				// create the memory surface
 				result =
 					IDirectDraw2_CreateSurface(
@@ -1000,7 +1000,7 @@ MDrUseTexture(
 					UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 					return;
 				}
-				
+
 				// get an interface to the DirectDrawSurface3
 				result =
 					IDirectDrawSurface_QueryInterface(
@@ -1020,7 +1020,7 @@ MDrUseTexture(
 				textureMapPrivate->memory_surface = textureMapPrivate->device_surface;
 				IDirectDrawSurface3_AddRef(textureMapPrivate->device_surface);
 			}
-			
+
 			// set the pointer to the data
 			UUrMemory_Clear(&ddsd, sizeof(DDSURFACEDESC));
 			ddsd.dwSize				= sizeof(DDSURFACEDESC);
@@ -1036,7 +1036,7 @@ MDrUseTexture(
 				UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 				return;
 			}
-			
+
 			// --------------------------------------------------
 			// query the surface for a texture interface
 			result =
@@ -1049,7 +1049,7 @@ MDrUseTexture(
 				UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 				return;
 			}
-			
+
 			// get a handle to the texture
 			result =
 				IDirect3DTexture2_GetHandle(
@@ -1061,10 +1061,10 @@ MDrUseTexture(
 				UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 				return;
 			}
-			
+
 			RELEASE(texture);
 		}
-		
+
 		// --------------------------------------------------
 		// load the texture
 		result =
@@ -1097,10 +1097,10 @@ MDrDrawContext_Method_Frame_Start(
 	HRESULT						result = DD_OK;
 	D3DRECT						d3d_rect;
 	DDBLTFX						dd_blt_fx;
-	
+
 	// get shortcut pointers
 	drawContextPrivate = (MDtDrawContextPrivate*)inDrawContext->privateContext;
-	
+
 	// use the blitter to do a color fill on the backbuffer
 	dd_blt_fx.dwSize = sizeof(DDBLTFX);
 	dd_blt_fx.dwFillColor = RGB_MAKE(0,0,255);
@@ -1121,7 +1121,7 @@ MDrDrawContext_Method_Frame_Start(
 	d3d_rect.y1 = drawContextPrivate->rect.top;
 	d3d_rect.x2 = drawContextPrivate->rect.right;
 	d3d_rect.y2 = drawContextPrivate->rect.bottom;
-	
+
 	result =
 		IDirect3DViewport2_Clear(
 			drawContextPrivate->d3d_viewport2,
@@ -1149,7 +1149,7 @@ MDrDrawContext_Method_Frame_Start(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		}
-		
+
 		// turn on z-buffering
 		result =
 			IDirect3DDevice2_SetRenderState(
@@ -1160,7 +1160,7 @@ MDrDrawContext_Method_Frame_Start(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		}
-		
+
 		// turn off culling
 		result =
 			IDirect3DDevice2_SetRenderState(
@@ -1171,7 +1171,7 @@ MDrDrawContext_Method_Frame_Start(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		}
-		
+
 		// turn on perspective correct texture mapping
 		result =
 			IDirect3DDevice2_SetRenderState(
@@ -1193,7 +1193,7 @@ MDrDrawContext_Method_Frame_Start(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		}
-		
+
 		// turn on some ambient light
 		result =
 			IDirect3DDevice2_SetLightState(
@@ -1207,10 +1207,10 @@ MDrDrawContext_Method_Frame_Start(
 
 		states_set = UUcTrue;
 	}
-	
+
 	return UUcError_None;
 }
-	
+
 // ----------------------------------------------------------------------
 UUtError
 MDrDrawContext_Method_Frame_End(
@@ -1220,10 +1220,10 @@ MDrDrawContext_Method_Frame_End(
 	HRESULT						result = DD_OK;
 
 	drawContextPrivate = (MDtDrawContextPrivate*)inDrawContext->privateContext;
-	
+
 	// end the Direct3D scene
 	result = IDirect3DDevice2_EndScene(drawContextPrivate->d3d_device2);
-	
+
 	// draw the rendered scene to the screen
 	if(drawContextPrivate->screenFlags & M3cDrawContextScreenFlags_DoubleBuffer)
 	{
@@ -1235,7 +1235,7 @@ MDrDrawContext_Method_Frame_End(
 				drawContextPrivate->backBuffer,
 				&drawContextPrivate->rect,
 				DDBLTFAST_NOCOLORKEY | DDBLTFAST_WAIT); /* XXX - Eventually get rid of the wait */
-		
+
 		if(result != DD_OK)
 		{
 			UUrError_Report(UUcError_Generic, M3rPlatform_GetErrorMsg(result));
@@ -1277,13 +1277,13 @@ MDiInitBuffers(
 //	DDSCAPS						ddscaps;
 	HRESULT						result;
 	UUtUns32					mem_location;
-	
+
 	// setup the direct draw surface description for the front buffer
 	UUrMemory_Clear(&ddsd, sizeof(DDSURFACEDESC));
 	ddsd.dwSize					= sizeof(DDSURFACEDESC);
 	ddsd.dwFlags				= DDSD_CAPS;
 	ddsd.ddsCaps.dwCaps			= DDSCAPS_PRIMARYSURFACE;
-	
+
 	// create the frontBuffer
 	result =
 		IDirectDraw2_CreateSurface(
@@ -1296,10 +1296,10 @@ MDiInitBuffers(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	// get a pointer to the platform data
 	platform_data = (MDtPlatform*)inDisplayDevice->platformDevice;
-	
+
 	// get the D3D device description
 	if (MDiIsHardware(&platform_data->d3d_devices[inD3DDevice]))
 	{
@@ -1339,7 +1339,7 @@ MDiInitBuffers(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	// create the zbuffer
 	UUrMemory_Clear(&ddsd, sizeof(DDSURFACEDESC));
 	ddsd.dwSize				= sizeof(DDSURFACEDESC);
@@ -1348,7 +1348,7 @@ MDiInitBuffers(
 	ddsd.dwWidth			= inDrawContextPrivate->width;
 	ddsd.dwHeight			= inDrawContextPrivate->height;
 	ddsd.dwZBufferBitDepth	= inDrawContextPrivate->zbpp;
-	
+
 	result =
 		IDirectDraw2_CreateSurface(
 			inDrawContextPrivate->dd2,
@@ -1360,7 +1360,7 @@ MDiInitBuffers(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	// attach the zBuffer to the rendering surface
 	result =
 		IDirectDrawSurface2_AddAttachedSurface(
@@ -1371,7 +1371,7 @@ MDiInitBuffers(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1385,10 +1385,10 @@ MDiInitD3D(
 	HRESULT						result;
 	D3DVIEWPORT2				viewport_data;
 	MDtPlatform					*platform_data;
-	
+
 	// get a pointer to the platform data
 	platform_data = (MDtPlatform*)inDisplayDevice->platformDevice;
-	
+
 	// create the D3D Device
 	result =
 		IDirect3D2_CreateDevice(
@@ -1401,7 +1401,7 @@ MDiInitD3D(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	// Create the viewport
 	result =
 		IDirect3D2_CreateViewport(
@@ -1413,7 +1413,7 @@ MDiInitD3D(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	// Attach viewport to D3D device
 	result =
 		IDirect3DDevice_AddViewport(
@@ -1424,10 +1424,10 @@ MDiInitD3D(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	// configure the viewport
 	UUrMemory_Clear(&viewport_data, sizeof(D3DVIEWPORT2));
-	
+
 	viewport_data.dwSize		= sizeof(D3DVIEWPORT2);
 	viewport_data.dwX			= inDrawContextPrivate->left;
 	viewport_data.dwY			= inDrawContextPrivate->top;
@@ -1439,7 +1439,7 @@ MDiInitD3D(
 	viewport_data.dvClipY		= 0.0;
 	viewport_data.dvMinZ		= 0.0;
 	viewport_data.dvMaxZ		= 1.0;
-	
+
 	result =
 		IDirect3DViewport2_SetViewport2(
 			inDrawContextPrivate->d3d_viewport2,
@@ -1449,7 +1449,7 @@ MDiInitD3D(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	// make the device use the viewport
 	result =
 		IDirect3DDevice2_SetCurrentViewport(
@@ -1460,7 +1460,7 @@ MDiInitD3D(
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		return UUcError_DirectDraw;
 	}
-	
+
 	// load the texture formats for the device
 	result =
 		IDirect3DDevice2_EnumTextureFormats(
@@ -1484,14 +1484,14 @@ MDiDrawEngine_SetupEngineCaps(
 	HRESULT				result;
 
 	ioDrawEngineCaps->numDisplayDevices = 0;
-	
+
 	// enumerate the direct draw devices
 	result = DirectDrawEnumerate(MDiDD_DriverCallback, ioDrawEngineCaps);
 	if (result != DD_OK)
 	{
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1509,33 +1509,33 @@ MDiDD_DriverCallback(
 	LPDIRECT3D2					d3d2;
 	MDtPlatform					*platform_data;
 	HRESULT						result;
-	
+
 	// if inData is null, something went terribly wrong
 	if (inData == NULL)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// get a pointer to the draw engine caps
 	draw_engine_caps = (M3tDrawEngineCaps*)inData;
-	
+
 	// get an index into the display devices array
 	index = draw_engine_caps->numDisplayDevices;
 	if (index >= M3cMaxDisplayDevices)
 	{
 		return DDENUMRET_CANCEL;
 	}
-	
+
 	// allocate the platform_data
 	platform_data = (MDtPlatform*)UUrMemory_Block_New(sizeof(MDtPlatform));
 	if (platform_data == NULL)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// clear the memory
 	UUrMemory_Clear(platform_data, sizeof(MDtPlatform));
-	
+
 	// save guid
 	if (inGuid)
 	{
@@ -1546,23 +1546,23 @@ MDiDD_DriverCallback(
 	{
 		platform_data->primary = UUcTrue;
 	}
-	
+
 	// initialize the display device
 	draw_engine_caps->displayDevices[index].platformDevice =
 		(M3tPlatformDevice)platform_data;
 	draw_engine_caps->displayDevices[index].numDisplayModes = 0;
-	
+
 	// create the DirectDraw object
 	result = DirectDrawCreate(inGuid, &dd, NULL);
 	if (result != DD_OK)
 	{
 		UUrMemory_Block_Delete(platform_data);
 		draw_engine_caps->displayDevices[index].platformDevice = NULL;
-		
+
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		goto cleanup;
 	}
-	
+
 	// try to get a Direct3D interface
 	result = IDirectDraw_QueryInterface(dd, &IID_IDirect3D2, &d3d2);
 	if (result != DD_OK)
@@ -1584,11 +1584,11 @@ MDiDD_DriverCallback(
 	{
 		UUrMemory_Block_Delete(platform_data);
 		draw_engine_caps->displayDevices[index].platformDevice = NULL;
-		
+
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		goto cleanup;
 	}
-	
+
 	// enumerate the d3d devices
 	result =
 		IDirect3D2_EnumDevices(
@@ -1599,7 +1599,7 @@ MDiDD_DriverCallback(
 	{
 		UUrMemory_Block_Delete(platform_data);
 		draw_engine_caps->displayDevices[index].platformDevice = NULL;
-		
+
 		UUrError_Report(UUcError_DirectDraw, M3rPlatform_GetErrorMsg(result));
 		goto cleanup;
 	}
@@ -1614,14 +1614,14 @@ cleanup:
 		IDirect3D2_Release(d3d2);
 		d3d2 = NULL;
 	}
-	
+
 	if (dd)
 	{
 		IDirectDraw_Release(dd);
 		dd = NULL;
 	}
-	
-	return DDENUMRET_OK;	
+
+	return DDENUMRET_OK;
 }
 
 // ----------------------------------------------------------------------
@@ -1632,51 +1632,51 @@ MDiDD_ModeCallback(
 {
 	M3tDisplayDevice			*display_device;
 	UUtUns16					index;
-	
+
 	// if inData is NULL, something went terribly wrong
 	if (inData == NULL)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// if the surface description is null something went wrong
 	if (inSurfaceDesc == NULL)
 	{
 		return DDENUMRET_CANCEL;
 	}
-	
+
 	// double check structure size
 	if (inSurfaceDesc->dwSize != sizeof(DDSURFACEDESC))
 	{
 		return DDENUMRET_CANCEL;
 	}
-	
+
 	// only use surfaces that have 16 bit pixels
 	if (inSurfaceDesc->ddpfPixelFormat.dwRGBBitCount != 16)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// get a pointer to the display device
 	display_device = (M3tDisplayDevice*)inData;
-	
+
 	// get an index into the display modes array
 	index = display_device->numDisplayModes;
 	if (index >= M3cMaxDisplayModes)
 	{
 		return DDENUMRET_CANCEL;
 	}
-	
+
 	// fill in info about the display mode
 	display_device->displayModes[index].width = (UUtUns16)inSurfaceDesc->dwWidth;
 	display_device->displayModes[index].height = (UUtUns16)inSurfaceDesc->dwHeight;
 	display_device->displayModes[index].bitDepth =
 		(UUtUns16)inSurfaceDesc->ddpfPixelFormat.dwRGBBitCount;
 	display_device->displayModes[index].pad = 0;
-	
+
 	// increment the number of display devices
 	display_device->numDisplayModes++;
-	
+
 	return DDENUMRET_OK;
 }
 
@@ -1693,39 +1693,39 @@ MDiD3D_DeviceCallback(
 	M3tDisplayDevice			*display_device;
 	MDtPlatform					*platform_data;
 	UUtUns16					index;
-	
+
 	// if inData is NULL, something went terribly wrong
 	if (inData == NULL)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// get a pointer to the display device
 	display_device = (M3tDisplayDevice*)inData;
-	
+
 	// get a pointer to the platform data
 	platform_data = (MDtPlatform*)display_device->platformDevice;
 	if (platform_data == NULL)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// get an index into the d3d device array
 	index = platform_data->num_d3d_devices;
 	if (index >= MDcMaxD3DDevices)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// record the info
 	platform_data->d3d_devices[index].d3d_guid = *inGuid;
 	UUrString_Copy(platform_data->d3d_devices[index].device_desc, inDescription, MDcMaxDescChars);
 	platform_data->d3d_devices[index].HAL_desc = *inHALDesc;
 	platform_data->d3d_devices[index].HEL_desc = *inHELDesc;
-		
+
 	// increment the number of d3d devices
 	platform_data->num_d3d_devices++;
-	
+
 	return DDENUMRET_OK;
 }
 
@@ -1737,27 +1737,27 @@ MDiD3D_TextureFormatCallback(
 {
 	MDtD3D_device_info			*d3d_device_info;
 	UUtUns16					index;
-	
+
 	// get a pointer to the d3d device info
 	d3d_device_info = (MDtD3D_device_info*)inData;
 	if (d3d_device_info == NULL)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// get an index into the texture format array
 	index = d3d_device_info->num_texture_formats;
 	if (index >= MDcMaxTextureDesc)
 	{
 		return DDENUMRET_OK;
 	}
-	
+
 	// record the info
 	d3d_device_info->texture_format[index] = *inTextureFormat;
-	
+
 	// increment the number of texture formats
 	d3d_device_info->num_texture_formats++;
-	
+
 	return DDENUMRET_OK;
 }
 

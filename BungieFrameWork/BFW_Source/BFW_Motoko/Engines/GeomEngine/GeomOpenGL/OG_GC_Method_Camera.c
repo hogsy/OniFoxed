@@ -1,12 +1,12 @@
 /*
 	FILE:	OG_GC_Method_Camera.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -22,7 +22,7 @@ UUtError
 OGrGeomContext_Method_Camera_New(
 	M3tGeomCamera*		*outCamera)
 {
-	
+
 	return UUcError_None;
 }
 
@@ -42,7 +42,7 @@ UUtError
 OGrGeomContext_Method_Camera_GetActive(
 	M3tGeomCamera*		*outCamera)
 {
-	
+
 	return UUcError_None;
 }
 

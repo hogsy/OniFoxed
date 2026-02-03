@@ -62,7 +62,7 @@ typedef struct LItKeyCodeHelper
 {
 	UUtUns8							ascii;
 	UUtUns8							keyCode;
-	
+
 } LItKeyCodeHelper;
 
 typedef struct LItMouse
@@ -75,7 +75,7 @@ typedef struct LItMouse
 	ISpElementReference		xAxis;
 	ISpElementReference		yAxis;
 	ISpElementReference		zAxis;
-	
+
 } LItMouse;
 
 // ======================================================================
@@ -94,7 +94,7 @@ struct mac_oni_key {
 	UUtUns8 mac_key;
 };
 
-static struct mac_oni_key mac_keyboard_translation_table[]= 
+static struct mac_oni_key mac_keyboard_translation_table[]=
 {
 	{LIcKeyCode_Grave, 0x32}, // ~ 0x32
 	{LIcKeyCode_1, 0x12}, // 1 0x12
@@ -266,29 +266,29 @@ void mac_hide_cursor(
 	void)
 {
 	extern UUtBool M3gResolutionSwitch; // BFW_Motoko.h
-	
+
 	if (SHIPPING_VERSION) // never hide cursor if running a non-shipping version
 	{
 		extern WindowPtr oni_mac_window; // Oni_Platform_Mac.c
 		Rect window_rect;
-		
+
 		// load the invisible cursor only if running full screen
 		if ((oni_cursor == NULL) && M3gResolutionSwitch)
 		{
 			oni_cursor= GetCursor(CURS_RES_ID);
 		}
-		
+
 		if (oni_cursor)
 		{
 			HLock(oni_cursor);
 			SetCursor(*oni_cursor);
 		}
-			
+
 		if (oni_mac_window &&
 			GetWindowPortBounds(oni_mac_window, &window_rect))
 		{
 			Point offset;
-			
+
 			offset.h= window_rect.left;
 			offset.v= window_rect.top;
 			ShieldCursor(&window_rect, offset);
@@ -297,10 +297,10 @@ void mac_hide_cursor(
 		{
 			HideCursor();
 		}
-		
+
 		mac_cursor_visible= false;
 	}
-	
+
 	return;
 }
 
@@ -312,7 +312,7 @@ void mac_show_cursor(
 		if (oni_cursor)
 		{
 			Cursor unused= {0}, *arrow;
-			
+
 			if ((arrow= GetQDGlobalsArrow(&unused)) != NULL)
 			{
 				SetCursor(arrow);
@@ -325,11 +325,11 @@ void mac_show_cursor(
 				UUrDebuggerMessage("unable to restore the MacOS cursor");
 			}
 		}
-	
+
 		ShowCursor();
 		mac_cursor_visible= true;
 	}
-	
+
 	return;
 }
 
@@ -348,13 +348,13 @@ LIiPlatform_Mouse_Activate(
 	if (using_input_sprocket)
 	{
 		UUtUns32 mindex;
-	
+
 		// activate the devices
 		for (mindex= 0; mindex < LIgMouse_NumMice; mindex++)
 		{
 			OSStatus status;
 			UUtUns32 i;
-		
+
 			if (LIgMouse[mindex].mouse == NULL) continue;
 
 			for (i= 0; i < LIgMouse[mindex].num_buttons; i++)
@@ -364,7 +364,7 @@ LIiPlatform_Mouse_Activate(
 			if (LIgMouse[mindex].xAxis)		status= ISpElement_Flush(LIgMouse[mindex].xAxis);
 			if (LIgMouse[mindex].yAxis)		status= ISpElement_Flush(LIgMouse[mindex].yAxis);
 			if (LIgMouse[mindex].zAxis)		status= ISpElement_Flush(LIgMouse[mindex].zAxis);
-		
+
 			status= ISpDevices_Activate(1, &LIgMouse[mindex].mouse);
 		}
 	}
@@ -380,15 +380,15 @@ LIiPlatform_Mouse_Deactivate(
 	if (using_input_sprocket)
 	{
 		UUtUns32 mindex;
-	
+
 		// activate the devices
 		for (mindex= 0; mindex < LIgMouse_NumMice; mindex++)
 		{
 			OSStatus status;
 			UUtUns32 i;
-		
+
 			if (LIgMouse[mindex].mouse == NULL) continue;
-			
+
 			for (i= 0; i < LIgMouse[mindex].num_buttons; i++)
 			{
 				if (LIgMouse[mindex].button[i])	status= ISpElement_Flush(LIgMouse[mindex].button[i]);
@@ -396,7 +396,7 @@ LIiPlatform_Mouse_Deactivate(
 			if (LIgMouse[mindex].xAxis)		status= ISpElement_Flush(LIgMouse[mindex].xAxis);
 			if (LIgMouse[mindex].yAxis)		status= ISpElement_Flush(LIgMouse[mindex].yAxis);
 			if (LIgMouse[mindex].zAxis)		status= ISpElement_Flush(LIgMouse[mindex].zAxis);
-			
+
 			status= ISpDevices_Deactivate(1, &LIgMouse[mindex].mouse);
 		}
 	}
@@ -416,14 +416,14 @@ LIiPlatform_Mouse_GetData(
 	if (using_input_sprocket)
 	{
 		UUtUns32 mindex;
-	
+
 		for (mindex= 0; mindex < LIgMouse_NumMice; mindex++)
 		{
 			UUtUns32 button_data;
 			UUtUns32 delta_data;
 			LItDeviceInput deviceInput;
 			UUtUns32 i;
-	
+
 			if (LIgMouse[mindex].mouse == NULL) continue;
 
 			// get the button data
@@ -438,29 +438,29 @@ LIiPlatform_Mouse_GetData(
 						// XXX - if LIcMouseCode_ButtonX ever change, this may break
 						deviceInput.input= i + LIcMouseCode_Button1;
 						deviceInput.analogValue= 1.0f;
-					
+
 						LIrActionBuffer_Add(outAction, &deviceInput);
 					}
 				}
 			}
-			
+
 			// get the axis data
 			if (LIgMouse[mindex].xAxis)
 			{
 				delta_data= 0;
 				ISpElement_GetSimpleState(LIgMouse[mindex].xAxis, &delta_data);
-				
+
 				deviceInput.input= LIcMouseCode_XAxis;
 				deviceInput.analogValue= (float)((UUtInt32)delta_data) * LIcFixed_to_Float * 160.0f;
-				
+
 				LIrActionBuffer_Add(outAction, &deviceInput);
 			}
-			
+
 			if (LIgMouse[mindex].yAxis)
 			{
 				delta_data= 0;
 				ISpElement_GetSimpleState(LIgMouse[mindex].yAxis, &delta_data);
-				
+
 				deviceInput.input= LIcMouseCode_YAxis;
 				if (LIgMouse_Invert)
 				{
@@ -470,18 +470,18 @@ LIiPlatform_Mouse_GetData(
 				{
 					deviceInput.analogValue= (float)((UUtInt32)delta_data) * LIcFixed_to_Float * -160.0f;
 				}
-				
+
 				LIrActionBuffer_Add(outAction, &deviceInput);
 			}
-			
+
 			if (LIgMouse[mindex].zAxis)
 			{
 				delta_data= 0;
 				ISpElement_GetSimpleState(LIgMouse[mindex].zAxis, &delta_data);
-				
+
 				deviceInput.input = LIcMouseCode_ZAxis;
 				deviceInput.analogValue = (float)((UUtInt32)delta_data) * LIcFixed_to_Float * 160.0f;
-				
+
 				LIrActionBuffer_Add(outAction, &deviceInput);
 			}
 		}
@@ -494,19 +494,19 @@ LIiPlatform_Mouse_GetData(
 		GrafPtr old_port;
 		Point current_mouse;
 		static Point old_mouse= {0,0};
-		
+
 		// set the port
 		GetPort(&old_port);
 		SetPort(GetWindowPort(LIgWindow));
-		
+
 		GetMouse(&current_mouse);
 		mouse_dx= current_mouse.h - old_mouse.h;
 		mouse_dy= old_mouse.v - current_mouse.v; // invert Y
 		old_mouse= current_mouse;
 		button_down= Button();
-		
+
 		SetPort(old_port);
-		
+
 		if (button_down)
 		{
 			device_input.input= LIcMouseCode_Button1;
@@ -540,17 +540,17 @@ LIiPlatform_Mouse_Initialize(
 	void)
 {
 	UUtError error= UUcError_None;
-	
+
 	if (using_input_sprocket)
 	{
 		OSStatus					status;
 		UUtUns32					numDevices;
 		ISpDeviceReference			devices[LIcNumDevices];
 		UUtUns32					mindex;
-		
+
 		// Initialize
 		UUrMemory_Clear(LIgMouse, sizeof(LIgMouse));
-		
+
 		// get a list of the mice attached to the system
 		status =
 			ISpDevices_ExtractByClass(
@@ -563,19 +563,19 @@ LIiPlatform_Mouse_Initialize(
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to extract devices");
 		}
 		if (numDevices == 0)	return UUcError_None;
-		
+
 		LIgMouse_NumMice = UUmMin(LIcMouse_MaxMice, numDevices);
-		
+
 		for (mindex = 0; mindex < LIgMouse_NumMice; mindex++)
 		{
 			ISpElementListReference		elementListRef;
 			UUtUns32					numElements;
 			ISpElementReference			elements[LIcNumElements];
 			UUtUns32					i;
-	
+
 			// only use the first device
 			LIgMouse[mindex].mouse = devices[mindex];
-			
+
 			// get a list of the elements in the first device
 			status =
 				ISpDevice_GetElementList(
@@ -591,7 +591,7 @@ LIiPlatform_Mouse_Initialize(
 				LIgMouse[mindex].mouse = NULL;
 				return UUcError_None;
 			}
-			
+
 			// extract the elements of the device
 			status =
 				ISpElementList_Extract(
@@ -609,12 +609,12 @@ LIiPlatform_Mouse_Initialize(
 				LIgMouse[mindex].mouse = NULL;
 				return UUcError_None;
 			}
-				
+
 			// go through the elements and find uses for them
 			for (i = 0; i < numElements; i++)
 			{
 				ISpElementInfo		elementInfo;
-				
+
 				// get info about the element
 				status =
 					ISpElement_GetInfo(
@@ -624,7 +624,7 @@ LIiPlatform_Mouse_Initialize(
 				{
 					UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to extract devices");
 				}
-				
+
 				// gather the info
 				switch (elementInfo.theKind)
 				{
@@ -635,18 +635,18 @@ LIiPlatform_Mouse_Initialize(
 							LIgMouse[mindex].num_buttons++;
 						}
 					break;
-					
+
 					case kISpElementKind_Delta:
 						switch (elementInfo.theLabel)
 						{
 							case kISpElementLabel_Delta_X:
 								LIgMouse[mindex].xAxis = elements[i];
 							break;
-							
+
 							case kISpElementLabel_Delta_Y:
 								LIgMouse[mindex].yAxis = elements[i];
 							break;
-							
+
 							case kISpElementLabel_Delta_Z:
 								LIgMouse[mindex].zAxis = elements[i];
 							break;
@@ -656,7 +656,7 @@ LIiPlatform_Mouse_Initialize(
 			}
 		}
 	}
-	
+
 	return error;
 }
 
@@ -691,20 +691,20 @@ static void LIiPlatform_Keyboard_GetData(
 {
 	unsigned char keymap[16];
 	int i;
-	
+
 	GetKeys((unsigned long *)keymap);
 	for (i= 0; i<num_mac_keys; i++)
 	{
 		if ((keymap[mac_keyboard_translation_table[i].mac_key>>3] >> (mac_keyboard_translation_table[i].mac_key & 7) ) & 1)
 		{
 			LItDeviceInput device_input;
-			
+
 			device_input.input= mac_keyboard_translation_table[i].oni_key;
 			device_input.analogValue= 1.0f;
 			LIrActionBuffer_Add(action, &device_input);
 		}
 	}
-	
+
 	return;
 }
 
@@ -736,7 +736,7 @@ LIiPlatform_Devices_Activate(
 	// activate the devices
 	LIiPlatform_Mouse_Activate();
 	LIiPlatform_Keyboard_Activate();
-	
+
 	return;
 }
 
@@ -748,10 +748,10 @@ LIiPlatform_Devices_Deactivate(
 	// deactivate the devices
 	LIiPlatform_Mouse_Deactivate();
 	LIiPlatform_Keyboard_Deactivate();
-	
+
 	// flush the events in the MacOS event queue
 	FlushEvents(everyEvent, 0);
-	
+
 	return;
 }
 
@@ -761,15 +761,15 @@ LIiPlatform_Devices_Initialize(
 	void)
 {
 	UUtError error;
-	
+
 	// initialize the mouse
 	error= LIiPlatform_Mouse_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the keyboard
 	error= LIiPlatform_Keyboard_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -784,10 +784,10 @@ LIiPlatform_Devices_GetData(
 {
 	// get mouse data
 	LIiPlatform_Mouse_GetData(outAction);
-	
+
 	// get the keyboard data
 	LIiPlatform_Keyboard_GetData(outAction);
-		
+
 	return;
 }
 
@@ -817,7 +817,7 @@ static void mac_handle_menu_choice(
 
 	menu= HiWord(menu_result);
 	menu_item= LoWord(menu_result);
-		
+
 	switch (menu)
 	{
 		case _mac_shortcuts_menu:
@@ -834,9 +834,9 @@ static void mac_handle_menu_choice(
 		default:
 			break;
 	}
-	
+
 	HiliteMenu(0);
-	
+
 	return;
 }
 
@@ -856,14 +856,14 @@ LIiPlatform_InputEvent_GetEvent(
 	EventRecord event= {0};
 	GrafPtr old_port;
 	LItInputEvent inputEvent= {0};
-	
+
 	// don't call WaitNextEvent() unless the mode is LIcMode_Normal
 	if (inMode == LIcMode_Game) return UUcFalse;
-	
+
 	// set the port
 	GetPort(&old_port);
 	SetPort(GetWindowPort(LIgWindow));
-	
+
 	// get keyboard events and mouse events
 	was_event= WaitNextEvent(everyEvent, &event, 0, NULL);
 	if (was_event)
@@ -875,7 +875,7 @@ LIiPlatform_InputEvent_GetEvent(
 				{
 					UUtInt16 part;
 					WindowPtr window;
-					
+
 					part= FindWindow(event.where, &window);
 					switch (part)
 					{
@@ -884,23 +884,23 @@ LIiPlatform_InputEvent_GetEvent(
 							mac_handle_menu_choice(MenuSelect(event.where));
 							break;
 					#endif
-					
+
 						case inSysWindow:
 							/* Carbon -S.S.
 							SystemClick(&event, window);
 							*/
 							was_event= UUcFalse;
 							break;
-						
+
 						case inContent:
 							// put the event in local coordinates
 							GlobalToLocal(&event.where);
-						
+
 							// set the where
 							inputEvent.where.x= event.where.h;
 							inputEvent.where.y= event.where.v;
 							inputEvent.modifiers= event.modifiers;
-						
+
 							// set the type
 							if (inputEvent.modifiers & LIcMacOS_RightMouseButtonKey)
 							{
@@ -928,25 +928,25 @@ LIiPlatform_InputEvent_GetEvent(
 					}
 				}
 				break;
-			
+
 			case keyDown:
 				inputEvent.type= LIcInputEvent_KeyDown;
 				inputEvent.key= LIgAsciiToKeyCode[(event.message & charCodeMask)];
 				inputEvent.modifiers= event.modifiers;
-				
+
 				if (inputEvent.key == LIcKeyCode_F1)
 				{
 					UUtUns32 index= ((event.message & keyCodeMask) - LIcFKeyStart) >> 8;
 					inputEvent.key= LIgFunctionKey[index];
 				}
-			#ifdef USE_MAC_MENU 
+			#ifdef USE_MAC_MENU
 				if (event.modifiers & cmdKey)
 				{
 					mac_handle_menu_choice(MenuKey(inputEvent.key));
 				}
 			#endif
 				break;
-			
+
 			case keyUp:
 				inputEvent.type= LIcInputEvent_KeyUp;
 				inputEvent.key= LIgAsciiToKeyCode[(event.message & charCodeMask)];
@@ -958,7 +958,7 @@ LIiPlatform_InputEvent_GetEvent(
 					inputEvent.key= LIgFunctionKey[index];
 				}
 				break;
-				
+
 			case autoKey:
 				inputEvent.type= LIcInputEvent_KeyRepeat;
 				inputEvent.key= LIgAsciiToKeyCode[(event.message & charCodeMask)];
@@ -969,27 +969,27 @@ LIiPlatform_InputEvent_GetEvent(
 					UUtUns32 index= ((event.message & keyCodeMask) - LIcFKeyStart) >> 8;
 					inputEvent.key= LIgFunctionKey[index];
 				}
-			#ifdef USE_MAC_MENU 
+			#ifdef USE_MAC_MENU
 				if (event.modifiers & cmdKey)
 				{
 					mac_handle_menu_choice(MenuKey(inputEvent.key));
 				}
 			#endif
 				break;
-			
+
 			case updateEvt:
 				BeginUpdate((WindowPtr)event.message);
 				mac_hide_cursor();
 				EndUpdate((WindowPtr)event.message);
 				was_event= UUcFalse;
 				break;
-			
+
 			case osEvt:
 				{
 					UUtUns8 osEvtType;
-				
+
 					osEvtType= (event.message & osEvtMessageMask) >> 24;
-				
+
 					if (osEvtType & suspendResumeMessage)
 					{
 						if (event.message & resumeFlag)
@@ -1001,7 +1001,7 @@ LIiPlatform_InputEvent_GetEvent(
 							// suspend
 						}
 					}
-				
+
 					if (osEvtType & mouseMovedMessage)
 					{
 						// if the mouse changed position, generate a mouse moved event
@@ -1028,28 +1028,28 @@ LIiPlatform_InputEvent_GetEvent(
 				was_event= UUcFalse;
 				break;
 		}
-		
+
 		// set the previous mouse location
 		LIgMouseLocation= inputEvent.where;
 	}
 	else
 	{
 		Point current_mouse_location;
-		
+
 		// get the current mouse position
 		GetMouse(&current_mouse_location);
-		
+
 		// if the mouse changed position, generate a mouse moved event
 		if ((current_mouse_location.h != LIgMouseLocation.x) ||
 			(current_mouse_location.v != LIgMouseLocation.y))
 		{
 			EventRecord fakeEvent= {0};
-			
+
 			// get a fake os event
 			/* Carbon
 			GetOSEvent(0, &fakeEvent);*/
 			//GetNextEvent(0, &fakeEvent); no need for this
-			
+
 			// set the type and location
 			inputEvent.type= LIcInputEvent_MouseMove;
 			inputEvent.where.x= current_mouse_location.h;
@@ -1064,7 +1064,7 @@ LIiPlatform_InputEvent_GetEvent(
 		}
 	}
 	event_avail= was_event;
-	
+
 	// add the event to the event queue
 	if (event_avail)
 	{
@@ -1074,7 +1074,7 @@ LIiPlatform_InputEvent_GetEvent(
 			inputEvent.key,
 			inputEvent.modifiers);
 	}
-	
+
 	// restore the port
 	SetPort(old_port);
 
@@ -1099,40 +1099,40 @@ LIrPlatform_InputEvent_GetMouse(
 		GrafPtr old_port;
 		Point mouse_position;
 		EventRecord fakeEvent;
-		
+
 		// set the port
 		GetPort(&old_port);
 		SetPort(GetWindowPort(LIgWindow));
-		
+
 		// get the mouse position
 		GetMouse(&mouse_position);
-		
+
 		// set the input event
 		outInputEvent->where.x= mouse_position.h;
 		outInputEvent->where.y= mouse_position.v;
-		
+
 		// get a fake os event
 		/* Carbon
 		GetOSEvent(0, &fakeEvent);*/
 		GetNextEvent(0, &fakeEvent);
-		
+
 		// check the shift key
 		if (fakeEvent.modifiers & LIcMacOS_ShiftKey)
 			outInputEvent->modifiers|= LIcMouseState_LShiftDown;
-		
+
 		// check the button state
-		if (!(fakeEvent.modifiers & btnState))				
+		if (!(fakeEvent.modifiers & btnState))
 		{
 			if (fakeEvent.modifiers & LIcMacOS_RightMouseButtonKey)
 				outInputEvent->modifiers|= LIcMouseState_RButtonDown;
 			else
 				outInputEvent->modifiers|= LIcMouseState_LButtonDown;
 		}
-		
+
 		// restore the port
 		SetPort(old_port);
 	}
-	
+
 	return;
 }
 
@@ -1143,10 +1143,10 @@ LIrPlatform_InputEvent_InterpretModifiers(
 	UUtUns32 inModifiers)
 {
 	UUtUns32 modifiers;
-	
+
 	// init
 	modifiers= 0;
-	
+
 	switch (inEventType)
 	{
 		case LIcInputEvent_MouseMove:
@@ -1159,16 +1159,16 @@ LIrPlatform_InputEvent_InterpretModifiers(
 			// set the modifiers
 			if (inModifiers & LIcMacOS_LShiftKey)
 				modifiers|= LIcMouseState_LShiftDown;
-			
+
 			if (inModifiers & LIcMacOS_RShiftKey)
 				modifiers|= LIcMouseState_RShiftDown;
-			
+
 			if (inModifiers & LIcMacOS_LOptionKey)
 				modifiers|= LIcMouseState_LControlDown;
 
 			if (inModifiers & LIcMacOS_ROptionKey)
 				modifiers|= LIcMouseState_RControlDown;
-			
+
 			if (!(inModifiers & btnState))
 			{
 				if (inModifiers & LIcMacOS_RightMouseButtonKey)
@@ -1177,7 +1177,7 @@ LIrPlatform_InputEvent_InterpretModifiers(
 					modifiers|= LIcMouseState_LButtonDown;
 			}
 			break;
-		
+
 		case LIcInputEvent_KeyUp:
 		case LIcInputEvent_KeyDown:
 		case LIcInputEvent_KeyRepeat:
@@ -1186,19 +1186,19 @@ LIrPlatform_InputEvent_InterpretModifiers(
 			{
 				modifiers|= LIcKeyState_ShiftDown;
 			}
-			
+
 			if (inModifiers & LIcMacOS_CommandKey)
 			{
 				modifiers|= LIcKeyState_CommandDown;
 			}
-			
+
 			if (inModifiers & LIcMacOS_OptionKey)
 			{
 				modifiers|= LIcKeyState_AltDown;
 			}
 			break;
 	}
-		
+
 	return modifiers;
 }
 
@@ -1220,7 +1220,7 @@ LIrPlatform_Mode_Set(
 	{
 		LIiPlatform_Devices_Deactivate();
 	}
-	
+
 	return;
 }
 
@@ -1239,20 +1239,20 @@ LIrPlatform_Initialize(
 	NumVersion ISpVersion= {0};
 	UUtUns16 i;
 	LItKeyCodeHelper *help;
-	
+
 	// ------------------------------
 	// initialize the globals
 	// ------------------------------
 	LIgWindow= inWindow;
 	LIgMouseLocation.x= 0;
 	LIgMouseLocation.y= 0;
-		
+
 	// initialize LIgAsciiToKeyCode
 	for (i = 0; i < 256; i++)
 	{
 		LIgAsciiToKeyCode[i] = i;
 	}
-	
+
 	for (help= LIgKeyCodeHelper; help->ascii != 0x0000; help++)
 	{
 		LIgAsciiToKeyCode[help->ascii] = help->keyCode;
@@ -1274,18 +1274,18 @@ LIrPlatform_Initialize(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "This version of InputSprocket is not supported.");
 		}
-		
+
 		// startup ISp
 		if (ISpStartup() != noErr)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to startup InputSprocket.");
 		}
 	}
-	
+
 	// initialize the devices
 	error= LIiPlatform_Devices_Initialize();
 	UUmError_ReturnOnErrorMsg(error, "Unable to initialize the devices.");
-	
+
 	return UUcError_None;
 }
 
@@ -1299,17 +1299,17 @@ LIrPlatform_PollInputForAction(
 	LItAction				*outAction)
 {
 	UUtUns16				i;
-	
+
 	// clear the action
 	outAction->buttonBits = 0;
 	for (i= 0; i<LIcNumAnalogValues; i++)
 	{
 		outAction->analogValues[i] = 0.0f;
 	}
-	
+
 	// get the action data
 	LIiPlatform_Devices_GetData(outAction);
-	
+
 	return;
 }
 
@@ -1350,7 +1350,7 @@ UUtBool LIrPlatform_TestKey(
 	unsigned char keymap[16];
 	UUtBool down= UUcFalse;
 	int i;
-	
+
 	GetKeys((unsigned long *)keymap);
 	for (i= 0; i<num_mac_keys; i++)
 	{
@@ -1360,7 +1360,7 @@ UUtBool LIrPlatform_TestKey(
 			break;
 		}
 	}
-	
+
 	return down;
 }
 

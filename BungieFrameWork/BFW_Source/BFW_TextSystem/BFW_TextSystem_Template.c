@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_TextSystem_Template.c
-	
+
 	AUTHOR:	Kevin Armstrong
-	
+
 	CREATED: ????
 
 	PURPOSE: text
-	
+
 	Copyright 1997-1998
 
 */
@@ -21,7 +21,7 @@ TSrRegisterTemplates(
 	void)
 {
 	UUtError	error;
-	
+
 	error = TMrTemplate_Register(TScTemplate_Font, sizeof(TStFont), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 	error = TMrTemplate_Register(TScTemplate_GlyphArray, sizeof(TStGlyphArray), TMcFolding_Allow);
@@ -30,6 +30,6 @@ TSrRegisterTemplates(
 	UUmError_ReturnOnError(error);
 	error = TMrTemplate_Register(TScTemplate_FontFamily, sizeof(TStFontFamily), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }

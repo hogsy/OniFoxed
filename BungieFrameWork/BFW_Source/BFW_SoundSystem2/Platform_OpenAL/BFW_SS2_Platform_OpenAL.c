@@ -140,7 +140,7 @@ SS2rPlatform_SoundChannel_Play(
 	alSourcei(inSoundChannel->pd.source, AL_LOOPING, SSiSoundChannel_IsLooping(inSoundChannel) == UUcTrue ? AL_TRUE : AL_FALSE);
 	alSourcePlay(inSoundChannel->pd.source);
 	CHECK_AL_ERROR();
-	
+
 	SSiSoundChannel_SetPlaying(inSoundChannel, UUcTrue);
 }
 
@@ -175,19 +175,19 @@ SS2r_DecompressMSADPCM(
 {
 	UUtBool success = UUcFalse;
 	unsigned channels = SSrSound_GetNumChannels(inSoundData);
-	
+
 	*samples = 0;
-	
+
 	if (SScSamplesPerSecond != 8 && SScBitsPerSample != 16)
 	{
 		UUrPrintWarning("Unexpected SScBitsPerSample: %d", SScBitsPerSample);
 		return UUcFalse;
 	}
-	
+
 #ifdef DEBUGGING
 	av_log_set_level(AV_LOG_DEBUG);
 #endif
-	
+
 	const AVCodec *codec = avcodec_find_decoder(AV_CODEC_ID_ADPCM_MS);
 	if (!codec) {
 		UUrPrintWarning("Failed to find ADPCM_MS codec");
@@ -219,7 +219,7 @@ SS2r_DecompressMSADPCM(
 	char *frame = inSoundData->data;
 	char *frames_end = frame + inSoundData->num_bytes;
 	const size_t framesz = 512 * channels;
-	
+
 	AVFrame *decoded_frame = av_frame_alloc();
 	if (!decoded_frame) {
 		UUrPrintWarning("Failed to allocate libav frame");
@@ -282,12 +282,12 @@ SS2r_DecompressMSADPCM(
 	}
 	av_frame_unref(decoded_frame);
 	av_frame_free(&decoded_frame);
-	
+
 error:
 	av_packet_free(&pkt);
 ctx_error:
 	avcodec_free_context(&c);
-	
+
 	return success;
 }
 
@@ -319,7 +319,7 @@ SS2rPlatform_SoundChannel_SetSoundData(
 		UUrPrintWarning("Invalid format. bps=%d, SStSoundChannel flags = %x", SScBitsPerSample, inSoundChannel->flags);
 		return UUcFalse;
 	}
-	
+
 	// MSADPCM offers near 4:1 compression
 	UUtUns16 *decoded = UUrMemory_Block_New(inSoundData->num_bytes * 4);
 	if (!decoded) {
@@ -327,7 +327,7 @@ SS2rPlatform_SoundChannel_SetSoundData(
 	}
 	size_t samples = 0;
 	UUtBool success = SS2r_DecompressMSADPCM(inSoundChannel, inSoundData, decoded, &samples);
-	
+
 	if (success)
 	{
 		alSourcei(inSoundChannel->pd.source, AL_BUFFER, 0);
@@ -336,9 +336,9 @@ SS2rPlatform_SoundChannel_SetSoundData(
 		alSourcei(inSoundChannel->pd.source, AL_BUFFER, inSoundChannel->pd.buffer);
 		CHECK_AL_ERROR();
 	}
-	
+
 	UUrMemory_Block_Delete(decoded);
-	
+
 	return success;
 }
 
@@ -357,10 +357,10 @@ SS2rPlatform_SoundChannel_SetPan(
 		case SScPanFlag_Left:
 			inPan = -inPan;
 		break;
-		
+
 		case SScPanFlag_Right:
 		break;
-		
+
 		case SScPanFlag_None:
 		default:
 			inPan = 0.0f;
@@ -416,7 +416,7 @@ SS2rPlatform_SoundChannel_Terminate(
 	alDeleteSources(1, &inSoundChannel->pd.source);
 	inSoundChannel->pd.source = 0;
 	CHECK_AL_ERROR();
-	
+
 	alDeleteBuffers(1, &inSoundChannel->pd.buffer);
 	inSoundChannel->pd.buffer = 0;
 	CHECK_AL_ERROR();
@@ -435,11 +435,11 @@ SS2rPlatform_Initialize(
 	UUtBool						inUseSound)
 {
 	*outNumChannels = 0;
-	
+
 	SSgDevice = alcOpenDevice(NULL);
 	CHECK_AL_ERROR();
 	UUmError_ReturnOnNull(SSgDevice);
-	
+
 	//FIXME: the number of channels will be split across mono/stereo
 	ALCint attrs[] = {
 		ALC_FREQUENCY, SScSamplesPerSecond,
@@ -450,16 +450,16 @@ SS2rPlatform_Initialize(
 	SSgContext = alcCreateContext(SSgDevice, &attrs);
 	CHECK_AL_ERROR();
 	UUmError_ReturnOnNull(SSgContext);
-	
+
 	ALCint numMono, numStereo;
 	alcGetIntegerv(SSgDevice, ALC_MONO_SOURCES, 1, &numMono);
 	alcGetIntegerv(SSgDevice, ALC_STEREO_SOURCES, 1, &numStereo);
 	CHECK_AL_ERROR();
 	*outNumChannels = UUmMin(numMono, numStereo);
-	
+
 	alcMakeContextCurrent(SSgContext);
 	CHECK_AL_ERROR();
-	
+
 	return UUcError_None;
 }
 
@@ -489,7 +489,7 @@ SS2rPlatform_Terminate(
 		CHECK_AL_ERROR();
 		SSgContext = NULL;
 	}
-	
+
 	if (SSgDevice)
 	{
 		alcCloseDevice(SSgDevice);

@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Error.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 18, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine               (uhh... hehe)
-	
+
 	Copyright 1997
 
 */
@@ -32,9 +32,9 @@ enum {
 	_button_abort= 1,
 	_button_retry,
 	_button_ignore,
-	
+
 	MAC_ERROR_ALERT_RES_ID= 129,
-	
+
 	MAX_STRING_LENGTH= 256
 };
 
@@ -62,7 +62,7 @@ static void iAppendDebugFileMessage(char *msg)
 		iDebugFile = fopen("debugger.txt", "wb");
 #endif
 	}
-	
+
 	if (iDebugFile != NULL)
 	{
 		fprintf(iDebugFile, "%s"UUmNL, msg);
@@ -87,20 +87,20 @@ static UUtBool iDebuggerMessageBox(char *msg)
 		MSG quitMsg;
 
 		UUrString_Copy(buffer, msg, MAX_STRING_LENGTH);
-		
-		// remove a quit message if required (otherwise the dialog quits for us, thanks!)
-		bQuit = PeekMessage(&quitMsg, NULL, WM_QUIT, WM_QUIT, PM_REMOVE);			
 
-		// bring up the dialog		
+		// remove a quit message if required (otherwise the dialog quits for us, thanks!)
+		bQuit = PeekMessage(&quitMsg, NULL, WM_QUIT, WM_QUIT, PM_REMOVE);
+
+		// bring up the dialog
 		UUrString_Cat(buffer, UUmNL UUmNL "(Retry will enter the debugger)", MAX_STRING_LENGTH);
 		ShowCursor(TRUE);
-		msgbox_result = MessageBox(NULL, buffer, "Assertion Failed", 
+		msgbox_result = MessageBox(NULL, buffer, "Assertion Failed",
 							MB_TASKMODAL|MB_ICONHAND|MB_ABORTRETRYIGNORE|MB_SETFOREGROUND);
 		ShowCursor(FALSE);
 
 		// restore the quit message if required
 		if (bQuit)
-			PostQuitMessage(quitMsg.wParam);					
+			PostQuitMessage(quitMsg.wParam);
 
 		switch(msgbox_result)
 		{
@@ -133,22 +133,22 @@ static UUtBool iDebuggerMessageBox(
 	{
 		char buffer[MAX_STRING_LENGTH];
 		int alert_result;
-		
+
 		extern void mac_hide_cursor(void);
 		extern void mac_show_cursor(void);
 
 		UUrString_Copy(buffer, msg, MAX_STRING_LENGTH);
 
-		// bring up the dialog		
+		// bring up the dialog
 		UUrString_Cat(buffer, " (Retry will enter the debugger)", MAX_STRING_LENGTH);
-		
+
 		mac_show_cursor();
-		
+
 		c2pstrcpy((StringPtr)buffer, buffer); // this call can do in-place conversion, so this is OK
 		ParamText((StringPtr)buffer, NULL, NULL, NULL);
 		alert_result= Alert(MAC_ERROR_ALERT_RES_ID, NULL);
-		
-		mac_hide_cursor();					
+
+		mac_hide_cursor();
 
 		switch (alert_result)
 		{
@@ -168,7 +168,7 @@ static UUtBool iDebuggerMessageBox(
 	return return_value;
 }
 #endif
-	
+
 #if UUmPlatform == UUmPlatform_Mac
 
 static void iDebugCStrG(char *str)
@@ -176,7 +176,7 @@ static void iDebugCStrG(char *str)
 #if TOOL_VERSION
 	unsigned char	buffer[MAX_STRING_LENGTH];
 	UUtUns8			length = strlen(str) > (MAX_STRING_LENGTH-2) ? (MAX_STRING_LENGTH-2) : strlen(str);
-		
+
 	UUrString_Copy((char *)buffer + 1, str, (MAX_STRING_LENGTH-1));
 	buffer[length + 1] = ';';
 	buffer[length + 2] = 'g';
@@ -186,7 +186,7 @@ static void iDebugCStrG(char *str)
 }
 
 #endif
-	
+
 void UUrError_Report_Internal(
 	const char*		file,
 	unsigned long	line,
@@ -194,13 +194,13 @@ void UUrError_Report_Internal(
 	const char*		message)
 {
 	char buffer[MAX_STRING_LENGTH];
-	
+
 	sprintf(buffer, "Error %x reported from File: %s, Line: %d (message follows)",error, file, line);
 
-	iAppendDebugFileMessage(buffer);	
+	iAppendDebugFileMessage(buffer);
 
 	sprintf(buffer, "%s", message);
-	
+
 #if TOOL_VERSION
 	#if (UUmPlatform == UUmPlatform_Win32)
 	{
@@ -224,9 +224,9 @@ void UUrError_Report_Internal(
 	}
 	#endif
 #endif
-	
+
 	iAppendDebugFileMessage("");
-	
+
 	return;
 }
 
@@ -250,7 +250,7 @@ UUtError UUrError_Initialize(
 {
 	return UUcError_None;
 }
-	
+
 void UUrError_Terminate(
 	void)
 {
@@ -365,7 +365,7 @@ char *UUrError_DirectDraw2Str(
 			name= "< unknown >";
 			break;
 	}
-	
+
 	return name;
 }
 
@@ -375,10 +375,10 @@ int UUrEnterDebuggerInline(
 	char	*msg)
 {
 	int enterDebugger = 0;
-	
-	
+
+
 	#if defined(DEBUGGING) && DEBUGGING
-	
+
 		#if UUmPlatform == UUmPlatform_Mac
 			// enterDebugger= iDebuggerMessageBox(msg);
 			enterDebugger = 1;
@@ -386,15 +386,15 @@ int UUrEnterDebuggerInline(
 			// enterDebugger= iDebuggerMessageBox(msg);
 			enterDebugger = 1;
 		#else
-		
+
 			#error implement me
-		
+
 		#endif
-	
+
 	#else
-		
+
 		/* XXX - Someday print a message to the console or something */
-		
+
 	#endif
 
 	return enterDebugger;
@@ -405,16 +405,16 @@ void UUcArglist_Call UUrEnterDebugger(const char *format, ...)
 	char msg[257]; /* [length byte] + [255 string bytes] + [null] */
 	va_list arglist;
 	int return_value;
-	
+
 	va_start(arglist, format);
 	return_value= vsprintf(msg, format, arglist);
 	va_end(arglist);
 
-	
+
 	iAppendDebugFileMessage(msg);
 
 	#if defined(DEBUGGING) && DEBUGGING
-	
+
 		#if UUmPlatform == UUmPlatform_Mac
 			{
 				UUtBool enter_debugger;
@@ -441,15 +441,15 @@ void UUcArglist_Call UUrEnterDebugger(const char *format, ...)
 				}
 			}
 		#else
-		
+
 			#error implement me
-		
+
 		#endif
-	
+
 	#else
-		
+
 		/* XXX - Someday print a message to the console or something */
-		
+
 	#endif
 }
 
@@ -461,14 +461,14 @@ void UUcArglist_Call UUrDebuggerMessage(
 	char buffer[2048];
 	va_list arglist;
 	int return_value;
-	
+
 	va_start(arglist, format);
 	return_value= vsprintf(buffer, format, arglist);
 	va_end(arglist);
 
 	iAppendDebugFileMessage(buffer);
 #if defined(DEBUGGING) && DEBUGGING
-#if UUmPlatform == UUmPlatform_Mac	
+#if UUmPlatform == UUmPlatform_Mac
 	iDebugCStrG(buffer);
 #elif UUmPlatform == UUmPlatform_Win32
 	OutputDebugString(buffer);
@@ -486,7 +486,7 @@ void UUcArglist_Call UUrStartupMessage(
 	char buffer[8192];
 	va_list arglist;
 	int return_value;
-	
+
 	va_start(arglist, format);
 	return_value= vsnprintf(buffer, sizeof(buffer), format, arglist);
 	va_end(arglist);

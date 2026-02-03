@@ -70,7 +70,7 @@ UUtError Imp_AddSky(
 	{
 		sky->skybox[M3cSkyFront] = M3rTextureMap_GetPlaceholder(temp_name);
 		UUmAssert(sky->skybox[M3cSkyFront]);
-	}	
+	}
 
 	error = GRrGroup_GetString(inGroup, "back", &temp_name);
 	if( error == UUcError_None )

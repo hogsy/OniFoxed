@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_LocalInput_Template.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 31, 1997
-	
+
 	PURPOSE: input
-	
+
 	Copyright 1997
 
 */

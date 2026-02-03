@@ -1,12 +1,12 @@
 /*
 	FILE:	Imp_Model.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: August 14, 1997
-	
+
 	PURPOSE: Header file for the BMP file format
-	
+
 	Copyright 1997
 
 */
@@ -65,12 +65,12 @@ UUtError Imp_Node_To_Geometry(
 UUtError Imp_Node_To_Geometry_ApplyMatrix(
 	const MXtNode	*inNode,
 	M3tGeometry		*inGeometry);
-	
+
 UUtError Imp_NodeMaterial_To_Geometry(
 	const MXtNode	*inNode,
 	UUtUns16		inMaterialIndex,
 	M3tGeometry		*outGeometry);
-	
+
 UUtError Imp_NodeMaterial_To_Geometry_ApplyMatrix(
 	const MXtNode	*inNode,
 	UUtUns16		inMaterialIndex,
@@ -89,7 +89,7 @@ Imp_AddModelArray(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 #ifdef __cplusplus
 }
 #endif

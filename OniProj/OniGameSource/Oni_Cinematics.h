@@ -22,7 +22,7 @@
 void
 OCrCinematic_Draw(
 	void);
-	
+
 void
 OCrCinematic_Start(
 	char						*inTextureName,
@@ -32,7 +32,7 @@ OCrCinematic_Start(
 	UUtUns8						inEnd,
 	float						inVelocity,
 	UUtBool						inMirror);
-	
+
 void
 OCrCinematic_Stop(
 	char						*inTextureName,
@@ -46,7 +46,7 @@ OCrCinematic_DeleteAll(
 void
 OCrCinematic_Update(
 	void);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 OCrInitialize(
@@ -55,6 +55,6 @@ OCrInitialize(
 void
 OCrTerminate(
 	void);
-	
+
 // ======================================================================
 #endif /* ONI_CINEMATICS_H */

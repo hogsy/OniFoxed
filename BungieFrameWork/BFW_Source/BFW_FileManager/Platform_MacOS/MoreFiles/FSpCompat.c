@@ -90,7 +90,7 @@ static	Boolean	FSHasFSSpecCalls(void)
 #else
 	Boolean	result = false;
 #endif
-	
+
 #if !GENERATENODATA
 	if ( !tested )
 	{
@@ -122,7 +122,7 @@ static	Boolean	QTHasFSSpecCalls(void)
 #else
 	Boolean	result = false;
 #endif
-	
+
 #if !GENERATENODATA
 	if ( !tested )
 	{
@@ -153,7 +153,7 @@ static	Boolean	HasFSpExchangeFilesCompatibilityFix(void)
 #else	/* !GENERATENODATA */
 	Boolean	result = false;
 #endif	/* !GENERATENODATA */
-	
+
 #if !GENERATENODATA
 	if ( !tested )
 	{
@@ -187,7 +187,7 @@ static	Boolean	HasFSpCreateScriptSupportFix(void)
 #else
 	Boolean	result = false;
 #endif	/* !GENERATENODATA */
-	
+
 #if !GENERATENODATA
 	if ( !tested )
 	{
@@ -218,12 +218,12 @@ pascal	OSErr	FSMakeFSSpecCompat(short vRefNum,
 								   FSSpec *spec)
 {
 	OSErr	result;
-	
+
 #if !__MACOSSEVENORLATER
 	if ( !FSHasFSSpecCalls() && !QTHasFSSpecCalls() )
 	{
 		Boolean	isDirectory;
-		
+
 		result = GetObjectLocation(vRefNum, dirID, fileName,
 									&(spec->vRefNum), &(spec->parID), spec->name,
 									&isDirectory);
@@ -256,7 +256,7 @@ pascal	OSErr	FSpOpenDFCompat(const FSSpec *spec,
 	{
 		OSErr			result;
 		HParamBlockRec	pb;
-		
+
 		pb.ioParam.ioVRefNum = spec->vRefNum;
 		pb.fileParam.ioDirID = spec->parID;
 		pb.ioParam.ioNamePtr = (StringPtr) &(spec->name);
@@ -285,7 +285,7 @@ pascal	OSErr	FSpOpenRFCompat(const FSSpec *spec,
 	{
 		OSErr			result;
 		HParamBlockRec	pb;
-		
+
 		pb.ioParam.ioVRefNum = spec->vRefNum;
 		pb.fileParam.ioDirID = spec->parID;
 		pb.ioParam.ioNamePtr = (StringPtr) &(spec->name);
@@ -314,7 +314,7 @@ pascal	OSErr	FSpCreateCompat(const FSSpec *spec,
 	OSErr			result;
 	UniversalFMPB	pb;
 
-	
+
 	if (
 #if !__MACOSSEVENORLATER
 		 (!FSHasFSSpecCalls() && !QTHasFSSpecCalls()) ||
@@ -369,7 +369,7 @@ pascal	OSErr	FSpDirCreateCompat(const FSSpec *spec,
 	{
 		OSErr			result;
 		UniversalFMPB	pb;
-		
+
 		pb.hPB.fileParam.ioVRefNum = spec->vRefNum;
 		pb.hPB.fileParam.ioDirID = spec->parID;
 		pb.hPB.fileParam.ioNamePtr = (StringPtr) &(spec->name);
@@ -391,7 +391,7 @@ pascal	OSErr	FSpDirCreateCompat(const FSSpec *spec,
 															((char)scriptTag | (char)0x80) :
 															(smRoman);
 				/* Restore ioDirID field in pb which was changed by PBGetCatInfo */
-				pb.ciPB.dirInfo.ioDrDirID = spec->parID;			
+				pb.ciPB.dirInfo.ioDrDirID = spec->parID;
 				result = PBSetCatInfoSync(&(pb.ciPB));
 			}
 		}
@@ -412,7 +412,7 @@ pascal	OSErr	FSpDeleteCompat(const FSSpec *spec)
 	if ( !FSHasFSSpecCalls() && !QTHasFSSpecCalls() )
 	{
 		HParamBlockRec	pb;
-		
+
 		pb.ioParam.ioVRefNum = spec->vRefNum;
 		pb.fileParam.ioDirID = spec->parID;
 		pb.ioParam.ioNamePtr = (StringPtr) &(spec->name);
@@ -436,7 +436,7 @@ pascal	OSErr	FSpGetFInfoCompat(const FSSpec *spec,
 	{
 		OSErr			result;
 		HParamBlockRec	pb;
-		
+
 		pb.fileParam.ioVRefNum = spec->vRefNum;
 		pb.fileParam.ioDirID = spec->parID;
 		pb.fileParam.ioNamePtr = (StringPtr) &(spec->name);
@@ -463,7 +463,7 @@ pascal	OSErr	FSpSetFInfoCompat(const FSSpec *spec,
 	{
 		OSErr			result;
 		HParamBlockRec	pb;
-		
+
 		pb.fileParam.ioVRefNum = spec->vRefNum;
 		pb.fileParam.ioDirID = spec->parID;
 		pb.fileParam.ioNamePtr = (StringPtr) &(spec->name);
@@ -493,7 +493,7 @@ pascal	OSErr	FSpSetFLockCompat(const FSSpec *spec)
 	if ( !FSHasFSSpecCalls() && !QTHasFSSpecCalls() )
 	{
 		HParamBlockRec	pb;
-		
+
 		pb.fileParam.ioVRefNum = spec->vRefNum;
 		pb.fileParam.ioDirID = spec->parID;
 		pb.fileParam.ioNamePtr = (StringPtr) &(spec->name);
@@ -515,7 +515,7 @@ pascal	OSErr	FSpRstFLockCompat(const FSSpec *spec)
 	if ( !FSHasFSSpecCalls() && !QTHasFSSpecCalls() )
 	{
 		HParamBlockRec	pb;
-		
+
 		pb.fileParam.ioVRefNum = spec->vRefNum;
 		pb.fileParam.ioDirID = spec->parID;
 		pb.fileParam.ioNamePtr = (StringPtr) &(spec->name);
@@ -538,7 +538,7 @@ pascal	OSErr	FSpRenameCompat(const FSSpec *spec,
 	if ( !FSHasFSSpecCalls() && !QTHasFSSpecCalls() )
 	{
 		HParamBlockRec	pb;
-		
+
 		pb.ioParam.ioVRefNum = spec->vRefNum;
 		pb.fileParam.ioDirID = spec->parID;
 		pb.ioParam.ioNamePtr = (StringPtr) &(spec->name);
@@ -562,11 +562,11 @@ pascal	OSErr	FSpCatMoveCompat(const FSSpec *source,
 	if ( !FSHasFSSpecCalls() && !QTHasFSSpecCalls() )
 	{
 		CMovePBRec	pb;
-		
+
 		/* source and destination volume must be the same */
 		if ( source->vRefNum != dest->vRefNum )
 			return ( paramErr );
-		
+
 		pb.ioNamePtr = (StringPtr) &(source->name);
 		pb.ioVRefNum = source->vRefNum;
 		pb.ioDirID = source->parID;
@@ -597,7 +597,7 @@ static	OSErr	GenerateUniqueName(short volume,
 	long			i;
 	CInfoPBRec		cinfo;
 	unsigned char	hexStr[16];
-	
+
 	for ( i = 0; i < 16; ++i )
 	{
 		if ( i < 10 )
@@ -609,14 +609,14 @@ static	OSErr	GenerateUniqueName(short volume,
 			hexStr[i] = 0x37 + i;
 		}
 	}
-	
+
 	cinfo.hFileInfo.ioVRefNum = volume;
 	cinfo.hFileInfo.ioFDirIndex = 0;
 	cinfo.hFileInfo.ioNamePtr = uniqueName;
 
 	while ( error != fnfErr )
 	{
-		(*startSeed)++;		
+		(*startSeed)++;
 		cinfo.hFileInfo.ioNamePtr[0] = 8;
 		for ( i = 1; i <= 8; i++ )
 		{
@@ -644,7 +644,7 @@ pascal	OSErr	FSpExchangeFilesCompat(const FSSpec *source,
 									   const FSSpec *dest)
 {
 #if !__MACOSSEVENFIVEORLATER
-	if ( 
+	if (
 #if !__MACOSSEVENORLATER
 		 !FSHasFSSpecCalls() ||
 #endif	/* !__MACOSSEVENORLATER */
@@ -657,23 +657,23 @@ pascal	OSErr	FSpExchangeFilesCompat(const FSSpec *source,
 		StringPtr				unique1Ptr, unique2Ptr, swapola;
 		GetVolParmsInfoBuffer	volInfo;
 		long					theSeed, temp;
-		
+
 		/* Make sure the source and destination are on the same volume */
 		if ( source->vRefNum != dest->vRefNum )
 		{
 			result = diffVolErr;
 			goto errorExit3;
 		}
-		
+
 		/* Try PBExchangeFiles first since it preserves the file ID reference */
 		pb.fidParam.ioNamePtr = (StringPtr) &(source->name);
 		pb.fidParam.ioVRefNum = source->vRefNum;
 		pb.fidParam.ioDestNamePtr = (StringPtr) &(dest->name);
 		pb.fidParam.ioDestDirID = dest->parID;
 		pb.fidParam.ioSrcDirID = source->parID;
-	
+
 		result = PBExchangeFilesSync(&pb);
-	
+
 		/* Note: The compatibility case won't work for files with *Btree control blocks. */
 		/* Right now the only *Btree files are created by the system. */
 		if ( result != noErr )
@@ -682,13 +682,13 @@ pascal	OSErr	FSpExchangeFilesCompat(const FSSpec *source,
 			pb.ioParam.ioBuffer = (Ptr) &volInfo;
 			pb.ioParam.ioReqCount = sizeof(volInfo);
 			result2 = PBHGetVolParmsSync(&pb);
-			
+
 			/* continue if volume has no fileID support (or no GetVolParms support) */
 			if ( (result2 == noErr) && hasFileIDs(volInfo) )
 			{
 				goto errorExit3;
 			}
-	
+
 			/* Get the catalog information for each file */
 			/* and make sure both files are *really* files */
 			catInfoSource.hFileInfo.ioVRefNum = source->vRefNum;
@@ -706,7 +706,7 @@ pascal	OSErr	FSpExchangeFilesCompat(const FSSpec *source,
 				result = notAFileErr;
 				goto errorExit3;
 			}
-			
+
 			catInfoDest.hFileInfo.ioVRefNum = dest->vRefNum;
 			catInfoDest.hFileInfo.ioFDirIndex = 0;
 			catInfoDest.hFileInfo.ioNamePtr = (StringPtr) &(dest->name);
@@ -722,24 +722,24 @@ pascal	OSErr	FSpExchangeFilesCompat(const FSSpec *source,
 				result = notAFileErr;
 				goto errorExit3;
 			}
-			
+
 			/* generate 2 filenames that are unique in both directories */
 			theSeed = 0x64666A6C;	/* a fine unlikely filename */
 			unique1Ptr = (StringPtr)&unique1;
 			unique2Ptr = (StringPtr)&unique2;
-			
+
 			result = GenerateUniqueName(source->vRefNum, &theSeed, source->parID, dest->parID, unique1Ptr);
 			if ( result != noErr )
 			{
 				goto errorExit3;
 			}
-	
+
 			GenerateUniqueName(source->vRefNum, &theSeed, source->parID, dest->parID, unique2Ptr);
 			if ( result != noErr )
 			{
 				goto errorExit3;
 			}
-	
+
 			/* rename source to unique1 */
 			pb.fileParam.ioNamePtr = (StringPtr) &(source->name);
 			pb.ioParam.ioMisc = (Ptr) unique1Ptr;
@@ -749,7 +749,7 @@ pascal	OSErr	FSpExchangeFilesCompat(const FSSpec *source,
 			{
 				goto errorExit3;
 			}
-			
+
 			/* rename dest to unique2 */
 			pb.ioParam.ioMisc = (Ptr) unique2Ptr;
 			pb.ioParam.ioVersNum = 0;
@@ -760,7 +760,7 @@ pascal	OSErr	FSpExchangeFilesCompat(const FSSpec *source,
 			{
 				goto errorExit2;	/* back out gracefully by renaming unique1 back to source */
 			}
-				
+
 			/* If files are not in same directory, swap their locations */
 			if ( source->parID != dest->parID )
 			{
@@ -774,7 +774,7 @@ pascal	OSErr	FSpExchangeFilesCompat(const FSSpec *source,
 				{
 					goto errorExit1;	/* back out gracefully by renaming both files to original names */
 				}
-				
+
 				/* move dest file to source directory */
 				pb.copyParam.ioNamePtr = unique2Ptr;
 				pb.copyParam.ioNewDirID = source->parID;
@@ -791,35 +791,35 @@ pascal	OSErr	FSpExchangeFilesCompat(const FSSpec *source,
 					goto errorExit1;	/* back out gracefully by renaming both files to original names */
 				}
 			}
-			
+
 			/* Make unique1Ptr point to file in source->parID */
 			/* and unique2Ptr point to file in dest->parID */
 			/* This lets us fall through to the rename code below */
 			swapola = unique1Ptr;
 			unique1Ptr = unique2Ptr;
 			unique2Ptr = swapola;
-	
+
 			/* At this point, the files are in their new locations (if they were moved) */
 			/* Source is named Unique1 (name pointed to by unique2Ptr) and is in dest->parID */
 			/* Dest is named Unique2 (name pointed to by unique1Ptr) and is in source->parID */
 			/* Need to swap attributes except mod date and swap names */
-	
+
 			/* swap the catalog info by re-aiming the CInfoPB's */
 			catInfoSource.hFileInfo.ioNamePtr = unique1Ptr;
 			catInfoDest.hFileInfo.ioNamePtr = unique2Ptr;
-			
+
 			catInfoSource.hFileInfo.ioDirID = source->parID;
 			catInfoDest.hFileInfo.ioDirID = dest->parID;
-			
+
 			/* Swap the original mod dates with each file */
 			temp = catInfoSource.hFileInfo.ioFlMdDat;
 			catInfoSource.hFileInfo.ioFlMdDat = catInfoDest.hFileInfo.ioFlMdDat;
 			catInfoDest.hFileInfo.ioFlMdDat = temp;
-			
+
 			/* Here's the swap (ignore errors) */
-			(void) PBSetCatInfoSync(&catInfoSource); 
+			(void) PBSetCatInfoSync(&catInfoSource);
 			(void) PBSetCatInfoSync(&catInfoDest);
-			
+
 			/* rename unique2 back to dest */
 errorExit1:
 			pb.ioParam.ioMisc = (Ptr) &(dest->name);
@@ -827,7 +827,7 @@ errorExit1:
 			pb.fileParam.ioNamePtr = unique2Ptr;
 			pb.fileParam.ioDirID = dest->parID;
 			(void) PBHRenameSync(&pb);	/* ignore errors */
-	
+
 			/* rename unique1 back to source */
 errorExit2:
 			pb.ioParam.ioMisc = (Ptr) &(source->name);
@@ -848,7 +848,7 @@ errorExit3: { /* null statement */ }
 
 /*****************************************************************************/
 
-/* 
+/*
 **	Resource Manager FSp calls
 */
 
@@ -875,7 +875,7 @@ pascal	void	FSpCreateResFileCompat(const FSSpec *spec,
 									   OSType creator,
 									   OSType fileType,
 									   ScriptCode scriptTag)
-{	
+{
 #if !__MACOSSEVENFIVEONEORLATER
 	if (
 #if !__MACOSSEVENORLATER
@@ -885,7 +885,7 @@ pascal	void	FSpCreateResFileCompat(const FSSpec *spec,
 	{
 		OSErr			result;
 		CInfoPBRec		pb;
-		
+
 		HCreateResFile(spec->vRefNum, spec->parID, spec->name);
 		if ( ResError() == noErr )
 		{
@@ -907,7 +907,7 @@ pascal	void	FSpCreateResFileCompat(const FSSpec *spec,
 				/* Set creator/fileType */
 				pb.hFileInfo.ioFlFndrInfo.fdCreator = creator;
 				pb.hFileInfo.ioFlFndrInfo.fdType = fileType;
-				
+
 				/* Restore ioDirID field in pb which was changed by PBGetCatInfo */
 				pb.hFileInfo.ioDirID = spec->parID;
 				result = PBSetCatInfoSync(&pb);

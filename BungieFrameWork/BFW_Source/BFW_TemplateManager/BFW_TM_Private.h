@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_TM_Private.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 17, 1997
-	
+
 	PURPOSE: This is shared between BFW_TemplateManager.c and the template extractor
-	
+
 	Copyright 1997
 
 */
@@ -42,10 +42,10 @@ typedef struct TMtInstanceFile	TMtInstanceFile;
  */
 	typedef enum TMtSwapCode
 	{
-		TMcSwapCode_8Byte = 1,				
-		TMcSwapCode_4Byte,				
-		TMcSwapCode_2Byte,				
-		TMcSwapCode_1Byte,				
+		TMcSwapCode_8Byte = 1,
+		TMcSwapCode_4Byte,
+		TMcSwapCode_2Byte,
+		TMcSwapCode_1Byte,
 		TMcSwapCode_BeginArray,			// Begin fixed length array
 		TMcSwapCode_EndArray,			// End fixed length array
 		TMcSwapCode_BeginVarArray,		// Begin variable length array
@@ -66,14 +66,14 @@ typedef struct TMtInstanceFile	TMtInstanceFile;
 		TMcDescriptorFlags_PlaceHolder		= (1 << 1),
 		TMcDescriptorFlags_Duplicate		= (1 << 2),			// This instance does not point to its own data - it points to its duplicates
 		TMcDescriptorFlags_DuplicatedSrc	= (1 << 3),			// This instance is being used by duplicate instances as a source
-		
+
 		/* These are not saved */
 		TMcDescriptorFlags_Touched			= (1 << 20),
 		TMcDescriptorFlags_InBatchFile		= (1 << 21),
 		TMcDescriptorFlags_DeleteMe			= (1 << 22),
-		
+
 		TMcDescriptorFlags_PersistentMask	= 0xFFFF
-		
+
 	} TMtDescriptorFlags;
 
 /*
@@ -84,7 +84,7 @@ typedef struct TMtInstanceFile	TMtInstanceFile;
 		UUtUns64		checksum;		// The checksum at the time instance file was created
 		TMtTemplateTag	tag;			// The tag of the template
 		UUtUns32		numUsed;		// The number of instances that use this template
-		
+
 	} TMtTemplateDescriptor;
 
 /*
@@ -96,9 +96,9 @@ typedef struct TMtInstanceFile	TMtInstanceFile;
 		UUtUns8*				dataPtr;
 		char*					namePtr;
 		UUtUns32				size;			// This is the total size including entire var array that is written to disk
-		TMtDescriptorFlags		flags;	
+		TMtDescriptorFlags		flags;
 	} TMtInstanceDescriptor;
-	
+
 	typedef struct TMtNameDescriptor
 	{
 		UUtUns32	instanceDescIndex;
@@ -125,12 +125,12 @@ typedef struct TMtInstanceFile	TMtInstanceFile;
 
 		UUtUns32		dataBlockOffset;
 		UUtUns32		dataBlockLength;
-		
+
 		UUtUns32		nameBlockOffset;
 		UUtUns32		nameBlockLength;
-		
+
 		UUtUns32		pad2[4];
-		
+
 	} TMtInstanceFile_Header;
 
 extern UUtBool					TMgInGame;

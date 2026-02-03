@@ -74,7 +74,7 @@ typedef	pascal	Boolean	(*CopyErrProcPtr) (OSErr error,
 							dstDirID specifies the directory.
 
 	__________
-	
+
 	Also see:	FilteredDirectoryCopy, FSpFilteredDirectoryCopy, DirectoryCopy, FSpDirectoryCopy
 */
 
@@ -89,11 +89,11 @@ typedef	pascal	Boolean	(*CopyFilterProcPtr) (const CInfoPBRec * const cpbPtr);
 	This is the prototype for the CopyFilterProc function called by
 	FilteredDirectoryCopy and GetLevelSize. If true is returned,
 	the file/folder is included in the copy, otherwise it is excluded.
-	
+
 	pb	input:	Points to the CInfoPBRec for the item under consideration.
 
 	__________
-	
+
 	Also see:	FilteredDirectoryCopy, FSpFilteredDirectoryCopy
 */
 
@@ -121,10 +121,10 @@ pascal	OSErr	FilteredDirectoryCopy(short srcVRefNum,
 	copyBufferPtr = NIL, then this routine allocates a buffer in the
 	application heap. If you pass a copy buffer to this routine, make
 	its size a multiple of 512 ($200) bytes for optimum performance.
-	
+
 	The optional copyFilterProc parameter lets a routine you define
 	decide what files or directories are copied to the destination.
-	
+
 	FilteredDirectoryCopy normally creates a new directory *in* the
 	specified destination directory and copies the source directory's
 	content into the new directory. However, if root parent directory
@@ -136,7 +136,7 @@ pascal	OSErr	FilteredDirectoryCopy(short srcVRefNum,
 	This special case is supported by FilteredDirectoryCopy, but
 	not by FSpFilteredDirectoryCopy since with FSpFilteredDirectoryCopy,
 	the dstName parameter can not be NULL.
-	
+
 	srcVRefNum		input:	Source volume specification.
 	srcDirID		input:	Source directory ID.
 	srcName			input:	Source directory name, or nil if
@@ -168,7 +168,7 @@ pascal	OSErr	FilteredDirectoryCopy(short srcVRefNum,
 	copyFilterProc	input:	A pointer to the filter routine you want called
 							for each item in the source directory, or NULL
 							if you don't want to filter.
-	
+
 	Result Codes
 		noErr				0		No error
 		readErr				–19		Driver does not respond to read requests
@@ -206,9 +206,9 @@ pascal	OSErr	FilteredDirectoryCopy(short srcVRefNum,
 									modes
 		afpObjectTypeErr	-5025	Source is a directory, directory not found
 									or incomplete pathname
-	
+
 	__________
-	
+
 	Also see:	CopyErrProcPtr, CopyFilterProcPtr, FSpFilteredDirectoryCopy,
 				DirectoryCopy, FSpDirectoryCopy, FileCopy, FSpFileCopy
 */
@@ -231,10 +231,10 @@ pascal	OSErr	FSpFilteredDirectoryCopy(const FSSpec *srcSpec,
 	copyBufferPtr = NIL, then this routine allocates a buffer in the
 	application heap. If you pass a copy buffer to this routine, make
 	its size a multiple of 512 ($200) bytes for optimum performance.
-	
+
 	The optional copyFilterProc parameter lets a routine you define
 	decide what files or directories are copied to the destination.
-	
+
 	srcSpec			input:	An FSSpec record specifying the directory to copy.
 	dstSpec			input:	An FSSpec record specifying destination directory
 							of the copy.
@@ -261,7 +261,7 @@ pascal	OSErr	FSpFilteredDirectoryCopy(const FSSpec *srcSpec,
 	copyFilterProc	input:	A pointer to the filter routine you want called
 							for each item in the source directory, or NULL
 							if you don't want to filter.
-	
+
 	Result Codes
 		noErr				0		No error
 		readErr				–19		Driver does not respond to read requests
@@ -299,9 +299,9 @@ pascal	OSErr	FSpFilteredDirectoryCopy(const FSSpec *srcSpec,
 									modes
 		afpObjectTypeErr	-5025	Source is a directory, directory not found
 									or incomplete pathname
-	
+
 	__________
-	
+
 	Also see:	CopyErrProcPtr, CopyFilterProcPtr, FilteredDirectoryCopy,
 				DirectoryCopy, FSpDirectoryCopy, FileCopy, FSpFileCopy
 */
@@ -327,7 +327,7 @@ pascal	OSErr	DirectoryCopy(short srcVRefNum,
 	routine allocates a buffer in the application heap. If you pass a
 	copy buffer to this routine, make its size a multiple of 512
 	($200) bytes for optimum performance.
-	
+
 	DirectoryCopy normally creates a new directory *in* the specified
 	destination directory and copies the source directory's content into
 	the new directory. However, if root parent directory (fsRtParID)
@@ -338,7 +338,7 @@ pascal	OSErr	DirectoryCopy(short srcVRefNum,
 	destination volume's root directory. This special case is supported
 	by DirectoryCopy, but not by FSpDirectoryCopy since with
 	FSpDirectoryCopy, the dstName parameter can not be NULL.
-	
+
 	srcVRefNum		input:	Source volume specification.
 	srcDirID		input:	Source directory ID.
 	srcName			input:	Source directory name, or nil if
@@ -367,7 +367,7 @@ pascal	OSErr	DirectoryCopy(short srcVRefNum,
 							error will cause the copy to quit and
 							DirectoryCopy will return the error.
 							Error handling is recommended...
-	
+
 	Result Codes
 		noErr				0		No error
 		readErr				–19		Driver does not respond to read requests
@@ -405,9 +405,9 @@ pascal	OSErr	DirectoryCopy(short srcVRefNum,
 									modes
 		afpObjectTypeErr	-5025	Source is a directory, directory not found
 									or incomplete pathname
-	
+
 	__________
-	
+
 	Also see:	CopyErrProcPtr, FSpDirectoryCopy, FilteredDirectoryCopy,
 				FSpFilteredDirectoryCopy, FileCopy, FSpFileCopy
 */
@@ -429,7 +429,7 @@ pascal	OSErr	FSpDirectoryCopy(const FSSpec *srcSpec,
 	routine allocates a buffer in the application heap. If you pass a
 	copy buffer to this routine, make its size a multiple of 512
 	($200) bytes for optimum performance.
-	
+
 	srcSpec			input:	An FSSpec record specifying the directory to copy.
 	dstSpec			input:	An FSSpec record specifying destination directory
 							of the copy.
@@ -453,7 +453,7 @@ pascal	OSErr	FSpDirectoryCopy(const FSSpec *srcSpec,
 							error will cause the copy to quit and
 							DirectoryCopy will return the error.
 							Error handling is recommended...
-	
+
 	Result Codes
 		noErr				0		No error
 		readErr				–19		Driver does not respond to read requests
@@ -491,9 +491,9 @@ pascal	OSErr	FSpDirectoryCopy(const FSSpec *srcSpec,
 									modes
 		afpObjectTypeErr	-5025	Source is a directory, directory not found
 									or incomplete pathname
-	
+
 	__________
-	
+
 	Also see:	CopyErrProcPtr, DirectoryCopy, FilteredDirectoryCopy,
 				FSpFilteredDirectoryCopy, FileCopy, FSpFileCopy
 */

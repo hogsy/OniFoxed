@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Executor.c
-	
+
 	AUTHOR:	Michael Evans, Chris Butcher
-	
+
 	CREATED: November 15, 1999
-	
+
 	PURPOSE: Low Level AI for Oni
-	
+
 	Copyright (c) 1999
 
 */
@@ -182,10 +182,10 @@ void AI2rExecutor_Update(ONtCharacter *ioCharacter)
 
 		facing_goal += ioCharacter->facingModifier;
 		UUmTrig_Clip(facing_goal);
-		
+
 		delta_facing_goal = facing_goal - ioCharacter->facing;
 		UUmTrig_Clip(delta_facing_goal);
-		
+
 		max_turn = AI2rExecutor_GetMaxDeltaFacingPerFrame(ioCharacter->characterClass, current_movement_mode, executor->turn_danger);
 		if (executor->turn_override) {
 #if AI2_ERROR_REPORT
@@ -197,10 +197,10 @@ void AI2rExecutor_Update(ONtCharacter *ioCharacter)
 			max_turn = executor->turn_override;
 			executor->turn_override = 0.0f;
 		}
-		
+
 		delta_facing_goal = (delta_facing_goal > M3cPi) ? (delta_facing_goal - M3c2Pi) : delta_facing_goal;
 		delta_facing_goal = UUmPin(delta_facing_goal, -max_turn, max_turn);
-		
+
 		active_character->pleaseTurnLeft = active_character->pleaseTurnRight = UUcFalse;
 		if (delta_facing_goal < -0.001f) {
 			active_character->pleaseTurnLeft = UUcTrue;
@@ -212,11 +212,11 @@ void AI2rExecutor_Update(ONtCharacter *ioCharacter)
 			// we're at our desired facing, just face forward from now on
 			AI2rMovement_FreeFacing(ioCharacter);
 		}
-		
+
 		new_facing = delta_facing_goal + ioCharacter->facing;
 		UUmTrig_Clip(new_facing);
-		
-		ONrCharacter_SetFacing(ioCharacter, new_facing); 
+
+		ONrCharacter_SetFacing(ioCharacter, new_facing);
 	}
 
 	// movement and facing overrides persist for only a single tick
@@ -237,7 +237,7 @@ void AI2rExecutor_Update(ONtCharacter *ioCharacter)
 			if (executor->attack_override_requiredcombotype == ONcAnimType_None) {
 				active_character->lastAttack = ONcAnimType_None;
 			}
-			
+
 			input.buttonIsDown |= executor->attack_override_keys_isdown;
 			input.buttonWentDown |= executor->attack_override_keys_wentdown;
 		}
@@ -692,7 +692,7 @@ void AI2rExecutor_UpdateAim(ONtCharacter *ioCharacter)
 			desired_aiming_vector.x = aim_length * MUrSin(desired_theta) * cos_phi;
 			desired_aiming_vector.y = aim_length * MUrSin(desired_phi);
 			desired_aiming_vector.z = aim_length * MUrCos(desired_theta) * cos_phi;
-	
+
 			// set the character's aiming vector
 			MUmVector_Add(active_character->aimingTarget, desired_aiming_vector, charfrom_vector);
 			active_character->isAiming = UUcTrue;

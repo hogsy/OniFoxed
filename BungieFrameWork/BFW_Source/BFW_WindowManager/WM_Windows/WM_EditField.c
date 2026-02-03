@@ -38,13 +38,13 @@ typedef struct WMtEditField_PrivateData
 {
 	UUtUns16					max_chars;
 	char						*string;
-	
+
 	UUtUns32					editfield_data;
 	UUtInt32					insert_before;
 	UUtUns16					insert_segment;
-	
+
 	UUtRect						text_bounds;
-	
+
 } WMtEditField_PrivateData;
 
 // ======================================================================
@@ -64,26 +64,26 @@ WMiEditField_SetCaretPosition(
 	TStStringFormat				string_format;
 	UUtUns16					index_in_segment;
 	TStFontInfo					font_info;
-	
+
 	WMrWindow_GetFontInfo(inEditField, &font_info);
 	DCrText_SetFontInfo(&font_info);
-	
+
 	// if this edit field doesn't have the focus then don't set the caret's position
 	if ((inPrivateData->editfield_data & WMcEditFieldFlag_HasFocus) == 0) { return; }
-	
+
 	// generate a formated string if one hasn't been supplied
 	if (inStringFormat == NULL)
 	{
 		UUtError				error;
 		IMtPoint2D				dest;
-		
+
 		// format the text
 		dest.x = inPrivateData->text_bounds.left + WMcEditField_Text_Buffer;
 		dest.y =
 			inPrivateData->text_bounds.top +
 			DCrText_GetAscendingHeight() +
 			DCrText_GetLeadingHeight();
-		
+
 		error =
 			TSrContext_FormatString(
 				DCrText_GetTextContext(),
@@ -92,10 +92,10 @@ WMiEditField_SetCaretPosition(
 				&dest,
 				&string_format);
 		if (error != UUcError_None) { return; }
-		
+
 		inStringFormat = &string_format;
 	}
-	
+
 	// figure out which segment the caret should be on
 	index_in_segment = (UUtUns16) inPrivateData->insert_before;
 	for (i = 0; i < inStringFormat->num_segments; i++)
@@ -119,7 +119,7 @@ WMiEditField_SetCaretPosition(
 		{
 			UUtUns16				character;
 			UUtUns16				width;
-			
+
 			character = TSrString_GetCharacterAtIndex(inStringFormat->segments[inPrivateData->insert_segment], i);
 			TSrFont_GetCharacterSize(font, character, &width, NULL);
 			x += (UUtInt16)width;
@@ -156,17 +156,17 @@ WMiEditField_SetInsertBeforeFromPoint(
 	IMtPoint2D					dest;
 	UUtInt16					test;
 	TStFontInfo					font_info;
-	
+
 	WMrWindow_GetFontInfo(inEditField, &font_info);
 	DCrText_SetFontInfo(&font_info);
-	
+
 	// format the text
 	dest.x = inPrivateData->text_bounds.left + WMcEditField_Text_Buffer;
 	dest.y =
 		inPrivateData->text_bounds.top +
 		DCrText_GetAscendingHeight() +
 		DCrText_GetLeadingHeight();
-	
+
 	error =
 		TSrContext_FormatString(
 			DCrText_GetTextContext(),
@@ -175,19 +175,19 @@ WMiEditField_SetInsertBeforeFromPoint(
 			&dest,
 			&string_format);
 	if (error != UUcError_None) { return; }
-	
+
 	// find out which line the user clicked in
 	inPrivateData->insert_before = 0;
 	segment_index = 0;
 	for (i = 0; i < string_format.num_lines; i++)
 	{
 		test = string_format.bounds[segment_index].bottom;
-		
+
 		if (inLocalPoint->y < test)
 		{
 			break;
 		}
-		
+
 		for (j = 0; j < string_format.line_num_segments[i]; j++, segment_index++) {
 			inPrivateData->insert_before += string_format.num_characters[segment_index];
 		}
@@ -212,34 +212,34 @@ WMiEditField_SetInsertBeforeFromPoint(
 		x = string_format.bounds[segment_index].left + WMcEditField_Text_Buffer;
 		string_length = TSrString_GetLength(string_format.segments[segment_index]);
 		font = DCrText_GetFont();
-		
+
 		for (i = 0; i < string_length; i++)
 		{
 			UUtUns16				character;
 			UUtUns16				width;
-			
+
 			character = TSrString_GetCharacterAtIndex(string_format.segments[segment_index], i);
 			TSrFont_GetCharacterSize(font, character, &width, NULL);
-			
+
 			// when testing the position, test to see if the user clicked
 			// in the first half of the character
 			test = x + (width >> 1);
-			
+
 			if (inLocalPoint->x < test)
 			{
 				break;
 			}
-			
+
 			// add in the second half of the character
 			x += width;
 		}
-		
+
 		// i is the index of the character that the insertion point should go before
 		// note that i == string_length, a point in the string wasn't found, the
 		// user clicked beyond the text so we put the insert before point at the end of the string.
 		inPrivateData->insert_before += i;
 	}
-	
+
 	// update the caret position
 	WMiEditField_SetCaretPosition(inEditField, inPrivateData, &string_format);
 }
@@ -260,49 +260,49 @@ WMiEditField_Create(
 	UUtInt16					right_width;
 	UUtInt16					bottom_height;
 	WMtEditField_PrivateData	*private_data;
-	
+
 	// create the private data
-	private_data = 
+	private_data =
 		(WMtEditField_PrivateData*)UUrMemory_Block_NewClear(
 			sizeof(WMtEditField_PrivateData));
 	UUmError_ReturnOnNull(private_data);
 	WMrWindow_SetLong(inEditField, 0, (UUtUns32)private_data);
-	
+
 	// initialize
 	private_data->max_chars = WMcEditField_DefaultMaxChars;
 	private_data->string = NULL;
 	private_data->editfield_data = WMcEditFieldFlag_None;
 	private_data->insert_before = 0;
-	
+
 	// allocate memory for the string
 	private_data->string = UUrMemory_Block_NewClear(private_data->max_chars + 1);
 	UUmError_ReturnOnNull(private_data->string);
-	
+
 	// get the active partspec ui
 	partspec_ui = PSrPartSpecUI_GetActive();
 	if (partspec_ui == NULL) { return UUcError_Generic; }
-	
+
 	// get the size of the parts
 	PSrPartSpec_GetSize(
 		partspec_ui->editfield,
 		PScPart_LeftTop,
 		&left_width,
 		&top_height);
-	
+
 	PSrPartSpec_GetSize(
 		partspec_ui->editfield,
 		PScPart_RightBottom,
 		&right_width,
 		&bottom_height);
-	
+
 	// set the text bounds
 	WMrWindow_GetClientRect(inEditField, &private_data->text_bounds);
-	
+
 	private_data->text_bounds.left += left_width;
 	private_data->text_bounds.top += top_height;
 	private_data->text_bounds.right -= right_width;
 	private_data->text_bounds.bottom -= bottom_height;
-	
+
 	return UUcError_None;
 }
 
@@ -312,18 +312,18 @@ WMiEditField_Destroy(
 	WMtEditField				*inEditField)
 {
 	WMtEditField_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtEditField_PrivateData*)WMrWindow_GetLong(inEditField, 0);
 	if (private_data == NULL) { return; }
-	
+
 	// delete the string
 	if (private_data->string)
 	{
 		UUrMemory_Block_Delete(private_data->string);
 		private_data->string = NULL;
 	}
-		
+
 	// delete the private data
 	UUrMemory_Block_Delete(private_data);
 	WMrWindow_SetLong(inEditField, 0, 0);
@@ -335,7 +335,7 @@ WMiEditField_HandleGetDialogCode(
 	WMtEditField				*inEditField)
 {
 	UUtUns32					result;
-	
+
 	result =
 		WMcDialogCode_WantDigits |
 		WMcDialogCode_WantPunctuation |
@@ -345,7 +345,7 @@ WMiEditField_HandleGetDialogCode(
 	{
 		result |= WMcDialogCode_WantAlphas;
 	}
-	
+
 	return result;
 }
 
@@ -357,7 +357,7 @@ static UUtUns32	WMiEditField_HandleGetFloat(
 	UUtError error;
 
 	WMtEditField_PrivateData	*private_data;
-	
+
 	private_data = (WMtEditField_PrivateData*)WMrWindow_GetLong(inEditField, 0);
 
 	if (private_data == NULL) { return UUcError_Generic; }
@@ -376,7 +376,7 @@ static UUtUns32	WMiEditField_HandleGetInt(
 	UUtError error;
 
 	WMtEditField_PrivateData	*private_data;
-	
+
 	private_data = (WMtEditField_PrivateData*)WMrWindow_GetLong(inEditField, 0);
 
 	if (private_data == NULL) { return UUcError_Generic; }
@@ -396,14 +396,14 @@ WMiEditField_HandleGetText(
 {
 	WMtEditField_PrivateData	*private_data;
 	UUtUns32					string_length;
-	
+
 	private_data = (WMtEditField_PrivateData*)WMrWindow_GetLong(inEditField, 0);
 	if (private_data == NULL) { return 0; }
 	if (private_data->string == NULL) { return 0; }
-	
+
 	string_length = TSrString_GetLength(private_data->string);
 	UUrString_Copy(outStringBuffer, private_data->string, inStringBufferLength);
-	
+
 	return string_length;
 }
 
@@ -418,31 +418,31 @@ WMiEditField_HandleKeyDown(
 	UUtUns16					string_length;
 	UUtBool						notify_parent;
 	UUtBool						inserted;
-	
+
 	// disabled edit fields don't handle key events
 	if (WMrWindow_GetEnabled(inEditField) == UUcFalse) { return; }
-	
+
 	private_data = (WMtEditField_PrivateData*)WMrWindow_GetLong(inEditField, 0);
 	if (private_data == NULL) { return; }
 	if (private_data->string == NULL) { return; }
-	
+
 	style = WMrWindow_GetStyle(inEditField);
-	
+
 	notify_parent = UUcTrue;
-	string_length = TSrString_GetLength(private_data->string);	
-	
+	string_length = TSrString_GetLength(private_data->string);
+
 	switch (inKey)
 	{
 		case LIcKeyCode_Tab:
 		{
 			UUtUns32				i;
-			
+
 			if (style & WMcEditFieldStyle_NumbersOnly) { break; }
-			
+
 			// insert 4 spaces
 			for (i = 0; i < 4; i ++)
 			{
-				inserted = 
+				inserted =
 					TSrString_InsertChar(
 						private_data->string,
 						(UUtUns16)private_data->insert_before,
@@ -455,7 +455,7 @@ WMiEditField_HandleKeyDown(
 			}
 		}
 		break;
-		
+
 		case LIcKeyCode_BackSpace:
 			if (private_data->insert_before > 0)
 			{
@@ -463,18 +463,18 @@ WMiEditField_HandleKeyDown(
 					private_data->string,
 					(private_data->insert_before - 1),
 					private_data->max_chars);
-				
+
 				private_data->insert_before--;
 			}
 		break;
-		
+
 		case LIcKeyCode_Delete:	/* forward delete */
 			TSrString_DeleteChar(
 				private_data->string,
 				(UUtUns16)private_data->insert_before,
 				private_data->max_chars);
 		break;
-		
+
 		case LIcKeyCode_Return:
 		case LIcKeyCode_PageUp:
 		case LIcKeyCode_PageDown:
@@ -485,7 +485,7 @@ WMiEditField_HandleKeyDown(
 		case LIcKeyCode_DownArrow:
 			notify_parent = UUcFalse;
 		break;
-		
+
 		case LIcKeyCode_RightArrow:
 			if (private_data->insert_before < string_length)
 			{
@@ -493,7 +493,7 @@ WMiEditField_HandleKeyDown(
 			}
 			notify_parent = UUcFalse;
 		break;
-		
+
 		case LIcKeyCode_LeftArrow:
 			if (private_data->insert_before > 0)
 			{
@@ -501,7 +501,7 @@ WMiEditField_HandleKeyDown(
 			}
 			notify_parent = UUcFalse;
 		break;
-		
+
 		default:
 			// check the numbers only style
 			if ((style & WMcEditFieldStyle_NumbersOnly) &&
@@ -514,7 +514,7 @@ WMiEditField_HandleKeyDown(
 				notify_parent = UUcFalse;
 				break;
 			}
-			
+
 			// insert the key into the string
 			inserted =
 				TSrString_InsertChar(
@@ -528,7 +528,7 @@ WMiEditField_HandleKeyDown(
 			}
 		break;
 	}
-	
+
 	// update the caret position
 	WMiEditField_SetCaretPosition(inEditField, private_data, NULL);
 
@@ -552,16 +552,16 @@ WMiEditField_HandleMouseEvent(
 	WMtEditField_PrivateData	*private_data;
 	IMtPoint2D					global_mouse;
 	IMtPoint2D					local_mouse;
-	
+
 	// get the private data
 	private_data = (WMtEditField_PrivateData*)WMrWindow_GetLong(inEditField, 0);
 	if (private_data == NULL) { return; }
-	
+
 	// get the mouse in local coordinates
 	global_mouse.x = (UUtInt16)UUmHighWord(inParam1);
 	global_mouse.y = (UUtInt16)UUmLowWord(inParam1);
 	WMrWindow_GlobalToLocal(inEditField, &global_mouse, &local_mouse);
-	
+
 	// set the position of the cursor
 	if (private_data->editfield_data & WMcEditFieldFlag_FocusClick)
 	{
@@ -571,7 +571,7 @@ WMiEditField_HandleMouseEvent(
 	{
 		WMiEditField_SetInsertBeforeFromPoint(inEditField, private_data, &local_mouse);
 	}
-	
+
 	// notify the parent of the click
 	WMrMessage_Send(
 		WMrWindow_GetParent(inEditField),
@@ -587,15 +587,15 @@ WMiEditField_HandleSetFocus(
 	UUtBool						inHasFocus)
 {
 	WMtEditField_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtEditField_PrivateData*)WMrWindow_GetLong(inEditField, 0);
 	if (private_data == NULL) { return; }
-	
+
 	if (inHasFocus)
 	{
 		private_data->editfield_data |= (WMcEditFieldFlag_HasFocus | WMcEditFieldFlag_FocusClick);
-		
+
 		// initialize the caret
 		WMrCaret_Create(
 			inEditField,
@@ -607,7 +607,7 @@ WMiEditField_HandleSetFocus(
 	else
 	{
 		private_data->editfield_data &= ~WMcEditFieldFlag_HasFocus;
-		
+
 		// destroy the caret
 		WMrCaret_Destroy();
 	}
@@ -621,28 +621,28 @@ WMiEditField_HandleSetMaxChars(
 {
 	WMtEditField_PrivateData	*private_data;
 	char						*new_string;
-	
+
 	// get the private data
 	private_data = (WMtEditField_PrivateData*)WMrWindow_GetLong(inEditField, 0);
 	if (private_data == NULL) { return UUcError_None; }
-	
+
 	// set the new number of maximum characters
 	private_data->max_chars = (UUtUns16)inMaxChars;
-	
+
 	// allocate memory for the string
 	new_string = UUrMemory_Block_NewClear(private_data->max_chars + 1);
 	UUmError_ReturnOnNull(new_string);
-	
+
 	// copy the data from the old string to the new string
 	UUrString_Copy(new_string, private_data->string, (private_data->max_chars + 1));
-	
+
 	// delete the old string
 	UUrMemory_Block_Delete(private_data->string);
-	
+
 	// set the string to the new string
 	private_data->string = new_string;
-	
-	return UUcError_None;	
+
+	return UUcError_None;
 }
 
 // ----------------------------------------------------------------------
@@ -652,11 +652,11 @@ WMiEditField_HandleSetText(
 	char						*inString)
 {
 	WMtEditField_PrivateData	*private_data;
-	
+
 	private_data = (WMtEditField_PrivateData*)WMrWindow_GetLong(inEditField, 0);
 	if (private_data == NULL) { return; }
 	if (private_data->string == NULL) { return; }
-	
+
 	UUrString_Copy(private_data->string, inString, (private_data->max_chars + 1));
 	private_data->insert_before = TSrString_GetLength(private_data->string);
 	WMiEditField_SetCaretPosition(inEditField, private_data, NULL);
@@ -676,26 +676,26 @@ WMiEditField_Paint(
 	UUtBool						enabled;
 	UUtBool						has_focus;
 	TStFontInfo					font_info;
-	
+
 	// get the private_data
 	private_data = (WMtEditField_PrivateData*)WMrWindow_GetLong(inEditField, 0);
 	if (private_data == NULL) { return; }
-	
+
 	// get the active partspec ui
 	partspec_ui = PSrPartSpecUI_GetActive();
 	if (partspec_ui == NULL) { return; }
-	
+
 	WMrWindow_GetSize(inEditField, &width, &height);
-	
+
 	draw_context = DCrDraw_Begin(inEditField);
-	
+
 	enabled = WMrWindow_GetEnabled(inEditField);
 	has_focus = (private_data->editfield_data & WMcEditFieldFlag_HasFocus) != 0;
-	
+
 	// set dest
 	dest.x = 0;
 	dest.y = 0;
-	
+
 	// draw the background
 	DCrDraw_PartSpec(
 		draw_context,
@@ -705,20 +705,20 @@ WMiEditField_Paint(
 		width,
 		height,
 		enabled ? (UUtUns16)WMcAlpha_Enabled : (UUtUns16)WMcAlpha_Disabled);
-		
+
 	dest.x = private_data->text_bounds.left;
 	dest.y = private_data->text_bounds.top;
-		
+
 	WMrWindow_GetFontInfo(inEditField, &font_info);
 	DCrText_SetFontInfo(&font_info);
-	
+
 	DCrText_SetShade(enabled ? font_info.font_shade : IMcShade_Gray50);
 	DCrText_SetFormat(TSc_HLeft);
 	dest.x += WMcEditField_Text_Buffer;
 	dest.y += DCrText_GetAscendingHeight() + DCrText_GetLeadingHeight();
-	
+
 	DCrDraw_String(draw_context, private_data->string, &private_data->text_bounds, &dest);
-	
+
 	DCrDraw_End(draw_context, inEditField);
 }
 
@@ -737,12 +737,12 @@ WMiEditField_Callback(
 {
 	UUtError				error;
 	UUtUns32				result;
-	
+
 	switch(inMessage)
 	{
 		case WMcMessage_NC_HitTest:
 		return WMcWindowArea_Client;
-		
+
 		case WMcMessage_Create:
 			error = WMiEditField_Create(inEditField);
 			if (error != UUcError_None)
@@ -750,30 +750,30 @@ WMiEditField_Callback(
 				return WMcResult_Error;
 			}
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Destroy:
 			WMiEditField_Destroy(inEditField);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Paint:
 			WMiEditField_Paint(inEditField);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_KeyDown:
 			WMiEditField_HandleKeyDown(inEditField, (UUtUns16)inParam1);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_LMouseDown:
 			if (WMrWindow_GetFocus() != inEditField)
 			{
 				WMrWindow_SetFocus(inEditField);
 			}
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_LMouseUp:
 			WMiEditField_HandleMouseEvent(inEditField, inParam1);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_SetFocus:
 			WMiEditField_HandleSetFocus(inEditField, UUcTrue);
 		return WMcResult_Handled;
@@ -781,7 +781,7 @@ WMiEditField_Callback(
 		case WMcMessage_KillFocus:
 			WMiEditField_HandleSetFocus(inEditField, UUcFalse);
 		return WMcResult_Handled;
-		
+
 		case EFcMessage_GetText:
 			result = WMiEditField_HandleGetText(inEditField, (char*)inParam1, inParam2);
 		return result;
@@ -801,12 +801,12 @@ WMiEditField_Callback(
 		case EFcMessage_SetText:
 			WMiEditField_HandleSetText(inEditField, (char*)inParam1);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_GetDialogCode:
 			result = WMiEditField_HandleGetDialogCode(inEditField);
 		return result;
 	}
-	
+
 	return WMrWindow_DefaultCallback(inEditField, inMessage, inParam1, inParam2);
 }
 
@@ -822,16 +822,16 @@ WMrEditField_Initialize(
 {
 	UUtError				error;
 	WMtWindowClass			window_class;
-	
+
 	// register the window class
 	UUrMemory_Clear(&window_class, sizeof(WMtWindowClass));
 	window_class.type = WMcWindowType_EditField;
 	window_class.callback = WMiEditField_Callback;
 	window_class.private_data_size = sizeof(WMtEditField_PrivateData*);
-	
+
 	error = WMrWindowClass_Register(&window_class);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -841,7 +841,7 @@ WMrEditField_GetInt32(WMtEditField *inEditField)
 {
 	UUtInt32 edit_field_number;
 	UUtError error;
-	
+
 	error = (UUtError) WMrMessage_Send(inEditField, EFcMessage_GetInt, (UUtUns32) &edit_field_number, 0);
 
 	if (UUcError_None != error) {
@@ -856,7 +856,7 @@ WMrEditField_GetFloat(WMtEditField *inEditField)
 {
 	float edit_field_number;
 	UUtError error;
-		
+
 	error = (UUtError) WMrMessage_Send(inEditField, EFcMessage_GetFloat, (UUtUns32) &edit_field_number, 0);
 
 	if (UUcError_None != error) {
@@ -893,7 +893,7 @@ WMrEditField_SetFloat(WMtEditField *inEditField, float inFloat)
 			buffer[--len] = '\0';
 		}
 	}
-	
+
 	WMrMessage_Send(inEditField, EFcMessage_SetText, (UUtUns32) buffer, 0);
 
 	return;

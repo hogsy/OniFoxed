@@ -37,13 +37,13 @@ enum
 typedef tm_template('V', 'M', 'S', 'B', "VM View Scrollbar")
 VMtView_Scrollbar
 {
-	
+
 	VMtPartSpec				*vertical_scrollbar;
 	VMtPartSpec				*vertical_thumb;
-	
+
 	VMtPartSpec				*horizontal_scrollbar;
 	VMtPartSpec				*horizontal_thumb;
-	
+
 } VMtView_Scrollbar;
 
 typedef struct VMtView_Scrollbar_PrivateData
@@ -51,12 +51,12 @@ typedef struct VMtView_Scrollbar_PrivateData
 	UUtBool					is_vertical;
 	UUtUns8					mouse_state;
 	UUtBool					mouse_down_in_thumb;
-	
+
 	// scrollbar values
 	UUtInt32				min;
 	UUtInt32				max;
 	UUtInt32				current_value;
-	
+
 	// thumb data
 	UUtRect					thumb_move_bounds;
 	IMtPoint2D				thumb_location;
@@ -64,13 +64,13 @@ typedef struct VMtView_Scrollbar_PrivateData
 	UUtUns16				thumb_height;
 	UUtUns16				thumb_x_track;
 	UUtUns16				thumb_y_track;
-	
+
 	// scrollbar areas
 	UUtRect					up_arrow_bounds;
 	UUtRect					dn_arrow_bounds;
 	UUtRect					page_up_bounds;
 	UUtRect					page_dn_bounds;
-	
+
 } VMtView_Scrollbar_PrivateData;
 
 extern TMtPrivateData*	DMgTemplate_Scrollbar_PrivateData;
@@ -94,7 +94,7 @@ VMrView_Scrollbar_GetRange(
 	VMtView					*inView,
 	UUtInt32				*outMin,
 	UUtInt32				*outMax);
-	
+
 UUtError
 VMrView_Scrollbar_ProcHandler(
 	TMtTemplateProc_Message	inMessage,

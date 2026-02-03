@@ -12,7 +12,7 @@
 	#include "BFW_CL_Platform_MacOS.h"
 
 #elif UUmPlatform == UUmPlatform_Win32
-	
+
 	#include "BFW_CL_Platform_Win32.h"
 
 #endif

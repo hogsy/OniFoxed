@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Math.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: January 9, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */
@@ -78,10 +78,10 @@ static void MUrRandomMatrix(M3tMatrix4x3 *outMatrix)
 	x = UUmLocalRandomRange(0, 10000) * M3c2Pi * 0.00001f; // S.S. / 10000.f;
 	y = UUmLocalRandomRange(0, 10000) * M3c2Pi * 0.00001f; // S.S. / 10000.f;
 	z = UUmLocalRandomRange(0, 10000) * M3c2Pi * 0.00001f; // S.S. / 10000.f;
-	
-	MUrMatrix_RotateX(outMatrix, x); 
-	MUrMatrix_RotateY(outMatrix, y); 
-	MUrMatrix_RotateZ(outMatrix, z); 
+
+	MUrMatrix_RotateX(outMatrix, x);
+	MUrMatrix_RotateY(outMatrix, y);
+	MUrMatrix_RotateZ(outMatrix, z);
 
 	return;
 }
@@ -98,7 +98,7 @@ static void MUrRandomVector(M3tVector3D *ioVector)
 	ioVector->x = x;
 	ioVector->y = y;
 	ioVector->z = z;
-	
+
 	return;
 }
 
@@ -128,7 +128,7 @@ static void MUrTest(void)
 	float x = 0.5f;
 	float y = 1.0f;
 	float z = 1.5f;
-	
+
 	M3tMatrix4x3 matA, matB;
 	MUtEuler eulA, eulB;
 	M3tQuaternion quatA, quatB;
@@ -142,9 +142,9 @@ static void MUrTest(void)
 	MUrEulerToMatrix(&eulA, &matA);
 
 	MUrMatrix_Identity(&matB);
-	MUrMatrix_RotateX(&matB, x); 
-	MUrMatrix_RotateY(&matB, y); 
-	MUrMatrix_RotateZ(&matB, z); 
+	MUrMatrix_RotateX(&matB, x);
+	MUrMatrix_RotateY(&matB, y);
+	MUrMatrix_RotateZ(&matB, z);
 
 	UUmAssert(MUrMatrix_IsEqual(&matA, &matB));
 
@@ -188,7 +188,7 @@ static void MUrTest(void)
 		r1 = a;
 		r2 = a;
 		MUrRandomVector(&vec);
-		
+
 		time1 -= UUrMachineTime_High();
 		// old
 		time1 += UUrMachineTime_High();
@@ -198,7 +198,7 @@ static void MUrTest(void)
 		time2 += UUrMachineTime_High();
 
 
-		if (!MUrMatrix_IsEqual(&r1, &r2)) { 
+		if (!MUrMatrix_IsEqual(&r1, &r2)) {
 			 UUrDebuggerMessage("failure");
 		}
 	}
@@ -260,7 +260,7 @@ void MUrLineSegment_ComputePoint(
 	      M3tPoint3D			*outPoint)
 {
 	M3tPoint3D 					P2MinusP1;
-	
+
 	P2MinusP1.x = inLineP2->x - inLineP1->x;
 	P2MinusP1.y = inLineP2->y - inLineP1->y;
 	P2MinusP1.z = inLineP2->z - inLineP1->z;
@@ -280,7 +280,7 @@ void MUrLineSegment_ClosestPointToPoint(
 {
 	// Returns closest point on line to point
 	float u = MUrLineSegment_ClosestPoint(inLineP1,inLineP2,inPoint);
-	
+
 	if (u<0.0f) *outClosestPoint = *inLineP1;
 	else if (u>1.0f) *outClosestPoint = *inLineP2;
 	else MUrLineSegment_ComputePoint(inLineP1,inLineP2,u,outClosestPoint);
@@ -321,7 +321,7 @@ float MUrTan(float f)
 float MUrATan2(float x, float y)
 {
 	float atan2_result = (float) atan2(x, y);
-	
+
 	return atan2_result;
 }
 
@@ -371,30 +371,30 @@ float MUrPoint_ManhattanLength(M3tPoint3D *inPoint)
 UUtBool MUrPoint_PointOnPlaneSloppy(M3tPoint3D *inPoint, M3tPlaneEquation *inPlane)
 {
 	// Returns whether the point is roughly in the plane
-	
+
 	if(UUmFloat_CompareEquSloppy(
 		inPlane->a * inPoint->x +
-		inPlane->b * inPoint->y + 
+		inPlane->b * inPoint->y +
 		inPlane->c * inPoint->z +
 		inPlane->d, 0.0f))
-		
+
 		return UUcTrue;
-		
+
 	return UUcFalse;
 }
 
 UUtBool MUrPoint_PointBehindPlaneSloppy(M3tPoint3D *inPoint, M3tPlaneEquation *inPlane)
 {
 	// Returns whether the point is roughly behind the plane
-	
+
 	if(UUmFloat_CompareLTSloppy(
 		inPlane->a * inPoint->x +
-		inPlane->b * inPoint->y + 
+		inPlane->b * inPoint->y +
 		inPlane->c * inPoint->z +
 		inPlane->d,0.0f))
-		
+
 		return UUcTrue;
-		
+
 	return UUcFalse;
 }
 
@@ -402,45 +402,45 @@ UUtBool MUrPoint_PointBehindPlaneSloppy(M3tPoint3D *inPoint, M3tPlaneEquation *i
 UUtBool MUrPoint_PointOnPlane(M3tPoint3D *inPoint, M3tPlaneEquation *inPlane)
 {
 	// Returns whether the point is in the plane
-	
+
 	if(UUmFloat_CompareEqu(
 		inPlane->a * inPoint->x +
-		inPlane->b * inPoint->y + 
+		inPlane->b * inPoint->y +
 		inPlane->c * inPoint->z +
 		inPlane->d, 0.0f))
-		
+
 		return UUcTrue;
-		
+
 	return UUcFalse;
 }
 
 UUtBool MUrPoint_PointBehindPlane(M3tPoint3D *inPoint, M3tPlaneEquation *inPlane)
 {
 	// Returns whether the point is behind the plane
-	
+
 	if(UUmFloat_CompareLT(
 		inPlane->a * inPoint->x +
-		inPlane->b * inPoint->y + 
+		inPlane->b * inPoint->y +
 		inPlane->c * inPoint->z +
 		inPlane->d,0.0f))
-		
+
 		return UUcTrue;
-		
+
 	return UUcFalse;
 }
 
 UUtBool MUrPoint_PointOnOrBehindPlane(M3tPoint3D *inPoint, M3tPlaneEquation *inPlane)
 {
 	// Returns whether the point is behind or in the plane
-	
+
 	if(UUmFloat_CompareLE(
 		inPlane->a * inPoint->x +
-		inPlane->b * inPoint->y + 
+		inPlane->b * inPoint->y +
 		inPlane->c * inPoint->z +
 		inPlane->d, 0.0f))
-		
+
 		return UUcTrue;
-		
+
 	return UUcFalse;
 }
 
@@ -448,10 +448,10 @@ void MUrVector_Increment_Unique(M3tVector3D *inDest, M3tVector3D *inSrc, M3tVect
 {
 	// Increments dest by src if src doesn't already exist in the list
 	// defined by 'inList' and 'inCount'. inSrc is added to that list afterwards.
-	
+
 	UUtUns16 c;
 	M3tVector3D *curV;
-	
+
 	for (c=0; c<*inCount; c++)
 	{
 		curV = &inList[c];
@@ -477,19 +477,19 @@ void MUrVector_ProjectToPlane(
 {
 	// Projects 'inVector' into the plane
 	float				distance;
-	
+
 	UUmAssertReadPtr(inPlaneEqu, sizeof(M3tPlaneEquation));
 	UUmAssertReadPtr(inVector, sizeof(M3tVector3D));
 	UUmAssertWritePtr(outVector, sizeof(M3tVector3D));
 
 	distance = MUrSqrt(UUmSQR(inPlaneEqu->a) + UUmSQR(inPlaneEqu->b) + UUmSQR(inPlaneEqu->c));
 	UUmAssert((distance >= 0.95f) && (distance <= 1.05f));
-	
-	distance = 
-		(inPlaneEqu->a * inVector->x) + 
-		(inPlaneEqu->b * inVector->y) + 
+
+	distance =
+		(inPlaneEqu->a * inVector->x) +
+		(inPlaneEqu->b * inVector->y) +
 		(inPlaneEqu->c * inVector->z);
-	
+
 	outVector->x = inVector->x - (distance * inPlaneEqu->a);
 	outVector->y = inVector->y - (distance * inPlaneEqu->b);
 	outVector->z = inVector->z - (distance * inPlaneEqu->c);
@@ -512,14 +512,14 @@ void MUrPoint_RotateAboutAxis(
 	M3tPoint3D 			*outPoint)
 {
 	M3tMatrix4x3	matrix;
-	
+
 	MUrMatrix_BuildRotate(
 		inRadians,
 		inVector->x,
 		inVector->y,
 		inVector->z,
 		&matrix);
-	
+
 	MUrMatrix_MultiplyPoint(
 		inPoint,
 		&matrix,
@@ -576,8 +576,8 @@ void MUrPoint_RotateYAxis(const M3tPoint3D *inPoint, float inRadians, M3tPoint3D
 	inZ = inPoint->z;
 
 	radians = M3c2Pi - radians;
-	if (radians > M3c2Pi) { 
-		radians -= M3c2Pi; 
+	if (radians > M3c2Pi) {
+		radians -= M3c2Pi;
 	}
 
 	radians2 = radians + M3cHalfPi;
@@ -637,12 +637,12 @@ MUrPoint_Align(
 	M3tPoint3D			*outPoint)
 {
 	M3tMatrix4x3	matrix;
-	
+
 	MUrMatrix_Alignment(
 		inFrom,
 		inTo,
 		&matrix);
-		
+
 	MUrMatrix_MultiplyPoint(
 		outPoint,
 		&matrix,
@@ -655,7 +655,7 @@ MUrPoint_Align(
 void MUrNormalize(M3tVector3D *ioVector)
 {
 	/* Normalizes 'ioVector' */
-	
+
 	float oneOverLength;
 	float length;
 
@@ -667,7 +667,7 @@ void MUrNormalize(M3tVector3D *ioVector)
 	{
 		ioVector->x *= 1e20f;
 		ioVector->y *= 1e20f;
-		ioVector->z *= 1e20f;	
+		ioVector->z *= 1e20f;
 		length = MUmVector_GetLength(*ioVector);
 	}
 
@@ -714,17 +714,17 @@ float MUrPointsXYAngle(float inFromX, float inFromY, float inToX, float inToY)
 float MUrAngleBetweenVectors(float inAx, float inAy, float inBx, float inBy)
 {
 	/* Returns angle between A and B in radians */
-	
+
 	float dot,absA,absB,denom;
 	float result;
 	float dotOverDenom;
-	
+
 	dot = inAx*inBx + inAy*inBy;
 	absA = MUrSqrt(inAx*inAx + inAy*inAy);
 	absB = MUrSqrt(inBx*inBx + inBy*inBy);
 	denom = absA * absB;
 	dotOverDenom = dot / denom;
-	
+
 	UUmAssert((denom > 0) && (denom < 1e9) && (denom > -1e9));
 	UUmAssert((dot < 1e9) && (dot > -1e9));
 	UUmAssert(denom != 0);
@@ -734,13 +734,13 @@ float MUrAngleBetweenVectors(float inAx, float inAy, float inBx, float inBy)
 	UUmAssert(dotOverDenom < 1.1f);
 
 	// valid range of acos is 0..1
-	dotOverDenom = UUmPin(dotOverDenom, -1.f, 1.f);	
+	dotOverDenom = UUmPin(dotOverDenom, -1.f, 1.f);
 
 	result = (float) MUrACos(dotOverDenom);
 
 	UUmAssert(result >= 0);
 	UUmAssert(result <= M3cPi);
-	
+
 	return result;
 }
 
@@ -765,13 +765,13 @@ UUtBool MUrPoint_Distance_LessOrEqual(const M3tPoint3D *inA, const M3tPoint3D *i
 float MUrPoint_Distance_Squared(const M3tPoint3D *inA, const M3tPoint3D *inB)
 {
 	/* Returns the distance between 'A' and 'B' */
-	
+
 	M3tPoint3D delta;
 	float distanceSquared;
 
 	UUmAssertReadPtr(inA, sizeof(M3tPoint3D));
 	UUmAssertReadPtr(inB, sizeof(M3tPoint3D));
-	
+
 	delta.x = inB->x - inA->x;
 	delta.y = inB->y - inA->y;
 	delta.z = inB->z - inA->z;
@@ -784,13 +784,13 @@ float MUrPoint_Distance_Squared(const M3tPoint3D *inA, const M3tPoint3D *inB)
 float MUrPoint_Distance_SquaredXZ(const M3tPoint3D *inA, const M3tPoint3D *inB)
 {
 	/* Returns the distance between 'A' and 'B' in the XZ plane */
-	
+
 	M3tPoint3D delta;
 	float distanceSquared;
 
 	UUmAssertReadPtr(inA, sizeof(M3tPoint3D));
 	UUmAssertReadPtr(inB, sizeof(M3tPoint3D));
-	
+
 	delta.x = inB->x - inA->x;
 	delta.z = inB->z - inA->z;
 
@@ -802,13 +802,13 @@ float MUrPoint_Distance_SquaredXZ(const M3tPoint3D *inA, const M3tPoint3D *inB)
 float MUrPoint_Distance(const M3tPoint3D *inA, const M3tPoint3D *inB)
 {
 	/* Returns the distance between 'A' and 'B' */
-	
+
 	M3tPoint3D delta;
 	float distance;
 
 	UUmAssertReadPtr(inA, sizeof(M3tPoint3D));
 	UUmAssertReadPtr(inB, sizeof(M3tPoint3D));
-	
+
 	delta.x = inB->x - inA->x;
 	delta.y = inB->y - inA->y;
 	delta.z = inB->z - inA->z;
@@ -821,13 +821,13 @@ float MUrPoint_Distance(const M3tPoint3D *inA, const M3tPoint3D *inB)
 float MUrPoint_ManhattanDistance(const M3tPoint3D *inA, const M3tPoint3D *inB)
 {
 	/* Returns the distance between 'A' and 'B' */
-	
+
 	M3tPoint3D delta;
 	float distance;
 
 	UUmAssertReadPtr(inA, sizeof(M3tPoint3D));
 	UUmAssertReadPtr(inB, sizeof(M3tPoint3D));
-	
+
 	delta.x = inB->x - inA->x;
 	delta.y = inB->y - inA->y;
 	delta.z = inB->z - inA->z;
@@ -840,13 +840,13 @@ float MUrPoint_ManhattanDistance(const M3tPoint3D *inA, const M3tPoint3D *inB)
 float MUrPoint_ManhattanDistanceXZ(const M3tPoint3D *inA, const M3tPoint3D *inB)
 {
 	/* Returns the distance between 'A' and 'B' in the XZ plane */
-	
+
 	M3tPoint3D delta;
 	float distance;
 
 	UUmAssertReadPtr(inA, sizeof(M3tPoint3D));
 	UUmAssertReadPtr(inB, sizeof(M3tPoint3D));
-	
+
 	delta.x = inB->x - inA->x;
 	delta.y = 0;
 	delta.z = inB->z - inA->z;
@@ -863,16 +863,16 @@ float MUrPoint_ManhattanDistanceToQuad(
 {
 	// Returns the average of the manhattan distances from the point to
 	// each vertex of the quad
-	
+
 	float accum = 0.0;
 	UUtUns16 c;
-	
+
 	for (c=0; c<4; c++)
 	{
 		accum += MUrPoint_ManhattanDistance((const M3tPoint3D *)inPoint,(const M3tPoint3D *)
 					(&inPointArray[inQuad->indices[c]]));
 	}
-	
+
 	return accum/4.0f;
 }
 
@@ -883,16 +883,16 @@ float MUrPoint_DistanceToQuad(
 {
 	// Returns the average of the manhattan distances from the point to
 	// each vertex of the quad
-	
+
 	float accum = 0.0;
 	UUtUns16 c;
-	
+
 	for (c=0; c<4; c++)
 	{
 		accum += MUrPoint_Distance((const M3tPoint3D *)inPoint,(const M3tPoint3D *)
 					(&inPointArray[inQuad->indices[c]]));
 	}
-	
+
 	return accum/4.0f;
 }
 
@@ -926,7 +926,7 @@ MUrAngleLess180(
 	{
 		UUmAssert(!"doh!");
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -985,7 +985,7 @@ void MUrXYZEulerToQuat(float x, float y, float z, M3tQuaternion *quat)
   Comments: remember:	roll  - rotation around X axis
 						pitch - rotation around Y axis
 						yaw   - rotation around Z axis
-			
+
 			rotations are performed in the following order:
 					yaw(z) -> pitch(y) -> roll(x)
 
@@ -1003,7 +1003,7 @@ void MUrZYXEulerToQuat(float x, float y, float z, M3tQuaternion *quat)
 	sr = MUrSin(x/2);
 	sp = MUrSin(y/2);
 	sy = MUrSin(z/2);
-	
+
 	cpcy = cp * cy;
 	spsy = sp * sy;
 
@@ -1019,7 +1019,7 @@ void MUrZYXEulerToQuat(float x, float y, float z, M3tQuaternion *quat)
 
   Name:		MUrQuat_Slerp
 
-  Action:	Smoothly (spherically, shortest path on a quaternion sphere) 
+  Action:	Smoothly (spherically, shortest path on a quaternion sphere)
 			interpolates between two UNIT quaternion positions
 
   Params:   GLQUAT (first and second quaternion), float (interpolation
@@ -1033,7 +1033,7 @@ void MUrZYXEulerToQuat(float x, float y, float z, M3tQuaternion *quat)
 		slerp(p,q,t) = (p*sin((1-t)*omega) + q*sin(t*omega)) / sin(omega)
 
 ***********************************************************************EDOC*/
-void MUrQuat_Slerp(const M3tQuaternion * from, const M3tQuaternion * to, float t, 
+void MUrQuat_Slerp(const M3tQuaternion * from, const M3tQuaternion * to, float t,
 															M3tQuaternion * res)
 {
     float           to1[4];
@@ -1070,7 +1070,7 @@ void MUrQuat_Slerp(const M3tQuaternion * from, const M3tQuaternion * to, float t
 
     // calculate coefficients
 
-    if ( (1.0 - cosom) > MUcQuatDelta ) 
+    if ( (1.0 - cosom) > MUcQuatDelta )
 	{
             // standard case (slerp)
             omega = MUrACos(cosom);
@@ -1078,8 +1078,8 @@ void MUrQuat_Slerp(const M3tQuaternion * from, const M3tQuaternion * to, float t
             scale0 = MUrSin((1.f - t) * omega) / sinom;
             scale1 = MUrSin(t * omega) / sinom;
 
-    } else {        
-			// "from" and "to" quaternions are very close 
+    } else {
+			// "from" and "to" quaternions are very close
 			//  ... so we can do a linear interpolation
 
             scale0 = 1.f - t;
@@ -1182,7 +1182,7 @@ void MUrQuat_Normalize(M3tQuaternion *quat)
 
 	square = quat->x * quat->x + quat->y * quat->y + quat->z * quat->z
 		+ quat->w * quat->w;
-	
+
 	if (square > 0.0)
 	{
 		dist = MUrOneOverSqrt(square);
@@ -1220,7 +1220,7 @@ void MUrQuat_Normalize(M3tQuaternion *quat)
 			NOTE2: angle is in RADIANS
 
 ***********************************************************************EDOC*/
-void MUrQuat_GetValue(M3tQuaternion *quat, float *x, float *y, 
+void MUrQuat_GetValue(M3tQuaternion *quat, float *x, float *y,
 											float *z, float *radians)
 {
     float len;
@@ -1233,7 +1233,7 @@ void MUrQuat_GetValue(M3tQuaternion *quat, float *x, float *y,
 
 	len = tx * tx + ty * ty + tz * tz;
 
-    if (len > MUcQuatDelta) 
+    if (len > MUcQuatDelta)
 	{
 		*x = tx * (1.f / len);
 		*y = ty * (1.f / len);
@@ -1276,7 +1276,7 @@ void MUrQuat_SetValue(M3tQuaternion *quat, float x, float y, float z, float angl
 	// normalize
 	temp = x*x + y*y + z*z;
 
-    dist = (float)(MUrOneOverSqrt(temp)) * theSin; 
+    dist = (float)(MUrOneOverSqrt(temp)) * theSin;
 
     x *= dist;
     y *= dist;
@@ -1359,7 +1359,7 @@ void MUrQuat_SetFromTwoVectors(const M3tVector3D *inFrom, const M3tVector3D *inT
 
 	MUmVector_Normalize(from);
 	MUmVector_Normalize(to);
-	
+
 	MUrQuat_SetFromAx(from.x, from.y, from.z, to.x, to.y, to.z, outQuat);
 
 	return;
@@ -1369,7 +1369,7 @@ void MUrQuat_SetFromTwoVectors(const M3tVector3D *inFrom, const M3tVector3D *inT
 
   Name:		MUrQuat_SetFromAx
 
-  Action:   Constructs quaternion to rotate from one direction vector to 
+  Action:   Constructs quaternion to rotate from one direction vector to
 			another
 
   Params:   fromX, fromY, fromZ - fromVector
@@ -1381,7 +1381,7 @@ void MUrQuat_SetFromTwoVectors(const M3tVector3D *inFrom, const M3tVector3D *inT
 			them before calling this function
 			Some parts are heavily optimized so readability is not so great :(
 ***********************************************************************EDOC*/
-void MUrQuat_SetFromAx(float fromX,float fromY, float fromZ, 
+void MUrQuat_SetFromAx(float fromX,float fromY, float fromZ,
 						 float toX,float toY, float toZ, M3tQuaternion *outQuat)
 
 {
@@ -1426,7 +1426,7 @@ void MUrQuat_SetFromAx(float fromX,float fromY, float fromZ,
 		tx *= dist;
 		ty *= dist;
 		tz *= dist;
-		
+
 		outQuat->x = tx;
 		outQuat->y = ty;
 		outQuat->z = tz;
@@ -1449,7 +1449,7 @@ void MUrQuat_SetFromAx(float fromX,float fromY, float fromZ,
 
 
 		// we have to use half-angle formulae (sin^2 t = ( 1 - cos (2t) ) /2)
-		
+
 		ss = MUrSqrt(0.5f * (1.0f - cost));
 
 		tx *= ss;
@@ -1615,7 +1615,7 @@ void MUrQuat_Div(const M3tQuaternion* q1, const M3tQuaternion* q2, M3tQuaternion
     q.x = -q.x;
     q.y = -q.y;
     q.z = -q.z;
-	
+
 	MUrQuat_Mul(q1, &q, &r);
 	MUrQuat_Mul(&q, &q, &s);
 
@@ -1704,8 +1704,8 @@ void MUrQuat_Sqrt(const M3tQuaternion* q1, M3tQuaternion* res)
 	M3tQuaternion r;
 
 	length = MUrSqrt (q1->w * q1->w + q1->x * q1->x + q1->y * q1->y);
-	if (length != 0.0) 
-		length = 1.0f / length; 
+	if (length != 0.0)
+		length = 1.0f / length;
 	else length = 1.0f;
 
 	r.x = q1->x * length;
@@ -1773,7 +1773,7 @@ float MUrQuat_Length(M3tQuaternion* q1)
 
   Returns:  nothing
 
-  Comments: Source quaternion does NOT have to be normalized 
+  Comments: Source quaternion does NOT have to be normalized
 
 ***********************************************************************EDOC*/
 void MUrQuat_Negate(M3tQuaternion* q1, M3tQuaternion* q2)
@@ -1804,9 +1804,9 @@ void MUrQuat_Exp(M3tQuaternion* q1, M3tQuaternion* q2)
 	float  len1, len2;
 
 	len1 = (float) MUrSqrt (q1->x * q1->x + q1->y * q1->y + q1->z * q1->z);
-	if (len1 > 0.0) 
-		len2 = (float)sin(len1) / len1; 
-	else 
+	if (len1 > 0.0)
+		len2 = (float)sin(len1) / len1;
+	else
 		len2 = 1.0;
 
 	q2->x = q1->x * len2;
@@ -1836,8 +1836,8 @@ void MUrQuat_Log(M3tQuaternion* q1, M3tQuaternion* q2)
 	length = MUrSqrt (q1->x * q1->x + q1->y * q1->y + q1->z * q1->z);
 
 	//make sure we do not divide by 0
-	if (q1->w != 0.0) 
-		length = MUrATan (length / q1->w); 
+	if (q1->w != 0.0)
+		length = MUrATan (length / q1->w);
 	else length = M3cHalfPi;
 
 	q2->w = 0.0f;
@@ -1884,15 +1884,15 @@ MUrQuatToMatrix(
 	outMatrix->m[2][2] = 1.f - (xx + yy);
 
 	outMatrix->m[3][0] = 0;
-	outMatrix->m[3][1] = 0;	
+	outMatrix->m[3][1] = 0;
 	outMatrix->m[3][2] = 0;
 
 	return;
 }
 
 void MUrMatrix_MultiplyPoint(
-	const M3tPoint3D	 *inPoint, 
-	const M3tMatrix4x3	 *inMatrix, 
+	const M3tPoint3D	 *inPoint,
+	const M3tMatrix4x3	 *inMatrix,
 	M3tPoint3D			 *outPoint)
 {
 	float iX = inPoint->x;
@@ -1907,8 +1907,8 @@ void MUrMatrix_MultiplyPoint(
 }
 
 void MUrMatrix3x3_MultiplyPoint(
-	const M3tPoint3D	 *inPoint, 
-	const M3tMatrix3x3	 *inMatrix, 
+	const M3tPoint3D	 *inPoint,
+	const M3tMatrix3x3	 *inMatrix,
 	M3tPoint3D			 *outPoint)
 {
 	float iX = inPoint->x;
@@ -1923,8 +1923,8 @@ void MUrMatrix3x3_MultiplyPoint(
 }
 
 void MUrMatrix3x3_TransposeMultiplyPoint(
-	const M3tPoint3D	 *inPoint, 
-	const M3tMatrix3x3	 *inMatrix, 
+	const M3tPoint3D	 *inPoint,
+	const M3tMatrix3x3	 *inMatrix,
 	M3tPoint3D			 *outPoint)
 {
 	float iX = inPoint->x;
@@ -1939,13 +1939,13 @@ void MUrMatrix3x3_TransposeMultiplyPoint(
 }
 
 void MUrMatrix_MultiplyNormal(
-	const M3tVector3D	 *inNormal, 
-	const M3tMatrix4x3	 *inMatrix, 
+	const M3tVector3D	 *inNormal,
+	const M3tMatrix4x3	 *inMatrix,
 	M3tVector3D			 *outNormal)
 {
 	float iX;
 	float iY;
-	float iZ; 
+	float iZ;
 
 	UUmAssertReadPtr(inNormal, sizeof(*inNormal));
 	UUmAssertReadPtr(inMatrix, sizeof(*inMatrix));
@@ -1965,13 +1965,13 @@ void MUrMatrix_MultiplyNormal(
 }
 
 void MUrMatrix3x3_MultiplyNormal(
-	const M3tVector3D	 *inNormal, 
-	const M3tMatrix3x3	 *inMatrix, 
+	const M3tVector3D	 *inNormal,
+	const M3tMatrix3x3	 *inMatrix,
 	M3tVector3D			 *outNormal)
 {
 	float iX;
 	float iY;
-	float iZ; 
+	float iZ;
 
 	UUmAssertReadPtr(inNormal, sizeof(*inNormal));
 	UUmAssertReadPtr(inMatrix, sizeof(*inMatrix));
@@ -2022,8 +2022,8 @@ void MUrMatrix3x3_MultiplyNormals(
 
 void MUrMatrix_MultiplyPoints(
 	UUtUns32			inNumPoints,
-	const M3tMatrix4x3	*inMatrix, 
-	const M3tPoint3D	*inPoints, 
+	const M3tMatrix4x3	*inMatrix,
+	const M3tPoint3D	*inPoints,
 	M3tPoint3D			*outPoints)
 {
 	UUtUns32 itr;
@@ -2064,7 +2064,7 @@ MUrVector_DotProduct(
 
 	UUmAssert(NULL != inVectorA);
 	UUmAssert(NULL != inVectorB);
-	
+
 	result = inVectorA->x * inVectorB->x + inVectorA->y * inVectorB->y + inVectorA->z * inVectorB->z;
 
 	return result;
@@ -2086,7 +2086,7 @@ MUrVector_NormalFromPoints(
 	UUmAssert(NULL != inPoint1);
 	UUmAssert(NULL != inPoint2);
 	UUmAssert(NULL != outNormal);
-	
+
 	vector01.x = inPoint1->x - inPoint0->x;
 	vector01.y = inPoint1->y - inPoint0->y;
 	vector01.z = inPoint1->z - inPoint0->z;
@@ -2094,12 +2094,12 @@ MUrVector_NormalFromPoints(
 	vector02.x = inPoint2->x - inPoint0->x;
 	vector02.y = inPoint2->y - inPoint0->y;
 	vector02.z = inPoint2->z - inPoint0->z;
-	
+
 	MUrVector_CrossProduct(
 		&vector01,
 		&vector02,
 		outNormal);
-	
+
 	length = outNormal->x * outNormal->x + outNormal->y * outNormal->y + outNormal->z * outNormal->z;
 
 	if (length==0.0f) {
@@ -2109,7 +2109,7 @@ MUrVector_NormalFromPoints(
 
 		return;
 	}
-	
+
 	length = MUrOneOverSqrt(length);
 
 	outNormal->x *= length;	// Negatives here account for counterclockwise point ordering
@@ -2132,13 +2132,13 @@ void MUrVector_PlaneFromEdges(
 	// of the plane is computed with the SECOND edge. This can be
 	// significant of the two edges are not intersecting.
 	M3tVector3D vecA,vecB,normal;
-	
+
 	// Determine the normal of the plane of the two lines of the collision
 	MUmVector_Subtract(vecA,*inEdge1a,*inEdge1b);
 	MUmVector_Subtract(vecB,*inEdge2b,*inEdge2a);
 	MUrVector_CrossProduct(&vecA,&vecB,&normal);
 	MUrNormalize(&normal);
-	
+
 	// Now extract the plane equation at the point of impact
 	outPlane->a = normal.x;
 	outPlane->b = normal.y;
@@ -2153,9 +2153,9 @@ void MUrVector_SetLength(M3tVector3D *ioVector, float inNewMagnitude)
 	* Adjusts 'ioVector' so that its magnitude is 'm',
 	* but leaves its direction unchanged
 	*/
-	
+
 	float oldLength, scaleAmt;
-	
+
 	oldLength = MUrVector_Length(ioVector);
 	scaleAmt = inNewMagnitude / oldLength;
 	MUmVector_Scale(*ioVector, scaleAmt);
@@ -2164,8 +2164,8 @@ void MUrVector_SetLength(M3tVector3D *ioVector, float inNewMagnitude)
 }
 
 void MUrVector_PushBack(
-	M3tVector3D *outPushBack, 
-	const M3tVector3D *inDelta, 
+	M3tVector3D *outPushBack,
+	const M3tVector3D *inDelta,
 	const M3tVector3D *inNormal)
 {
 #if 0
@@ -2180,7 +2180,7 @@ void MUrVector_PushBack(
 	*outPushBack = projection;
 
 	if (UUmFloat_CompareEquSloppy(inDelta->x,outPushBack->x)) outPushBack->x = inDelta->x;
-	if (UUmFloat_CompareEquSloppy(inDelta->y,outPushBack->y)) outPushBack->y = inDelta->y;	
+	if (UUmFloat_CompareEquSloppy(inDelta->y,outPushBack->y)) outPushBack->y = inDelta->y;
 	if (UUmFloat_CompareEquSloppy(inDelta->z,outPushBack->z)) outPushBack->z = inDelta->z;
 
 /*	if ((inDelta->x < 0 && -outPushBack->x < inDelta->x) ||
@@ -2224,7 +2224,7 @@ void MUrVector_PushBack(
 		pushBackAlignmentSpace.x = inDeltaAlignmentSpace.x;
 		pushBackAlignmentSpace.y = 0;
 		pushBackAlignmentSpace.z = 0;
-		
+
 		//if (pushBackAlignmentSpace.x > -0.01f) pushBackAlignmentSpace.x = -0.01f;
 		MUrMatrix_MultiplyPoints(1, &inverseAlignmentMatrix, &pushBackAlignmentSpace, outPushBack);
 	}
@@ -2235,7 +2235,7 @@ void MUrVector_PushBack(
 	}
 
 	//if (UUmFloat_CompareEquSloppy(inDelta->x,outPushBack->x)) outPushBack->x = inDelta->x;
-	//if (UUmFloat_CompareEquSloppy(inDelta->y,outPushBack->y)) outPushBack->y = inDelta->y;	
+	//if (UUmFloat_CompareEquSloppy(inDelta->y,outPushBack->y)) outPushBack->y = inDelta->y;
 	//if (UUmFloat_CompareEquSloppy(inDelta->z,outPushBack->z)) outPushBack->z = inDelta->z;
 #else
 	float pushback_dot;
@@ -2259,13 +2259,13 @@ void MUrVector_ProjectVector(M3tVector3D *inA, M3tVector3D *inB, M3tVector3D *ou
 	/******************
 	* Projects A on to B
 	*/
-	
+
 	float magsquared,dotovermagsq;
-	
+
 	magsquared = MUrVector_Length(inB);
 	magsquared *= magsquared;
 	UUmAssert(magsquared);
-	
+
 	*outV = *inB;
 	dotovermagsq = MUrVector_DotProduct(inA,inB)/magsquared;
 	MUmVector_Scale(*outV,dotovermagsq);
@@ -2277,38 +2277,38 @@ MUrTriangle_Area(
 	M3tPoint3D*	inPoint1,
 	M3tPoint3D*	inPoint2)
 {
-	
+
 	float		length01, temp, height;
 	M3tPoint3D	closestPointOn01;
-	
+
 	length01 = inPoint1->x - inPoint0->x;
 	length01 *= length01;
-	
+
 	temp = inPoint1->y - inPoint0->y;
 	length01 += temp * temp;
-	
+
 	temp = inPoint1->z - inPoint0->z;
 	length01 += temp * temp;
-	
+
 	length01 = MUrSqrt(length01);
-	
+
 	MUrLineSegment_ClosestPointToPoint(
 		inPoint0,
 		inPoint1,
 		inPoint2,
 		&closestPointOn01);
-	
+
 	height = closestPointOn01.x - inPoint2->x;
 	height *= height;
-	
+
 	temp = closestPointOn01.y - inPoint2->y;
 	height += temp * temp;
-	
+
 	temp = closestPointOn01.z - inPoint2->z;
 	height += temp * temp;
-	
+
 	height = MUrSqrt(height);
-	
+
 	return length01 * height * 0.5f;
 }
 
@@ -2327,11 +2327,11 @@ float MUrAngleBetweenVectors3D(const M3tVector3D *inVector1, const M3tVector3D *
 	UUmAssert((dotProduct > -1.1f) && (dotProduct < 1.1f));
 
 	// valid range of acos is strictly 0..1
-	dotProduct = UUmPin(dotProduct, -1.f, 1.f);	
+	dotProduct = UUmPin(dotProduct, -1.f, 1.f);
 	result = MUrACos(dotProduct);
 
 	UUmAssertTrigRange(result);
-	
+
 	return result;
 }
 
@@ -2343,37 +2343,37 @@ float MUrAngleBetweenVectors3D_0To2Pi(const M3tVector3D *inVector1, const M3tVec
 	M3tVector3D	alignedV2;
 	M3tVector3D	upX;
 	M3tMatrix4x3	alignUpXMatrix;
-	
+
 	UUmAssert(MUmVector_IsNormalized(*inVector1));
 	UUmAssert(MUmVector_IsNormalized(*inVector2));
-	
+
 	upX.x = 1.0f;
 	upX.y = 0.0f;
 	upX.z = 0.0f;
-	
+
 	MUrMatrix_Alignment(
 		inVector1,
 		&upX,
 		&alignUpXMatrix);
-	
+
 	MUrMatrix_MultiplyPoint(
 		(const M3tPoint3D*)inVector2,
 		&alignUpXMatrix,
 		(M3tPoint3D*)&alignedV2);
-		
+
 	dotProduct = MUrVector_DotProduct(&upX, &alignedV2);
 
 	// never should be to far off
 	UUmAssert((dotProduct > -1.1f) && (dotProduct < 1.1f));
 
 	// valid range of acos is strictly 0..1
-	dotProduct = UUmPin(dotProduct, -1.f, 1.f);	
+	dotProduct = UUmPin(dotProduct, -1.f, 1.f);
 	result = MUrACos(dotProduct);
 
 	UUmAssertTrigRange(result);
-	
+
 	if(alignedV2.y < 0.0f) result = M3cPi * 2.0f - result;
-	
+
 	return result;
 }
 
@@ -2381,18 +2381,18 @@ float MUrAngleBetweenVectors3D_0To2Pi(const M3tVector3D *inVector1, const M3tVec
 float MUrACos(float inFloat)
 {
 	float result;
-	
+
 	UUmAssert((inFloat >= -1.f) && (inFloat <= 1.f));
-	
+
 	result = (float) acos(inFloat);
-	
+
 #if UUmCompiler	== UUmCompiler_MWerks
 	result = UUmPin(result, 0, M3cPi);
 	UUmAssert((result >= 0) && (result <= M3cPi));
 #else
 	UUmAssert((result >= 0) && (result <= M3cPi));
 #endif
-	
+
 	return result;
 }
 
@@ -2409,13 +2409,13 @@ float MUrASin(float inFloat)
 
 void MUrMinMaxBBox_CreateFromSphere(
 		const M3tMatrix4x3 *inMatrix,
-		const M3tBoundingSphere *inSphere, 
+		const M3tBoundingSphere *inSphere,
 		M3tBoundingBox_MinMax *outBBox)
 {
 	M3tPoint3D center;
 
 	UUmAssertWritePtr(outBBox, sizeof(*outBBox));
-	
+
 	if (NULL == inMatrix)
 	{
 		center = inSphere->center;
@@ -2428,7 +2428,7 @@ void MUrMinMaxBBox_CreateFromSphere(
 
 	outBBox->minPoint.x = center.x - inSphere->radius;
 	outBBox->maxPoint.x = center.x + inSphere->radius;
-	
+
 	outBBox->minPoint.y = center.y - inSphere->radius;
 	outBBox->maxPoint.y = center.y + inSphere->radius;
 
@@ -2441,7 +2441,7 @@ void MUrMinMaxBBox_CreateFromSphere(
 
 void MUrMinMaxBBox_ExpandBySphere(
 		const M3tMatrix4x3 *inMatrix,
-		const M3tBoundingSphere *inSphere, 
+		const M3tBoundingSphere *inSphere,
 		M3tBoundingBox_MinMax *outBBox)
 {
 	M3tPoint3D center;
@@ -2465,7 +2465,7 @@ void MUrMinMaxBBox_ExpandBySphere(
 
 	outBBox->minPoint.z = UUmMin(center.z - inSphere->radius, outBBox->minPoint.z);
 	outBBox->maxPoint.z = UUmMax(center.z + inSphere->radius, outBBox->maxPoint.z);
-	
+
 	return;
 }
 
@@ -2482,16 +2482,16 @@ void MUrMinMaxBBox_To_Sphere(
 	outSphere->center.y = inBBox->minPoint.y + (inBBox->maxPoint.y - inBBox->minPoint.y) / 2;
 	outSphere->center.z = inBBox->minPoint.z + (inBBox->maxPoint.z - inBBox->minPoint.z) / 2;
 
-	outSphere->radius = (cLargerThanRoot2 * 0.5f /* S.S. / 2.f*/) * 
-							UUmMax3(inBBox->maxPoint.x - inBBox->minPoint.x, 
-									inBBox->maxPoint.y - inBBox->minPoint.y, 
+	outSphere->radius = (cLargerThanRoot2 * 0.5f /* S.S. / 2.f*/) *
+							UUmMax3(inBBox->maxPoint.x - inBBox->minPoint.x,
+									inBBox->maxPoint.y - inBBox->minPoint.y,
 									inBBox->maxPoint.z - inBBox->minPoint.z);
 	return;
 }
 
 void MUrCylinder_CreateFromSphere(
 		const M3tMatrix4x3 *inMatrix,
-		const M3tBoundingSphere *inSphere, 
+		const M3tBoundingSphere *inSphere,
 		M3tBoundingCylinder *outCylinder)
 {
 	M3tPoint3D center;
@@ -2499,7 +2499,7 @@ void MUrCylinder_CreateFromSphere(
 	UUmAssertReadPtr(inMatrix, sizeof(*inMatrix));
 	UUmAssertReadPtr(inSphere, sizeof(*inSphere));
 	UUmAssertWritePtr(outCylinder, sizeof(*outCylinder));
-	
+
 	MUrMatrix_MultiplyPoints(1, inMatrix, &inSphere->center, &center);
 
 	outCylinder->circle.center.x = center.x;
@@ -2563,7 +2563,7 @@ static float MUrLineSegment2D_ExpandByPoint(float cur_distance_squared, M3tPoint
 	}
 	else {
 		*l1 = *newPoint;
-		
+
 		return l2_new_distance_squared;
 	}
 }
@@ -2631,7 +2631,7 @@ static void MUrCircle_ExpandByCircle(M3tBoundingCircle *ioCircleA, const M3tBoun
 
 void MUrCylinder_ExpandBySphere(
 		const M3tMatrix4x3 *inMatrix,
-		const M3tBoundingSphere *inSphere, 
+		const M3tBoundingSphere *inSphere,
 		M3tBoundingCylinder *ioCylinder)
 {
 	M3tPoint3D center;
@@ -2640,14 +2640,14 @@ void MUrCylinder_ExpandBySphere(
 	UUmAssertReadPtr(inMatrix, sizeof(*inMatrix));
 	UUmAssertReadPtr(inSphere, sizeof(*inSphere));
 	UUmAssertWritePtr(ioCylinder, sizeof(*ioCylinder));
-	
+
 	MUrMatrix_MultiplyPoints(1, inMatrix, &inSphere->center, &center);
 
 	// step 1 grow top and bottom
 	ioCylinder->top = UUmMax(center.y + inSphere->radius, ioCylinder->top);
 	ioCylinder->bottom = UUmMin(center.y - inSphere->radius, ioCylinder->bottom);
 
-	// step 2 grow radius & move center 
+	// step 2 grow radius & move center
 
 	// draw line segment from center of one 2-d circle to the other
 	// grow segment to hit the edges of each circle.
@@ -2675,7 +2675,7 @@ UUtUns8 MUrSolveQuadratic(float a, float b, float c, float *outSolutions)
 	}
 	else {
 		float one_over_two_a = 0.5f / a;
-		
+
 		if (UUmFloat_CompareEqu(discriminant, 0)) {
 			outSolutions[0] = -b * one_over_two_a;
 
@@ -2804,7 +2804,7 @@ UUtBool MUrQuat_IsEqual(
 
 		equal = MUrQuat_IsEqual_Internal(&inverseA, inQuatB);
 	}
-	
+
 	return equal;
 }
 
@@ -2840,7 +2840,7 @@ UUtInt32 MUrFloat_Round_To_Int(float inFloatNumber)
 	UUtInt32 integerNumber;
 //	#define MUrFloat_Round_To_Int(x) (((x) < 0.0) ? (float)((UUtInt32)(x - 0.5)) : (float)((UUtInt32)(x + 0.5)))
 
-	if (inFloatNumber < 0) 
+	if (inFloatNumber < 0)
 	{
 		integerNumber = inFloatNumber - 0.5f;
 	}
@@ -2919,70 +2919,70 @@ MUrPointVector_FlipAboutPlane(
 	float	refl_vec_x, refl_vec_y, refl_vec_z;
 	float	temp;
 	float	t;
-	
+
 	plane_a = inPlane->a;
 	plane_b = inPlane->b;
 	plane_c = inPlane->c;
 	plane_d = inPlane->d;
-	
+
 	vec_x = inVector->x;
 	vec_y = inVector->y;
 	vec_z = inVector->z;
-	
+
 	point_x = inPoint->x;
 	point_y = inPoint->y;
 	point_z = inPoint->z;
-	
+
 	// compute reflection point
 		dist_point_to_plane = plane_a * point_x + plane_b * point_y + plane_c * point_z + plane_d;
-		
+
 		refl_point_x = point_x - dist_point_to_plane * plane_a * 2.0f;
 		refl_point_y = point_y - dist_point_to_plane * plane_b * 2.0f;
 		refl_point_z = point_z - dist_point_to_plane * plane_c * 2.0f;
-	
+
 	// compute intersection point
 		denom = plane_a * vec_x + plane_b * vec_y + plane_c * vec_z;
-		
+
 		if(denom == 0.0f)
 		{
 			*outReflectedPoint = *inPoint;
 			*outReflectedVector = *inVector;
 			return;
 		}
-		
+
 		t = -(plane_a * point_x + plane_b * point_y + plane_c * point_z + plane_d) / denom;
-		
+
 		inter_point_x = vec_x * t + point_x;
 		inter_point_y = vec_y * t + point_y;
 		inter_point_z = vec_z * t + point_z;
-	
+
 	#if 0
 	// compute reflection vector which is V - N(2(N.V))
 		temp = 2.0f * denom;
 		refl_vec_x = vec_x - plane_a * temp;
 		refl_vec_y = vec_y - plane_b * temp;
 		refl_vec_z = vec_z - plane_c * temp;
-	
+
 	#else
 		refl_vec_x = inter_point_x - refl_point_x;
 		refl_vec_y = inter_point_y - refl_point_y;
 		refl_vec_z = inter_point_z - refl_point_z;
-		
+
 		temp = MUrOneOverSqrt(refl_vec_x * refl_vec_x + refl_vec_y * refl_vec_y + refl_vec_z * refl_vec_z);
-		
+
 		refl_vec_x *= temp;
 		refl_vec_y *= temp;
 		refl_vec_z *= temp;
 	#endif
-	
+
 	outReflectedPoint->x = refl_point_x;
 	outReflectedPoint->y = refl_point_y;
 	outReflectedPoint->z = refl_point_z;
-	
+
 	outReflectedVector->x = refl_vec_x;
 	outReflectedVector->y = refl_vec_y;
 	outReflectedVector->z = refl_vec_z;
-	
+
 }
 
 /* these used to be inlined */
@@ -3031,7 +3031,7 @@ UUtUns32 MUrUnsignedSmallFloat_To_Uns_Round(float f)
 	UUmAssert((f >= 0) && (f < UUcFloat_NormalizedBit));
 
 	f += UUcFloat_NormalizedBit;
-	
+
 	number.float_4byte = f;
 
 	return number.unsigned_4byte & UUcFloat_FractionMask;

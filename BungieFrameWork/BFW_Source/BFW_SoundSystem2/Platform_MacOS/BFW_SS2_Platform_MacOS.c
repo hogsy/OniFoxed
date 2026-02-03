@@ -47,7 +47,7 @@ SS2iPlatform_SoundChannel_ApplyVolume(
 	UUtUns32					volume;
 	UUtUns16					left_volume;
 	UUtUns16					right_volume;
-	
+
 	// calculate the left and right volumes
 	left_volume =
 			(UUtUns16)(inSoundChannel->pd.volume *
@@ -57,10 +57,10 @@ SS2iPlatform_SoundChannel_ApplyVolume(
 		(UUtUns16)(inSoundChannel->pd.volume *
 			SScPlatform_MaxVolume*
 			inSoundChannel->pd.right_pan);
-	
+
 	// set the volume
 	volume = UUmMakeLong(right_volume, left_volume);
-		
+
 	// set the channel volume
 	SSmSetSndCommand(cmd, volumeCmd, 0, volume);
 	err = SndDoImmediate(inSoundChannel->pd.sound_channel, &cmd);
@@ -74,10 +74,10 @@ SSiPlatform_SoundChannel_Callback(
 	SndCommand				*inSoundCommand)
 {
 	SStSoundChannel			*sound_channel;
-	
+
 	// get the sound channel being used
 	sound_channel = (SStSoundChannel*)inSoundCommand->param2;
-	
+
 	if (SSiSoundChannel_IsLooping(sound_channel))
 	{
 		// play another permutation in the group
@@ -101,16 +101,16 @@ SSiPlatform_SoundChannel_Terminate(
 	char						*inErrorString)
 {
 	OSErr					err;
-	
+
 	if (inErrorString)
 	{
 		UUrError_Report(UUcError_Generic, inErrorString);
 	}
-	
+
 	if (inSoundChannel->pd.sound_channel)
 	{
 		// stop the sound channel
-		err = 
+		err =
 			SndDisposeChannel(
 				inSoundChannel->pd.sound_channel,
 				UUcTrue);
@@ -136,7 +136,7 @@ SS2rPlatform_SoundChannel_Initialize(
 {
 	OSErr						err;
 	UUtInt32					init_flag;
-	
+
 	// clear the vars
 	inSoundChannel->pd.sound_channel	= NULL;
 	inSoundChannel->pd.sound			= NULL;
@@ -144,7 +144,7 @@ SS2rPlatform_SoundChannel_Initialize(
 	inSoundChannel->pd.left_pan			= 1.0f;
 	inSoundChannel->pd.right_pan		= 1.0f;
 	inSoundChannel->pd.pitch			= (UUcMaxUns16 + 1);
-	
+
 	// ------------------------------
 	// Sound Channel
 	// ------------------------------
@@ -156,7 +156,7 @@ SS2rPlatform_SoundChannel_Initialize(
 	{
 		init_flag = initStereo;
 	}
-	
+
 	// intialize the sound channel
 	err =
 		SndNewChannel(
@@ -171,7 +171,7 @@ SS2rPlatform_SoundChannel_Initialize(
 			"Unable to initialize the sound channel.");
 		return;
 	}
-	
+
 	// ------------------------------
 	// Sound
 	// ------------------------------
@@ -194,10 +194,10 @@ SS2rPlatform_SoundChannel_Play(
 {
 	SndCommand					cmd;
 	OSErr						err;
-	
+
 	UUmAssert(inSoundChannel->pd.sound_channel);
 	UUmAssert(inSoundChannel->pd.sound);
-	
+
 	// set the status field
 	SSiSoundChannel_SetPlaying(inSoundChannel, UUcTrue);
 
@@ -205,18 +205,18 @@ SS2rPlatform_SoundChannel_Play(
 	SSmSetSndCommand(cmd, bufferCmd, 0, (UUtUns32)inSoundChannel->pd.sound);
 	err = SndDoCommand(inSoundChannel->pd.sound_channel, &cmd, UUcTrue);
 	if (err != noErr) { goto cleanup; }
-	
+
 	// queue the callback
 	SSmSetSndCommand(cmd, callBackCmd, 0, (UUtUns32)inSoundChannel);
 	err = SndDoCommand(inSoundChannel->pd.sound_channel, &cmd, UUcTrue);
 	if (err != noErr) { goto cleanup; }
-	
+
 	return;
-	
+
 cleanup:
 	SSmSetSndCommand(cmd, quietCmd, 0, 0);
 	SndDoImmediate(inSoundChannel->pd.sound_channel, &cmd);
-	
+
 	// set the status field
 	SSiSoundChannel_SetPlaying(inSoundChannel, UUcTrue);
 }
@@ -229,10 +229,10 @@ SS2rPlatform_SoundChannel_SetSoundData(
 {
 //	UUtUns32					num_frames;
 	UUtUns32					num_channels =  SSrSound_GetNumChannels(inSoundData);
-	
+
 	UUmAssert(inSoundChannel->pd.sound_channel);
 	UUmAssert(inSoundChannel->pd.sound);
-	
+
 	// make sure a mono channel plays on a mono sound
 	if (((inSoundChannel->flags & SScSoundChannelFlag_Mono) == SScSoundChannelFlag_Mono) &&
 		(num_channels != 1))
@@ -246,7 +246,7 @@ SS2rPlatform_SoundChannel_SetSoundData(
 	{
 		return UUcFalse;
 	}
-	
+
 #if 0
 	num_frames =
 		(SScBitsPerSample == 8) ?
@@ -259,10 +259,10 @@ SS2rPlatform_SoundChannel_SetSoundData(
 	{
 		CmpSoundHeader			*cmp_sound;
 		UUtUns32				packet_count = inSoundData->num_bytes / (num_channels * sizeof(SStIMA_SampleData));
-			
+
 		cmp_sound = (CmpSoundHeader*)inSoundChannel->pd.sound;
 		UUrMemory_Clear(cmp_sound, sizeof(CmpSoundHeader));
-		
+
 		// setup the compressed sound header
 		cmp_sound->samplePtr		= (char*)inSoundData->data;
 		cmp_sound->numChannels		= num_channels;
@@ -282,15 +282,15 @@ SS2rPlatform_SoundChannel_SetSoundData(
 //		cmp_sound->snthID			= 0;
 		cmp_sound->sampleSize		= SScBitsPerSample;
 	}
-	
+
 #if 0
 	else if ((inSoundData->flags & SScSoundDataFlag_PCM_Little) != 0)
 	{
 		CmpSoundHeader			*cmp_sound;
-		
+
 		cmp_sound = (CmpSoundHeader*)inSoundChannel->pd.sound;
 		UUrMemory_Clear(cmp_sound, sizeof(CmpSoundHeader));
-		
+
 		// setup the compressed sound header
 		cmp_sound->samplePtr		= (char*)inSoundData->data;
 		cmp_sound->numChannels		= inSoundData->f.nChannels;
@@ -313,10 +313,10 @@ SS2rPlatform_SoundChannel_SetSoundData(
 	else if ((inSoundData->flags & SScSoundDataFlag_PCM_Big) != 0)
 	{
 		ExtSoundHeader			*ext_sound;
-		
+
 		ext_sound = (ExtSoundHeader*)inSoundChannel->pd.sound;
 		UUrMemory_Clear(ext_sound, sizeof(ExtSoundHeader));
-	
+
 		// setup the extended sound header
 		ext_sound->samplePtr		= (char*)inSoundData->data;
 		ext_sound->numChannels		= inSoundData->f.nChannels;
@@ -356,24 +356,24 @@ SS2rPlatform_SoundChannel_SetPan(
 			inSoundChannel->pd.left_pan = 1.0f;
 			inSoundChannel->pd.right_pan = 1.0f;
 		break;
-		
+
 		case SScPanFlag_Left:
 			// lower right volume
 			inSoundChannel->pd.left_pan = 1.0f;
 			inSoundChannel->pd.right_pan = inPan;
 		break;
-		
+
 		case SScPanFlag_Right:
 			// lower right volume
 			inSoundChannel->pd.left_pan = inPan;
 			inSoundChannel->pd.right_pan = 1.0f;
 		break;
 	}
-	
+
 	// apply the pan
 	SS2iPlatform_SoundChannel_ApplyVolume(inSoundChannel);
 }
-	
+
 // ----------------------------------------------------------------------
 void
 SS2rPlatform_SoundChannel_SetPitch(
@@ -383,11 +383,11 @@ SS2rPlatform_SoundChannel_SetPitch(
 	SndCommand					cmd;
 	OSErr						err;
 	UUtUns32					rate;
-	
+
 	// calculate the rate
 	rate = (UUtUns32)(inPitch * (float)(UUcMaxUns16 + 1));
 	inSoundChannel->pitch = rate;
-	
+
 	// set the rate
 	if (!(inSoundChannel->status & SScSCStatus_Paused)) {
 		SSmSetSndCommand(cmd, rateCmd, 0, rate);
@@ -406,7 +406,7 @@ SS2rPlatform_SoundChannel_SetVolume(
 {
 	// set the volume
 	inSoundChannel->pd.volume = inVolume;
-	
+
 	// apply the volume
 	SS2iPlatform_SoundChannel_ApplyVolume(inSoundChannel);
 }
@@ -418,12 +418,12 @@ SS2rPlatform_SoundChannel_Stop(
 {
 	SndCommand					cmd;
 	OSErr						err;
-	
+
 	// flush the commands from the channel
 	SSmSetSndCommand(cmd, flushCmd, 0, 0);
 	err = SndDoImmediate(inSoundChannel->pd.sound_channel, &cmd);
 	SSmCheckSndError(err);
-	
+
 	// stop the sound that is playing
 	SSmSetSndCommand(cmd, quietCmd, 0, 0);
 	err = SndDoImmediate(inSoundChannel->pd.sound_channel, &cmd);
@@ -456,11 +456,11 @@ SS2rPlatform_Initialize(
 	NumVersion					sound_manager_version;
 	OSErr						err;
 	UUtInt32					response;
-	
+
 	// ------------------------------
 	// make sure the needed sound capabilities exist on this hardware
 	// ------------------------------
-	
+
 	// get the sound manager version
 	sound_manager_version = SndSoundManagerVersion();
 	if (sound_manager_version.majorRev < 3) { return UUcError_Generic; }
@@ -468,17 +468,17 @@ SS2rPlatform_Initialize(
 	{
 		return UUcError_Generic;
 	}
-	
+
 	// gestalt the sound attributes
 	err = Gestalt(gestaltSoundAttr, &response);
 	if (err != noErr) { return UUcError_Generic; }
-	
+
 	// check for needed properties
 	if ((response & (1 << gestaltStereoCapability)) == 0)	{ return UUcError_Generic; }
 	if ((response & (1 << gestaltMultiChannels)) == 0)		{ return UUcError_Generic; }
 	if ((response & (1 << gestalt16BitSoundIO)) == 0)		{ return UUcError_Generic; }
 	if ((response & (1 << gestalt16BitAudioSupport)) == 0)	{ return UUcError_Generic; }
-	
+
 	// ------------------------------
 	// Create the Sound Callback
 	// ------------------------------
@@ -490,11 +490,11 @@ SS2rPlatform_Initialize(
 		UUrError_Report(UUcError_Generic, "Unable to create sound callback UPP");
 		return UUcError_Generic;
 	}
-	
+
 	// ------------------------------
 	// set the number of sound channels
 	*outNumChannels = SScMaxSoundChannels;
-	
+
 	return UUcError_None;
 }
 
@@ -574,7 +574,7 @@ void SS2rPlatform_GetDebugNeeds(
 	UUtUns32 *outNumLines)
 {
 	*outNumLines= 0L;
-	
+
 	return;
 }
 
@@ -583,7 +583,7 @@ void SS2rPlatform_PerformanceStartFrame(
 {
 	return;
 }
-	
+
 void SS2rPlatform_PerformanceEndFrame(
 	void)
 {
@@ -629,16 +629,16 @@ SS2rPlatform_SoundChannel_Pause(
 {
 	SndCommand					cmd;
 	OSErr						err;
-	
+
 	UUmAssert(inSoundChannel);
-	
+
 	// make sure the channel is playing
 	if (SSiSoundChannel_IsPlaying(inSoundChannel) == UUcFalse) { return; }
-	
+
 	SSmSetSndCommand(cmd, rateCmd, 0, 0);
 	err = SndDoImmediate(inSoundChannel->pd.sound_channel, &cmd);
 	SSmCheckSndError(err);
-	
+
 	// set the status field
 	SSiSoundChannel_SetPaused(inSoundChannel, UUcTrue);
 
@@ -651,16 +651,16 @@ SS2rPlatform_SoundChannel_Resume(
 {
 	SndCommand					cmd;
 	OSErr						err;
-	
+
 	UUmAssert(inSoundChannel);
-	
+
 	// make sure the channel is playing and paused
 	if ((SSiSoundChannel_IsPlaying(inSoundChannel) == UUcFalse) ||
 		(SSiSoundChannel_IsPaused(inSoundChannel) == UUcFalse))
 	{
 		return;
 	}
-				
+
 	SSmSetSndCommand(cmd, rateCmd, 0, inSoundChannel->pd.pitch);
 	err = SndDoImmediate(inSoundChannel->pd.sound_channel, &cmd);
 	SSmCheckSndError(err);
@@ -678,7 +678,7 @@ void SS2rPlatform_SoundChannel_Silence(
 {
 	return;
 }
-	
+
 
 /* end S.S. */
 

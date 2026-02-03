@@ -1,10 +1,10 @@
 /*
 	FILE:	Oni_AI2_LocalPath.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: May 08, 1999
-	
+
 	PURPOSE: Local-grid pathfinding for Oni AI
 
 	Copyright (c) 2000
@@ -215,7 +215,7 @@ UUtError AI2rFindNearbyPoint(ONtCharacter *ioCharacter, PHtPathMode inPathMode, 
 		MUmVector_Set(AI2gLocalPath.end_point, MUrSin(current_direction), 0, MUrCos(current_direction));
 		MUmVector_Scale(AI2gLocalPath.end_point, inDistance);
 		MUmVector_Add(AI2gLocalPath.end_point, AI2gLocalPath.end_point, AI2gLocalPath.start_point);
-	
+
 		// try the local path in this direction
 		AI2gLocalPath.nodes_crossed = 0;
 		cur_path_ok = AI2rDoLocalMovement(&cur_weight, &cur_escape_path, &cur_stop_point);
@@ -228,7 +228,7 @@ UUtError AI2rFindNearbyPoint(ONtCharacter *ioCharacter, PHtPathMode inPathMode, 
 			*outSuccess = UUcTrue;
 			return UUcError_None;
 		}
-		
+
 		cur_distsq = MUmVector_GetDistanceSquared(cur_stop_point, AI2gLocalPath.start_point);
 		if (!found || (cur_distsq > found_distsq)) {
 			// this path is longer than our current best one. store its values.
@@ -347,7 +347,7 @@ UUtError AI2rFindLocalPath(ONtCharacter *ioCharacter, PHtPathMode inPathMode, M3
 		MUmVector_Set(AI2gLocalPath.end_point, MUrSin(current_direction), 0, MUrCos(current_direction));
 		MUmVector_Scale(AI2gLocalPath.end_point, inDistance);
 		MUmVector_Add(AI2gLocalPath.end_point, AI2gLocalPath.end_point, AI2gLocalPath.start_point);
-	
+
 		// try the local path in this direction
 		AI2gLocalPath.nodes_crossed = 0;
 		path_ok = AI2rDoLocalMovement(&found_weight, &escape_path, &stop_point);

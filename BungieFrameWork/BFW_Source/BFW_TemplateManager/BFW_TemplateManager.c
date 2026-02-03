@@ -1,16 +1,16 @@
 /*
 	FILE:	BFW_TemplateManager.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 8, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 	WARNING: Leave this evil place! Go! Run! Do not look back!
-	
+
 	However, if you stay there is a moral to be learned. Never try to rewrite something really
 	complex in a day.
 */
@@ -60,7 +60,7 @@ UUtMemory_String*		gTemplateNameAlloced = NULL;
 
 /*
  * pre instance data memory map
- 
+
  -1: Place holder
  -2: Ptr to instance file
  -3: Ptr to dynamic data <- To go away
@@ -75,7 +75,7 @@ UUtMemory_String*		gTemplateNameAlloced = NULL;
  */
 	#define TMmInstanceData_GetInstanceFile(instanceDataPtr) \
 		(*((TMtInstanceFile**)instanceDataPtr - 2))
-	
+
 /*
  * Get the place holder of this instance
  */
@@ -98,21 +98,21 @@ UUtMemory_String*		gTemplateNameAlloced = NULL;
 
 	#define TMmInstanceDesc_Verify(instanceDesc) \
 		UUmAssert(instanceDesc->templatePtr->checksum == instanceDesc->checksum)
-	
+
 	#define TMmInstanceFile_Verify(instanceFile) \
 		UUmAssert(instanceFile->magicCookie == TMcMagicCookie)
-		
+
 	#define TMmTemplatePtr_Verify(templatePtr) \
 		UUmAssert(templatePtr->magicCookie == TMcMagicCookie)
-	
+
 	#define TMmInstanceData_Verify(dataPtr) \
 		UUmAssert(NULL != ((void *) dataPtr));			\
 		UUmAssertAlignedPtr(dataPtr);	\
 		UUmAssert(TMmInstanceData_GetTemplateDefinition(dataPtr)->magicCookie == TMcMagicCookie);	\
 		UUmAssert(TMmInstanceData_GetMagicCookie(dataPtr) == TMcMagicCookie)
-	
+
 	#define TMmInstanceFile_VerifyAllTouched(instanceFile) TMiInstanceFile_VerifyAllTouched(instanceFile)
-	
+
 #else
 
 	#define TMmInstanceDesc_Verify(instanceDataPtr)
@@ -126,10 +126,10 @@ UUtMemory_String*		gTemplateNameAlloced = NULL;
 #if defined(DEBUGGING) && DEBUGGING && !(defined(TMmBrentSucks) && TMmBrentSucks)
 
 	#define TMmInstanceFile_MajorCheck(instanceFile, absolutePlaceHolder) TMiInstanceFile_MajorCheck(instanceFile, absolutePlaceHolder)
-	
+
 #else
 
-	#define TMmInstanceFile_MajorCheck(instanceFile, absolutePlaceHolder) 
+	#define TMmInstanceFile_MajorCheck(instanceFile, absolutePlaceHolder)
 
 #endif
 
@@ -143,14 +143,14 @@ UUtMemory_String*		gTemplateNameAlloced = NULL;
 		TMcDescriptorFlags_PlaceHolder		= (1 << 1),
 		TMcDescriptorFlags_Duplicate		= (1 << 2),			// This instance does not point to its own data - it points to its duplicates
 		TMcDescriptorFlags_DuplicatedSrc	= (1 << 3),			// This instance is being used by duplicate instances as a source
-		
+
 		/* These are not saved */
 		TMcDescriptorFlags_Touched			= (1 << 20),
 		TMcDescriptorFlags_InBatchFile		= (1 << 21),
 		TMcDescriptorFlags_DeleteMe			= (1 << 22)
-		
+
 	} TMtDescriptorFlags;
-	
+
 	#define TMcFlags_PersistentMask	(0xFFFF)
 
 /*
@@ -161,13 +161,13 @@ typedef struct TMtTemplate_ConstructionData
 {
 	UUtUns32	numInstancesUsed;
 	UUtUns32	totalSizeOfAllInstances;
-	
+
 	UUtUns32	nextInstanceIndex;
 	UUtUns32	instanceIndexList[TMcMaxInstancesPerTemplate];
-	
+
 	UUtUns32	numInstancesRemoved;
 	UUtUns32	removedSize;
-	
+
 } TMtTemplate_ConstructionData;
 
 
@@ -179,7 +179,7 @@ typedef struct TMtTemplate_ConstructionData
 		UUtUns64		checksum;		// The checksum at the time instance file was created
 		TMtTemplateTag	tag;			// The tag of the template
 		UUtUns32		numUsed;		// The number of instances that use this template
-		
+
 	} TMtTemplateDescriptor;
 
 /*
@@ -194,53 +194,53 @@ typedef struct TMtTemplate_ConstructionData
 		UUtUns32				size;			// This is the total size including entire var array that is written to disk
 		TMtDescriptorFlags		flags;
 		UUtUns32				creationDate;	// in seconds since 1900
-		
+
 	} TMtInstanceDescriptor;
-	
+
 	typedef struct TMtNameDescriptor
 	{
 		UUtUns32	instanceDescIndex;
 		char*		namePtr;
-		
+
 		char		pad[24];
 
 	} TMtNameDescriptor;
-	
+
 /*
  * This is the instance file
  */
 	typedef struct TMtInstanceFile
 	{
 		char					fileName[BFcMaxFileNameLength];
-		
+
 		BFtFileRef*				instanceFileRef;
-		
+
 		UUtUns32				numInstanceDescriptors;
 		TMtInstanceDescriptor*	instanceDescriptors;
-		
+
 		UUtUns32				numNameDescriptors;
 		TMtNameDescriptor*		nameDescriptors;		// Used for binary search
-		
+
 		UUtUns32				numTemplateDescriptors;
 		TMtTemplateDescriptor*	templateDescriptors;
-		
+
 		void*					allocBlock;				// The pointer which is used to alloc entire disk data
 		BFtFileMapping*			mapping;				// if file mapping is used
-		
+
 		UUtUns32				dataBlockLength;
 		void*					dataBlock;
 
 		UUtUns32				nameBlockLength;
 		char*					nameBlock;
-		
+
 		void*					dynamicMemory;
-		
+
 		UUtBool					final;
-		
+
 		#if defined(DEBUGGING) && DEBUGGING
-			
+
 			UUtUns32			magicCookie;
-			
+
 		#endif
 
 	} TMtInstanceFile;
@@ -261,12 +261,12 @@ typedef struct TMtInstanceFile_Header
 
 	UUtUns32		dataBlockOffset;
 	UUtUns32		dataBlockLength;
-	
+
 	UUtUns32		nameBlockOffset;
 	UUtUns32		nameBlockLength;
-	
+
 	UUtUns32		pad2[5];
-	
+
 } TMtInstanceFile_Header;
 
 /*
@@ -277,38 +277,38 @@ typedef struct TMtInstanceFile_Header
 		void*		instance;
 		UUtUns32	cachedSize;
 		UUtUns32	offset;
-		
+
 	} TMtCache_Entry;
-	
+
 	struct TMtCache
 	{
 		TMtTemplateDefinition*		templatePtr;
-		
+
 		UUtUns32					maxNumEntries;
 		UUtUns32					memoryPoolSize;
-		
+
 		TMtCacheProc_Load			loadProc;
 		TMtCacheProc_Unload			unloadProc;
 		TMtCacheProc_ComputeSize	computeSizeProc;
-		
+
 		void**						entryList;
 		UUtMemory_Pool*				memoryPool;
-		
+
 	};
-	
+
 	struct TMtPrivateData
 	{
 		UUtUns32			dataSize;
 		UUtMemory_Pool*		memoryPool;
 	};
-	
+
 /*
  * TMgTemplateData points to the template definition data loaded from template.dat
  * TMgTemplateNameData points to the template name data loaded from template.nam
  */
 	UUtUns8*				TMgTemplateData = NULL;
 	char*					TMgTemplateNameData = NULL;
-	
+
 	UUtBool					gInGame;
 
 /*
@@ -340,23 +340,23 @@ typedef struct TMtInstanceFile_Header
  */
 	UUtUns16				TMgNumCurLevelFiles = 0;
 	TMtInstanceFile*		TMgCurLevelFiles[TMcMaxLevelDatFiles];
-	
+
 	UUtUns16				TMgLevelLoadStack = 0;
-	
+
 /*
  * Memory for dynamic instances
  */
 	UUtMemory_Pool*			TMgPermPool = NULL;
 	UUtMemory_Pool*			TMgTempPool = NULL;
-	
+
 	TMtInstanceFile			TMgPermInstanceFile;
 	TMtInstanceFile			TMgTempInstanceFile;
 	UUtMemory_Array*		TMgPermDescriptorArray = NULL;
 	UUtMemory_Array*		TMgTempDescriptorArray = NULL;
-	
+
 	#define TMcPermPoolChunkSize	(10 * 1024 * 1024)
 	#define TMcTempPoolChunkSize	(15 * 1024 * 1024)
-	
+
 	#define TMcConstructionPoolChunkSize	(10 * 1024 * 1024)
 
 extern UUtUns64	gTemplateChecksum;
@@ -382,19 +382,19 @@ static void
 TMiSkipVarArray(
 	UUtUns8*		*ioSwapCode)
 {
-	
+
 	UUtBool		stop;
 	UUtUns8*	curSwapCode;
 	char		swapCode;
-	
+
 	curSwapCode = *ioSwapCode;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
@@ -402,49 +402,49 @@ TMiSkipVarArray(
 
 			case TMcSwapCode_4Byte:
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				curSwapCode++;
-				
+
 				TMiSkipVarArray(&curSwapCode);
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				curSwapCode++;
 
 				TMiSkipVarArray(
 					&curSwapCode);
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 				curSwapCode += 4;
 				break;
-			
+
 			case TMcSwapCode_TemplateReference:
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 }
-	
+
 #if defined(DEBUGGING) && DEBUGGING
 
 static UUtUns32
@@ -452,18 +452,18 @@ TMrPlaceHolder_GetIndex(
 	TMtPlaceHolder	inPlaceHolder)
 {
 	UUtUns32	result;
-	
+
 	if(gInGame == UUcFalse)
 	{
 		UUmAssert(gConstructionFile != NULL);
-		
+
 		UUmAssert(!TMmPlaceHolder_IsPtr(inPlaceHolder));
 	}
-	
+
 	result = (UUtUns32)(inPlaceHolder >> 8);
-	
+
 	//UUmAssert(result < gConstructionFile->numInstanceDescriptors);
-	
+
 	return result;
 }
 
@@ -476,7 +476,7 @@ TMrPlaceHolder_MakeFromIndex(
 		UUmAssert(gConstructionFile != NULL);
 		UUmAssert(inIndex < gConstructionFile->numInstanceDescriptors);
 	}
-		
+
 	return (inIndex << 8) | (0x0001);
 }
 
@@ -486,19 +486,19 @@ static TMtInstanceDescriptor*
 TMrPlaceHolder_GetInstanceDesc(
 	TMtInstanceFile*	inInstanceFile,
 	TMtPlaceHolder		inPlaceHolder)
-{	
+{
 	TMtInstanceDescriptor*	instanceDesc;
 	TMtPlaceHolder			placeHolder;
 	UUtUns32				index;
 
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	if(TMmPlaceHolder_IsPtr(inPlaceHolder))
 	{
 		TMmInstanceData_Verify(inPlaceHolder);
-		
+
 		placeHolder = TMmInstanceData_GetPlaceHolder(inPlaceHolder);
-		
+
 		UUmAssert(!TMmPlaceHolder_IsPtr(placeHolder));
 
 		index = TMmPlaceHolder_GetIndex(placeHolder);
@@ -515,9 +515,9 @@ TMrPlaceHolder_GetInstanceDesc(
 
 		instanceDesc = inInstanceFile->instanceDescriptors + index;
 	}
-	
+
 	TMmInstanceDesc_Verify(instanceDesc);
-	
+
 	return instanceDesc;
 }
 
@@ -525,9 +525,9 @@ static void
 TMrPlaceHolder_EnsureIndex(
 	TMtPlaceHolder	*ioPlaceHolder)
 {
-	
+
 	if(*ioPlaceHolder == 0) return;
-	
+
 	if(TMmPlaceHolder_IsPtr(*ioPlaceHolder))
 	{
 		*ioPlaceHolder = TMmInstanceData_GetPlaceHolder(*ioPlaceHolder);
@@ -554,18 +554,18 @@ TMiInstance_MajorCheck_Recursive(
 	UUtUns32	count;
 	UUtUns8		*origSwapCode;
 	char		msg[2048];
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
@@ -575,27 +575,27 @@ TMiInstance_MajorCheck_Recursive(
 			case TMcSwapCode_4Byte:
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
-					
+
 				count = *curSwapCode++;
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				UUmAssert(count < 10000);	// Arbitrary number
-				
+
 				for(i = 0; i < count; i++)
 				{
 					curSwapCode = origSwapCode;
-					
+
 					TMiInstance_MajorCheck_Recursive(
 						&curSwapCode,
 						&curDataPtr,
@@ -604,14 +604,14 @@ TMiInstance_MajorCheck_Recursive(
 						inMsg,
 						inBaseDataPtr,
 						inAbsolutePlaceHolder);
-					
+
 				}
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				switch(*curSwapCode++)
 				{
@@ -624,16 +624,16 @@ TMiInstance_MajorCheck_Recursive(
 						count = *(UUtUns32 *)curDataPtr;
 						curDataPtr += 4;
 						break;
-						
+
 					case TMcSwapCode_2Byte:
 						count = *(UUtUns16 *)curDataPtr;
 						curDataPtr += 2;
 						break;
-						
+
 					default:
 						UUmDebugStr("swap codes are messed up.");
 				}
-				
+
 				if(count == 0)
 				{
 					TMiSkipVarArray(&curSwapCode);
@@ -641,11 +641,11 @@ TMiInstance_MajorCheck_Recursive(
 				else
 				{
 					origSwapCode = curSwapCode;
-					
+
 					for(i = 0; i < count; i++)
 					{
 						curSwapCode = origSwapCode;
-						
+
 						TMiInstance_MajorCheck_Recursive(
 							&curSwapCode,
 							&curDataPtr,
@@ -657,52 +657,52 @@ TMiInstance_MajorCheck_Recursive(
 					}
 				}
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 			case TMcSwapCode_TemplateReference:
 				{
 					TMtInstanceDescriptor	*targetDesc;
 					void					*targetData;
-					
+
 					targetData = *(void **)curDataPtr;
-					
+
 					if(targetData != NULL)
 					{
 						targetDesc = TMrPlaceHolder_GetInstanceDesc(inInstanceFile, (TMtPlaceHolder)targetData);
 						UUmAssert(targetDesc != NULL);
 						TMmInstanceDesc_Verify(targetDesc);
-						
+
 						if(inAbsolutePlaceHolder == UUcTrue)
 						{
 							UUmAssert(!TMmPlaceHolder_IsPtr(targetData));
 						}
-						
+
 						if(targetDesc->flags & TMcDescriptorFlags_DeleteMe)
 						{
 							UUmAssert(targetDesc->dataPtr == NULL);
 						}
-						
+
 						if(targetDesc->dataPtr != NULL && TMmPlaceHolder_IsPtr(targetData))
 						{
 							UUmAssert(!(targetDesc->flags & TMcDescriptorFlags_DeleteMe));
 							UUmAssert(targetDesc->dataPtr == targetData);
 						}
-						
+
 						#if defined(DEBUGGING) && DEBUGGING
-							
-							if(swapCode == TMcSwapCode_TemplatePtr && 
+
+							if(swapCode == TMcSwapCode_TemplatePtr &&
 								*(TMtTemplateTag*)curSwapCode != targetDesc->templatePtr->tag)
 							{
 								char	expectedTag[5];
 								char	actualTag[5];
-								
+
 								UUrString_Copy(expectedTag, UUrTag2Str(*(long*)curSwapCode), 5);
 								UUrString_Copy(actualTag, UUrTag2Str(targetDesc->templatePtr->tag), 5);
-								
+
 								sprintf(
 									msg,
 									"%s: Expecting template tag %s at offset %d, instead got tag %s, name %s",
@@ -713,26 +713,26 @@ TMiInstance_MajorCheck_Recursive(
 									targetDesc->namePtr ? targetDesc->namePtr + 4 : "no name");
 								UUrError_Report(UUcError_Generic, msg);
 							}
-							
+
 						#endif
-						
+
 						sprintf(msg, "%s -> Template: %s, name: %s",
 							inMsg,
 							UUrTag2Str(targetDesc->templatePtr->tag),
 							targetDesc->namePtr ? targetDesc->namePtr + 4 : "no name");
-			
+
 						if(!(targetDesc->flags & (TMcDescriptorFlags_PlaceHolder | TMcDescriptorFlags_DeleteMe)))
 						{
 							UUtUns8*	swapCode;
 							UUtUns8*	dataPtr;
-							
+
 							UUmAssertAlignedPtr(targetDesc->dataPtr);
 
 							swapCode = targetDesc->templatePtr->swapCodes;
 							dataPtr = targetDesc->dataPtr;
-							
+
 							TMmInstanceData_Verify(targetDesc->dataPtr);
-							
+
 							TMiInstance_MajorCheck_Recursive(
 								&swapCode,
 								&dataPtr,
@@ -754,15 +754,15 @@ TMiInstance_MajorCheck_Recursive(
 					}
 				}
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
-	
+
 }
 
 static void
@@ -771,18 +771,18 @@ TMiInstanceFile_MajorCheck(
 	UUtBool				inAbsolutePlaceHolder)
 {
 	UUtUns32				curDescIndex;
-	
+
 	TMtInstanceDescriptor*	curInstDesc;
 	TMtNameDescriptor*		curNameDesc;
-	
+
 	TMtPlaceHolder			curPlaceHolder;
 	UUtUns32				curIndex;
 
 	UUtUns8*				swapCodes;
 	UUtUns8*				dataPtr;
-	
+
 	char					msg[2048];
-	
+
 	for(
 		curDescIndex = 0, curInstDesc = inInstanceFile->instanceDescriptors;
 		curDescIndex < inInstanceFile->numInstanceDescriptors;
@@ -792,35 +792,35 @@ TMiInstanceFile_MajorCheck(
 		{
 			UUmAssert(curInstDesc->flags & TMcDescriptorFlags_Unique);
 		}
-		
+
 		if(curInstDesc->flags & TMcDescriptorFlags_Unique)
 		{
 			UUmAssert(curInstDesc->namePtr == NULL);
 		}
-		
+
 		if(curInstDesc->flags & TMcDescriptorFlags_PlaceHolder)
 		{
 			UUmAssert(curInstDesc->dataPtr == NULL);
 		}
-		
+
 		if(curInstDesc->dataPtr == NULL)
 		{
 			UUmAssert(curInstDesc->flags & (TMcDescriptorFlags_PlaceHolder | TMcDescriptorFlags_DeleteMe));
 			continue;
 		}
-		
+
 		//UUmAssert(!((curInstDesc->flags & TMcDescriptorFlags_Touched) && (curInstDesc->flags & TMcDescriptorFlags_DeleteMe)));
 
 		TMmInstanceData_Verify(curInstDesc->dataPtr);
-		
+
 		curPlaceHolder = TMmInstanceData_GetPlaceHolder(curInstDesc->dataPtr);
 		UUmAssert(!TMmPlaceHolder_IsPtr(curPlaceHolder));
-		
+
 		curIndex = curPlaceHolder >> 16;
-		
+
 		UUmAssert(curIndex == curDescIndex);
 	}
-	
+
 	for(
 		curDescIndex = 0, curNameDesc = inInstanceFile->nameDescriptors;
 		curDescIndex < inInstanceFile->numNameDescriptors;
@@ -830,7 +830,7 @@ TMiInstanceFile_MajorCheck(
 		UUmAssert((inInstanceFile->instanceDescriptors + curNameDesc->instanceDescIndex)->namePtr != NULL);
 		UUmAssert(strcmp(curNameDesc->namePtr, (inInstanceFile->instanceDescriptors + curNameDesc->instanceDescIndex)->namePtr) == 0);
 	}
-	
+
 	for(
 		curDescIndex = 0, curInstDesc = inInstanceFile->instanceDescriptors;
 		curDescIndex < inInstanceFile->numInstanceDescriptors;
@@ -838,15 +838,15 @@ TMiInstanceFile_MajorCheck(
 	{
 		swapCodes = curInstDesc->templatePtr->swapCodes;
 		dataPtr = curInstDesc->dataPtr;
-		
+
 		if(dataPtr == NULL) continue;
-		
+
 		if(curInstDesc->flags & TMcDescriptorFlags_DeleteMe) continue;
-		
+
 		sprintf(msg, "Template: %s, name: %s",
 			UUrTag2Str(curInstDesc->templatePtr->tag),
 			curInstDesc->namePtr ? curInstDesc->namePtr + 4 : "no name");
-			
+
 		TMiInstance_MajorCheck_Recursive(
 			&swapCodes,
 			&dataPtr,
@@ -866,26 +866,26 @@ TMiTemplate_FindDefinition(
 {
 	TMtTemplateDefinition*	curTemplate = TMgTemplateDefinitionArray;
 	UUtInt32				i;
-	
+
 	for(i = TMgNumTemplateDefinitions; i-- > 0;)
 	{
 		if(curTemplate->tag == inTemplateTag)
 		{
 			TMmTemplatePtr_Verify(curTemplate);
-			
+
 			return curTemplate;
 		}
-		
+
 		curTemplate++;
 	}
-	
+
 	UUrDebuggerMessage(
 		"Could not find template %c%c%c%c",
 		(inTemplateTag >> 24) & 0xFF,
 		(inTemplateTag >> 16) & 0xFF,
 		(inTemplateTag >> 8) & 0xFF,
 		(inTemplateTag >> 0) & 0xFF);
-	
+
 	return NULL;
 }
 
@@ -898,13 +898,13 @@ TMiTemplate_InitializePostProcess(
 	UUtBool		inNeedsSwapping)
 {
 	UUtError	error;
-	
+
 	UUtUns8		*curSwapCode;
 	UUtBool		stop;
 	UUtUns8		count;
-	
+
 	stop = UUcFalse;
-	
+
 	curSwapCode = *ioSwapCode;
 
 	while(!stop)
@@ -916,24 +916,24 @@ TMiTemplate_InitializePostProcess(
 			case TMcSwapCode_2Byte:
 			case TMcSwapCode_1Byte:
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				count = *curSwapCode++;
-				
+
 				error =
 					TMiTemplate_InitializePostProcess(
 						&curSwapCode,
 						inNeedsSwapping);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				{
-					
+
 					switch(*curSwapCode++)
 					{
 						case TMcSwapCode_8Byte:
@@ -941,28 +941,28 @@ TMiTemplate_InitializePostProcess(
 
 						case TMcSwapCode_4Byte:
 							break;
-							
+
 						case TMcSwapCode_2Byte:
 							break;
-							
+
 						default:
 							UUrError_Report(UUcError_Generic, "illegal swap code");
 							return UUcError_Generic;
 					}
-					
+
 					error =
 						TMiTemplate_InitializePostProcess(
 							&curSwapCode,
 							inNeedsSwapping);
 					UUmError_ReturnOnError(error);
-					
+
 				}
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 				if(inNeedsSwapping)
 				{
@@ -970,18 +970,18 @@ TMiTemplate_InitializePostProcess(
 				}
 				curSwapCode += 4;
 				break;
-			
+
 			case TMcSwapCode_TemplateReference:
 				break;
-			
+
 			default:
 				UUrError_Report(UUcError_Generic, "illegal swap code");
 				return UUcError_Generic;
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
-	
+
 	return UUcError_None;
 }
 
@@ -995,34 +995,34 @@ TMiInstance_PrepareForDisk(
 	TMtInstanceFile*	inInstanceFile,
 	UUtBool				inRemap)
 {
-	
+
 	UUtBool					stop;
 	UUtUns8*				curSwapCode;
 	UUtUns8*				curDataPtr;
 	char					swapCode;
-	
+
 	UUtUns32				index;
-	
+
 	TMtInstanceDescriptor*	targetDesc;
 	TMtPlaceHolder			targetPlaceHolder;
-	
+
 	UUtUns8*				origSwapCode;
 	UUtUns32				count;
 	UUtUns32				i;
-	
+
 	//UUmAssert(gInGame == UUcFalse);
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
@@ -1032,24 +1032,24 @@ TMiInstance_PrepareForDisk(
 			case TMcSwapCode_4Byte:
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				count = *curSwapCode++;
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				for(i = 0; i < count; i++)
 				{
 					curSwapCode = origSwapCode;
-					
+
 					TMiInstance_PrepareForDisk(
 						&curSwapCode,
 						&curDataPtr,
@@ -1057,11 +1057,11 @@ TMiInstance_PrepareForDisk(
 						inRemap);
 				}
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				switch(*curSwapCode++)
 				{
@@ -1074,18 +1074,18 @@ TMiInstance_PrepareForDisk(
 						count = (*(UUtUns32 *)curDataPtr);
 						curDataPtr += 4;
 						break;
-						
+
 					case TMcSwapCode_2Byte:
 						count = (*(UUtUns16 *)curDataPtr);
 						curDataPtr += 2;
 						break;
-						
+
 					default:
 						UUmDebugStr("swap codes are messed up.");
 				}
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				if(count == 0)
 				{
 					TMiSkipVarArray(
@@ -1094,11 +1094,11 @@ TMiInstance_PrepareForDisk(
 				else
 				{
 					//UUmAssert(count < 160000);	//artifically random number to check against large numbers
-					
+
 					for(i = 0; i < count; i++)
 					{
 						curSwapCode = origSwapCode;
-						
+
 						TMiInstance_PrepareForDisk(
 							&curSwapCode,
 							&curDataPtr,
@@ -1107,22 +1107,22 @@ TMiInstance_PrepareForDisk(
 					}
 				}
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplateReference:
 			case TMcSwapCode_TemplatePtr:
-			
+
 				targetPlaceHolder = *(TMtPlaceHolder*)curDataPtr;
-				
+
 				if(targetPlaceHolder != 0)
 				{
 					if(TMmPlaceHolder_IsPtr(targetPlaceHolder))
 					{
 						TMmInstanceData_Verify((void*)targetPlaceHolder);
-						
+
 						*(TMtPlaceHolder*)curDataPtr = TMmInstanceData_GetPlaceHolder(targetPlaceHolder);
 						TMrPlaceHolder_EnsureIndex((TMtPlaceHolder*)curDataPtr);
 					}
@@ -1132,7 +1132,7 @@ TMiInstance_PrepareForDisk(
 						UUmAssert(index < inInstanceFile->numInstanceDescriptors);
 					}
 				}
-				
+
 				if(targetPlaceHolder != 0)
 				{
 					targetPlaceHolder = *(TMtPlaceHolder*)curDataPtr;
@@ -1140,19 +1140,19 @@ TMiInstance_PrepareForDisk(
 				}
 
 				#if defined(DEBUGGING) && DEBUGGING
-				
+
 					if(targetPlaceHolder != 0)
 					{
 						UUmAssert(!(targetDesc->flags & TMcDescriptorFlags_DeleteMe));
-				
+
 						if(swapCode == TMcSwapCode_TemplatePtr)
 						{
 							UUmAssert(targetDesc->templatePtr->tag == *(TMtTemplateTag*)curSwapCode);
 						}
 					}
-				
+
 				#endif
-						
+
 				if(swapCode == TMcSwapCode_TemplatePtr)
 				{
 					curSwapCode += 4;
@@ -1176,7 +1176,7 @@ TMiInstance_PrepareForDisk(
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
 }
@@ -1188,32 +1188,32 @@ TMiInstance_Remap_Recursive(
 	UUtUns32*			inRemapArray,
 	TMtInstanceFile*	inInstanceFile)
 {
-	
+
 	UUtBool					stop;
 	UUtUns8*				curSwapCode;
 	UUtUns8*				curDataPtr;
 	char					swapCode;
-	
+
 	TMtPlaceHolder			targetPlaceHolder;
 	TMtInstanceDescriptor*	targetInstanceDesc;
-	
+
 	UUtUns8*				origSwapCode;
 	UUtUns32				count;
 	UUtUns32				i;
-	
+
 	//UUmAssert(gInGame == UUcFalse);
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
@@ -1223,24 +1223,24 @@ TMiInstance_Remap_Recursive(
 			case TMcSwapCode_4Byte:
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				count = *curSwapCode++;
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				for(i = 0; i < count; i++)
 				{
 					curSwapCode = origSwapCode;
-					
+
 					TMiInstance_Remap_Recursive(
 						&curSwapCode,
 						&curDataPtr,
@@ -1248,11 +1248,11 @@ TMiInstance_Remap_Recursive(
 						inInstanceFile);
 				}
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				switch(*curSwapCode++)
 				{
@@ -1265,18 +1265,18 @@ TMiInstance_Remap_Recursive(
 						count = (*(UUtUns32 *)curDataPtr);
 						curDataPtr += 4;
 						break;
-						
+
 					case TMcSwapCode_2Byte:
 						count = (*(UUtUns16 *)curDataPtr);
 						curDataPtr += 2;
 						break;
-						
+
 					default:
 						UUmDebugStr("swap codes are messed up.");
 				}
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				if(count == 0)
 				{
 					TMiSkipVarArray(
@@ -1287,7 +1287,7 @@ TMiInstance_Remap_Recursive(
 					for(i = 0; i < count; i++)
 					{
 						curSwapCode = origSwapCode;
-						
+
 						TMiInstance_Remap_Recursive(
 							&curSwapCode,
 							&curDataPtr,
@@ -1296,24 +1296,24 @@ TMiInstance_Remap_Recursive(
 					}
 				}
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplateReference:
 			case TMcSwapCode_TemplatePtr:
-				
+
 				targetInstanceDesc = NULL;
 				targetPlaceHolder = *(TMtPlaceHolder*)curDataPtr;
-				
+
 				if(targetPlaceHolder != 0)
 				{
 					if(TMmPlaceHolder_IsPtr(targetPlaceHolder))
 					{
 						TMrPlaceHolder_EnsureIndex((TMtPlaceHolder*)curDataPtr);	// This maps it to the correct index
 						targetPlaceHolder = *(TMtPlaceHolder*)curDataPtr;
-						
+
 						targetInstanceDesc = inInstanceFile->instanceDescriptors + TMmPlaceHolder_GetIndex(targetPlaceHolder);
 					}
 					else
@@ -1321,18 +1321,18 @@ TMiInstance_Remap_Recursive(
 						//targetPlaceHolder is an index and needs to be remapped
 						UUtUns32	originalIndex = TMmPlaceHolder_GetIndex(targetPlaceHolder);
 						UUtUns32	remappedIndex = inRemapArray[originalIndex];
-					
+
 						if(remappedIndex != UUcMaxUns32)
 						{
 							UUmAssert(remappedIndex < inInstanceFile->numInstanceDescriptors);
-							
+
 							*(TMtPlaceHolder*)curDataPtr = TMmPlaceHolder_MakeFromIndex(remappedIndex);
 						}
 						else
 						{
 							UUmAssert(0);
 						}
-						
+
 						targetInstanceDesc = inInstanceFile->instanceDescriptors + remappedIndex;
 					}
 				}
@@ -1342,7 +1342,7 @@ TMiInstance_Remap_Recursive(
 					{
 						UUmAssert(*(TMtTemplateTag*)curSwapCode == targetInstanceDesc->templatePtr->tag);
 					}
-					
+
 					curSwapCode += 4;
 					curDataPtr += 4;
 				}
@@ -1351,12 +1351,12 @@ TMiInstance_Remap_Recursive(
 					curDataPtr += 8;
 				}
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
 }
@@ -1368,31 +1368,31 @@ TMiInstance_Compare_Recursive(
 	UUtUns8*			*ioDataPtrB,
 	TMtInstanceFile*	inInstanceFile)
 {
-	
+
 	UUtBool					stop;
 	UUtUns8*				curSwapCode;
 	UUtUns8*				curDataPtrA;
 	UUtUns8*				curDataPtrB;
 	char					swapCode;
-	
+
 	UUtInt8					result;
-		
+
 	UUtUns8*				origSwapCode;
 	UUtUns32				count;
 	UUtUns32				i;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
 
 	curSwapCode = *ioSwapCode;
 	curDataPtrA = *ioDataPtrA;
 	curDataPtrB = *ioDataPtrB;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
@@ -1408,30 +1408,30 @@ TMiInstance_Compare_Recursive(
 				curDataPtrA += 4;
 				curDataPtrB += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				if(*(UUtUns16*)curDataPtrA > *(UUtUns16*)curDataPtrB) return -1;
 				if(*(UUtUns16*)curDataPtrA < *(UUtUns16*)curDataPtrB) return 1;
 				curDataPtrA += 2;
 				curDataPtrB += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				if(*(UUtUns8*)curDataPtrA > *(UUtUns8*)curDataPtrB) return -1;
 				if(*(UUtUns8*)curDataPtrA < *(UUtUns8*)curDataPtrB) return 1;
 				curDataPtrA += 1;
 				curDataPtrB += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				count = *curSwapCode++;
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				for(i = 0; i < count; i++)
 				{
 					curSwapCode = origSwapCode;
-					
+
 					result = TMiInstance_Compare_Recursive(
 								&curSwapCode,
 								&curDataPtrA,
@@ -1440,11 +1440,11 @@ TMiInstance_Compare_Recursive(
 					if(result != 0) return result;
 				}
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				switch(*curSwapCode++)
 				{
@@ -1463,7 +1463,7 @@ TMiInstance_Compare_Recursive(
 						curDataPtrA += 4;
 						curDataPtrB += 4;
 						break;
-						
+
 					case TMcSwapCode_2Byte:
 						if(*(UUtUns16*)curDataPtrA > *(UUtUns16*)curDataPtrB) return -1;
 						if(*(UUtUns16*)curDataPtrA < *(UUtUns16*)curDataPtrB) return 1;
@@ -1471,13 +1471,13 @@ TMiInstance_Compare_Recursive(
 						curDataPtrA += 2;
 						curDataPtrB += 2;
 						break;
-						
+
 					default:
 						UUmDebugStr("swap codes are messed up.");
 				}
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				if(count == 0)
 				{
 					TMiSkipVarArray(
@@ -1488,7 +1488,7 @@ TMiInstance_Compare_Recursive(
 					for(i = 0; i < count; i++)
 					{
 						curSwapCode = origSwapCode;
-						
+
 						result = TMiInstance_Compare_Recursive(
 									&curSwapCode,
 									&curDataPtrA,
@@ -1498,11 +1498,11 @@ TMiInstance_Compare_Recursive(
 					}
 				}
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplateReference:
 			case TMcSwapCode_TemplatePtr:
 			{
@@ -1510,37 +1510,37 @@ TMiInstance_Compare_Recursive(
 				TMtPlaceHolder			targetPlaceHolderB;
 				TMtInstanceDescriptor*	targetDescA;
 				TMtInstanceDescriptor*	targetDescB;
-				
+
 				targetPlaceHolderA = *(TMtPlaceHolder*)curDataPtrA;
 				targetPlaceHolderB = *(TMtPlaceHolder*)curDataPtrB;
-		
+
 				if(targetPlaceHolderA == 0) return 1;
 				if(targetPlaceHolderB == 0) return -1;
-				
+
 				targetDescA = TMrPlaceHolder_GetInstanceDesc(inInstanceFile, targetPlaceHolderA);
 				targetDescB = TMrPlaceHolder_GetInstanceDesc(inInstanceFile, targetPlaceHolderB);
-				
+
 				if(targetDescA->dataPtr == NULL) return 1;
 				if(targetDescB->dataPtr == NULL) return -1;
-				
+
 				if(targetDescA != targetDescB)
 				{
 					if(targetDescA->size > targetDescB->size) return -1;
 					if(targetDescA->size < targetDescB->size) return 1;
-					
+
 					if(targetDescA->templatePtr < targetDescB->templatePtr) return -1;
 					if(targetDescA->templatePtr > targetDescB->templatePtr) return 1;
-					
+
 					{
 						UUtUns8*	swapCode;
 						UUtUns8*	dataPtrA;
 						UUtUns8*	dataPtrB;
-						
+
 						swapCode = targetDescA->templatePtr->swapCodes;
-						
+
 						dataPtrA = targetDescA->dataPtr;
 						dataPtrB = targetDescB->dataPtr;
-						
+
 						result = TMiInstance_Compare_Recursive(
 									&swapCode,
 									&dataPtrA,
@@ -1549,7 +1549,7 @@ TMiInstance_Compare_Recursive(
 						if(result != 0) return result;
 					}
 				}
-				
+
 				if(swapCode == TMcSwapCode_TemplatePtr)
 				{
 					curSwapCode += 4;
@@ -1563,16 +1563,16 @@ TMiInstance_Compare_Recursive(
 				}
 				break;
 			}
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtrA = curDataPtrA;
 	*ioDataPtrB = curDataPtrB;
-	
+
 	return 0;
 }
 
@@ -1585,32 +1585,32 @@ TMiInstance_NullOutDeletedRefs(
 	UUtUns8*			*ioDataPtr,
 	TMtInstanceFile*	inInstanceFile)
 {
-	
+
 	UUtBool					stop;
 	UUtUns8*				curSwapCode;
 	UUtUns8*				curDataPtr;
 	char					swapCode;
-	
+
 	TMtInstanceDescriptor*	targetDesc;
 	TMtPlaceHolder			targetPlaceHolder;
-	
+
 	UUtUns8*				origSwapCode;
 	UUtUns32				count;
 	UUtUns32				i;
-	
+
 	UUmAssert(gInGame == UUcFalse);
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
@@ -1620,35 +1620,35 @@ TMiInstance_NullOutDeletedRefs(
 			case TMcSwapCode_4Byte:
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				count = *curSwapCode++;
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				for(i = 0; i < count; i++)
 				{
 					curSwapCode = origSwapCode;
-					
+
 					TMiInstance_NullOutDeletedRefs(
 						&curSwapCode,
 						&curDataPtr,
 						inInstanceFile);
 				}
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				switch(*curSwapCode++)
 				{
@@ -1661,18 +1661,18 @@ TMiInstance_NullOutDeletedRefs(
 						count = (*(UUtUns32 *)curDataPtr);
 						curDataPtr += 4;
 						break;
-						
+
 					case TMcSwapCode_2Byte:
 						count = (*(UUtUns16 *)curDataPtr);
 						curDataPtr += 2;
 						break;
-						
+
 					default:
 						UUmDebugStr("swap codes are messed up.");
 				}
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				if(count == 0)
 				{
 					TMiSkipVarArray(
@@ -1683,7 +1683,7 @@ TMiInstance_NullOutDeletedRefs(
 					for(i = 0; i < count; i++)
 					{
 						curSwapCode = origSwapCode;
-						
+
 						TMiInstance_NullOutDeletedRefs(
 							&curSwapCode,
 							&curDataPtr,
@@ -1691,26 +1691,26 @@ TMiInstance_NullOutDeletedRefs(
 					}
 				}
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplateReference:
 			case TMcSwapCode_TemplatePtr:
-			
+
 				targetPlaceHolder = *(TMtPlaceHolder*)curDataPtr;
-				
+
 				if(targetPlaceHolder != 0)
 				{
 					targetDesc = TMrPlaceHolder_GetInstanceDesc(inInstanceFile, targetPlaceHolder);
-					
+
 					if(targetDesc->flags & TMcDescriptorFlags_DeleteMe)
 					{
 						*(void**)curDataPtr = NULL;
 					}
 				}
-				
+
 				if(swapCode == TMcSwapCode_TemplatePtr)
 				{
 					curSwapCode += 4;
@@ -1721,12 +1721,12 @@ TMiInstance_NullOutDeletedRefs(
 					curDataPtr += 8;
 				}
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
 }
@@ -1752,7 +1752,7 @@ TMiInstance_PrepareForMemory_Array(
 	curSwapCode += 1;
 
 	oneTypeArray = (*(curSwapCode + 1) == TMcSwapCode_EndArray);
-	
+
 	if ((*curSwapCode == TMcSwapCode_8Byte) && oneTypeArray)
 	{
 		curDataPtr += 8 * count;
@@ -1773,15 +1773,15 @@ TMiInstance_PrepareForMemory_Array(
 		curDataPtr += 1 * count;
 		curSwapCode += 2;
 	}
-	else 
+	else
 	{
 		UUtUns8 *oldSwapCode = curSwapCode;
 
 		for(i = 0; i < count; i++)
 		{
 			curSwapCode = oldSwapCode;
-			
-			error = 
+
+			error =
 				TMiInstance_PrepareForMemory(
 					&curSwapCode,
 					&curDataPtr,
@@ -1791,7 +1791,7 @@ TMiInstance_PrepareForMemory_Array(
 			UUmError_ReturnOnError(error);
 		}
 	}
-		
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
 
@@ -1826,18 +1826,18 @@ TMiInstance_PrepareForMemory_VarArray(
 			count = (*(UUtUns32 *)curDataPtr);
 			curDataPtr += 4;
 			break;
-			
+
 		case TMcSwapCode_2Byte:
 			count = (*(UUtUns16 *)curDataPtr);
 			curDataPtr += 2;
 			break;
-			
+
 		default:
 			UUmDebugStr("swap codes are messed up.");
 	}
-	
+
 	origSwapCode = curSwapCode;
-	
+
 	if(count == 0)
 	{
 		TMiSkipVarArray(&curSwapCode);
@@ -1845,7 +1845,7 @@ TMiInstance_PrepareForMemory_VarArray(
 	else
 	{
 		UUtBool oneElementArray = (*(curSwapCode + 1) == TMcSwapCode_EndVarArray);
-		
+
 		if ((*curSwapCode == TMcSwapCode_8Byte) && oneElementArray)
 		{
 			curDataPtr += 8 * count;
@@ -1866,13 +1866,13 @@ TMiInstance_PrepareForMemory_VarArray(
 			curDataPtr += 1 * count;
 			curSwapCode += 2;
 		}
-		else 
+		else
 		{
 			for(i = 0; i < count; i++)
 			{
 				curSwapCode = origSwapCode;
-				
-				error = 
+
+				error =
 					TMiInstance_PrepareForMemory(
 						&curSwapCode,
 						&curDataPtr,
@@ -1880,7 +1880,7 @@ TMiInstance_PrepareForMemory_VarArray(
 						inMsg,
 						UUcFalse);
 				UUmError_ReturnOnError(error);
-				
+
 			}
 		}
 	}
@@ -1905,45 +1905,45 @@ TMiInstance_PrepareForMemory(
 	UUtUns8*				curSwapCode;
 	UUtUns8*				curDataPtr;
 	char					swapCode;
-	
+
 	TMtPlaceHolder			targetPlaceHolder;
-	
+
 	TMtInstanceDescriptor*	targetDesc;
 
 	static char				msg[2048];
-	
+
 	UUmAssert(NULL != ioSwapCode);
 	UUmAssert(NULL != ioDataPtr);
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
 				curDataPtr += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				error = TMiInstance_PrepareForMemory_Array(
 									&curSwapCode,
@@ -1952,11 +1952,11 @@ TMiInstance_PrepareForMemory(
 									inMsg);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				if(inIsVarArrayLeaf) return UUcError_None;
 				error = TMiInstance_PrepareForMemory_VarArray(
@@ -1966,18 +1966,18 @@ TMiInstance_PrepareForMemory(
 									inMsg);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 			case TMcSwapCode_TemplateReference:
 				// I think this crash means engine and data are out of sync - Michael
 				UUmAssertReadPtr(curDataPtr, sizeof(TMtPlaceHolder));
 
 				targetPlaceHolder = *(TMtPlaceHolder*)curDataPtr;
-				
+
 				if(targetPlaceHolder != 0)
 				{
 					if(!TMmPlaceHolder_IsPtr(targetPlaceHolder))
@@ -1985,7 +1985,7 @@ TMiInstance_PrepareForMemory(
 						targetDesc = TMrPlaceHolder_GetInstanceDesc(inInstanceFile, targetPlaceHolder);
 						UUmAssert(targetDesc != NULL);
 						TMmInstanceDesc_Verify(targetDesc);
-						
+
 						if(gInGame == UUcFalse)
 						{
 							if(!(targetDesc->flags & TMcDescriptorFlags_PlaceHolder))
@@ -2031,7 +2031,7 @@ TMiInstance_PrepareForMemory(
 						TMmInstanceData_Verify(targetPlaceHolder);
 					}
 				}
-				
+
 				if(swapCode == TMcSwapCode_TemplatePtr)
 				{
 					curSwapCode += 4;
@@ -2042,15 +2042,15 @@ TMiInstance_PrepareForMemory(
 					curDataPtr += 8;
 				}
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
-	
+
 	return UUcError_None;
 }
 
@@ -2073,7 +2073,7 @@ TMiInstance_ByteSwap_Array(
 	curSwapCode += 1;
 
 	oneElementArray = (*(curSwapCode + 1) == TMcSwapCode_EndArray);
-	
+
 	if ((*curSwapCode == TMcSwapCode_8Byte) && oneElementArray)
 	{
 		for(i = 0; i < count; i++)
@@ -2106,15 +2106,15 @@ TMiInstance_ByteSwap_Array(
 		curDataPtr += 1 * count;
 		curSwapCode += 2;
 	}
-	else 
+	else
 	{
 		UUtUns8 *oldSwapCode = curSwapCode;
 
 		for(i = 0; i < count; i++)
 		{
 			curSwapCode = oldSwapCode;
-			
-			error = 
+
+			error =
 				TMiInstance_ByteSwap(
 					&curSwapCode,
 					&curDataPtr,
@@ -2122,7 +2122,7 @@ TMiInstance_ByteSwap_Array(
 			UUmError_ReturnOnError(error);
 		}
 	}
-		
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
 
@@ -2159,17 +2159,17 @@ TMiInstance_ByteSwap_VarArray(
 			count = (*(UUtUns32 *)curDataPtr);
 			curDataPtr += 4;
 			break;
-			
+
 		case TMcSwapCode_2Byte:
 			UUrSwap_2Byte(curDataPtr);
 			count = (*(UUtUns16 *)curDataPtr);
 			curDataPtr += 2;
 			break;
-			
+
 		default:
 			UUmDebugStr("swap codes are messed up.");
 	}
-	
+
 	if(inByteSwapProc != NULL)
 	{
 		inByteSwapProc(inData);
@@ -2182,7 +2182,7 @@ TMiInstance_ByteSwap_VarArray(
 	else
 	{
 		UUtBool oneElementArray = (*(curSwapCode + 1) == TMcSwapCode_EndVarArray);
-		
+
 		if ((*curSwapCode == TMcSwapCode_8Byte) && oneElementArray)
 		{
 			for(i = 0; i < count; i++)
@@ -2226,15 +2226,15 @@ TMiInstance_ByteSwap_VarArray(
 			curDataPtr += 1 * count;
 			curSwapCode += 2;
 		}
-		else 
+		else
 		{
 			origSwapCode = curSwapCode;
 
 			for(i = 0; i < count; i++)
 			{
 				curSwapCode = origSwapCode;
-				
-				error = 
+
+				error =
 					TMiInstance_ByteSwap(
 						&curSwapCode,
 						&curDataPtr,
@@ -2261,40 +2261,40 @@ TMiInstance_ByteSwap(
 	UUtUns8*				curSwapCode;
 	UUtUns8*				curDataPtr;
 	char					swapCode;
-	
+
 	UUmAssert(NULL != ioSwapCode);
 	UUmAssert(NULL != ioDataPtr);
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
 				UUrSwap_8Byte(curDataPtr);
 				curDataPtr += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				UUrSwap_4Byte(curDataPtr);
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				UUrSwap_2Byte(curDataPtr);
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				error =
 					TMiInstance_ByteSwap_Array(
@@ -2302,11 +2302,11 @@ TMiInstance_ByteSwap(
 						&curDataPtr);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				error =
 					TMiInstance_ByteSwap_VarArray(
@@ -2316,11 +2316,11 @@ TMiInstance_ByteSwap(
 						*ioDataPtr);
 				UUmError_ReturnOnError(error);
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 			case TMcSwapCode_TemplateReference:
 				// I think this crash means engine and data are out of sync - Michael
@@ -2339,15 +2339,15 @@ TMiInstance_ByteSwap(
 					curDataPtr += 8;
 				}
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
-	
+
 	return UUcError_None;
 }
 
@@ -2367,85 +2367,85 @@ TMiInstance_Clean_Recursive(
 	UUtUns32	i;
 	UUtUns32	count;
 	UUtUns8		*origSwapCode;
-	
+
 	UUmAssert(NULL != ioSwapCode);
 	UUmAssert(NULL != ioDataPtr);
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
 				#if defined(DEBUGGING) && DEBUGGING
-					
+
 					*(UUtUns64*)curDataPtr = UUmMemoryBlock_Garbage;
-					
+
 				#endif
-				
+
 				curDataPtr += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				#if defined(DEBUGGING) && DEBUGGING
-					
+
 					*(UUtUns32*)curDataPtr = UUmMemoryBlock_Garbage;
-					
+
 				#endif
-				
+
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				#if defined(DEBUGGING) && DEBUGGING
-				
+
 					*(UUtUns16*)curDataPtr = (UUtUns16)UUmMemoryBlock_Garbage;
-					
+
 				#endif
 
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				#if defined(DEBUGGING) && DEBUGGING
-				
+
 					*(UUtUns8*)curDataPtr = (UUtUns8)UUmMemoryBlock_Garbage;
-					
+
 				#endif
 
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
-					
+
 				count = *curSwapCode++;
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				for(i = 0; i < count; i++)
 				{
 					curSwapCode = origSwapCode;
-					
+
 					TMiInstance_Clean_Recursive(
 						&curSwapCode,
 						&curDataPtr,
 						inInstanceFile);
-					
+
 				}
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				switch(*curSwapCode++)
 				{
@@ -2453,21 +2453,21 @@ TMiInstance_Clean_Recursive(
 						count = (UUtUns32) *(UUtUns64 *)curDataPtr;
 						curDataPtr += 8;
 						break;
-						
+
 					case TMcSwapCode_4Byte:
 						count = *(UUtUns32 *)curDataPtr;
 						curDataPtr += 4;
 						break;
-						
+
 					case TMcSwapCode_2Byte:
 						count = *(UUtUns16 *)curDataPtr;
 						curDataPtr += 2;
 						break;
-						
+
 					default:
 						UUmDebugStr("swap codes are messed up.");
 				}
-				
+
 				if(count == 0)
 				{
 					TMiSkipVarArray(&curSwapCode);
@@ -2475,11 +2475,11 @@ TMiInstance_Clean_Recursive(
 				else
 				{
 					origSwapCode = curSwapCode;
-					
+
 					for(i = 0; i < count; i++)
 					{
 						curSwapCode = origSwapCode;
-						
+
 						TMiInstance_Clean_Recursive(
 							&curSwapCode,
 							&curDataPtr,
@@ -2487,32 +2487,32 @@ TMiInstance_Clean_Recursive(
 					}
 				}
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 			case TMcSwapCode_TemplateReference:
 				{
 					TMtInstanceDescriptor	*targetDesc;
 					void					*targetData;
-					
+
 					targetData = *(void **)curDataPtr;
-					
+
 					if(targetData != NULL)
 					{
 						targetDesc = TMrPlaceHolder_GetInstanceDesc(inInstanceFile, (TMtPlaceHolder)targetData);
 						TMmInstanceDesc_Verify(targetDesc);
-						
+
 						if((targetDesc->flags & TMcDescriptorFlags_Unique) && targetDesc->dataPtr != NULL)
 						{
 							UUtUns8*	swapCode;
 							UUtUns8*	dataPtr;
-							
+
 							swapCode = targetDesc->templatePtr->swapCodes;
 							dataPtr = targetDesc->dataPtr;
-							
+
 							TMiInstance_Clean_Recursive(
 								&swapCode,
 								&dataPtr,
@@ -2542,12 +2542,12 @@ TMiInstance_Clean_Recursive(
 					}
 				}
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
 }
@@ -2569,49 +2569,49 @@ TMiInstance_CheckExists_Recursive(
 	UUtUns32	count;
 	UUtUns8		*origSwapCode;
 	UUtBool		result;
-	
+
 	UUmAssert(NULL != ioSwapCode);
 	UUmAssert(NULL != ioDataPtr);
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
 				curDataPtr += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
-					
+
 				count = *curSwapCode++;
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				for(i = 0; i < count; i++)
 				{
 					curSwapCode = origSwapCode;
-					
+
 					result = TMiInstance_CheckExists_Recursive(
 						&curSwapCode,
 						&curDataPtr,
@@ -2619,11 +2619,11 @@ TMiInstance_CheckExists_Recursive(
 					if(result == UUcFalse) return UUcFalse;
 				}
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				switch(*curSwapCode++)
 				{
@@ -2631,21 +2631,21 @@ TMiInstance_CheckExists_Recursive(
 						count = (UUtUns32) *(UUtUns64 *)curDataPtr;
 						curDataPtr += 8;
 						break;
-						
+
 					case TMcSwapCode_4Byte:
 						count = *(UUtUns32 *)curDataPtr;
 						curDataPtr += 4;
 						break;
-						
+
 					case TMcSwapCode_2Byte:
 						count = *(UUtUns16 *)curDataPtr;
 						curDataPtr += 2;
 						break;
-						
+
 					default:
 						UUmDebugStr("swap codes are messed up.");
 				}
-				
+
 				if(count == 0)
 				{
 					TMiSkipVarArray(&curSwapCode);
@@ -2653,11 +2653,11 @@ TMiInstance_CheckExists_Recursive(
 				else
 				{
 					origSwapCode = curSwapCode;
-					
+
 					for(i = 0; i < count; i++)
 					{
 						curSwapCode = origSwapCode;
-						
+
 						result = TMiInstance_CheckExists_Recursive(
 							&curSwapCode,
 							&curDataPtr,
@@ -2666,44 +2666,44 @@ TMiInstance_CheckExists_Recursive(
 					}
 				}
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 			case TMcSwapCode_TemplateReference:
 				{
 					TMtInstanceDescriptor	*targetDesc;
 					void					*targetData;
-					
+
 					targetData = *(void **)curDataPtr;
-					
+
 					if(targetData != NULL)
 					{
 						targetDesc = TMrPlaceHolder_GetInstanceDesc(inInstanceFile, (TMtPlaceHolder)targetData);
 						TMmInstanceDesc_Verify(targetDesc);
-						
+
 						if((targetDesc->flags & TMcDescriptorFlags_Unique) && targetDesc->dataPtr == NULL)
 						{
 							return UUcFalse;
 						}
-						
+
 						if(targetDesc->dataPtr != NULL)
 						{
 							UUtUns8*	swapCode;
 							UUtUns8*	dataPtr;
-							
+
 							swapCode = targetDesc->templatePtr->swapCodes;
 							dataPtr = targetDesc->dataPtr;
-							
+
 							result = TMiInstance_CheckExists_Recursive(
 								&swapCode,
 								&dataPtr,
 								inInstanceFile);
 							if(result == UUcFalse) return UUcFalse;
 						}
-						
+
 					}
 					if(swapCode == TMcSwapCode_TemplatePtr)
 					{
@@ -2716,15 +2716,15 @@ TMiInstance_CheckExists_Recursive(
 					}
 				}
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
-	
+
 	return UUcTrue;
 }
 
@@ -2753,7 +2753,7 @@ TMiInstance_Touch_Recursive_Array(
 	curSwapCode += 1;
 
 	oneTypeArray = (*(curSwapCode + 1) == TMcSwapCode_EndArray);
-	
+
 	if ((*curSwapCode == TMcSwapCode_8Byte) && oneTypeArray)
 	{
 		curDataPtr += 8 * count;
@@ -2774,21 +2774,21 @@ TMiInstance_Touch_Recursive_Array(
 		curDataPtr += 1 * count;
 		curSwapCode += 2;
 	}
-	else 
+	else
 	{
 		UUtUns8 *oldSwapCode = curSwapCode;
 
 		for(i = 0; i < count; i++)
 		{
 			curSwapCode = oldSwapCode;
-			
+
 			TMiInstance_Touch_Recursive(
 				&curSwapCode,
 				&curDataPtr,
 				inInstanceFile);
 		}
 	}
-		
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
 }
@@ -2814,23 +2814,23 @@ TMiInstance_Touch_Recursive_VarArray(
 			count = (UUtUns32) (*(UUtUns64 *)curDataPtr);
 			curDataPtr += 8;
 			break;
-			
+
 		case TMcSwapCode_4Byte:
 			count = (*(UUtUns32 *)curDataPtr);
 			curDataPtr += 4;
 			break;
-			
+
 		case TMcSwapCode_2Byte:
 			count = (*(UUtUns16 *)curDataPtr);
 			curDataPtr += 2;
 			break;
-			
+
 		default:
 			UUmDebugStr("swap codes are messed up.");
 	}
-	
+
 	origSwapCode = curSwapCode;
-	
+
 	if(count == 0)
 	{
 		TMiSkipVarArray(&curSwapCode);
@@ -2838,7 +2838,7 @@ TMiInstance_Touch_Recursive_VarArray(
 	else
 	{
 		UUtBool oneElementArray = (*(curSwapCode + 1) == TMcSwapCode_EndVarArray);
-		
+
 		if ((*curSwapCode == TMcSwapCode_8Byte) && oneElementArray)
 		{
 			curDataPtr += 8 * count;
@@ -2859,12 +2859,12 @@ TMiInstance_Touch_Recursive_VarArray(
 			curDataPtr += 1 * count;
 			curSwapCode += 2;
 		}
-		else 
+		else
 		{
 			for(i = 0; i < count; i++)
 			{
 				curSwapCode = origSwapCode;
-				
+
 				TMiInstance_Touch_Recursive(
 					&curSwapCode,
 					&curDataPtr,
@@ -2887,76 +2887,76 @@ TMiInstance_Touch_Recursive(
 	UUtUns8		*curSwapCode;
 	UUtUns8		swapCode;
 	UUtUns8		*curDataPtr;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
 				curDataPtr += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				TMiInstance_Touch_Recursive_Array(
 					&curSwapCode,
 					&curDataPtr,
 					inInstanceFile);
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				TMiInstance_Touch_Recursive_VarArray(
 					&curSwapCode,
 					&curDataPtr,
 					inInstanceFile);
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 			case TMcSwapCode_TemplateReference:
 				{
 					TMtInstanceDescriptor	*targetDesc;
 					void					*targetData;
-					
+
 					targetData = *(void **)curDataPtr;
-					
+
 					if(targetData != NULL)
 					{
 						targetDesc = TMrPlaceHolder_GetInstanceDesc(inInstanceFile, (TMtPlaceHolder)targetData);
 						UUmAssert(targetDesc != NULL);
 						TMmInstanceDesc_Verify(targetDesc);
-						
+
 						if(!(targetDesc->flags & TMcDescriptorFlags_Touched))
 						{
 							targetDesc->flags |= TMcDescriptorFlags_Touched;
-							
+
 							if(targetDesc->flags & TMcDescriptorFlags_PlaceHolder)
 							{
 								// Make sure a touched place holder does not get deleted
@@ -2966,12 +2966,12 @@ TMiInstance_Touch_Recursive(
 							{
 								UUtUns8*	swapCode;
 								UUtUns8*	dataPtr;
-								
+
 								swapCode = targetDesc->templatePtr->swapCodes;
 								dataPtr = targetDesc->dataPtr;
-								
+
 								TMmInstanceData_Verify(targetDesc->dataPtr);
-								
+
 								TMiInstance_Touch_Recursive(
 									&swapCode,
 									&dataPtr,
@@ -2990,15 +2990,15 @@ TMiInstance_Touch_Recursive(
 					}
 				}
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
-	
+
 }
 
 static UUtUns32
@@ -3014,61 +3014,61 @@ TMiInstance_ComputeSize_Recursive(
 	UUtUns32	i;
 	UUtUns32	count;
 	UUtUns8		*origSwapCode;
-	
+
 	UUtUns32	curSize = 0;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
 				curDataPtr += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
-					
+
 				count = *curSwapCode++;
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				for(i = 0; i < count; i++)
 				{
 					curSwapCode = origSwapCode;
-					
+
 					curSize +=
 						TMiInstance_ComputeSize_Recursive(
 							&curSwapCode,
 							&curDataPtr,
 							inInstanceFile);
-					
+
 				}
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				switch(*curSwapCode++)
 				{
@@ -3076,21 +3076,21 @@ TMiInstance_ComputeSize_Recursive(
 						count = (UUtUns32) *(UUtUns64 *)curDataPtr;
 						curDataPtr += 8;
 						break;
-						
+
 					case TMcSwapCode_4Byte:
 						count = *(UUtUns32 *)curDataPtr;
 						curDataPtr += 4;
 						break;
-						
+
 					case TMcSwapCode_2Byte:
 						count = *(UUtUns16 *)curDataPtr;
 						curDataPtr += 2;
 						break;
-						
+
 					default:
 						UUmDebugStr("swap codes are messed up.");
 				}
-				
+
 				if(count == 0)
 				{
 					TMiSkipVarArray(&curSwapCode);
@@ -3098,11 +3098,11 @@ TMiInstance_ComputeSize_Recursive(
 				else
 				{
 					origSwapCode = curSwapCode;
-					
+
 					for(i = 0; i < count; i++)
 					{
 						curSwapCode = origSwapCode;
-						
+
 						curSize +=
 							TMiInstance_ComputeSize_Recursive(
 								&curSwapCode,
@@ -3111,11 +3111,11 @@ TMiInstance_ComputeSize_Recursive(
 					}
 				}
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 			case TMcSwapCode_TemplateReference:
 				{
@@ -3123,29 +3123,29 @@ TMiInstance_ComputeSize_Recursive(
 					void					*targetData;
 
 					UUmAssertReadPtr(curDataPtr, sizeof(void *));
-					
+
 					targetData = *(void **)curDataPtr;
-					
+
 					if(targetData != NULL)
 					{
 						targetDesc = TMrPlaceHolder_GetInstanceDesc(inInstanceFile, (TMtPlaceHolder)targetData);
 						UUmAssert(targetDesc != NULL);
 						TMmInstanceDesc_Verify(targetDesc);
-						
+
 						targetDesc->flags |= TMcDescriptorFlags_Touched;
-						
+
 						curSize += targetDesc->size;
-						
+
 						if(!(targetDesc->flags & TMcDescriptorFlags_PlaceHolder))
 						{
 							UUtUns8*	swapCode;
 							UUtUns8*	dataPtr;
-							
+
 							swapCode = targetDesc->templatePtr->swapCodes;
 							dataPtr = targetDesc->dataPtr;
-							
+
 							TMmInstanceData_Verify(targetDesc->dataPtr);
-							
+
 							TMiInstance_ComputeSize_Recursive(
 								&swapCode,
 								&dataPtr,
@@ -3163,15 +3163,15 @@ TMiInstance_ComputeSize_Recursive(
 					}
 				}
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
-	
+
 	return curSize;
 }
 
@@ -3190,14 +3190,14 @@ TMiInstance_VarArray_Reset_Recursive(
 	UUtUns32	i;
 	UUtUns32	count;
 	UUtUns8		*origSwapCode;
-	
+
 //	UUmAssert(gInGame == UUcFalse);
 
 	curSwapCode = *ioSwapCode;
 	curDataPtr = *ioDataPtr;
-	
+
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		switch(*curSwapCode++)
@@ -3205,40 +3205,40 @@ TMiInstance_VarArray_Reset_Recursive(
 			case TMcSwapCode_8Byte:
 				curDataPtr += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				curDataPtr += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				curDataPtr += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				curDataPtr += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				count = *curSwapCode++;
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				for(i = 0; i < count; i++)
 				{
 					curSwapCode = origSwapCode;
-					
+
 					TMiInstance_VarArray_Reset_Recursive(
 						&curSwapCode,
 						&curDataPtr,
 						inInitialVarArrayLength);
-					
+
 				}
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				switch(*curSwapCode++)
 				{
@@ -3246,23 +3246,23 @@ TMiInstance_VarArray_Reset_Recursive(
 						*(UUtUns64 *)curDataPtr = inInitialVarArrayLength;
 						curDataPtr += 8;
 						break;
-						
+
 					case TMcSwapCode_4Byte:
 						*(UUtUns32 *)curDataPtr = inInitialVarArrayLength;
 						curDataPtr += 4;
 						break;
-						
+
 					case TMcSwapCode_2Byte:
 						*(UUtUns16 *)curDataPtr = (UUtUns16)inInitialVarArrayLength;
 						curDataPtr += 2;
 						break;
-						
+
 					default:
 						UUmDebugStr("swap codes are messed up.");
 				}
-				
+
 				origSwapCode = curSwapCode;
-				
+
 				if(inInitialVarArrayLength > 0)
 				{
 					for(i = 0; i < inInitialVarArrayLength; i++)
@@ -3280,27 +3280,27 @@ TMiInstance_VarArray_Reset_Recursive(
 					TMiSkipVarArray(&curSwapCode);
 				}
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 				*(void**)curDataPtr = NULL;
 				curSwapCode += 4;
 				curDataPtr += 4;
 				break;
-			
+
 			case TMcSwapCode_TemplateReference:
 				*(void**)curDataPtr = NULL;
 				curDataPtr += 8;
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataPtr = curDataPtr;
 }
@@ -3314,10 +3314,10 @@ TMiInstanceFile_DumpPlaceHolders(
 	UUtUns32				curDescIndex;
 	TMtNameDescriptor*		curNameDesc;
 	UUtUns32				numPlaceHolders = 0;
-	
+
 	fprintf(inFile, "Place holder dump"UUmNL);
 	fprintf(inFile, "fileName: %s"UUmNL, BFrFileRef_GetLeafName(inInstanceFile->instanceFileRef));
-	
+
 	for(curDescIndex = 0, curNameDesc = inInstanceFile->nameDescriptors;
 		curDescIndex < inInstanceFile->numNameDescriptors;
 		curDescIndex++, curNameDesc++)
@@ -3328,7 +3328,7 @@ TMiInstanceFile_DumpPlaceHolders(
 			numPlaceHolders++;
 		}
 	}
-	
+
 	if(numPlaceHolders > 0)
 	{
 		fprintf(stderr, "YO: I found %d place holders see %s for details."UUmNL, numPlaceHolders, inFileName);
@@ -3343,32 +3343,32 @@ TMiInstanceFile_PrepareForMemory(
 	UUtError				error;
 	UUtUns32				curDescIndex;
 	TMtInstanceDescriptor*	curDesc;
-	
+
 	UUtUns8*				swapCode;
 	UUtUns8*				dataPtr;
 	char					msg[2048];
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	for(curDescIndex = 0, curDesc = inInstanceFile->instanceDescriptors;
 		curDescIndex < inInstanceFile->numInstanceDescriptors;
 		curDescIndex++, curDesc++)
 	{
 		if(curDesc->templatePtr->flags & TMcTemplateFlag_Leaf) continue;
-		
+
 		swapCode = curDesc->templatePtr->swapCodes;
 		dataPtr = (UUtUns8 *)curDesc->dataPtr;
-		
+
 		if(dataPtr == NULL) continue;
 
 		if (NULL == dataPtr) {
 			UUmError_ReturnOnErrorMsgP(UUcError_Generic, "Loading, could not resolve place holder '%s'.", (UUtUns32) curDesc->namePtr, 0, 0);
 		}
-		
+
 		UUmAssert(dataPtr != NULL); //  && "This probably means that there is a bogus place holder...");
 
 		TMmInstanceDesc_Verify(curDesc);
-		
+
 		sprintf(
 			msg,
 			"%s: template %s[%s], name %s",
@@ -3376,8 +3376,8 @@ TMiInstanceFile_PrepareForMemory(
 			curDesc->templatePtr->name,
 			UUrTag2Str(curDesc->templatePtr->tag),
 			(curDesc->namePtr!=NULL) ? curDesc->namePtr + 4 : "NULL");
-		
-		error = 
+
+		error =
 			TMiInstance_PrepareForMemory(
 				&swapCode,
 				&dataPtr,
@@ -3386,7 +3386,7 @@ TMiInstanceFile_PrepareForMemory(
 				(curDesc->templatePtr->flags & TMcTemplateFlag_VarArrayIsLeaf) ? UUcTrue : UUcFalse );
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3396,10 +3396,10 @@ TMiInstanceFile_PrepareForDisk(
 {
 	UUtUns32				curDescIndex;
 	TMtInstanceDescriptor*	curDesc;
-	
+
 	UUtUns8*				swapCode;
 	UUtUns8*				dataPtr;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
 
 	for(curDescIndex = 0, curDesc = inInstanceFile->instanceDescriptors;
@@ -3408,18 +3408,18 @@ TMiInstanceFile_PrepareForDisk(
 	{
 		swapCode = curDesc->templatePtr->swapCodes;
 		dataPtr = (UUtUns8 *)curDesc->dataPtr;
-		
+
 		TMmInstanceDesc_Verify(curDesc);
-		
+
 		if(dataPtr == NULL) continue;
-		
+
 		TMiInstance_PrepareForDisk(
 			&swapCode,
 			&dataPtr,
 			inInstanceFile,
 			UUcFalse);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3431,24 +3431,24 @@ TMiInstanceFile_CallProcs(
 	UUtError				error;
 	UUtUns32				curDescIndex;
 	TMtInstanceDescriptor*	curDesc;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	for(curDescIndex = 0, curDesc = inInstanceFile->instanceDescriptors;
 		curDescIndex < inInstanceFile->numInstanceDescriptors;
 		curDescIndex++, curDesc++)
 	{
 		TMmInstanceDesc_Verify(curDesc);
-		
+
 		if(curDesc->dataPtr == NULL) continue;
-		
+
 		if(curDesc->templatePtr->handler != NULL)
 		{
 			error = curDesc->templatePtr->handler(inMessage, curDesc->templatePtr->tag, curDesc->dataPtr);
 			UUmError_ReturnOnErrorMsg(error, "Could not call proc");
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3459,7 +3459,7 @@ TMiInstanceFile_New(
 	BFtFile*	emptyFile;
 	UUtError				error;
 	TMtInstanceFile_Header	fileHeader;
-	
+
 	// make it an empty template file (delete, create, open, write file header goo and close)
 	error = BFrFile_Delete(inInstanceFileRef);
 
@@ -3471,7 +3471,7 @@ TMiInstanceFile_New(
 
 	error = BFrFile_Open(inInstanceFileRef, "w", &emptyFile);
 	UUmError_ReturnOnError(error);
-	
+
 	fileHeader.version = TMcInstanceFile_Version;
 	fileHeader.totalTemplateChecksum = gTemplateChecksum;
 	fileHeader.numInstanceDescriptors = 0;
@@ -3481,16 +3481,16 @@ TMiInstanceFile_New(
 	fileHeader.nameBlockOffset = sizeof(TMtInstanceFile_Header);
 	fileHeader.dataBlockLength = 0;
 	fileHeader.nameBlockLength = 0;
-	
+
 	// Write out endian detector
 		error = BFrFile_WritePos(emptyFile, 0, sizeof(fileHeader), &fileHeader);
 		UUmError_ReturnOnError(error);
-	
+
 	BFrFile_Close(emptyFile);
 
 	return UUcError_None;
 }
-	
+
 static UUtError
 TMiInstanceFile_LoadHeaderFromMemory(
 	TMtInstanceFile_Header	*inFileHeader,
@@ -3499,46 +3499,46 @@ TMiInstanceFile_LoadHeaderFromMemory(
 	UUtBool needsSwapping;
 
 	needsSwapping = inFileHeader->version != TMcInstanceFile_Version;
-	
+
 	if(needsSwapping)
 	{
 		UUrSwap_4Byte(&inFileHeader->version);
-		
+
 		if(inFileHeader->version != TMcInstanceFile_Version)
 		{
 			return TMcError_DataCorrupt;
 		}
-		
+
 		UUrSwap_8Byte(&inFileHeader->totalTemplateChecksum);
 
 		UUrSwap_4Byte(&inFileHeader->numInstanceDescriptors);
 		UUrSwap_4Byte(&inFileHeader->numNameDescriptors);
 		UUrSwap_4Byte(&inFileHeader->numTemplateDescriptors);
-		
+
 		UUrSwap_4Byte(&inFileHeader->dataBlockOffset);
 		UUrSwap_4Byte(&inFileHeader->dataBlockLength);
 
 		UUrSwap_4Byte(&inFileHeader->nameBlockOffset);
 		UUrSwap_4Byte(&inFileHeader->nameBlockLength);
 	}
-	
+
 	UUmAssert(inFileHeader->numNameDescriptors <= inFileHeader->numInstanceDescriptors);
-	UUmAssert(inFileHeader->dataBlockOffset >= 
-		sizeof(TMtInstanceFile_Header) + 
-		inFileHeader->numInstanceDescriptors * sizeof(TMtInstanceDescriptor) + 
+	UUmAssert(inFileHeader->dataBlockOffset >=
+		sizeof(TMtInstanceFile_Header) +
+		inFileHeader->numInstanceDescriptors * sizeof(TMtInstanceDescriptor) +
 		inFileHeader->numNameDescriptors * sizeof(TMtNameDescriptor) +
 		inFileHeader->numTemplateDescriptors * sizeof(TMtTemplateDescriptor));
-	UUmAssert(inFileHeader->nameBlockOffset >= 
-		sizeof(TMtInstanceFile_Header) + 
-		inFileHeader->numInstanceDescriptors * sizeof(TMtInstanceDescriptor) + 
-		inFileHeader->numNameDescriptors * sizeof(TMtNameDescriptor) + 
+	UUmAssert(inFileHeader->nameBlockOffset >=
+		sizeof(TMtInstanceFile_Header) +
+		inFileHeader->numInstanceDescriptors * sizeof(TMtInstanceDescriptor) +
+		inFileHeader->numNameDescriptors * sizeof(TMtNameDescriptor) +
 		inFileHeader->numTemplateDescriptors * sizeof(TMtTemplateDescriptor) +
 		inFileHeader->dataBlockLength);
-		
+
 	UUmAssert(inFileHeader->dataBlockOffset + inFileHeader->dataBlockLength <= inFileHeader->nameBlockOffset);
-	
+
 	*outNeedsSwapping = needsSwapping;
-	
+
 	return UUcError_None;
 }
 
@@ -3549,8 +3549,8 @@ TMiInstanceFile_LoadHeader(
 	UUtBool					*outNeedsSwapping)
 {
 	UUtError	error;
-	
-	error = 
+
+	error =
 		BFrFile_ReadPos(
 			inFile,
 			0,
@@ -3574,13 +3574,13 @@ TMiInstanceFile_TraverseAndSet(
 	UUtUns32				curDescIndex;
 	TMtInstanceDescriptor*	curDesc;
 	UUtUns32				dynamicMemSize;
-	
+
 	TMtNameDescriptor*		curNameDesc;
 
 	UUrMemory_Block_VerifyList();
-	
+
 	dynamicMemSize = 0;
-	
+
 	UUmAssertAlignedPtr(inInstanceFile->dataBlock);
 
 	// Traverse through the instances and set the fields
@@ -3598,13 +3598,13 @@ TMiInstanceFile_TraverseAndSet(
 			UUrSwap_4Byte(&curDesc->creationDate);
 			UUrSwap_8Byte(&curDesc->checksum);
 		}
-		
+
 		curDesc->templatePtr = TMiTemplate_FindDefinition((TMtTemplateTag)curDesc->templatePtr);
-		
+
 		UUmAssert(curDesc->templatePtr != NULL);
 
 		curDesc->flags = (TMtDescriptorFlags)(curDesc->flags & TMcFlags_PersistentMask);
-		
+
 		if(!(curDesc->flags & TMcDescriptorFlags_PlaceHolder))
 		{
 			// Check for an out of date instance
@@ -3614,7 +3614,7 @@ TMiInstanceFile_TraverseAndSet(
 				{
 					UUmError_ReturnOnErrorMsg(UUcError_Generic, "instance checksum does not match");
 				}
-				
+
 				curDesc->dataPtr = NULL;
 				if(curDesc->flags & TMcDescriptorFlags_Unique)
 				{
@@ -3630,15 +3630,15 @@ TMiInstanceFile_TraverseAndSet(
 			{
 				curDesc->dataPtr = (char*)inInstanceFile->dataBlock + (UUtUns32)curDesc->dataPtr;
 			}
-			
+
 			if(inNeedsSwapping)
 			{
 				UUtUns8*	swapCode;
 				UUtUns8*	dataPtr;
-				
+
 				swapCode = curDesc->templatePtr->swapCodes;
 				dataPtr = curDesc->dataPtr;
-				
+
 				error = TMiInstance_ByteSwap(&swapCode, &dataPtr, curDesc->templatePtr->byteSwapProc);
 				UUmError_ReturnOnError(error);
 			}
@@ -3647,7 +3647,7 @@ TMiInstanceFile_TraverseAndSet(
 		{
 			curDesc->dataPtr = NULL;
 		}
-		
+
 		if(!(curDesc->flags & TMcDescriptorFlags_Unique))
 		{
 			curDesc->namePtr = (char*)inInstanceFile->nameBlock + (UUtUns32)curDesc->namePtr;
@@ -3656,10 +3656,10 @@ TMiInstanceFile_TraverseAndSet(
 		{
 			curDesc->namePtr = NULL;
 		}
-		
+
 
 		dynamicMemSize += curDesc->templatePtr->privateDataSize;
-		
+
 		// this is where all the majority of the time is spent loading the file (on the PC)
 		if(curDesc->dataPtr != NULL)
 		{
@@ -3680,15 +3680,15 @@ TMiInstanceFile_TraverseAndSet(
 		{
 			UUrSwap_4Byte(&curNameDesc->instanceDescIndex);
 		}
-		
+
 		UUmAssert(curNameDesc->instanceDescIndex < inInstanceFile->numInstanceDescriptors);
-		
-		curNameDesc->namePtr = 
+
+		curNameDesc->namePtr =
 			(inInstanceFile->instanceDescriptors + curNameDesc->instanceDescIndex)->namePtr;
-		
+
 		UUmAssert(curNameDesc->namePtr != NULL);
 	}
-		
+
 	*outDynamicMemSize = dynamicMemSize;
 
 	return UUcError_None;
@@ -3699,26 +3699,26 @@ TMiInstanceFile_Reload_InGame(
 	TMtInstanceFile*	inInstanceFile)
 {
 	UUtError				error;
-	
+
 	BFtFile*				instancePhysicalFile = NULL;
 
 	UUtBool					needsSwapping;
-	
+
 	UUtUns32				totalFileLength;
-	
+
 	UUtUns32				curDescIndex;
 	TMtInstanceDescriptor*	curDesc;
-	
+
 	UUtUns32				dynamicMemSize;
 	char*					curDynamicMemPtr;
 	UUtUns8					*mappingPtr;
-	
+
 	TMtInstanceFile_Header	*fileHeader;
-	
+
 	UUrMemory_Block_VerifyList();
 
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	/*
 	 * open the instance file data
 	 */
@@ -3741,13 +3741,13 @@ TMiInstanceFile_Reload_InGame(
 			error = error != UUcError_OutOfMemory ? TMcError_DataCorrupt : UUcError_OutOfMemory;
 			UUmError_ReturnOnErrorMsg(error, "Could not open instance file");
 		}
-	
+
 	UUrMemory_Block_VerifyList();
-			
+
 
 		fileHeader = (TMtInstanceFile_Header *) mappingPtr;
 		error = TMiInstanceFile_LoadHeaderFromMemory(fileHeader, &needsSwapping);
-		
+
 		UUmAssert(totalFileLength == fileHeader->nameBlockOffset + fileHeader->nameBlockLength);
 
 		inInstanceFile->numInstanceDescriptors = fileHeader->numInstanceDescriptors;
@@ -3758,18 +3758,18 @@ TMiInstanceFile_Reload_InGame(
 		inInstanceFile->numTemplateDescriptors = 0;
 		inInstanceFile->templateDescriptors = NULL;
 
-		UUrMemory_Block_VerifyList();		
+		UUrMemory_Block_VerifyList();
 
 		// map the stuff
 		inInstanceFile->instanceDescriptors = (struct TMtInstanceDescriptor *) (mappingPtr + sizeof(TMtInstanceFile_Header));
 		inInstanceFile->nameDescriptors = (struct TMtNameDescriptor *) (mappingPtr + sizeof(TMtInstanceFile_Header) + inInstanceFile->numInstanceDescriptors * sizeof(TMtInstanceDescriptor));
 		inInstanceFile->dataBlock = (mappingPtr + fileHeader->dataBlockOffset);
 		inInstanceFile->nameBlock = (char*)(mappingPtr + fileHeader->nameBlockOffset);
-	
+
 	/// xxxx
 	error = TMiInstanceFile_TraverseAndSet(inInstanceFile, needsSwapping, &dynamicMemSize);
 	UUmError_ReturnOnErrorMsg(error, "TMiInstanceFile_TraverseAndSet failed");
-	
+
 	UUrMemory_Block_VerifyList();
 
 	// If in game allocate dynamic memory
@@ -3780,7 +3780,7 @@ TMiInstanceFile_Reload_InGame(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Could not allocate dynamic mem");
 		}
-		
+
 		for(curDescIndex = 0, curDesc = inInstanceFile->instanceDescriptors;
 			curDescIndex < inInstanceFile->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
@@ -3802,13 +3802,13 @@ TMiInstanceFile_Reload_InGame(
 			curDescIndex < inInstanceFile->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
 		{
-			if (curDesc->dataPtr != NULL) 
+			if (curDesc->dataPtr != NULL)
 			{
 				TMmInstance_GetDynamicData(curDesc->dataPtr) = NULL;
 			}
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3819,19 +3819,19 @@ TMiInstanceFile_Reload(
 	UUtBool				inOKToRebuild)
 {
 	UUtError				error;
-	
+
 	BFtFile*				instancePhysicalFile = NULL;
 
 	UUtBool					needsSwapping;
-	
+
 	UUtUns32				totalFileLength;
-	
+
 	UUtUns32				curDescIndex;
 	TMtInstanceDescriptor*	curDesc;
-	
+
 	UUtUns32				dynamicMemSize;
 	char*					curDynamicMemPtr;
-	
+
 	TMtInstanceFile_Header	fileHeader;
 
 	UUmAssert(gInGame == UUcTrue ? inOKToRebuild == UUcFalse : 1);
@@ -3843,7 +3843,7 @@ TMiInstanceFile_Reload(
 	UUrMemory_Block_VerifyList();
 
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	/*
 	 * open the instance file data
 	 */
@@ -3853,17 +3853,17 @@ TMiInstanceFile_Reload(
 		if ((error != UUcError_None) && (gInGame == UUcFalse))
 		{
 			instancePhysicalFile = NULL;
-			
+
 fuckingRebuild:
 			//UUmAssert(!"Rebuilding, ok to continue");
-			
+
 			inOKToRebuild = UUcFalse;
-			
+
 			if(instancePhysicalFile != NULL)
 			{
 				BFrFile_Close(instancePhysicalFile);
 			}
-			
+
 			error = TMiInstanceFile_New(inInstanceFile->instanceFileRef);
 			UUmError_ReturnOnErrorMsg(error, "Could not create instance file");
 
@@ -3878,27 +3878,27 @@ fuckingRebuild:
 		}
 
 	#if defined(TMmBrentSucks) && TMmBrentSucks
-		
+
 		if(inOKToRebuild) goto fuckingRebuild;
-		
+
 	#endif
-	
+
 	UUrMemory_Block_VerifyList();
 
 		// Get total file length
-	 		error = 
+	 		error =
 	 			BFrFile_GetLength(
 	 				instancePhysicalFile,
 	 				&totalFileLength);
 			UUmError_ReturnOnError(error);
-			
+
 		error = TMiInstanceFile_LoadHeader(instancePhysicalFile, &fileHeader, &needsSwapping);
 		if(error != UUcError_None && inOKToRebuild && gInGame)
 		{
 			inOKToRebuild = UUcFalse;
 			goto fuckingRebuild;
 		}
-		
+
 		UUmAssert(totalFileLength == fileHeader.nameBlockOffset + fileHeader.nameBlockLength);
 
 		inInstanceFile->numInstanceDescriptors = fileHeader.numInstanceDescriptors;
@@ -3917,32 +3917,32 @@ fuckingRebuild:
 			{
 				UUrMemory_Block_Delete(inInstanceFile->allocBlock);
 			}
-			
+
 			inInstanceFile->allocBlock = UUrMemory_Block_New(totalFileLength - sizeof(TMtInstanceFile_Header));
 
 			if(inInstanceFile->allocBlock == NULL)
 			{
-				UUmError_ReturnOnErrorMsgP(UUcError_OutOfMemory, "%s big alloc of %d", 
+				UUmError_ReturnOnErrorMsgP(UUcError_OutOfMemory, "%s big alloc of %d",
 						(UUtUns32) BFrFileRef_GetLeafName(inInstanceFile->instanceFileRef),
 						totalFileLength - sizeof(TMtInstanceFile_Header),
 						0);
 			}
-			
+
 			inInstanceFile->instanceDescriptors = (TMtInstanceDescriptor*)(inInstanceFile->allocBlock);
-			
+
 			inInstanceFile->nameDescriptors =
-				(TMtNameDescriptor*)((char*)inInstanceFile->allocBlock + 
+				(TMtNameDescriptor*)((char*)inInstanceFile->allocBlock +
 					inInstanceFile->numInstanceDescriptors * sizeof(TMtInstanceDescriptor));
-			
+
 			inInstanceFile->dataBlock = (char*)inInstanceFile->allocBlock + fileHeader.dataBlockOffset - sizeof(TMtInstanceFile_Header);
-			
+
 			inInstanceFile->nameBlock = (char*)inInstanceFile->allocBlock + fileHeader.nameBlockOffset - sizeof(TMtInstanceFile_Header);
 		}
 		else
 		{
 			if(gInstanceDescriptorArray == NULL)
 			{
-				gInstanceDescriptorArray = 
+				gInstanceDescriptorArray =
 					UUrMemory_Array_New(
 						sizeof(TMtInstanceDescriptor),
 						20,
@@ -3958,10 +3958,10 @@ fuckingRebuild:
 				error = UUrMemory_Array_SetUsedElems(gInstanceDescriptorArray, fileHeader.numInstanceDescriptors, NULL);
 				UUmError_ReturnOnErrorMsg(error, "Could not initialize gInstanceDescriptorArray");
 			}
-			
+
 			if(gNameDescriptorArray == NULL)
 			{
-				gNameDescriptorArray = 
+				gNameDescriptorArray =
 					UUrMemory_Array_New(
 						sizeof(TMtNameDescriptor),
 						20,
@@ -3977,29 +3977,29 @@ fuckingRebuild:
 				error = UUrMemory_Array_SetUsedElems(gNameDescriptorArray, fileHeader.numNameDescriptors, NULL);
 				UUmError_ReturnOnErrorMsg(error, "Could not initialize gNameDescriptorArray");
 			}
-			
+
 			inInstanceFile->instanceDescriptors = UUrMemory_Array_GetMemory(gInstanceDescriptorArray);
 			UUmAssert(inInstanceFile->instanceDescriptors != NULL);
-			
+
 			inInstanceFile->nameDescriptors = UUrMemory_Array_GetMemory(gNameDescriptorArray);
 			UUmAssert(inInstanceFile->nameDescriptors != NULL);
-			
+
 			inInstanceFile->allocBlock = NULL;
-			
+
 			if(inInstanceFile->dataBlock != NULL)
 			{
 				UUrMemory_Block_Delete(inInstanceFile->dataBlock);
 				inInstanceFile->dataBlock = NULL;
 			}
-			
+
 			if(inInstanceFile->nameBlock != NULL)
 			{
 				UUrMemory_Block_Delete(inInstanceFile->nameBlock);
 				inInstanceFile->nameBlock = NULL;
 			}
-			
+
 			UUrMemory_Block_VerifyList();
-			
+
 			if(inInstanceFile->dataBlockLength > 0)
 			{
 				inInstanceFile->dataBlock = UUrMemory_Block_New(inInstanceFile->dataBlockLength);
@@ -4008,7 +4008,7 @@ fuckingRebuild:
 					UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Could not alloc data block");
 				}
 			}
-			
+
 			if(inInstanceFile->nameBlockLength > 0)
 			{
 				inInstanceFile->nameBlock = UUrMemory_Block_New(inInstanceFile->nameBlockLength);
@@ -4017,7 +4017,7 @@ fuckingRebuild:
 					UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Could not alloc name block");
 				}
 			}
-			
+
 			// load the template descriptor array
 			if(fileHeader.numTemplateDescriptors > 0)
 			{
@@ -4025,7 +4025,7 @@ fuckingRebuild:
 				UUmAssert(inInstanceFile->numTemplateDescriptors < TMgNumTemplateDefinitions);
 				inInstanceFile->templateDescriptors = UUrMemory_Block_New(inInstanceFile->numTemplateDescriptors * sizeof(TMtTemplateDescriptor));
 				UUmError_ReturnOnNull(inInstanceFile->templateDescriptors);
-				error = 
+				error =
 					BFrFile_ReadPos(
 						instancePhysicalFile,
 						sizeof(TMtInstanceFile_Header) +
@@ -4039,11 +4039,11 @@ fuckingRebuild:
 				}
 			}
 		}
-	
+
 		if(inInstanceFile->numInstanceDescriptors > 0)
 		{
 			//Read in the instance descriptors
-				error = 
+				error =
 					BFrFile_ReadPos(
 						instancePhysicalFile,
 						sizeof(TMtInstanceFile_Header),
@@ -4054,12 +4054,12 @@ fuckingRebuild:
 					UUmError_ReturnOnErrorMsg(TMcError_DataCorrupt, "Could not read instance descs");
 				}
 		}
-		
+
 		UUrMemory_Block_VerifyList();
 		if(inInstanceFile->numNameDescriptors > 0)
 		{
 			//Read in the name descriptors
-				error = 
+				error =
 					BFrFile_ReadPos(
 						instancePhysicalFile,
 						sizeof(TMtInstanceFile_Header) + inInstanceFile->numInstanceDescriptors * sizeof(TMtInstanceDescriptor),
@@ -4070,12 +4070,12 @@ fuckingRebuild:
 					UUmError_ReturnOnErrorMsg(TMcError_DataCorrupt, "Could not read instance descs");
 				}
 		}
-		
+
 		UUrMemory_Block_VerifyList();
 		if(fileHeader.dataBlockLength > 0)
 		{
 			//Read in the data block
-			error = 
+			error =
 				BFrFile_ReadPos(
 					instancePhysicalFile,
 					fileHeader.dataBlockOffset,
@@ -4086,12 +4086,12 @@ fuckingRebuild:
 				UUmError_ReturnOnErrorMsg(TMcError_DataCorrupt, "Could not read instance descs");
 			}
 		}
-		
+
 		UUrMemory_Block_VerifyList();
 		if(fileHeader.nameBlockLength > 0)
 		{
 			//Read in the name block
-			error = 
+			error =
 				BFrFile_ReadPos(
 					instancePhysicalFile,
 					fileHeader.nameBlockOffset,
@@ -4102,13 +4102,13 @@ fuckingRebuild:
 				UUmError_ReturnOnErrorMsg(TMcError_DataCorrupt, "Could not read instance descs");
 			}
 		}
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	/// xxxx
 	error = TMiInstanceFile_TraverseAndSet(inInstanceFile, needsSwapping, &dynamicMemSize);
-	UUmError_ReturnOnErrorMsg(error, "TMiInstanceFile_TraverseAndSet failed");	
-	
+	UUmError_ReturnOnErrorMsg(error, "TMiInstanceFile_TraverseAndSet failed");
+
 	UUrMemory_Block_VerifyList();
 
 	// If in game allocate dynamic memory
@@ -4119,7 +4119,7 @@ fuckingRebuild:
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Could not allocate dynamic mem");
 		}
-		
+
 		for(curDescIndex = 0, curDesc = inInstanceFile->instanceDescriptors;
 			curDescIndex < inInstanceFile->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
@@ -4141,20 +4141,20 @@ fuckingRebuild:
 			curDescIndex < inInstanceFile->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
 		{
-			if (curDesc->dataPtr != NULL) 
+			if (curDesc->dataPtr != NULL)
 			{
 				TMmInstance_GetDynamicData(curDesc->dataPtr) = NULL;
 			}
 		}
 	}
-	
+
 	BFrFile_Close(instancePhysicalFile);
-	
+
 	if(!gInGame)
 	{
 		TMmInstanceFile_MajorCheck(inInstanceFile, UUcTrue);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -4166,9 +4166,9 @@ TMiInstanceFile_MakeFromFileRef(
 {
 	UUtError				error;
 	TMtInstanceFile			*newInstanceFile;
-	
+
 	*outNewInstanceFile = NULL;
-	
+
 	/*
 	 * Create the instance file structure
 	 */
@@ -4178,7 +4178,7 @@ TMiInstanceFile_MakeFromFileRef(
 			UUrError_Report(UUcError_OutOfMemory, "Could not open instance file");
 			return UUcError_OutOfMemory;
 		}
-		
+
 	/*
 	 * Copy the instanceFileRef into the new structure
 	 */
@@ -4196,21 +4196,21 @@ TMiInstanceFile_MakeFromFileRef(
 	newInstanceFile->nameBlockLength = 0;
 	newInstanceFile->numInstanceDescriptors = 0;
 	newInstanceFile->numNameDescriptors = 0;
-	
+
 	if(!gInGame)
 	{
 		gConstructionFile = newInstanceFile;
 	}
-	
+
 	#if defined(DEBUGGING) && DEBUGGING
-	
+
 		newInstanceFile->magicCookie = TMcMagicCookie;
-	
+
 	#endif
-	
+
 	error = TMiInstanceFile_Reload(newInstanceFile, inOKToRebuild);
 	UUmError_ReturnOnErrorMsg(error, "Could not reload file");
-	
+
 	*outNewInstanceFile = newInstanceFile;
 
 	return UUcError_None;
@@ -4227,35 +4227,35 @@ TMiInstanceFile_RemoveIdentical_Compare(
 {
 	TMtInstanceDescriptor*	instanceDescA = TMgCompare_InstanceBase + inA;
 	TMtInstanceDescriptor*	instanceDescB = TMgCompare_InstanceBase + inB;
-	
+
 	UUmAssertReadPtr(TMgCompare_InstanceFile, sizeof(*TMgCompare_InstanceFile));
-	
+
 	UUmAssert(instanceDescA->templatePtr == instanceDescB->templatePtr);
-	
+
 	if(TMgCompare_TemplateIndex != UUcMaxUns32)
 	{
 		UUtInt32	extIndex = instanceDescA->templatePtr - TMgTemplateDefinitionArray;
-	
+
 		UUmAssert(TMgCompare_TemplateIndex == (UUtUns32)extIndex);
 	}
-	
+
 	// first compare based on size
 	if(instanceDescA->size > instanceDescB->size) return -1;
 	if(instanceDescA->size < instanceDescB->size) return 1;
-	
+
 	if(instanceDescA->dataPtr == NULL) return 1;
 	if(instanceDescB->dataPtr == NULL) return -1;
-	
+
 	// next compare based on value of the data
 	{
 		UUtUns8*	swapCode;
 		UUtUns8*	dataPtrA;
 		UUtUns8*	dataPtrB;
-		
+
 		swapCode = instanceDescA->templatePtr->swapCodes;
 		dataPtrA = instanceDescA->dataPtr;
 		dataPtrB = instanceDescB->dataPtr;
-		
+
 		return TMiInstance_Compare_Recursive(&swapCode, &dataPtrA, &dataPtrB, TMgCompare_InstanceFile);
 	}
 }
@@ -4268,7 +4268,7 @@ TMiDumpStats_Compare_InstanceCount(
 	UUtUns32	inB)
 {
 	UUmAssertReadPtr(gTemplateConstructionList, sizeof(TMtTemplateDescriptor));
-	
+
 	if(gTemplateConstructionList[inA].numInstancesUsed == gTemplateConstructionList[inB].numInstancesUsed) return 0;
 	if(gTemplateConstructionList[inA].numInstancesUsed > gTemplateConstructionList[inB].numInstancesUsed) return -1;
 	return 1;
@@ -4280,7 +4280,7 @@ TMiDumpStats_Compare_MemSize(
 	UUtUns32	inB)
 {
 	UUmAssertReadPtr(gTemplateConstructionList, sizeof(TMtTemplateDescriptor));
-	
+
 	if(gTemplateConstructionList[inA].totalSizeOfAllInstances == gTemplateConstructionList[inB].totalSizeOfAllInstances) return 0;
 	if(gTemplateConstructionList[inA].totalSizeOfAllInstances > gTemplateConstructionList[inB].totalSizeOfAllInstances) return -1;
 	return 1;
@@ -4292,7 +4292,7 @@ TMiDumpStats_Compare_NumRemoved(
 	UUtUns32	inB)
 {
 	UUmAssertReadPtr(gTemplateConstructionList, sizeof(TMtTemplateDescriptor));
-	
+
 	if(gTemplateConstructionList[inA].numInstancesRemoved == gTemplateConstructionList[inB].numInstancesRemoved) return 0;
 	if(gTemplateConstructionList[inA].numInstancesRemoved > gTemplateConstructionList[inB].numInstancesRemoved) return -1;
 	return 1;
@@ -4304,7 +4304,7 @@ TMiInstanceFile_RemoveIdentical(
 {
 	TMtTemplate_ConstructionData*	curTemplateData;
 	UUtUns32						curTemplateDataIndex;
-	
+
 	UUtUns32						curInstanceIndex;
 	UUtUns32						targetCheckInstanceIndex;
 	UUtUns32						curInstanceIndexItr;
@@ -4313,91 +4313,91 @@ TMiInstanceFile_RemoveIdentical(
 	TMtInstanceDescriptor*			targetCheckInstance;
 	UUtUns32*						duplicateRemapArray;
 	TMtTemplate_ConstructionData*	templateConstructionData;
-	
+
 	UUtUns32						numTemplateDescriptors = 0;
-	
+
 	UUtUns32						numTotalInstancesRemoved = 0;
 	UUtUns32						totalRemovedSize = 0;
-	
+
 	UUtUns32						numNewInstances;
-	
+
 	UUtUns32						curNameDescIndex;
 	TMtNameDescriptor*				curNameDesc;
-	
+
 	TMtInstanceDescriptor*			originalDescriptorList;
 	UUtUns32*						originalDuplicateDescriptorArray;
-	
+
 	fprintf(stderr, "Removing identical...\n");
-	
+
 	TMgCompare_InstanceFile = inInstanceFile;
 	TMgCompare_InstanceBase = inInstanceFile->instanceDescriptors;
-	
+
 	duplicateRemapArray = UUrMemory_Block_New(inInstanceFile->numInstanceDescriptors * sizeof(UUtInt32));
 	UUmError_ReturnOnNull(duplicateRemapArray);
-	
+
 	UUrMemory_Set32(duplicateRemapArray, UUcMaxUns32, inInstanceFile->numInstanceDescriptors * sizeof(UUtUns32));
-	
+
 	templateConstructionData = UUrMemory_Block_NewClear(TMgNumTemplateDefinitions * sizeof(TMtTemplate_ConstructionData));
 	UUmError_ReturnOnNull(templateConstructionData);
-	
+
 	UUmAssertReadPtr(gInstanceDuplicateArray, sizeof(UUtUns32));
-	
+
 	UUrMemory_Set32(gInstanceDuplicateArray, UUcMaxUns32, inInstanceFile->numInstanceDescriptors * sizeof(UUtUns32));
-	
+
 	originalDescriptorList = UUrMemory_Block_New(inInstanceFile->numInstanceDescriptors * sizeof(TMtInstanceDescriptor));
 	UUmError_ReturnOnNull(originalDescriptorList);
-	
+
 	originalDuplicateDescriptorArray = UUrMemory_Block_New(inInstanceFile->numInstanceDescriptors * sizeof(UUtUns32));
 	UUmError_ReturnOnNull(originalDuplicateDescriptorArray);
-	
+
 	// Build the template construction data
 	for(curInstanceIndex = 0, curInstanceDesc = inInstanceFile->instanceDescriptors;
 		curInstanceIndex < inInstanceFile->numInstanceDescriptors;
 		curInstanceIndex++, curInstanceDesc++)
 	{
 		UUtInt32	templateIndex = curInstanceDesc->templatePtr - TMgTemplateDefinitionArray;
-		
+
 		UUmAssert(templateIndex >= 0);
 		UUmAssert(templateIndex < (UUtInt32)TMgNumTemplateDefinitions);
 
 		templateConstructionData[templateIndex].totalSizeOfAllInstances += curInstanceDesc->size;
-		
+
 		if(templateConstructionData[templateIndex].numInstancesUsed >= TMcMaxInstancesPerTemplate)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Too many instances for template");
 		}
-		
+
 		templateConstructionData[templateIndex].numInstancesUsed++;
-		
+
 		templateConstructionData[templateIndex].instanceIndexList[templateConstructionData[templateIndex].nextInstanceIndex++] = curInstanceIndex;
 	}
-	
+
 	fprintf(stderr, "\tSorting each template type");
-	
+
 	// Sort the instances for each template type
 	for(curTemplateDataIndex = 0, curTemplateData = templateConstructionData;
 		curTemplateDataIndex < TMgNumTemplateDefinitions;
 		curTemplateDataIndex++, curTemplateData++)
 	{
 		if((curTemplateDataIndex % 10) == 0) fprintf(stderr, ".");
-		
+
 		if(curTemplateData->nextInstanceIndex > 0) numTemplateDescriptors++;
-		
+
 		if(curTemplateData->nextInstanceIndex <= 1) continue;
-		
+
 		TMgCompare_TemplateIndex = curTemplateDataIndex;
-		
+
 		AUrQSort_32(
 			curTemplateData->instanceIndexList,
 			curTemplateData->nextInstanceIndex,
 			TMiInstanceFile_RemoveIdentical_Compare);
-			
+
 		TMgCompare_TemplateIndex = UUcMaxUns32;
 	}
-	
+
 	fprintf(stderr, "\n");
 	fprintf(stderr, "\tLooking for duplicates");
-	
+
 	// now look for duplicates
 	for(curTemplateDataIndex = 0, curTemplateData = templateConstructionData;
 		curTemplateDataIndex < TMgNumTemplateDefinitions;
@@ -4407,7 +4407,7 @@ TMiInstanceFile_RemoveIdentical(
 
 		if(curTemplateData->nextInstanceIndex == 0) continue;
 		if(!(TMgTemplateDefinitionArray[curTemplateDataIndex].flags & TMcTemplateFlag_AllowFolding)) continue;
-		
+
 		TMgCompare_TemplateIndex = curTemplateDataIndex;
 
 		// go through the indices comparing the current one to the subsequent ones looking for identical instances
@@ -4417,67 +4417,67 @@ TMiInstanceFile_RemoveIdentical(
 			targetCheckInstanceIndexItr = curInstanceIndexItr;
 			targetCheckInstanceIndex = curTemplateData->instanceIndexList[targetCheckInstanceIndexItr];
 			targetCheckInstance = inInstanceFile->instanceDescriptors + targetCheckInstanceIndex;
-			
+
 			// make sure the target is not already a duplicate
 			UUmAssert(!(targetCheckInstance->flags & TMcDescriptorFlags_Duplicate));
 
 			while(++curInstanceIndexItr < curTemplateData->nextInstanceIndex)
 			{
 				curInstanceIndex = curTemplateData->instanceIndexList[curInstanceIndexItr];
-				
+
 				if(TMiInstanceFile_RemoveIdentical_Compare(
 					targetCheckInstanceIndex,
 					curInstanceIndex) != 0) break;
-				
+
 				// we have an identical instance
-				
+
 				// make sure it has not beeing assigned a target instance already
 				UUmAssert(gInstanceDuplicateArray[curInstanceIndex] == UUcMaxUns32);
-				
+
 				// assign this instance a source(target)
 				gInstanceDuplicateArray[curInstanceIndex] = targetCheckInstanceIndex;	// This needs to get remaped later
-				
+
 				// Mark the target instance as a source
 				targetCheckInstance->flags |= TMcDescriptorFlags_DuplicatedSrc;
-				
+
 				// make sure the source is not a duplicate itself
 				UUmAssert(!(targetCheckInstance->flags & TMcDescriptorFlags_Duplicate));
-				
+
 				curInstanceDesc = inInstanceFile->instanceDescriptors + curInstanceIndex;
-				
+
 				// make sure this instance is not a source - because it is a duplicate
 				UUmAssert(!(curInstanceDesc->flags & TMcDescriptorFlags_DuplicatedSrc));
-				
+
 				// mark this instance as being a duplicate
 				curInstanceDesc->flags |= TMcDescriptorFlags_Duplicate;
-				
+
 				// update some stats
 				curTemplateData->numInstancesRemoved++;
 				numTotalInstancesRemoved++;
-				
+
 				curTemplateData->removedSize += curInstanceDesc->size;
-				
+
 				totalRemovedSize += curInstanceDesc->size;
-				
+
 				UUmAssert(curTemplateData->numInstancesUsed > 0);
 				UUmAssert(curTemplateData->totalSizeOfAllInstances > curInstanceDesc->size);
-				
+
 				curTemplateData->numInstancesUsed--;
 				curTemplateData->totalSizeOfAllInstances -= curInstanceDesc->size;
 			}
 		}
 		TMgCompare_TemplateIndex = UUcMaxUns32;
 	}
-	
+
 	fprintf(stderr, "\n");
 	fprintf(stderr, "\tRemapping");
 
 	UUrMemory_MoveFast(gInstanceDuplicateArray, originalDuplicateDescriptorArray, inInstanceFile->numInstanceDescriptors * sizeof(UUtUns32));
 	UUrMemory_MoveFast(inInstanceFile->instanceDescriptors, originalDescriptorList, inInstanceFile->numInstanceDescriptors * sizeof(TMtInstanceDescriptor));
-		
+
 	// compute the remap array and move the structures
 		numNewInstances = 0;
-		
+
 		for(curInstanceIndex = 0, curInstanceDesc = originalDescriptorList;
 			curInstanceIndex < inInstanceFile->numInstanceDescriptors;
 			curInstanceIndex++, curInstanceDesc++)
@@ -4492,7 +4492,7 @@ TMiInstanceFile_RemoveIdentical(
 			{
 				UUmAssert(originalDuplicateDescriptorArray[curInstanceIndex] == UUcMaxUns32);
 			}
-			
+
 			if(!(curInstanceDesc->flags & TMcDescriptorFlags_Duplicate) || curInstanceDesc->dataPtr == NULL || curInstanceDesc->namePtr != NULL)
 			{
 				gInstanceDuplicateArray[numNewInstances] = originalDuplicateDescriptorArray[curInstanceIndex];
@@ -4503,9 +4503,9 @@ TMiInstanceFile_RemoveIdentical(
 			{
 				UUmAssert(originalDuplicateDescriptorArray[curInstanceIndex] < inInstanceFile->numInstanceDescriptors);
 			}
-			
+
 		}
-	
+
 	TMgCompare_InstanceBase = originalDescriptorList;
 
 	fprintf(stderr, "\n");
@@ -4517,27 +4517,27 @@ TMiInstanceFile_RemoveIdentical(
 		curInstanceIndex++, curInstanceDesc++)
 	{
 		UUtUns32	remappedInstanceIndex = duplicateRemapArray[curInstanceIndex];
-	
+
 		if((curInstanceIndex % 1000) == 0) fprintf(stderr, ".");
 
 		if(remappedInstanceIndex == UUcMaxUns32)
 		{
 			// curInstanceIndex is being deleted
-			
+
 			// make sure it has a duplicate
 			UUmAssert(originalDuplicateDescriptorArray[curInstanceIndex] < inInstanceFile->numInstanceDescriptors);
-			
+
 			targetCheckInstance = originalDescriptorList + originalDuplicateDescriptorArray[curInstanceIndex];
-			
+
 			// make sure that the duplicate flag is set
 			UUmAssert(curInstanceDesc->flags & TMcDescriptorFlags_Duplicate);
-			
+
 			// make sure its source is marked
 			UUmAssert(targetCheckInstance->flags & TMcDescriptorFlags_DuplicatedSrc);
-			
+
 			// make sure it should really be deleted
 			UUmAssert(curInstanceDesc->namePtr == NULL);
-			
+
 			// this deleted instance need to point to the duplicate source
 			duplicateRemapArray[curInstanceIndex] = duplicateRemapArray[originalDuplicateDescriptorArray[curInstanceIndex]];
 			UUmAssert(duplicateRemapArray[curInstanceIndex] < numNewInstances);
@@ -4545,32 +4545,32 @@ TMiInstanceFile_RemoveIdentical(
 		else
 		{
 			// curInstanceIndex is not being deleted
-			
+
 			// make sure it is legal
 			UUmAssert(remappedInstanceIndex < numNewInstances);
-			
+
 			// if it is a duplicate then set its dataPtr to NULL
 			if(originalDuplicateDescriptorArray[curInstanceIndex] != UUcMaxUns32)
 			{
 				UUmAssert(originalDuplicateDescriptorArray[curInstanceIndex] < inInstanceFile->numInstanceDescriptors);
-				
+
 				// curInstanceIndex is a duplicate and it is not being deleted
 				// screwing up tests - curInstanceDesc->dataPtr = NULL; // This gets remapped to the duplicate data later
 			}
 		}
-		
+
 		if(originalDuplicateDescriptorArray[curInstanceIndex] != UUcMaxUns32)
 		{
 			// curInstanceDesc has a duplicate
-			
+
 			targetCheckInstance = originalDescriptorList + originalDuplicateDescriptorArray[curInstanceIndex];
 
 			// make sure it is legal
 			UUmAssert(originalDuplicateDescriptorArray[curInstanceIndex] < inInstanceFile->numInstanceDescriptors);
-			
+
 			// make sure its dupicate it not being deleted
 			UUmAssert(duplicateRemapArray[originalDuplicateDescriptorArray[curInstanceIndex]] != UUcMaxUns32);
-			
+
 			UUmAssert(curInstanceDesc->flags & TMcDescriptorFlags_Duplicate);
 
 			// make sure its source is marked
@@ -4579,14 +4579,14 @@ TMiInstanceFile_RemoveIdentical(
 		else
 		{
 			// curInstanceDesc does not have a duplicate
-			
+
 			UUmAssert(!(curInstanceDesc->flags & TMcDescriptorFlags_Duplicate));
 		}
 	}
-	
+
 	UUrMemory_Array_SetUsedElems(gInstanceDescriptorArray, numNewInstances, NULL);
 	inInstanceFile->numInstanceDescriptors = numNewInstances;
-	
+
 	fprintf(stderr, "\n");
 	fprintf(stderr, "\tUpdating place holders");
 
@@ -4600,22 +4600,22 @@ TMiInstanceFile_RemoveIdentical(
 		if(curInstanceDesc->flags & TMcDescriptorFlags_Duplicate)
 		{
 			UUmAssert(gInstanceDuplicateArray[curInstanceIndex] != UUcMaxUns32);
-			
+
 			gInstanceDuplicateArray[curInstanceIndex] = duplicateRemapArray[gInstanceDuplicateArray[curInstanceIndex]];
-			
+
 			UUmAssert(gInstanceDuplicateArray[curInstanceIndex] < inInstanceFile->numInstanceDescriptors);
-			
+
 		}
 		else
 		{
 			UUmAssert(gInstanceDuplicateArray[curInstanceIndex] == UUcMaxUns32);
 		}
-		
+
 		if(curInstanceDesc->dataPtr == NULL) continue;
-		
+
 		TMmInstanceData_GetPlaceHolder(curInstanceDesc->dataPtr) = TMmPlaceHolder_MakeFromIndex(curInstanceIndex);
 	}
-	
+
 	fprintf(stderr, "\n");
 	fprintf(stderr, "\tRemapping instance data");
 
@@ -4630,15 +4630,15 @@ TMiInstanceFile_RemoveIdentical(
 		{
 			UUtUns8*	swapCode;
 			UUtUns8*	dataPtr;
-			
+
 			swapCode = curInstanceDesc->templatePtr->swapCodes;
 			dataPtr = curInstanceDesc->dataPtr;
-			
+
 			TMiInstance_Remap_Recursive(&swapCode, &dataPtr, duplicateRemapArray, inInstanceFile);
 		}
 
 	}
-	
+
 	// do some more verifing
 	for(curInstanceIndex = 0, curInstanceDesc = inInstanceFile->instanceDescriptors;
 		curInstanceIndex < inInstanceFile->numInstanceDescriptors;
@@ -4647,12 +4647,12 @@ TMiInstanceFile_RemoveIdentical(
 		if(gInstanceDuplicateArray[curInstanceIndex] != UUcMaxUns32)
 		{
 			// curInstanceDesc has a duplicate
-			
+
 			targetCheckInstance = inInstanceFile->instanceDescriptors + gInstanceDuplicateArray[curInstanceIndex];
 
 			// make sure it is legal
 			UUmAssert(gInstanceDuplicateArray[curInstanceIndex] < inInstanceFile->numInstanceDescriptors);
-			
+
 			UUmAssert(curInstanceDesc->flags & TMcDescriptorFlags_Duplicate);
 
 			// make sure its source is marked
@@ -4661,20 +4661,20 @@ TMiInstanceFile_RemoveIdentical(
 		else
 		{
 			// curInstanceDesc does not have a duplicate
-			
+
 			UUmAssert(!(curInstanceDesc->flags & TMcDescriptorFlags_Duplicate));
 		}
 	}
-	
+
 	// now remap the name descriptor array
 	for(curNameDescIndex = 0, curNameDesc = inInstanceFile->nameDescriptors;
 		curNameDescIndex < inInstanceFile->numNameDescriptors;
 		curNameDescIndex++, curNameDesc++)
 	{
 		UUtUns32	remapedIndex = duplicateRemapArray[curNameDesc->instanceDescIndex];
-		
+
 		UUmAssert(remapedIndex < inInstanceFile->numInstanceDescriptors);
-		
+
 		UUmAssert(inInstanceFile->instanceDescriptors[remapedIndex].namePtr != NULL);
 		UUmAssert(strcmp(
 					inInstanceFile->instanceDescriptors[remapedIndex].namePtr,
@@ -4695,25 +4695,25 @@ TMiInstanceFile_RemoveIdentical(
 
 	fprintf(stderr, "num instances saved: %d\n", numTotalInstancesRemoved);
 	fprintf(stderr, "size saved: %d\n", totalRemovedSize);
-	
+
 	UUrMemory_Block_Delete(duplicateRemapArray);
 
 	inInstanceFile->numTemplateDescriptors = numTemplateDescriptors;
 	inInstanceFile->templateDescriptors = UUrMemory_Block_New(numTemplateDescriptors * sizeof(TMtTemplateDescriptor));
 	numTemplateDescriptors = 0;
-	
+
 	for(curTemplateDataIndex = 0, curTemplateData = templateConstructionData;
 		curTemplateDataIndex < TMgNumTemplateDefinitions;
 		curTemplateDataIndex++, curTemplateData++)
 	{
 		if(curTemplateData->numInstancesUsed == 0) continue;
-		
+
 		inInstanceFile->templateDescriptors[numTemplateDescriptors].checksum = TMgTemplateDefinitionArray[curTemplateDataIndex].checksum;
 		inInstanceFile->templateDescriptors[numTemplateDescriptors].tag = TMgTemplateDefinitionArray[curTemplateDataIndex].tag;
 		inInstanceFile->templateDescriptors[numTemplateDescriptors].numUsed = curTemplateData->numInstancesUsed;
 		numTemplateDescriptors++;
 	}
-	
+
 
 	{
 		UUtUns32	curDescIndex;
@@ -4721,34 +4721,34 @@ TMiInstanceFile_RemoveIdentical(
 		FILE*		file;
 		char		instanceFileName[BFcMaxFileNameLength];
 		char		fileName[BFcMaxFileNameLength];
-		
+
 		UUrString_Copy(instanceFileName, BFrFileRef_GetLeafName(inInstanceFile->instanceFileRef), BFcMaxFileNameLength);
 		UUrString_StripExtension(instanceFileName);
-		
+
 		sprintf(fileName, "%s_stats.txt", instanceFileName);
-		
+
 		file = fopen(fileName, "w");
-		
+
 		if(file != NULL)
 		{
 			gTemplateConstructionList = templateConstructionData;
-			
+
 			sortedList = UUrMemory_Block_New(TMgNumTemplateDefinitions * sizeof(UUtUns32));
 			UUmError_ReturnOnNull(sortedList);
-			
+
 			for(curDescIndex = 0; curDescIndex < TMgNumTemplateDefinitions; curDescIndex++)
 			{
 				sortedList[curDescIndex] = curDescIndex;
 			}
-			
+
 			AUrQSort_32(
 				sortedList,
 				TMgNumTemplateDefinitions,
 				TMiDumpStats_Compare_InstanceCount);
-			
+
 			fprintf(file, "Instance file dump\n");
 			fprintf(file, "fileName: %s\n", BFrFileRef_GetLeafName(inInstanceFile->instanceFileRef));
-			
+
 			fprintf(file, "Template descriptor list(sorted by instance count)\n");
 			for(curDescIndex = 0;
 				curDescIndex < TMgNumTemplateDefinitions;
@@ -4757,9 +4757,9 @@ TMiInstanceFile_RemoveIdentical(
 				UUtInt32						templateDefIndex = sortedList[curDescIndex];
 				TMtTemplate_ConstructionData*	curTemplateData = templateConstructionData + templateDefIndex;
 				TMtTemplateDefinition*			templateDef = TMgTemplateDefinitionArray + templateDefIndex;
-				
+
 				if(curTemplateData->numInstancesUsed == 0) continue;
-				
+
 				fprintf(file, "\tName: %s\n", templateDef->name);
 				fprintf(file, "\tTag: %c%c%c%c\n",
 					(templateDef->tag >> 24) & 0xFF,
@@ -4772,12 +4772,12 @@ TMiInstanceFile_RemoveIdentical(
 				fprintf(file, "\tMemory Saved: %d\n", curTemplateData->removedSize);
 				fprintf(file, "\t*******************************\n");
 			}
-			
+
 			for(curDescIndex = 0; curDescIndex < TMgNumTemplateDefinitions; curDescIndex++)
 			{
 				sortedList[curDescIndex] = curDescIndex;
 			}
-			
+
 			AUrQSort_32(
 				sortedList,
 				TMgNumTemplateDefinitions,
@@ -4791,7 +4791,7 @@ TMiInstanceFile_RemoveIdentical(
 				UUtInt32						templateDefIndex = sortedList[curDescIndex];
 				TMtTemplate_ConstructionData*	curTemplateData = templateConstructionData + templateDefIndex;
 				TMtTemplateDefinition*			templateDef = TMgTemplateDefinitionArray + templateDefIndex;
-								
+
 				if(curTemplateData->numInstancesUsed == 0) continue;
 
 				fprintf(file, "\tName: %s\n", templateDef->name);
@@ -4806,12 +4806,12 @@ TMiInstanceFile_RemoveIdentical(
 				fprintf(file, "\tMemory Saved: %d\n", curTemplateData->removedSize);
 				fprintf(file, "\t*******************************\n");
 			}
-			
+
 			for(curDescIndex = 0; curDescIndex < TMgNumTemplateDefinitions; curDescIndex++)
 			{
 				sortedList[curDescIndex] = curDescIndex;
 			}
-			
+
 			AUrQSort_32(
 				sortedList,
 				TMgNumTemplateDefinitions,
@@ -4825,9 +4825,9 @@ TMiInstanceFile_RemoveIdentical(
 				UUtInt32						templateDefIndex = sortedList[curDescIndex];
 				TMtTemplate_ConstructionData*	curTemplateData = templateConstructionData + templateDefIndex;
 				TMtTemplateDefinition*			templateDef = TMgTemplateDefinitionArray + templateDefIndex;
-				
+
 				if(curTemplateData->numInstancesUsed == 0) continue;
-				
+
 				fprintf(file, "\tName: %s\n", templateDef->name);
 				fprintf(file, "\tTag: %c%c%c%c\n",
 					(templateDef->tag >> 24) & 0xFF,
@@ -4840,19 +4840,19 @@ TMiInstanceFile_RemoveIdentical(
 				fprintf(file, "\tMemory Saved: %d\n", curTemplateData->removedSize);
 				fprintf(file, "\t*******************************\n");
 			}
-			
+
 			fclose(file);
-			
+
 			UUrMemory_Block_Delete(sortedList);
 		}
 	}
-	
+
 	UUrMemory_Block_Delete(templateConstructionData);
 	UUrMemory_Block_Delete(originalDuplicateDescriptorArray);
 	UUrMemory_Block_Delete(originalDescriptorList);
-	
+
 	TMgCompare_InstanceFile = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -4868,25 +4868,25 @@ TMiInstanceFile_DeleteUnusedInstances(
 	TMtNameDescriptor*		curNameDesc;
 
 	UUtUns32*				deletedRemapArray = NULL;
-	
+
 	UUtUns8*				swapCodes;
 	UUtUns8*				dataPtr;
-	
+
 	UUtUns32				newInstanceIndex;
-	
+
 	TMtInstanceDescriptor*	originalDescriptorList;
-	
+
 	fprintf(stderr, "Deleting unused...\n");
-	
+
 	deletedRemapArray = UUrMemory_Block_New(inInstanceFile->numInstanceDescriptors * sizeof(UUtInt32));
 	UUmError_ReturnOnNull(deletedRemapArray);
-	
+
 	UUrMemory_Set32(deletedRemapArray, UUcMaxUns32, inInstanceFile->numInstanceDescriptors * sizeof(UUtInt32));
-	
+
 	originalDescriptorList = UUrMemory_Block_New(inInstanceFile->numInstanceDescriptors * sizeof(TMtInstanceDescriptor));
 	UUmError_ReturnOnNull(originalDescriptorList);
-	
-	
+
+
 	UUrMemory_Block_VerifyList();
 
 	/*
@@ -4898,7 +4898,7 @@ TMiInstanceFile_DeleteUnusedInstances(
 			curDescIndex++, curDesc++)
 		{
 			TMmInstanceDesc_Verify(curDesc);
-			
+
 			if(!(curDesc->flags & TMcDescriptorFlags_Touched))
 			{
 				// instance has not been touched, delete it
@@ -4917,7 +4917,7 @@ TMiInstanceFile_DeleteUnusedInstances(
 					{
 						swapCodes = curDesc->templatePtr->swapCodes;
 						dataPtr = curDesc->dataPtr;
-						
+
 						TMiInstance_Clean_Recursive(
 							&swapCodes,
 							&dataPtr,
@@ -4927,7 +4927,7 @@ TMiInstanceFile_DeleteUnusedInstances(
 				}
 			}
 		}
-	
+
 	/*
 	 * NULL out pointers to deleted instances
 	 */
@@ -4937,7 +4937,7 @@ TMiInstanceFile_DeleteUnusedInstances(
 		{
 			swapCodes = curDesc->templatePtr->swapCodes;
 			dataPtr = (UUtUns8 *)curDesc->dataPtr;
-			
+
 			if((curDesc->flags & TMcDescriptorFlags_DeleteMe) || dataPtr == NULL)
 			{
 				continue;
@@ -4945,33 +4945,33 @@ TMiInstanceFile_DeleteUnusedInstances(
 
 			TMiInstance_NullOutDeletedRefs(&swapCodes, &dataPtr, inInstanceFile);
 		}
-	
-		
+
+
 	UUrMemory_MoveFast(inInstanceFile->instanceDescriptors, originalDescriptorList, inInstanceFile->numInstanceDescriptors * sizeof(TMtInstanceDescriptor));
-	
+
 	/*
 	 * Compute the remap array
 	 */
 		newInstanceIndex = 0;
-		
+
 		for(curDescIndex = 0, curDesc = originalDescriptorList;
 			curDescIndex < inInstanceFile->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
 		{
 			TMmInstanceDesc_Verify(curDesc);
-			
+
 			if(!(curDesc->flags & TMcDescriptorFlags_DeleteMe))
 			{
 				inInstanceFile->instanceDescriptors[newInstanceIndex] = *curDesc;
 				deletedRemapArray[curDescIndex] = newInstanceIndex++;
 				continue;
 			}
-			
+
 			if(curDesc->namePtr == NULL)
 			{
 				continue;
 			}
-			
+
 			/* we must delete the name descriptor */
 			for(curNameDescIndex = 0, curNameDesc = inInstanceFile->nameDescriptors;
 				curNameDescIndex < inInstanceFile->numNameDescriptors;
@@ -4980,14 +4980,14 @@ TMiInstanceFile_DeleteUnusedInstances(
 				if(curNameDesc->instanceDescIndex == curDescIndex)
 				{
 					UUmAssert(strcmp(curNameDesc->namePtr, curDesc->namePtr) == 0);
-					
+
 					UUrMemory_Array_DeleteElement(gNameDescriptorArray, curNameDescIndex);
 					inInstanceFile->numNameDescriptors--;
 					break;
 				}
 			}
 		}
-		
+
 	for(curDescIndex = 0, curDesc = originalDescriptorList;
 		curDescIndex < inInstanceFile->numInstanceDescriptors;
 		curDescIndex++, curDesc++)
@@ -4996,17 +4996,17 @@ TMiInstanceFile_DeleteUnusedInstances(
 		{
 			TMtInstanceDescriptor*	originalDesc = originalDescriptorList + curDescIndex;
 			TMtInstanceDescriptor*	newDesc = inInstanceFile->instanceDescriptors + deletedRemapArray[curDescIndex];
-			
+
 			UUmAssert(originalDesc->templatePtr == newDesc->templatePtr);
 			UUmAssert(originalDesc->dataPtr == newDesc->dataPtr);
-		}	
+		}
 	}
-	
+
 	inInstanceFile->numInstanceDescriptors = newInstanceIndex;
 	UUrMemory_Array_SetUsedElems(gInstanceDescriptorArray, newInstanceIndex,  NULL);
 
 	UUrMemory_Block_VerifyList();
-	
+
 	/*
 	 * Remap the name descriptor indices
 	 */
@@ -5016,13 +5016,13 @@ TMiInstanceFile_DeleteUnusedInstances(
 		{
 			curNameDesc->instanceDescIndex = deletedRemapArray[curNameDesc->instanceDescIndex];
 			UUmAssert(curNameDesc->instanceDescIndex < inInstanceFile->numInstanceDescriptors);
-			
+
 			UUmAssert(inInstanceFile->instanceDescriptors[curNameDesc->instanceDescIndex].namePtr != NULL);
 			UUmAssert(strcmp(
 						inInstanceFile->instanceDescriptors[curNameDesc->instanceDescIndex].namePtr,
 						curNameDesc->namePtr) == 0);
 		}
-	
+
 	/*
 	 * update the place holder data
 	 */
@@ -5031,10 +5031,10 @@ TMiInstanceFile_DeleteUnusedInstances(
 			curDescIndex++, curDesc++)
 		{
 			if(curDesc->dataPtr == NULL) continue;
-			
+
 			TMmInstanceData_GetPlaceHolder(curDesc->dataPtr) = TMmPlaceHolder_MakeFromIndex(curDescIndex);
 		}
-	
+
 	/*
 	 * update the place holder data and apply the remap
 	 */
@@ -5043,18 +5043,18 @@ TMiInstanceFile_DeleteUnusedInstances(
 			curDescIndex++, curDesc++)
 		{
 			if(curDesc->dataPtr == NULL) continue;
-			
+
 			swapCodes = curDesc->templatePtr->swapCodes;
 			dataPtr = curDesc->dataPtr;
-			
+
 			TMiInstance_Remap_Recursive(&swapCodes, &dataPtr, deletedRemapArray, inInstanceFile);
 		}
-	
+
 	UUrMemory_Block_Delete(deletedRemapArray);
 	UUrMemory_Block_Delete(originalDescriptorList);
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	return UUcError_None;
 }
 
@@ -5064,85 +5064,85 @@ TMiInstanceFile_Save(
 {
 	UUtError				error;
 	BFtFile*				instancePhysicalFile;
-	
+
 	UUtUns32				curDescIndex;
 	TMtInstanceDescriptor*	curDesc;
-	
+
 	UUtUns32				curDataFilePos;
 	UUtUns32				curNameFilePos;
-	
+
 	UUtUns32				curDataOffset;
 	UUtUns32				curNameOffset;
-	
+
 	UUtUns32				curNameLen;
-	
+
 	TMtTemplateDefinition*	templateDefinition;
-	
-	
+
+
 	TMtInstanceFile_Header	fileHeader;
-		
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	if(inInstanceFile->numInstanceDescriptors == 0)
 	{
 		UUmAssert(inInstanceFile->numNameDescriptors == 0);
 		UUmAssert(inInstanceFile->numTemplateDescriptors == 0);
 		UUmAssert(inInstanceFile->dataBlockLength == 0);
 		UUmAssert(inInstanceFile->nameBlockLength == 0);
-		
+
 		return UUcError_None;
 	}
-	
+
 	if(gInstanceDuplicateArray != NULL)
 	{
 		UUrMemory_Block_Delete(gInstanceDuplicateArray);
 	}
-	
+
 	gInstanceDuplicateArray = UUrMemory_Block_New(inInstanceFile->numInstanceDescriptors * sizeof(UUtUns32));
 	UUmError_ReturnOnNull(gInstanceDuplicateArray);
-	
+
 	// delete unused instances
 		error = TMiInstanceFile_DeleteUnusedInstances(inInstanceFile);
 		UUmError_ReturnOnError(error);
-	
+
 	/*
 	 * Remove identical instance
 	 */
 		error = TMiInstanceFile_RemoveIdentical(inInstanceFile);
 		UUmError_ReturnOnError(error);
-	
+
 	/*
-	 * Prepare all instances for disk 
+	 * Prepare all instances for disk
 	 */
-		
+
 		for(curDescIndex = 0, curDesc = inInstanceFile->instanceDescriptors;
 			curDescIndex < inInstanceFile->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
 		{
 			templateDefinition = curDesc->templatePtr;
-			
+
 			curDesc->templatePtr = (void*)templateDefinition->tag;
 		}
-		
+
 	UUrMemory_Block_VerifyList();
-	
+
 	/*
 	 * Delete the instance file
 	 */
 		error = BFrFile_Delete(inInstanceFile->instanceFileRef);
 		UUmError_ReturnOnErrorMsg(error, "Could not open instance file for writing");
-	 
+
 		error = BFrFile_Create(inInstanceFile->instanceFileRef);
 		UUmError_ReturnOnErrorMsg(error, "Could not open instance file for writing");
-	 
+
 	/*
 	 * open the instance files for writing
 	 */
 		error = BFrFile_Open(inInstanceFile->instanceFileRef, "w", &instancePhysicalFile);
 		UUmError_ReturnOnErrorMsg(error, "Could not open instance file for writing");
-	
+
 	/*
 	 * Calculate the new file header
 	 */
@@ -5152,18 +5152,18 @@ TMiInstanceFile_Save(
 		fileHeader.numNameDescriptors = inInstanceFile->numNameDescriptors;
 		fileHeader.numTemplateDescriptors = inInstanceFile->numTemplateDescriptors;
 		fileHeader.dataBlockOffset =
-			sizeof(TMtInstanceFile_Header) + 
-			fileHeader.numInstanceDescriptors * sizeof(TMtInstanceDescriptor) + 
+			sizeof(TMtInstanceFile_Header) +
+			fileHeader.numInstanceDescriptors * sizeof(TMtInstanceDescriptor) +
 			fileHeader.numNameDescriptors * sizeof(TMtNameDescriptor) +
 			fileHeader.numTemplateDescriptors * sizeof(TMtTemplateDescriptor);
 		fileHeader.dataBlockOffset = UUmMakeMultipleCacheLine(fileHeader.dataBlockOffset);
-			
+
 	/*
 	 * Write out the instance data and compute the new offsets
 	 */
 		curDataOffset = 0;
 		curDataFilePos = fileHeader.dataBlockOffset;
-		
+
 		for(curDescIndex = 0, curDesc = inInstanceFile->instanceDescriptors;
 			curDescIndex < inInstanceFile->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
@@ -5172,10 +5172,10 @@ TMiInstanceFile_Save(
 			{
 				continue;
 			}
-			
+
 			curDataOffset += TMcPreDataBuffer;
 			curDataFilePos += TMcPreDataBuffer;
-			
+
 			// First write the data to the new offset
 			error =
 				BFrFile_WritePos(
@@ -5188,9 +5188,9 @@ TMiInstanceFile_Save(
 			curDesc->dataPtr = (void*)curDataOffset;
 			curDataOffset += curDesc->size;
 			curDataFilePos += curDesc->size;
-			
+
 		}
-		
+
 		for(curDescIndex = 0, curDesc = inInstanceFile->instanceDescriptors;
 			curDescIndex < inInstanceFile->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
@@ -5200,14 +5200,14 @@ TMiInstanceFile_Save(
 				curDesc->dataPtr = inInstanceFile->instanceDescriptors[gInstanceDuplicateArray[curDescIndex]].dataPtr;
 			}
 		}
-		
+
 		UUrMemory_Block_VerifyList();
 
 		fileHeader.dataBlockLength = inInstanceFile->dataBlockLength = curDataOffset;
-		
+
 		curNameOffset = 0;
 		fileHeader.nameBlockOffset = curNameFilePos = curDataFilePos;
-		
+
 		for(curDescIndex = 0, curDesc = inInstanceFile->instanceDescriptors;
 			curDescIndex < inInstanceFile->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
@@ -5216,10 +5216,10 @@ TMiInstanceFile_Save(
 			{
 				continue;
 			}
-			
+
 			// First write the name to the new offset
 			curNameLen = strlen(curDesc->namePtr) + 1;
-			
+
 			error =
 				BFrFile_WritePos(
 					instancePhysicalFile,
@@ -5230,35 +5230,35 @@ TMiInstanceFile_Save(
 
 			curDesc->namePtr = (char*)curNameOffset;
 			curNameOffset += curNameLen;
-			
+
 			curNameFilePos += curNameLen;
 		}
 
 		fileHeader.nameBlockLength = inInstanceFile->nameBlockLength = curNameOffset;
-	
+
 	UUrMemory_Block_VerifyList();
 
 	/*
 	 * Write out the file header
 	 */
 		UUmAssert(fileHeader.numNameDescriptors <= fileHeader.numInstanceDescriptors);
-		UUmAssert(fileHeader.dataBlockOffset >= 
-			sizeof(TMtInstanceFile_Header) + 
-			fileHeader.numInstanceDescriptors * sizeof(TMtInstanceDescriptor) + 
+		UUmAssert(fileHeader.dataBlockOffset >=
+			sizeof(TMtInstanceFile_Header) +
+			fileHeader.numInstanceDescriptors * sizeof(TMtInstanceDescriptor) +
 			fileHeader.numNameDescriptors * sizeof(TMtNameDescriptor) +
 			fileHeader.numTemplateDescriptors * sizeof(TMtTemplateDescriptor));
-		UUmAssert(fileHeader.nameBlockOffset >= 
-			sizeof(TMtInstanceFile_Header) + 
-			fileHeader.numInstanceDescriptors * sizeof(TMtInstanceDescriptor) + 
-			fileHeader.numNameDescriptors * sizeof(TMtNameDescriptor) + 
-			fileHeader.numTemplateDescriptors * sizeof(TMtTemplateDescriptor) + 
+		UUmAssert(fileHeader.nameBlockOffset >=
+			sizeof(TMtInstanceFile_Header) +
+			fileHeader.numInstanceDescriptors * sizeof(TMtInstanceDescriptor) +
+			fileHeader.numNameDescriptors * sizeof(TMtNameDescriptor) +
+			fileHeader.numTemplateDescriptors * sizeof(TMtTemplateDescriptor) +
 			fileHeader.dataBlockLength);
-			
+
 		UUmAssert(fileHeader.dataBlockOffset + fileHeader.dataBlockLength <= fileHeader.nameBlockOffset);
 
 		error = BFrFile_WritePos(instancePhysicalFile, 0, sizeof(TMtInstanceFile_Header), &fileHeader);
 		UUmError_ReturnOnErrorMsg(error, "Could not write endian detector");
-	
+
 	/*
 	 * Write out the instance descriptors
 	 */
@@ -5269,7 +5269,7 @@ TMiInstanceFile_Save(
 					inInstanceFile->numInstanceDescriptors * sizeof(TMtInstanceDescriptor),
 					inInstanceFile->instanceDescriptors);
 		UUmError_ReturnOnErrorMsg(error, "Could not write instance descriptors");
-	
+
 	/*
 	 * Write out the name descriptors
 	 */
@@ -5280,7 +5280,7 @@ TMiInstanceFile_Save(
 					inInstanceFile->numNameDescriptors * sizeof(TMtNameDescriptor),
 					inInstanceFile->nameDescriptors);
 		UUmError_ReturnOnErrorMsg(error, "Could not write name descriptors");
-	
+
 	/*
 	 * Write out the template descriptors
 	 */
@@ -5293,16 +5293,16 @@ TMiInstanceFile_Save(
 					inInstanceFile->numTemplateDescriptors * sizeof(TMtTemplateDescriptor),
 					inInstanceFile->templateDescriptors);
 		UUmError_ReturnOnErrorMsg(error, "Could not write name descriptors");
-		
+
 	BFrFile_Close(instancePhysicalFile);
-	
+
 	UUrMemory_Block_VerifyList();
 
 	UUrMemory_Pool_Reset(gConstructionPool);
-	
+
 	UUrMemory_Block_Delete(inInstanceFile->templateDescriptors);
 	inInstanceFile->templateDescriptors = NULL;
-	
+
 	return TMiInstanceFile_Reload(inInstanceFile, UUcFalse);
 }
 
@@ -5311,13 +5311,13 @@ TMiInstanceFile_Dispose(
 	TMtInstanceFile*	inInstanceFile)
 {
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	BFrFileRef_Dispose(inInstanceFile->instanceFileRef);
-	
+
 	if(gInGame == UUcTrue)
 	{
 		BFrFile_UnMap(inInstanceFile->mapping);
-		
+
 		if(inInstanceFile->dynamicMemory != NULL)
 		{
 			UUrMemory_Block_Delete(inInstanceFile->dynamicMemory);
@@ -5326,23 +5326,23 @@ TMiInstanceFile_Dispose(
 	else
 	{
 		UUmAssert(inInstanceFile->allocBlock == NULL);
-		
+
 		if(inInstanceFile->dataBlock != NULL)
 		{
 			UUrMemory_Block_Delete(inInstanceFile->dataBlock);
 		}
-		
+
 		if(inInstanceFile->nameBlock != NULL)
 		{
 			UUrMemory_Block_Delete(inInstanceFile->nameBlock);
 		}
-		
+
 		if(inInstanceFile->templateDescriptors != NULL)
 		{
 			UUrMemory_Block_Delete(inInstanceFile->templateDescriptors);
 		}
 	}
-	
+
 	UUrMemory_Block_Delete(inInstanceFile);
 }
 
@@ -5354,15 +5354,15 @@ TMiInstanceFile_Instance_FindInstanceDescriptor(
 {
 	UUtUns32				curDescIndex;
 	TMtNameDescriptor*		curDesc;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	for(curDescIndex = 0, curDesc = inInstanceFile->nameDescriptors;
 		curDescIndex < inInstanceFile->numNameDescriptors;
 		curDescIndex++, curDesc++)
 	{
 		UUmAssert(curDesc->namePtr != NULL);
-		
+
 		if(	curDesc->namePtr[0] == (char)((inTemplateTag >> 24) & 0xFF) &&
 			curDesc->namePtr[1] == (char)((inTemplateTag >> 16) & 0xFF) &&
 			curDesc->namePtr[2] == (char)((inTemplateTag >> 8) & 0xFF) &&
@@ -5376,7 +5376,7 @@ TMiInstanceFile_Instance_FindInstanceDescriptor(
 			}
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -5393,31 +5393,31 @@ TMiInstanceFile_Instance_GetDataPtr_DoesNotWork(
 	UUtInt16			result;
 	TMtNameDescriptor*	curNameDesc;
 	TMtInstanceDescriptor*	targetInstanceDesc;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	lowRange = 0;
 	highRange = inInstanceFile->numNameDescriptors;
-	
+
 	while(1)
 	{
 		if(lowRange >= highRange) break;
-		
+
 		midPoint = (lowRange + highRange) >> 1;
-		
+
 		curNameDesc = inInstanceFile->nameDescriptors + midPoint;
-		
+
 		result = strcmp(inName, curNameDesc->namePtr);
-		
+
 		if(result  == 0)
 		{
 			UUmAssert(curNameDesc->instanceDescIndex < inInstanceFile->numInstanceDescriptors);
-			
+
 			targetInstanceDesc = inInstanceFile->instanceDescriptors + curNameDesc->instanceDescIndex;
-			
+
 			TMmInstanceDesc_Verify(targetInstanceDesc);
 			TMmInstanceData_Verify(targetInstanceDesc->dataPtr);
-			
+
 			return targetInstanceDesc->dataPtr;
 		}
 		else if(result < 0)
@@ -5429,7 +5429,7 @@ TMiInstanceFile_Instance_GetDataPtr_DoesNotWork(
 			lowRange = midPoint;
 		}
 	}
-	
+
 	return NULL;
 }
 #endif
@@ -5442,10 +5442,10 @@ TMiInstanceFile_Instance_CreateNewDescriptor(
 	UUtUns32			*outIndex)
 {
 	UUtError				error;
-	
+
 	TMtTemplateDefinition*	templateDefinition;
 	TMtInstanceDescriptor*	newInstanceDescriptor;
-	
+
 	char*					newNamePtr;
 
 	UUtUns32				newIndex;
@@ -5453,14 +5453,14 @@ TMiInstanceFile_Instance_CreateNewDescriptor(
 	UUtUns32				curNameDescIndex;
 	TMtNameDescriptor*		curNameDesc;
 	TMtNameDescriptor*		newNameDescriptor;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
 	UUmAssert(gInGame == UUcFalse);
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	*outIndex = 0xFFFF;
-	
+
 	templateDefinition = TMiTemplate_FindDefinition(inTemplateTag);
 	if(templateDefinition == NULL)
 	{
@@ -5469,14 +5469,14 @@ TMiInstanceFile_Instance_CreateNewDescriptor(
 
 	error = UUrMemory_Array_GetNewElement(gInstanceDescriptorArray, &newIndex, NULL);
 	UUmError_ReturnOnErrorMsg(error, "Could not get new index");
-	
+
 	if(newIndex > TMcMaxInstances)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Exceeded maximum number of instances in a file");
 	}
-	
+
 	inInstanceFile->instanceDescriptors = UUrMemory_Array_GetMemory(gInstanceDescriptorArray);
-	
+
 	newInstanceDescriptor = inInstanceFile->instanceDescriptors + newIndex;
 
 	if(inName != NULL)
@@ -5486,7 +5486,7 @@ TMiInstanceFile_Instance_CreateNewDescriptor(
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Could not alloc contruction pool");
 		}
-		
+
 		strcpy(newNamePtr + 4, inName);
 		newNamePtr[0] = (char)((inTemplateTag >> 24) & 0xFF);
 		newNamePtr[1] = (char)((inTemplateTag >> 16) & 0xFF);
@@ -5497,7 +5497,7 @@ TMiInstanceFile_Instance_CreateNewDescriptor(
 	{
 		newNamePtr = NULL;
 	}
-	
+
 	UUrMemory_Block_VerifyList();
 
 	newInstanceDescriptor->templatePtr = templateDefinition;
@@ -5507,9 +5507,9 @@ TMiInstanceFile_Instance_CreateNewDescriptor(
 	newInstanceDescriptor->creationDate = UUrGetSecsSince1900();
 	newInstanceDescriptor->dataPtr = NULL;
 	newInstanceDescriptor->size = 0;
-	
+
 	newInstanceDescriptor->flags |= TMcDescriptorFlags_Touched;
-	
+
 	UUrMemory_Block_VerifyList();
 
 	if(inName != NULL)
@@ -5523,7 +5523,7 @@ TMiInstanceFile_Instance_CreateNewDescriptor(
 				break;
 			}
 		}
-		
+
 		UUrMemory_Block_VerifyList();
 
 		error = UUrMemory_Array_InsertElement(gNameDescriptorArray, curNameDescIndex, NULL);
@@ -5533,17 +5533,17 @@ TMiInstanceFile_Instance_CreateNewDescriptor(
 		}
 		inInstanceFile->nameDescriptors = UUrMemory_Array_GetMemory(gNameDescriptorArray);
 		newNameDescriptor = inInstanceFile->nameDescriptors + curNameDescIndex;
-		
+
 		newNameDescriptor->namePtr = newInstanceDescriptor->namePtr;
 		newNameDescriptor->instanceDescIndex = newIndex;
-		
+
 		inInstanceFile->numNameDescriptors++;
 	}
-	
+
 	inInstanceFile->numInstanceDescriptors++;
-	
+
 	*outIndex = newIndex;
-	
+
 	return UUcError_None;
 }
 
@@ -5557,22 +5557,22 @@ TMiInstanceFile_Instance_CreatePlaceHolder(
 	UUtError	error;
 	UUtUns32	newIndex;
 	TMtInstanceDescriptor*	targetDesc;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
-	error = 
+
+	error =
 		TMiInstanceFile_Instance_CreateNewDescriptor(
 			inInstanceFile,
 			inTemplateTag,
 			inName,
 			&newIndex);
 	UUmError_ReturnOnError(error);
-	
+
 	*outPlaceHolder = TMmPlaceHolder_MakeFromIndex(newIndex);
-	
+
 	targetDesc = TMrPlaceHolder_GetInstanceDesc(inInstanceFile, *outPlaceHolder);
 	targetDesc->flags |= TMcDescriptorFlags_PlaceHolder;
-	
+
 	return UUcError_None;
 }
 
@@ -5586,23 +5586,23 @@ TMiInstanceFile_Instance_Create(
 	UUtError				error;
 	TMtTemplateDefinition*	templateDefinition;
 	TMtInstanceDescriptor*	newInstanceDescriptor;
-	
+
 	void*					newDataPtr;
 	UUtUns32				dataSize;
-	
+
 	UUtUns32				newDescIndex;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	templateDefinition = TMiTemplate_FindDefinition(inTemplateTag);
 	if(templateDefinition == NULL)
 	{
 		UUrError_Report(UUcError_Generic, "Could not find template definition");
 		return NULL;
 	}
-	
+
 	newInstanceDescriptor = NULL;
-	
+
 	if(inName != NULL)
 	{
 		/*
@@ -5622,14 +5622,14 @@ TMiInstanceFile_Instance_Create(
 				}
 				// Replace the place holder
 				newInstanceDescriptor->flags &= (TMtDescriptorFlags)~TMcDescriptorFlags_PlaceHolder;
-				
+
 				newDescIndex = newInstanceDescriptor - inInstanceFile->instanceDescriptors;
 			}
 	}
-	
+
 	if(newInstanceDescriptor == NULL)
 	{
-		error = 
+		error =
 			TMiInstanceFile_Instance_CreateNewDescriptor(
 				inInstanceFile,
 				inTemplateTag,
@@ -5640,12 +5640,12 @@ TMiInstanceFile_Instance_Create(
 			UUrError_Report(UUcError_Generic, "Could not create descriptor");
 			return NULL;
 		}
-		
+
 		newInstanceDescriptor = inInstanceFile->instanceDescriptors + newDescIndex;
 	}
 
 	dataSize = templateDefinition->size + inVarArrayLength * templateDefinition->varArrayElemSize;
-	
+
 	dataSize = (dataSize + UUcProcessor_CacheLineSize_Mask) & ~UUcProcessor_CacheLineSize_Mask;
 
 	newDataPtr = UUrMemory_Pool_Block_New(gConstructionPool, dataSize + TMcPreDataBuffer);
@@ -5654,20 +5654,20 @@ TMiInstanceFile_Instance_Create(
 		UUmAssert(!"Out of memory");
 		return NULL;
 	}
-	
+
 	UUrMemory_Set32(newDataPtr, 0xDEADDEAD, dataSize + TMcPreDataBuffer);
-	
+
 	UUmAssertAlignedPtr(newDataPtr);
 
 	newDataPtr = (char*)newDataPtr + TMcPreDataBuffer;
-	
+
 	UUmAssertReadPtr(newDataPtr, dataSize);
-	
+
 	TMmInstanceData_GetPlaceHolder(newDataPtr) = TMmPlaceHolder_MakeFromIndex(newDescIndex);
 	TMmInstanceData_GetInstanceFile(newDataPtr) = inInstanceFile;
 	TMmInstanceData_GetMagicCookie(newDataPtr) = TMcMagicCookie;
 	TMmInstanceData_GetTemplateDefinition(newDataPtr) = templateDefinition;
-	
+
 	newInstanceDescriptor->checksum = templateDefinition->checksum;
 	newInstanceDescriptor->size = dataSize;
 	newInstanceDescriptor->dataPtr = newDataPtr;
@@ -5675,7 +5675,7 @@ TMiInstanceFile_Instance_Create(
 	{
 		UUtUns8*	dataPtr	= newDataPtr;
 		UUtUns8*	swapCodes = newInstanceDescriptor->templatePtr->swapCodes;
-		
+
 		TMiInstance_VarArray_Reset_Recursive(
 			&swapCodes,
 			&dataPtr,
@@ -5693,32 +5693,32 @@ TMiInstanceFile_Instance_Clean(
 {
 	UUtUns8*				swapCode;
 	UUtUns8*				dataPtr;
-	
+
 	TMtInstanceDescriptor*	targetDesc;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
-	
+
 	targetDesc = TMiInstanceFile_Instance_FindInstanceDescriptor(inInstanceFile, inTemplateTag, inName);
 	if(targetDesc == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not find descriptor");
 	}
-	
+
 	if(targetDesc->dataPtr == NULL)
 	{
 		return UUcError_None;
 	}
-	
+
 	targetDesc->flags |= TMcDescriptorFlags_Touched;
-	
+
 	swapCode = targetDesc->templatePtr->swapCodes;
 	dataPtr = targetDesc->dataPtr;
-	
+
 	TMiInstance_Clean_Recursive(
 		&swapCode,
 		&dataPtr,
 		inInstanceFile);
-	
+
 	return UUcError_None;
 }
 
@@ -5730,42 +5730,42 @@ TMiInstanceFile_Instance_ResizeVarArray(
 	TMtInstanceDescriptor*	instanceDesc;
 	UUtUns32				newSize;
 	void*					newDataPtr;
-	
+
 	TMmInstanceData_Verify(inDataPtr);
-	
+
 	instanceDesc = TMrPlaceHolder_GetInstanceDesc(gConstructionFile, (TMtPlaceHolder)inDataPtr);
 	UUmAssert(instanceDesc != NULL);
 	TMmInstanceDesc_Verify(instanceDesc);
-	
-	newSize = instanceDesc->templatePtr->size + 
+
+	newSize = instanceDesc->templatePtr->size +
 		instanceDesc->templatePtr->varArrayElemSize * inVarArrayLength;
-	
+
 	newDataPtr = UUrMemory_Pool_Block_New(gConstructionPool, newSize + TMcPreDataBuffer);
-	
+
 	if(newDataPtr == NULL)
 	{
 		return NULL;
 	}
-	
+
 	newDataPtr = (char*)newDataPtr + TMcPreDataBuffer;
-	
+
 	TMmInstanceData_GetInstanceFile(newDataPtr) = TMmInstanceData_GetInstanceFile(instanceDesc->dataPtr);
 	TMmInstanceData_GetPlaceHolder(newDataPtr) = TMmInstanceData_GetPlaceHolder(instanceDesc->dataPtr);
 	TMmInstanceData_GetMagicCookie(newDataPtr) = TMcMagicCookie;
 	TMmInstanceData_GetTemplateDefinition(newDataPtr) = instanceDesc->templatePtr;
-	
+
 	instanceDesc->dataPtr = newDataPtr;
-	
+
 	{
 		UUtUns8*	dataPtr	= newDataPtr;
 		UUtUns8*	swapCodes = instanceDesc->templatePtr->swapCodes;
-		
+
 		TMiInstance_VarArray_Reset_Recursive(
 			&swapCodes,
 			&dataPtr,
 			inVarArrayLength);
 	}
-	
+
 	return newDataPtr;
 }
 
@@ -5776,15 +5776,15 @@ TMiInstanceFile_Instance_Touch(
 {
 	UUtUns8*				swapCodes;
 	UUtUns8*				dataPtr;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
 	TMmInstanceDesc_Verify(inInstanceDesc);
-	
+
 	if(inInstanceDesc->dataPtr != NULL)
 	{
 		swapCodes = inInstanceDesc->templatePtr->swapCodes;
 		dataPtr = inInstanceDesc->dataPtr;
-		
+
 		TMiInstance_Touch_Recursive(
 			&swapCodes,
 			&dataPtr,
@@ -5799,9 +5799,9 @@ TMiInstanceFile_VerifyAllTouched(
 	TMtInstanceFile*	inInstanceFile)
 {
 	UUtUns32				curDescIndex;
-	
+
 	TMtInstanceDescriptor*	curInstDesc;
-	
+
 	UUtUns8*				swapCodes;
 	UUtUns8*				dataPtr;
 
@@ -5812,31 +5812,31 @@ TMiInstanceFile_VerifyAllTouched(
 	{
 		curInstDesc->flags &= (TMtDescriptorFlags)~TMcDescriptorFlags_Touched;
 	}
-	
+
 	for(
 		curDescIndex = 0, curInstDesc = inInstanceFile->instanceDescriptors;
 		curDescIndex < inInstanceFile->numInstanceDescriptors;
 		curDescIndex++, curInstDesc++)
 	{
 		if((curDescIndex % 100) == 0) fputc('.', stderr);
-		
+
 		if(curInstDesc->flags & (TMcDescriptorFlags_Unique | TMcDescriptorFlags_PlaceHolder))
 		{
 			continue;
 		}
-		
+
 		swapCodes = curInstDesc->templatePtr->swapCodes;
 		dataPtr = curInstDesc->dataPtr;
-		
+
 		if(dataPtr == NULL) continue;
-		
+
 		TMiInstance_Touch_Recursive(
 			&swapCodes,
 			&dataPtr,
 			inInstanceFile);
 	}
 	fputc('\n', stderr);
-	
+
 	for(
 		curDescIndex = 0, curInstDesc = inInstanceFile->instanceDescriptors;
 		curDescIndex < inInstanceFile->numInstanceDescriptors;
@@ -5847,8 +5847,8 @@ TMiInstanceFile_VerifyAllTouched(
 		//if(curInstDesc->flags & TMcDescriptorFlags_PlaceHolder) continue;
 		UUmAssert(!(curInstDesc->flags & TMcDescriptorFlags_DeleteMe));
 		if(!(curInstDesc->flags & TMcDescriptorFlags_Unique)) continue;
-		
-		if(curInstDesc->flags & TMcDescriptorFlags_Touched) continue;	
+
+		if(curInstDesc->flags & TMcDescriptorFlags_Touched) continue;
 
 		if (!ignore) {
 			AUtMB_ButtonChoice button;
@@ -5892,20 +5892,20 @@ TMrInitialize(
 	BFtFileRef*		inGameDataFolderRef)
 {
 	UUtError				error;
-	
+
 	gInGame = inGame;
-	
+
 	UUmAssert(sizeof(TMtInstanceFile_Header) == UUcProcessor_CacheLineSize * 2);
-	
+
 	/*
 	 * Get the folder ref
 	 */
 		error = BFrFileRef_Duplicate(inGameDataFolderRef, &TMgDataFolderRef);
 		UUmError_ReturnOnErrorMsg(error, "Could not duplicate game data file ref");
-	
+
 	TMrTemplate_BuildList();
-	
-	
+
+
 	if(inGame == UUcTrue)
 	{
 		/*
@@ -5917,14 +5917,14 @@ TMrInitialize(
 			UUrError_Report(UUcError_OutOfMemory, "could not create perm memory pool");
 			return UUcError_OutOfMemory;
 		}
-	
+
 		TMgTempPool = UUrMemory_Pool_New(TMcTempPoolChunkSize, UUcPool_Fixed);
 		if(TMgTempPool == NULL)
 		{
 			UUrError_Report(UUcError_OutOfMemory, "could not create Temp memory pool");
 			return UUcError_OutOfMemory;
 		}
-		
+
 		/*
 		 * Initialize the dynamic instance fies
 		 */
@@ -5947,15 +5947,15 @@ TMrInitialize(
 			TMgTempInstanceFile.nameBlockLength			= 0;
 			TMgTempInstanceFile.nameBlock				= NULL;
 			TMgTempInstanceFile.dynamicMemory			= NULL;
-			
+
 			#if defined(DEBUGGING) && DEBUGGING
-			
+
 				TMgPermInstanceFile.magicCookie = TMcMagicCookie;
 				TMgTempInstanceFile.magicCookie = TMcMagicCookie;
-				
+
 			#endif
-			
-			TMgPermDescriptorArray = 
+
+			TMgPermDescriptorArray =
 				UUrMemory_Array_New(
 					sizeof(TMtInstanceDescriptor),
 					20,
@@ -5965,10 +5965,10 @@ TMrInitialize(
 			{
 				UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Could not alloc perm desc array");
 			}
-			
+
 			TMgPermInstanceFile.instanceDescriptors = UUrMemory_Array_GetMemory(TMgPermDescriptorArray);
-			
-			TMgTempDescriptorArray = 
+
+			TMgTempDescriptorArray =
 				UUrMemory_Array_New(
 					sizeof(TMtInstanceDescriptor),
 					20,
@@ -5986,7 +5986,7 @@ TMrInitialize(
 		gConstructionPool = UUrMemory_Pool_New(TMcConstructionPoolChunkSize, UUcPool_Growable);
 		UUmError_ReturnOnNull(gConstructionPool);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -6007,14 +6007,14 @@ TMrTerminate(
 		TMgPermDescriptorArray = NULL;
 		UUrMemory_Array_Delete(TMgTempDescriptorArray);
 		TMgTempDescriptorArray = NULL;
-			
+
 	}
 
 	if(gTemplateDefinitionsAlloced != NULL)
 	{
-		
+
 		for(i = 0; i < TMgNumTemplateDefinitions; i++)
-		{	
+		{
 			if(TMgTemplateDefinitionArray[i].swapCodes != NULL)
 			{
 				UUrMemory_Block_Delete(TMgTemplateDefinitionArray[i].swapCodes);
@@ -6024,45 +6024,45 @@ TMrTerminate(
 		UUrMemory_Block_Delete(gTemplateDefinitionsAlloced);
 		gTemplateDefinitionsAlloced = NULL;
 	}
-	
+
 	if(gTemplateNameAlloced != NULL)
 	{
 		UUrMemory_String_Delete(gTemplateNameAlloced);
 	}
-	
+
 	if(TMgTemplateNameData != NULL)
 	{
 		UUrMemory_Block_Delete(TMgTemplateNameData);
 	}
-	
+
 	if(TMgTemplateData != NULL)
 	{
 		UUrMemory_Block_Delete(TMgTemplateData);
 	}
-	
+
 	if(TMgPermPool != NULL)
 	{
 		UUrMemory_Pool_Delete(TMgPermPool);
 		TMgPermPool = NULL;
 	}
-	
+
 	if(TMgTempPool != NULL)
 	{
 		UUrMemory_Pool_Delete(TMgTempPool);
 		TMgTempPool = NULL;
 	}
-	
+
 	if(TMgDataFolderRef != NULL)
 	{
 		BFrFileRef_Dispose(TMgDataFolderRef);
 	}
-	
+
 	TMgTemplateData = NULL;
 	TMgTemplateNameData = NULL;
 	TMgNumTemplateDefinitions = 0;
-	
+
 	UUmAssert(gConstructionFile == NULL);
-	
+
 	if(gInGame == UUcFalse)
 	{
 		if(gInstanceDescriptorArray != NULL)
@@ -6070,19 +6070,19 @@ TMrTerminate(
 			UUrMemory_Array_Delete(gInstanceDescriptorArray);
 			gInstanceDescriptorArray = NULL;
 		}
-		
+
 		if(gNameDescriptorArray != NULL)
 		{
 			UUrMemory_Array_Delete(gNameDescriptorArray);
 			gNameDescriptorArray = NULL;
 		}
-		
+
 		if(gConstructionPool != NULL)
 		{
 			UUrMemory_Pool_Delete(gConstructionPool);
 			gConstructionPool = NULL;
 		}
-		
+
 		if(gInstanceDuplicateArray != NULL)
 		{
 			UUrMemory_Block_Delete(gInstanceDuplicateArray);
@@ -6101,7 +6101,7 @@ TMrMameAndDestroy(
 	BFtFileRef*			datFileRef;
 	BFtFile*			datFile;
 	void*				garbage;
-	
+
 	error =
 		BFrDirectory_FileIterator_New(
 			TMgDataFolderRef,
@@ -6109,12 +6109,12 @@ TMrMameAndDestroy(
 			".dat",
 			&fileIterator);
 	UUmError_ReturnOnErrorMsg(error, "Could not create file iterator");
-	
+
 	garbage = UUrMemory_Block_New(TMcMameAndDestroy_Garb_Size);
 	UUmError_ReturnOnNull(garbage);
-	
+
 	UUrMemory_Set32(garbage, 0xDEAD, TMcMameAndDestroy_Garb_Size);
-	
+
 	while(1)
 	{
 		error = BFrDirectory_FileIterator_Next(fileIterator, &datFileRef);
@@ -6122,7 +6122,7 @@ TMrMameAndDestroy(
 		{
 			break;
 		}
-		
+
 		error = BFrFile_Open(datFileRef, "w", &datFile);
 
 		if(error == UUcError_None)
@@ -6130,14 +6130,14 @@ TMrMameAndDestroy(
 			BFrFile_Write(datFile, TMcMameAndDestroy_Garb_Size, garbage);
 			BFrFile_Close(datFile);
 		}
-				
+
 		BFrFileRef_Dispose(datFileRef);
-	}	
-	
+	}
+
 	BFrDirectory_FileIterator_Delete(fileIterator);
-	
+
 	UUrMemory_Block_Delete(garbage);
-	
+
 	return UUcError_None;
 }
 
@@ -6156,33 +6156,33 @@ TMrTemplate_Register(
 	TMtAllowFolding		inAllowFolding)
 {
 	TMtTemplateDefinition	*curTemplateDefinition;
-	
+
 	curTemplateDefinition = TMiTemplate_FindDefinition(inTemplateTag);
 
 	if(curTemplateDefinition == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "template does not exist");
 	}
-	
+
 	if(curTemplateDefinition->flags & TMcTemplateFlag_Registered)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "template already registered");
 	}
-	
+
 	if(curTemplateDefinition->size + curTemplateDefinition->varArrayElemSize != inSize)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "size mismatch, either you need to run the extractor or structure padding is wrong");
 	}
 
 	curTemplateDefinition->flags |= TMcTemplateFlag_Registered;
-	
+
 	if(inAllowFolding == TMcFolding_Allow)
 	{
 		curTemplateDefinition->flags |= TMcTemplateFlag_AllowFolding;
 	}
-	
+
 	curTemplateDefinition->handler = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -6197,22 +6197,22 @@ TMrTemplate_InstallPrivateData(
 	TMtTemplateProc_Handler	inProcHandler)
 {
 	TMtTemplateDefinition*	templatePtr;
-	
+
 	templatePtr = TMiTemplate_FindDefinition(inTemplateTag);
 	if(templatePtr == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not find template");
 	}
-	
+
 	if(templatePtr->handler != NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "A handler is already installed");
 	}
-	
+
 	templatePtr->privateDataSize = inDynamicSize;
 
 	templatePtr->handler = inProcHandler;
-		
+
 	return UUcError_None;
 }
 
@@ -6222,17 +6222,17 @@ TMrTemplate_InstallByteSwap(
 	TMtTemplateProc_ByteSwap	inProc)
 {
 	TMtTemplateDefinition*	templatePtr;
-	
+
 	templatePtr = TMiTemplate_FindDefinition(inTemplateTag);
 	if(templatePtr == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not find template");
 	}
-	
+
 	UUmAssert(templatePtr->varArrayElemSize > 0);
-	
+
 	templatePtr->byteSwapProc = inProc;
-	
+
 	return UUcError_None;
 }
 
@@ -6245,7 +6245,7 @@ TMrTemplate_CallProc(
 	TMtTemplateProc_Message		inMessage)
 {
 	UUtUns32			curFileIndex;
-	
+
 	for(curFileIndex = 0; curFileIndex < TMgNumLevel0Files; curFileIndex++)
 	{
 		if(TMgLevel0Files[curFileIndex] != NULL)
@@ -6253,7 +6253,7 @@ TMrTemplate_CallProc(
 			TMiInstanceFile_CallProcs(TMgLevel0Files[curFileIndex], inMessage);
 		}
 	}
-	
+
 	for(curFileIndex = 0; curFileIndex < TMgNumCurLevelFiles; curFileIndex++)
 	{
 		if(TMgCurLevelFiles[curFileIndex] != NULL)
@@ -6261,7 +6261,7 @@ TMrTemplate_CallProc(
 			TMiInstanceFile_CallProcs(TMgCurLevelFiles[curFileIndex], inMessage);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -6282,12 +6282,12 @@ TMrInstance_GetDataPtr(
 	UUtUns32				curFileIndex;
 	TMtInstanceDescriptor*	targetInstDesc;
 	TMtTemplateDefinition*	templatePtr;
-	
+
 	UUmAssert(gInGame == UUcTrue);
 	UUmAssert(gConstructionFile == NULL);
-	
+
 	*outDataPtr = NULL;
-	
+
 	templatePtr = TMiTemplate_FindDefinition(inTemplateTag);
 	if(templatePtr == NULL)
 	{
@@ -6300,27 +6300,27 @@ TMrInstance_GetDataPtr(
 			inInstanceName);
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not find template definition");
 	}
-	
+
 	// First look in non final current level instance finals
 	for(curFileIndex = 0; curFileIndex < TMgNumCurLevelFiles; curFileIndex++)
 	{
 		if(TMgCurLevelFiles[curFileIndex]->final == UUcTrue) continue;
-		
+
 		targetInstDesc =
 			TMiInstanceFile_Instance_FindInstanceDescriptor(
 				TMgCurLevelFiles[curFileIndex],
 				inTemplateTag,
 				inInstanceName);
-				
+
 		if(targetInstDesc != NULL && targetInstDesc->dataPtr != NULL)
 		{
 			TMmInstanceData_Verify(targetInstDesc->dataPtr);
-			
+
 			*outDataPtr = targetInstDesc->dataPtr;
 			return UUcError_None;
 		}
 	}
-	
+
 	// Look in final current level instance finals
 	for(curFileIndex = 0; curFileIndex < TMgNumCurLevelFiles; curFileIndex++)
 	{
@@ -6331,21 +6331,21 @@ TMrInstance_GetDataPtr(
 				TMgCurLevelFiles[curFileIndex],
 				inTemplateTag,
 				inInstanceName);
-				
+
 		if(targetInstDesc != NULL && targetInstDesc->dataPtr != NULL)
 		{
 			TMmInstanceData_Verify(targetInstDesc->dataPtr);
-			
+
 			*outDataPtr = targetInstDesc->dataPtr;
 			return UUcError_None;
 		}
 	}
-	
+
 	// First look in non final level 0 instance finals
 	for(curFileIndex = 0; curFileIndex < TMgNumLevel0Files; curFileIndex++)
 	{
 		if(TMgLevel0Files[curFileIndex]->final == UUcTrue) continue;
-		
+
 		targetInstDesc =
 			TMiInstanceFile_Instance_FindInstanceDescriptor(
 				TMgLevel0Files[curFileIndex],
@@ -6353,19 +6353,19 @@ TMrInstance_GetDataPtr(
 				inInstanceName);
 		if(targetInstDesc != NULL && targetInstDesc->dataPtr != NULL)
 		{
-			
+
 			TMmInstanceData_Verify(targetInstDesc->dataPtr);
-			
+
 			*outDataPtr = targetInstDesc->dataPtr;
 			return UUcError_None;
 		}
 	}
-	
+
 	// Look in final level 0 instance finals
 	for(curFileIndex = 0; curFileIndex < TMgNumLevel0Files; curFileIndex++)
 	{
 		if(TMgLevel0Files[curFileIndex]->final == UUcFalse) continue;
-		
+
 		targetInstDesc =
 			TMiInstanceFile_Instance_FindInstanceDescriptor(
 				TMgLevel0Files[curFileIndex],
@@ -6373,14 +6373,14 @@ TMrInstance_GetDataPtr(
 				inInstanceName);
 		if(targetInstDesc != NULL && targetInstDesc->dataPtr != NULL)
 		{
-			
+
 			TMmInstanceData_Verify(targetInstDesc->dataPtr);
-			
+
 			*outDataPtr = targetInstDesc->dataPtr;
 			return UUcError_None;
 		}
 	}
-	
+
 	return UUcError_Generic;
 }
 
@@ -6395,27 +6395,27 @@ TMrInstance_GetDataPtr_List(
 	TMtInstanceDescriptor*	curDesc;
 	TMtTemplateDefinition*	templatePtr;
 	UUtUns32				curDescIndex;
-	
+
 	UUtUns32				numPtrs;
-	
+
 	UUmAssert(gInGame == UUcTrue);
 	UUmAssert(gConstructionFile == NULL);
-	
+
 	numPtrs = 0;
-	
+
 	templatePtr = TMiTemplate_FindDefinition(inTemplateTag);
 	if(templatePtr == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not find template definition");
 	}
-	
+
 	// First look in the non final files
 	for(curFileIndex = 0; curFileIndex < TMgNumCurLevelFiles; curFileIndex++)
 	{
 		UUmAssertReadPtr(TMgCurLevelFiles[curFileIndex], sizeof(TMtInstanceFile));
-		
+
 		if(TMgCurLevelFiles[curFileIndex]->final == UUcTrue) continue;
-		
+
 		for(curDescIndex = 0, curDesc = TMgCurLevelFiles[curFileIndex]->instanceDescriptors;
 			curDescIndex < TMgCurLevelFiles[curFileIndex]->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
@@ -6434,12 +6434,12 @@ TMrInstance_GetDataPtr_List(
 			}
 		}
 	}
-	
+
 	// next look in the final files
 	for(curFileIndex = 0; curFileIndex < TMgNumCurLevelFiles; curFileIndex++)
 	{
 		if(TMgCurLevelFiles[curFileIndex]->final == UUcFalse) continue;
-		
+
 		for(curDescIndex = 0, curDesc = TMgCurLevelFiles[curFileIndex]->instanceDescriptors;
 			curDescIndex < TMgCurLevelFiles[curFileIndex]->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
@@ -6458,11 +6458,11 @@ TMrInstance_GetDataPtr_List(
 			}
 		}
 	}
-	
+
 	for(curFileIndex = 0; curFileIndex < TMgNumLevel0Files; curFileIndex++)
 	{
 		if(TMgLevel0Files[curFileIndex]->final == UUcTrue) continue;
-		
+
 		for(curDescIndex = 0, curDesc = TMgLevel0Files[curFileIndex]->instanceDescriptors;
 			curDescIndex < TMgLevel0Files[curFileIndex]->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
@@ -6481,11 +6481,11 @@ TMrInstance_GetDataPtr_List(
 			}
 		}
 	}
-	
+
 	for(curFileIndex = 0; curFileIndex < TMgNumLevel0Files; curFileIndex++)
 	{
 		if(TMgLevel0Files[curFileIndex]->final == UUcFalse) continue;
-		
+
 		for(curDescIndex = 0, curDesc = TMgLevel0Files[curFileIndex]->instanceDescriptors;
 			curDescIndex < TMgLevel0Files[curFileIndex]->numInstanceDescriptors;
 			curDescIndex++, curDesc++)
@@ -6504,9 +6504,9 @@ TMrInstance_GetDataPtr_List(
 			}
 		}
 	}
-	
+
 	*outNumPtrs = numPtrs;
-	
+
 	return UUcError_None;
 }
 
@@ -6578,32 +6578,32 @@ TMrInstance_Dynamic_New(
 	TMtInstanceDescriptor*	newDesc;
 	UUtUns32				newIndex;
 	void*					newDynamicMemory;
-	
+
 	UUmAssert(gInGame == UUcTrue);
 	UUmAssert(gConstructionFile == NULL);
 	UUmAssert((TMcTemporarySpace == inTempSpace) || (TMcPermanentSpace == inTempSpace));
-	
+
 	templatePtr = TMiTemplate_FindDefinition(inTemplateTag);
 	if(templatePtr == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not find template");
 	}
-	
+
 	newDynamicMemory = NULL;
-	
+
 	size = templatePtr->size + templatePtr->varArrayElemSize * inInitialVarArrayLength;
-	
+
 	if(inTempSpace == TMcTemporarySpace)
 	{
 		newDataPtr = UUrMemory_Pool_Block_New(TMgTempPool, size + TMcPreDataBuffer);
-		
+
 		error = UUrMemory_Array_MakeRoom(TMgTempDescriptorArray, TMgTempInstanceFile.numInstanceDescriptors + 1, NULL);
 		UUmError_ReturnOnErrorMsg(error, "Could not make room");
-		
+
 		TMgTempInstanceFile.instanceDescriptors = UUrMemory_Array_GetMemory(TMgTempDescriptorArray);
 		newDesc = TMgTempInstanceFile.instanceDescriptors + TMgTempInstanceFile.numInstanceDescriptors;
 		newIndex = TMgTempInstanceFile.numInstanceDescriptors++;
-		
+
 		if(templatePtr->privateDataSize != 0)
 		{
 			newDynamicMemory = UUrMemory_Pool_Block_New(TMgTempPool, templatePtr->privateDataSize);
@@ -6616,14 +6616,14 @@ TMrInstance_Dynamic_New(
 	else
 	{
 		newDataPtr = UUrMemory_Pool_Block_New(TMgPermPool, size + TMcPreDataBuffer);
-		
+
 		error = UUrMemory_Array_MakeRoom(TMgPermDescriptorArray, TMgPermInstanceFile.numInstanceDescriptors + 1, NULL);
 		UUmError_ReturnOnErrorMsg(error, "Could not make room");
-		
+
 		TMgPermInstanceFile.instanceDescriptors = UUrMemory_Array_GetMemory(TMgPermDescriptorArray);
 		newDesc = TMgPermInstanceFile.instanceDescriptors + TMgPermInstanceFile.numInstanceDescriptors;
 		newIndex = TMgPermInstanceFile.numInstanceDescriptors++;
-		
+
 		if(templatePtr->privateDataSize != 0)
 		{
 			newDynamicMemory = UUrMemory_Pool_Block_New(TMgPermPool, templatePtr->privateDataSize);
@@ -6633,12 +6633,12 @@ TMrInstance_Dynamic_New(
 			}
 		}
 	}
-	
+
 	if(newDataPtr == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "could not allocate dynamic instance");
 	}
-	
+
 	newDataPtr = (char*)newDataPtr + TMcPreDataBuffer;
 
 	newDesc->templatePtr = templatePtr;
@@ -6646,35 +6646,35 @@ TMrInstance_Dynamic_New(
 	newDesc->namePtr = NULL;
 	newDesc->size = size;
 	newDesc->checksum = templatePtr->checksum;
-	
+
 	TMmInstance_GetDynamicData(newDataPtr) = newDynamicMemory;
-	
+
 	TMmInstanceData_GetInstanceFile(newDataPtr) = (inTempSpace == TMcTemporarySpace) ? &TMgTempInstanceFile : &TMgPermInstanceFile;
 	TMmInstanceData_GetPlaceHolder(newDataPtr) = TMmPlaceHolder_MakeFromIndex(newIndex);
 	TMmInstanceData_GetMagicCookie(newDataPtr) = TMcMagicCookie;
 	TMmInstanceData_GetTemplateDefinition(newDataPtr) = templatePtr;
-	
+
 	/*
 	 * Set the variable length array
 	 */
 	{
 		UUtUns8*	swapCode = templatePtr->swapCodes;
 		UUtUns8*	dataPtr = (UUtUns8 *)newDataPtr;
-		
+
 		TMiInstance_VarArray_Reset_Recursive(
 			&swapCode,
 			&dataPtr,
 			inInitialVarArrayLength);
 	}
-	
+
 	if(templatePtr->handler != NULL)
 	{
 		error = templatePtr->handler(TMcTemplateProcMessage_NewPostProcess, templatePtr->tag, newDataPtr);
 		UUmError_ReturnOnErrorMsg(error, "Could not new post process");
 	}
-		
+
 	*outDataPtr = newDataPtr;
-	
+
 	return UUcError_None;
 }
 
@@ -6686,13 +6686,13 @@ TMrInstance_Update(
 	void*				inDataPtr)
 {
 	TMtTemplateDefinition*	templatePtr;
-	
+
 	TMmInstanceData_Verify(inDataPtr);
 
 	templatePtr = TMmInstanceData_GetTemplateDefinition(inDataPtr);
-	
+
 	if(templatePtr->handler == NULL) return UUcError_None;
-	
+
 	return templatePtr->handler(TMcTemplateProcMessage_Update, templatePtr->tag, inDataPtr);
 }
 
@@ -6704,11 +6704,11 @@ TMrInstance_PrepareForUse(
 	void*				inDataPtr)
 {
 	TMtTemplateDefinition*	templatePtr;
-	
+
 	TMmInstanceData_Verify(inDataPtr);
 
 	templatePtr = TMmInstanceData_GetTemplateDefinition(inDataPtr);
-	
+
 	if(templatePtr->handler == NULL) return UUcError_None;
 
 	return templatePtr->handler(TMcTemplateProcMessage_PrepareForUse, templatePtr->tag, inDataPtr);
@@ -6723,15 +6723,15 @@ TMrInstance_GetTemplateTag(
 {
 	TMtInstanceDescriptor*	targetDesc;
 	TMtInstanceFile*		targetInstanceFile;
-	
+
 	TMmInstanceData_Verify(inDataPtr);
 
 	targetInstanceFile = TMmInstanceData_GetInstanceFile(inDataPtr);
 	TMmInstanceFile_Verify(targetInstanceFile);
-	
+
 	targetDesc = targetInstanceFile->instanceDescriptors + TMmPlaceHolder_GetIndex(TMmInstanceData_GetPlaceHolder(inDataPtr));
 	TMmInstanceDesc_Verify(targetDesc);
-	
+
 	return targetDesc->templatePtr->tag;
 }
 
@@ -6745,7 +6745,7 @@ TMrInstance_GetInstanceName(
 	TMtInstanceDescriptor*	targetDesc;
 	TMtInstanceFile*		targetInstanceFile;
 	char *					namePtr;
-	
+
 	TMmInstanceData_Verify(inDataPtr);
 
 	targetInstanceFile = TMmInstanceData_GetInstanceFile(inDataPtr);
@@ -6756,14 +6756,14 @@ TMrInstance_GetInstanceName(
 
 	namePtr = targetDesc->namePtr;
 
-	if (NULL != namePtr) 
+	if (NULL != namePtr)
 	{
 		namePtr += 4;
 	}
-	
+
 	return namePtr;
 }
-	
+
 // ----------------------------------------------------------------------
 UUtBool
 TMrLevel_Exists(
@@ -6772,7 +6772,7 @@ TMrLevel_Exists(
 {
 	UUtError			error;
 	UUtBool				level_exists = UUcFalse;
-	
+
 	char				fileName[128];
 	BFtFileIterator*	fileIterator;
 
@@ -6784,16 +6784,16 @@ TMrLevel_Exists(
 
 	BFtFile*				datFile;
 	TMtInstanceFile_Header	fileHeader;
-	
+
 	UUtBool					needsSwapping;
-	
+
 	TMtTemplateDescriptor*	templateDescriptors = NULL;
 	UUtUns32				itr;
 	TMtTemplateDefinition*	templatePtr;
-	
+
 	level_exists = UUcFalse;
 	datFileRef = NULL;
-	
+
 	// set the file name
 	sprintf(fileName, "level%d", inLevelNumber);
 
@@ -6808,7 +6808,7 @@ TMrLevel_Exists(
 	{
 		return UUcFalse;
 	}
-	
+
 	// go through all the files in the file iterator and look for
 	// a file with the same level number as inLevelNumber
 	while (1)
@@ -6820,17 +6820,17 @@ TMrLevel_Exists(
 			datFileRef = NULL;
 			break;
 		}
-		
+
 		// copy the name of the file
 		UUrString_Copy(curFileName, BFrFileRef_GetLeafName(datFileRef), 256);
-		
+
 		// get the level number from the file name
 		temp = strrchr(curFileName, '_');
 		UUmAssert(temp != NULL);
 		*temp = 0;
-		
+
 		sscanf(curFileName + 5, "%d", &curFileLevelNum);
-		
+
 		if(curFileLevelNum == inLevelNumber && inCheckTemplateChecksum)
 		{
 			error = BFrFile_Open(datFileRef, "r", &datFile);
@@ -6840,7 +6840,7 @@ TMrLevel_Exists(
 				level_exists = UUcFalse;
 				goto done;
 			}
-			
+
 			error = TMiInstanceFile_LoadHeader(datFile, &fileHeader, &needsSwapping);
 			if (error != UUcError_None)
 			{
@@ -6848,19 +6848,19 @@ TMrLevel_Exists(
 				level_exists = UUcFalse;
 				goto done;
 			}
-			
+
 			if(fileHeader.numTemplateDescriptors == 0)
 			{
 				UUrDebuggerMessage("level %d: no templates", inLevelNumber);
 				level_exists = UUcFalse;
 				goto done;
 			}
-			
+
 			if(templateDescriptors != NULL)
 			{
 				UUrMemory_Block_Delete(templateDescriptors);
 			}
-			
+
 			templateDescriptors = UUrMemory_Block_New(fileHeader.numTemplateDescriptors * sizeof(TMtTemplateDescriptor));
 			if(templateDescriptors == NULL)
 			{
@@ -6868,13 +6868,13 @@ TMrLevel_Exists(
 				level_exists = UUcFalse;
 				goto done;
 			}
-			
+
 			//Read in the template descriptors
-				error = 
+				error =
 					BFrFile_ReadPos(
 						datFile,
 						sizeof(TMtInstanceFile_Header) +
-							fileHeader.numInstanceDescriptors * sizeof(TMtInstanceDescriptor) + 
+							fileHeader.numInstanceDescriptors * sizeof(TMtInstanceDescriptor) +
 							fileHeader.numNameDescriptors * sizeof(TMtNameDescriptor),
 						fileHeader.numTemplateDescriptors * sizeof(TMtTemplateDescriptor),
 						templateDescriptors);
@@ -6884,7 +6884,7 @@ TMrLevel_Exists(
 					level_exists = UUcFalse;
 					goto done;
 				}
-			
+
 			// check to make sure all template checksums match
 				for(itr = 0; itr < fileHeader.numTemplateDescriptors; itr++)
 				{
@@ -6892,7 +6892,7 @@ TMrLevel_Exists(
 					{
 						UUrSwap_4Byte(&templateDescriptors[itr].tag);
 					}
-					
+
 					templatePtr = TMiTemplate_FindDefinition(templateDescriptors[itr].tag);
 					if(templatePtr == NULL)
 					{
@@ -6905,7 +6905,7 @@ TMrLevel_Exists(
 						level_exists = UUcFalse;
 						goto done;
 					}
-					
+
 					if(needsSwapping)
 					{
 						UUrSwap_8Byte(&templateDescriptors[itr].checksum);
@@ -6923,10 +6923,10 @@ TMrLevel_Exists(
 						goto done;
 					}
 				}
-			
+
 			BFrFile_Close(datFile);
 		}
-		
+
 		if(curFileLevelNum == inLevelNumber)
 		{
 			level_exists = UUcTrue;
@@ -6935,17 +6935,17 @@ TMrLevel_Exists(
 		BFrFileRef_Dispose(datFileRef);
 		datFileRef = NULL;
 	}
-	
+
 done:
-	
+
 	// delete the file iterator
 	BFrDirectory_FileIterator_Delete(fileIterator);
-	
+
 	if(datFileRef != NULL)
 	{
 		BFrFileRef_Dispose(datFileRef);
 	}
-	
+
 	if(templateDescriptors != NULL)
 	{
 		UUrMemory_Block_Delete(templateDescriptors);
@@ -6959,9 +6959,9 @@ TMrLevel_Unload(
 	void)
 {
 	UUtUns32			curFileIndex;
-	
+
 	TMgLevelLoadStack--;
-	
+
 	if(TMgLevelLoadStack == 0)
 	{
 		for(curFileIndex = 0; curFileIndex < TMgNumLevel0Files; curFileIndex++)
@@ -6970,7 +6970,7 @@ TMrLevel_Unload(
 			TMiInstanceFile_Dispose(TMgLevel0Files[curFileIndex]);
 			TMgLevel0Files[curFileIndex] = NULL;
 		}
-	
+
 		// Delete all the level instance files after calling dispose
 			TMiInstanceFile_CallProcs(&TMgPermInstanceFile, TMcTemplateProcMessage_DisposePreProcess);
 	}
@@ -6985,10 +6985,10 @@ TMrLevel_Unload(
 				TMiInstanceFile_Dispose(TMgCurLevelFiles[curFileIndex]);
 				TMgCurLevelFiles[curFileIndex] = NULL;
 			}
-		
+
 		#if 0
 		BHP - no longer do this because it prevents us from accessing level 0 after an unload
-		/* 
+		/*
 		 * Next prepare the level 0 files for disk
 		 */
 			for(curFileIndex = 0; curFileIndex < TMgNumLevel0Files; curFileIndex++)
@@ -6996,15 +6996,15 @@ TMrLevel_Unload(
 				TMiInstanceFile_CallProcs(TMgLevel0Files[curFileIndex], TMcTemplateProcMessage_DisposePreProcess);
 				TMiInstanceFile_PrepareForDisk(TMgLevel0Files[curFileIndex]);
 			}
-		
+
 		#endif
 	}
-	
+
 	// Next delete the temporary dynamic instances
 		TMiInstanceFile_CallProcs(&TMgTempInstanceFile, TMcTemplateProcMessage_DisposePreProcess);
 		TMgTempInstanceFile.numInstanceDescriptors = 0;
 		UUrMemory_Pool_Reset(TMgTempPool);
-	
+
 	TMgNumCurLevelFiles = 0;
 }
 
@@ -7019,36 +7019,36 @@ TMrLevel_Load(
 	UUtError			error;
 
 	char				*desiredSuffix;
-	
+
 	BFtFileIterator*	fileIterator;
 	char				fileName[128];
-	
+
 	BFtFileRef*			datFileRef;
-	
+
 	UUtUns16			curFileIndex;
 	char				msg[256];
-	
+
 	TMtInstanceFile*	curInstanceFile;
 	char*				temp;
 	char				curFileName[256];
-	
+
 	TMtInstanceFile*	(*instanceFileArray)[TMcMaxLevelDatFiles];
 	UUtUns16			numLevelFiles;
-	
+
 	UUtUns32			curFileLevelNum;
-	
+
 	UUmAssert(gInGame == UUcTrue);
 	UUmAssert(gConstructionFile == NULL);
-	
+
 	sprintf(fileName, "level%d", inLevelNumber);
-	
+
 	if(inLevelNumber == 0)
 	{
 		if(TMrLevel_Exists(0, UUcTrue) == UUcFalse)
 		{
 			UUmError_ReturnOnErrorMsg(TMcError_DataCorrupt, "Level 0 out of data");
 		}
-	
+
 		UUmAssert(TMgNumLevel0Files == 0);
 		instanceFileArray = &TMgLevel0Files;
 	}
@@ -7066,7 +7066,7 @@ TMrLevel_Load(
 	{
 		desiredSuffix = "_Final.dat";
 	}
-	
+
 	error =
 		BFrDirectory_FileIterator_New(
 			TMgDataFolderRef,
@@ -7074,9 +7074,9 @@ TMrLevel_Load(
 			desiredSuffix,
 			&fileIterator);
 	UUmError_ReturnOnErrorMsg(error, "Could not create file iterator");
-	
+
 	numLevelFiles = 0;
-	
+
 	while(1)
 	{
 		error = BFrDirectory_FileIterator_Next(fileIterator, &datFileRef);
@@ -7084,21 +7084,21 @@ TMrLevel_Load(
 		{
 			break;
 		}
-		
+
 		UUrString_Copy(curFileName, BFrFileRef_GetLeafName(datFileRef), 256);
-		
+
 		temp = strrchr(curFileName, '_');
 		UUmAssert(temp != NULL);
 		*temp = 0;
-		
+
 		sscanf(curFileName + 5, "%d", &curFileLevelNum);
-		
+
 		if((UUtUns32)curFileLevelNum != inLevelNumber)
 		{
 			BFrFileRef_Dispose(datFileRef);
 			continue;
 		}
-		
+
 		// Create the instance file from a file ref
 		error =
 			TMiInstanceFile_MakeFromFileRef(
@@ -7106,9 +7106,9 @@ TMrLevel_Load(
 				&(*instanceFileArray)[numLevelFiles],
 				UUcFalse);
 		UUmError_ReturnOnErrorMsg(error, "Could not make instance file");
-		
+
 		curInstanceFile = (*instanceFileArray)[numLevelFiles];
-		
+
 		curInstanceFile->final = (strncmp(temp + 1, "Final", 5) == 0);
 		UUrString_Copy(
 			curInstanceFile->fileName,
@@ -7117,9 +7117,9 @@ TMrLevel_Load(
 		numLevelFiles++;
 		BFrFileRef_Dispose(datFileRef);
 	}
-		
+
 	BFrDirectory_FileIterator_Delete(fileIterator);
-	
+
 	if(numLevelFiles == 0)
 	{
 		UUmError_ReturnOnErrorMsg(TMcError_NoDatFile, "Could not find and .dat files");
@@ -7139,7 +7139,7 @@ TMrLevel_Load(
 				error = TMiInstanceFile_PrepareForMemory(TMgLevel0Files[curFileIndex], msg);
 				UUmError_ReturnOnErrorMsg(error, "Could not prepare instance file for memory");
 			}
-		
+
 		/*
 		 * Call the load postprocess message
 		 */
@@ -7162,7 +7162,7 @@ TMrLevel_Load(
 				error = TMiInstanceFile_PrepareForMemory(TMgCurLevelFiles[curFileIndex], msg);
 				UUmError_ReturnOnErrorMsg(error, "Could not prepare instance file for memory");
 			}
-		
+
 		/*
 		 * Call the load postprocess message
 		 */
@@ -7173,9 +7173,9 @@ TMrLevel_Load(
 				UUmError_ReturnOnErrorMsg(error, "Could not prepare instance file for memory");
 			}
 	}
-	
+
 	TMgLevelLoadStack++;
-	
+
 	return UUcError_None;
 }
 
@@ -7184,11 +7184,11 @@ TMrConstruction_Start(
 	BFtFileRef*			inInstanceFileRef)
 {
 	UUtError	error;
-	
+
 	UUmAssert(gInGame == UUcFalse);
-	
+
 	error = TMiInstanceFile_MakeFromFileRef(inInstanceFileRef, &gConstructionFile, UUcTrue);
-	
+
 	return error;
 }
 
@@ -7203,32 +7203,32 @@ TMrConstruction_Stop(
 
 	UUmAssert(gInGame == UUcFalse);
 	UUmAssert(gConstructionFile != NULL);
-	
+
 	printf("running major check... "UUmNL);
 	TMmInstanceFile_MajorCheck(gConstructionFile, UUcFalse);
-	
+
 	printf("writing to disk... "UUmNL);
 	TMiInstanceFile_Save(gConstructionFile);
-	
+
 	printf("verifying all touched... "UUmNL);
 	TMmInstanceFile_VerifyAllTouched(gConstructionFile);
-	
+
 	printf("dumping placeholders... "UUmNL);
-	
+
 	sprintf(temp, "%s", BFrFileRef_GetLeafName(gConstructionFile->instanceFileRef));
 	p = strchr(temp, '.');
 	if(p != NULL) *p = 0;
-	
+
 	sprintf(fileName, "%s_phs.txt", temp);
-	
+
 	file = fopen(fileName, "wb");
 	TMiInstanceFile_DumpPlaceHolders(gConstructionFile, fileName, file);
 	fclose(file);
 
-	
+
 	TMiInstanceFile_Dispose(gConstructionFile);
 	gConstructionFile = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -7241,17 +7241,17 @@ TMrConstruction_Instance_Renew(
 {
 	void*	dataPtr;
 	TMtInstanceDescriptor*	targetInstDesc;
-	
+
 	UUmAssert(gInGame == UUcFalse);
 	UUmAssert(gConstructionFile != NULL);
-	
+
 	*outNewInstance = NULL;
-	
+
 	if(inInstanceName == NULL)
 	{
 		return TMrConstruction_Instance_NewUnique(inTemplateTag, inVarArrayLength, outNewInstance);
 	}
-	
+
 	targetInstDesc = TMiInstanceFile_Instance_FindInstanceDescriptor(gConstructionFile, inTemplateTag, inInstanceName);
 	if(targetInstDesc == NULL || targetInstDesc->dataPtr == NULL)
 	{
@@ -7262,32 +7262,32 @@ TMrConstruction_Instance_Renew(
 	{
 		TMiInstanceFile_Instance_Clean(gConstructionFile, inTemplateTag, inInstanceName);
 		dataPtr = TMiInstanceFile_Instance_ResizeVarArray(targetInstDesc->dataPtr, inVarArrayLength);
-		
+
 		targetInstDesc->dataPtr = dataPtr;
 	}
-	
+
 	if(dataPtr == NULL)
 	{
 		return UUcError_OutOfMemory;
 	}
-	
+
 	UUmAssert(targetInstDesc != NULL);
-	
+
 	#if defined(DEBUGGING) && DEBUGGING
-	
+
 		if(!(targetInstDesc->templatePtr->flags & TMcTemplateFlag_Registered))
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "template not registered");
 		}
-	
+
 	#endif
-	
+
 	targetInstDesc->flags |= (TMtDescriptorFlags)(TMcDescriptorFlags_Touched | TMcDescriptorFlags_InBatchFile);
 
 	TMmInstanceData_Verify(dataPtr);
-	
+
 	*outNewInstance = dataPtr;
-	
+
 	return UUcError_None;
 }
 
@@ -7299,30 +7299,30 @@ TMrConstruction_Instance_NewUnique(
 {
 	void*	dataPtr;
 	TMtTemplateDefinition* templatePtr;
-	
+
 	UUmAssert(gInGame == UUcFalse);
 	UUmAssert(gConstructionFile != NULL);
-	
+
 	templatePtr = TMiTemplate_FindDefinition(inTemplateTag);
-	
+
 	#if defined(DEBUGGING) && DEBUGGING
-	
+
 		if(!(templatePtr->flags & TMcTemplateFlag_Registered))
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "template not registered");
 		}
-	
+
 	#endif
-	
+
 	dataPtr =
 		TMiInstanceFile_Instance_Create(
 			gConstructionFile,
 			inTemplateTag,
 			0,
 			inVarArrayLength);
-	
+
 	*outReference = dataPtr;
-	
+
 	return UUcError_None;
 }
 
@@ -7338,21 +7338,21 @@ TMrConstruction_Instance_GetPlaceHolder(
 	UUmAssertReadPtr(inInstanceName, sizeof(char));
 	UUmAssertWritePtr(outPlaceHolder, sizeof(TMtPlaceHolder));
 
-	if('\0' == inInstanceName[0]) 
+	if('\0' == inInstanceName[0])
 	{
 		return UUcError_Generic;
 	}
-	
+
 	if(gInGame == UUcTrue)
 	{
 		return TMrInstance_GetDataPtr(inTemplateTag, inInstanceName, (void**)outPlaceHolder);
 	}
-	
+
 	//UUmAssert(gInGame == UUcFalse);
 	//UUmAssert(gConstructionFile != NULL);
-	
+
 	*outPlaceHolder = 0;
-	
+
 	targetDesc = TMiInstanceFile_Instance_FindInstanceDescriptor(gConstructionFile, inTemplateTag, inInstanceName);
 	if(targetDesc == NULL)
 	{
@@ -7366,9 +7366,9 @@ TMrConstruction_Instance_GetPlaceHolder(
 		targetDesc = TMiInstanceFile_Instance_FindInstanceDescriptor(gConstructionFile, inTemplateTag, inInstanceName);
 		UUmAssert(targetDesc != NULL);
 	}
-	
+
 	TMiInstanceFile_Instance_Touch(gConstructionFile, targetDesc);
-	
+
 	// Always return an index
 	if( 0 && targetDesc->dataPtr != NULL)
 	{
@@ -7378,7 +7378,7 @@ TMrConstruction_Instance_GetPlaceHolder(
 	{
 		*outPlaceHolder = TMmPlaceHolder_MakeFromIndex(targetDesc - gConstructionFile->instanceDescriptors);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -7392,37 +7392,37 @@ TMrConstruction_Instance_CheckExists(
 	UUtUns8*				swapCode;
 	UUtUns8*				dataPtr;
 	UUtBool					result;
-	
+
 	targetDesc = TMiInstanceFile_Instance_FindInstanceDescriptor(gConstructionFile, inTemplateTag, inInstanceName);
 	if(targetDesc == NULL || targetDesc->dataPtr == NULL)
 	{
 		return UUcFalse;
 	}
-	
+
 	/*
 	 * Recursively look for unique instances that got out of date
 	 */
 	{
 		swapCode = targetDesc->templatePtr->swapCodes;
 		dataPtr = targetDesc->dataPtr;
-		
+
 		result = TMiInstance_CheckExists_Recursive(
 			&swapCode,
 			&dataPtr,
 			gConstructionFile);
-		
+
 		if(result == UUcFalse) return UUcFalse;
 	}
-	
+
 	TMiInstanceFile_Instance_Touch(gConstructionFile, targetDesc);
-	
+
 	targetDesc->flags |= (TMtDescriptorFlags)(TMcDescriptorFlags_Touched | TMcDescriptorFlags_InBatchFile);
-	
+
 	if(outCreationDate != NULL)
 	{
 		*outCreationDate = targetDesc->creationDate;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -7432,17 +7432,17 @@ TMrConstruction_Instance_Keep(
 	char*				inInstanceName)
 {
 	TMtInstanceDescriptor*	targetDesc;
-	
+
 	targetDesc = TMiInstanceFile_Instance_FindInstanceDescriptor(gConstructionFile, inTemplateTag, inInstanceName);
 	if(targetDesc == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Could not find instance");
 	}
-	
+
 	TMiInstanceFile_Instance_Touch(gConstructionFile, targetDesc);
-	
+
 	targetDesc->flags |= (TMtDescriptorFlags)(TMcDescriptorFlags_Touched | TMcDescriptorFlags_InBatchFile);
-	
+
 	return UUcError_None;
 }
 
@@ -7470,7 +7470,7 @@ TMrConstruction_ConvertToNativeEndian(
 	TMtInstanceFile*		instanceFile;
 	TMtInstanceDescriptor*	curInstDesc;
 	UUtUns32				curDescIndex;
-	
+
 	// create the file iterator
 	error =
 		BFrDirectory_FileIterator_New(
@@ -7479,7 +7479,7 @@ TMrConstruction_ConvertToNativeEndian(
 			".dat",
 			&fileIterator);
 	UUmError_ReturnOnError(error);
-	
+
 	while (1)
 	{
 		// get the next file in the directory from the file iterator
@@ -7488,20 +7488,20 @@ TMrConstruction_ConvertToNativeEndian(
 		{
 			break;
 		}
-	
+
 		error = BFrFile_Open(datFileRef, "r", &datFile);
 		UUmError_ReturnOnError(error);
 
 		error = TMiInstanceFile_LoadHeader(datFile, &fileHeader, &needsSwapping);
 		UUmError_ReturnOnError(error);
-		
+
 		if(needsSwapping)
 		{
 			fprintf(stderr, "converting instance file %s\n", BFrFileRef_GetLeafName(datFileRef));
-			
+
 			error = TMiInstanceFile_MakeFromFileRef(datFileRef, &instanceFile, UUcFalse);
 			UUmError_ReturnOnError(error);
-			
+
 			BFrFile_Close(datFile);
 			BFrFileRef_Dispose(datFileRef);
 
@@ -7512,16 +7512,16 @@ TMrConstruction_ConvertToNativeEndian(
 				curDescIndex++, curInstDesc++)
 			{
 				curInstDesc->flags |= TMcDescriptorFlags_Touched;
-				
+
 				if(!(curInstDesc->flags & TMcDescriptorFlags_PlaceHolder))
 				{
 					curInstDesc->flags |= TMcDescriptorFlags_InBatchFile;
 				}
 			}
-			
+
 			error = TMiInstanceFile_Save(instanceFile);
 			UUmError_ReturnOnError(error);
-			
+
 			TMiInstanceFile_Dispose(instanceFile);
 		}
 		else
@@ -7530,12 +7530,12 @@ TMrConstruction_ConvertToNativeEndian(
 			BFrFileRef_Dispose(datFileRef);
 		}
 	}
-	
+
 	// delete the file iterator
 	BFrDirectory_FileIterator_Delete(fileIterator);
-	
+
 	gConstructionFile = NULL;
-		
+
 	return UUcError_None;
 }
 
@@ -7547,7 +7547,7 @@ TMiInstanceFile_VerifyRobust(
 {
 	UUtUns32				curDescIndex;
 	TMtInstanceDescriptor*	curDesc;
-	
+
 	TMmInstanceFile_Verify(inInstanceFile);
 
 	for(curDescIndex = 0, curDesc = inInstanceFile->instanceDescriptors;
@@ -7572,7 +7572,7 @@ TMrVerifyAll(
 	UUtUns16			curFileIndex;
 
 	TMiInstanceFile_VerifyRobust(&TMgTempInstanceFile);
-	
+
 	for(curFileIndex = 0; curFileIndex < TMgNumLevel0Files; curFileIndex++)
 	{
 		TMiInstanceFile_VerifyRobust(TMgLevel0Files[curFileIndex]);
@@ -7582,7 +7582,7 @@ TMrVerifyAll(
 	{
 		TMiInstanceFile_VerifyRobust(TMgCurLevelFiles[curFileIndex]);
 	}
-	
+
 }
 
 static void
@@ -7593,9 +7593,9 @@ TMiSwapCode_Dump_Indent(
 	UUtUns32	inSwapCodeOffset)
 {
 	UUtUns32	itr;
-	
+
 	fprintf(inFile, "[%04d, %04d]", inSwapCodeOffset, inDataOffset);
-	
+
 	for(itr = 0; itr < inIndent; itr++)
 	{
 		fprintf(inFile, "\t");
@@ -7616,15 +7616,15 @@ TMiSwapCode_Dump_Recursive(
 	UUtBool					stop;
 	UUtUns8					count;
 	UUtUns32				savedDataOffset;
-	
+
 	curSwapCode = *ioSwapCode;
 
 	stop = UUcFalse;
-	
+
 	while(!stop)
 	{
 		swapCode = *curSwapCode++;
-		
+
 		switch(swapCode)
 		{
 			case TMcSwapCode_8Byte:
@@ -7632,25 +7632,25 @@ TMiSwapCode_Dump_Recursive(
 				fprintf(inFile, "8Byte(%02x)\n", TMcSwapCode_8Byte);
 				curDataOffset += 8;
 				break;
-				
+
 			case TMcSwapCode_4Byte:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "4Byte(%02x)\n", TMcSwapCode_4Byte);
 				curDataOffset += 4;
 				break;
-				
+
 			case TMcSwapCode_2Byte:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "2Byte(%02x)\n", TMcSwapCode_2Byte);
 				curDataOffset += 2;
 				break;
-				
+
 			case TMcSwapCode_1Byte:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "1Byte(%02x)\n", TMcSwapCode_1Byte);
 				curDataOffset += 1;
 				break;
-				
+
 			case TMcSwapCode_BeginArray:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "begin array(%02x)\n", TMcSwapCode_BeginArray);
@@ -7666,13 +7666,13 @@ TMiSwapCode_Dump_Recursive(
 					inSwapCodeBase);
 				curDataOffset += (curDataOffset - savedDataOffset) * (count - 1);
 				break;
-				
+
 			case TMcSwapCode_EndArray:
 				stop = UUcTrue;
 				TMiSwapCode_Dump_Indent(inFile, inIndent-1, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "end array(%02x)\n", TMcSwapCode_EndArray);
 				break;
-				
+
 			case TMcSwapCode_BeginVarArray:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "begin vararray(%02x)\n", TMcSwapCode_BeginVarArray);
@@ -7695,7 +7695,7 @@ TMiSwapCode_Dump_Recursive(
 					default:
 						UUmAssert(!"Swap codes fucked up");
 				}
-				
+
 				TMiSwapCode_Dump_Recursive(
 					inFile,
 					inIndent+1,
@@ -7703,13 +7703,13 @@ TMiSwapCode_Dump_Recursive(
 					&curDataOffset,
 					inSwapCodeBase);
 				break;
-				
+
 			case TMcSwapCode_EndVarArray:
 				TMiSwapCode_Dump_Indent(inFile, inIndent-1, curDataOffset, curSwapCode - inSwapCodeBase - 1);
 				fprintf(inFile, "end vararray(%02x)\n", TMcSwapCode_EndVarArray);
 				stop = UUcTrue;
 				break;
-				
+
 			case TMcSwapCode_TemplatePtr:
 			case TMcSwapCode_TemplateReference:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
@@ -7720,7 +7720,7 @@ TMiSwapCode_Dump_Recursive(
 						(*(UUtUns32*)curSwapCode >> 16) & 0xFF,
 						(*(UUtUns32*)curSwapCode >> 8) & 0xFF,
 						(*(UUtUns32*)curSwapCode >> 0) & 0xFF);
-						
+
 					curSwapCode += 4;
 					curDataOffset += 4;
 				}
@@ -7730,12 +7730,12 @@ TMiSwapCode_Dump_Recursive(
 					curDataOffset += 8;
 				}
 				break;
-			
+
 			default:
 				UUmDebugStr("swap codes are messed up.");
 		}
 	}
-	
+
 	*ioSwapCode = curSwapCode;
 	*ioDataOffset = curDataOffset;
 }
@@ -7746,17 +7746,17 @@ TMrSwapCode_DumpDefinition(
 	TMtTemplateDefinition*	inTemplateDefinition)
 {
 	fprintf(inFile, "Name: %s\n", inTemplateDefinition->name);
-	fprintf(inFile, "Tag: %c%c%c%c\n", 
+	fprintf(inFile, "Tag: %c%c%c%c\n",
 		(inTemplateDefinition->tag >> 24) & 0xFF,
 		(inTemplateDefinition->tag >> 16) & 0xFF,
 		(inTemplateDefinition->tag >> 8) & 0xFF,
 		(inTemplateDefinition->tag >> 0) & 0xFF);
-	
+
 	fprintf(inFile, "Swap Codes:\n");
 	{
 		UUtUns8*	swapCodes = inTemplateDefinition->swapCodes;
 		UUtUns32	dataOffset = 0;
-		
+
 		TMiSwapCode_Dump_Indent(inFile, 0, 0, 0);
 		fprintf(inFile, "begin array\n");
 		TMiSwapCode_Dump_Recursive(inFile, 1, &swapCodes, &dataOffset, inTemplateDefinition->swapCodes);
@@ -7768,11 +7768,11 @@ TMrSwapCode_DumpAll(
 	FILE*	inFile)
 {
 	UUtUns32	itr;
-	
+
 	for(itr = 0; itr < TMgNumTemplateDefinitions; itr++)
 	{
 		fprintf(inFile, "******************************************\n");
 		TMrSwapCode_DumpDefinition(inFile, TMgTemplateDefinitionArray + itr);
 	}
-	
+
 }

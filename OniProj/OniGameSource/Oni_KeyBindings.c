@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_KeyBindings.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: January 26, 2000
-	
+
 	PURPOSE:
-	
+
 	Copyright 2000
 
 */
@@ -23,7 +23,7 @@ typedef enum ONtDebugKeyModifiers
 {
 	ONcDebugKey_Needs_Modifier,
 	ONcDebugKey_Without_Modifier
-	
+
 } ONtDebugKeyModifiers;
 
 typedef enum ONtDebugKeyWhen
@@ -45,9 +45,9 @@ typedef struct ONtDebugKeyBinding
 
 const ONtDebugKeyBinding bindings[ONcDebugKey_Num] =
 {
-	{	ONcDebugKey_Occl,					ONcDebugKey_Tool,	ONcDebugKey_Needs_Modifier,		LIcKeyCode_None,		LIcKeyCode_O	},		
+	{	ONcDebugKey_Occl,					ONcDebugKey_Tool,	ONcDebugKey_Needs_Modifier,		LIcKeyCode_None,		LIcKeyCode_O	},
 	{	ONcDebugKey_Invis,					ONcDebugKey_Tool,	ONcDebugKey_Needs_Modifier,		LIcKeyCode_None,		LIcKeyCode_I	},
-	{	ONcDebugKey_Perf_Overall,			ONcDebugKey_Game,	ONcDebugKey_Needs_Modifier,		LIcKeyCode_None,		LIcKeyCode_Y	},	
+	{	ONcDebugKey_Perf_Overall,			ONcDebugKey_Game,	ONcDebugKey_Needs_Modifier,		LIcKeyCode_None,		LIcKeyCode_Y	},
 	{	ONcDebugKey_Character_Collision,	ONcDebugKey_Tool,	ONcDebugKey_Needs_Modifier,		LIcKeyCode_None,		LIcKeyCode_T	},
 	{	ONcDebugKey_Object_Collision,		ONcDebugKey_Tool,	ONcDebugKey_Needs_Modifier,		LIcKeyCode_None,		LIcKeyCode_R	},
 	{	ONcDebugKey_FastMode,				ONcDebugKey_Tool,	ONcDebugKey_Needs_Modifier,		LIcKeyCode_None,		LIcKeyCode_F	},
@@ -112,7 +112,7 @@ UUtBool ONrDebugKey_WentDown(ONtDebuggingKey inKey)
 		return UUcFalse;
 	}
 
-	if (LIrTestKey(LIcKeyCode_LeftControl) || LIrTestKey(LIcKeyCode_RightControl)) 
+	if (LIrTestKey(LIcKeyCode_LeftControl) || LIrTestKey(LIcKeyCode_RightControl))
 	{
 		UUtBool shift_down = LIrTestKey(LIcKeyCode_LeftShift) || LIrTestKey(LIcKeyCode_RightShift);
 		UUtBool alt_down = LIrTestKey(LIcKeyCode_LeftAlt) || LIrTestKey(LIcKeyCode_RightAlt);

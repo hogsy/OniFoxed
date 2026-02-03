@@ -22,13 +22,13 @@ VMiView_Picture_Paint(
 	M3tPointScreen					*inDestination)
 {
 	UUtUns16			alpha;
-	
+
 	// set the alpha
 	if (inView->flags & VMcViewFlag_Enabled)
 		alpha = VUcAlpha_Enabled;
 	else
 		alpha = VUcAlpha_Disabled;
-	
+
 	if (inPicture->partspec)
 	{
 		VUrDrawPartSpecification(
@@ -63,10 +63,10 @@ VMrView_Picture_Callback(
 	UUtUns32			inParam2)
 {
 	VMtView_Picture		*picture;
-	
+
 	// get a pointer to the picture data
 	picture = (VMtView_Picture*)inView->view_data;
-	
+
 	switch (inMessage)
 	{
 		case VMcMessage_Paint:
@@ -77,6 +77,6 @@ VMrView_Picture_Callback(
 				(M3tPointScreen*)inParam2);
 		break;
 	}
-	
+
 	return VMrView_DefaultCallback(inView, inMessage, inParam1, inParam2);
 }

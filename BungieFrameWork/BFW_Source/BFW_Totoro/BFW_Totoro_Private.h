@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Totoro.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: Sept 25, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997, 1998
 
 */
@@ -46,7 +46,7 @@ typedef struct M3tCompressedQuaternion6
 	UUtUns16 rx;
 	UUtUns16 ry;
 	UUtUns16 rz;
-} M3tCompressedQuaternion6;			
+} M3tCompressedQuaternion6;
 
 typedef struct M3tCompressedQuaternion8
 {
@@ -54,7 +54,7 @@ typedef struct M3tCompressedQuaternion8
 	UUtInt16 y;
 	UUtInt16 z;
 	UUtInt16 w;
-} M3tCompressedQuaternion8;				
+} M3tCompressedQuaternion8;
 
 enum {
 	TRcAnimationFlag_Reversable		= 0x01
@@ -79,7 +79,7 @@ enum {
 typedef tm_struct TRtBlur
 {
 	UUtUns32	blurParts;
-	UUtUns16	firstBlurFrame;	
+	UUtUns16	firstBlurFrame;
 	UUtUns16	lastBlurFrame;
 	UUtUns8		blurQuantity;
 	UUtUns8		blurAmount;
@@ -103,7 +103,7 @@ typedef struct TRtShortcut
 typedef struct TRtThrowInfo
 {
 	M3tVector3D				throwOffset;
-	float					relativeThrowFacing;			
+	float					relativeThrowFacing;
 	float					throwDistance;
 
 	UUtUns16				throwType;
@@ -119,7 +119,7 @@ typedef struct TRtSound
 {
 	char					impulseName[SScMaxNameLength];
 	UUtUns16				frameNum;
-	
+
 } TRtSound;
 
 // an animation of a translation, rotation Body
@@ -140,9 +140,9 @@ TRtAnimation
 	tm_raw(void *)			data;
 	tm_raw(TRtSound *)		newSounds;
 
-	UUtUns32				flags;					
+	UUtUns32				flags;
 	TRtAnimation			*directAnimation[2];	// skips pause & end interpolation
-	UUtUns32				usedParts;				
+	UUtUns32				usedParts;
 	UUtUns32				replaceParts;
 
 	float					finalRotation;
@@ -156,23 +156,23 @@ TRtAnimation
 
 	UUtUns16				hardPause;				// pause (no block)
 	UUtUns16				softPause;				// pause (can block)
-	
+
 	UUtUns32				numNewSounds;			// number of items in the new_sounds list
 	UUtUns32				soundName;				// only valid at runtime (typecast to char*)
 	UUtUns16				soundFrame;				// only valid at runtime
-	
-	UUtUns16				fps;				
 
-	UUtUns16				compressionSize;	
+	UUtUns16				fps;
+
+	UUtUns16				compressionSize;
 	UUtUns16				type;
 
 	UUtUns16				aimingType;
 	UUtUns16				fromState;
-	
-	UUtUns16				toState;		
-	UUtUns16				numParts;		
 
-	UUtUns16				numFrames;		
+	UUtUns16				toState;
+	UUtUns16				numParts;
+
+	UUtUns16				numFrames;
 	UUtUns16				duration;
 
 	UUtUns16				varient;
@@ -202,7 +202,7 @@ TRtAnimation
 tm_template('T', 'R', 'A', 'S', "Totoro Aiming Screen")
 TRtAimingScreen
 {
-	
+
 	TRtAnimation *animation;
 
 	float		negativeYawDelta;
@@ -219,7 +219,7 @@ TRtAimingScreen
 };
 
 
-/* 
+/*
  * functions for getting quaternion arrays
  */
 
@@ -257,7 +257,7 @@ TRtScreenCollection
 	tm_pad								pad0[22];
 
 	tm_varindex UUtUns16				numScreens;
-	tm_vararray TRtAimingScreen			*screen[1];	
+	tm_vararray TRtAimingScreen			*screen[1];
 };
 
 void TRrVerifyAnimation(const TRtAnimation *inAnimation);

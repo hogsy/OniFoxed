@@ -88,7 +88,7 @@ typedef struct COtTextArea
 	UUtUns16			num_text_entries;
 	UUtUns16			max_text_entries;
 	COtTextEntry		*text_entries;				// an array (num_text_entries long) of COtTextEntry
-	
+
 } COtTextArea;
 
 typedef char		COtCommandLine[COcMaxCharsPerLine];
@@ -212,7 +212,7 @@ COrTextArea_DiscardByPriority(
 static void
 COrTextArea_Display(
 	COtTextArea				*inTextArea);
-	
+
 static void
 COrTextArea_Print(
 	COtTextArea				*inTextArea,
@@ -222,7 +222,7 @@ COrTextArea_Print(
 	const char				*inString,
 	const char				*inIdentifier,
 	UUtUns32				inFadeTime);
-	
+
 static UUtBool
 COrTextArea_FadeByIdentifier(
 	COtTextArea				*inTextArea,
@@ -290,7 +290,7 @@ COrProcessKeyRepeat(
 static void
 COrCommand_Complete(
 	LItInputEvent			*input_event);
-	
+
 static void
 COrCommand_Copy(
 	char					*inCommandLine);
@@ -302,7 +302,7 @@ COrCommand_CycleUp(
 static void
 COrCommand_CycleDown(
 	void);
-	
+
 // ======================================================================
 // functions
 // ======================================================================
@@ -317,7 +317,7 @@ COiCommand_Print_Callback(
 	SLtParameter_Actual		*ioReturnValue)
 {
 	UUtUns32	itr;
-	
+
 	for(itr = 0; itr < inParameterListLength; itr++)
 	{
 		switch(inParameterList[itr].type)
@@ -325,20 +325,20 @@ COiCommand_Print_Callback(
 			case SLcType_Int32:
 				COrConsole_Printf("%d\n", inParameterList[itr].val.i);
 				break;
-				
+
 			case SLcType_Float:
 				COrConsole_Printf("%f\n", inParameterList[itr].val.f);
 				break;
-				
+
 			case SLcType_String:
 				COrConsole_Printf("%s\n", inParameterList[itr].val.str);
 				break;
-			
+
 			default:
 				UUmAssert(0);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -366,13 +366,13 @@ COrRunConfigFile(
 	BFtFileRef		configFileRef;
 	BFtTextFile*	configFile;
 	char*			curLine;
-	
+
 	error = BFrFileRef_Search(inFilename, &configFileRef);
 	if(error != UUcError_None)
 	{
 		return UUcFalse;
 	}
-	
+
 	if(BFrFileRef_FileExists(&configFileRef) == UUcFalse)
 	{
 		return UUcFalse;
@@ -383,7 +383,7 @@ COrRunConfigFile(
 	{
 		return UUcFalse;
 	}
-		
+
 	while(1)
 	{
 		curLine = BFrTextFile_GetNextStr(configFile);
@@ -401,9 +401,9 @@ COrRunConfigFile(
 			COrCommand_Execute(curLine);
 		}
 	}
-	
+
 	BFrTextFile_Close(configFile);
-	
+
 	return UUcTrue;
 }
 
@@ -461,37 +461,37 @@ COrInitialize(
 	UUtError				error;
 
 	error;
-	
+
 	// set gInConsole
 	COgInConsole = UUcFalse;
-	
+
 	// set initial values draw area width and height
 	COgDrawAreaWidth = 0;
 	COgDrawAreaHeight = 0;
-	
+
 	// register the console variables
 #if CONSOLE_DEBUGGING_COMMANDS
-	error = SLrGlobalVariable_Register_Int32(COcFadeTime_Name, "The fade time of the console", &COgFadeTimeValue);	
+	error = SLrGlobalVariable_Register_Int32(COcFadeTime_Name, "The fade time of the console", &COgFadeTimeValue);
 	UUmError_ReturnOnErrorMsg(error, "Unable to register console control variable");
 
 	SLrGlobalVariable_Register("co_priority", "changes the priority of messages to display on the console",
 								SLcReadWrite_ReadWrite, SLcType_Int32, (SLtValue *) &COgPriority, COiVariableChanged_Priority);
 
-	error = SLrGlobalVariable_Register_Bool("co_display", "enables console display", &COgDisplayConsole);	
+	error = SLrGlobalVariable_Register_Bool("co_display", "enables console display", &COgDisplayConsole);
 	UUmError_ReturnOnErrorMsg(error, "Unable to register console control variable");
 
 	error = SLrGlobalVariable_Register_Bool("co_message_display", "enables text message display", &COgDisplayMessages);
 	UUmError_ReturnOnErrorMsg(error, "Unable to register console control variable");
-	
+
 	// register the console commands
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"console_print",
 			"dumps all arguments",
 			"",
 			COiCommand_Print_Callback);
 	UUmError_ReturnOnErrorMsg(error, "Unable to create a new command.");
-	
+
 	error =
 		SLrScript_Command_Register_Void(
 			"co_toggle_text",
@@ -520,7 +520,7 @@ COrTerminate(
 	}
 
 	COgInConsole = UUcFalse;
-	
+
 	// delete the text areas
 	if (COgCommandLine) {
 		COrTextArea_Delete(COgCommandLine);
@@ -569,30 +569,30 @@ COrConfigure(
 	UUtUns16				ui_width, ui_height, line_height;
 	TStFontFamily			*font_family;
 	TStFont					*default_font;
-	
+
 	// get the font family
 	error =
 		TSrFontFamily_Get(
 			TScFontFamily_Default,
 			&font_family);
 	UUmError_ReturnOnErrorMsg(error, "Unable to get the font family.");
-	
+
 	// get the width and height of the draw area
 	drawAreaWidth = M3rDraw_GetWidth();
 	drawAreaHeight = M3rDraw_GetHeight();
-	
+
 	if ((drawAreaWidth <= 0) || (drawAreaHeight <= 0))
 	{
 		char error_msg[128]= "";
-		
+
 		sprintf(error_msg, "drawAreaWidth= %d   drawAreaHeight= %d", drawAreaWidth, drawAreaHeight);
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, error_msg);
 	}
-	
+
 	// store the draw area width and height
 	COgDrawAreaWidth = drawAreaWidth;
 	COgDrawAreaHeight = drawAreaHeight;
-	
+
 	// set the command line bounds
 	bounds.left = 2;
 	bounds.top = drawAreaHeight - 23;
@@ -603,7 +603,7 @@ COrConfigure(
 	error = M3rDrawEngine_FindGrayscalePixelType(
 				&COgTexelType);
 	UUmError_ReturnOnErrorMsg(error, "Unable to find a texel_type");
-	
+
 	if (COgCommandLine == NULL) {
 		// create the command area
 		error = COrTextArea_New(&COgCommandLine, &bounds, IMrPixel_FromShade(COgTexelType, COcCommandLineColor),
@@ -616,10 +616,10 @@ COrConfigure(
 		error = COrTextArea_Resize(COgCommandLine, &bounds, 1);
 		UUmError_ReturnOnErrorMsg(error, "Unable to resize the command line.");
 	}
-		
+
 	// set the command line prefix
 	COrTextArea_SetPrefix(COgCommandLine, "CMD: ");
-	
+
 	// set the console lines bounds
 	COiVariableChanged_Priority();
 
@@ -641,7 +641,7 @@ COrConfigure(
 		error = COrTextArea_Resize(COgConsoleLines, &COgConsoleBounds, -1);
 		UUmError_ReturnOnErrorMsg(error, "Unable to resize the console area.");
 	}
-	
+
 	// set the message area bounds so that there is room for the in-game UI.
 	// currently the in-game UI is a fixed number of pixels, if this changes then
 	// this calculation should be based on the draw area's size.
@@ -663,7 +663,7 @@ COrConfigure(
 	} else {
 		bounds.top = 2;
 	}
-	
+
 	if (COgMessageArea == NULL)
 	{
 		// create the message area
@@ -727,11 +727,11 @@ COiCompletion_BuildList(
 	void)
 {
 	UUtUns32	numNames;
-	
+
 	SLrScript_ConsoleCompletionList_Get(&numNames, &COgCompletionNames);
 	COgNumCompletionNames = (UUtUns16) numNames;
-		
-	AUrQSort_32(COgCompletionNames, COgNumCompletionNames, COiCompletiond_BuildList_Compare_Function);	
+
+	AUrQSort_32(COgCompletionNames, COgNumCompletionNames, COiCompletiond_BuildList_Compare_Function);
 }
 
 // ----------------------------------------------------------------------
@@ -741,17 +741,17 @@ COiCompletion_FindPartial(
 {
 	UUtUns16	itr;
 	UUtUns16	len;
-	
+
 	COiCompletion_BuildList();
-	
+
 	len = strlen(inName);
-	
+
 	for (itr = 0; itr < COgNumCompletionNames; itr++)
 	{
 		if (strncmp(COgCompletionNames[itr], inName, len) == 0)
 			return itr;
 	}
-	
+
 	return 0xFFFF;
 }
 
@@ -765,26 +765,26 @@ COiGetCurPrefix(
 	commandline = COgCommandLine->text_entries[0].text;
 	len = strlen(commandline);
 	outCompletionBuffer[0] = '\0';
-	
+
 	if (len == 0)
 		return;
-	
+
 	cp = &commandline[len - 1];
-	
+
 	while(len > 0)
 	{
 		c = *cp;
-		
+
 		if(c == '"') return;
-		
+
 		if(c == ' ' || c == ',' || c == '(' || c == '=') break;
-		
+
 		len--;
 		cp--;
 	}
-	
+
 	UUrString_Copy(outCompletionBuffer, cp+1, COcMaxCharsPerLine);
-	
+
 }
 
 // ======================================================================
@@ -817,7 +817,7 @@ COrConsole_Deactivate(
 		COgInputModeSwitchTime = COcInputModeSwitchTime;
 	}
 }
-	
+
 // ----------------------------------------------------------------------
 void
 COrConsole_TemporaryDisable(
@@ -900,7 +900,7 @@ COrConsole_Print(
 		COgConsoleDebugFile = BFrDebugFile_Open("consoleLog.txt");
 		COgConsoleDebugFile_Checked = UUcTrue;
 	}
-		
+
 	if (COgConsoleDebugFile != NULL) {
 		BFrDebugFile_Printf(COgConsoleDebugFile, "%s"UUmNL, inString);
 	}
@@ -928,7 +928,7 @@ COrConsole_PrintIdentified(
 		COgConsoleDebugFile = BFrDebugFile_Open("consoleLog.txt");
 		COgConsoleDebugFile_Checked = UUcTrue;
 	}
-		
+
 	if (COgConsoleDebugFile != NULL) {
 		BFrDebugFile_Printf(COgConsoleDebugFile, "%s"UUmNL, inString);
 	}
@@ -1043,10 +1043,10 @@ COrConsole_Update(
 	UUtUns32				inTicksPassed)
 {
 	LItInputEvent			input_event;
-	
+
 	if (COgInputModeSwitchTime > 0)
 		COgInputModeSwitchTime--;
-	
+
 	// set the input mode if necessary
 	if (COgSetInputMode && (COgInputModeSwitchTime == 0))
 	{
@@ -1080,27 +1080,27 @@ COrConsole_Update(
 			{
 				break;
 			}
-		
+
 			// process the input event
 			switch (input_event.type)
 			{
 				case LIcInputEvent_MouseMove:
 					COrProcessMouseMove(&input_event);
 					break;
-				
+
 				case LIcInputEvent_LMouseDown:
 					COrProcessMouseDown(&input_event);
 					break;
-				
+
 				case LIcInputEvent_LMouseUp:
 					COrProcessMouseUp(&input_event);
 					break;
-				
+
 				case LIcInputEvent_KeyDown:
 				case LIcInputEvent_KeyRepeat:
 					COrProcessKeyDown(&input_event);
 					break;
-				
+
 				default:
 					break;
 			}
@@ -1108,20 +1108,20 @@ COrConsole_Update(
 
 		// update the command line
 		COrTextArea_SetTimer(COgCommandLine, COgFadeTimeValue);
-		COrTextArea_Update(COgCommandLine, inTicksPassed, UUcTrue);		
+		COrTextArea_Update(COgCommandLine, inTicksPassed, UUcTrue);
 	}
 
 	if (!COgConsoleTemporaryDisable) {
 		// update the console text
 		COrTextArea_Update(COgConsoleLines, inTicksPassed, UUcFalse);
 	}
-	
+
 	if (!COgMessagesTemporaryDisable) {
 		// update the message and in-game subtitle text
 		COrTextArea_Update(COgMessageArea, inTicksPassed, UUcFalse);
 		COrTextArea_Update(COgInGameSubtitleArea, inTicksPassed, UUcFalse);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1147,7 +1147,7 @@ COrTextArea_New(
 	UUtBool					inFadeOverBounds)
 {
 	COtTextArea				*text_area;
-	
+
 	// allocate memory for the text area
 	text_area = UUrMemory_Block_New(sizeof(COtTextArea));
 	UUmError_ReturnOnNull(text_area);
@@ -1184,17 +1184,17 @@ COrTextArea_Delete(
 	COtTextArea				*inTextArea)
 {
 	UUmAssert(inTextArea);
-	
+
 	// delete the text context
 	if (inTextArea->text_context)
 	{
 		TSrContext_Delete(inTextArea->text_context);
 		inTextArea->text_context = 0;
 	}
-	
+
 	// delete the text_entries array
 	UUrMemory_Block_Delete(inTextArea->text_entries);
-	
+
 	// release the memory used by the text area
 	UUrMemory_Block_Delete(inTextArea);
 }
@@ -1291,7 +1291,7 @@ static void COrTextArea_Display(COtTextArea	*inTextArea)
 
 		// determine how much vertical space this text requires, and where it should be placed
 		text_height = (formatted_string.bounds[formatted_string.num_segments - 1].bottom - formatted_string.bounds[0].top) + 2;
-		
+
 		if (inTextArea->bottom_justify) {
 			cur_y -= text_height;
 			overflow = (cur_y < inTextArea->bounds.top);
@@ -1326,20 +1326,20 @@ static void COrTextArea_Display(COtTextArea	*inTextArea)
 		offset.x = +1; offset.y = +1;
 		TSrContext_DrawFormattedText(inTextArea->text_context, &formatted_string, alpha, &offset, &text_entry->text_shadow);
 		TSrContext_DrawFormattedText(inTextArea->text_context, &formatted_string, alpha, NULL, NULL);
-		
+
 		if((inTextArea->display_completion) && (i == 0) && (COgCurCompletionNameIndex != 0xFFFF))
 		{
 			UUtRect	newBounds;
 			IMtPoint2D	newDest;
-			
+
 			// draw the greyed out part
 			TSrContext_SetShade(inTextArea->text_context, IMcShade_Gray50);
-			
+
 			TSrContext_GetStringRect(inTextArea->text_context, text, &newBounds);
 			newDest = dest;
 			newDest.x += newBounds.right + 1;
 			newDest.y += 1;
-			
+
 			COiGetCurPrefix(text);
 
 			TSrContext_SetShade(inTextArea->text_context, COcTextShadow[COgTextColor]);
@@ -1350,7 +1350,7 @@ static void COrTextArea_Display(COtTextArea	*inTextArea)
 					alpha,
 					NULL,
 					&newDest);
-		
+
 			newDest.x -= 1; newDest.y -= 1;
 
 			TSrContext_SetShade(inTextArea->text_context, COcDimShades[COgTextColor]);
@@ -1455,13 +1455,13 @@ COrTextArea_Resize(
 	// calculate the width and height of the text area
 	text_width = inTextArea->bounds.right - inTextArea->bounds.left;
 	text_height = inTextArea->bounds.bottom - inTextArea->bounds.top;
-	
+
 	UUmAssert(text_width > 0);
 	UUmAssert(text_height > 0);
 
 	if (text_width > 512)
 		text_width = 512;
-	
+
 	if (inNumTextEntries == -1) {
 		// calculate how many text lines can be displayed
 		line_height =
@@ -1471,7 +1471,7 @@ COrTextArea_Resize(
 	} else {
 		max_text_entries = inNumTextEntries;
 	}
-	
+
 	if (max_text_entries != inTextArea->max_text_entries) {
 		if (inTextArea->text_entries == NULL) {
 			// allocate memory for the text entries and clear it to zero
@@ -1484,15 +1484,15 @@ COrTextArea_Resize(
 
 			if (max_text_entries > inTextArea->max_text_entries) {
 				// clear the new memory
-				UUrMemory_Clear(&inTextArea->text_entries[inTextArea->max_text_entries], 
+				UUrMemory_Clear(&inTextArea->text_entries[inTextArea->max_text_entries],
 								(max_text_entries - inTextArea->max_text_entries) * sizeof(COtTextEntry));
 			}
 		}
-	
+
 		inTextArea->max_text_entries = max_text_entries;
 		inTextArea->num_text_entries = UUmMin(inTextArea->num_text_entries, inTextArea->max_text_entries);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1520,7 +1520,7 @@ COrTextArea_SetTimer(
 	UUtUns32				inTimer)
 {
 	UUtUns16				i;
-	
+
 	if (!inTextArea)
 		return;
 
@@ -1541,7 +1541,7 @@ COrTextArea_Update(
 	UUtBool					inDisplayCaret)
 {
 	UUtUns16				i;
-	
+
 	for (i = 0; i < inTextArea->num_text_entries; i++) {
 		if (inTextArea->text_entries[i].timer > 0) {
 			if (inTextArea->text_entries[i].timer > inTicksPassed) {
@@ -1654,21 +1654,21 @@ COrProcessKeyDown(
 	key = (input_event->key & 0x00FF);
 	commandline = COgCommandLine->text_entries[0].text;
 	len = strlen(commandline);
-	
+
 	switch (key)
 	{
 		case LIcKeyCode_RightArrow:
 			if(potentialNextIndex < COgNumCompletionNames)
 			{
 				potentialNextIndex += 1;
-			
+
 				if(strncmp(commandline, COgCompletionNames[potentialNextIndex], len) == 0)
 				{
 					COgCurCompletionNameIndex = potentialNextIndex;
 				}
 			}
 			break;
-			
+
 		case LIcKeyCode_LeftArrow:
 			if(potentialNextIndex > 1 && potentialNextIndex < COgNumCompletionNames)
 			{
@@ -1689,7 +1689,7 @@ COrProcessKeyDown(
 			if(COgPerformCompletionOnTab)
 			{
 				COgPerformCompletionOnTab = UUcFalse;
-				
+
 				if(COgCurCompletionNameIndex >= COgNumCompletionNames)
 				{
 					COgCurCompletionNameIndex = UUcMaxUns16;
@@ -1724,19 +1724,19 @@ COrProcessKeyDown(
 						COgCurCompletionNameIndex = 0;
 					}
 				}
-				
+
 				UUmAssert(COgCurCompletionNameIndex < COgNumCompletionNames);
-				
+
 				UUrString_Copy(commandline, COgCompletionNames[COgCurCompletionNameIndex], COcMaxVarNameLength);
 			}
 			break;
-		
+
 		case LIcKeyCode_BackSpace:	// backspace
 			COgPerformCompletionOnTab = UUcTrue;
 			commandline[len - 1] = '\0';
-			
+
 			len--;
-			
+
 			if(len == 0)
 			{
 				COgCurCompletionNameIndex = 0xFFFF;
@@ -1749,7 +1749,7 @@ COrProcessKeyDown(
 				}
 			}
 			break;
-		
+
 		case LIcKeyCode_Return:	// return - complete the current command
 			COrCommand_Execute(commandline);
 			break;
@@ -1758,19 +1758,19 @@ COrProcessKeyDown(
 		case LIcKeyCode_Escape:	// escape
 			COrConsole_Deactivate();
 			break;
-		
+
 		case LIcKeyCode_UpArrow:	// up arrow
 			COrCommand_CycleUp();
 			COgCurCompletionNameIndex = UUcMaxUns16;
 			COgPerformCompletionOnTab = UUcFalse;
 			break;
-		
+
 		case LIcKeyCode_DownArrow:	// down arrow
 			COrCommand_CycleDown();
 			COgCurCompletionNameIndex = UUcMaxUns16;
 			COgPerformCompletionOnTab = UUcFalse;
 			break;
-		
+
 		default:
 			COgPerformCompletionOnTab = UUcTrue;
 			if (len < COcCharsPerLine) {
@@ -1821,14 +1821,14 @@ COrCommand_Execute(
 	char					*inCommandLine)
 {
 	UUtBool					success;
-	
+
 	if(inCommandLine[0] == '+')
 	{
 		if(COrRunConfigFile(inCommandLine + 1) == UUcTrue)
 		{
 			COrCommand_Copy(inCommandLine);
 		}
-		
+
 		success = UUcTrue;
 	}
 	else
@@ -1836,7 +1836,7 @@ COrCommand_Execute(
 		// try a hook
 		success = COiConsole_CallHook(inCommandLine);
 
-		if (success) 
+		if (success)
 		{
 			// copy command to command list - only valid commands get copied
 			COrCommand_Copy(inCommandLine);
@@ -1844,7 +1844,7 @@ COrCommand_Execute(
 			// clear the command line
 			COgCommandLine->text_entries[0].text[0] = '\0';
 		}
-	}		
+	}
 
 	return success;
 }
@@ -1865,11 +1865,11 @@ COrCommand_Copy(
 				UUrString_Copy(COgRememberedCommands[itr-1], COgRememberedCommands[itr], COcMaxCharsPerLine);
 			}
 		}
-		
+
 		UUrString_Copy(COgRememberedCommands[COgRemComNum], inCommandLine, COcMaxCharsPerLine);
-		
+
 		COgRemComPos = COgRemComNum;
-		
+
 		if(COgRemComNum < COcMaxRememberedCommands) COgRemComNum++;
 	}
 }
@@ -1883,9 +1883,9 @@ COrCommand_CycleUp(
 	{
 		// copy the previous command
 		COrTextArea_Print(COgCommandLine, COcPriority_Console, IMcShade_White, IMcShade_Black, COgRememberedCommands[COgRemComPos], NULL, 0);
-		
+
 		if(COgRemComPos > 0) COgRemComPos--;
-				
+
 	}
 }
 
@@ -1896,7 +1896,7 @@ COrCommand_CycleDown(
 {
 	if(COgRemComPos >= 0)
 	{
-		if(COgRemComPos < COgRemComNum) 
+		if(COgRemComPos < COgRemComNum)
 		{
 			COgRemComPos++;
 
@@ -1923,7 +1923,7 @@ void UUcArglist_Call COrConsole_Printf(const char *format, ...)
 	char buffer[2048];
 	va_list arglist;
 	int return_value;
-	
+
 	va_start(arglist, format);
 	return_value= vsprintf(buffer, format, arglist);
 	va_end(arglist);
@@ -1939,7 +1939,7 @@ void UUcArglist_Call COrConsole_Printf_Color(COtPriority inPriority, IMtShade in
 	char buffer[2048];
 	va_list arglist;
 	int return_value;
-	
+
 	va_start(arglist, format);
 	return_value= vsprintf(buffer, format, arglist);
 	va_end(arglist);
@@ -1983,7 +1983,7 @@ static UUtBool COiConsole_CallHook(const char *inCommandLine)
 {
 	UUtInt32 itr;
 	UUtInt32 count = COgNumHooks;
-		
+
 	if (NULL == inCommandLine) {
 		return UUcFalse;
 	}
@@ -1995,7 +1995,7 @@ static UUtBool COiConsole_CallHook(const char *inCommandLine)
 		const char *prefix = COgHooks[itr].prefix;
 		UUtUns32 refCon = COgHooks[itr].refCon;
 		UUtBool handled = UUcFalse;
-		
+
 		if (UUrString_HasPrefix(inCommandLine, prefix)) {
 			handled = COgHooks[itr].hook(prefix, refCon, inCommandLine);
 		}
@@ -2081,7 +2081,7 @@ void COrConsole_StatusLine_Display(void)
 
 	M3rDraw_State_SetInt(M3cDrawStateIntType_ConstantColor, IMcShade_White);
 	M3rDraw_State_SetInt(M3cDrawStateIntType_Alpha, 0x80);
-	
+
 	M3rDraw_State_SetPtr(M3cDrawStatePtrType_BaseTextureMap, ONgLetterboxTexture);
 
 	for(current_line = COgStatusLines; current_line != NULL; current_line = current_line->next)

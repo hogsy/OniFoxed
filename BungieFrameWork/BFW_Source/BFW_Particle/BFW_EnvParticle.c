@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_EnvParticle.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: May 26, 2000
-	
+
 	PURPOSE: support for environmental particles
-	
+
 	Copyright (c) 2000, Bungie Software
 
  */
@@ -64,7 +64,7 @@ void EPrNotifyMatrixChange(EPtEnvParticle *inParticle, UUtUns32 inTime, UUtBool 
 	UUtUns32				*p_texture, *p_lensframes;
 	AKtOctNodeIndexCache	*p_envcache;
 	UUtBool					is_dead;
-	
+
 	// if we haven't been created, don't do anything
 	if ((inParticle->flags & EPcParticleFlag_Created) == 0)
 		return;
@@ -78,7 +78,7 @@ void EPrNotifyMatrixChange(EPtEnvParticle *inParticle, UUtUns32 inTime, UUtBool 
 		EPrNewParticle( inParticle, inTime );
 		return;
 	}
-	
+
 	// make sure there is a particle before going any further
 	if (inParticle->particle == NULL)
 		return;
@@ -87,25 +87,25 @@ void EPrNotifyMatrixChange(EPtEnvParticle *inParticle, UUtUns32 inTime, UUtBool 
 	p_position = P3rGetPositionPtr(inParticle->particle_class, inParticle->particle, &is_dead);
 	if (is_dead)
 		return;
-	
+
 	// set up the particle's position from the envparticle's matrix
 	*p_position = MUrMatrix_GetTranslation(&inParticle->matrix);
-	
+
 	p_orientation = P3rGetOrientationPtr(inParticle->particle_class, inParticle->particle);
 	if (p_orientation != NULL) {
 		MUrMatrix3x3_ExtractFrom4x3(p_orientation, &inParticle->matrix);
 	}
-	
+
 	p_velocity = P3rGetVelocityPtr(inParticle->particle_class, inParticle->particle);
 	if (p_velocity != NULL) {
 		MUmVector_Set(*p_velocity, 0, 0, 0);
 	}
-	
+
 	p_offset = P3rGetOffsetPosPtr(inParticle->particle_class, inParticle->particle);
 	if (p_offset != NULL) {
 		MUmVector_Set(*p_offset, 0, 0, 0);
 	}
-	
+
 	p_dynamicmatrix = P3rGetDynamicMatrixPtr(inParticle->particle_class, inParticle->particle);
 	if (p_dynamicmatrix != NULL) {
 		*p_dynamicmatrix = inParticle->dynamic_matrix;
@@ -116,7 +116,7 @@ void EPrNotifyMatrixChange(EPtEnvParticle *inParticle, UUtUns32 inTime, UUtBool 
 				break;
 		}
 	}
-	
+
 	/* everything below here only needs to be done once when the particle is created */
 	if (!inInitialize)
 		return;
@@ -125,13 +125,13 @@ void EPrNotifyMatrixChange(EPtEnvParticle *inParticle, UUtUns32 inTime, UUtBool 
 	if (p_owner != NULL) {
 		*p_owner = 0;		// flags this particle as an environmental particle
 	}
-	
+
 	// randomise texture start index
 	p_texture = P3rGetTextureIndexPtr(inParticle->particle_class, inParticle->particle);
 	if (p_texture != NULL) {
 		*p_texture = (UUtUns32) UUrLocalRandom();
 	}
-	
+
 	// set texture time index to be now
 	p_texture = P3rGetTextureTimePtr(inParticle->particle_class, inParticle->particle);
 	if (p_texture != NULL) {
@@ -181,7 +181,7 @@ static UUtBool EPrNewDecal(EPtEnvParticle *inParticle, UUtUns32 inTime)
 
 	environment = ONrGameState_GetEnvironment();
 	AKrCollision_Point(environment, &position, &findwall_ray, AKcGQ_Flag_Obj_Col_Skip, 1);
-	if (AKgNumCollisions == 0) 
+	if (AKgNumCollisions == 0)
 		return UUcFalse;
 
 	quad_index	= AKgCollisionList[0].gqIndex;
@@ -191,7 +191,7 @@ static UUtBool EPrNewDecal(EPtEnvParticle *inParticle, UUtUns32 inTime)
 	UUrMemory_Clear(&effect_data, sizeof(effect_data));
 	effect_data.cause_type					= P3cEffectCauseType_ParticleHitWall;
 	effect_data.cause_data.particle_wall.gq_index = quad_index;
-	effect_data.time						= inTime;	
+	effect_data.time						= inTime;
 	effect_data.position					= AKgCollisionList[0].collisionPoint;
 	MUrMatrix_GetCol(&inParticle->matrix, 2, &effect_data.upvector);
 	effect_data.decal_xscale				= inParticle->decal_xscale;
@@ -222,12 +222,12 @@ static UUtBool EPrNewDecal(EPtEnvParticle *inParticle, UUtUns32 inTime)
 // ----------------------------------------------------------------------
 // create an env particle
 UUtBool EPrNewParticle(EPtEnvParticle *inParticle, UUtUns32 inTime)
-{	
+{
 	inParticle->flags |= EPcParticleFlag_Created;
 
 	if (inParticle->particle_class == NULL)
 		return UUcFalse;
-	
+
 	if (inParticle->particle_class->definition->flags2 & P3cParticleClassFlag2_Appearance_Decal) {
 		// create a decal instead
 		return EPrNewDecal(inParticle, inTime);
@@ -237,12 +237,12 @@ UUtBool EPrNewParticle(EPtEnvParticle *inParticle, UUtUns32 inTime)
 	inParticle->particle = P3rCreateParticle(inParticle->particle_class, inTime);
 	if (inParticle->particle == NULL)
 		return UUcFalse;
-	
+
 	// save the particle's self_ref
 	inParticle->particle_self_ref = inParticle->particle->header.self_ref;
-	
+
 	EPrNotifyMatrixChange(inParticle, inTime, UUcTrue);
-	
+
 	P3rSendEvent(inParticle->particle_class, inParticle->particle, P3cEvent_Create, ((float) inTime) / UUcFramesPerSecond);
 
 	return UUcTrue;
@@ -257,7 +257,7 @@ UUtBool EPrKillParticle(EPtEnvParticle *inParticle)
 	if (inParticle->particle == NULL) {
 		return UUcFalse;
 	}
-	
+
 	if (inParticle->particle->header.self_ref != inParticle->particle_self_ref) {
 		// this particle is already dead
 		inParticle->particle_self_ref = P3cParticleReference_Null;
@@ -268,11 +268,11 @@ UUtBool EPrKillParticle(EPtEnvParticle *inParticle)
 
 	// we have a particle, we must have a particle class
 	UUmAssert(inParticle->particle_class != NULL);
-	
+
 	P3rKillParticle(inParticle->particle_class, inParticle->particle);
 	inParticle->particle = NULL;
 	inParticle->particle_self_ref = P3cParticleReference_Null;
-	
+
 	return UUcTrue;
 }
 
@@ -479,7 +479,7 @@ void EPrEnumerateByTag(char *inTag, EPtEnumCallback_EnvParticle inCallback, UUtU
 		UUmAssertReadPtr(particle, sizeof(EPtEnvParticle));
 
 		inCallback(particle, inUserData);
-		
+
 		particle = particle->taglist;
 	}
 }
@@ -624,7 +624,7 @@ void EPrNew(EPtEnvParticle *inParticle, UUtUns32 inTime)
 void EPrDelete(EPtEnvParticle *inParticle)
 {
 	UUtBool					was_in_hash;
-	
+
 	// this should never be called for a particle that
 	// hasn't already been added to the particle list
 	UUmAssert(inParticle->flags & EPcParticleFlag_InUse);
@@ -671,7 +671,7 @@ UUtError EPrArray_New(EPtEnvParticleArray *inParticleArray, UUtUns16 inOwnerType
 	EPtEnvParticle *particle;
 	char particle_tag[256];
 	UUtBool skip_prefix = ((inTagPrefix == NULL) || (inTagPrefix[0] == '\0'));
-	
+
 	if (inParticleArray == NULL)
 		return UUcError_None;
 
@@ -693,7 +693,7 @@ UUtError EPrArray_New(EPtEnvParticleArray *inParticleArray, UUtUns16 inOwnerType
 
 		EPrNew(particle, inTime);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -701,7 +701,7 @@ void EPrArray_Delete(EPtEnvParticleArray *inParticleArray)
 {
 	UUtUns32 itr;
 	EPtEnvParticle *particle;
-	
+
 	if (inParticleArray == NULL)
 		return;
 
@@ -736,11 +736,11 @@ static void EPiDrawPositionMarker(EPtEnvParticle *inParticle, UUtUns32 inUserDat
 	MUmVector_Set(tri[2], -0.8660f, 0.0f, -0.5f);
 	tri[3] = tri[0];
 	M3rGeometry_LineDraw(4, tri, shade);
-	
+
 	MUmVector_Set(tri[0], 0.0f, 0.0f, 0.0f);
 	MUmVector_Set(tri[1], 0.0f, 1.0f, 0.0f);
 	M3rGeometry_LineDraw(2, tri, shade);
-	
+
 	M3rMatrixStack_Pop();
 }
 
@@ -772,7 +772,7 @@ UUtError EPrInitialize(void)
 UUtError EPrRegisterTemplates(void)
 {
 	UUtError error;
-	
+
 	error = TMrTemplate_Register(EPcTemplate_EnvParticleArray, sizeof(EPtEnvParticleArray), TMcFolding_Allow);
 	UUmError_ReturnOnError(error);
 

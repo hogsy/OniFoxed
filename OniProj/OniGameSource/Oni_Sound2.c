@@ -87,7 +87,7 @@ typedef struct OStHashElement
 		SStGroup				*group;
 		SStImpulse				*impulse;
 	} u;
-	
+
 } OStHashElement;
 
 // ----------------------------------------------------------------------
@@ -108,12 +108,12 @@ typedef struct OStPlayingAmbient
 	SStPlayID					ambient_id;
 	const SStAmbient			*ambient;
 	SStPlayID					play_id;
-	
+
 	UUtBool						has_position;
 	M3tPoint3D					position;
 	float						max_volume_distance;
 	float						min_volume_distance;
-	
+
 	float						volume;
 	OStOcclusionCache			occlusion_cache;
 
@@ -124,16 +124,16 @@ typedef struct OStPlayingObject
 {
 	const OBJtObject			*object;
 	SStPlayID					play_id;
-	
+
 	float						volume;
 	float						transition_volume;
 	float						object_volume;
-	
+
 	UUtUns32					state;		// for sound volumes
 	UUtUns32					start_time;
 
 	OStOcclusionCache			occlusion_cache;
-	
+
 } OStPlayingObject;
 
 // ----------------------------------------------------------------------
@@ -254,25 +254,25 @@ OSrDebugDisplay(
 	void)
 {
 	UUtUns32				i;
-	
+
 	if (SSgShowDebugInfo) {
 		// go through all of the ambient sources that are active
 		// and draw them
 		for (i = 0; i < OScMaxPlayingAmbientHandles; i++)
 		{
 			OStPlayingAmbient		*playing_ambient;
-			
+
 			playing_ambient = OSiPlayingAmbient_GetByID(i);
 			if (playing_ambient == NULL) { continue; }
-			
+
 			M3rGeom_Draw_DebugSphere(
 				&playing_ambient->position,
-				playing_ambient->max_volume_distance * UUmFeet(1), 
+				playing_ambient->max_volume_distance * UUmFeet(1),
 				IMcShade_Red);
 
 			M3rGeom_Draw_DebugSphere(
 				&playing_ambient->position,
-				playing_ambient->min_volume_distance * UUmFeet(1), 
+				playing_ambient->min_volume_distance * UUmFeet(1),
 				IMcShade_Green);
 		}
 	}
@@ -281,7 +281,7 @@ OSrDebugDisplay(
 	if (OSgShowOcclusions) {
 		IMtShade				shade;
 		M3tPoint3D				p0, p1;
-		
+
 		// draw occlusion lines and points
 		for (i = 0; i < OSgNumOcclusionLines; i++) {
 			M3rGeom_Line_Light(&OSgOcclusionLines[i][0], &OSgOcclusionLines[i][1], IMcShade_White);
@@ -349,11 +349,11 @@ OSiIsOccluded(
 	UUtUns16				num_collisions, itr;
 	UUtUns32				inside_object_tag;
 	float					dot, dist_tolerance;
-	
+
 	if (env == NULL) { return OScMaxCollisions; }
-	
+
 	MUmVector_Subtract(sightline, *inListener, *inSource);
-	
+
 #if TOOL_VERSION
 	if ((OSgShowOcclusions) && (OSgNumOcclusionLines < 64)) {
 		OSgOcclusionLines[OSgNumOcclusionLines][0] = *inSource;
@@ -361,13 +361,13 @@ OSiIsOccluded(
 		OSgNumOcclusionLines++;
 	}
 #endif
-	
+
 	had_collision = AKrCollision_Point_SpatialCache(env, inSource, &sightline, AKcGQ_Flag_SoundOcclude_Skip,
 													AKcMaxNumCollisions, ioSourceCache, &OSgListener_OctreeCache);
 	if (!had_collision) {
 		return 0;
 	}
-	
+
 	// process the collision list
 	inside_object_tag = (UUtUns32) -1;
 	num_collisions = 0;
@@ -378,13 +378,13 @@ OSiIsOccluded(
 	for(itr = 0, collision = AKgCollisionList; itr < AKgNumCollisions; itr++, collision++) {
 		AKtGQ_General			*general_gq;
 		AKtGQ_Collision			*collision_gq;
-		
+
 		if (collision->collisionType != CLcCollision_Face) {
 			continue;
 		}
-		
+
 		general_gq = env->gqGeneralArray->gqGeneral + collision->gqIndex;
-		
+
 		if (num_collisions == 0) {
 			if (MUmVector_GetDistanceSquared(*inSource, collision->collisionPoint) < UUmSQR(OScOcclusion_CoplanarDistance)) {
 				// ignore this collision so that we don't get occluded when we create a sound that is exactly
@@ -499,7 +499,7 @@ OSiIsOccluded(
 		lastpoint_was_collision = UUcTrue;
 		last_collision_point = last_point;
 	}
-	
+
 	return num_collisions;
 }
 
@@ -532,13 +532,13 @@ OSiCalc_PositionAndVolume(
 	M3tPoint3D				position;
 	float					direct_dist;
 	UUtUns32				current_time = ONrGameState_GetGameTime();
-	
+
 	// NULL position indicates non-spatialized audio,
 	// but must be handled outside this function!
 	UUmAssert(inPosition != NULL);
 	position = *outPosition = *inPosition;
 	*outVolume = 0.0f;
-	
+
 	// determine if the sound is within the minimum volume distance
 	direct_dist = MUrPoint_Distance_Squared(&position, &OSgListener_Position) * UUmSQR(SScFootToDist);
 	if (direct_dist > UUmSQR(inMinVolumeDistance)) { return UUcFalse; }
@@ -591,7 +591,7 @@ OSiCalc_PositionAndVolume(
 //			COrConsole_Printf("%d: occlusion calc %f", current_time, *outVolume);
 		}
 	}
-	
+
 	if (ioOcclusionCache != NULL) {
 		ioOcclusionCache->occlusion_volume = *outVolume;
 	}
@@ -612,15 +612,15 @@ OSiHasElement_GetByName(
 {
 	OStHashElement			find_me;
 	OStHashElement			*hash_elem;
-	
+
 	if (inHashTable == NULL) { return NULL; }
 	if (inName == NULL) { return NULL; }
-	
+
 	find_me.name = inName;
 	find_me.u.ambient = NULL;
-	
+
 	hash_elem = (OStHashElement*)AUrHashTable_Find(inHashTable, &find_me);
-	
+
 	return hash_elem;
 }
 
@@ -631,10 +631,10 @@ OSiHashElement_GetHashValue(
 {
 	OStHashElement			*hash_elem;
 	UUtUns32				hash_value;
-	
+
 	hash_elem = (OStHashElement*)inElement;
 	hash_value = AUrString_GetHashValue(hash_elem->name);
-	
+
 	return hash_value;
 }
 
@@ -647,12 +647,12 @@ OSiHashElement_IsEqual(
 	OStHashElement			*hash_elem1;
 	OStHashElement			*hash_elem2;
 	UUtBool					result;
-	
+
 	hash_elem1 = (OStHashElement*)inElement1;
 	hash_elem2 = (OStHashElement*)inElement2;
-	
+
 	result = UUrString_Compare_NoCase(hash_elem1->name, hash_elem2->name) == 0;
-	
+
 	return result;
 }
 
@@ -669,9 +669,9 @@ OSiPlayingAmbientHandles_Update(
 	OStPlayingAmbient		*playing_ambient_array;
 	UUtUns32				num_elements;
 	UUtUns32				i;
-	
+
 	UUrMemory_Clear(OSgPlayingAmbientHandles, (sizeof(OStPlayingAmbient*) * OScMaxPlayingAmbientHandles));
-	
+
 	playing_ambient_array = (OStPlayingAmbient*)UUrMemory_Array_GetMemory(OSgPlayingAmbient);
 	num_elements = UUrMemory_Array_GetUsedElems(OSgPlayingAmbient);
 	for (i = 0; i < num_elements; i++)
@@ -691,7 +691,7 @@ OSiPlayingAmbient_FreeElement(
 	UUmAssert(inPlayingAmbient != NULL);
 	UUmAssert(inPlayingAmbient->ambient_id < OScMaxPlayingAmbientHandles);
 	UUmAssert(inPlayingAmbient->play_id == SScInvalidID);
-	
+
 	UUrMemory_Array_DeleteElement(OSgPlayingAmbient, inPlayingAmbient->index);
 	OSiPlayingAmbientHandles_Update();
 }
@@ -707,40 +707,40 @@ OSiPlayingAmbient_GetNewElement(
 	UUtUns32				index;
 	UUtBool					mem_moved;
 	UUtUns32				i;
-	
+
 	*outPlayingAmbient = NULL;
-	
+
 	if (UUrMemory_Array_GetUsedElems(OSgPlayingAmbient) >= OScMaxPlayingAmbientHandles)
 	{
 		return UUcError_Generic;
 	}
-	
+
 	// get a new element from the array
 	error = UUrMemory_Array_GetNewElement(OSgPlayingAmbient, &index, &mem_moved);
 	UUmError_ReturnOnError(error);
-	
+
 	playing_ambient_array = (OStPlayingAmbient*)UUrMemory_Array_GetMemory(OSgPlayingAmbient);
-	
+
 	// set the index
 	playing_ambient_array[index].index = index;
-	
+
 	// add a link to the playing ambient to the handle array
 	for (i = 0; i < OScMaxPlayingAmbientHandles; i++)
 	{
 		if (OSgPlayingAmbientHandles[i] != NULL) { continue; }
-	
+
 		// set the ambient_id
 		playing_ambient_array[index].ambient_id = i;
-		
+
 		if (mem_moved == UUcFalse)
 		{
 			OSgPlayingAmbientHandles[i] = &playing_ambient_array[index];
 		}
 		break;
 	}
-	
+
 	if (mem_moved) { OSiPlayingAmbientHandles_Update(); }
-		
+
 	// set the outgoing playing ambient
 	*outPlayingAmbient = &playing_ambient_array[index];
 	*outIndex = index;
@@ -754,11 +754,11 @@ OSiPlayingAmbient_GetByID(
 	UUtUns32				inAmbientID)
 {
 	OStPlayingAmbient		*playing_ambient;
-	
+
 	UUmAssert(inAmbientID < OScMaxPlayingAmbientHandles);
-	
+
 	playing_ambient = OSgPlayingAmbientHandles[inAmbientID];
-	
+
 	return playing_ambient;
 }
 
@@ -771,11 +771,11 @@ OSiPlayingAmbient_Initialize(
 	OSgPlayingAmbientHandles =
 		(OStPlayingAmbient**)UUrMemory_Block_NewClear(sizeof(OStPlayingAmbient*) * OScMaxPlayingAmbientHandles);
 	UUmError_ReturnOnNull(OSgPlayingAmbientHandles);
-	
+
 	// initialize the playing ambient array
 	OSgPlayingAmbient =	UUrMemory_Array_New(sizeof(OStPlayingAmbient), 16, 0, 0);
 	UUmError_ReturnOnNull(OSgPlayingAmbient);
-	
+
 	return UUcError_None;
 }
 
@@ -786,7 +786,7 @@ OSiPlayingAmbient_Terminate(
 {
 	UUrMemory_Array_Delete(OSgPlayingAmbient);
 	OSgPlayingAmbient = NULL;
-	
+
 	UUrMemory_Block_Delete(OSgPlayingAmbientHandles);
 	OSgPlayingAmbientHandles = NULL;
 }
@@ -803,14 +803,14 @@ OSrAmbient_BuildHashTable(
 {
 	UUtUns32				num_ambients;
 	UUtUns32				i;
-	
+
 	// delete the old table
 	if (OSgAmbientTable != NULL)
 	{
 		AUrHashTable_Delete(OSgAmbientTable);
 		OSgAmbientTable = NULL;
 	}
-	
+
 	// allocate a new table
 	OSgAmbientTable =
 		AUrHashTable_New(
@@ -819,23 +819,23 @@ OSrAmbient_BuildHashTable(
 			OSiHashElement_GetHashValue,
 			OSiHashElement_IsEqual);
 	UUmError_ReturnOnNull(OSgAmbientTable);
-	
+
 	// add the ambient sounds to the table
 	num_ambients = SSrAmbient_GetNumAmbientSounds();
 	for (i = 0; i < num_ambients; i++)
 	{
 		SStAmbient				*ambient;
 		OStHashElement			hash_elem;
-		
+
 		ambient = SSrAmbient_GetByIndex(i);
 		if (ambient == NULL) { break; }
-		
+
 		hash_elem.name = ambient->ambient_name;
 		hash_elem.u.ambient = ambient;
-		
+
 		AUrHashTable_Add(OSgAmbientTable, &hash_elem);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -846,18 +846,18 @@ OSrAmbient_ChangeName(
 	const char				*inName)
 {
 	char					name[SScMaxNameLength];
-	
+
 	UUmAssert(inAmbient);
 	UUmAssert(inName);
-	
+
 	// save the old name
 	UUrString_Copy(name, inAmbient->ambient_name, SScMaxNameLength);
-	
+
 	// change the ambients's name
 	UUrString_Copy(inAmbient->ambient_name, inName, SScMaxNameLength);
-	
+
 	// update the name
-	
+
 	// rebuild the hash table
 	OSrAmbient_BuildHashTable();
 }
@@ -868,12 +868,12 @@ OSrAmbient_Delete(
 	const char				*inName)
 {
 	UUtError				error;
-	
+
 	SSrAmbient_Delete(inName, UUcTrue);
-	
+
 	error = OSrAmbient_BuildHashTable();
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -885,11 +885,11 @@ OSrAmbient_GetByName(
 	const char				*inName)
 {
 	OStHashElement			*hash_elem;
-	
+
 	// find the hash element for the ambient sound named inName
 	hash_elem = OSiHasElement_GetByName(OSgAmbientTable, inName);
 	if (hash_elem == NULL) { return NULL; }
-	
+
 	// return the ambient pointer
 	return hash_elem->u.ambient;
 }
@@ -901,13 +901,13 @@ OSrAmbient_Halt(
 	SStPlayID					inAmbientID)
 {
 	OStPlayingAmbient			*playing_ambient;
-	
+
 	if (inAmbientID == SScInvalidID) { return; }
-	
+
 	// go through and find the ambient to halt
 	playing_ambient = OSiPlayingAmbient_GetByID(inAmbientID);
 	if (playing_ambient == NULL) { return; }
-	
+
 	if (playing_ambient->play_id != SScInvalidID)
 	{
 		SSrAmbient_Halt(playing_ambient->play_id);
@@ -919,10 +919,10 @@ OSrAmbient_Halt(
 				playing_ambient->play_id,
 				playing_ambient->ambient->ambient_name);
 		}*/
-	
+
 		playing_ambient->play_id = SScInvalidID;
 	}
-	
+
 	OSiPlayingAmbient_FreeElement(playing_ambient);
 }
 
@@ -937,21 +937,21 @@ OSiAmbient_Load(
 {
 	UUtError				error;
 	SStAmbient				*ambient;
-	
+
 	UUtUns8					*buffer;
 	UUtUns32				buffer_size;
 	UUtUns32				version;
-	
+
 	char					name[SScMaxNameLength];
-	
+
 	UUmAssert(inIdentifier);
 	UUmAssert(ioBinaryData);
-		
+
 	// ------------------------------
 	// create a new ambient sound
 	// ------------------------------
 	OSrMakeGoodName(inIdentifier, name);
-	
+
 	// if no ambient sound with this name exists, create a new one,
 	// if one does exist, take it over
 	ambient = SSrAmbient_GetByName(name);
@@ -969,7 +969,7 @@ OSiAmbient_Load(
 		ambient->base_track2 = NULL;
 		ambient->detail = NULL;
 	}
-	
+
 	// ------------------------------
 	// read the binary data
 	// ------------------------------
@@ -978,7 +978,7 @@ OSiAmbient_Load(
 
 	// read the version number
 	BDmGet4BytesFromBuffer(buffer, version, UUtUns32, inSwapIt);
-	
+
 	BDmGet4BytesFromBuffer(buffer, ambient->priority, SStPriority2, inSwapIt);
 	BDmGet4BytesFromBuffer(buffer, ambient->flags, UUtUns32, inSwapIt);
 	BDmGet4BytesFromBuffer(buffer, ambient->sphere_radius, float, inSwapIt);
@@ -991,7 +991,7 @@ OSiAmbient_Load(
 	BDmGetStringFromBuffer(buffer, ambient->base_track2_name, SScMaxNameLength, inSwapIt);
 	BDmGetStringFromBuffer(buffer, ambient->in_sound_name, SScMaxNameLength, inSwapIt);
 	BDmGetStringFromBuffer(buffer, ambient->out_sound_name, SScMaxNameLength, inSwapIt);
-	
+
 	if (version < OS2cVersion_5)
 	{
 		ambient->threshold = SScAmbientThreshold;
@@ -1000,7 +1000,7 @@ OSiAmbient_Load(
 	{
 		BDmGet4BytesFromBuffer(buffer, ambient->threshold, UUtUns32, inSwapIt);
 	}
-	
+
 	if (version < OS2cVersion_6)
 	{
 		ambient->min_occlusion = 0.0f;
@@ -1009,12 +1009,12 @@ OSiAmbient_Load(
 	{
 		BDmGet4BytesFromBuffer(buffer, ambient->min_occlusion, float, inSwapIt);
 	}
-	
+
 	if (inAllocated == UUcTrue)
 	{
 		UUrMemory_Block_Delete(ioBinaryData);
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -1024,10 +1024,10 @@ OSiAmbient_LevelLoad(
 	void)
 {
 	UUtError				error;
-	
+
 	error = OSrAmbient_BuildHashTable();
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -1052,15 +1052,15 @@ OSrAmbient_New(
 {
 	UUtError				error;
 	char					name[SScMaxNameLength];
-	
+
 	OSrMakeGoodName(inName, name);
-	
+
 	error = SSrAmbient_New(name, outAmbient);
 	UUmError_ReturnOnError(error);
-	
+
 	error = OSrAmbient_BuildHashTable();
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -1083,36 +1083,36 @@ OSrAmbient_Save(
 	sprintf(name, "%s.%s", inAmbient->ambient_name, OScAmbientSuffix);
 	error = BFrFileRef_DuplicateAndAppendName(inParentDirRef, name, &file_ref);
 	UUmError_ReturnOnError(error);
-	
+
 	// create the file if it doesn't exist
 	if (BFrFileRef_FileExists(file_ref) == UUcFalse)
 	{
 		error = BFrFile_Create(file_ref);
 		UUmError_ReturnOnErrorMsg(error, "Could not create the file.");
 	}
-	
+
 	// see if the file is locked
 	if (BFrFileRef_IsLocked(file_ref) == UUcTrue)
 	{
 		char					error_string[1024];
-		
+
 		sprintf(
 			error_string,
 			"Unable to save ambient sound, because the file %s is locked",
 			name);
-		
+
 		WMrDialog_MessageBox(
 			NULL,
 			"Error",
 			error_string,
 			WMcMessageBoxStyle_OK);
-			
+
 		BFrFileRef_Dispose(file_ref);
 		file_ref = NULL;
-		
+
 		return UUcError_None;
 	}
-	
+
 	// open the file for writing
 	error =
 		BFrFile_Open(
@@ -1120,17 +1120,17 @@ OSrAmbient_Save(
 			"w",
 			&file);
 	UUmError_ReturnOnErrorMsg(error, "Could not open the group file.");
-	
+
 	// set the pos to the beginning of the file
 	BFrFile_SetPos(file, 0);
-	
+
 	// setup the buffer pointer
 	buffer = data;
 	bytes_avail = OScMaxBufferSize;
-	
+
 	// write the version
 	BDmWrite4BytesToBuffer(buffer, OS2cCurrentVersion, UUtUns32, bytes_avail, BDcWrite_Little);
-	
+
 	// write the ambient sound to the buffer
 	BDmWrite4BytesToBuffer(buffer, inAmbient->priority, SStPriority2, bytes_avail, BDcWrite_Little);
 	BDmWrite4BytesToBuffer(buffer, inAmbient->flags, UUtUns32, bytes_avail, BDcWrite_Little);
@@ -1146,7 +1146,7 @@ OSrAmbient_Save(
 	BDmWriteStringToBuffer(buffer, inAmbient->out_sound_name, SScMaxNameLength, bytes_avail, BDcWrite_Little);
 	BDmWrite4BytesToBuffer(buffer, inAmbient->threshold, UUtUns32, bytes_avail, BDcWrite_Little);
 	BDmWrite4BytesToBuffer(buffer, inAmbient->min_occlusion, float, bytes_avail, BDcWrite_Little);
-	
+
 	// write the ambient sound
 	error =
 		BDrBinaryData_Write(
@@ -1155,17 +1155,17 @@ OSrAmbient_Save(
 			(OScMaxBufferSize - bytes_avail),
 			file);
 	UUmError_ReturnOnErrorMsg(error, "Unable to write to file.");
-	
+
 	// set the EOF
 	BFrFile_SetEOF(file);
-	
+
 	// close the file
 	BFrFile_Close(file);
 	file = NULL;
-	
+
 	UUrMemory_Block_Delete(file_ref);
 	file_ref = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -1186,9 +1186,9 @@ OSrAmbient_Start(
 	float						volume;
 	float						max_volume_distance;
 	float						min_volume_distance;
-	
+
 	OStPlayingAmbient			*playing_ambient;
-	
+
 	// set the min and max volume distances
 	if (inMaxVolDistance == NULL)
 	{
@@ -1198,7 +1198,7 @@ OSrAmbient_Start(
 	{
 		max_volume_distance = *inMaxVolDistance;
 	}
-	
+
 	if (inMinVolDistance == NULL)
 	{
 		min_volume_distance = inAmbient->min_volume_distance;
@@ -1207,7 +1207,7 @@ OSrAmbient_Start(
 	{
 		min_volume_distance = *inMinVolDistance;
 	}
-	
+
 	// get an entry in the playing ambient array
 	error = OSiPlayingAmbient_GetNewElement(&playing_ambient, &playing_ambient_index);
 	if (error != UUcError_None)
@@ -1220,10 +1220,10 @@ OSrAmbient_Start(
 		}*/
 		return SScInvalidID;
 	}
-	
+
 /*	{
 	float dist = MUrPoint_Distance(inPosition, &OSgListener_Position);
-	
+
 	COrConsole_Printf(
 		"OSrAmbient_Start %d: %s %d at (%f, %f, %f) %f",
 		ONrGameState_GetGameTime(),
@@ -1234,7 +1234,7 @@ OSrAmbient_Start(
 		inPosition->z,
 		dist);
 	}*/
-	
+
 	// initialize the playing ambient
 	playing_ambient->play_id = SScInvalidID;
 	playing_ambient->ambient = inAmbient;
@@ -1242,14 +1242,14 @@ OSrAmbient_Start(
 	playing_ambient->min_volume_distance = min_volume_distance;
 	playing_ambient->has_position = UUcFalse;
 	OSiSetupOcclusionCache(playing_ambient_index, &playing_ambient->occlusion_cache);
-	
+
 	// play the ambient sound if possible
 	if (inPosition == NULL)
 	{
 		if (OSgScriptOnly == UUcFalse)
 		{
 			playing_ambient->play_id = SSrAmbient_Start_Simple(inAmbient, NULL);
-			
+
 /*			if (SSgShowDebugInfo)
 			{
 				COrConsole_Printf(
@@ -1263,7 +1263,7 @@ OSrAmbient_Start(
 	{
 		playing_ambient->position = *inPosition;
 		playing_ambient->has_position = UUcTrue;
-		
+
 		// calculate the position and volume of the sound
 		can_play =
 			OSiCalc_PositionAndVolume(
@@ -1288,7 +1288,7 @@ OSrAmbient_Start(
 					min_volume_distance,
 					&volume);
 			playing_ambient->volume = volume;
-			
+
 /*			if (SSgShowDebugInfo)
 			{
 				if (playing_ambient->play_id == SScInvalidID)
@@ -1300,7 +1300,7 @@ OSrAmbient_Start(
 				else
 				{
 					float direct_dist = MUrPoint_Distance(&position, &OSgListener_Position) * SScFootToDist;
-					
+
 					COrConsole_Printf(
 						"SSrAmbient_Start: %d %s, %f <=> %f, (%f, %f, %f), (%f, %f, %f)",
 						playing_ambient->play_id,
@@ -1334,7 +1334,7 @@ OSrAmbient_Start(
 				playing_ambient->ambient->ambient_name);
 		}*/
 	}
-	
+
 	return playing_ambient->ambient_id;
 }
 
@@ -1344,13 +1344,13 @@ OSrAmbient_Stop(
 	SStPlayID					inAmbientID)
 {
 	OStPlayingAmbient			*playing_ambient;
-	
+
 	if (inAmbientID == SScInvalidID) { return; }
-	
+
 	// go through and find the ambient to stop
 	playing_ambient = OSiPlayingAmbient_GetByID(inAmbientID);
 	if (playing_ambient == NULL) { return; }
-	
+
 	if (playing_ambient->play_id != SScInvalidID)
 	{
 		SSrAmbient_Stop(playing_ambient->play_id);
@@ -1363,10 +1363,10 @@ OSrAmbient_Stop(
 				playing_ambient->ambient->ambient_name,
 				inAmbientID);
 		}*/
-	
+
 		playing_ambient->play_id = SScInvalidID;
 	}
-	
+
 	OSiPlayingAmbient_FreeElement(playing_ambient);
 }
 
@@ -1380,18 +1380,18 @@ OSiAmbient_Update(
 	const M3tVector3D			*inVelocity)
 {
 	UUmAssert(inPlayingAmbient);
-	
+
 	if (inPosition != NULL)
 	{
 		UUtBool						is_playing;
 		UUtBool						can_play;
 		M3tPoint3D					position;
 		float						volume;
-		
+
 		// update the playing ambient
 		inPlayingAmbient->position = *inPosition;
 		inPlayingAmbient->has_position = UUcTrue;
-		
+
 		can_play =
 			OSiCalc_PositionAndVolume(
 				&inPlayingAmbient->position,
@@ -1409,11 +1409,11 @@ OSiAmbient_Update(
 			// that the sound system code can deal with stopping it if
 			// necessary
 			if (inPlayingAmbient->play_id == SScInvalidID) { return UUcTrue; }
-			
+
 /*			if (SSgShowDebugInfo)
 			{
 				float direct_dist = MUrPoint_Distance(&position, &OSgListener_Position) * SScFootToDist;
-				
+
 				COrConsole_Printf(
 					"SSrAmbient_Update: %d %s, %f <=> %f, (%f, %f, %f), (%f, %f, %f)",
 					inPlayingAmbient->play_id,
@@ -1447,7 +1447,7 @@ OSiAmbient_Update(
 							inPlayingAmbient->play_id,
 							inPlayingAmbient->ambient->ambient_name);
 					}*/
-					
+
 					OSrAmbient_Stop(inAmbientID);
 					return UUcFalse;
 				}
@@ -1462,14 +1462,14 @@ OSiAmbient_Update(
 						inPlayingAmbient->play_id,
 						inPlayingAmbient->ambient->ambient_name);
 				}*/
-			
+
 				SSrAmbient_Halt(inPlayingAmbient->play_id);
 				inPlayingAmbient->play_id = SScInvalidID;
 			}
-			
+
 			return UUcTrue;
 		}
-		
+
 		if (inPlayingAmbient->play_id == SScInvalidID)
 		{
 			if (OSgScriptOnly == UUcFalse)
@@ -1499,7 +1499,7 @@ OSiAmbient_Update(
 		else
 		{
 			float			volume_delta;
-			
+
 //			COrConsole_Printf("volume changing, %f -> %f", inPlayingAmbient->volume, volume);
 
 			// update occluding volumes over time
@@ -1520,7 +1520,7 @@ OSiAmbient_Update(
 						0.0f,
 						1.0f);
 			}
-						
+
 			// update the ambient sound
 //			COrConsole_Printf("volume makechange %f", inPlayingAmbient->volume, volume);
 			is_playing =
@@ -1541,10 +1541,10 @@ OSiAmbient_Update(
 				}
 			}
 		}
-		
+
 		inPlayingAmbient->volume = volume;
 	}
-		
+
 	return UUcTrue;
 }
 
@@ -1558,16 +1558,16 @@ OSrAmbient_Update(
 {
 	OStPlayingAmbient			*playing_ambient;
 	UUtBool						result;
-	
+
 	if (inAmbientID == SScInvalidID) { return UUcFalse; }
-	
+
 	// get the a pointer to the playing ambient
 	playing_ambient = OSiPlayingAmbient_GetByID(inAmbientID);
 	if (playing_ambient == NULL) { return UUcFalse; }
-	
+
 /*	{
 	float dist = MUrPoint_Distance(inPosition, &OSgListener_Position);
-	
+
 	COrConsole_Printf(
 		"OSrAmbient_Update %d: %s %d at (%f, %f, %f) %f",
 		ONrGameState_GetGameTime(),
@@ -1578,9 +1578,9 @@ OSrAmbient_Update(
 		inPosition->z,
 		dist);
 	}*/
-	
+
 	result = OSiAmbient_Update(inAmbientID, playing_ambient, inPosition, inDirection, inVelocity);
-	
+
 	return result;
 }
 
@@ -1590,15 +1590,15 @@ OSiAmbient_UpdateAll(
 	void)
 {
 	UUtUns32					i;
-	
+
 	for (i = 0; i < OScMaxPlayingAmbientHandles; i++)
 	{
 		OStPlayingAmbient			*playing_ambient;
-		
+
 		playing_ambient = OSiPlayingAmbient_GetByID(i);
 		if (playing_ambient == NULL) { continue; }
 		if (playing_ambient->has_position == UUcFalse) { continue; }
-		
+
 //		COrConsole_Printf("update playingambient %s", playing_ambient->ambient->ambient_name);
 		OSiAmbient_Update(i, playing_ambient, &playing_ambient->position, NULL, NULL);
 	}
@@ -1635,7 +1635,7 @@ OSiAmbient_GetSimpleDuration(
 
 		return SSrSoundData_GetDuration(permutation->sound_data);
 	}
-	
+
 	// found no non-NULL permutations
 	return 0;
 }
@@ -1652,14 +1652,14 @@ OSrGroup_BuildHashTable(
 {
 	UUtUns32				num_groups;
 	UUtUns32				i;
-	
+
 	// delete the old table
 	if (OSgGroupTable != NULL)
 	{
 		AUrHashTable_Delete(OSgGroupTable);
 		OSgGroupTable = NULL;
 	}
-	
+
 	// allocate a new table
 	OSgGroupTable =
 		AUrHashTable_New(
@@ -1668,23 +1668,23 @@ OSrGroup_BuildHashTable(
 			OSiHashElement_GetHashValue,
 			OSiHashElement_IsEqual);
 	UUmError_ReturnOnNull(OSgGroupTable);
-	
+
 	// add the sound groups to the table
 	num_groups = SSrGroup_GetNumSoundGroups();
 	for (i = 0; i < num_groups; i++)
 	{
 		SStGroup				*group;
 		OStHashElement			hash_elem;
-		
+
 		group = SSrGroup_GetByIndex(i);
 		if (group == NULL) { break; }
-		
+
 		hash_elem.name = group->group_name;
 		hash_elem.u.group = group;
-		
+
 		AUrHashTable_Add(OSgGroupTable, &hash_elem);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1695,20 +1695,20 @@ OSrGroup_ChangeName(
 	const char				*inName)
 {
 	char					name[SScMaxNameLength];
-	
+
 	UUmAssert(inGroup);
 	UUmAssert(inName);
-	
+
 	// save the old name
 	UUrString_Copy(name, inGroup->group_name, SScMaxNameLength);
-	
+
 	// change the group's name
 	UUrString_Copy(inGroup->group_name, inName, SScMaxNameLength);
-	
+
 	// update the ambient and impulse sounds
 	SSrAmbient_UpdateGroupName(name, inName);
 	SSrImpulse_UpdateGroupName(name, inName);
-	
+
 	// rebuild the hash table
 	OSrGroup_BuildHashTable();
 }
@@ -1719,13 +1719,13 @@ OSrGroup_Delete(
 	const char				*inName)
 {
 	UUtError				error;
-	
+
 	// delete the group
 	SSrGroup_Delete(inName, UUcTrue);
-	
+
 	error = OSrGroup_BuildHashTable();
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -1735,11 +1735,11 @@ OSrGroup_GetByName(
 	const char				*inName)
 {
 	OStHashElement			*hash_elem;
-	
+
 	// find the hash element for the sound group named inName
 	hash_elem = OSiHasElement_GetByName(OSgGroupTable, inName);
 	if (hash_elem == NULL) { return NULL; }
-	
+
 	// return the group pointer
 	return hash_elem->u.group;
 }
@@ -1755,26 +1755,26 @@ OSiGroup_Load(
 {
 	UUtError				error;
 	SStGroup				*group;
-	
+
 	UUtUns8					*buffer;
 	UUtUns32				buffer_size;
 	UUtUns32				version;
-	
+
 	UUtUns32				i;
 	UUtUns32				num_permutations;
 	UUtMemory_Array			*permutations;
 	SStPermutation			*perm_array;
-	
+
 	char					name[SScMaxNameLength];
-	
+
 	UUmAssert(inIdentifier);
 	UUmAssert(ioBinaryData);
-	
+
 	// ------------------------------
 	// create a new group sound
 	// ------------------------------
 	OSrMakeGoodName(inIdentifier, name);
-	
+
 	// if no group with this name exists, create a new one,
 	// if one does exist, take it over
 	group = SSrGroup_GetByName(name);
@@ -1789,7 +1789,7 @@ OSiGroup_Load(
 		UUrMemory_Array_Delete(group->permutations);
 		group->permutations = NULL;
 	}
-	
+
 	// ------------------------------
 	// read the binary data
 	// ------------------------------
@@ -1798,7 +1798,7 @@ OSiGroup_Load(
 
 	// read the version number
 	BDmGet4BytesFromBuffer(buffer, version, UUtUns32, inSwapIt);
-	
+
 	// read the group volume in file versions 2 or higher, before then, use
 	// a default of 1.0f
 	if (version < OS2cVersion_2)
@@ -1809,7 +1809,7 @@ OSiGroup_Load(
 	{
 		BDmGet4BytesFromBuffer(buffer, group->group_volume, float, inSwapIt);
 	}
-	
+
 	// read the group pitch in file versions 3 or higher, before then, use
 	// a default of 1.0f
 	if (version < OS2cVersion_3)
@@ -1820,7 +1820,7 @@ OSiGroup_Load(
 	{
 		BDmGet4BytesFromBuffer(buffer, group->group_pitch, float, inSwapIt);
 	}
-	
+
 	// read the group flags from files version 6 or higher
 	if (version < OS2cVersion_6)
 	{
@@ -1832,17 +1832,17 @@ OSiGroup_Load(
 		BDmGet2BytesFromBuffer(buffer, group->flags, UUtUns16, inSwapIt);
 		BDmGet2BytesFromBuffer(buffer, group->flag_data, UUtUns16, inSwapIt);
 	}
-	
+
 	BDmGet4BytesFromBuffer(buffer, group->num_channels, UUtUns32, inSwapIt);
 	BDmGet4BytesFromBuffer(buffer, num_permutations, UUtUns32, inSwapIt);
-	
+
 	// for older groups, default to SScGroupFlag_PreventRepeats if
 	// num_permutations >= SScPreventRepeats_Default
 	if ((version < OS2cVersion_6) && (num_permutations >= SScPreventRepeats_Default))
 	{
 		group->flags |= SScGroupFlag_PreventRepeats;
 	}
-	
+
 	// create a memory array to hold the permutations
 	permutations =
 		UUrMemory_Array_New(
@@ -1851,13 +1851,13 @@ OSiGroup_Load(
 			num_permutations,
 			num_permutations);
 	UUmError_ReturnOnNull(permutations);
-	
+
 	if (group->permutations)
 	{
 		UUrMemory_Array_Delete(group->permutations);
 	}
 	group->permutations = permutations;
-	
+
 	// read the permutations
 	perm_array = (SStPermutation*)UUrMemory_Array_GetMemory(permutations);
 	for (i = 0; i < num_permutations; i++)
@@ -1869,16 +1869,16 @@ OSiGroup_Load(
 		BDmGet4BytesFromBuffer(buffer, perm_array[i].min_pitch_percent, float, inSwapIt);
 		BDmGet4BytesFromBuffer(buffer, perm_array[i].max_pitch_percent, float, inSwapIt);
 		BDmGetStringFromBuffer(buffer, perm_array[i].sound_data_name, BFcMaxFileNameLength, inSwapIt);
-		
+
 		// get a pointer to the sound buffer
 		perm_array[i].sound_data = NULL;
 	}
-	
+
 	if (inAllocated == UUcTrue)
 	{
 		UUrMemory_Block_Delete(ioBinaryData);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1888,12 +1888,12 @@ OSiGroup_LevelLoad(
 	void)
 {
 	UUtError					error;
-	
+
 	error = OSrGroup_BuildHashTable();
 	UUmError_ReturnOnError(error);
-	
+
 	SSrGroup_UpdateSoundDataPointers();
-		
+
 	return UUcError_None;
 }
 
@@ -1919,20 +1919,20 @@ OSrGroup_New(
 	UUtError				error;
 	SStGroup				*group;
 	char					name[SScMaxNameLength];
-	
+
 	*outGroup = NULL;
-	
+
 	OSrMakeGoodName(inName, name);
-	
+
 	group = OSrGroup_GetByName(name);
 	if (group != NULL) { return UUcError_Generic; }
-	
+
 	error = SSrGroup_New(name, outGroup);
 	UUmError_ReturnOnError(error);
-	
+
 	error = OSrGroup_BuildHashTable();
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -1956,19 +1956,19 @@ OSrGroup_Save(
 	char					name[BFcMaxFileNameLength];
 	UUtUns32				bytes_needed;
 	UUtBool					mem_allocated;
-	
+
 	// create the file ref
 	sprintf(name, "%s.%s", inGroup->group_name, OScGroupSuffix);
 	error = BFrFileRef_DuplicateAndAppendName(inParentDirRef, name, &file_ref);
 	UUmError_ReturnOnError(error);
-	
+
 	// create the file if it doesn't exist
 	if (BFrFileRef_FileExists(file_ref) == UUcFalse)
 	{
 		error = BFrFile_Create(file_ref);
 		UUmError_ReturnOnErrorMsg(error, "Could not create the file.");
 	}
-		
+
 	// open the file for writing
 	error =
 		BFrFile_Open(
@@ -1976,13 +1976,13 @@ OSrGroup_Save(
 			"w",
 			&file);
 	UUmError_ReturnOnErrorMsg(error, "Could not open the group file.");
-	
+
 	// set the pos to the beginning of the file
 	BFrFile_SetPos(file, 0);
-	
+
 	// get the number of permutations
 	num_permutations = UUrMemory_Array_GetUsedElems(inGroup->permutations);
-	
+
 	// determine if memory needs to be allocated
 	mem_allocated = UUcFalse;
 	bytes_needed =
@@ -1994,7 +1994,7 @@ OSrGroup_Save(
 	{
 		data = UUrMemory_Block_New(bytes_needed);
 		UUmError_ReturnOnNull(data);
-		
+
 		data_size = bytes_needed;
 		mem_allocated = UUcTrue;
 	}
@@ -2002,29 +2002,29 @@ OSrGroup_Save(
 	// setup the buffer pointer
 	buffer = data;
 	bytes_avail = data_size;
-	
+
 	// write the version
 	BDmWrite4BytesToBuffer(buffer, OS2cCurrentVersion, UUtUns32, bytes_avail, BDcWrite_Little);
-	
+
 	// write the group volume and pitch
 	BDmWrite4BytesToBuffer(buffer, inGroup->group_volume, float, bytes_avail, BDcWrite_Little);
 	BDmWrite4BytesToBuffer(buffer, inGroup->group_pitch, float, bytes_avail, BDcWrite_Little);
-	
+
 	// write the flag and flag data
 	BDmWrite2BytesToBuffer(buffer, (inGroup->flags & SScGroupFlag_WriteMask), UUtUns16, bytes_avail, BDcWrite_Little);
 	BDmWrite2BytesToBuffer(buffer, inGroup->flag_data, UUtUns16, bytes_avail, BDcWrite_Little);
-	
+
 	// write the group channels and permutations to the buffer
 	BDmWrite4BytesToBuffer(buffer, inGroup->num_channels, UUtUns32, bytes_avail, BDcWrite_Little);
 	BDmWrite4BytesToBuffer(buffer, num_permutations, UUtUns32, bytes_avail, BDcWrite_Little);
-	
+
 	perm_array = (SStPermutation*)UUrMemory_Array_GetMemory(inGroup->permutations);
 	for (i = 0; i < num_permutations; i++)
 	{
 		SStPermutation			*perm;
-		
+
 		perm = &perm_array[i];
-		
+
 		BDmWrite4BytesToBuffer(buffer, perm->weight, UUtUns32, bytes_avail, BDcWrite_Little);
 		BDmWrite4BytesToBuffer(buffer, perm->min_volume_percent, float, bytes_avail, BDcWrite_Little);
 		BDmWrite4BytesToBuffer(buffer, perm->max_volume_percent, float, bytes_avail, BDcWrite_Little);
@@ -2032,7 +2032,7 @@ OSrGroup_Save(
 		BDmWrite4BytesToBuffer(buffer, perm->max_pitch_percent, float, bytes_avail, BDcWrite_Little);
 		BDmWriteStringToBuffer(buffer, perm->sound_data_name, SScMaxNameLength, bytes_avail, BDcWrite_Little);
 	}
-	
+
 	// write the group
 	error =
 		BDrBinaryData_Write(
@@ -2041,23 +2041,23 @@ OSrGroup_Save(
 			(data_size - bytes_avail),
 			file);
 	UUmError_ReturnOnErrorMsg(error, "Unable to write to file.");
-	
+
 	if (mem_allocated)
 	{
 		UUrMemory_Block_Delete(data);
 		data = NULL;
 	}
-	
+
 	// set the EOF
 	BFrFile_SetEOF(file);
-	
+
 	// close the file
 	BFrFile_Close(file);
 	file = NULL;
-	
+
 	UUrMemory_Block_Delete(file_ref);
 	file_ref = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -2073,14 +2073,14 @@ OSrImpulse_BuildHashTable(
 {
 	UUtUns32				num_impulses;
 	UUtUns32				i;
-	
+
 	// delete the old table
 	if (OSgImpulseTable != NULL)
 	{
 		AUrHashTable_Delete(OSgImpulseTable);
 		OSgImpulseTable = NULL;
 	}
-	
+
 	// allocate a new table
 	OSgImpulseTable =
 		AUrHashTable_New(
@@ -2089,23 +2089,23 @@ OSrImpulse_BuildHashTable(
 			OSiHashElement_GetHashValue,
 			OSiHashElement_IsEqual);
 	UUmError_ReturnOnNull(OSgImpulseTable);
-	
+
 	// add the ipulse sounds to the table
 	num_impulses = SSrImpulse_GetNumImpulseSounds();
 	for (i = 0; i < num_impulses; i++)
 	{
 		SStImpulse				*impulse;
 		OStHashElement			hash_elem;
-		
+
 		impulse = SSrImpulse_GetByIndex(i);
 		if (impulse == NULL) { break; }
-		
+
 		hash_elem.name = impulse->impulse_name;
 		hash_elem.u.impulse = impulse;
-		
+
 		AUrHashTable_Add(OSgImpulseTable, &hash_elem);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2119,16 +2119,16 @@ OSrImpulse_ChangeName(
 
 	UUmAssert(inImpulse);
 	UUmAssert(inName);
-	
+
 	// save the old name
 	UUrString_Copy(name, inImpulse->impulse_name, SScMaxNameLength);
-	
+
 	// change the impulse's name
 	UUrString_Copy(inImpulse->impulse_name, inName, SScMaxNameLength);
-	
+
 	// update the impulse names
 	OSrVariantList_UpdateImpulseName(name, inName);
-	
+
 	// rebuild the hash table
 	OSrImpulse_BuildHashTable();
 }
@@ -2139,15 +2139,15 @@ OSrImpulse_Delete(
 	const char				*inName)
 {
 	UUtError				error;
-	
+
 	SSrImpulse_Delete(inName, UUcTrue);
-	
+
 	error = OSrImpulse_BuildHashTable();
 	UUmError_ReturnOnError(error);
 
 	// an impulse sound has been deleted, we must possibly delete its pointer
 	ONrImpactEffects_SetupSoundPointers();
-	
+
 	return UUcError_None;
 }
 
@@ -2157,11 +2157,11 @@ OSrImpulse_GetByName(
 	const char				*inName)
 {
 	OStHashElement			*hash_elem;
-	
+
 	// find the hash element for the impulse sound named inName
 	hash_elem = OSiHasElement_GetByName(OSgImpulseTable, inName);
 	if (hash_elem == NULL) { return NULL; }
-	
+
 	// return the impulse pointer
 	return hash_elem->u.impulse;
 }
@@ -2177,21 +2177,21 @@ OSiImpulse_Load(
 {
 	UUtError				error;
 	SStImpulse				*impulse;
-	
+
 	UUtUns8					*buffer;
 	UUtUns32				buffer_size;
 	UUtUns32				version;
-	
+
 	char					name[SScMaxNameLength];
-	
+
 	UUmAssert(inIdentifier);
 	UUmAssert(ioBinaryData);
-	
+
 	// ------------------------------
 	// create a new impulse sound
 	// ------------------------------
 	OSrMakeGoodName(inIdentifier, name);
-	
+
 	// if no group with this name exists, create a new one,
 	// if one does exist, take it over
 	impulse = SSrImpulse_GetByName(name);
@@ -2206,16 +2206,16 @@ OSiImpulse_Load(
 		impulse->impulse_group = NULL;
 		impulse->alt_impulse = NULL;
 	}
-	
+
 	// ------------------------------
 	// read the binary data
 	// ------------------------------
 	buffer = ioBinaryData->data;
 	buffer_size = ioBinaryData->header.data_size;
-	
+
 	// read the version number
 	BDmGet4BytesFromBuffer(buffer, version, UUtUns32, inSwapIt);
-	
+
 	BDmGetStringFromBuffer(buffer, impulse->impulse_group_name, SScMaxNameLength, inSwapIt);
 	BDmGet4BytesFromBuffer(buffer, impulse->priority, SStPriority2, inSwapIt);
 	BDmGet4BytesFromBuffer(buffer, impulse->max_volume_distance, float, inSwapIt);
@@ -2223,7 +2223,7 @@ OSiImpulse_Load(
 	BDmGet4BytesFromBuffer(buffer, impulse->max_volume_angle, float, inSwapIt);
 	BDmGet4BytesFromBuffer(buffer, impulse->min_volume_angle, float, inSwapIt);
 	BDmGet4BytesFromBuffer(buffer, impulse->min_angle_attenuation, float, inSwapIt);
-	
+
 	if (version < OS2cVersion_4)
 	{
 		impulse->alt_threshold = 0;
@@ -2235,7 +2235,7 @@ OSiImpulse_Load(
 		BDmGet4BytesFromBuffer(buffer, impulse->alt_threshold, UUtUns32, inSwapIt);
 		BDmGetStringFromBuffer(buffer, impulse->alt_impulse_name, SScMaxNameLength, inSwapIt);
 	}
-	
+
 	if (version < OS2cVersion_5)
 	{
 		impulse->impact_velocity = 0;
@@ -2244,7 +2244,7 @@ OSiImpulse_Load(
 	{
 		BDmGet4BytesFromBuffer(buffer, impulse->impact_velocity, float, inSwapIt);
 	}
-	
+
 	if (version < OS2cVersion_6)
 	{
 		impulse->min_occlusion = 0.0f;
@@ -2253,12 +2253,12 @@ OSiImpulse_Load(
 	{
 		BDmGet4BytesFromBuffer(buffer, impulse->min_occlusion, float, inSwapIt);
 	}
-	
+
 	if (inAllocated == UUcTrue)
 	{
 		UUrMemory_Block_Delete(ioBinaryData);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2268,10 +2268,10 @@ OSiImpulse_LevelLoad(
 	void)
 {
 	UUtError					error;
-	
+
 	error = OSrImpulse_BuildHashTable();
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -2296,15 +2296,15 @@ OSrImpulse_New(
 {
 	UUtError				error;
 	char					name[SScMaxNameLength];
-	
+
 	OSrMakeGoodName(inName, name);
 
 	error = SSrImpulse_New(name, outImpulse);
 	UUmError_ReturnOnError(error);
-	
+
 	error = OSrImpulse_BuildHashTable();
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -2320,9 +2320,9 @@ OSrImpulse_Play(
 	UUtBool					play;
 	M3tPoint3D				position;
 	float					volume;
-		
+
 	UUmAssert(inImpulse);
-	
+
 	if (inPosition == NULL) {
 		// do not play spatialized
 		volume = 1.0f;
@@ -2340,12 +2340,12 @@ OSrImpulse_Play(
 				UUcFalse,
 				NULL);
 	}
-	
+
 	if (inVolume != NULL)
 	{
 		volume *= (*inVolume);
 	}
-	
+
 	if ((play) && (OSgScriptOnly == UUcFalse))
 	{
 		SSrImpulse_Play(inImpulse, inPosition, inDirection, inVelocity, &volume);
@@ -2366,10 +2366,10 @@ OSrImpulse_PlayByName(
 	float					*inVolume)
 {
 	SStImpulse				*impulse;
-	
+
 	impulse = OSrImpulse_GetByName(inImpulseName);
 	if (impulse == NULL) { return; }
-	
+
 	OSrImpulse_Play(impulse, inPosition, inDirection, inVelocity, inVolume);
 }
 
@@ -2387,19 +2387,19 @@ OSrImpulse_Save(
 	UUtUns8					*buffer;
 	UUtUns32				bytes_avail;
 	char					name[BFcMaxFileNameLength];
-	
+
 	// create the file ref
 	sprintf(name, "%s.%s", inImpulse->impulse_name, OScImpulseSuffix);
 	error = BFrFileRef_DuplicateAndAppendName(inParentDirRef, name, &file_ref);
 	UUmError_ReturnOnError(error);
-	
+
 	// create the file if it doesn't exist
 	if (BFrFileRef_FileExists(file_ref) == UUcFalse)
 	{
 		error = BFrFile_Create(file_ref);
 		UUmError_ReturnOnErrorMsg(error, "Could not create the file.");
 	}
-	
+
 	// open the file for writing
 	error =
 		BFrFile_Open(
@@ -2407,17 +2407,17 @@ OSrImpulse_Save(
 			"w",
 			&file);
 	UUmError_ReturnOnErrorMsg(error, "Could not open the group file.");
-	
+
 	// set the pos to the beginning of the file
 	BFrFile_SetPos(file, 0);
-	
+
 	// setup the buffer pointer
 	buffer = data;
 	bytes_avail = OScMaxBufferSize;
-	
+
 	// write the version
 	BDmWrite4BytesToBuffer(buffer, OS2cCurrentVersion, UUtUns32, bytes_avail, BDcWrite_Little);
-	
+
 	// write the ambient sound to the buffer
 	BDmWriteStringToBuffer(buffer, inImpulse->impulse_group_name, SScMaxNameLength, bytes_avail, BDcWrite_Little);
 	BDmWrite4BytesToBuffer(buffer, inImpulse->priority, SStPriority2, bytes_avail, BDcWrite_Little);
@@ -2430,7 +2430,7 @@ OSrImpulse_Save(
 	BDmWriteStringToBuffer(buffer, inImpulse->alt_impulse_name, SScMaxNameLength, bytes_avail, BDcWrite_Little);
 	BDmWrite4BytesToBuffer(buffer, inImpulse->impact_velocity, float, bytes_avail, BDcWrite_Little);
 	BDmWrite4BytesToBuffer(buffer, inImpulse->min_occlusion, float, bytes_avail, BDcWrite_Little);
-	
+
 	// write the impulse sound
 	error =
 		BDrBinaryData_Write(
@@ -2439,17 +2439,17 @@ OSrImpulse_Save(
 			(OScMaxBufferSize - bytes_avail),
 			file);
 	UUmError_ReturnOnErrorMsg(error, "Unable to write to file.");
-	
+
 	// set the EOF
 	BFrFile_SetEOF(file);
-	
+
 	// close the file
 	BFrFile_Close(file);
 	file = NULL;
-	
+
 	UUrMemory_Block_Delete(file_ref);
 	file_ref = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -2465,13 +2465,13 @@ OSiTest(
 {
 	UUtUns32				itr;
 	UUtUns32				num_items;
-	
+
 	// test groups
 	num_items = SSrGroup_GetNumSoundGroups();
 	for (itr = 0; itr < num_items; itr++)
 	{
 		SStGroup				*group;
-		
+
 		group = SSrGroup_GetByIndex(itr);
 		if (group != OSrGroup_GetByName(group->group_name))
 		{
@@ -2484,7 +2484,7 @@ OSiTest(
 	for (itr = 0; itr < num_items; itr++)
 	{
 		SStImpulse				*impulse;
-		
+
 		impulse = SSrImpulse_GetByIndex(itr);
 		if (impulse != OSrImpulse_GetByName(impulse->impulse_name))
 		{
@@ -2498,7 +2498,7 @@ OSiTest(
 	for (itr = 0; itr < num_items; itr++)
 	{
 		SStAmbient				*ambient;
-		
+
 		ambient = SSrAmbient_GetByIndex(itr);
 		if (ambient != OSrAmbient_GetByName(ambient->ambient_name))
 		{
@@ -2529,20 +2529,20 @@ OSrInGameDialog_Play(
 	if (ambient == NULL) {
 		goto exit;
 	}
-	
+
 	has_all_sounds = SSrAmbient_CheckSoundData(ambient);
 	if (has_all_sounds) {
 		// we found all the sound data
 		not_found = UUcFalse;
 	}
-	
+
 	play_id = OSrAmbient_Start(ambient, inLocation, NULL, NULL, NULL, NULL);
 	sound_duration = OSiAmbient_GetSimpleDuration(ambient);
 	if (sound_duration == 0) {
 		// could not successfully get a duration from the sound, get a default duration
 		sound_duration = 120;
 	}
-	
+
 	OSrSubtitle_Draw(ambient, sound_duration + OScSubtitleStayTime);
 
 exit:
@@ -2567,7 +2567,7 @@ OSiDialog_Start(
 	float					volume;
 	UUtUns32				sound_duration;
 	UUtBool					setup_endcue;
-	
+
 	if (OSgDialog_Playing) {
 		// there is already dialogue playing
 		if (inInterrupt) {
@@ -2582,21 +2582,21 @@ OSiDialog_Start(
 			return UUcTrue;
 		}
 	}
-	
+
 	ambient = OSrAmbient_GetByName(inName);
 	if (ambient == NULL) {
 		return UUcFalse;
 	}
-	
+
 	OSgDialog_Playing = UUcTrue;
-	
+
 	// scripted dialog is always highest priority
 	ambient->priority = SScPriority2_Highest;
-	
+
 	// start the ambient sound playing
 	volume = 1.0f;
 	OSgDialog_PlayID = SSrAmbient_Start_Simple(ambient, &volume);
-	
+
 	setup_endcue = UUcTrue;
 	sound_duration = OSiAmbient_GetSimpleDuration(ambient);
 	if (sound_duration == 0) {
@@ -2610,7 +2610,7 @@ OSiDialog_Start(
 			setup_endcue = UUcFalse;
 		}
 	}
-	
+
 	if (setup_endcue) {
 		// cue up the dialogue to stop blocking at the correct game tick, even if the sound is
 		// still playing (maybe because we are in fast-forward mode)
@@ -2618,9 +2618,9 @@ OSiDialog_Start(
 	} else {
 		OSgDialog_EndTime = 0;
 	}
-	
+
 	OSrSubtitle_Draw(ambient, sound_duration + OScSubtitleStayTime);
-	
+
 	// we completed, don't stall any longer
 	return UUcFalse;
 }
@@ -2636,7 +2636,7 @@ OSiDialog_Play(
 	SLtParameter_Actual		*ioReturnValue)
 {
 	OSiDialog_Start(inParameterList[0].val.str, UUcFalse);
-	
+
 	return UUcError_None;
 }
 
@@ -2651,7 +2651,7 @@ OSiDialog_Play_Blocked(
 	SLtParameter_Actual		*ioReturnValue)
 {
 	*outStall = OSiDialog_Start(inParameterList[0].val.str, UUcFalse);
-	
+
 	return UUcError_None;
 }
 
@@ -2678,13 +2678,13 @@ OSrListBrokenSounds(
 	UUtError				error;
 	BFtFileRef				*file_ref;
 	BFtFile					*file;
-	
+
 	// create a file ref
 	error = BFrFileRef_MakeFromName("BrokenSoundLinks.txt", &file_ref);
 	if (error != UUcError_None) {
 		return;
 	}
-	
+
 	// create the .TXT file if it doesn't already exist
 	if (BFrFileRef_FileExists(file_ref) == UUcFalse)
 	{
@@ -2694,19 +2694,19 @@ OSrListBrokenSounds(
 			return;
 		}
 	}
-	
+
 	// open the file
 	error = BFrFile_Open(file_ref, "rw", &file);
 	if (error != UUcError_None) {
 		return;
 	}
-	
+
 	// set the position to 0
 	error = BFrFile_SetPos(file, 0);
 	if (error != UUcError_None) {
 		return;
 	}
-	
+
 	// write the broken links
 	SSrListBrokenSounds(file);
 	OSrSA_ListBrokenSounds(file);
@@ -2716,11 +2716,11 @@ OSrListBrokenSounds(
 
 	// set the end of the file
 	BFrFile_SetEOF(file);
-	
+
 	// close the file
 	BFrFile_Close(file);
 	file = NULL;
-	
+
 	// delete the file ref
 	BFrFileRef_Dispose(file_ref);
 	file_ref = NULL;
@@ -2755,11 +2755,11 @@ OSiScriptAmbient_Start(
 	float					volume;
 	UUtUns32				itr;
 	OStScriptAmbient		*script_ambient;
-	
+
 	// get the ambient sound from the name
 	ambient = OSrAmbient_GetByName(inParameterList[0].val.str);
 	if (ambient == NULL) { return UUcError_None; }
-	
+
 	// get the volume
 	if (inParameterListLength == 2)
 	{
@@ -2769,7 +2769,7 @@ OSiScriptAmbient_Start(
 	{
 		volume = 1.0f;
 	}
-	
+
 	// Find an available slot to play the script ambient
 	script_ambient = NULL;
 	for (itr = 0; itr < OScMaxScriptAmbients; itr++)
@@ -2778,17 +2778,17 @@ OSiScriptAmbient_Start(
 		if (OSgScriptAmbients[itr].play_id == SScInvalidID) { break; }
 	}
 	if (itr == OScMaxScriptAmbients) { return UUcError_None; }
-	
+
 	// save the name for later scripts and save the user desired volume
 	UUrString_Copy(script_ambient->name, inParameterList[0].val.str, SScMaxNameLength);
 	script_ambient->volume = volume;
-		
+
 	// scripted ambients are always highest priority
 	ambient->priority = SScPriority2_Highest;
-	
+
 	// start the ambient sound
 	script_ambient->play_id = SSrAmbient_Start_Simple(ambient, &volume);
-	
+
 	return UUcError_None;
 }
 
@@ -2803,23 +2803,23 @@ OSiScriptAmbient_Stop(
 	SLtParameter_Actual		*ioReturnValue)
 {
 	UUtUns32				itr;
-	
+
 	for (itr = 0; itr < OScMaxScriptAmbients; itr++)
 	{
 		OStScriptAmbient		*script_ambient;
 		UUtInt32				result;
-		
+
 		script_ambient = &OSgScriptAmbients[itr];
 		if (script_ambient->play_id == SScInvalidID) { continue; }
 
 		result = UUrString_Compare_NoCase(script_ambient->name, inParameterList[0].val.str);
 		if (result != 0) { continue; }
-		
+
 		// stop the music
 		SSrAmbient_Stop(script_ambient->play_id);
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2836,9 +2836,9 @@ OSiScriptAmbient_Volume(
 	UUtUns32				itr;
 	float					volume;
 	float					time;
-	
+
 	volume = UUmPin(inParameterList[1].val.f, 0.0f, 1.0f);
-	
+
 	if (inParameterListLength == 3)
 	{
 		time = inParameterList[2].val.f;
@@ -2847,26 +2847,26 @@ OSiScriptAmbient_Volume(
 	{
 		time = 0.0f;
 	}
-	
+
 	for (itr = 0; itr < OScMaxScriptAmbients; itr++)
 	{
 		OStScriptAmbient		*script_ambient;
 		UUtInt32				result;
-		
+
 		script_ambient = &OSgScriptAmbients[itr];
-		
+
 		result = UUrString_Compare_NoCase(script_ambient->name, inParameterList[0].val.str);
 		if (result != 0) { continue; }
-		
+
 		// save the music volume
 		script_ambient->volume = inParameterList[1].val.f;
 
 		// set the volume
 		SSrAmbient_SetVolume(script_ambient->play_id, volume, time);
-		
+
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2882,10 +2882,10 @@ OSiSound_Impulse_Play(
 {
 	SStImpulse				*impulse;
 	float					volume;
-	
+
 	impulse = OSrImpulse_GetByName(inParameterList[0].val.str);
 	if (impulse == NULL) { return UUcError_None; }
-	
+
 	if (inParameterListLength == 2)
 	{
 		volume = UUmPin(inParameterList[1].val.f, 0.0f, 1.0f);
@@ -2894,9 +2894,9 @@ OSiSound_Impulse_Play(
 	{
 		volume = 1.0f;
 	}
-	
+
 	OSrImpulse_Play(impulse, NULL, NULL, NULL, &volume);
-	
+
 	return UUcError_None;
 }
 
@@ -2907,43 +2907,43 @@ OSiScriptCommands_Initialize(
 {
 	UUtError					error;
 	UUtUns32					itr;
-	
+
 	// initialize the globals
 	OSgDialog_Playing = UUcFalse;
 	OSgDialog_PlayID = SScInvalidID;
 	OSgDialog_EndTime = 0;
-	
+
 	for (itr = 0; itr < OScMaxScriptAmbients; itr++)
 	{
 		OSgScriptAmbients[itr].play_id = SScInvalidID;
 	}
-		
+
 	// initialize the commands
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"sound_music_start",
 			"function to start music playing",
 			"name:string [volume:float | ]",
 			OSiScriptAmbient_Start);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		SLrScript_Command_Register_Void(
 			"sound_music_stop",
 			"function to stop playing music",
 			"name:string",
 			OSiScriptAmbient_Stop);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		SLrScript_Command_Register_Void(
 			"sound_music_volume",
 			"function to set the volume of playing music",
 			"name:string volume:float [time:float | ]",
 			OSiScriptAmbient_Volume);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		SLrScript_Command_Register_Void(
 			"sound_dialog_play",
 			"function to start character dialog playing",
@@ -2951,22 +2951,22 @@ OSiScriptCommands_Initialize(
 			OSiDialog_Play);
 	UUmError_ReturnOnError(error);
 
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"sound_dialog_play_block",
 			"function to start character dialog playing after the current dialog finishes",
 			"name:string",
 			OSiDialog_Play_Blocked);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		SLrScript_Command_Register_Void(
 			"sound_dialog_play_interrupt",
 			"function to interrupt the current character dialog and play a new one",
 			"name:string",
 			OSiDialog_Play_Interrupted);
 	UUmError_ReturnOnError(error);
-	
+
 	error =
 		SLrScript_Command_Register_Void(
 			"sound_ambient_start",
@@ -2998,7 +2998,7 @@ OSiScriptCommands_Initialize(
 			"name:string [volume:float | ]",
 			OSiSound_Impulse_Play);
 	UUmError_ReturnOnError(error);
-	
+
 	error =
 		SLrScript_Command_Register_Void(
 			"sound_list_broken_links",
@@ -3024,11 +3024,11 @@ OSiScriptCommands_Terminate(
 	void)
 {
 	UUtUns32					itr;
-	
+
 	for (itr = 0; itr < OScMaxScriptAmbients; itr++)
 	{
 		if (OSgScriptAmbients[itr].play_id == SScInvalidID) { continue; }
-		
+
 		SSrAmbient_Halt(OSgScriptAmbients[itr].play_id);
 		OSgScriptAmbients[itr].play_id = SScInvalidID;
 	}
@@ -3047,27 +3047,27 @@ OSiScriptCommands_Update(
 	{
 		UUtInt32			result;
 		OStScriptAmbient	*script_ambient;
-		
+
 		script_ambient = &OSgScriptAmbients[itr];
 		if (script_ambient->play_id == SScInvalidID) { continue; }
-		
+
 		result = SSrAmbient_Update(script_ambient->play_id, NULL, NULL, NULL, NULL);
 		if (result == UUcFalse)
 		{
 			script_ambient->play_id = SScInvalidID;
 		}
 	}
-	
+
 	if (!OSgDialog_Playing) {
 		UUmAssert(OSgDialog_PlayID == SScInvalidID);
 		return;
 	}
-	
+
 	current_time = ONrGameState_GetGameTime();
 	if (OSgDialog_PlayID != SScInvalidID)
 	{
 		UUtBool					active;
-		
+
 		active = SSrAmbient_Update(OSgDialog_PlayID, NULL, NULL, NULL, NULL);
 		if (active == UUcFalse)
 		{
@@ -3078,7 +3078,7 @@ OSiScriptCommands_Update(
 			return;
 		}
 	}
-	
+
 	if (current_time >= OSgDialog_EndTime) {
 		// the dialogue's time is up, even if the sound is still playing we
 		// should go on to the next one (i.e. stop blocking). this makes fast-forwarding
@@ -3100,7 +3100,7 @@ OSrMusic_Halt(
 	void)
 {
 	if (OSgMusic_PlayID == SScInvalidID) { return; }
-	
+
 	SSrAmbient_Halt(OSgMusic_PlayID);
 	OSgMusic_PlayID = SScInvalidID;
 }
@@ -3120,7 +3120,7 @@ OSrMusic_SetVolume(
 	float					inTime)
 {
 	if (OSgMusic_PlayID == SScInvalidID) { return; }
-	
+
 	SSrAmbient_SetVolume(OSgMusic_PlayID, inVolume, inTime);
 }
 
@@ -3132,15 +3132,15 @@ OSrMusic_Start(
 {
 	SStAmbient				*ambient;
 	float					volume;
-	
+
 	if ((inMusicName == NULL) /*|| (OSgMusic_PlayID != SScInvalidID)*/) { return; }
-	
+
 	ambient = OSrAmbient_GetByName(inMusicName);
 	if (ambient == NULL) { return; }
-	
+
 	// music is always highest priority
 	ambient->priority = SScPriority2_Highest;
-	
+
 	volume = inVolume;
 	OSgMusic_PlayID = SSrAmbient_Start_Simple(ambient, &volume);
 }
@@ -3151,7 +3151,7 @@ OSrMusic_Stop(
 	void)
 {
 	if (OSgMusic_PlayID == SScInvalidID) { return; }
-	
+
 	SSrAmbient_Stop(OSgMusic_PlayID);
 }
 
@@ -3161,7 +3161,7 @@ OSiMusic_Update(
 	void)
 {
 	if (OSgMusic_PlayID == SScInvalidID) { return; }
-	
+
 	if (SSrAmbient_Update(OSgMusic_PlayID, NULL, NULL, NULL, NULL) == UUcFalse)
 	{
 		OSgMusic_PlayID = SScInvalidID;
@@ -3187,18 +3187,18 @@ OSiBinFile_Load(
 		UUtUns32		data_size;
 		char			identifier[BFcMaxFileNameLength];
 		UUtBool			locked;
-		
+
 		// load the file into memory
 		error = BFrFileRef_LoadIntoMemory(inFileRef, &data_size, &data);
 		UUmError_ReturnOnError(error);
-		
+
 		// get the identifier
 		UUrString_Copy(identifier, BFrFileRef_GetLeafName(inFileRef), BFcMaxFileNameLength);
 		UUrString_StripExtension(identifier);
-		
+
 		// get the locked status of the file
 		locked = BFrFileRef_IsLocked(inFileRef);
-		
+
 		// process the file
 		error =
 			BDrBinaryLoader(
@@ -3209,7 +3209,7 @@ OSiBinFile_Load(
 				UUcTrue);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3227,9 +3227,9 @@ OSiBinFiles_GetDirectory(
 	char					binaryDirNameStr[BFcMaxPathLength];
 	BFtFileRef				*binaryDataFolder;
 	BFtFileRef				*soundDirRef;
-	
+
 	UUmAssert(outDirectoryRef);
-	
+
 	// find the preferences file
 #if defined(SHIPPING_VERSION) && (!SHIPPING_VERSION)
 	error = BFrFileRef_Search("Preferences.txt", &prefFileRef);
@@ -3241,7 +3241,7 @@ OSiBinFiles_GetDirectory(
 		*outDirectoryRef = NULL;
 		return UUcError_Generic;
 	}
-	
+
 	// create a group from the file
 	error =
 		GRrGroup_Context_NewFromFileRef(
@@ -3249,28 +3249,28 @@ OSiBinFiles_GetDirectory(
 			NULL,
 			NULL,
 			&prefGroupContext,
-			&prefGroup);	
+			&prefGroup);
 	if (error != UUcError_None) { return error; }
-	
+
 	// get the data file directory
 	error = GRrGroup_GetString(prefGroup, "BinFileDir", &binaryDirName);
 	if (error != UUcError_None)
 	{
 		char						*dataFileDir;
-		
+
 		// get the data file directory
 		error = GRrGroup_GetString(prefGroup, "DataFileDir", &dataFileDir);
 		if (error != UUcError_None) { return error; }
-		
+
 		// and append the binary data path to the data file dir name
 		sprintf(binaryDirNameStr, "%s\\Binary", dataFileDir);
 		binaryDirName = binaryDirNameStr;
-	}	
+	}
 
 	// make a file ref for the binary data folder
 	error = BFrFileRef_MakeFromName(binaryDirName, &binaryDataFolder);
 	if (error != UUcError_None) { return error; }
-	
+
 	GRrGroup_Context_Delete(prefGroupContext);
 
 	// make sure the binary data folder exists
@@ -3278,11 +3278,11 @@ OSiBinFiles_GetDirectory(
 	{
 		UUrMemory_Block_Delete(binaryDataFolder);
 		binaryDataFolder = NULL;
-		
+
 		*outDirectoryRef = NULL;
 		return UUcError_Generic;
 	}
-	
+
 	// find the level0\sound directory
 	error =
 		BFrFileRef_DuplicateAndAppendName(
@@ -3290,11 +3290,11 @@ OSiBinFiles_GetDirectory(
 			"Level0\\Sounds",
 			&soundDirRef);
 	UUmError_ReturnOnErrorMsg(error, "Could not create a file ref for Binary\\Level0\\Sounds");
-	
+
 	// delete the binary data folder
 	UUrMemory_Block_Delete(binaryDataFolder);
 	binaryDataFolder = NULL;
-	
+
 	// make sure the sound directory exists
 	if (BFrFileRef_FileExists(soundDirRef) == UUcFalse)
 	{
@@ -3309,13 +3309,13 @@ OSiBinFiles_GetDirectory(
 			// can't find the directory
 			UUrMemory_Block_Delete(soundDirRef);
 			soundDirRef = NULL;
-			
+
 			return UUcError_Generic;
 		}
 	}
-	
+
 	*outDirectoryRef = soundDirRef;
-	
+
 	return UUcError_None;
 }
 
@@ -3328,7 +3328,7 @@ OSiBinFiles_Load(
 	UUtError error;
 	UUtUns32 count = BFrFileCache_Count(OSgBinFiles_Load_Cache);
 	UUtUns32 itr;
-		
+
 	for(itr = 0; itr < count; itr++)
 	{
 		BFtFileRef	*file_ref = BFrFileCache_GetIndex(OSgBinFiles_Load_Cache, itr);
@@ -3340,7 +3340,7 @@ OSiBinFiles_Load(
 			if (error != UUcError_None) { break; }
 		}
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -3362,7 +3362,7 @@ OSiLoadNothing(
 	{
 		UUrMemory_Block_Delete(ioBinaryData);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3373,7 +3373,7 @@ OSiBinaryData_Register(
 {
 	UUtError				error;
 	BDtMethods				methods;
-	
+
 	methods.rLoad = OSiAmbient_Load;
 	error = BDrRegisterClass(OScAmbientDataClass, &methods);
 	UUmError_ReturnOnError(error);
@@ -3385,11 +3385,11 @@ OSiBinaryData_Register(
 	methods.rLoad = OSiImpulse_Load;
 	error = BDrRegisterClass(OScImpulseDataClass, &methods);
 	UUmError_ReturnOnError(error);
-	
+
 	methods.rLoad = OSiLoadNothing;
 	error =	BDrRegisterClass(OScBinaryDataClass, &methods);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -3471,7 +3471,7 @@ OSiNeutral_ListBrokenSounds(
 	UUmAssert(inObject->object_type == OBJcType_Neutral);
 	neutral_osd = (OBJtOSD_Neutral *) inObject->object_data;
 	file = (BFtFile *)inUserData;
-	
+
 	OSrCheckBrokenAmbientSound(file, neutral_osd->name, "abort",		neutral_osd->abort_sound);
 	OSrCheckBrokenAmbientSound(file, neutral_osd->name, "trigger",		neutral_osd->trigger_sound);
 	OSrCheckBrokenAmbientSound(file, neutral_osd->name, "enemy",		neutral_osd->enemy_sound);
@@ -3512,17 +3512,17 @@ OSiGroup_AddToList(
 	UUtError					error;
 	UUtUns32					num_permutations;
 	UUtUns32					itr;
-	
+
 	num_permutations = SSrGroup_GetNumPermutations(inGroup);
-	
+
 	for (itr = 0; itr < num_permutations; itr++)
 	{
 		SStPermutation				*permutation;
 		UUtUns32					index;
-	
+
 		permutation = SSrGroup_Permutation_Get(inGroup, itr);
 		if (permutation == NULL) { continue; }
-		
+
 		error =
 			AUrSharedStringArray_AddString(
 				inStringArray,
@@ -3535,7 +3535,7 @@ OSiGroup_AddToList(
 			return error;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3561,7 +3561,7 @@ OSrAmbient_AddToStringList(
 			return;
 		}
 	}
-	
+
 	if (inAmbient->base_track1)
 	{
 		error = OSiGroup_AddToList(inAmbient->base_track1, inStringArray);
@@ -3571,7 +3571,7 @@ OSrAmbient_AddToStringList(
 			return;
 		}
 	}
-	
+
 	if (inAmbient->base_track2)
 	{
 		error = OSiGroup_AddToList(inAmbient->base_track2, inStringArray);
@@ -3581,7 +3581,7 @@ OSrAmbient_AddToStringList(
 			return;
 		}
 	}
-	
+
 	if (inAmbient->in_sound)
 	{
 		error = OSiGroup_AddToList(inAmbient->in_sound, inStringArray);
@@ -3591,7 +3591,7 @@ OSrAmbient_AddToStringList(
 			return;
 		}
 	}
-	
+
 	if (inAmbient->out_sound)
 	{
 		error = OSiGroup_AddToList(inAmbient->out_sound, inStringArray);
@@ -3610,10 +3610,10 @@ OSiSoundObject_BuildStringList(
 	UUtUns32					inUserData)
 {
 	SStAmbient					*ambient;
-	
+
 	ambient = OBJrSound_GetAmbient(inObject);
 	OSrAmbient_AddToStringList(ambient, (AUtSharedStringArray *) inUserData);
-	
+
 	return UUcTrue;
 }
 
@@ -3632,7 +3632,7 @@ OSiNeutralInteraction_BuildStringList(
 	UUmAssert(inObject->object_type == OBJcType_Neutral);
 	neutral_osd = (OBJtOSD_Neutral *) inObject->object_data;
 	string_array = (AUtSharedStringArray*)inUserData;
-	
+
 	ambient = OSrAmbient_GetByName(neutral_osd->abort_sound);
 	OSrAmbient_AddToStringList(ambient, string_array);
 
@@ -3665,35 +3665,35 @@ OSiObjects_WriteAiffList(
 	UUtUns32					itr;
 	char						file_name[BFcMaxFileNameLength];
 	UUtUns32					num_strings;
-	
+
 	// create the list
 	string_array = AUrSharedStringArray_New();
 	UUmError_ReturnOnNull(string_array);
-	
+
 	// fill in the list
 	OBJrObjectType_EnumerateObjects(
 		inObjectType,
 		inAddSoundCallback,
 		(UUtUns32)string_array);
-	
+
 	// set the file_name
 	sprintf(file_name, "L%d_%s_aiff.txt", ONrLevel_GetCurrentLevel(), inObjectName);
-	
+
 	// make file ref
 	error = BFrFileRef_MakeFromName(file_name, &file_ref);
 	UUmError_ReturnOnErrorMsg(error, "Unable to create file.");
-	
+
 	// create file if it doesn't exist
 	if (BFrFileRef_FileExists(file_ref) == UUcFalse)
 	{
 		error = BFrFile_Create(file_ref);
 		UUmError_ReturnOnErrorMsg(error, "Unable to create file.");
 	}
-	
+
 	// open the file
 	error = BFrFile_Open(file_ref, "rw", &file);
 	UUmError_ReturnOnErrorMsg(error, "Unable to open file.");
-	
+
 	// set the position to 0
 	error = BFrFile_SetPos(file, 0);
 	UUmError_ReturnOnError(error);
@@ -3705,20 +3705,20 @@ OSiObjects_WriteAiffList(
 	{
 		BFrFile_Printf(file, "%s"UUmNL, string_list[itr].string);
 	}
-	
+
 	// close the file
 	BFrFile_Close(file);
 	file = NULL;
-	
+
 	// delete the file ref
 	BFrFileRef_Dispose(file_ref);
 	file_ref = NULL;
-	
+
 	// delete the list
 	AUrSharedStringArray_Delete(string_array);
 	string_array = NULL;
 	string_list = NULL;
-	
+
 	COrConsole_Printf("Finished writing %s AIFF list to file.", inObjectName);
 
 	return UUcError_None;
@@ -3755,18 +3755,18 @@ OSiSoundObject_BuildPlayList(
 	OBJtOSD_All					osd_all;
 	UUtUns32					index;
 	OStPlayingObject			*playing_object_array;
-	
+
 	// get the object specific data
 	OBJrObject_GetObjectSpecificData(inObject, &osd_all);
-	
+
 	// get the ambient sound
 	error = UUrMemory_Array_GetNewElement(OSgPlayingObjects, &index, NULL);
 	if (error != UUcError_None) { return UUcFalse; }
-	
+
 	// get a pointer to the memory array
 	playing_object_array = (OStPlayingObject*)UUrMemory_Array_GetMemory(OSgPlayingObjects);
 	if (playing_object_array == NULL) { return UUcFalse; }
-	
+
 	// initialize the array element
 	playing_object_array[index].object = inObject;
 	playing_object_array[index].play_id = SScInvalidID;
@@ -3775,7 +3775,7 @@ OSiSoundObject_BuildPlayList(
 	playing_object_array[index].transition_volume = 0.0f;
 	playing_object_array[index].object_volume = OBJrSound_GetVolume(inObject);
 	OSiSetupOcclusionCache(index, &playing_object_array[index].occlusion_cache);
-	
+
 	return UUcTrue;
 }
 
@@ -3787,34 +3787,34 @@ OSrPlayList_Build(
 	UUtUns32					i;
 	OStPlayingObject			*playing_object_array;
 	UUtUns32					num_elements;
-	
+
 	// go through the ambient sound play list and stop the playing sounds
 	playing_object_array = (OStPlayingObject*)UUrMemory_Array_GetMemory(OSgPlayingObjects);
 	num_elements = UUrMemory_Array_GetUsedElems(OSgPlayingObjects);
 	for (i = 0; i < num_elements; i++)
 	{
 		if (playing_object_array[i].play_id == SScInvalidID) { continue; }
-		
+
 		switch (OBJrSound_GetType(playing_object_array[i].object))
 		{
 			case OBJcSoundType_Spheres:
 				SSrAmbient_Stop(playing_object_array[i].play_id);
 			break;
-			
+
 			case OBJcSoundType_BVolume:
 				SSrAmbient_Stop(playing_object_array[i].play_id);
 			break;
 		}
-		
+
 		playing_object_array[i].play_id = SScInvalidID;
 	}
-	
+
 	// there are no more objects in the playing object array
 	UUrMemory_Array_SetUsedElems(OSgPlayingObjects, 0, NULL);
-	
+
 	// rebuild the list
 	OBJrObjectType_EnumerateObjects(OBJcType_Sound, OSiSoundObject_BuildPlayList, 0);
-	
+
 	return UUcError_None;
 }
 
@@ -3831,13 +3831,13 @@ OSiPlayList_Initialize(
 			0,
 			10);
 	UUmError_ReturnOnNull(OSgPlayingObjects);
-	
+
 	// build a list of the spatial and evironmental ambient sounds in the level
 	OBJrObjectType_EnumerateObjects(
 		OBJcType_Sound,
 		OSiSoundObject_BuildPlayList,
 		0);
-	
+
 	return UUcError_None;
 }
 
@@ -3849,28 +3849,28 @@ OSiPlayList_Terminate(
 	UUtUns32					i;
 	OStPlayingObject			*playing_object_array;
 	UUtUns32					num_elements;
-	
+
 	// go through the ambient sound play list and stop the playing sounds
 	playing_object_array = (OStPlayingObject*)UUrMemory_Array_GetMemory(OSgPlayingObjects);
 	num_elements = UUrMemory_Array_GetUsedElems(OSgPlayingObjects);
 	for (i = 0; i < num_elements; i++)
 	{
 		if (playing_object_array[i].play_id == SScInvalidID) { continue; }
-		
+
 		switch (OBJrSound_GetType(playing_object_array[i].object))
 		{
 			case OBJcSoundType_Spheres:
 				SSrAmbient_Stop(playing_object_array[i].play_id);
 			break;
-			
+
 			case OBJcSoundType_BVolume:
 				SSrAmbient_Stop(playing_object_array[i].play_id);
 			break;
 		}
-		
+
 		playing_object_array[i].play_id = SScInvalidID;
 	}
-	
+
 	// delete the ambient sound play list
 	UUrMemory_Array_Delete(OSgPlayingObjects);
 	OSgPlayingObjects = NULL;
@@ -3884,7 +3884,7 @@ OSiPlayList_CalcSphereVolume(
 {
 	float						volume;
 	float						volume_delta;
-	
+
 	// update occluding volumes over time
 	volume = inVolume;
 	volume_delta = inPlayingObject->transition_volume - volume;
@@ -3921,7 +3921,7 @@ OSiPlayList_Update_Spheres(
 	float						min_volume_distance;
 	UUtBool						can_play;
 	float						volume;
-	
+
 	if (OSgScriptOnly == UUcTrue) { return; }
 
 	if (OBJrSound_PointIn(inPlayingObject->object, inPosition) == UUcFalse)
@@ -3931,28 +3931,28 @@ OSiPlayList_Update_Spheres(
 			SSrAmbient_Stop(inPlayingObject->play_id);
 			inPlayingObject->play_id = SScInvalidID;
 		}
-		
+
 		return;
 	}
-	
+
 	// get the ambient sound to play
 	ambient = OBJrSound_GetAmbient(inPlayingObject->object);
 	if (ambient == NULL) { return; }
-	
+
 	// sound objects are always low priority
 	ambient->priority = SScPriority2_Low;
-	
+
 	if (inPlayingObject->play_id != SScInvalidID)
 	{
 		UUtBool						is_playing;
-		
+
 		is_playing = SSrAmbient_Update(inPlayingObject->play_id, NULL, NULL, NULL, NULL);
 		if (is_playing == UUcFalse)
 		{
 			inPlayingObject->play_id = SScInvalidID;
 			return;
 		}
-		
+
 		OBJrSound_GetMinMaxDistances(
 			inPlayingObject->object,
 			&max_volume_distance,
@@ -3976,17 +3976,17 @@ OSiPlayList_Update_Spheres(
 			OSiPlayList_CalcSphereVolume(inPlayingObject, volume);
 			SSrAmbient_SetVolume(inPlayingObject->play_id, inPlayingObject->volume, 0.0f);
 		}
-		
+
 		return;
 	}
-	
+
 	// play the ambient sound
 	OBJrObject_GetPosition(inPlayingObject->object, &position, NULL);
 	OBJrSound_GetMinMaxDistances(
 		inPlayingObject->object,
 		&max_volume_distance,
 		&min_volume_distance);
-	
+
 	// calculate the position and volume of the sound
 	can_play =
 		OSiCalc_PositionAndVolume(
@@ -4001,12 +4001,12 @@ OSiPlayList_Update_Spheres(
 	if (can_play)
 	{
 		OSiPlayList_CalcSphereVolume(inPlayingObject, volume);
-		
+
 		MUmVector_Set(velocity, 0.0f, 0.0f, 0.0f);
-		
+
 		// reuse the volume variable
 		volume = 0.0f;
-		
+
 		inPlayingObject->play_id =
 			SSrAmbient_Start(
 				ambient,
@@ -4016,7 +4016,7 @@ OSiPlayList_Update_Spheres(
 				max_volume_distance,
 				min_volume_distance,
 				&volume);
-		
+
 		SSrAmbient_SetVolume(inPlayingObject->play_id, inPlayingObject->volume, 0.25f);
 	}
 }
@@ -4041,11 +4041,11 @@ OSiPL_CalcFadeInVol(
 	float						volume;
 	float						x_minus_n;
 	float						n_squared;
-	
+
 	x_minus_n = (inTicks - OScPL_FadeInTimeTicks);
 	n_squared = OScPL_FadeInTimeTicks * OScPL_FadeInTimeTicks;
 	volume = 1.0f - ((x_minus_n * x_minus_n) / n_squared);
-	
+
 	return volume;
 }
 
@@ -4056,11 +4056,11 @@ OSiPL_CalcFadeOutVol(
 	float						volume;
 	float						x_squared;
 	float						n_squared;
-	
+
 	x_squared = (inTicks * inTicks);
 	n_squared = (OScPL_FadeInTimeTicks * OScPL_FadeInTimeTicks);
 	volume = 1.0f - (x_squared / n_squared);
-	
+
 	return volume;
 }
 
@@ -4069,9 +4069,9 @@ OSiPL_CalcFadeInStartTime(
 	float						inVolume)
 {
 	UUtUns32					time;
-	
+
 	time = (UUtUns32)(OScPL_FadeInTimeTicks - (OScPL_FadeInTimeTicks * MUrSqrt(1 - inVolume)));
-	
+
 	return time;
 }
 
@@ -4085,37 +4085,37 @@ OSiPlayList_Transfer(
 	OStPlayingObject			*playing_object_array;
 	UUtUns32					num_elements;
 	UUtBool						result;
-	
+
 	result = UUcFalse;
-	
+
 	// go through the ambient sound play list and update the playing sounds
 	playing_object_array = (OStPlayingObject*)UUrMemory_Array_GetMemory(OSgPlayingObjects);
 	num_elements = UUrMemory_Array_GetUsedElems(OSgPlayingObjects);
 	for (i = 0; i < num_elements; i++)
 	{
 		OStPlayingObject			*playing_object;
-		
+
 		playing_object = &playing_object_array[i];
-		
+
 		if (OBJrSound_GetType(playing_object->object) != OBJcSoundType_BVolume)	{ continue; }
 		if (playing_object->play_id == SScInvalidID) { continue; }
 		if (OBJrSound_GetAmbient(playing_object->object) != inAmbient) { continue; }
-		
+
 		// transfer control of this ambient sound to inPlayingObject
 		inPlayingObject->play_id = playing_object->play_id;
 		inPlayingObject->state = OScPOState_Starting;
 		inPlayingObject->volume = playing_object->volume;
 		inPlayingObject->start_time = inTime - OSiPL_CalcFadeInStartTime(playing_object->volume);
-		
+
 		// release control from the playing ambient
 		playing_object->play_id = SScInvalidID;
 		playing_object->state = OScPOState_Off;
 		playing_object->volume = 0.0f;
-		
+
 		result = UUcTrue;
 		break;
 	}
-	
+
 	return result;
 }
 
@@ -4130,43 +4130,43 @@ OSiPlayList_Update_BVolume(
 	float						ticks;
 	UUtUns32					time;
 	UUtBool						is_playing;
-	
+
 	time = UUrMachineTime_Sixtieths();
 	ticks = (float)(time - inPlayingObject->start_time);
-	
+
 	if (OSgScriptOnly == UUcTrue) { return; }
-	
+
 	if (inPlayingObject->state == OScPOState_Off)
 	{
 		UUtBool						result;
-		
+
 		if (OBJrSound_PointIn(inPlayingObject->object, inPosition) == UUcFalse) { return; }
-		
+
 		ambient = OBJrSound_GetAmbient(inPlayingObject->object);
 		if (ambient == NULL) { return; }
-		
+
 		result = OSiPlayList_Transfer(inPlayingObject, ambient, time);
 		if (result == UUcTrue) { return; }
-		
+
 		// sound objects are always low priority
 		ambient->priority = SScPriority2_Low;
-		
+
 		inPlayingObject->state = OScPOState_Starting;
 		inPlayingObject->volume = 0.0f;
-		
+
 		inPlayingObject->play_id = SSrAmbient_Start_Simple(ambient, &inPlayingObject->volume);
 		inPlayingObject->start_time = time;
-		
+
 		return;
 	}
-	
+
 	// handle the starting and stopping states
 	if (inPlayingObject->state == OScPOState_Starting)
 	{
 		if (ticks > OScPL_FadeInTimeTicks) { ticks = OScPL_FadeInTimeTicks; }
 		inPlayingObject->volume = OSiPL_CalcFadeInVol(ticks);
-		
-		
+
+
 		if (inPlayingObject->volume >= 1.0f)
 		{
 			inPlayingObject->volume = 1.0f;
@@ -4177,7 +4177,7 @@ OSiPlayList_Update_BVolume(
 	{
 		if (ticks > OScPL_FadeOutTimeTicks) { ticks = OScPL_FadeOutTimeTicks; }
 		inPlayingObject->volume = OSiPL_CalcFadeOutVol(ticks);
-		
+
 		if (inPlayingObject->volume <= 0.0f)
 		{
 			inPlayingObject->volume = 0.0f;
@@ -4186,7 +4186,7 @@ OSiPlayList_Update_BVolume(
 			inPlayingObject->play_id = SScInvalidID;
 		}
 	}
-	
+
 	is_playing = SSrAmbient_Update(inPlayingObject->play_id, NULL, NULL, NULL, NULL);
 	if (is_playing == UUcFalse)
 	{
@@ -4195,10 +4195,10 @@ OSiPlayList_Update_BVolume(
 		inPlayingObject->play_id = SScInvalidID;
 		return;
 	}
-	
+
 	volume = inPlayingObject->volume * inPlayingObject->object_volume;
 	SSrAmbient_SetVolume(inPlayingObject->play_id, volume, 0.0f);
-	
+
 	// handle general playing
 	if (inPlayingObject->state != OScPOState_Off)
 	{
@@ -4208,7 +4208,7 @@ OSiPlayList_Update_BVolume(
 			{
 				inPlayingObject->start_time = time;
 			}
-			
+
 			// user has moved out of the sound volume so stop playing
 			inPlayingObject->state = OScPOState_Stopping;
 		}
@@ -4232,7 +4232,7 @@ OSiPlayList_Reset(
 {
 	OSiPlayList_Terminate();
 	OSiPlayList_Initialize();
-	
+
 	return UUcError_None;
 }
 
@@ -4245,9 +4245,9 @@ OSiPlayList_Update(
 	UUtUns32					i;
 	OStPlayingObject			*playing_object_array;
 	UUtUns32					num_elements;
-	
+
 	if (OSgPlayingObjects == NULL) { return; }
-	
+
 	// go through the ambient sound play list and update the playing sounds
 	playing_object_array = (OStPlayingObject*)UUrMemory_Array_GetMemory(OSgPlayingObjects);
 	num_elements = UUrMemory_Array_GetUsedElems(OSgPlayingObjects);
@@ -4258,7 +4258,7 @@ OSiPlayList_Update(
 			case OBJcSoundType_Spheres:
 				OSiPlayList_Update_Spheres(&playing_object_array[i], inPosition, inFacing);
 			break;
-			
+
 			case OBJcSoundType_BVolume:
 				OSiPlayList_Update_BVolume(
 					&playing_object_array[i],
@@ -4282,9 +4282,9 @@ OSrSubtitle_Draw(
 {
 	const char				*subtitle;
 	ONtLetterBox			*letterbox;
-	
+
 	if (!ONrPersist_AreSubtitlesOn()) { return; }
-	
+
 	// get a pointer to the subtitle text
 	subtitle = SSrAmbient_GetSubtitle(inAmbient);
 	if (subtitle == NULL) { return; }
@@ -4307,7 +4307,7 @@ OSrRegisterTemplates(
 	void)
 {
 	UUtError	error;
-	
+
 	error =
 		TMrTemplate_Register(
 			OScTemplate_SoundBinaryData,
@@ -4331,10 +4331,10 @@ OSiBinaryData_ProcHandler(
 	BDtData					*data= NULL;
 	UUtBool					swap_it;
 	char					name[BFcMaxFileNameLength];
-	
+
 #if (UUmEndian == UUmEndian_Big)
 	swap_it = UUcTrue;
-// uhh hey this is a NULL pointer... -S.S.	
+// uhh hey this is a NULL pointer... -S.S.
 //	UUrSwap_4Byte(&data->header.class_type);
 //	UUrSwap_4Byte(&data->header.data_size);
 #else
@@ -4342,7 +4342,7 @@ OSiBinaryData_ProcHandler(
 #endif
 
 	binary_data = (OStBinaryData*)inInstancePtr;
-	
+
 	switch (inMessage)
 	{
 		case TMcTemplateProcMessage_LoadPostProcess:
@@ -4362,17 +4362,17 @@ OSiBinaryData_ProcHandler(
 					UUrSwap_4Byte(&data->header.class_type);
 					UUrSwap_4Byte(&data->header.data_size);
 				}
-				
+
 				UUrString_Copy(
 					name,
 					TMrInstance_GetInstanceName(inInstancePtr),
 					BFcMaxFileNameLength);
 				UUrString_StripExtension(name);
-				
+
 				switch (data->header.class_type)
 				{
 					case OScAmbientDataClass:
-						error = 
+						error =
 							OSiAmbient_Load(
 								name,
 								data,
@@ -4381,7 +4381,7 @@ OSiBinaryData_ProcHandler(
 								UUcTrue);
 						UUmError_ReturnOnError(error);
 					break;
-					
+
 					case OScGroupDataClass:
 						error =
 							OSiGroup_Load(
@@ -4392,7 +4392,7 @@ OSiBinaryData_ProcHandler(
 								UUcTrue);
 						UUmError_ReturnOnError(error);
 					break;
-					
+
 					case OScImpulseDataClass:
 						error =
 							OSiImpulse_Load(
@@ -4407,7 +4407,7 @@ OSiBinaryData_ProcHandler(
 			}
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -4422,14 +4422,14 @@ OSrGetSoundBinaryDirectory(
 	BFtFileRef				**outDirRef)
 {
 	UUtError				error;
-	
+
 	UUmAssert(outDirRef);
-	
+
 	*outDirRef = NULL;
-	
+
 	error = OSiBinFiles_GetDirectory(outDirRef, UUcTrue);
 	UUmError_ReturnOnError(error);
-	
+
 	return error;
 }
 
@@ -4443,14 +4443,14 @@ OSrGetSoundFileRef(
 {
 	UUtError				error;
 	BFtFileIterator			*file_iterator;
-	
+
 	UUmAssert(inName);
 	UUmAssert(inSuffix);
 	UUmAssert(inDirRef);
 	UUmAssert(outFileRef);
-	
+
 	*outFileRef = NULL;
-	
+
 	// make a file iterator
 	error =
 		BFrDirectory_FileIterator_New(
@@ -4459,29 +4459,29 @@ OSrGetSoundFileRef(
 			NULL,
 			&file_iterator);
 	UUmError_ReturnOnError(error);
-	
+
 	while (1)
 	{
 		BFtFileRef				ref;
-		
+
 		// get the next ref
 		error = BFrDirectory_FileIterator_Next(file_iterator, &ref);
 		if (error != UUcError_None) { break; }
-		
+
 		// process the ref
 		if (BFrFileRef_IsDirectory(&ref) == UUcTrue)
 		{
 			error = OSrGetSoundFileRef(inName, inSuffix, &ref, outFileRef);
-			
+
 			UUmError_ReturnOnError(error);
-			
+
 			if (*outFileRef != NULL) { break; }
 		}
 		else
 		{
 			const char			*file_name;
 			char				find_name[BFcMaxFileNameLength];
-			
+
 			file_name = BFrFileRef_GetLeafName(&ref);
 			sprintf(find_name, "%s.%s", inName, inSuffix);
 			if (UUrString_Compare_NoCase(file_name, find_name) == 0)
@@ -4491,11 +4491,11 @@ OSrGetSoundFileRef(
 			}
 		}
 	}
-	
+
 	// delete the file iterator
 	BFrDirectory_FileIterator_Delete(file_iterator);
 	file_iterator = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -4505,11 +4505,11 @@ OSrInitialize(
 	void)
 {
 	UUtError				error;
-	
+
 	// register the binary data classes
 	error = OSiBinaryData_Register();
 	UUmError_ReturnOnError(error);
-	
+
 	// get the binary directory for the sound files
 #if TOOL_VERSION
 	{
@@ -4526,33 +4526,33 @@ OSrInitialize(
 		}
 	}
 #endif
-	
+
 	// register the script commands
 	error = OSiScriptCommands_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the sound animations
 	error = OSrSA_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// intitialize the hash tables
 	error = OSrAmbient_BuildHashTable();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OSrGroup_BuildHashTable();
 	UUmError_ReturnOnError(error);
-	
+
 	error = OSrImpulse_BuildHashTable();
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the playing ambient array
 	error = OSiPlayingAmbient_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the binary data
 	error = OSrRegisterTemplates();
 	UUmError_ReturnOnError(error);
-	
+
 	// install the proc handler
 	error =
 		TMrTemplate_PrivateData_New(
@@ -4566,11 +4566,11 @@ OSrInitialize(
 	OSgEnabled = UUcTrue;
 	OSgScriptOnly = UUcFalse;
 	OSgMusic_PlayID = SScInvalidID;
-	
+
 	// install pointer-update handlers into BFW_SoundSystem2
 	SS2rInstallPointerHandlers(OSrUpdateImpulsePointers, OSrUpdateAmbientPointers);
 
-	error = 
+	error =
 		SLrScript_Command_Register_Void(
 			"sound_objects_reset",
 			"reloads the sounds objects",
@@ -4587,32 +4587,32 @@ OSrLevel_Load(
 	UUtUns32				inLevelNum)
 {
 	UUtError				error;
-	
+
 	// start the sound data file cache
 	SSrSoundData_GetByName_StartCache();
-	
+
 	// enable the playing of sounds
 	OSgEnabled = UUcTrue;
-	
+
 	// set the sound volume
 	SS2rVolume_Set(ONrPersist_GetOverallVolume());
-	
+
 	if (inLevelNum == 0)
 	{
 		// initialize the variant list
 		error = OSrVariantList_Initialize();
 		UUmError_ReturnOnError(error);
-		
+
 		// build the hash tables out of the data loaded from the .dat file
 		error = OSrAmbient_BuildHashTable();
 		UUmError_ReturnOnError(error);
-		
+
 		error = OSrGroup_BuildHashTable();
 		UUmError_ReturnOnError(error);
-		
+
 		error = OSrImpulse_BuildHashTable();
 		UUmError_ReturnOnError(error);
-		
+
 #if TOOL_VERSION
 		if (SSgSearchOnDisk || SSgSearchBinariesOnDisk)
 		{
@@ -4624,32 +4624,32 @@ OSrLevel_Load(
 				// load the binary data
 				error = OSiBinFiles_Load(OSgBinaryDir, OScAmbientSuffix);
 				UUmError_ReturnOnError(error);
-				
+
 				error = OSiBinFiles_Load(OSgBinaryDir, OScGroupSuffix);
 				UUmError_ReturnOnError(error);
-				
+
 				error = OSiBinFiles_Load(OSgBinaryDir, OScImpulseSuffix);
 				UUmError_ReturnOnError(error);
 
 				BFrFileCache_Dispose(OSgBinFiles_Load_Cache);
 				OSgBinFiles_Load_Cache = NULL;
 			}
-			
+
 			// build the hash tables out of the data loaded from the .dat file
 			// and the binary files
 			error = OSrAmbient_BuildHashTable();
 			UUmError_ReturnOnError(error);
-			
+
 			error = OSrGroup_BuildHashTable();
 			UUmError_ReturnOnError(error);
-			
+
 			error = OSrImpulse_BuildHashTable();
 			UUmError_ReturnOnError(error);
 		}
 
 //		OSiTest();
-#endif		
-		
+#endif
+
 		// update the pointers
 		SSrGroup_UpdateSoundDataPointers();
 		SSrAmbient_UpdateGroupPointers();
@@ -4661,24 +4661,24 @@ OSrLevel_Load(
 		OSiAmbient_LevelLoad();
 		OSiGroup_LevelLoad();
 		OSiImpulse_LevelLoad();
-		
+
 		// initialize the playlist
 		OSiPlayList_Initialize();
 	}
-	
+
 	error = OSrVariantList_LevelLoad();
 	UUmError_ReturnOnError(error);
-	
+
 	OSrUpdateSoundPointers();
-	
+
 	SSrSoundData_GetByName_StopCache();
-	
+
 	OSiFlybyProjectile_Clear();
 
 	AKrCollision_InitializeSpatialCache(&OSgListener_OctreeCache);
-	
+
 	SSrLevel_Begin();
-	
+
 	return UUcError_None;
 }
 
@@ -4731,13 +4731,13 @@ OSrLevel_Unload(
 	void)
 {
 	SSrStopAll();
-	
+
 	OSrVariantList_LevelUnload();
 
 	OSiAmbient_LevelUnload();
 	OSiGroup_LevelUnload();
 	OSiImpulse_LevelUnload();
-	
+
 	OSiPlayList_Terminate();
 }
 
@@ -4748,23 +4748,23 @@ OSrMakeGoodName(
 	char					*outName)
 {
 	UUtUns32	itr;
-	
+
 	UUmAssert(inName);
 	UUmAssert(outName);
-	
+
 	for(itr = 0;
 		(itr < (SScMaxNameLength - 1)) && (*inName != 0);
 		itr++)
 	{
 		char				letter;
-		
+
 		letter = *inName++;
-		
+
 		if (letter == ' ') { letter = '_'; }
-		
+
 		*outName++ = letter;
 	}
-	
+
 	*outName = 0;
 }
 
@@ -4774,11 +4774,11 @@ OSrSetEnabled(
 	UUtBool					inEnabled)
 {
 	UUtBool					prev;
-	
+
 	prev = OSgEnabled;
-	
+
 	OSgEnabled = inEnabled;
-	
+
 	if (OSgEnabled == UUcFalse)
 	{
 		if (prev == UUcTrue)
@@ -4816,11 +4816,11 @@ OSrTerminate(
 	OSiPlayingAmbient_Terminate();
 	OSrVariantList_Terminate();
 	OSiScriptCommands_Terminate();
-	
+
 	OSiAmbient_LevelUnload();
 	OSiGroup_LevelUnload();
 	OSiImpulse_LevelUnload();
-	
+
 #if TOOL_VERSION
 	{
 		if (OSgBinaryDir != NULL)
@@ -4830,7 +4830,7 @@ OSrTerminate(
 		}
 	}
 #endif
-	
+
 	if (OSgPlayingAmbient != NULL)
 	{
 		UUrMemory_Array_Delete(OSgPlayingAmbient);
@@ -4848,24 +4848,24 @@ OSrUpdate(
 	OSgNumOcclusionLines = 0;
 	OSgNumOcclusionPoints = 0;
 #endif
-	
+
 	// set the listener's position
 	SSrListener_SetPosition(inPosition, inFacing);
 	OSgListener_Position = *inPosition;
 	OSgListener_Facing = *inFacing;
-	
+
 	// update the playing ambient sounds
 	OSiAmbient_UpdateAll();
-	
+
 	// update flyby sounds
 	OSiFlybyProjectiles_Update();
-	
+
 	// update the sound object play list
 	OSiPlayList_Update(inPosition, inFacing);
-	
+
 	// update the script commands.
 	OSiScriptCommands_Update();
-	
+
 	// update the music
 	OSiMusic_Update();
 }
@@ -4910,7 +4910,7 @@ OSrFlybyProjectile_Create(
 		return UUcFalse;
 	}
 
-	// calculate 
+	// calculate
 
 	projectile->prev_position = projectile->position;
 
@@ -5020,7 +5020,7 @@ OSiFlybyProjectiles_Update(
 {
 	UUtUns32 itr;
 	OStFlybyProjectile *projectile;
-	
+
 	if (OSgFlybyProjectile == NULL) { return; }
 
 	for (itr = 0, projectile = OSgFlybyProjectile; itr < OSgNumFlybyProjectiles; itr++, projectile++) {

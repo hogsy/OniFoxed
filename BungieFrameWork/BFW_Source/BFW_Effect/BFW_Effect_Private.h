@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_Effect_Private.h
-	
+
 	AUTHOR:	Brent Pease
-	
+
 	CREATED: Oct 8, 1999
-	
+
 	PURPOSE: effects engine
-	
+
 	Copyright 1999
 
  */

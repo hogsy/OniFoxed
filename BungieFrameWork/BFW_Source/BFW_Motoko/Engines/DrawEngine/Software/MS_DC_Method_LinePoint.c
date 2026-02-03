@@ -4,9 +4,9 @@
 	AUTHOR:	Brent H. Pease
 
 	CREATED: Sept 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -32,37 +32,37 @@ MSrDrawContext_Method_Point(
 	UUtUns32	targetZ;
 	UUtUns16	*targetZPtr, *targetRGBPtr;
 	MStDrawContextPrivate	*drawContextPrivate = (MStDrawContextPrivate *)inDrawContext->privateContext;
-	
+
 	UUmAssert(invCoord->y >= 0.0 && invCoord->y < (float)drawContextPrivate->height);
 	UUmAssert(invCoord->x >= 0.0 && invCoord->x < (float)drawContextPrivate->width);
 	UUmAssert(invCoord->z >= 0.0 && invCoord->z <= 1.0);
-	
+
 	x = (UUtInt32)invCoord->x;
 	y = (UUtInt32)invCoord->y;
 	z = (UUtInt32)invCoord->z * MSmULongScale;
-	
+
 	//y = drawContext->height - y;
-	
+
 	targetZPtr = (UUtUns16 *)((char *)drawContextPrivate->zBufferBaseAddr +
-				y * drawContextPrivate->zBufferRowBytes + 
+				y * drawContextPrivate->zBufferRowBytes +
 				x * 2);
-				
+
 	targetZ = *targetZPtr << 16;
-	
+
 	if(z < targetZ)
 	{
 		*targetZPtr = (UUtUns16)(z >> 16);
-		
+
 		targetRGBPtr = (UUtUns16 *)((char *)drawContextPrivate->imageBufferBaseAddr +
-				y * drawContextPrivate->imageBufferRowBytes + 
+				y * drawContextPrivate->imageBufferRowBytes +
 				x * 2);
-		
+
 		*targetRGBPtr = inVShade;
-			
+
 	}
 }
 
-void 
+void
 MSrDrawContext_Method_Line_Interpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -88,10 +88,10 @@ MSrDrawContext_Method_Line_Interpolate(
 	long					zRowBytes;
 	float					x0, y0, x1, y1;
 	float					dx, dy, fabs_dx, fabs_dy;
-	
+
 	M3tPointScreen			*vCoordStart, *vCoordEnd;
 	UUtUns16				vShadeStart, vShadeEnd;
-	
+
 	long					major, minor;
 	char					*rgbAddress;
 	char					*zAddress;
@@ -103,24 +103,24 @@ MSrDrawContext_Method_Line_Interpolate(
 
 	float					height = (float) drawContextPrivate->height;
 	float					width = (float) drawContextPrivate->width;
-	
+
 	M3tPointScreen*			screenPoints;
 	M3tPointScreen*			vCoord0;
 	M3tPointScreen*			vCoord1;
-	
+
 	UUtUns16*			vertexShades;
 	UUtUns16			vShade0;
 	UUtUns16			vShade1;
-	
+
 	screenPoints = drawContextPrivate->arrayData[M3cDrawArrayType_ScreenPoint];
 	vertexShades = (UUtUns16*)drawContextPrivate->arrayData[M3cDrawArrayType_ScreenShade_DC];
-	
+
 	vCoord0 = screenPoints + inVIndex0;
 	vCoord1 = screenPoints + inVIndex1;
-	
+
 	vShade0 = vertexShades[inVIndex0];
 	vShade1 = vertexShades[inVIndex1];
-	
+
 	x0 = vCoord0->x;
 	x1 = vCoord1->x;
 	y0 = vCoord0->y;
@@ -132,7 +132,7 @@ MSrDrawContext_Method_Line_Interpolate(
 	 * It appears that this functions requires clipped lines, I am adding assertions
 	 *
 	 */
-	
+
 	UUmAssert(x0 >= 0.0);
 	UUmAssert(x1 >= 0.0);
 	UUmAssert(y0 >= 0.0);
@@ -145,7 +145,7 @@ MSrDrawContext_Method_Line_Interpolate(
 
 	dx = x1 - x0;
 	dy = y1 - y0;
-	
+
 	rgbPixelBytes = M3cDrawRGBBytesPerPixel;
 	zPixelBytes = M3cDrawZBytesPerPixel;
 
@@ -154,18 +154,18 @@ MSrDrawContext_Method_Line_Interpolate(
 
 	rgbRowBytes = drawContextPrivate->imageBufferRowBytes;
 	zRowBytes = drawContextPrivate->zBufferRowBytes;
-	
+
 	if (fabs_dx > fabs_dy)
 	{
 		/*
 		 * Δx is larger, so the major axis will be X.
 		 */
-		
+
 		rgbMajorIncrement = rgbPixelBytes;
 		zMajorIncrement = zPixelBytes;
 		rgbMinorIncrement = rgbRowBytes;
 		zMinorIncrement = zRowBytes;
-		
+
 		if (dx > 0.0F)
 		{
 			vCoordStart = vCoord0;
@@ -195,12 +195,12 @@ MSrDrawContext_Method_Line_Interpolate(
 		/*
 		 * Δy is larger, so the major axis will be Y.
 		 */
-		
+
 		rgbMajorIncrement = rgbRowBytes;
 		zMajorIncrement = zRowBytes;
 		rgbMinorIncrement = rgbPixelBytes;
 		zMinorIncrement = zPixelBytes;
-		
+
 		if (dy > 0.0F)
 		{
 			vCoordStart = vCoord0;
@@ -225,19 +225,19 @@ MSrDrawContext_Method_Line_Interpolate(
 		}
 		fabsMajorDelta = fabs_dy;
 	}
-	
+
 	/*
 	 * Snap major axis endpoints, including a 0.5 pixel subpixel coverage rule.
 	 */
-	
+
 	majorStartSnapped = (UUtInt32)(majorStart + 0.5F);
-	
+
 	/* Avoid Divide by zero error */
 	if(fabsMajorDelta == 0.0F)
 	{
 		return;
 	}
-	
+
 	invLength = 1.0F / fabsMajorDelta;
 	snapCorrection = (majorStartSnapped + 0.5F) - majorStart;
 	tempEnd = majorEnd - 0.5F;
@@ -249,7 +249,7 @@ MSrDrawContext_Method_Line_Interpolate(
 		 * reasons -- if we continue, the cast of fTemp to an int will produce
 		 * 0, which isn't correct.
 		 */
-		
+
 		return;
 	}
 	majorEndSnapped = (UUtInt32)tempEnd;
@@ -259,17 +259,17 @@ MSrDrawContext_Method_Line_Interpolate(
 	 * initial value. This isn't really necessary if kQAZFunction_None is set, but testing
 	 * for that isn't really worth while.
 	 */
-	
+
 	{
 		const float	zScale = (float)MSmULongScale;
 		const float	zOffset = (float)MSmULongOffset;
-		
+
 		tempStart = vCoordStart->z * zScale + zOffset;
 		tempEnd = vCoordEnd->z * zScale + zOffset;
 		dTemp = (tempEnd - tempStart) * invLength;
 		z = (UUtUns32)(tempStart + snapCorrection * dTemp);
 		dZ = (long) dTemp;
-		
+
 	}
 
 	tempStart = vShadeStart->r * charScale;
@@ -277,33 +277,33 @@ MSrDrawContext_Method_Line_Interpolate(
 	dTemp = (tempEnd - tempStart) * invLength;
 	rScaled = (UUtInt32)tempStart;
 	dRScaled = (UUtInt32)dTemp;
-	
+
 	tempStart = vShadeStart->g * charScale;
 	tempEnd = vShadeEnd->g * charScale;
 	dTemp = (tempEnd - tempStart) * invLength;
 	gScaled = (UUtInt32)tempStart;
 	dGScaled = (UUtInt32)dTemp;
-	
+
 	tempStart = vShadeStart->b * charScale;
 	tempEnd = vShadeEnd->b * charScale;
 	dTemp = (tempEnd - tempStart) * invLength;
 	bScaled = (UUtInt32)tempStart;
 	dBScaled = (UUtInt32)dTemp;
-	
+
 	/*
 	 * Determine the initial minor axis value, the minor axis delta per major axis pixel,
 	 * and whether the minor axis will increment or decrement as we move along the major axis.
 	 */
-	
+
 	minorScaled = (UUtInt32)(minorStart * (float)MSmFractOne);
 	dMinorScaled = (UUtInt32)(minorDelta * invLength * (float)MSmFractOne);
-	
+
 	if (minorDelta < 0.0F)
 	{
 		/*
 		 * Minor axis decrements, so negate the rgb/zMinorIncrement values.
 		 */
-		
+
 		rgbMinorIncrement = -rgbMinorIncrement;
 		zMinorIncrement = -zMinorIncrement;
 	}
@@ -311,10 +311,10 @@ MSrDrawContext_Method_Line_Interpolate(
 	major = majorStartSnapped;
 	minor = minorScaled >> MSmFractBits;
 	minorScaled &= fractMask;
-	
+
 	rgbAddress = (char *)drawContextPrivate->imageBufferBaseAddr
 			+ major * rgbMajorIncrement + minor * abs (rgbMinorIncrement);
-			
+
 	zAddress = (char *)drawContextPrivate->zBufferBaseAddr
 			+ major * zMajorIncrement + minor * abs (zMinorIncrement);
 
@@ -322,11 +322,11 @@ MSrDrawContext_Method_Line_Interpolate(
 	{
 		zPixel = *((unsigned short *) zAddress);
 		zPixel = zPixel | (zPixel << 16);
-		
+
 		if (z < zPixel)
 		{
 			long	rDithered, gDithered, bDithered;
-			
+
 			rDithered = rScaled >> MSmFractBits;
 			gDithered = gScaled >> MSmFractBits;
 			bDithered = bScaled >> MSmFractBits;
@@ -338,7 +338,7 @@ MSrDrawContext_Method_Line_Interpolate(
 					| ((gScaled >> (MSmFractBits + 3)) << 5)
 					|  (bScaled >> (MSmFractBits + 3)));
 		}
-		
+
 		zAddress += zMajorIncrement;
 		z += dZ;
 		minorScaled += dMinorScaled;
@@ -357,7 +357,7 @@ MSrDrawContext_Method_Line_Interpolate(
 
 }
 
-void 
+void
 MSrDrawContext_Method_Line_Flat(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -380,9 +380,9 @@ MSrDrawContext_Method_Line_Flat(
 	long					zRowBytes;
 	float					x0, y0, x1, y1;
 	float					dx, dy, fabs_dx, fabs_dy;
-	
+
 	M3tPointScreen			*vCoordStart, *vCoordEnd;
-	
+
 	long					major, minor;
 	char					*rgbAddress;
 	char					*zAddress;
@@ -398,9 +398,9 @@ MSrDrawContext_Method_Line_Flat(
 	M3tPointScreen*			screenPoints;
 	M3tPointScreen*			vCoord0;
 	M3tPointScreen*			vCoord1;
-	
+
 	screenPoints = drawContextPrivate->statePtr[M3cDrawStatePtrType_ScreenPointArray];
-	
+
 	vCoord0 = screenPoints + inVIndex0;
 	vCoord1 = screenPoints + inVIndex1;
 
@@ -415,7 +415,7 @@ MSrDrawContext_Method_Line_Flat(
 	 * It appears that this functions requires clipped lines, I am adding assertions
 	 *
 	 */
-	
+
 	UUmAssert(x0 >= 0.0);
 	UUmAssert(x1 >= 0.0);
 	UUmAssert(y0 >= 0.0);
@@ -424,7 +424,7 @@ MSrDrawContext_Method_Line_Flat(
 	UUmAssert(vCoord1->z >= 0.0);
 	UUmAssert(vCoord0->z <= 1.0);
 	UUmAssert(vCoord1->z <= 1.0);
-	
+
 	UUmAssert(x0 < width);
 	UUmAssert(x1 < width);
 	UUmAssert(y0 < height);
@@ -438,7 +438,7 @@ MSrDrawContext_Method_Line_Flat(
 
 	dx = x1 - x0;
 	dy = y1 - y0;
-	
+
 	rgbPixelBytes = M3cDrawRGBBytesPerPixel;
 	zPixelBytes = M3cDrawZBytesPerPixel;
 
@@ -447,18 +447,18 @@ MSrDrawContext_Method_Line_Flat(
 
 	rgbRowBytes = drawContextPrivate->imageBufferRowBytes;
 	zRowBytes = drawContextPrivate->zBufferRowBytes;
-	
+
 	if (fabs_dx > fabs_dy)
 	{
 		/*
 		 * Δx is larger, so the major axis will be X.
 		 */
-		
+
 		rgbMajorIncrement = rgbPixelBytes;
 		zMajorIncrement = zPixelBytes;
 		rgbMinorIncrement = rgbRowBytes;
 		zMinorIncrement = zRowBytes;
-		
+
 		if (dx > 0.0F)
 		{
 			vCoordStart = vCoord0;
@@ -484,12 +484,12 @@ MSrDrawContext_Method_Line_Flat(
 		/*
 		 * Δy is larger, so the major axis will be Y.
 		 */
-		
+
 		rgbMajorIncrement = rgbRowBytes;
 		zMajorIncrement = zRowBytes;
 		rgbMinorIncrement = rgbPixelBytes;
 		zMinorIncrement = zPixelBytes;
-		
+
 		if (dy > 0.0F)
 		{
 			vCoordStart = vCoord0;
@@ -510,19 +510,19 @@ MSrDrawContext_Method_Line_Flat(
 		}
 		fabsMajorDelta = fabs_dy;
 	}
-	
+
 	/*
 	 * Snap major axis endpoints, including a 0.5 pixel subpixel coverage rule.
 	 */
-	
+
 	majorStartSnapped = (UUtInt32)(majorStart + 0.5F);
-	
+
 	/* Avoid Divide by zero error */
 	if(fabsMajorDelta == 0.0F)
 	{
 		return;
 	}
-	
+
 	invLength = 1.0F / fabsMajorDelta;
 	snapCorrection = (majorStartSnapped + 0.5F) - majorStart;
 	tempEnd = majorEnd - 0.5F;
@@ -534,7 +534,7 @@ MSrDrawContext_Method_Line_Flat(
 		 * reasons -- if we continue, the cast of fTemp to an int will produce
 		 * 0, which isn't correct.
 		 */
-		
+
 		return;
 	}
 	majorEndSnapped = (UUtInt32)tempEnd;
@@ -544,33 +544,33 @@ MSrDrawContext_Method_Line_Flat(
 	 * initial value. This isn't really necessary if kQAZFunction_None is set, but testing
 	 * for that isn't really worth while.
 	 */
-	
+
 	{
 		const float	zScale = (float)MSmULongScale;
 		const float	zOffset = (float)MSmULongOffset;
-		
+
 		tempStart = vCoordStart->z * zScale + zOffset;
 		tempEnd = vCoordEnd->z * zScale + zOffset;
 		dTemp = (tempEnd - tempStart) * invLength;
 		z = (UUtUns32)(tempStart + snapCorrection * dTemp);
 		dZ = (long) dTemp;
-		
+
 	}
 
 	/*
 	 * Determine the initial minor axis value, the minor axis delta per major axis pixel,
 	 * and whether the minor axis will increment or decrement as we move along the major axis.
 	 */
-	
+
 	minorScaled = (UUtInt32)(minorStart * (float)MSmFractOne);
 	dMinorScaled = (UUtInt32)(minorDelta * invLength * (float)MSmFractOne);
-	
+
 	if (minorDelta < 0.0F)
 	{
 		/*
 		 * Minor axis decrements, so negate the rgb/zMinorIncrement values.
 		 */
-		
+
 		rgbMinorIncrement = -rgbMinorIncrement;
 		zMinorIncrement = -zMinorIncrement;
 	}
@@ -578,10 +578,10 @@ MSrDrawContext_Method_Line_Flat(
 	major = majorStartSnapped;
 	minor = minorScaled >> MSmFractBits;
 	minorScaled &= fractMask;
-	
+
 	rgbAddress = (char *)drawContextPrivate->imageBufferBaseAddr
 			+ major * rgbMajorIncrement + minor * abs (rgbMinorIncrement);
-			
+
 	zAddress = (char *)drawContextPrivate->zBufferBaseAddr
 			+ major * zMajorIncrement + minor * abs (zMinorIncrement);
 
@@ -589,7 +589,7 @@ MSrDrawContext_Method_Line_Flat(
 	{
 		zPixel = *((unsigned short *) zAddress);
 		zPixel = zPixel | (zPixel << 16);
-		
+
 		if (z < zPixel)
 		{
 
@@ -597,7 +597,7 @@ MSrDrawContext_Method_Line_Flat(
 
 			*((UUtUns16 *) rgbAddress) = inShade;
 		}
-		
+
 		zAddress += zMajorIncrement;
 		z += dZ;
 		minorScaled += dMinorScaled;

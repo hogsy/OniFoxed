@@ -43,7 +43,7 @@ DCrDraw_Glyph(
 	const DCtDrawContext	*inDrawContext,
 	M3tPointScreen			*inScreenDest,
 	M3tTextureCoord			*inUVs);
-	
+
 void
 DCrDraw_Line(
 	DCtDrawContext			*inDrawContext,
@@ -53,12 +53,12 @@ DCrDraw_Line(
 DCtDrawContext*
 DCrDraw_NC_Begin(
 	WMtWindow				*inWindow);
-	
+
 void
 DCrDraw_NC_End(
 	DCtDrawContext			*inDrawContext,
 	WMtWindow				*inWindow);
-	
+
 void
 DCrDraw_PartSpec(
 	DCtDrawContext			*inDrawContext,
@@ -81,14 +81,14 @@ DCrDraw_String2(
 	const UUtRect			*inBounds,
 	const IMtPoint2D		*inDestination,
 	UUtRect					*outStringRect);
-	
+
 void
 DCrDraw_String(
 	DCtDrawContext			*inDrawContext,
 	const char				*inString,
 	const UUtRect			*inBounds,
 	const IMtPoint2D		*inDestination);
-	
+
 void
 DCrDraw_TextureRef(
 	DCtDrawContext			*inDrawContext,
@@ -106,33 +106,33 @@ DCrText_DrawString(
 	char					*inString,
 	UUtRect					*inBounds,
 	IMtPoint2D				*inDestination);
-	
+
 void
 DCrText_DrawText(
 	char			*inString,
 	UUtRect			*inBounds,
 	IMtPoint2D		*inDestination);
-	
+
 UUtUns16
 DCrText_GetAscendingHeight(
 	void);
-	
+
 const TStTextContext*
 DCrText_GetTextContext(
 	void);
-	
+
 UUtUns16
 DCrText_GetDescendingHeight(
 	void);
-	
+
 TStFont*
 DCrText_GetFont(
 	void);
-	
+
 UUtUns16
 DCrText_GetLeadingHeight(
 	void);
-	
+
 UUtUns16
 DCrText_GetLineHeight(
 	void);
@@ -149,27 +149,27 @@ DCrText_Initialize(
 void
 DCrText_SetFontFamily(
 	TStFontFamily			*inFontFamily);
-	
+
 void
 DCrText_SetFontInfo(
 	TStFontInfo				*inFontInfo);
-	
+
 void
 DCrText_SetFormat(
 	TStFormat				inFormat);
-	
+
 void
 DCrText_SetShade(
 	UUtUns32				inShade);
-	
+
 void
 DCrText_SetSize(
 	UUtUns16				inSize);
-	
+
 void
 DCrText_SetStyle(
 	TStFontStyle			inStyle);
-	
+
 void
 DCrText_Terminate(
 	void);

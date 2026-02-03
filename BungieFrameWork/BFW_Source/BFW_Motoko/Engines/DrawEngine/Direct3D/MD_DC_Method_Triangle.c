@@ -1,12 +1,12 @@
 /*
 	FILE:	MD_DC_Method_Triangle.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 18, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -26,7 +26,7 @@
 // funcitons
 // ======================================================================
 // ----------------------------------------------------------------------
-void 
+void
 MDrDrawContext_Method_TriGouraudInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -37,18 +37,18 @@ MDrDrawContext_Method_TriGouraudInterpolate(
 	MDtDrawContextPrivate		*drawContextPrivate;
 	D3DTLVERTEX					vertex_list[3];
 	M3tPointScreen				*screenPoints;
-	
+
 	// get access to the private context
 	drawContextPrivate =
 		(MDtDrawContextPrivate*)inDrawContext->privateContext;
 	if (drawContextPrivate == NULL)
 		return;
-	
+
 	// get the list of screen points
 	screenPoints =
 		(M3tPointScreen*)drawContextPrivate->statePtr[
 			M3cDrawStatePtrType_ScreenPointArray];
-	
+
 	// set up the vertex_list
 	vertex_list[0].sx = screenPoints[inVIndex0].x;
 	vertex_list[0].sy = screenPoints[inVIndex0].y;
@@ -56,23 +56,23 @@ MDrDrawContext_Method_TriGouraudInterpolate(
 	vertex_list[0].rhw = screenPoints[inVIndex0].invW;
 	vertex_list[0].color = RGB_MAKE(255,255,255);
 	vertex_list[0].specular = RGB_MAKE(0,0,0);
-	
+
 	vertex_list[1].sx = screenPoints[inVIndex1].x;
 	vertex_list[1].sy = screenPoints[inVIndex1].y;
 	vertex_list[1].sz = screenPoints[inVIndex1].z;
 	vertex_list[1].rhw = screenPoints[inVIndex1].invW;
 	vertex_list[1].color = RGB_MAKE(255,255,255);
 	vertex_list[1].specular = RGB_MAKE(0,0,0);
-	
+
 	vertex_list[2].sx = screenPoints[inVIndex2].x;
 	vertex_list[2].sy = screenPoints[inVIndex2].y;
 	vertex_list[2].sz = screenPoints[inVIndex2].z;
 	vertex_list[2].rhw = screenPoints[inVIndex2].invW;
 	vertex_list[2].color = RGB_MAKE(255,255,255);
 	vertex_list[2].specular = RGB_MAKE(0,0,0);
-	
+
 	// draw the triangle
-	d3dResult = 
+	d3dResult =
 		IDirect3DDevice2_DrawPrimitive(
 			drawContextPrivate->d3d_device2,
 			D3DPT_TRIANGLELIST,
@@ -83,7 +83,7 @@ MDrDrawContext_Method_TriGouraudInterpolate(
 }
 
 // ----------------------------------------------------------------------
-void 
+void
 MDrDrawContext_Method_TriGouraudFlat(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -95,18 +95,18 @@ MDrDrawContext_Method_TriGouraudFlat(
 	MDtDrawContextPrivate		*drawContextPrivate;
 	D3DTLVERTEX					vertex_list[3];
 	M3tPointScreen				*screenPoints;
-	
+
 	// get access to the private context
 	drawContextPrivate =
 		(MDtDrawContextPrivate*)inDrawContext->privateContext;
 	if (drawContextPrivate == NULL)
 		return;
-	
+
 	// get the list of screen points
 	screenPoints =
 		(M3tPointScreen*)drawContextPrivate->statePtr[
 			M3cDrawStatePtrType_ScreenPointArray];
-	
+
 	// set up the vertex_list
 	vertex_list[0].sx = screenPoints[inVIndex0].x;
 	vertex_list[0].sy = screenPoints[inVIndex0].y;
@@ -114,23 +114,23 @@ MDrDrawContext_Method_TriGouraudFlat(
 	vertex_list[0].rhw = screenPoints[inVIndex0].invW;
 	vertex_list[0].color = RGB_MAKE(255,255,255);
 	vertex_list[0].specular = RGB_MAKE(0,0,0);
-	
+
 	vertex_list[1].sx = screenPoints[inVIndex1].x;
 	vertex_list[1].sy = screenPoints[inVIndex1].y;
 	vertex_list[1].sz = screenPoints[inVIndex1].z;
 	vertex_list[1].rhw = screenPoints[inVIndex1].invW;
 	vertex_list[1].color = RGB_MAKE(255,255,255);
 	vertex_list[1].specular = RGB_MAKE(0,0,0);
-	
+
 	vertex_list[2].sx = screenPoints[inVIndex2].x;
 	vertex_list[2].sy = screenPoints[inVIndex2].y;
 	vertex_list[2].sz = screenPoints[inVIndex2].z;
 	vertex_list[2].rhw = screenPoints[inVIndex2].invW;
 	vertex_list[2].color = RGB_MAKE(255,255,255);
 	vertex_list[2].specular = RGB_MAKE(0,0,0);
-	
+
 	// draw the triangle
-	d3dResult = 
+	d3dResult =
 		IDirect3DDevice2_DrawPrimitive(
 			drawContextPrivate->d3d_device2,
 			D3DPT_TRIANGLELIST,
@@ -141,7 +141,7 @@ MDrDrawContext_Method_TriGouraudFlat(
 }
 
 // ----------------------------------------------------------------------
-void 
+void
 MDrDrawContext_Method_TriTextureInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -152,18 +152,18 @@ MDrDrawContext_Method_TriTextureInterpolate(
 	MDtDrawContextPrivate		*drawContextPrivate;
 	D3DTLVERTEX					vertex_list[3];
 	M3tPointScreen				*screenPoints;
-	
+
 	// get access to the private context
 	drawContextPrivate =
 		(MDtDrawContextPrivate*)inDrawContext->privateContext;
 	if (drawContextPrivate == NULL)
 		return;
-	
+
 	// get the list of screen points
 	screenPoints =
 		(M3tPointScreen*)drawContextPrivate->statePtr[
 			M3cDrawStatePtrType_ScreenPointArray];
-	
+
 	// set up the vertex_list
 	vertex_list[0].sx = screenPoints[inVIndex0].x;
 	vertex_list[0].sy = screenPoints[inVIndex0].y;
@@ -171,23 +171,23 @@ MDrDrawContext_Method_TriTextureInterpolate(
 	vertex_list[0].rhw = screenPoints[inVIndex0].invW;
 	vertex_list[0].color = RGB_MAKE(255,255,255);
 	vertex_list[0].specular = RGB_MAKE(0,0,0);
-	
+
 	vertex_list[1].sx = screenPoints[inVIndex1].x;
 	vertex_list[1].sy = screenPoints[inVIndex1].y;
 	vertex_list[1].sz = screenPoints[inVIndex1].z;
 	vertex_list[1].rhw = screenPoints[inVIndex1].invW;
 	vertex_list[1].color = RGB_MAKE(255,255,255);
 	vertex_list[1].specular = RGB_MAKE(0,0,0);
-	
+
 	vertex_list[2].sx = screenPoints[inVIndex2].x;
 	vertex_list[2].sy = screenPoints[inVIndex2].y;
 	vertex_list[2].sz = screenPoints[inVIndex2].z;
 	vertex_list[2].rhw = screenPoints[inVIndex2].invW;
 	vertex_list[2].color = RGB_MAKE(255,255,255);
 	vertex_list[2].specular = RGB_MAKE(0,0,0);
-	
+
 	// draw the triangle
-	d3dResult = 
+	d3dResult =
 		IDirect3DDevice2_DrawPrimitive(
 			drawContextPrivate->d3d_device2,
 			D3DPT_TRIANGLELIST,
@@ -214,7 +214,7 @@ MDrDrawContext_Method_TriTextureFlat(
 	UUtUns8						color1, color2, color3;
 
 	color1 = color2 = color3 = 255;
-	
+
 	// get access to the data
 	drawContextPrivate =
 		(MDtDrawContextPrivate*)inDrawContext->privateContext;
@@ -231,7 +231,7 @@ MDrDrawContext_Method_TriTextureFlat(
 	MDrUseTexture(
 		drawContextPrivate,
 		drawContextPrivate->statePtr[M3cDrawStatePtrType_BaseTextureMap]);
-	
+
 	// set up the vertex_list
 	vertex_list[0].sx = screenPoints[inVIndex0].x;
 	vertex_list[0].sy = screenPoints[inVIndex0].y;
@@ -241,7 +241,7 @@ MDrDrawContext_Method_TriTextureFlat(
 	vertex_list[0].tv = textureCoords[inVIndex0].v;
 	vertex_list[0].color = RGB_MAKE(color1, color2, color3);
 	vertex_list[0].specular = RGB_MAKE(0,0,0);
-	
+
 	vertex_list[1].sx = screenPoints[inVIndex1].x;
 	vertex_list[1].sy = screenPoints[inVIndex1].y;
 	vertex_list[1].sz = screenPoints[inVIndex1].z;
@@ -250,7 +250,7 @@ MDrDrawContext_Method_TriTextureFlat(
 	vertex_list[1].tv = textureCoords[inVIndex1].v;
 	vertex_list[1].color = RGB_MAKE(color1, color2, color3);
 	vertex_list[1].specular = RGB_MAKE(0,0,0);
-	
+
 	vertex_list[2].sx = screenPoints[inVIndex2].x;
 	vertex_list[2].sy = screenPoints[inVIndex2].y;
 	vertex_list[2].sz = screenPoints[inVIndex2].z;
@@ -259,9 +259,9 @@ MDrDrawContext_Method_TriTextureFlat(
 	vertex_list[2].tv = textureCoords[inVIndex2].v;
 	vertex_list[2].color = RGB_MAKE(color1, color2, color3);
 	vertex_list[2].specular = RGB_MAKE(0,0,0);
-	
+
 	// draw the triangle
-	result = 
+	result =
 		IDirect3DDevice2_DrawPrimitive(
 			drawContextPrivate->d3d_device2,
 			D3DPT_TRIANGLELIST,
@@ -291,9 +291,9 @@ MDrDrawContext_Method_TriTextureSplit(
 	M3tPointScreen				*screenPoints;
 	M3tTextureCoord				*textureCoords;
 	UUtUns8						color1, color2, color3;
-	
+
 	color1 = color2 = color3 = 255;
-	
+
 	// get access to the data
 	drawContextPrivate =
 		(MDtDrawContextPrivate*)inDrawContext->privateContext;
@@ -310,7 +310,7 @@ MDrDrawContext_Method_TriTextureSplit(
 	MDrUseTexture(
 		drawContextPrivate,
 		drawContextPrivate->statePtr[M3cDrawStatePtrType_BaseTextureMap]);
-	
+
 	// set up the vertex_list
 	vertex_list[0].sx = screenPoints[inVIndex0].x;
 	vertex_list[0].sy = screenPoints[inVIndex0].y;
@@ -320,7 +320,7 @@ MDrDrawContext_Method_TriTextureSplit(
 	vertex_list[0].tv = textureCoords[inBaseUVIndex0].v;
 	vertex_list[0].color = RGB_MAKE(color1, color2, color3);
 	vertex_list[0].specular = RGB_MAKE(0,0,0);
-	
+
 	vertex_list[1].sx = screenPoints[inVIndex1].x;
 	vertex_list[1].sy = screenPoints[inVIndex1].y;
 	vertex_list[1].sz = screenPoints[inVIndex1].z;
@@ -329,7 +329,7 @@ MDrDrawContext_Method_TriTextureSplit(
 	vertex_list[1].tv = textureCoords[inBaseUVIndex1].v;
 	vertex_list[1].color = RGB_MAKE(color1, color2, color3);
 	vertex_list[1].specular = RGB_MAKE(0,0,0);
-	
+
 	vertex_list[2].sx = screenPoints[inVIndex2].x;
 	vertex_list[2].sy = screenPoints[inVIndex2].y;
 	vertex_list[2].sz = screenPoints[inVIndex2].z;
@@ -338,9 +338,9 @@ MDrDrawContext_Method_TriTextureSplit(
 	vertex_list[2].tv = textureCoords[inBaseUVIndex2].v;
 	vertex_list[2].color = RGB_MAKE(color1, color2, color3);
 	vertex_list[2].specular = RGB_MAKE(0,0,0);
-	
+
 	// draw the triangle
-	result = 
+	result =
 		IDirect3DDevice2_DrawPrimitive(
 			drawContextPrivate->d3d_device2,
 			D3DPT_TRIANGLELIST,

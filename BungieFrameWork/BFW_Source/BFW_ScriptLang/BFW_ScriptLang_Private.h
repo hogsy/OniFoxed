@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_ScriptLang_Private.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -40,9 +40,9 @@ typedef enum SLtToken_Code
 	SLcToken_Cmp_GT,
 	SLcToken_Cmp_LE,
 	SLcToken_Cmp_GE,
-	
+
 	SLcToken_NumOperators,
-	
+
 	SLcToken_LeftParen = SLcToken_NumOperators,
 	SLcToken_RightParen,
 	SLcToken_LeftCurley,
@@ -52,15 +52,15 @@ typedef enum SLtToken_Code
 	SLcToken_SemiColon,
 	SLcToken_Colon,
 	SLcToken_Comma,
-	
+
 	SLcToken_Bar,
-	
+
 	SLcToken_Identifier,
 	SLcToken_Constant_Int,
 	SLcToken_Constant_Bool,
 	SLcToken_Constant_Float,
 	SLcToken_Constant_String,
-	
+
 	SLcToken_Schedule,
 	SLcToken_Iterate,
 	SLcToken_Repeat,
@@ -83,9 +83,9 @@ typedef enum SLtToken_Code
 	SLcToken_Var,
 	SLcToken_At,
 	SLcToken_If,
-	
+
 	SLcToken_EOF
-	
+
 } SLtToken_Code;
 
 typedef struct SLtToken SLtToken;
@@ -94,7 +94,7 @@ typedef enum SLtToken_Flags
 {
 	SLcTokenFlag_None				= 0,
 	SLcTokenFlag_PrecedesNewline	= (1 << 0)
-	
+
 } SLtToken_Flags;
 
 struct SLtToken
@@ -113,15 +113,15 @@ typedef enum SLtSymbol_Kind
 	SLcSymbolKind_Func_Script,
 	SLcSymbolKind_Func_Command,
 	SLcSymbolKind_Iterator
-	
+
 } SLtSymbol_Kind;
 
 typedef struct SLtSymbol_Var
 {
 	SLtType	type;
-	
+
 	SLtValue val;
-	
+
 } SLtSymbol_Var;
 
 typedef struct SLtSymbol_VarAddr
@@ -131,18 +131,18 @@ typedef struct SLtSymbol_VarAddr
 	void*				valAddr;
 	SLtNotificationProc	noticeProc;
 	char*				desc;
-	
+
 } SLtSymbol_VarAddr;
 
 typedef struct SLtParameterOption
 {
 	SLtParameter_Formal	formalParam;
-	
+
 	UUtBool					repeats;
-	
+
 	UUtUns16				numLegalValues;
 	SLtValue		legalValue[SLcMaxLegalValues];
-	
+
 } SLtParameterOption;
 
 typedef struct SLtParameterList
@@ -150,7 +150,7 @@ typedef struct SLtParameterList
 	UUtBool				hasRepeating;
 	UUtUns16			numParams;
 	SLtParameterOption	params[SLcScript_MaxNumParams];
-	
+
 } SLtParameterList;
 
 typedef struct SLtSymbol_Func_Script
@@ -159,7 +159,7 @@ typedef struct SLtSymbol_Func_Script
 	SLtToken*				startToken;
 	UUtUns16				numParams;
 	SLtParameter_Formal	paramList[SLcScript_MaxNumParams];
-	
+
 } SLtSymbol_Func_Script;
 
 typedef struct SLtSymbol_Func_Command
@@ -169,18 +169,18 @@ typedef struct SLtSymbol_Func_Command
 	const char*				paramSpec;
 	UUtBool					checkParams;
 	SLtType			returnType;
-	
+
 	UUtUns16				numParamListOptions;
 	SLtParameterList		paramListOptions[SLcScript_MaxNumParamLists];
-	
+
 } SLtSymbol_Func_Command;
 
 typedef struct SLtSymbol_Iterator
-{	
+{
 	SLtScript_Iterator_GetFirst	getFirst;
 	SLtScript_Iterator_GetNext	getNext;
 	SLtType				type;
-	
+
 } SLtSymbol_Iterator;
 
 
@@ -193,7 +193,7 @@ struct SLtSymbol
 	UUtUns16		line;
 	UUtUns16		scopeLevel;
 	SLtSymbol_Kind	kind;
-	
+
 	union
 	{
 		SLtSymbol_Var			var;
@@ -201,44 +201,44 @@ struct SLtSymbol
 		SLtSymbol_Func_Script	funcScript;
 		SLtSymbol_Func_Command	funcCommand;
 		SLtSymbol_Iterator		iterator;
-		
+
 	} u;
-	
+
 	SLtSymbol*	prev;
 	SLtSymbol*	next;
-	
+
 };
 
 typedef enum SLtExpr_Kind
 {
 	SLcExprKind_Constant,
 	SLcExprKind_Identifier
-	
+
 } SLtExpr_Kind;
 
 typedef struct SLtExpr_Ident
 {
 	const char*	name;
-	
+
 } SLtExpr_Ident;
 
 typedef struct SLtExpr_Const
 {
 	SLtValue	val;
-	
+
 } SLtExpr_Const;
 
 typedef struct SLtExpr
 {
 	SLtExpr_Kind	kind;
 	SLtType	type;
-	
+
 	union
 	{
 		SLtExpr_Ident	ident;
 		SLtExpr_Const	constant;
 	} u;
-	
+
 } SLtExpr;
 
 #define SLcExprOpStack_MaxDepth			(4)
@@ -255,31 +255,31 @@ typedef struct SLtContext_FuncState
 {
 	UUtUns16		parseTOS;
 	UUtUns8			parseStack[SLcContext_ParseStack_MaxDepth];
-	
+
 	UUtUns16		exprTOS;
 	SLtExpr			exprStack[SLcContext_ExprStack_MaxDepth];
 	UUtUns16		parenLevel;
-	
+
 	UUtUns16			parenTOS;
 	SLtExpr_OpStack		parenStack[SLcContext_ParenStack_MaxDepth];
 	SLtExpr_OpStack*	curParenStack;
-	
+
 	SLtSymbol*		symbolList[SLcMaxScopeLevel];
 	UUtUns16		scopeLevel;
-	
+
 	SLtToken*		curToken;
 
 	UUtUns16		statementLevel;
 	UUtBool			statementEval[SLcContext_StatementStack_MaxDepth];
 	UUtUns16		statement_TargetLevel;
-	
+
 	const char*		funcName;
 	SLtSymbol*		symbol;
-	
+
 	UUtUns16		numParams;
 	SLtExpr			paramExprs[SLcScript_MaxNumParams];
 	SLtParameter_Actual	params[SLcScript_MaxNumParams];
-	
+
 	const char*		funcIdent;
 
 } SLtContext_FuncState;
@@ -290,14 +290,14 @@ struct SLtContext
 	SLtContext_FuncState	funcStack[SLcContext_FuncState_MaxDepth];
 
 	SLtContext_FuncState*	curFuncState;
-	
+
 	// common state that is shared
 	SLtType		returnType;
 	SLtValue	returnValue;
-		
+
 	UUtUns32			ticksTillCompletion;
 	UUtBool				stalled;
-	
+
 	// whereabouts the rest of the engine has a pointer to us stored
 	struct SLtContext **referenceptr;
 

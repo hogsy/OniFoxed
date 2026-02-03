@@ -45,51 +45,51 @@ VMiView_Slider_HandleHorizontalScroll(
 	UUtInt32					min;
 	UUtInt32					max;
 	UUtInt32					current_pos;
-	
+
 	// get the scroll range
 	current_pos = VMrView_Scrollbar_GetPosition(inPrivateData->scrollbar);
 	VMrView_Scrollbar_GetRange(inPrivateData->scrollbar, &min, &max);
 	scroll_range = max - min;
-	
+
 	// interpret the parameters of the message
 	switch (UUmLowWord(inParam1))
 	{
 		case SBcNotify_LineUp:
 			scroll_increment = -1;
 		break;
-		
+
 		case SBcNotify_LineDown:
 			scroll_increment = 1;
 		break;
-		
+
 		case SBcNotify_PageUp:
 			scroll_increment = UUmMin(-1, -scroll_range / 10);
 		break;
-		
+
 		case SBcNotify_PageDown:
 			scroll_increment = UUmMax(1, scroll_range / 10);
 		break;
-		
+
 		case SBcNotify_ThumbPosition:
 			scroll_increment = inParam2 - current_pos;
 		break;
-		
+
 		default:
 			scroll_increment = 0;
 		break;
 	}
-	
+
 	// adjust the the thumb position and redraw the texture
 	if (scroll_increment != 0)
 	{
 		VMtView_PrivateData			*view_private_data;
-		
+
 		view_private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 		UUmAssert(view_private_data);
-		
+
 		current_pos += scroll_increment;
 		VMrView_Scrollbar_SetPosition(inPrivateData->scrollbar, current_pos);
-		
+
 		// tell the parent about the new slider value
 		VMrView_SendMessage(
 			view_private_data->parent,
@@ -112,7 +112,7 @@ VMiView_Slider_Create(
 	VMtView_Slider_PrivateData	*inPrivateData)
 {
 	UUtError					error;
-	
+
 	// ------------------------------
 	// create title texture
 	// ------------------------------
@@ -120,7 +120,7 @@ VMiView_Slider_Create(
 		(TSrString_GetLength(inSlider->title) > 0))
 	{
 		UUtRect					string_bounds;
-		
+
 		error =
 			VUrCreate_StringTexture(
 				inSlider->title,
@@ -128,15 +128,15 @@ VMiView_Slider_Create(
 				&inPrivateData->title_texture_ref,
 				&string_bounds);
 		UUmError_ReturnOnErrorMsg(error, "Unable to create title texture for the button");
-		
+
 		// get the title_texture_width and title_texture_height
 		inPrivateData->title_texture_width = string_bounds.right;
 		inPrivateData->title_texture_height = string_bounds.bottom;
-		
+
 		inPrivateData->title_location.x = 4;
 		inPrivateData->title_location.y = 2;
 	}
-	
+
 	// ------------------------------
 	// initialize the scrollbar
 	// ------------------------------
@@ -147,7 +147,7 @@ VMiView_Slider_Create(
 		{
 			IMtPoint2D			new_location;
 			UUtUns16			new_width;
-			
+
 			if (inSlider->outline)
 			{
 				new_location.x = 4;
@@ -160,7 +160,7 @@ VMiView_Slider_Create(
 				new_location.y = inView->height - inPrivateData->scrollbar->height;
 				new_width = inView->width;
 			}
-			
+
 			VMrView_SetLocation(inPrivateData->scrollbar, &new_location);
 			VMrView_SetSize(inPrivateData->scrollbar, new_width, inPrivateData->scrollbar->height);
 
@@ -172,7 +172,7 @@ VMiView_Slider_Create(
 			inPrivateData->scrollbar = NULL;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -192,7 +192,7 @@ VMiView_Slider_Paint(
 		alpha = VUcAlpha_Enabled;
 	else
 		alpha = VUcAlpha_Disabled;
-	
+
 	// draw the outline
 	if (inSlider->outline)
 	{
@@ -204,14 +204,14 @@ VMiView_Slider_Paint(
 			inView->height,
 			alpha);
 	}
-	
+
 	// draw the title
 	if (inPrivateData->title_texture_ref)
 	{
 		dest = *inDestination;
 		dest.x += (float)inPrivateData->title_location.x;
 		dest.y += (float)inPrivateData->title_location.y;
-		
+
 		VUrDrawTextureRef(
 			inPrivateData->title_texture_ref,
 			&dest,
@@ -236,7 +236,7 @@ VMrView_Slider_Callback(
 {
 	VMtView_Slider				*slider;
 	VMtView_Slider_PrivateData	*private_data;
-	
+
 	// get the data
 	slider = (VMtView_Slider*)inView->view_data;
 	private_data = (VMtView_Slider_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Slider_PrivateData, slider);
@@ -247,7 +247,7 @@ VMrView_Slider_Callback(
 		case VMcMessage_Create:
 			VMiView_Slider_Create(inView, slider, private_data);
 		return 0;
-		
+
 		case VMcMessage_Paint:
 			// draw the slider
 			VMiView_Slider_Paint(
@@ -266,7 +266,7 @@ VMrView_Slider_Callback(
 				inParam2);
 		return 0;
 	}
-	
+
 	return VMrView_DefaultCallback(inView, inMessage, inParam1, inParam2);
 }
 
@@ -277,15 +277,15 @@ VMrView_Slider_GetPosition(
 {
 	VMtView_Slider				*slider;
 	VMtView_Slider_PrivateData	*private_data;
-	
+
 	UUmAssert(inView);
-	
+
 	// get a pointer to the data
 	slider = (VMtView_Slider*)inView->view_data;
 	private_data = (VMtView_Slider_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Slider_PrivateData, slider);
 	UUmAssert(private_data);
 	UUmAssert(private_data->scrollbar);
-	
+
 	// set the new range values
 	return VMrView_Scrollbar_GetPosition(private_data->scrollbar);
 }
@@ -299,7 +299,7 @@ VMrView_Slider_ProcHandler(
 {
 	VMtView_Slider				*slider;
 	VMtView_Slider_PrivateData	*private_data;
-	
+
 	// get a pointer to the button data
 	slider = (VMtView_Slider*)inInstancePtr;
 	private_data = (VMtView_Slider_PrivateData*)inPrivateData;
@@ -313,18 +313,18 @@ VMrView_Slider_ProcHandler(
 			private_data->title_texture_ref	= NULL;
 			private_data->scrollbar			= NULL;
 		break;
-		
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 		break;
-		
+
 		case TMcTemplateProcMessage_Update:
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -336,9 +336,9 @@ VMrView_Slider_SetPosition(
 {
 	VMtView_Slider				*slider;
 	VMtView_Slider_PrivateData	*private_data;
-	
+
 	UUmAssert(inView);
-	
+
 	// get a pointer to the data
 	slider = (VMtView_Slider*)inView->view_data;
 	private_data = (VMtView_Slider_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Slider_PrivateData, slider);
@@ -358,15 +358,15 @@ VMrView_Slider_SetRange(
 {
 	VMtView_Slider				*slider;
 	VMtView_Slider_PrivateData	*private_data;
-	
+
 	UUmAssert(inView);
-	
+
 	// get a pointer to the data
 	slider = (VMtView_Slider*)inView->view_data;
 	private_data = (VMtView_Slider_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Slider_PrivateData, slider);
 	UUmAssert(private_data);
 	UUmAssert(private_data->scrollbar);
-	
+
 	// set the new range values
 	VMrView_Scrollbar_SetRange(private_data->scrollbar, inMin, inMax);
 }

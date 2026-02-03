@@ -1,13 +1,13 @@
 #if TOOL_VERSION
 /*
 	FILE:	Oni_Win_AI_Neutral.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 13, 2000
-	
+
 	PURPOSE: AI Neutral Behavior Windows
-	
+
 	Copyright (c) Bungie Software 2000
 
 */
@@ -184,9 +184,9 @@ OWrEditNeutral_Callback(
 	SStAmbient			*new_sound;
 	static UUtUns32		current_line;			// ugly - would be better stored in user data but unfortunately userdata
 												// is constrained by oni_win_tools to be a pointer to the object, no room
-	
+
 	OWtSelectResult		result;
-	
+
 	OBJrObject_GetObjectSpecificData(object, &object_specific_data);
 	neutral_osd = &object_specific_data.osd.neutral_osd;
 
@@ -277,7 +277,7 @@ OWrEditNeutral_Callback(
 		case WMcMessage_Command:
 			dirty = UUcTrue;
 
-			switch(UUmLowWord(inParam1)) 
+			switch(UUmLowWord(inParam1))
 			{
 				case cEditNeutral_Name:
 					WMrEditField_GetText(name_edit, neutral_osd->name, sizeof(neutral_osd->name));
@@ -290,7 +290,7 @@ OWrEditNeutral_Callback(
 						dirty = UUcFalse;
 						break;
 					}
-					
+
 					if (new_sound == NULL) {
 						neutral_osd->trigger_sound[0] = '\0';
 					} else {
@@ -612,7 +612,7 @@ UUtUns16 OWrChooseNeutral(UUtUns16 inNeutralID)
 
 	object_specific_data.osd.neutral_osd.id = inNeutralID;
 	object = OBJrObjectType_Search(OBJcType_Neutral, OBJcSearch_NeutralID, &object_specific_data);
-	
+
 	object = OWrSelectObject(OBJcType_Neutral, object, UUcTrue, UUcFalse);
 
 	if (object != NULL) {

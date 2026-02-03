@@ -28,14 +28,14 @@ enum
 typedef tm_template('V', 'M', '_', 'S', "VM View Slider")
 VMtView_Slider
 {
-	
+
 	UUtUns16				flags;
 	UUtUns16				reserved;
-		
+
 	VMtPartSpec				*outline;
 
 	char					title[32];
-	
+
 } VMtView_Slider;
 
 typedef struct VMtView_Slider_PrivateData
@@ -45,7 +45,7 @@ typedef struct VMtView_Slider_PrivateData
 	IMtPoint2D				title_location;
 	UUtUns16				title_texture_width;
 	UUtUns16				title_texture_height;
-		
+
 	// scrollbar
 	VMtView					*scrollbar;
 
@@ -66,7 +66,7 @@ VMrView_Slider_Callback(
 UUtInt32
 VMrView_Slider_GetPosition(
 	VMtView					*inView);
-	
+
 UUtError
 VMrView_Slider_ProcHandler(
 	TMtTemplateProc_Message	inMessage,
@@ -83,6 +83,6 @@ VMrView_Slider_SetRange(
 	VMtView					*inView,
 	UUtInt32				inMin,
 	UUtInt32				inMax);
-	
+
 // ======================================================================
 #endif /* VM_VIEW_SLIDER_H */

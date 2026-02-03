@@ -2,13 +2,13 @@
 
 /*
 	FILE:	BFW_Object.h
-	
+
 	AUTHOR:	Quinn Dunki, Michael Evans, Kevin Armstrong
-	
+
 	CREATED: 4/8/98
-	
+
 	PURPOSE: Interface to the Object engine
-	
+
 	Copyright 1998,2000
 
 */
@@ -59,7 +59,7 @@ enum {
 
 };
 
-struct OBtObject;	
+struct OBtObject;
 typedef UUtBool (*OBtAllowPauseCallback)(const struct OBtObject *inObject, const struct PHtPhysicsContext *inCollidingCallback);
 
 #define OBcObjectNodeCount 32
@@ -72,9 +72,9 @@ typedef struct OBtObject
 	UUtUns32				geometry_count;
 
 	M3tGeometry				*damagedGeometry;
-	
+
 	EPtEnvParticleArray*	particleArray;
-		
+
 	UUtUns16				index;
 	UUtUns16				flags;
 
@@ -82,7 +82,7 @@ typedef struct OBtObject
 	UUtUns16				pad;
 
 	PHtPhysicsContext		*physics;				// Data for physics engine
-	
+
 	UUtUns32				num_frames_offscreen;
 	IMtShade				flat_lighting_shade;
 	void					*owner;
@@ -102,10 +102,10 @@ typedef tm_struct OBtObjectList
 {
 	UUtUns16				maxObjects;
 	UUtUns16				numObjects;
-	
+
 	OBtObject				object_list[1];
 } OBtObjectList;
-	
+
 UUtError OBrRegisterTemplates(void);
 
 UUtBool OBrUpdate(OBtObject *ioObject, UUtBool *deleteMe, UUtInt16 *redoObject);

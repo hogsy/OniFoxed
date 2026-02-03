@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Group.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Dec 17, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -23,7 +23,7 @@
 typedef enum GRtToken
 {
 	GReToken_None,
-	
+
 	GReToken_BracketLeft,
 	GReToken_BracketRight,
 	GReToken_CurlyLeft,
@@ -32,35 +32,35 @@ typedef enum GRtToken
 	GReToken_String,
 	GReToken_Equal,
 	GReToken_Identifier,
-	
+
 	GReToken_EOF
-	
+
 } GRtToken;
 
 typedef struct GRtElement
 {
 	GRtElementType	type;
-	
+
 	union
 	{
 		char*				value;
 		GRtGroup*			group;
 		GRtElementArray*	array;
 	} u;
-	
+
 } GRtElement;
 
 struct GRtElementArray
 {
 	UUtUns16	numElements;
 	GRtElement	elements[GRcMaxNumArray];
-	
+
 };
 
 typedef struct GRtBinding
 {
 	char*		varName;
-	
+
 	GRtElement	element;
 
 } GRtBinding;
@@ -90,7 +90,7 @@ GRiGroup_Create(
 	GRtGroup_Context*	inContext,
 	GRtGroup*			inPreferenceGroup,
 	BFtTextFile*		inTextFile);
-	
+
 static UUtError
 GRiGroup_ParseElement(
 	GRtGroup_Context*	inContext,
@@ -119,16 +119,16 @@ GRiGetNextToken(
 		GRgUngotToken = GReToken_None;
 		return;
 	}
-	
+
 	GRgToken = GReToken_None;
-	
+
 	if(GRgCurLine == NULL || *GRgCurLine == 0)
 	{
 		while(1)
 		{
 			GRgCurLine = BFrTextFile_GetNextStr(inTextFile);
 			GRgLineNum++;
-			
+
 			if(GRgCurLine == NULL || GRgLineNum >= GRgMaxLines)
 			{
 				GRgToken = GReToken_EOF;
@@ -161,14 +161,14 @@ GRiGetNextToken(
 				*lexem++ = c;
 				c = *GRgCurLine;
 				if(!(isalpha(c) || c == '_' || isdigit(c))) break;
-				
+
 				GRgCurLine++;
 			}
 			*lexem = 0;
-			
+
 			GRgToken = GReToken_Identifier;
 			return;
-		
+
 		case '{':
 			GRgToken = GReToken_CurlyLeft;
 			return;
@@ -176,7 +176,7 @@ GRiGetNextToken(
 		case '}':
 			GRgToken = GReToken_CurlyRight;
 			return;
-			
+
 		case '[':
 			GRgToken = GReToken_BracketLeft;
 			return;
@@ -184,20 +184,20 @@ GRiGetNextToken(
 		case ']':
 			GRgToken = GReToken_BracketRight;
 			return;
-		
+
 		case '=':
 			GRgToken = GReToken_Equal;
 			return;
-		
+
 		case ',':
 			GRgToken = GReToken_Comma;
 			return;
-		
+
 		case '#':
 			GRgCurLine = NULL;
 			GRiGetNextToken(inTextFile);
 			return;
-		
+
 		case '"':
 			while(1)
 			{
@@ -217,12 +217,12 @@ GRiGetNextToken(
 					c = *GRgCurLine++;
 					UUmAssert(c != 0);
 				}
-				
+
 				GRgCurLine++;
 			}
-			
+
 			*lexem = 0;
-			
+
 			GRgToken = GReToken_String;
 			break;
 
@@ -233,7 +233,7 @@ GRiGetNextToken(
 			GRgToken = GReToken_String;
 			break;
 	}
-	
+
 	while(1)
 	{
 		*lexem++ = c;
@@ -243,8 +243,8 @@ GRiGetNextToken(
 			escaped = UUcTrue;
 			c = *(++GRgCurLine);
 		}
-		
-		if(c == 0 || 
+
+		if(c == 0 ||
 			c == '{' ||
 			c == '}' ||
 			c == '[' ||
@@ -260,12 +260,12 @@ GRiGetNextToken(
 
 		GRgCurLine++;
 	}
-	
+
 	*lexem = 0;
-	
+
 	GRgToken = GReToken_String;
 }
-	
+
 
 static GRtElementArray*
 GRiGroup_ParseArray(
@@ -278,27 +278,27 @@ GRiGroup_ParseArray(
 
 	UUmAssert(NULL != inContext);
 	UUmAssert(NULL != inTextFile);
-	
+
 	newArray = UUrMemory_Pool_Block_New(inContext->memoryPool, sizeof(GRtElementArray));
 	if(newArray == NULL)
 	{
 		return NULL;
 	}
-	
+
 	newArray->numElements = 0;
-	
+
 	while(1)
 	{
 		GRiGetNextToken(inTextFile);
-		
+
 		if(GRgToken == GReToken_BracketRight)
 		{
 			break;
 		}
-		
+
 		GRiUngetToken(GRgToken);
-		
-		error = 
+
+		error =
 			GRiGroup_ParseElement(
 				inContext,
 				inPreferenceGroup,
@@ -308,10 +308,10 @@ GRiGroup_ParseArray(
 		{
 			return NULL;
 		}
-		
+
 		newArray->numElements++;
 	}
-	
+
 	return newArray;
 }
 
@@ -329,13 +329,13 @@ GRiGroup_ParseElement(
 	char*			value;
 	GRtElementType	elementType;
 	UUtUns32		itr;
-	
+
 	UUmAssert(NULL != inContext);
 	UUmAssert(NULL != inTextFile);
 	UUmAssert(NULL != outElement);
-	
+
 	GRiGetNextToken(inTextFile);
-	
+
 	if(GRgToken == GReToken_CurlyLeft)
 	{
 		outElement->type = GRcElementType_Group;
@@ -356,30 +356,30 @@ GRiGroup_ParseElement(
 	}
 	else if(GRgToken == GReToken_Identifier)
 	{
-		
+
 		if(NULL == inPreferenceGroup)
 		{
 			UUrError_Report(UUcError_Generic, "No preferences group");
 			return UUcError_Generic;
 		}
-		
+
 		error = GRrGroup_GetElement(inPreferenceGroup, GRgLexem, &elementType, &value);
 		if(error != UUcError_None || elementType != GRcElementType_String)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Illegal preference variable");
 		}
-		
+
 		UUrString_Copy(temp, value, 1024);
-		
+
 		p = temp + strlen(temp);
-		
+
 		GRiGetNextToken(inTextFile);
-		
+
 		if(GRgToken != GReToken_String)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "expected a string here");
 		}
-		
+
 		// Wierd ass crap here for backward compatibility but to remove extra spaces from strings
 		if(!isspace(GRgLexem[0]))
 		{
@@ -397,9 +397,9 @@ GRiGroup_ParseElement(
 		}
 
 		UUrString_Copy(p, GRgLexem, 1024 - strlen(p));
-	
+
 		outElement->type = GRcElementType_String;
-		
+
 		outElement->u.value = UUrMemory_String_GetStr(inContext->memoryString, temp);
 	}
 	else if(GRgToken == GReToken_String)
@@ -419,25 +419,25 @@ GRiGroup_ParseElement(
 				}
 			}
 		}
-		
+
 		UUrString_Copy(temp, GRgLexem, 1024);
-		
+
 		outElement->type = GRcElementType_String;
-		
+
 		outElement->u.value = UUrMemory_String_GetStr(inContext->memoryString, temp);
 	}
 	else
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Illegal token");
 	}
-	
+
 	GRiGetNextToken(inTextFile);
-	
+
 	if(GRgToken != GReToken_Comma)
 	{
 		GRiUngetToken(GRgToken);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -450,48 +450,48 @@ GRiGroup_Create(
 	UUtError	error;
 	GRtGroup*	newGroup;
 	char		c;
-	
+
 	UUmAssert(NULL != inContext);
 	UUmAssert(NULL != inTextFile);
-	
+
 	newGroup = UUrMemory_Pool_Block_New(inContext->memoryPool, sizeof(GRtGroup));
 	if(newGroup == NULL)
 	{
 		UUrError_Report(UUcError_OutOfMemory, "out of memory");
 		return NULL;
 	}
-	
+
 	newGroup->numBindings = 0;
 	newGroup->recursive = NULL;
-	
+
 	while(1)
 	{
 		GRiGetNextToken(inTextFile);
-		
+
 		if(GRgToken == GReToken_CurlyRight ||
 			GRgToken == GReToken_BracketRight ||
 			GRgToken == GReToken_EOF) break;
-		
+
 		if(GRgToken == GReToken_Identifier)
 		{
 			newGroup->bindings[newGroup->numBindings].varName =
 				UUrMemory_String_GetStr(inContext->memoryString, GRgLexem);
-			
+
 			GRiGetNextToken(inTextFile);
-			
+
 			if(GRgToken != GReToken_Equal)
 			{
 				UUrError_Report(UUcError_Generic, "Expecting $name = value");
 				return NULL;
 			}
-			
+
 			while(1)
 			{
 				c = *GRgCurLine;
 				if(c == 0 || !UUrIsSpace(c)) break;
 				GRgCurLine++;
 			}
-			
+
 			if(*GRgCurLine != 0)
 			{
 				error =
@@ -509,7 +509,7 @@ GRiGroup_Create(
 			else
 			{
 				newGroup->bindings[newGroup->numBindings].element.type = GRcElementType_String;
-				
+
 				newGroup->bindings[newGroup->numBindings].element.u.value =
 					UUrMemory_String_GetStr(inContext->memoryString, "\0");
 			}
@@ -517,11 +517,11 @@ GRiGroup_Create(
 			newGroup->numBindings++;
 		}
 	}
-	
+
 	return newGroup;
 }
 
-UUtError 
+UUtError
 GRrGroup_Context_New(
 	GRtGroup_Context	**outGroupContext)
 {
@@ -532,16 +532,16 @@ GRrGroup_Context_New(
 	{
 		goto errorExit;
 	}
-	
+
 	newContext->memoryPool = NULL;
 	newContext->memoryString = NULL;
-	
+
 	newContext->memoryPool = UUrMemory_Pool_New(10 * 1024, UUcPool_Growable);
 	if(newContext->memoryPool == NULL)
 	{
 		goto errorExit;
 	}
-	
+
 	newContext->memoryString = UUrMemory_String_New(10 * 1024);
 	if(newContext->memoryString == NULL)
 	{
@@ -571,34 +571,34 @@ GRrGroup_Context_NewFromPartialFile(
 	* You specify how many lines from the current file pointer are to
 	* be treated as the group.
 	*/
-	
+
 	UUtError			error;
 	GRtGroup_Context*	newContext;
-	
+
 	UUmAssert(NULL != inFile);
 	UUmAssert(NULL != outGroupContext);
 	UUmAssert(NULL != outGroup);
-	
+
 	GRgMaxLines = inLines;
 	GRgLineNum = 0;
-	
+
 	*outGroupContext = NULL;
 	*outGroup = NULL;
-	
+
 	if (NULL == inGroupContext)
 	{
 		error = GRrGroup_Context_New(&newContext);
 		UUmError_ReturnOnError(error);
 	}
-	else 
+	else
 	{
 		newContext = inGroupContext;
 	}
-		
+
 	*outGroup = GRiGroup_Create(newContext, inPreferenceGroup, inFile);
-	
+
 	*outGroupContext = newContext;
-	
+
 	return UUcError_None;
 }
 
@@ -612,17 +612,17 @@ GRrGroup_Context_NewFromString(
 {
 	UUtError		error;
 	BFtTextFile*	textFile;
-	
+
 	GRgMaxLines = UUcMaxInt32;
 	GRgLineNum = 0;
-	
-	error = 
+
+	error =
 		BFrTextFile_MakeFromString(
 			inString,
 			&textFile);
 	UUmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		GRrGroup_Context_NewFromPartialFile(
 			textFile,
 			inPreferenceGroup,
@@ -630,12 +630,12 @@ GRrGroup_Context_NewFromString(
 			UUcMaxUns16,
 			outGroupContext,
 			outGroup);
-	
+
 	BFrTextFile_Close(textFile);
-	
+
 	return error;
 }
-	
+
 UUtError
 GRrGroup_Context_NewFromFileRef(
 	BFtFileRef*			inFileRef,
@@ -649,17 +649,17 @@ GRrGroup_Context_NewFromFileRef(
 	BFtTextFile*		textFile;
 
 	UUmAssert(NULL != inFileRef);
-	
-	if (NULL != outGroupContext) 
+
+	if (NULL != outGroupContext)
 	{
 		*outGroupContext = NULL;
 	}
 
-	if (NULL != outGroup) 
+	if (NULL != outGroup)
 	{
 		*outGroup = NULL;
 	}
-	
+
 	GRgMaxLines = UUcMaxInt32;
 	GRgLineNum = 0;
 
@@ -668,18 +668,18 @@ GRrGroup_Context_NewFromFileRef(
 		error = GRrGroup_Context_New(&newContext);
 		UUmError_ReturnOnError(error);
 	}
-	else 
+	else
 	{
 		newContext = inGroupContext;
 	}
-	
+
 	error = BFrTextFile_OpenForRead(inFileRef, &textFile);
 
 	if (UUcError_None != error) {
 		UUrError_ReportP(error, "failed to open group file %s", (UUtUns32) BFrFileRef_GetLeafName(inFileRef),0,0);
 	}
-	
-	if (NULL != outGroup) 
+
+	if (NULL != outGroup)
 	{
 		*outGroup = GRiGroup_Create(newContext, inPreferenceGroup, textFile);
 	}
@@ -688,9 +688,9 @@ GRrGroup_Context_NewFromFileRef(
 	{
 		*outGroupContext = newContext;
 	}
-	
+
 	BFrTextFile_Close(textFile);
-	
+
 	return UUcError_None;
 }
 
@@ -704,14 +704,14 @@ GRrGroup_Context_Delete(
 		{
 			UUrMemory_Pool_Delete(inGroupContext->memoryPool);
 		}
-		
+
 		if(inGroupContext->memoryString != NULL)
 		{
 			UUrMemory_String_Delete(inGroupContext->memoryString);
 		}
-		
+
 		UUrMemory_Block_Delete(inGroupContext);
-	}	
+	}
 }
 
 UUtError
@@ -738,18 +738,18 @@ GRrGroup_GetElement(
 		}
 	}
 
-	if (inGroup->recursive != NULL) 
+	if (inGroup->recursive != NULL)
 	{
 		return GRrGroup_GetElement(
-			inGroup->recursive, 
-			inVarName, 
-			outElementType, 
+			inGroup->recursive,
+			inVarName,
+			outElementType,
 			outDataPtr);
 	}
-	
+
 	return GRcError_ElementNotFound;
 }
-	
+
 UUtError
 GRrGroup_Array_GetElement(
 	GRtElementArray*	inElementArray,
@@ -764,10 +764,10 @@ GRrGroup_Array_GetElement(
 	{
 		if (outElementType) *outElementType = inElementArray->elements[inIndex].type;
 		*outDataPtr = inElementArray->elements[inIndex].u.value;
-		
+
 		return UUcError_None;
 	}
-	
+
 	return GRcError_ElementNotFound;
 }
 
@@ -781,7 +781,7 @@ GRrGroup_Array_GetLength(
 }
 
 
-	 
+
 UUtError
 GRrGroup_GetString(
 	GRtGroup*		inGroup,
@@ -1110,7 +1110,7 @@ GRrGroup_GetOSType(
 
 	error = GRrGroup_GetString(inGroup, inVarName, &string);
 
-	if (error) 
+	if (error)
 	{
 		return error;
 	}
@@ -1138,8 +1138,8 @@ GRrGroup_GetVarName(
 	UUtUns32		inVarNumber)
 {
 	const char *varName = NULL;
-	
-	if (inVarNumber < inGroup->numBindings) 
+
+	if (inVarNumber < inGroup->numBindings)
 	{
 		varName = inGroup->bindings[inVarNumber].varName;
 	}

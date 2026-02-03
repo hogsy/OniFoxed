@@ -19,7 +19,7 @@ Imp_AddPartSpecification(
 	UUtUns32			inSourceFileModDate,
 	GRtGroup*			inGroup,
 	char*				inInstanceName);
-	
+
 UUtError
 Imp_AddView(
 	BFtFileRef*			inSourceFile,

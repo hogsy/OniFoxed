@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Movement.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: November 15, 1999
-	
+
 	PURPOSE: Movement AI for Oni
-	
+
 	Copyright (c) Bungie Software, 1999
 
 */
@@ -148,7 +148,7 @@ typedef struct AI2tMovementOrders {
 	// walk, run, creep etc
 	AI2tMovementMode		movementMode;
 	UUtBool					slowdownDisabled;
-	
+
 	// character to attempt to pathfind through
 	ONtCharacter			*curPathIgnoreChar;
 

@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Alarm.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: September 2, 2000
-	
+
 	PURPOSE: Alarm AI for Oni
-	
+
 	Copyright (c) 2000 Bungie Software
 
 */

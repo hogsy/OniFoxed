@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_ScriptLang_Error.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -68,17 +68,17 @@ SLrScript_ReportError(
 	char buffer2[2048];
 	va_list arglist;
 	int return_value;
-	
+
 	va_start(arglist, inMsg);
 	return_value= vsprintf(buffer, inMsg, arglist);
 	va_end(arglist);
-	
+
 	sprintf(buffer2, "Func \"%s\", File \"%s\", Line %d: %s",
 		inErrorContext->funcName,
 		inErrorContext->fileName,
 		inErrorContext->line,
 		buffer);
-		
+
 	SLrScript_DisplayError("%s", buffer2);
 
 	return;
@@ -95,13 +95,13 @@ SLrScript_Error_Parse(
 	char buffer2[2048];
 	va_list arglist;
 	int return_value;
-	
+
 	va_start(arglist, inMsg);
 	return_value= vsprintf(buffer, inMsg, arglist);
 	va_end(arglist);
-	
+
 	sprintf(buffer2, "parse error, token \"%s\", msg: %s", inToken->lexem, buffer);
-	
+
 	SLrScript_ReportError(inErrorContext, buffer2);
 }
 
@@ -116,13 +116,13 @@ SLrScript_Error_Lexical(
 	char buffer2[2048];
 	va_list arglist;
 	int return_value;
-	
+
 	va_start(arglist, inMsg);
 	return_value= vsprintf(buffer, inMsg, arglist);
 	va_end(arglist);
-	
+
 	sprintf(buffer2, "lexical error, \'%c\', msg : %s", inChar, inMsg);
-	
+
 	SLrScript_ReportError(inErrorContext, buffer2);
 }
 
@@ -133,13 +133,13 @@ SLrScript_Error_Parse_IllegalToken(
 	SLtToken_Code		inTokenCode)
 {
 	char buffer[2048];
-	
+
 	sprintf(
 		buffer,
 		"Illegal token, got \"%s\" expected \"%s\"",
 		inToken->lexem,
 		SLrTokenCode_ConvertToString(inTokenCode));
-	
+
 	SLrScript_ReportError(inErrorContext, buffer);
 }
 
@@ -152,24 +152,24 @@ SLrScript_Error_Semantic(
 	char buffer[2048];
 	char buffer2[2048];
 	va_list arglist;
-	
+
 	va_start(arglist, inMsg);
 	vsprintf(buffer, inMsg, arglist);
 	va_end(arglist);
-	
+
 	sprintf(buffer2, "semantic error, %s", buffer);
-	
+
 	SLrScript_ReportError(inErrorContext, buffer2);
 }
-	
-	
+
+
 void
 SLrDebugMessage_LogParamList(
 	UUtUns16			inParameterListLength,
 	SLtParameter_Actual*		inParameterList)
 {
 	UUtUns16 itr;
-	
+
 	for(itr = 0; itr < inParameterListLength; itr++)
 	{
 		switch(inParameterList[itr].type)
@@ -177,19 +177,19 @@ SLrDebugMessage_LogParamList(
 			case SLcType_Int32:
 				BFrDebugFile_Printf(SLgDebugFile, "int: %d", inParameterList[itr].val.i);
 				break;
-				
+
 			case SLcType_String:
 				BFrDebugFile_Printf(SLgDebugFile, "string: %s", inParameterList[itr].val.str);
 				break;
-				
+
 			case SLcType_Float:
 				BFrDebugFile_Printf(SLgDebugFile, "float: %f", inParameterList[itr].val.f);
 				break;
-			
+
 			case SLcType_Bool:
 				BFrDebugFile_Printf(SLgDebugFile, "bool: %d", inParameterList[itr].val.b);
 				break;
-			
+
 			default:
 				UUmAssert(0);
 		}

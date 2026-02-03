@@ -21,7 +21,7 @@
 // internal globals
 // ======================================================================
 
-AUtFlagElement	IMPgEnvParticleFlags[] = 
+AUtFlagElement	IMPgEnvParticleFlags[] =
 {
 	{
 		"not-created",
@@ -57,7 +57,7 @@ UUtError IMPrParse_EnvParticle(
 	M3tVector3D				marker_z;
 	M3tVector3D				particle_x, particle_y, particle_z;
 	M3tVector3D				position;
-	
+
 	groupContext = NULL;
 
 	// clear the particle to zero (default values)
@@ -69,7 +69,7 @@ UUtError IMPrParse_EnvParticle(
 	{
 		goto cleanup;
 	}
-	
+
 	// create a GRtGroup from the user data
 	error =
 		GRrGroup_Context_NewFromString(
@@ -80,7 +80,7 @@ UUtError IMPrParse_EnvParticle(
 			&group);
 	if (error != UUcError_None)
 		goto cleanup;
-	
+
 	error = GRrGroup_GetString(group, "particle_class", &stringptr);
 	if (error != UUcError_None)
 		goto cleanup;
@@ -90,8 +90,8 @@ UUtError IMPrParse_EnvParticle(
 	if (error == UUcError_None) {
 		UUrString_Copy(outParticle->tagname, stringptr, P3cParticleClassNameLength + 1);
 	}
-	
-	// construct an orthonormal basis from the input matrix	
+
+	// construct an orthonormal basis from the input matrix
 	MUrMatrix_GetCol(inMatrix, 1, &particle_y);
 	MUmVector_Normalize(particle_y);
 
@@ -130,7 +130,7 @@ UUtError IMPrParse_EnvParticle(
 
 	// successfully parsed particle
 	error = UUcError_None;
-	
+
 cleanup:
 	if (groupContext)
 	{

@@ -1,12 +1,12 @@
 /*
 	FILE:	EM_DC_Method_Triangle.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 18, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */

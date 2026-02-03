@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_DrawEngine_Platform.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -20,5 +20,5 @@ MGrDrawEngine_Platform_SetupDrawContextPrivate(
 void
 MGrDrawEngine_Platform_DestroyDrawContextPrivate(
 	void);
-	
+
 #endif /* MG_DRAWENGINE_PLATFORM_H */

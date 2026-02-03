@@ -23,7 +23,7 @@ typedef struct tParts
 	char					*name;
 	UUtUns16				row;
 	UUtUns16				column;
-	
+
 } tParts;
 
 // ======================================================================
@@ -58,19 +58,19 @@ IMPiAddPartSpecToUI(
 	UUtError			error;
 	char				*partspec_name;
 	TMtPlaceHolder		partspec_ref;
-	
+
 	error = GRrGroup_GetString(inGroup, inPartName, &partspec_name);
 	IMPmError_ReturnOnError(error);
-	
-	error = 
+
+	error =
 		TMrConstruction_Instance_GetPlaceHolder(
 			PScTemplate_PartSpecification,
 			partspec_name,
 			&partspec_ref);
 	IMPmError_ReturnOnErrorMsg(error, "Could not get partspec placeholder");
-	
+
 	*outPartSpec = (PStPartSpec*)partspec_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -88,7 +88,7 @@ IMPiProcessSingleTexture(
 	BFtFileRef			*texture_file_ref;
 	const char			*texture_name;
 	TMtPlaceHolder		texture_ref;
-	
+
 	error =
 		GRrGroup_GetElement(
 			inGroup,
@@ -101,7 +101,7 @@ IMPiProcessSingleTexture(
 		{
 			Imp_PrintWarning("Unable to process the texture");
 		}
-		
+
 		return error;
 	}
 
@@ -112,10 +112,10 @@ IMPiProcessSingleTexture(
 			texture_file_name,
 			&texture_file_ref);
 	IMPmError_ReturnOnErrorMsg(error, "texture file was not found");
-	
+
 	// set the textures name
 	texture_name = BFrFileRef_GetLeafName(texture_file_ref);
-	
+
 	// process the texture map file
 	error =
 		Imp_ProcessTexture_File(
@@ -123,12 +123,12 @@ IMPiProcessSingleTexture(
 			texture_name,
 			&texture_ref);
 	IMPmError_ReturnOnErrorMsg(error, "unable to process the texture");
-	
+
 	BFrFileRef_Dispose(texture_file_ref);
-	
+
 	// save the texture ref
 	*outTextureRef = texture_ref;
-	
+
 	return UUcError_None;
 }
 
@@ -148,11 +148,11 @@ Imp_AddPartSpec(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(PScTemplate_PartSpecification, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		GRtElementType			element_type;
@@ -161,7 +161,7 @@ Imp_AddPartSpec(
 		UUtUns16				i;
 		PStPartSpec				*part_spec;
 		TMtPlaceHolder			texture;
-		
+
 		// get the texture
 		error =
 			IMPiProcessSingleTexture(
@@ -182,14 +182,14 @@ Imp_AddPartSpec(
 				0,
 				&part_spec);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create a part specification instance");
-		
+
 		// set the texture
 		part_spec->texture = (void*)texture;
-		
+
 		// clear the part matrices
 		UUrMemory_Clear(part_spec->part_matrix_tl, sizeof(part_spec->part_matrix_tl));
 		UUrMemory_Clear(part_spec->part_matrix_br, sizeof(part_spec->part_matrix_br));
-		
+
 		// get the parts specs
 		error =
 			GRrGroup_GetElement(
@@ -201,9 +201,9 @@ Imp_AddPartSpec(
 		{
 			IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to get part specs array");
 		}
-		
+
 		num_parts = (UUtUns16)GRrGroup_Array_GetLength(part_spec_array);
-		
+
 		// process the part specs
 		for (i = 0; i < num_parts; i++)
 		{
@@ -215,7 +215,7 @@ Imp_AddPartSpec(
 			UUtInt32				right;
 			UUtInt32				bottom;
 			tParts					*parts;
-			
+
 			// get the element i from the part spec array
 			error =
 				GRrGroup_Array_GetElement(
@@ -224,19 +224,19 @@ Imp_AddPartSpec(
 					&element_type,
 					&part_array);
 			if ((error != UUcError_None) || (element_type != GRcElementType_Array))
-			{	
+			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to get part spec from array");
 			}
-			
+
 			if (GRrGroup_Array_GetLength(part_array) != 5)
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// ------------------------------
 			// process the elements of the part
 			// ------------------------------
-			
+
 			// get the part name
 			error =
 				GRrGroup_Array_GetElement(
@@ -248,7 +248,7 @@ Imp_AddPartSpec(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// get the left coordinate of the part
 			left = 0;
 			error =
@@ -267,7 +267,7 @@ Imp_AddPartSpec(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// get the top coordinate of the part
 			top = 0;
 			error =
@@ -286,7 +286,7 @@ Imp_AddPartSpec(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// get the right coordinate of the part
 			right = 0;
 			error =
@@ -305,7 +305,7 @@ Imp_AddPartSpec(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// get the bottom coordinate of the part
 			bottom = 0;
 			error =
@@ -324,7 +324,7 @@ Imp_AddPartSpec(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "the part array in not correct");
 			}
-			
+
 			// stick the elements into the template
 			for (parts = IMPgParts; parts->name != NULL; parts++)
 			{
@@ -339,7 +339,7 @@ Imp_AddPartSpec(
 			}
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -354,11 +354,11 @@ Imp_AddPartSpecList(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(PScTemplate_PartSpecList, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		GRtElementType			element_type;
@@ -366,7 +366,7 @@ Imp_AddPartSpecList(
 		UUtUns32				num_partspecdescs;
 		UUtUns32				i;
 		PStPartSpecList			*partspec_list;
-		
+
 		// get the array of partspec descriptions
 		error =
 			GRrGroup_GetElement(
@@ -378,15 +378,15 @@ Imp_AddPartSpecList(
 		{
 			IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to get part spec desc list array");
 		}
-		
+
 		// get the number of partspec descriptions in the array
 		num_partspecdescs = GRrGroup_Array_GetLength(partspecdesc_array);
-		
+
 		if (num_partspecdescs == 0)
 		{
 			return UUcError_None;
 		}
-		
+
 		// create a partspeclist instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -395,14 +395,14 @@ Imp_AddPartSpecList(
 				num_partspecdescs,
 				&partspec_list);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create a part spec list instance");
-		
+
 		for (i = 0; i < num_partspecdescs; i++)
 		{
 			GRtGroup				*partspecdesc_group;
 			UUtUns32				partspectype;
 			char					*partspec;
 			TMtPlaceHolder			partspec_ref;
-			
+
 			// get a partspec desc group from the array
 			error =
 				GRrGroup_Array_GetElement(
@@ -414,7 +414,7 @@ Imp_AddPartSpecList(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to get part spec desc group from array");
 			}
-			
+
 			// process the elements of the partspec description
 			error =
 				GRrGroup_GetUns32(
@@ -422,27 +422,27 @@ Imp_AddPartSpecList(
 					"partspectype",
 					&partspectype);
 			IMPmError_ReturnOnErrorMsg(error, "Unable to get partspectype");
-			
+
 			error =
 				GRrGroup_GetString(
 					partspecdesc_group,
 					"partspec",
 					&partspec);
 			IMPmError_ReturnOnErrorMsg(error, "Unable to get partspec");
-			
+
 			// save the information
 			partspec_list->partspec_descs[i].partspec_type = partspectype;
-			error = 
+			error =
 				TMrConstruction_Instance_GetPlaceHolder(
 					PScTemplate_PartSpecification,
 					partspec,
 					&partspec_ref);
 			IMPmError_ReturnOnErrorMsg(error, "Could not get partspec placeholder");
-			
+
 			partspec_list->partspec_descs[i].partspec = (void*)partspec_ref;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -457,15 +457,15 @@ Imp_AddPartSpecUI(
 	UUtError			error;
 
 	UUtBool				build_instance;
-	
-	
+
+
 	// check to see if the dialogs need to be built
 	build_instance = !TMrConstruction_Instance_CheckExists(PScTemplate_PartSpecUI, inInstanceName);
-	
+
 	if (build_instance)
 	{
 		PStPartSpecUI			*partspec_ui;
-		
+
 		// create a partspec_ui instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -474,130 +474,130 @@ Imp_AddPartSpecUI(
 				0,
 				&partspec_ui);
 		IMPmError_ReturnOnErrorMsg(error, "Could not create a part spec ui instance");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "background", &partspec_ui->background);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "border", &partspec_ui->border);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "title", &partspec_ui->title);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "grow", &partspec_ui->grow);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "close_idle", &partspec_ui->close_idle);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "close_pressed", &partspec_ui->close_pressed);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "zoom_idle", &partspec_ui->zoom_idle);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "zoom_pressed", &partspec_ui->zoom_pressed);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "flatten_idle", &partspec_ui->flatten_idle);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "flatten_pressed", &partspec_ui->flatten_pressed);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "text_caret", &partspec_ui->text_caret);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "outline", &partspec_ui->outline);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "button_off", &partspec_ui->button_off);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
 
 		error = IMPiAddPartSpecToUI(inGroup, "default_button", &partspec_ui->default_button);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "button_on", &partspec_ui->button_on);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
 
 		error = IMPiAddPartSpecToUI(inGroup, "checkbox_on", &partspec_ui->checkbox_on);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "checkbox_off", &partspec_ui->checkbox_off);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "editfield", &partspec_ui->editfield);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "ef_hasfocus", &partspec_ui->ef_hasfocus);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "hilite", &partspec_ui->hilite);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "divider", &partspec_ui->divider);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "check", &partspec_ui->check);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "popup_menu", &partspec_ui->popup_menu);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "progressbar_track", &partspec_ui->progressbar_track);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "progressbar_fill", &partspec_ui->progressbar_fill);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "radio_button_on", &partspec_ui->radiobutton_on);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "radio_button_off", &partspec_ui->radiobutton_off);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "up_arrow", &partspec_ui->up_arrow);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "up_arrow_pressed", &partspec_ui->up_arrow_pressed);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "dn_arrow", &partspec_ui->dn_arrow);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "dn_arrow_pressed", &partspec_ui->dn_arrow_pressed);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "lt_arrow", &partspec_ui->lt_arrow);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "lt_arrow_pressed", &partspec_ui->lt_arrow_pressed);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "rt_arrow", &partspec_ui->rt_arrow);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "rt_arrow_pressed", &partspec_ui->rt_arrow_pressed);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "sb_thumb", &partspec_ui->sb_thumb);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "sb_v_track", &partspec_ui->sb_v_track);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "sb_h_track", &partspec_ui->sb_h_track);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "sl_thumb", &partspec_ui->sl_thumb);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "sl_track", &partspec_ui->sl_track);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "tab_active", &partspec_ui->tab_active);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
-		
+
 		error = IMPiAddPartSpecToUI(inGroup, "tab_inactive", &partspec_ui->tab_inactive);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
 
@@ -607,6 +607,6 @@ Imp_AddPartSpecUI(
 		error = IMPiAddPartSpecToUI(inGroup, "folder", &partspec_ui->folder);
 		IMPmError_ReturnOnErrorMsg(error, "could not get partspec");
 	}
-	
+
 	return UUcError_None;
 }

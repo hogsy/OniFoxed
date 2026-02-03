@@ -44,10 +44,10 @@ Imp_AddDataList(
 
 	UUtBool				bool_result;
 	UUtBool				build_instance;
-	
+
 	UUtUns32			create_date;
 	UUtUns32			compile_date;
-	
+
 	// check to see if the dialogs need to be built
 	bool_result =
 		TMrConstruction_Instance_CheckExists(
@@ -57,7 +57,7 @@ Imp_AddDataList(
 	if (bool_result)
 	{
 		compile_date = UUrConvertStrToSecsSince1900(gUVCompileTime);
-		
+
 		build_instance = (UUtBool)(create_date < inSourceFileModDate ||
 									create_date < compile_date);
 	}
@@ -65,17 +65,17 @@ Imp_AddDataList(
 	{
 		build_instance = UUcTrue;
 	}
-	
+
 	if (build_instance)
 	{
 		UUtUns32			i;
 		UUtUns32			num_groups;
 		char				*type;
-		
+
 		GRtElementType		element_type;
 		GRtElementArray		*data_array;
 		UVtDataList			*data_list;
-		
+
 		// get the data array
 		error =
 			GRrGroup_GetElement(
@@ -87,10 +87,10 @@ Imp_AddDataList(
 		{
 			IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Can't process the data");
 		}
-		
+
 		// get the number of data groups in the data array
 		num_groups = GRrGroup_Array_GetLength(data_array);
-		
+
 		// create an view template instance
 		error =
 			TMrConstruction_Instance_Renew(
@@ -107,7 +107,7 @@ Imp_AddDataList(
 				"type",
 				&type);
 		IMPmError_ReturnOnErrorMsg(error, "Data list type not found in _ins.txt");
-		
+
 		error =
 			AUrFlags_ParseFromString(
 				type,
@@ -115,14 +115,14 @@ Imp_AddDataList(
 				IMPgDataTypeFlags,
 				&data_list->data_type);
 		IMPmError_ReturnOnErrorMsg(error, "Unknown data list type");
-			
+
 		// process the elements of the data array
 		for (i = 0; i < num_groups; i++)
 		{
 			GRtGroup			*data_group;
 			char				*name;
 			char				*template_name;
-			
+
 			// ------------------------------
 			// get the data group at index i
 			// ------------------------------
@@ -136,7 +136,7 @@ Imp_AddDataList(
 			{
 				IMPmError_ReturnOnErrorMsg(UUcError_Generic, "Could not get the data group");
 			}
-			
+
 			// ------------------------------
 			// get the template ref
 			// ------------------------------
@@ -146,12 +146,12 @@ Imp_AddDataList(
 					"template",
 					&template_name);
 			IMPmError_ReturnOnErrorMsg(error, "Unable to get template name");
-			
+
 			UUrString_Copy(
 				data_list->data[i].instance_name,
 				template_name,
 				UVcMaxInstNameLength);
-										
+
 			// ------------------------------
 			// get the name
 			// ------------------------------
@@ -160,13 +160,13 @@ Imp_AddDataList(
 					data_group,
 					"name",
 					&name);
-			
+
 			UUrString_Copy(
 				data_list->data[i].name,
 				name,
 				UVcMaxDataNameLength);
 		}
 	}
-		
+
 	return UUcError_None;
 }

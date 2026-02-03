@@ -136,19 +136,19 @@ UUtBool gl_platform_initialize(
 	static short window_width= 0;
 	static short window_height= 0;
 	static short window_depth= 0;
-	
+
 	if (aglChoosePixelFormat == NULL)
 	{
 		AUrMessageBox(AUcMBType_OK, "Oni requires OpenGL to run; please install OpenGL and try again.");
 		exit(0);
 	}
-	
+
 	if (original_display_width == 0)
 	{
 		boolean got_settings;
 		OSErr err= noErr;
 		unsigned long value= 0L;
-		
+
 		// save initial display settings
 		got_settings= gl_get_current_display_setting(&original_display_width, &original_display_height, &original_display_depth);
 		UUrStartupMessage("original display settings= %dx%dx%d : %s", original_display_width, original_display_height, original_display_depth,
@@ -159,9 +159,9 @@ UUtBool gl_platform_initialize(
 			UUrStartupMessage("DMGetDisplayMode() returned err= %d", err);
 		}
 	}
-	
+
 	UUmAssert(ONgPlatformData.gameWindow);
-	
+
 	if (gl->context == NULL)
 	{
 		if (gl->display_mode.bitDepth == 32)
@@ -172,13 +172,13 @@ UUtBool gl_platform_initialize(
 		{
 			pixel_format= aglChoosePixelFormat(NULL, 0, pixel_attributes_16bit);
 		}
-		
+
 		if (pixel_format == NULL)
 		{
 			AUtMB_ButtonChoice response;
 			UUtUns32 gl_macos_pref;
 			UUtBool option_key_down;
-			
+
 			gl_macos_pref= gl_macos_read_pref();
 			option_key_down= LIrPlatform_TestKey(LIcKeyCode_LeftOption, 0);
 			if ((gl_macos_pref & _mac_always_search_any_opengl_pref_flag) && (option_key_down == UUcFalse))
@@ -198,7 +198,7 @@ UUtBool gl_platform_initialize(
 				}
 				gl_macos_write_pref(gl_macos_pref);
 			}
-			
+
 			if (response == AUcMBChoice_Yes)
 			{
 				GLint pixel_attributes_any32bit[]= {
@@ -217,7 +217,7 @@ UUtBool gl_platform_initialize(
 					16,
 					AGL_NONE
 				};
-				
+
 				if (gl->display_mode.bitDepth == 32)
 				{
 					pixel_format= aglChoosePixelFormat(NULL, 0, pixel_attributes_any32bit);
@@ -228,7 +228,7 @@ UUtBool gl_platform_initialize(
 				}
 			}
 		}
-		
+
 		if (pixel_format != NULL)
 		{
 			if (M3gResolutionSwitch)
@@ -250,7 +250,7 @@ UUtBool gl_platform_initialize(
 			{
 				success= TRUE;
 			}
-			
+
 			if (success)
 			{
 				gl->context= aglCreateContext(pixel_format, NULL);
@@ -267,10 +267,10 @@ UUtBool gl_platform_initialize(
 							8 * MEG,
 							16 * MEG,
 							32 * MEG};
-						
+
 						quality_setting= UUmMin(quality_setting, 4);
 						available_texture_memory= texture_memory_based_on_quality[quality_setting];
-						
+
 						success= aglSetCurrentContext((AGLContext)gl->context);
 						aglDestroyPixelFormat(pixel_format);
 						window_width= gl->display_mode.width;
@@ -298,13 +298,13 @@ UUtBool gl_platform_initialize(
 		{
 			success= TRUE;
 		}
-		
+
 		if (success)
 		{
 			SizeWindow(ONgPlatformData.gameWindow, gl->display_mode.width, gl->display_mode.height, false);
 			window_width= gl->display_mode.width;
 			window_height= gl->display_mode.height;
-			
+
 			if (!aglUpdateContext((AGLContext)gl->context))
 			{
 				UUrDebuggerMessage("aglUpdateContext() failed after resizing the display");
@@ -316,11 +316,11 @@ UUtBool gl_platform_initialize(
 		// redundant call (also occurs on resolution changing)
 		success= TRUE;
 	}
-	
+
 	if (success)
 	{
 		GLbyte *renderer_string, *vendor_string;
-		
+
 		// punt if we end up in one of Apple's software renderers
 		renderer_string= GL_FXN(glGetString)(GL_RENDERER);
 		vendor_string= GL_FXN(glGetString)(GL_VENDOR);
@@ -332,7 +332,7 @@ UUtBool gl_platform_initialize(
 			gl_platform_dispose();
 			exit(0);
 		}
-		
+
 		// cursor won't stay hidden until we are done messing around with display settings
 		mac_hide_cursor();
 	}
@@ -350,7 +350,7 @@ void gl_platform_dispose(
 		aglDestroyContext((AGLContext)gl->context);
 		gl->context= NULL;
 	}
-	
+
 	// new; since we no longer play bink thru OpenGL we need to grow the window back up to full-screen size
 	// on the chance that the end movie is going to play after we exit this function
 	if (ONgPlatformData.gameWindow &&
@@ -359,11 +359,11 @@ void gl_platform_dispose(
 	{
 		SizeWindow(ONgPlatformData.gameWindow, original_display_width, original_display_height, false);
 	}
-	
+
 	if (M3gResolutionSwitch)
 	{
 		short width, height, depth;
-		
+
 		// restore previous display settings if we messed with them
 		if (quicktime_screen_state_ptr)
 		{
@@ -374,11 +374,11 @@ void gl_platform_dispose(
 			(gl->display_mode.bitDepth != original_display_depth))
 		{
 			boolean success;
-			
+
 			UUrStartupMessage("resetting display settings to: %dx%dx%d", original_display_width, original_display_height, original_display_depth);
 			success= gl_change_display_setting(original_display_width, original_display_height, original_display_depth);
 		}
-		
+
 		if (gl_get_current_display_setting(&width, &height, &depth))
 		{
 			UUrStartupMessage("actual exiting display settings= %dx%dx%d", width, height, depth);
@@ -390,7 +390,7 @@ void gl_platform_dispose(
 			}
 		}
 	}
-	
+
 	return;
 }
 
@@ -399,7 +399,7 @@ void gl_display_back_buffer(
 {
 	UUmAssert(gl->context);
 	aglSwapBuffers((AGLContext)gl->context);
-	
+
 	return;
 }
 
@@ -408,7 +408,7 @@ void gl_matrox_display_back_buffer(
 {
 	UUmAssert(gl->context);
 	aglSwapBuffers((AGLContext)gl->context);
-	
+
 	return;
 }
 
@@ -433,7 +433,7 @@ int gl_enumerate_valid_display_modes(
 			{1600, 1200, 32, 0},
 			{1920, 1080, 32, 0}
 			/*{1920, 1200, 32, 0}*/};
-	
+
 	n= sizeof(desired_display_mode_list)/sizeof(desired_display_mode_list[0]);
 	j= 0;
 	for (i= 0; i<n; i++)
@@ -448,14 +448,14 @@ int gl_enumerate_valid_display_modes(
 			++j;
 		}
 	}
-	
+
 	if (j == 0)
 	{
 		display_mode_list[0]= desired_display_mode_list[0]; // 640x480x16
 		display_mode_list[1]= desired_display_mode_list[6]; // 640x480x32
 		j= 2;
 	}
-	
+
 	return j;
 }
 
@@ -464,7 +464,7 @@ void * aglGetProcAddress(
 	const char *string)
 {
 	void *function;
-	
+
 	if (0) {}
 	// GL_ARB_multitexture
 	LOAD_GL_EXT(glActiveTextureARB)
@@ -494,7 +494,7 @@ void * aglGetProcAddress(
 	{
 		function= NULL;
 	}
-		
+
 	return function;
 }
 
@@ -511,7 +511,7 @@ static boolean gl_get_current_display_setting(
 {
 	boolean success= FALSE;
 	GDHandle device;
-	
+
 	device= GetMainDevice();
 	if (device)
 	{
@@ -520,7 +520,7 @@ static boolean gl_get_current_display_setting(
 		*depth= (*((*device)->gdPMap))->pixelSize;
 		success= TRUE;
 	}
-	
+
 	return success;
 }
 
@@ -531,14 +531,14 @@ static boolean gl_test_display_setting(
 {
 	VideoRequestRec	request= {0};
 	boolean success= FALSE;
-	
+
 	request.screenDevice= GetMainDevice();
 	request.reqHorizontal= width;
 	request.reqVertical= height;
 	request.reqBitDepth= depth;
 	request.displayMode= nil; // must init to nil
 	request.depthMode= nil; // must init to nil
-	request.requestFlags= 0;						
+	request.requestFlags= 0;
 	if ((RVRequestVideoSetting(&request) == noErr) &&
 		(request.reqHorizontal == request.availHorizontal) &&
 		(request.reqVertical == request.availVertical) &&
@@ -546,7 +546,7 @@ static boolean gl_test_display_setting(
 	{
 		success= TRUE;
 	}
-	
+
 	return success;
 }
 
@@ -562,7 +562,7 @@ static boolean gl_change_display_setting_use_quicktime(
 	WindowPtr fullscreen_window= NULL;
 	short original_width= width;
 	short original_height= height;
-	
+
 	err= BeginFullScreen(&quicktime_screen_state_ptr, NULL, &width, &height, &fullscreen_window, &black_color, flags);
 	if (err != noErr)
 	{
@@ -572,19 +572,19 @@ static boolean gl_change_display_setting_use_quicktime(
 	else
 	{
 		short dx= 0, dy= 0;
-		
+
 		SizeWindow(ONgPlatformData.gameWindow, original_width, original_height, false);
 		BringToFront(ONgPlatformData.gameWindow);
-		
+
 		if ((width > original_width) || (height > original_height))
 		{
 			dx= (width - original_width)>>1;
 			dy= (height - original_height)>>1;
 		}
-		
+
 		MoveWindow(ONgPlatformData.gameWindow, dx, dy, true);
 	}
-	
+
 	return (err == noErr);
 }
 
@@ -592,7 +592,7 @@ static boolean gl_restore_display_settings_use_quicktime(
 	void)
 {
 	OSErr err= noErr;
-	
+
 	if (quicktime_screen_state_ptr)
 	{
 		err= EndFullScreen(quicktime_screen_state_ptr, nil);
@@ -605,7 +605,7 @@ static boolean gl_restore_display_settings_use_quicktime(
 			quicktime_screen_state_ptr= NULL;
 		}
 	}
-	
+
 	return (err == noErr);
 }
 
@@ -617,12 +617,12 @@ static boolean gl_change_display_setting(
 	boolean success= FALSE, osx= FALSE;
 	OSErr err;
 	unsigned long value;
-	
+
 	err= Gestalt(gestaltSystemVersion, &value);
 	if (err == noErr)
 	{
 		unsigned long major_version;
-		
+
 		// value will look like this: 0x00000904 (OS 9.0.4)
 		major_version= (value & 0x0000FF00)>>8;
 		if (major_version >= 10)
@@ -630,8 +630,8 @@ static boolean gl_change_display_setting(
 			osx= TRUE;
 		}
 	}
-	
-	
+
+
 	if (osx || quicktime_screen_state_ptr)
 	{
 		success= gl_change_display_setting_use_quicktime(width, height);
@@ -642,7 +642,7 @@ static boolean gl_change_display_setting(
 		short current_width;
 		short current_height;
 		short current_bitdepth;
-		
+
 		if (gl_get_current_display_setting(&current_width, &current_height, &current_bitdepth))
 		{
 			request.screenDevice= GetMainDevice();
@@ -651,27 +651,27 @@ static boolean gl_change_display_setting(
 			request.reqBitDepth= depth;
 			request.displayMode= nil; // must init to nil
 			request.depthMode= nil; // must init to nil
-			request.requestFlags= 0; //1<<kAllValidModesBit;					
+			request.requestFlags= 0; //1<<kAllValidModesBit;
 			if (RVRequestVideoSetting(&request) == noErr)
 			{
 				if (RVSetVideoRequest(&request) == noErr)
 				{
 					short result;
 					ModalFilterUPP confirmFilterUPP;
-			
+
 					if (request.availFlags & 1<<kModeValidNotSafeBit) // new mode is valid but not safe, so ask user to confirm
 					{
 						UUrStartupMessage("attempted display mode is unsafe");
-						
+
 						mac_show_cursor();
-		
+
 						//confirmFilterUPP= (ModalFilterUPP)NewModalFilterProc (ConfirmAlertFilter);	// create a new modal filter proc UPP
 						confirmFilterUPP= (ModalFilterUPP)ConfirmAlertFilter;	// create a new modal filter proc UPP
 						result= Alert(rConfirmSwtchAlrt, confirmFilterUPP);	// alert the user
 						DisposeModalFilterUPP(confirmFilterUPP);
-				
+
 						mac_hide_cursor();
-				
+
 						if (result != iConfirmItem)
 						{
 							// switch things back
@@ -683,8 +683,8 @@ static boolean gl_change_display_setting(
 							request.reqBitDepth= current_bitdepth;
 							request.displayMode= nil; // must init to nil
 							request.depthMode= nil; // must init to nil
-							request.requestFlags= 0;	
-							
+							request.requestFlags= 0;
+
 							success= ((RVRequestVideoSetting(&request) == noErr) && (RVSetVideoRequest(&request) == noErr)) ? TRUE : FALSE;
 						}
 						else
@@ -715,7 +715,7 @@ static boolean gl_change_display_setting(
 			UUrDebuggerMessage("gl_get_current_display_setting() failed");
 			success= FALSE;
 		}
-		
+
 		if (success == FALSE) // try using QuickTime (odds are slim to none that things would come to this, but just in case...)
 		{
 			UUrDebuggerMessage("attempting to use QuickTime to change display settings...");
@@ -726,7 +726,7 @@ static boolean gl_change_display_setting(
 			MoveWindow(ONgPlatformData.gameWindow, 0, 0, true);
 		}
 	}
-	
+
 	return success;
 }
 
@@ -760,8 +760,8 @@ static OSErr RVSetVideoRequest(
 
 	if (requestRecPtr->displayMode && requestRecPtr->depthMode)
 	{
-		SetDeviceAttribute(requestRecPtr->screenDevice, gdDevType, kColorDev);		
-		
+		SetDeviceAttribute(requestRecPtr->screenDevice, gdDevType, kColorDev);
+
 		err= DMSetDisplayMode(requestRecPtr->screenDevice,	// GDevice
 			requestRecPtr->displayMode,						// DM1.0 uses this
 			&requestRecPtr->depthMode,						// DM1.0 uses this
@@ -769,7 +769,7 @@ static OSErr RVSetVideoRequest(
 			display_state_handle);
 		if (noErr == err)
 		{
-			
+
 		}
 		else if (kDMDriverNotDisplayMgrAwareErr == err)
 		{
@@ -784,7 +784,7 @@ static OSErr RVSetVideoRequest(
 	{
 		UUrDebuggerMessage("bad display change request", err);
 	}
-	
+
 	return err;
 }
 
@@ -834,7 +834,7 @@ static OSErr RVRequestVideoSetting(
 {
 	short							iCount = 0;					// just a counter of GDevices we have seen
 	DMDisplayModeListIteratorUPP	myModeIteratorProc = nil;	// for DM2.0 searches
-	Boolean							suppliedGDevice;	
+	Boolean							suppliedGDevice;
 	DisplayIDType					theDisplayID;				// for DM2.0 searches
 	DMListIndexType					theDisplayModeCount;		// for DM2.0 searches
 	DMListType						theDisplayModeList;			// for DM2.0 searches
@@ -852,10 +852,10 @@ static OSErr RVRequestVideoSetting(
 		walkDevice = DMGetFirstScreenDevice (dmOnlyActiveDisplays);			// for everybody
 		suppliedGDevice = false;
 	}
-	
+
 	//myModeIteratorProc = (DMDisplayModeListIteratorUPP)NewDMDisplayModeListIteratorProc(ModeListIterator);	// for DM2.0 searches
 	myModeIteratorProc = (DMDisplayModeListIteratorUPP)(ModeListIterator);	// for DM2.0 searches
-	
+
 	// Note that we are hosed if somebody changes the gdevice list behind our backs while we are iterating....
 	// ...now do the loop if we can start
 	if( walkDevice && myModeIteratorProc) do // start the search
@@ -885,7 +885,7 @@ static OSErr RVRequestVideoSetting(
 	} while ( !suppliedGDevice && nil != (walkDevice = DMGetNextScreenDevice ( walkDevice, dmOnlyActiveDisplays )) );	// go until no more gdevices
 	if( myModeIteratorProc )
 		DisposeDMNotificationUPP(myModeIteratorProc);
-	
+
 	return (noErr);	// we were able to get the look for a match
 }
 
@@ -895,10 +895,10 @@ static pascal void ModeListIterator(void *userData, DMListIndexType, DMDisplayMo
 	short					iCount;
 	ListIteratorDataRec		*myIterateData		= (ListIteratorDataRec*) userData;
 	DepthInfo				*myDepthInfo;
-	
+
 	// set user data in a round about way
 	myIterateData->displayModeTimingInfo		= *displaymodeInfo->displayModeTimingInfo;
-	
+
 	// now get the DMDepthInfo info into memory we own
 	depthCount = displaymodeInfo->displayModeDepthBlockInfo->depthBlockCount;
 	myDepthInfo = (DepthInfo*)NewPtrClear(depthCount * sizeof(DepthInfo));
@@ -910,9 +910,9 @@ static pascal void ModeListIterator(void *userData, DMListIndexType, DMDisplayMo
 	// and fill out all the entries
 	if (depthCount) for (iCount=0; iCount < depthCount; iCount++)
 	{
-		myDepthInfo[iCount].depthSwitchInfo = 
+		myDepthInfo[iCount].depthSwitchInfo =
 			*displaymodeInfo->displayModeDepthBlockInfo->depthVPBlock[iCount].depthSwitchInfo;
-		myDepthInfo[iCount].depthVPBlock = 
+		myDepthInfo[iCount].depthVPBlock =
 			*displaymodeInfo->displayModeDepthBlockInfo->depthVPBlock[iCount].depthVPBlock;
 	}
 }
@@ -932,12 +932,12 @@ static void GetRequestTheDM2Way(VideoRequestRecPtr requestRecPtr,
 	for (jCount=0; jCount<theDisplayModeCount; jCount++)		// get info on all the resolution timings
 	{
 		DMGetIndexedDisplayModeFromList(*theDisplayModeList, jCount, 0, myModeIteratorProc, &searchData);
-		
+
 		// for all the depths for this resolution timing (mode)...
 		if (searchData.depthBlockCount) for (kCount = 0; kCount < searchData.depthBlockCount; kCount++)
 		{
 			// only if the mode is valid and is safe or we override it with the kAllValidModesBit request flag
-			if	(	searchData.displayModeTimingInfo.csTimingFlags & 1<<kModeValid && 
+			if	(	searchData.displayModeTimingInfo.csTimingFlags & 1<<kModeValid &&
 					(	searchData.displayModeTimingInfo.csTimingFlags & 1<<kModeSafe ||
 						requestRecPtr->requestFlags & 1<<kAllValidModesBit
 					)
@@ -952,7 +952,7 @@ static void GetRequestTheDM2Way(VideoRequestRecPtr requestRecPtr,
 					requestRecPtr->availBitDepth = searchData.depthBlocks[kCount].depthVPBlock.vpPixelSize;
 					requestRecPtr->availHorizontal = searchData.depthBlocks[kCount].depthVPBlock.vpBounds.right;
 					requestRecPtr->availVertical = searchData.depthBlocks[kCount].depthVPBlock.vpBounds.bottom;
-					
+
 					// now set the important info for DM to set the display
 					requestRecPtr->depthMode = searchData.depthBlocks[kCount].depthSwitchInfo.csMode;
 					requestRecPtr->displayMode = searchData.depthBlocks[kCount].depthSwitchInfo.csData;
@@ -960,12 +960,12 @@ static void GetRequestTheDM2Way(VideoRequestRecPtr requestRecPtr,
 					if (searchData.displayModeTimingInfo.csTimingFlags & 1<<kModeSafe)
 						requestRecPtr->availFlags = 0;							// mode safe
 					else requestRecPtr->availFlags = 1<<kModeValidNotSafeBit;	// mode valid but not safe, requires user validation of mode switch
-	
+
 				}
 			}
 
 		}
-	
+
 		if (searchData.depthBlocks)
 		{
 			DisposePtr ((Ptr)searchData.depthBlocks);	// toss for this timing mode of this gdevice
@@ -989,19 +989,19 @@ static Boolean FindBestMatch(
 			&&
 			(	(horizontal >= requestRecPtr->reqHorizontal &&
 				vertical >= requestRecPtr->reqVertical)
-				||														
-				!(requestRecPtr->requestFlags & 1<<kMaximizeResBit)	
+				||
+				!(requestRecPtr->requestFlags & 1<<kMaximizeResBit)
 			)
 			&&
-			(	bitDepth <= requestRecPtr->reqBitDepth ||	
-				!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)		
+			(	bitDepth <= requestRecPtr->reqBitDepth ||
+				!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)
 			)
 			&&
-			(	(horizontal == requestRecPtr->reqHorizontal &&	
+			(	(horizontal == requestRecPtr->reqHorizontal &&
 				vertical == requestRecPtr->reqVertical &&
 				bitDepth == requestRecPtr->reqBitDepth)
 				||
-				!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)	
+				!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)
 			)
 		)
 		{
@@ -1014,7 +1014,7 @@ static Boolean FindBestMatch(
 		//		((depth is greater avail and depth is less/equal req) or kShallowDepth not set) and
 		//		(avail depth less reqested and new greater avail)
 		//		(request match or kAbsoluteRequest not set)
-		if	(	(	requestRecPtr->requestFlags & 1<<kBitDepthPriorityBit && 
+		if	(	(	requestRecPtr->requestFlags & 1<<kBitDepthPriorityBit &&
 					requestRecPtr->availBitDepth != requestRecPtr->reqBitDepth
 				)
 				&&
@@ -1022,18 +1022,18 @@ static Boolean FindBestMatch(
 						bitDepth <= requestRecPtr->reqBitDepth
 					)
 					||
-					!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)	
+					!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)
 				)
 				&&
 				(	requestRecPtr->availBitDepth < requestRecPtr->reqBitDepth &&
-					bitDepth > requestRecPtr->availBitDepth	
+					bitDepth > requestRecPtr->availBitDepth
 				)
 				&&
-				(	(horizontal == requestRecPtr->reqHorizontal &&	
+				(	(horizontal == requestRecPtr->reqHorizontal &&
 					vertical == requestRecPtr->reqVertical &&
 					bitDepth == requestRecPtr->reqBitDepth)
 					||
-					!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)	
+					!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)
 				)
 			)
 		{
@@ -1050,7 +1050,7 @@ static Boolean FindBestMatch(
 				)
 			{
 				// now we have a smaller or equal delta
-				//	if (h or v greater/equal to request or kMaximizeRes not set) 
+				//	if (h or v greater/equal to request or kMaximizeRes not set)
 				if (	(horizontal >= requestRecPtr->reqHorizontal &&
 						vertical >= requestRecPtr->reqVertical)
 						||
@@ -1061,12 +1061,12 @@ static Boolean FindBestMatch(
 					//		(depth is less/equal or kShallowDepth not set) and
 					//		([h or v not equal] or [avail depth less reqested and new greater avail] or depth equal avail) and
 					//		(request match or kAbsoluteRequest not set)
-					if	(	(	requestRecPtr->availBitDepth == bitDepth ||			
+					if	(	(	requestRecPtr->availBitDepth == bitDepth ||
 								!(requestRecPtr->requestFlags & 1<<kBitDepthPriorityBit)
 							)
 							&&
-							(	bitDepth <= requestRecPtr->reqBitDepth ||	
-								!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)		
+							(	bitDepth <= requestRecPtr->reqBitDepth ||
+								!(requestRecPtr->requestFlags & 1<<kShallowDepthBit)
 							)
 							&&
 							(	(requestRecPtr->availHorizontal != horizontal ||
@@ -1078,11 +1078,11 @@ static Boolean FindBestMatch(
 								(bitDepth == requestRecPtr->reqBitDepth)
 							)
 							&&
-							(	(horizontal == requestRecPtr->reqHorizontal &&	
+							(	(horizontal == requestRecPtr->reqHorizontal &&
 								vertical == requestRecPtr->reqVertical &&
 								bitDepth == requestRecPtr->reqBitDepth)
 								||
-								!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)	
+								!(requestRecPtr->requestFlags & 1<<kAbsoluteRequestBit)
 							)
 						)
 					{
@@ -1101,7 +1101,7 @@ static UUtUns32 gl_macos_read_pref(
 {
 	UUtUns32 pref= 0L;
 	Handle pref_handle;
-	
+
 	pref_handle= GetResource('pref', MAC_PREF_RSRC_ID);
 	if (pref_handle && (GetHandleSize(pref_handle) == sizeof(UUtUns32)))
 	{
@@ -1110,7 +1110,7 @@ static UUtUns32 gl_macos_read_pref(
 		HUnlock(pref_handle);
 		ReleaseResource(pref_handle);
 	}
-	
+
 	return pref;
 }
 
@@ -1118,7 +1118,7 @@ static void gl_macos_write_pref(
 	UUtUns32 pref)
 {
 	Handle pref_handle;
-	
+
 	pref_handle= GetResource('pref', MAC_PREF_RSRC_ID);
 	if (pref_handle)
 	{
@@ -1130,7 +1130,7 @@ static void gl_macos_write_pref(
 		WriteResource(pref_handle);
 		ReleaseResource(pref_handle);
 	}
-	
+
 	return;
 }
 

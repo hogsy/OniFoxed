@@ -1,5 +1,5 @@
 /* noise.c : Filtered pseudorandom noise functions.
-** 
+**
 ** This file defines the functions to generate filtered random noise
 ** in one, two and three dimensions (so far).
 **
@@ -34,18 +34,18 @@ static UUtUns32 generator(UUtUns32 seed);
 // Macros to shift the random number generator over a column, row or layer.
 #define ADVANCE_COLUMN  x -= 1.0f;                                         \
                         random_accum = random_accum * BASE_PARAM1         \
-                                                    + BASE_PARAM2;  
+                                                    + BASE_PARAM2;
 
 #define ADVANCE_ROW     y -= 1.0f;                                         \
                         x += 3.0f;                                         \
                         random_accum = random_accum * rowshift_param1     \
-                                                    + rowshift_param2;  
+                                                    + rowshift_param2;
 
 #define ADVANCE_LAYER   z -= 1.0f;                                         \
                         y += 3.0f;                                         \
                         x += 3.0f;                                         \
                         random_accum = random_accum * layershift_param1   \
-                                                    + layershift_param2;  
+                                                    + layershift_param2;
 
 // The cubic filter that is used in 1D to interpolate the pseudo-random
 // noise values.
@@ -177,9 +177,9 @@ void UUrNoise_Initialize(UUtUns32 extent)
 	rowshift_param2 = 0;
 	param1 = BASE_PARAM1;
 	param2 = BASE_PARAM2;
-	for (dist = noise_extent - 3; dist > 0; dist >>= 1) 
+	for (dist = noise_extent - 3; dist > 0; dist >>= 1)
 	{
-		if (dist & 1) 
+		if (dist & 1)
 		{
 			rowshift_param2 += rowshift_param1 * param2;
 			rowshift_param1 *= param1;
@@ -194,9 +194,9 @@ void UUrNoise_Initialize(UUtUns32 extent)
 	layershift_param2 = 0;
 	param1 = BASE_PARAM1;
 	param2 = BASE_PARAM2;
-	for (dist = noise_extent_sq - 3*noise_extent - 3; dist > 0; dist >>= 1) 
+	for (dist = noise_extent_sq - 3*noise_extent - 3; dist > 0; dist >>= 1)
 	{
-		if (dist & 1) 
+		if (dist & 1)
 		{
 			layershift_param2 += layershift_param1 * param2;
 			layershift_param1 *= param1;

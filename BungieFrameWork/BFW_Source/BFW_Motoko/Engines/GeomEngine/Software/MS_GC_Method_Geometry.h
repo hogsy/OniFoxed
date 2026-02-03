@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_GC_Method_Geometry.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 19, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -31,7 +31,7 @@ MSrGeomContext_Method_Sprite_Draw(
 	M3tMatrix3x3*		inOrientation,
 	float				inXOffset,
 	float				inXShorten,
-	float				inXChop);	
+	float				inXChop);
 
 UUtError
 MSrGeomContext_Method_SpriteArray_Draw(
@@ -48,13 +48,13 @@ MSrGeomContext_Method_Contrail_Draw(
 UUtError
 MSrGeomContext_Method_Geometry_Draw(
 	M3tGeometry*		inGeometryObject);
-			
+
 UUtError
 MSrGeomContext_Method_Geometry_PolyDraw(
 	UUtUns32			inNumPoints,
 	M3tPoint3D*			inPoints,
 	UUtUns32			inShade);
-			
+
 UUtError
 MSrGeomContext_Method_Geometry_LineDraw(
 	UUtUns32			inNumPoints,
@@ -78,8 +78,8 @@ MSrGeomContext_Method_PointTestVisibleScale(
 	M3tPoint2D*			inTestOffsets,
 	UUtUns32			inTestOffsetsCount );
 
-UUtError 
-MSrGeomContext_Method_Skybox_Draw( 
+UUtError
+MSrGeomContext_Method_Skybox_Draw(
 	M3tSkyboxData		*inSkybox );
 
 UUtError MSrGeomContext_Method_Skybox_Create(
@@ -93,6 +93,6 @@ UUtError
 MSrGeomContext_Method_Decal_Draw(
 	M3tDecalHeader*		inDecal,
 	UUtUns16			inAlpha);
-			
+
 
 #endif /* MS_GC_METHOD_GEOMETRY_H */

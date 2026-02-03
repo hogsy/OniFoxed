@@ -1,8 +1,8 @@
 /*
 	BFW_Path.c
-	
+
 	This file contains all BFW pathfinding related code
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -38,13 +38,13 @@ void PHrTerminate(void)
 }
 
 void PHrBresenham2(
-	UUtInt16 x1, 
-	UUtInt16 y1, 
-	UUtInt16 x2, 
-	UUtInt16 y2, 
-	PHtSquare *grid, 
-	UUtUns32 inWidth, 
-	UUtUns32 inHeight, 
+	UUtInt16 x1,
+	UUtInt16 y1,
+	UUtInt16 x2,
+	UUtInt16 y2,
+	PHtSquare *grid,
+	UUtUns32 inWidth,
+	UUtUns32 inHeight,
 	PHtSquare *fill,
 	PHtRasterizationCallback callback);
 
@@ -59,7 +59,7 @@ void PHrPutObstruction(
 {
 	if (s>=0 && s<width && t>=0 && t<height)
 	{
-		PutObstruction(s,t,obstruction); 		
+		PutObstruction(s,t,obstruction);
 	}
 }
 
@@ -81,14 +81,14 @@ void PHrCheckAndPutCell(
 		weight = c->weight;
 
 		if (cell_macro_value.weight < weight)
-		{							
-			PutCell(s,t,weight); 		
-			DEBUG_PH_PLOT;			
+		{
+			PutCell(s,t,weight);
+			DEBUG_PH_PLOT;
 		}
 	}
 }
 
-			 
+
 void PHrCheckAndBlastCell(
 	PHtSquare *grid,
 	UUtUns16 height,
@@ -100,15 +100,15 @@ void PHrCheckAndBlastCell(
 	PHtSquare cell_macro_value;
 	UUtUns8 weight;
 
-	if (s>=0 && s<width && t>=0 && t<height) 
-	{ 	
+	if (s>=0 && s<width && t>=0 && t<height)
+	{
 		cell_macro_value = GetCell(s,t);
 
 		weight = c->weight;
 
 		PutCell(s,t,weight);
 		DEBUG_PH_PLOT;
-	}							
+	}
 }
 
 void PHrGridToWorldSpace(UUtUns16 inGridX, UUtUns16 inGridY, const float *inAltitude, M3tPoint3D *outWorld, const PHtRoomData *inRoom)
@@ -118,7 +118,7 @@ void PHrGridToWorldSpace(UUtUns16 inGridX, UUtUns16 inGridY, const float *inAlti
 	* to the grid defined for 'inRoom'. Pass the altitude of the room at (inGridX,inGridY)
 	* if known, otherwise NULL
 	*/
-	
+
 	outWorld->x = (float)(inGridX+inRoom->gox) * inRoom->squareSize + inRoom->squareSize/2.0f + inRoom->origin.x;
 	if (inAltitude)
 		outWorld->y = *inAltitude;
@@ -139,7 +139,7 @@ void PHrWorldToGridSpace(UUtUns16 *outGridX, UUtUns16 *outGridY, const M3tPoint3
 	UUmAssertWritePtr(outGridY, sizeof(UUtUns16));
 	UUmAssertReadPtr(inWorld, sizeof(M3tPoint3D));
 	UUmAssertReadPtr(inRoom, sizeof(PHtRoomData));
-	
+
 	gridX = MUrFloat_Round_To_Int(((inWorld->x - inRoom->squareSize * 0.5f /* S.S./2.0f*/ - inRoom->origin.x) / inRoom->squareSize - (float)inRoom->gox));
 	gridY = MUrFloat_Round_To_Int(((inWorld->z - inRoom->squareSize * 0.5f /* S.S./2.0f*/ - inRoom->origin.z) / inRoom->squareSize - (float)inRoom->goy));
 
@@ -170,14 +170,14 @@ UUtBool PHrWorldInGridSpace(const M3tPoint3D *inWorld, const PHtRoomData *inRoom
 
 	UUmAssertReadPtr(inWorld, sizeof(M3tPoint3D));
 	UUmAssertReadPtr(inRoom, sizeof(PHtRoomData));
-	
+
 	gridX = MUrFloat_Round_To_Int(((inWorld->x - inRoom->squareSize * 0.5f/* S.S. /2.0f*/ - inRoom->origin.x) / inRoom->squareSize - (float)inRoom->gox));
 	gridY = MUrFloat_Round_To_Int(((inWorld->z - inRoom->squareSize * 0.5f/*/2.0f*/ - inRoom->origin.z) / inRoom->squareSize - (float)inRoom->goy));
 
 	success =	(gridX >= 0) && ((UUtUns32) gridX < inRoom->gridX) &&
 				(gridY >= 0) && ((UUtUns32) gridY < inRoom->gridY);
 
-	return success;			
+	return success;
 }
 
 void PHrWorldToGridSpaceDangerous(UUtInt16 *outGridX, UUtInt16 *outGridY, const M3tPoint3D *inWorld, const PHtRoomData *inRoom)
@@ -188,7 +188,7 @@ void PHrWorldToGridSpaceDangerous(UUtInt16 *outGridX, UUtInt16 *outGridY, const 
 	* for the coordinate system of the grid in question. Don't use this routine unless you
 	* know what you're doing.
 	*/
-	
+
 	UUmAssertWritePtr(outGridX, sizeof(UUtUns16));
 	UUmAssertWritePtr(outGridY, sizeof(UUtUns16));
 	UUmAssertReadPtr(inWorld, sizeof(M3tPoint3D));
@@ -207,10 +207,10 @@ void PHrWaypointFromGunk(AKtEnvironment *inEnv, AKtGQ_General *inGQGeneral, M3tP
 	* getting to that quad from 'inPoint'. Pass NULL in 'inPoint'
 	* to return the center of the quad on the floor
 	*/
-	
+
 	M3tPoint3D *lowest_point_1;
 	M3tPoint3D *lowest_point_2;
-	
+
 	// Find lowest two points of quad
 	{
 		M3tQuad *quad = &inGQGeneral->m3Quad.vertexIndices;
@@ -218,10 +218,10 @@ void PHrWaypointFromGunk(AKtEnvironment *inEnv, AKtGQ_General *inGQGeneral, M3tP
 
 		AUrQuad_LowestPoints(quad,points,&lowest_point_1,&lowest_point_2);
 	}
-	
+
 	// If the doorway is narrow or an SAT, or we want the center, head for the middle of it
 	if (
-			(NULL == inPoint) || 
+			(NULL == inPoint) ||
 			(MUrPoint_Distance_Squared(lowest_point_1,lowest_point_2) <= UUmSQR(PHcComfortDistance * 2.0f))
 		)
 	{
@@ -248,22 +248,22 @@ void PHrWaypointFromGunk(AKtEnvironment *inEnv, AKtGQ_General *inGQGeneral, M3tP
 
 			MUmVector_Subtract(*outPoint, *lowest_point_1, *lowest_point_2);
 			MUrVector_SetLength(outPoint, PHcComfortDistance);
-			MUmVector_Increment(*outPoint, *lowest_point_2);		
+			MUmVector_Increment(*outPoint, *lowest_point_2);
 		}
 	}
-	
+
 	outPoint->y += 1.0f;
 }
 
 void PHrBresenhamAA(
-	UUtInt16 x1, 
-	UUtInt16 y1, 
-	UUtInt16 x2, 
+	UUtInt16 x1,
+	UUtInt16 y1,
+	UUtInt16 x2,
 	UUtInt16 y2,
-	PHtSquare *grid, 
-	UUtUns32 width, 
-	UUtUns32 height, 
-	PHtSquare *fill, 
+	PHtSquare *grid,
+	UUtUns32 width,
+	UUtUns32 height,
+	PHtSquare *fill,
 	PHtSquare *blend,
 	PHtRasterizationCallback callback)
 {
@@ -271,14 +271,14 @@ void PHrBresenhamAA(
 	* Draws an antialiased bresenham line with 'fill' as the line,
 	* and using 'blend' to smooth the edges.
 	*/
-	
+
 	UUtInt16 dx,dy;
-	
+
 	PHrBresenham2(x1,y1,x2,y2,grid,width,height,fill,callback);
-	
+
 	dx = UUmABS(x2-x1);
 	dy = UUmABS(y2-y1);
-	
+
 	if (dx > dy)
 	{
 		PHrBresenham2(x1,y1-1,x2,y2-1,grid,width,height,blend,callback);
@@ -292,15 +292,15 @@ void PHrBresenhamAA(
 
 	return;
 }
-		
+
 void PHrBresenham2(
-	UUtInt16 x1, 
-	UUtInt16 y1, 
-	UUtInt16 x2, 
-	UUtInt16 y2, 
-	PHtSquare *grid, 
-	UUtUns32 inWidth, 
-	UUtUns32 inHeight, 
+	UUtInt16 x1,
+	UUtInt16 y1,
+	UUtInt16 x2,
+	UUtInt16 y2,
+	PHtSquare *grid,
+	UUtUns32 inWidth,
+	UUtUns32 inHeight,
 	PHtSquare *fill,
 	PHtRasterizationCallback callback)
 {
@@ -311,12 +311,12 @@ void PHrBresenham2(
 	* input validation. Will not overwrite squares of heavier weight unless
 	* the fill colour is PHcClear (which indicates we want to erase)
 	*/
-	
+
 	UUtInt32 width = inWidth;
 	UUtInt32 height = inHeight;
 	UUtInt16 ax,ay,dx,dy,x,y,e,xdir,ydir;
 	UUtBool overwrite;
-	
+
 	overwrite = (PHcClear == fill->weight) ? UUcTrue : UUcFalse;
 
 	gOverwrite = overwrite;
@@ -325,18 +325,18 @@ void PHrBresenham2(
 	gFill = *fill;
 	//symwuline((int)x1,(int)y1,(int)x2,(int)y2);
 	//return;
-	
+
 	UUmAssert(inWidth <= UUcMaxInt32);
 	UUmAssert(inHeight <= UUcMaxInt32);
-	
+
 //	UUmAssert(x1 >= 0 && x1 < width && y1 >= 0 && y1 < height);
 //	UUmAssert(x2 >= 0 && x2 < width && y2 >= 0 && y2 < height);
-	
+
 	dx = x2-x1;
 	dy = y2-y1;
 	ax = UUmABS(x2-x1);
 	ay = UUmABS(y2-y1);
-	
+
 	if (dx < 0) {
 		xdir = -1;
 	}
@@ -356,10 +356,10 @@ void PHrBresenham2(
 	else {
 		ydir = 1;
 	}
-	
+
 	x = x1;
 	y = y1;
-	
+
 	if (ax > ay)
 	{
 		e = (ay-ax)/2;
@@ -371,14 +371,14 @@ void PHrBresenham2(
 
 			if (!overwrite) PHrCheckAndPutCell(grid,(UUtUns16)height,(UUtUns16)width,x,y,fill);
 			else PHrCheckAndBlastCell(grid,(UUtUns16)height,(UUtUns16)width,x,y,fill);
-			
+
 			if (x==x2) return;
 			if (e>=0)
 			{
 				y+=ydir;
 				e-=ax;
 			}
-			
+
 			x+=xdir;
 			e+=ay;
 		}
@@ -394,14 +394,14 @@ void PHrBresenham2(
 
 			if (!overwrite) PHrCheckAndPutCell(grid,(UUtUns16)height,(UUtUns16)width,x,y,fill);
 			else PHrCheckAndBlastCell(grid,(UUtUns16)height,(UUtUns16)width,x,y,fill);
-			
+
 			if (y==y2) return;
 			if (e>=0)
 			{
 				x+=xdir;
 				e-=ay;
 			}
-			
+
 			y+=ydir;
 			e+=ax;
 		}
@@ -410,13 +410,13 @@ void PHrBresenham2(
 
 
 void PHrDynamicBresenham2(
-	UUtInt16 x1, 
-	UUtInt16 y1, 
-	UUtInt16 x2, 
-	UUtInt16 y2, 
-	PHtDynamicSquare *grid, 
-	UUtUns32 inWidth, 
-	UUtUns32 inHeight, 
+	UUtInt16 x1,
+	UUtInt16 y1,
+	UUtInt16 x2,
+	UUtInt16 y2,
+	PHtDynamicSquare *grid,
+	UUtUns32 inWidth,
+	UUtUns32 inHeight,
 	UUtUns8 inObstruction,
 	UUtBool inOverwrite)
 {
@@ -427,19 +427,19 @@ void PHrDynamicBresenham2(
 	* input validation. Will not overwrite existing obstructions unless
 	* inOverwrite is set.
 	*/
-	
+
 	UUtInt32 width = inWidth;
 	UUtInt32 height = inHeight;
 	UUtInt16 ax,ay,dx,dy,x,y,e,xdir,ydir;
-	
+
 	UUmAssert(inWidth <= UUcMaxInt32);
 	UUmAssert(inHeight <= UUcMaxInt32);
-	
+
 	dx = x2-x1;
 	dy = y2-y1;
 	ax = UUmABS(x2-x1);
 	ay = UUmABS(y2-y1);
-	
+
 	if (dx < 0) {
 		xdir = -1;
 	}
@@ -459,10 +459,10 @@ void PHrDynamicBresenham2(
 	else {
 		ydir = 1;
 	}
-	
+
 	x = x1;
 	y = y1;
-	
+
 	if (ax > ay)
 	{
 		e = (ay-ax)/2;
@@ -473,14 +473,14 @@ void PHrDynamicBresenham2(
 					grid[x + y*width].obstruction = inObstruction;
 				}
 			}
-			
+
 			if (x==x2) return;
 			if (e>=0)
 			{
 				y+=ydir;
 				e-=ax;
 			}
-			
+
 			x+=xdir;
 			e+=ay;
 		}
@@ -495,14 +495,14 @@ void PHrDynamicBresenham2(
 					grid[x + y*width].obstruction = inObstruction;
 				}
 			}
-			
+
 			if (y==y2) return;
 			if (e>=0)
 			{
 				x+=xdir;
 				e-=ay;
 			}
-			
+
 			y+=ydir;
 			e+=ax;
 		}

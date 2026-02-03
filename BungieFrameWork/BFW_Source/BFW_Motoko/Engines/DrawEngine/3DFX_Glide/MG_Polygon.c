@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_Polygon.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: July 5, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 
 */

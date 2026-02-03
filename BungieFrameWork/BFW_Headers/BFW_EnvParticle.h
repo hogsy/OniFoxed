@@ -5,13 +5,13 @@
 
 /*
 	FILE:	BFW_EnvParticle.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: May 26, 2000
-	
+
 	PURPOSE: support for environmental particles
-	
+
 	Copyright (c) 2000, Bungie Software
 
  */
@@ -83,10 +83,10 @@ typedef tm_template('E','N','V','P',"Env Particle Array")
 EPtEnvParticleArray
 {
 	tm_pad							pad0[22];
-	
+
 	tm_varindex UUtUns16			numParticles;
 	tm_vararray EPtEnvParticle		particle[1];
-		
+
 } EPtEnvParticleArray;
 
 // callback function template, for enumerating env particles

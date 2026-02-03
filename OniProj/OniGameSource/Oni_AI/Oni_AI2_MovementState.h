@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_MovementState.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: July 29, 2000
-	
+
 	PURPOSE: Incarnated Movement AI for Oni
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */

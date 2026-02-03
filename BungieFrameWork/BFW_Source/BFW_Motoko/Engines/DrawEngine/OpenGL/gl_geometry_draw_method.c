@@ -148,7 +148,7 @@ static void FUNCTION_NAME (
 			// diffuse color + base texture
 			{
 				GEOM_SPLIT_TYPE *in_geom_split= (GEOM_SPLIT_TYPE *)in_geom;
-				
+
 				gl_set_textures(gl->texture0, NULL, NONE, NONE); // this will flush buffers if needed
 				GL_FXN(glBegin)(GEOMETRY_MODE);
 				for (i=0; i<NUM_VERTICES; i++)
@@ -195,7 +195,7 @@ static void FUNCTION_NAME (
 			// diffuse color, base texture & enviroment map texture
 			{
 				const M3tTextureCoord *env_texture_coords= gl->state_ptr[M3cDrawStatePtrType_EnvTextureCoordArray];
-				
+
 				if (gl->multitexture)
 				{
 					gl_set_textures(gl->texture0, gl->texture1, NONE, NONE); // this will flush buffers if needed

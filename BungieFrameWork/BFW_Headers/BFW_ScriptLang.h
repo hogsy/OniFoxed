@@ -1,26 +1,26 @@
 #pragma once
 /*
 	FILE:	BFW_ScriptLang.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Oct 29, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	This module is designed to let a game designer write simple game logic that
-	can communicate with the core game engine. 
-	
+	can communicate with the core game engine.
+
 	Features:
-	
+
 	1) different parts of the core engine can register commands to make them
 		available to the game designers. An example of this is a command to initiate a
 		particle effect or to tell a character to start moving.
-		
+
 	2) different parts of the engine can register global variables to make them
 		available to the game designers. An example of this is the current game time
 		or the number of civilians killed.
-		
+
 	3) A simple interpreted language to describe game logic
 	   - functions
 	   - global/local variables
@@ -28,28 +28,28 @@
 	   - if then else statements
 	   - iterators
 	   - etc
-	   
+
 	 4) An event scheduling system. Functions can be scheduled to be called periodically.
 	 	For an example a function can be scheduled every 60 game ticks to check for
 	 	mission success or failure conditions.
-	 	
+
 	 5) Engine can check the value of global vars declared within a script
-	 
+
 	 6) scripts can sleep for a specified amount of time
-	
+
 	 7) Game designers can modify the scripts while still in the engine.
-	 
+
 	Uses:
 	 1) Code level logic such as keeping track of number of civilians killed.
-	 
+
 	 2) Glue different parts of the system together. When particles hit something
 	 	(either wall or character) then can execute a script that can change some
 	 	other part of the system. When a trigger volume is hit a script can be executed
 	 	to issue orders to the AI system.
-	 	
+
 	 3) Implement multiplayer game logic. Score can be kept track with the script system
 	 	for an any type of multiplayer game that we come up with.
-	
+
 	Copyright 1999
 
 */
@@ -70,7 +70,7 @@ typedef enum SLtReadWrite
 {
 	SLcReadWrite_ReadOnly,
 	SLcReadWrite_ReadWrite
-	
+
 } SLtReadWrite;
 
 typedef enum SLtType
@@ -81,7 +81,7 @@ typedef enum SLtType
 	SLcType_Bool		= 3,
 	SLcType_Void		= 4,		// used to signal no return value
 	SLcType_Max			= 5
-	
+
 } SLtType;
 
 extern const char *SLcTypeName[];
@@ -101,21 +101,21 @@ typedef union SLtValue
 	UUtUns32	b;
 #else
 	UUtBool		b;
-#endif	
+#endif
 } SLtValue;
 
 typedef struct SLtParameter_Actual
 {
 	SLtType		type;
 	SLtValue	val;
-	
+
 } SLtParameter_Actual;
 
 typedef struct SLtParameter_Formal
 {
 	const char*	name;
 	SLtType		type;
-	
+
 } SLtParameter_Formal;
 
 typedef struct SLtErrorContext
@@ -123,7 +123,7 @@ typedef struct SLtErrorContext
 	const char*	funcName;
 	const char*	fileName;
 	UUtUns16	line;
-	
+
 } SLtErrorContext;
 
 typedef UUtError
@@ -197,7 +197,7 @@ typedef struct SLtRegisterVoidFunctionTable
 	SLtEngineCommand function;
 } SLtRegisterVoidFunctionTable;
 
-UUtError 
+UUtError
 SLrScript_CommandTable_Register_Void(SLtRegisterVoidFunctionTable *inTable);
 
 UUtError
@@ -279,7 +279,7 @@ UUtError SLrGlobalVariable_Register_String_Table(SLtRegisterStringTable *inTable
  * These are used by the engine to execute commands in the scripting engine
  */
 
-UUtError	
+UUtError
 SLrScript_Schedule(
 	const char*				inName,
 	UUtUns16				inParameterListLength,
@@ -289,7 +289,7 @@ SLrScript_Schedule(
 	UUtUns32				inNumberOfTimes,	// if 0 script executes every game tick(not recommended)
 	SLtContext **			ioReferencePtr);	// used for getting a reference to track currently-running scripts
 
-UUtError	
+UUtError
 SLrScript_ExecuteOnce(
 	const char*				inName,
 	UUtUns16				inParameterListLength,
@@ -318,7 +318,7 @@ SLrScheduler_ForceDelete(
  *
  * These are used to add functions and variables defined in text files
  */
- 
+
 void
 SLrScript_Database_Reset(
 	void);
@@ -329,7 +329,7 @@ SLrScript_Database_Add(
 	const char*	inText);
 
 /*
- * 
+ *
  */
 
 void

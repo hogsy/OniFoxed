@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Image_Private.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Nov 27, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 */
 #ifndef BFW_IMAGE_PRIVATE_H
@@ -37,7 +37,7 @@ IMrImage_Scale_Box_IndependantAlpha(
 typedef struct IMtDitherPixel
 {
 	UUtInt16	a, r, g, b;
-	
+
 } IMtDitherPixel;
 
 void

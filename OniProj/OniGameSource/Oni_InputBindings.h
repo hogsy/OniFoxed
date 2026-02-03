@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_InputBindings.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 11, 1997
-	
+
 	PURPOSE:
-	
+
 	Copyright 1997
 
 */

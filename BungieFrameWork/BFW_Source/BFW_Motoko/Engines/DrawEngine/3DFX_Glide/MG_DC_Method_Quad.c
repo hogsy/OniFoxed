@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_DC_Method_Quad.c
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: Sept 18, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997, 1998
 
 */
@@ -25,14 +25,14 @@
 #include "MG_DC_Method_Quad.h"
 #include "rasterizer_3dfx.h"
 
-void 
+void
 MGrQuad_Point(
 	M3tQuad*		inQuad)
 {
 	M3tPointScreen*	screenPoints = MGmGetScreenPoints(MGgDrawContextPrivate);
 	UUtUns32*		vertexShades = MGmGetVertexShades(MGgDrawContextPrivate);
 	GrVertex*		vertexList;
-	
+
 	vertexList = MGgDrawContextPrivate->vertexList;
 	UUmAssert(vertexList != NULL);
 
@@ -60,9 +60,9 @@ MGrQuad_Line_InterpNone(
 	M3tPointScreen*	screenPoints = MGmGetScreenPoints(MGgDrawContextPrivate);
 	UUtUns32*		vertexShades = MGmGetVertexShades(MGgDrawContextPrivate);
 	GrVertex*		vertexList;
-	
+
 	UUtUns16		vertexItr;
-	
+
 	vertexList = MGgDrawContextPrivate->vertexList;
 	UUmAssert(vertexList != NULL);
 
@@ -94,25 +94,25 @@ MGrQuad_Solid_Gouraud_InterpNone(
 
 	UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Interpolation] ==
 				M3cDrawState_Interpolation_None);
-	
+
 	UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Appearence] ==
 				M3cDrawState_Appearence_Gouraud);
-	
+
 	vertexList = MGgDrawContextPrivate->vertexList;
 	UUmAssert(vertexList != NULL);
-	
+
 	if(MGgDrawContextPrivate->clipping)
 	{
 		M3tPointScreen*	screenPoints = MGmGetScreenPoints(MGgDrawContextPrivate);
 		UUtUns16		numRealVertices = (UUtUns16)MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_NumRealVertices];
 		UUmAssert(numRealVertices < MGcMaxElements);
-		
+
 		MGmSplatVertex_XYZ(inQuad->indices[0]);
 		MGmSplatVertex_XYZ(inQuad->indices[1]);
 		MGmSplatVertex_XYZ(inQuad->indices[2]);
 		MGmSplatVertex_XYZ(inQuad->indices[3]);
 	}
-	
+
 	iList[0] = inQuad->indices[0];
 	iList[1] = inQuad->indices[1];
 	iList[2] = inQuad->indices[2];
@@ -131,16 +131,16 @@ MGrQuad_Solid_Gouraud_InterpVertex(
 {
 	GrVertex*		vertexList;
 	int				iList[4];
-	
+
 	UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Interpolation] ==
 				M3cDrawState_Interpolation_Vertex);
-	
+
 	UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Appearence] ==
 				M3cDrawState_Appearence_Gouraud);
 
 	vertexList = MGgDrawContextPrivate->vertexList;
 	UUmAssert(vertexList != NULL);
-	
+
 	if(MGgDrawContextPrivate->clipping)
 	{
 		UUtUns16		numRealVertices = (UUtUns16)MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_NumRealVertices];
@@ -148,13 +148,13 @@ MGrQuad_Solid_Gouraud_InterpVertex(
 		UUtUns32*		vertexShades = MGmGetVertexShades(MGgDrawContextPrivate);
 
 		UUmAssert(numRealVertices < MGcMaxElements);
-		
+
 		MGmSplatVertex_XYZRGB(inQuad->indices[0]);
 		MGmSplatVertex_XYZRGB(inQuad->indices[1]);
 		MGmSplatVertex_XYZRGB(inQuad->indices[2]);
 		MGmSplatVertex_XYZRGB(inQuad->indices[3]);
 	}
-			
+
 	iList[0] = inQuad->indices[0];
 	iList[1] = inQuad->indices[1];
 	iList[2] = inQuad->indices[2];
@@ -172,16 +172,16 @@ MGrQuad_Solid_TextureLit_InterpNone(
 {
 	GrVertex*		vertexList;
 	int				iList[4];
-	
+
 	UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Interpolation] ==
 				M3cDrawState_Interpolation_None);
-	
+
 	//UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Appearence] ==
 	//			M3cDrawState_Appearence_Texture_Lit);
-	
+
 	vertexList = MGgDrawContextPrivate->vertexList;
 	UUmAssert(vertexList != NULL);
-	
+
 	if(MGgDrawContextPrivate->clipping)
 	{
 		UUtUns16				numRealVertices = (UUtUns16)MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_NumRealVertices];
@@ -189,19 +189,19 @@ MGrQuad_Solid_TextureLit_InterpNone(
 		M3tPointScreen*			screenPoints = MGmGetScreenPoints(MGgDrawContextPrivate);
 		MGtTextureMapPrivate*	baseMapPrivate = MGmGetBaseMapPrivate(MGgDrawContextPrivate);
 		float					u_scale, v_scale;
-		
+
 		UUmAssert(numRealVertices < MGcMaxElements);
 		UUmAssertReadPtr(baseMapPrivate, sizeof(*baseMapPrivate));
-		
+
 		u_scale = baseMapPrivate->u_scale;
 		v_scale = baseMapPrivate->v_scale;
-		
+
 		MGmSplatVertex_XYZUV(inQuad->indices[0]);
 		MGmSplatVertex_XYZUV(inQuad->indices[1]);
 		MGmSplatVertex_XYZUV(inQuad->indices[2]);
 		MGmSplatVertex_XYZUV(inQuad->indices[3]);
 	}
-	
+
 	iList[0] = inQuad->indices[0];
 	iList[1] = inQuad->indices[1];
 	iList[2] = inQuad->indices[2];
@@ -219,18 +219,18 @@ MGrQuad_Solid_TextureLit_InterpVertex(
 {
 	GrVertex*		vertexList;
 	int				iList[4];
-	
+
 	UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Interpolation] ==
 				M3cDrawState_Interpolation_Vertex);
-	
+
 	UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Appearence] ==
 				M3cDrawState_Appearence_Texture_Lit);
-	
+
 	UUmAssert(globals_3dfx.currentColorCombine == MGcColorCombine_TextureGouraud);
-	
+
 	vertexList = MGgDrawContextPrivate->vertexList;
 	UUmAssert(vertexList != NULL);
-	
+
 	if(MGgDrawContextPrivate->clipping)
 	{
 		M3tPointScreen*			screenPoints = MGmGetScreenPoints(MGgDrawContextPrivate);
@@ -242,16 +242,16 @@ MGrQuad_Solid_TextureLit_InterpVertex(
 
 		UUmAssertReadPtr(baseMapPrivate, sizeof(*baseMapPrivate));
 		UUmAssert(numRealVertices < MGcMaxElements);
-		
+
 		u_scale = baseMapPrivate->u_scale;
 		v_scale = baseMapPrivate->v_scale;
-		
+
 		MGmSplatVertex_XYZUVRGB(inQuad->indices[0]);
 		MGmSplatVertex_XYZUVRGB(inQuad->indices[1]);
 		MGmSplatVertex_XYZUVRGB(inQuad->indices[2]);
 		MGmSplatVertex_XYZUVRGB(inQuad->indices[3]);
 	}
-	
+
 	MGmAssertVertex_RGB(vertexList + inQuad->indices[0]);
 	MGmAssertVertex_RGB(vertexList + inQuad->indices[1]);
 	MGmAssertVertex_RGB(vertexList + inQuad->indices[2]);
@@ -274,18 +274,18 @@ MGrQuad_Solid_TextureLit_EnvMap_InterpVertex(
 {
 	GrVertex*		vertexList;
 	int				iList[4];
-	
+
 	UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Interpolation] ==
 				M3cDrawState_Interpolation_Vertex);
-	
+
 	UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Appearence] ==
 				M3cDrawState_Appearence_Texture_Lit_EnvMap);
-	
+
 	UUmAssert(globals_3dfx.currentColorCombine == MGcColorCombine_TextureGouraud);
-	
+
 	vertexList = MGgDrawContextPrivate->vertexList;
 	UUmAssert(vertexList != NULL);
-	
+
 	if(MGgDrawContextPrivate->clipping)
 	{
 		M3tPointScreen*			screenPoints = MGmGetScreenPoints(MGgDrawContextPrivate);
@@ -300,18 +300,18 @@ MGrQuad_Solid_TextureLit_EnvMap_InterpVertex(
 
 		UUmAssertReadPtr(baseMapPrivate, sizeof(*baseMapPrivate));
 		UUmAssert(numRealVertices < MGcMaxElements);
-		
+
 		u_scale = baseMapPrivate->u_scale;
 		v_scale = baseMapPrivate->v_scale;
 		u_scale_env = envMapPrivate->u_scale;
 		v_scale_env = envMapPrivate->v_scale;
-		
+
 		MGmSplatVertex_XYZUVRGBEnvMap(inQuad->indices[0]);
 		MGmSplatVertex_XYZUVRGBEnvMap(inQuad->indices[1]);
 		MGmSplatVertex_XYZUVRGBEnvMap(inQuad->indices[2]);
 		MGmSplatVertex_XYZUVRGBEnvMap(inQuad->indices[3]);
 	}
-	
+
 	MGmAssertVertex_RGB(vertexList + inQuad->indices[0]);
 	MGmAssertVertex_RGB(vertexList + inQuad->indices[1]);
 	MGmAssertVertex_RGB(vertexList + inQuad->indices[2]);
@@ -361,30 +361,30 @@ MGrQuadSplit_Solid_TextureUnlit_LMOff(
 	GrVertex*				vertexList;
 	float					u_scale, v_scale;
 	int						iList[4];
-	
+
 	UUmAssertReadPtr(baseMapPrivate, sizeof(*baseMapPrivate));
 	UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Interpolation] ==
 				M3cDrawState_Interpolation_None);
-	
+
 	UUmAssert(MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_Appearence] ==
 				M3cDrawState_Appearence_Texture_Unlit);
-	
+
 	vertexList = MGgDrawContextPrivate->vertexList;
 	UUmAssert(vertexList != NULL);
-	
+
 	if(MGgDrawContextPrivate->clipping)
 	{
 		UUtUns16	numRealVertices = (UUtUns16)MGgDrawContextPrivate->stateInt[M3cDrawStateIntType_NumRealVertices];
 		M3tPointScreen*			screenPoints = MGmGetScreenPoints(MGgDrawContextPrivate);
-		
+
 		UUmAssert(numRealVertices < MGcMaxElements);
-	
+
 		MGmSplatVertex_XYZ(inQuad->vertexIndices.indices[0]);
 		MGmSplatVertex_XYZ(inQuad->vertexIndices.indices[1]);
 		MGmSplatVertex_XYZ(inQuad->vertexIndices.indices[2]);
 		MGmSplatVertex_XYZ(inQuad->vertexIndices.indices[3]);
 	}
-	
+
 	u_scale = baseMapPrivate->u_scale;
 	v_scale = baseMapPrivate->v_scale;
 
@@ -393,25 +393,25 @@ MGrQuadSplit_Solid_TextureUnlit_LMOff(
 		0,
 		textureCoords + inQuad->baseUVIndices.indices[0],
 		vertexList + inQuad->vertexIndices.indices[0]);
-		
+
 	MGmConvertVertex_UV(
 		u_scale, v_scale,
 		0,
 		textureCoords + inQuad->baseUVIndices.indices[1],
 		vertexList + inQuad->vertexIndices.indices[1]);
-		
+
 	MGmConvertVertex_UV(
 		u_scale, v_scale,
 		0,
 		textureCoords + inQuad->baseUVIndices.indices[2],
 		vertexList + inQuad->vertexIndices.indices[2]);
-		
+
 	MGmConvertVertex_UV(
 		u_scale, v_scale,
 		0,
 		textureCoords + inQuad->baseUVIndices.indices[3],
 		vertexList + inQuad->vertexIndices.indices[3]);
-		
+
 	iList[0] = inQuad->vertexIndices.indices[0];
 	iList[1] = inQuad->vertexIndices.indices[1];
 	iList[2] = inQuad->vertexIndices.indices[2];
@@ -421,6 +421,6 @@ MGrQuadSplit_Solid_TextureUnlit_LMOff(
 		4,
 		iList,
 		vertexList);
-	
+
 	return;
 }

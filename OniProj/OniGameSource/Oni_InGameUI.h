@@ -42,43 +42,43 @@ typedef tm_enum ONtKey
 
 	ONcKey_Plus						= 0x0100,
 	ONcKey_Wait						= 0x0200,
-	
+
 	ONcKey_Punch					= 0x0001,
 	ONcKey_Kick						= 0x0002,
-	
+
 	ONcKey_Forward					= 0x0004,
 	ONcKey_Backward					= 0x0008,
 	ONcKey_Left						= 0x0010,
 	ONcKey_Right					= 0x0020,
-	
+
 	ONcKey_Crouch					= 0x0040,
 	ONcKey_Jump						= 0x0060,
-	
+
 	ONcKey_HoldPunch				= (ONcKey_Hold | ONcKey_Punch),
 	ONcKey_HoldKick					= (ONcKey_Hold | ONcKey_Kick),
-	
+
 	ONcKey_HoldForward				= (ONcKey_Hold | ONcKey_Forward),
 	ONcKey_HoldBackward				= (ONcKey_Hold | ONcKey_Backward),
 	ONcKey_HoldLeft					= (ONcKey_Hold | ONcKey_Left),
 	ONcKey_HoldRight				= (ONcKey_Hold | ONcKey_Right),
-	
+
 	ONcKey_HoldCrouch				= (ONcKey_Hold | ONcKey_Crouch),
 	ONcKey_HoldJump					= (ONcKey_Hold | ONcKey_Jump),
-	
+
 	ONcKey_QuickPunch				= (ONcKey_Quick | ONcKey_Punch),
 	ONcKey_QuickKick				= (ONcKey_Quick | ONcKey_Kick),
-	
+
 	ONcKey_QuickForward				= (ONcKey_Quick | ONcKey_Forward),
 	ONcKey_QuickBackward			= (ONcKey_Quick | ONcKey_Backward),
 	ONcKey_QuickLeft				= (ONcKey_Quick | ONcKey_Left),
 	ONcKey_QuickRight				= (ONcKey_Quick | ONcKey_Right),
-	
+
 	ONcKey_QuickCrouch				= (ONcKey_Quick | ONcKey_Crouch),
 	ONcKey_QuickJump				= (ONcKey_Quick | ONcKey_Jump),
-		
+
 	ONcKey_Action					= 0x00FF,
 	ONcKey_Modifier					= 0xF000
-	
+
 } ONtKey;
 
 enum
@@ -89,30 +89,30 @@ enum
 	ONcWeaponStr_Range,
 	ONcWeaponStr_FireRate,
 	ONcWeaponStr_Hint,
-	
+
 	ONcWeaponStr_NumStrs
 };
 
 enum
 {
 	ONcItemStr_Name,
-	
+
 	// shield
 	ONcShieldStr_PowerRemaining = 1,
 	ONcShieldStr_Hint,
 	ONcShieldStr_NumStrs,
-	
+
 	// hypo
 	ONcHypoStr_Dosage = 1,
 	ONcHypoStr_WarningLabels,
 	ONcHypoStr_Hint,
 	ONcHypoStr_NumStrs,
-	
+
 	// ammo
 	ONcAmmoStr_Type = 1,
 	ONcAmmoStr_Hint,
 	ONcAmmoStr_NumStrs,
-	
+
 	// LSIs
 	ONcLSIStr_Description
 };
@@ -135,7 +135,7 @@ typedef tm_struct ONtImagePlacement
 	UUtBool								visible;		// used at runtime
 	IMtPoint2D							dest;
 	M3tTextureMap						*image;
-	
+
 } ONtImagePlacement;
 
 // ----------------------------------------------------------------------
@@ -147,7 +147,7 @@ ONtIGUI_FontInfo
 	UUtUns32							font_shade;
 	UUtUns16							font_size;
 	UUtUns16							flags;
-	
+
 } ONtIGUI_FontInfo;
 
 #define ONcTemplate_IGUI_String			UUm4CharToUns32('I', 'G', 'S', 't')
@@ -164,10 +164,10 @@ typedef tm_template('I', 'G', 'S', 'A', "IGUI String Array")
 ONtIGUI_StringArray
 {
 	tm_pad								pad0[20];
-	
+
 	tm_varindex UUtUns32				numStrings;
 	tm_vararray ONtIGUI_String			*string[1];
-	
+
 } ONtIGUI_StringArray;
 
 #define ONcTemplate_IGUI_Page			UUm4CharToUns32('I', 'G', 'P', 'G')
@@ -189,7 +189,7 @@ ONtIGUI_PageArray
 
 	tm_varindex	UUtUns32				num_pages;
 	tm_vararray ONtIGUI_Page			*pages[1];
-	
+
 } ONtIGUI_PageArray;
 
 
@@ -202,10 +202,10 @@ ONtDiaryPage
 	UUtInt16							page_number;
 	UUtBool								has_new_move;
 	tm_pad								pad[3];
-	
+
 	ONtKey								keys[12];		// must match ONcMaxNumKeys above
 	ONtIGUI_Page						*page;
-	
+
 } ONtDiaryPage;
 
 #define ONcTemplate_ItemPage			UUm4CharToUns32('I', 'P', 'g', 'e')
@@ -214,7 +214,7 @@ ONtItemPage
 {
 	WPtPowerupType						powerup_type;
 	ONtIGUI_Page						*page;
-	
+
 } ONtItemPage;
 
 #define ONcTemplate_ObjectivePage		UUm4CharToUns32('O', 'P', 'g', 'e')
@@ -225,7 +225,7 @@ ONtObjectivePage
 
 	UUtInt16							level_number;
 	ONtIGUI_PageArray					*objectives;
-	
+
 } ONtObjectivePage;
 
 #define ONcTemplate_WeaponPage			UUm4CharToUns32('W', 'P', 'g', 'e')
@@ -234,7 +234,7 @@ ONtWeaponPage
 {
 	WPtWeaponClass						*weaponClass;
 	ONtIGUI_Page						*page;
-	
+
 } ONtWeaponPage;
 
 #define ONcTemplate_HelpPage			UUm4CharToUns32('H', 'P', 'g', 'e')
@@ -242,10 +242,10 @@ typedef tm_template('H', 'P', 'g', 'e', "Help Page")
 ONtHelpPage
 {
 	tm_pad								pad[2];
-	
+
 	UUtInt16							page_number;
 	ONtIGUI_Page						*page;
-	
+
 } ONtHelpPage;
 
 #define ONcTemplate_KeyIcons			UUm4CharToUns32('K', 'e', 'y', 'I')
@@ -259,13 +259,13 @@ ONtKeyIcons
 	M3tTextureMap						*backward;
 	M3tTextureMap						*left;
 	M3tTextureMap						*right;
-	
+
 	M3tTextureMap						*crouch;
 	M3tTextureMap						*jump;
-	
+
 	M3tTextureMap						*hold;
 	M3tTextureMap						*plus;
-	
+
 } ONtKeyIcons;
 
 // --------------------------------------------
@@ -273,8 +273,8 @@ ONtKeyIcons
 typedef tm_template('T', 'x', 't', 'C', "Text Console")
 ONtTextConsole
 {
-	ONtIGUI_PageArray					*console_data;	
-	
+	ONtIGUI_PageArray					*console_data;
+
 } ONtTextConsole;
 
 // --------------------------------------------
@@ -301,7 +301,7 @@ ONtIGUI_HUDHelp
 
 	tm_varindex	UUtUns32				num_text_items;
 	tm_vararray ONtIGUI_HUDTextItem		text_items[1];
-	
+
 } ONtIGUI_HUDHelp;
 
 // ======================================================================
@@ -310,7 +310,7 @@ ONtIGUI_HUDHelp
 void
 ONrInGameUI_Display(
 	void);
-	
+
 // ----------------------------------------------------------------------
 void
 ONrPauseScreen_Display(
@@ -324,7 +324,7 @@ ONrPauseScreen_OverrideMessage(
 void
 ONrEnemyScanner_Display(
 	void);
-	
+
 UUtBool
 ONrEnemyScanner_IsOn(
 	void);
@@ -337,7 +337,7 @@ ONrEnemyScanner_Stop(
 UUtError
 ONrInGameUI_Initialize(
 	void);
-	
+
 UUtError
 ONrInGameUI_LevelLoad(
 	UUtUns32					inLevelNum);
@@ -349,11 +349,11 @@ ONrInGameUI_LevelUnload(
 UUtError
 ONrInGameUI_RegisterTemplates(
 	void);
-	
+
 void
 ONrInGameUI_Terminate(
 	void);
-	
+
 void
 ONrInGameUI_Update(
 	void);
@@ -378,6 +378,6 @@ ONrInGameUI_NotifyRestoreGame(
 void
 ONrInGameUI_TextConsole_Display(
 	ONtTextConsole				*inTextConsole);
-	
+
 // ======================================================================
 #endif /* ONI_INGAMEUI_H */

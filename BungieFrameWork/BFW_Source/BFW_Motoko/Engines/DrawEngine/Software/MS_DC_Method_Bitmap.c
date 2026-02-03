@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_DC_Method_Bitmap.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Nov 13, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -100,7 +100,7 @@
 // funcitons
 // ======================================================================
 // ----------------------------------------------------------------------
-void 
+void
 MSrDrawContext_Method_Bitmap(
 	M3tDrawContext			*inDrawContext,
 	M3tTextureMap			*inBitmap,
@@ -111,14 +111,14 @@ MSrDrawContext_Method_Bitmap(
 	UUtUns16				inAlpha)			/* 0 - 31 */
 {
 	UUtUns16				i, j;
-	
+
 	UUtUns16				alpha;
 
 	UUtUns16				*src_texels, *src_texel;
 	UUtUns32				src_rowtexels;
 	UUtInt16				src_x, src_y;
 	UUtUns16				src;
-	
+
 	UUtUns32				*src_32_texels, *src_32_texel;
 	UUtUns32				src_32_rowtexels;
 
@@ -130,7 +130,7 @@ MSrDrawContext_Method_Bitmap(
 	UUtInt16				clip_left, clip_top, clip_right, clip_bottom;
 
 	MStDrawContextPrivate	*drawContextPrivate;
-	
+
 	// get access to the private context
 	drawContextPrivate = (MStDrawContextPrivate *)inDrawContext->privateContext;
 	if (drawContextPrivate->imageBufferBaseAddr == NULL)
@@ -141,25 +141,25 @@ MSrDrawContext_Method_Bitmap(
 	clip_top = 0;
 	clip_right = (UUtUns16)drawContextPrivate->width;
 	clip_bottom = (UUtUns16)drawContextPrivate->height;
-	
+
 	// if nothing is going to be drawn, exit now
 	if (clip_left >= clip_right)
 		return;
 	if (clip_top >= clip_bottom)
 		return;
-	
+
 	// set dst_x and dst_y
 	dst_x = (UUtInt16)inDestPoint->x;
 	dst_y = (UUtInt16)inDestPoint->y;
-	
+
 	// set src_x and src_y
 	src_x = 0;
 	src_y = 0;
-	
+
 	// set draw_width and draw_height
 	draw_width = inWidth;//inBitmap->width;
 	draw_height = inHeight;//inBitmap->height;
-	
+
 	if ((dst_x + draw_width) > clip_right)
 		draw_width = clip_right - dst_x;
 	if (dst_x < clip_left)
@@ -176,15 +176,15 @@ MSrDrawContext_Method_Bitmap(
 		dst_y = clip_top;
 		draw_height -= src_y;
 	}
-	
+
 	// get the rowpixels and a pointer to the dst pixels
 	dst_rowtexels = drawContextPrivate->imageBufferRowBytes >> 1;
 	dst_texels =
 		drawContextPrivate->imageBufferBaseAddr +
 		dst_x +
 		(dst_y * dst_rowtexels);
-	
-	
+
+
 	switch (inBitmap->texelType)
 	{
 		case M3cTextureType_ARGB4444:
@@ -205,7 +205,7 @@ MSrDrawContext_Method_Bitmap(
 					{
 						dst_texel = dst_texels;
 						src_texel = src_texels;
-						
+
 						for (j = 0; j < draw_width; j++)
 						{
 							alpha = CalcAlpha(*src_texel, inAlpha);
@@ -217,13 +217,13 @@ MSrDrawContext_Method_Bitmap(
 						src_texels += src_rowtexels;
 					}
 					break;
-					
+
 				case M3cTextureType_RGB555:
 					for (i = 0; i < draw_height; i++)
 					{
 						dst_texel = dst_texels;
 						src_texel = src_texels;
-						
+
 						for (j = 0; j < draw_width; j++)
 						{
 							*dst_texel = Mix555(*src_texel, *dst_texel, inAlpha);
@@ -234,13 +234,13 @@ MSrDrawContext_Method_Bitmap(
 						src_texels += src_rowtexels;
 					}
 					break;
-					
+
 				case M3cTextureType_ARGB1555:
 					for (i = 0; i < draw_height; i++)
 					{
 						dst_texel = dst_texels;
 						src_texel = src_texels;
-						
+
 						for (j = 0; j < draw_width; j++)
 						{
 							if (*src_texel & cAlphaBit1555)
@@ -254,7 +254,7 @@ MSrDrawContext_Method_Bitmap(
 					break;
 			}
 			break;
-			
+
 		case M3cTextureType_ARGB8888:
 			// get a pointer to the source pixels
 			src_32_rowtexels = inBitmap->rowBytes >> 2;
@@ -262,12 +262,12 @@ MSrDrawContext_Method_Bitmap(
 				((UUtUns32*)inBitmap->data) +
 				src_x +
 				(src_y * src_32_rowtexels);
-			
+
 			for (i = 0; i < draw_height; i++)
 			{
 				dst_texel = dst_texels;
 				src_32_texel = src_32_texels;
-				
+
 				for (j = 0; j < draw_width; j++)
 				{
 					src = (UUtUns16)M3mARGB32_to_16(*src_32_texel);
@@ -280,7 +280,7 @@ MSrDrawContext_Method_Bitmap(
 				src_32_texels += src_32_rowtexels;
 			}
 			break;
-		
+
 		default:
 			UUmAssert(!"Unknown TexelType");
 			break;

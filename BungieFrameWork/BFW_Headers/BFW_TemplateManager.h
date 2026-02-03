@@ -1,13 +1,13 @@
 	#pragma once
 /*
 	FILE:	BFW_TemplateManager.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 8, 1997
-	
+
 	PURPOSE: Manage templates and instance data
-	
+
 	Copyright 1997
 
 */
@@ -29,25 +29,25 @@ extern "C" {
 	#define TMcMaxLevelNum					(128)
 
 	#define TMcTemplateTag_None		UUm4CharToUns32('N', 'O', 'N', 'E')
-	
+
 	#define TMcInstanceName_MaxLength		(128)
-	
+
 	#define TMcMaxStringLength				(128)
-	
+
 	#define TMcSeparateFileOffset_None		((TMtSeparateFileOffset) 0)
 
 /*
- * 
+ *
  */
 	typedef enum TMtAllowFolding
 	{
-		TMcFolding_Forbid,	
+		TMcFolding_Forbid,
 		TMcFolding_Allow
-		
+
 	} TMtAllowFolding;
 
 /*
- * 
+ *
  */
 	typedef enum TMtTemplateFlags
 	{
@@ -56,17 +56,17 @@ extern "C" {
 		TMcTemplateFlag_Leaf			= (1 << 1),
 		TMcTemplateFlag_VarArrayIsLeaf	= (1 << 2),
 		TMcTemplateFlag_AllowFolding	= (1 << 3)
-		
+
 	} TMtTemplateFlags;
 
 /*
- * 
+ *
  */
 	typedef enum TMtDynamicPool_Type
 	{
 		TMcDynamicPool_Type_Temporary = 2,
 		TMcDynamicPool_Type_Permanent = 3
-		
+
 	} TMtDynamicPool_Type;
 
 
@@ -80,9 +80,9 @@ extern "C" {
 		TMcTemplateProcMessage_DisposePreProcess,
 		TMcTemplateProcMessage_Update,
 		TMcTemplateProcMessage_PrepareForUse,
-		
+
 		TMcTemplateProcMessage_Dummy = (1 << 31)
-		
+
 	} TMtTemplateProc_Message;
 
 /*
@@ -94,9 +94,9 @@ extern "C" {
 		TMcInstancePriority_NotNeeded	= 1,
 		TMcInstancePriority_NeededSoon	= 2,
 		TMcInstancePriority_NeededNow	= 3,
-		
+
 		TMcInstancePriority_Num			= 4
-		
+
 	} TMtInstancePriorities;
 
 /*
@@ -108,7 +108,7 @@ extern "C" {
 
 	typedef struct TMtCache_MemoryPool	TMtCache_MemoryPool;
 	typedef struct TMtPrivateData		TMtPrivateData;
-	
+
 
 /*
  * The typedef for a routine that receives runtime template messages
@@ -118,11 +118,11 @@ extern "C" {
 		TMtTemplateProc_Message	inMessage,
 		void*					inInstancePtr,
 		void*					inPrivateData);
-	
+
 	typedef UUtError
 	(*TMtTemplateProc_ByteSwap)(
 		void*					inInstancePtr);
-		
+
 /*
  * Template definition
  */
@@ -132,16 +132,16 @@ extern "C" {
 		TMtTemplateTag				tag;
 		char*						name;
 		UUtUns8*					swapCodes;
-		
+
 		TMtTemplateFlags			flags;
-		
+
 		UUtUns32					size;			// This is the size with a var array length of zero
 		UUtUns32					varArrayElemSize;
-		
+
 		TMtTemplateProc_ByteSwap	byteSwapProc;
-			
+
 		UUtUns32					magicCookie;
-		void						*timer;			
+		void						*timer;
 	} TMtTemplateDefinition;
 
 /*
@@ -152,30 +152,30 @@ extern "C" {
 	TMtIndexArray
 	{
 		tm_pad					pad0[20];
-		
+
 		tm_varindex	UUtUns32	numIndices;
 		tm_vararray	UUtUns32	indices[1];
-		
+
 	} TMtIndexArray;
-	
-	
+
+
 	typedef tm_struct TMtTemplateRef
 	{
 		tm_templateref	templateRef;
-		
+
 	} TMtTemplateRef;
-	
+
 	#define TMcTemplate_TemplateRefArray UUm4CharToUns32('T', 'M', 'R', 'A')
 	typedef tm_template('T', 'M', 'R', 'A', "Template Reference Array")
 	TMtTemplateRefArray
 	{
 		tm_pad						pad0[20];
-		
+
 		tm_varindex	UUtUns32		numRefs;
 		tm_vararray	TMtTemplateRef	templateRefs[1];
 
 	} TMtTemplateRefArray;
-	
+
 	#define TMcTemplate_FloatArray	UUm4CharToUns32('T', 'M', 'F', 'A')
 	typedef tm_template('T', 'M', 'F', 'A', "Float Array")
 	TMtFloatArray
@@ -183,15 +183,15 @@ extern "C" {
 		tm_pad						pad0[22];
 
 		tm_varindex UUtUns16		numFloats;
-		tm_vararray float			numbers[1];	
-		
+		tm_vararray float			numbers[1];
+
 	} TMtFloatArray;
 
 	#define TMcTemplate_String UUm4CharToUns32('T', 'S', 't', 'r')
 	typedef tm_template('T', 'S', 't', 'r', "String")
 	TMtString
 	{
-		
+
 		char				string[128];	// must match TMcMaxStringLength above
 	} TMtString;
 
@@ -202,7 +202,7 @@ extern "C" {
 		tm_pad						pad0[22];
 
 		tm_varindex UUtUns16		numStrings;
-		tm_vararray TMtString		*string[1];	
+		tm_vararray TMtString		*string[1];
 	} TMtStringArray;
 
 /*
@@ -241,7 +241,7 @@ extern "C" {
 	UUtError
 	TMrRegisterTemplates(
 		void);
-	
+
 /*
  * This is used to add custom byte swapping for the var array field
  */
@@ -270,7 +270,7 @@ extern "C" {
 	(*TMtCacheProc_Simple_Unload)(
 		void*		inInstanceData,
 		void*		inDataPtr);
-	
+
 	typedef void
 	(*TMtCacheProc_MemoryPool_Load)(
 		void*		inInstanceData,
@@ -280,11 +280,11 @@ extern "C" {
 	(*TMtCacheProc_MemoryPool_Unload)(
 		void*		inInstanceData,
 		void*		inDataPtr);
-	
+
 	typedef UUtUns32
 	(*TMtCacheProc_MemoryPool_ComputeSize)(
 		void*		inInstanceData);
-	
+
 	UUtError
 	TMrTemplate_Cache_MemoryPool_New(
 		TMtTemplateTag					inTemplateTag,
@@ -292,16 +292,16 @@ extern "C" {
 		TMtCacheProc_MemoryPool_Load	inLoadProc,
 		TMtCacheProc_MemoryPool_Unload	inUnloadProc,
 		TMtCache_MemoryPool*			*outCache);
-	
+
 	void
 	TMrTemplate_Cache_MemoryPool_Delete(
 		TMtCache_MemoryPool*	inCache);
-	
+
 	void*
 	TMrTemplate_Cache_MemoryPool_GetDataPtr(
 		TMtCache_MemoryPool*	inCache,
 		void*					inInstanceDataPtr);
-		
+
 /*
  * Allow the allocation of private data associated with instances of common template
  */
@@ -311,11 +311,11 @@ extern "C" {
 		UUtUns32					inDataSize,
 		TMtTemplateProc_Handler		inProcHandler,
 		TMtPrivateData*				*outPrivateData);
-	
+
 	void
 	TMrTemplate_PrivateData_Delete(
 		TMtPrivateData*				inPrivateData);
-	
+
 	void*
 	TMrTemplate_PrivateData_GetDataPtr(
 		TMtPrivateData*				inPrivateData,
@@ -325,13 +325,13 @@ extern "C" {
  * This is used to load a new level
  */
 
-	typedef enum 
+	typedef enum
 	{
 		TMcPrivateData_Yes,
 		TMcPrivateData_No
-		
+
 	} TMtAllowPrivateData;
-	
+
 	UUtBool
 	TMrLevel_Exists(
 		UUtUns16			inLevelNumber);
@@ -339,12 +339,12 @@ extern "C" {
 	void
 	TMrLevel_Unload(
 		UUtUns16			inLevelNumber);
-		
+
 	UUtError
 	TMrLevel_Load(
 		UUtUns16			inLevelNumber,
 		TMtAllowPrivateData	inAllowPrivateData);
-	
+
 /*
  * Get a pointer to the requested instance
  *	IN
@@ -390,7 +390,7 @@ extern "C" {
 	TMrInstance_GetTagCount(
 		TMtTemplateTag		inTemplateTag);
 
-		
+
 /*
  * This is used to create a runtime instance
  */

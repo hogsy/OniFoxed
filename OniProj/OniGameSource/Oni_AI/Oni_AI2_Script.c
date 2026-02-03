@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Script.c
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: April 04, 2000
-	
+
 	PURPOSE: AI interface to the scripting system for Oni
-	
+
 	Copyright (c) Bungie Software, 2000
 
 */
@@ -246,7 +246,7 @@ static UUtError	AI2iScript_Skill_Select(SLtErrorContext *inErrorContext, UUtUns3
 	UUrMemory_MoveFast(AI2gSkillEdit_TargetPtr, &AI2gSkillEdit_SavedCopy, sizeof(AI2tShootingSkill));
 
 	AI2gSkillEdit_Active = UUcTrue;
-	COrConsole_Printf("Now editing '%s' shooting skill with weapon %d '%s'", 
+	COrConsole_Printf("Now editing '%s' shooting skill with weapon %d '%s'",
 		TMrInstance_GetInstanceName(AI2gSkillEdit_TargetClass), AI2gSkillEdit_TargetIndex, TMrInstance_GetInstanceName(AI2gSkillEdit_TargetWeapon));
 
 	return UUcError_None;
@@ -486,7 +486,7 @@ static UUtError	AI2iScript_Reset(SLtErrorContext *inErrorContext, UUtUns32 inPar
 	if (inParameterListLength >= 1) {
 		reset_player = (UUtBool) inParameterList[0].val.i;
 	}
-	
+
 	AI2rDeleteAllCharacters(reset_player);
 
 	AI2rKnowledge_Reset();
@@ -718,7 +718,7 @@ static UUtError	AI2iScript_SetState_Alarm(SLtErrorContext *inErrorContext, UUtUn
 			action_marker = AI2rAlarm_FindAlarmConsole(character);
 
 #if DEBUG_VERBOSE_ALARM
-			COrConsole_Printf("%s: action_marker %sfound (%f %f %f)", character->player_name, 
+			COrConsole_Printf("%s: action_marker %sfound (%f %f %f)", character->player_name,
 				(action_marker == NULL) ? "not " : "",
 				(action_marker == NULL) ? 0 : action_marker->position.x,
 				(action_marker == NULL) ? 0 : action_marker->position.y,
@@ -773,11 +773,11 @@ static UUtError	AI2iScript_SetState_Alarm(SLtErrorContext *inErrorContext, UUtUn
 #if DEBUG_VERBOSE_ALARM
 		if (character->ai2State.currentGoal == AI2cGoal_Alarm) {
 			UUmAssertReadPtr(character->ai2State.alarmStatus.action_marker, sizeof(ONtActionMarker));
-			COrConsole_Printf("%s: ai2_doalarm completed, running for alarm at (%f %f %f)", 
+			COrConsole_Printf("%s: ai2_doalarm completed, running for alarm at (%f %f %f)",
 				character->player_name, character->ai2State.alarmStatus.action_marker->position.x,
 				character->ai2State.alarmStatus.action_marker->position.y, character->ai2State.alarmStatus.action_marker->position.z);
 		} else {
-			COrConsole_Printf("%s: ai2_doalarm completed, but not running for alarm (behavior is %s)", 
+			COrConsole_Printf("%s: ai2_doalarm completed, but not running for alarm (behavior is %s)",
 				character->player_name, AI2cGoalName[character->ai2State.currentGoal]);
 		}
 #endif
@@ -918,7 +918,7 @@ static UUtError	AI2iScript_Debug_SetMovementMode(SLtErrorContext *inErrorContext
 			COrConsole_Printf("### ai2_setmovementmode: cannot move player character without first using ai2_takecontrol 1");
 			return UUcError_None;
 		}
-		
+
 		UUmAssert(inParameterListLength >= 2);
 
 		for (itr = 0; itr < AI2cMovementMode_Max; itr++) {
@@ -944,9 +944,9 @@ static UUtError	AI2iScript_MoveToFlag(SLtErrorContext *inErrorContext, UUtUns32 
 	UUtInt32 flag_id = inParameterList[1].val.i;
 	ONtFlag	flag;
 	UUtBool found, setfacing = UUcFalse;
-	
+
 	found = ONrLevel_Flag_ID_To_Flag((UUtUns16) flag_id, &flag);
-	
+
 	if (character == NULL) {
 		AI2rScript_NoCharacterError(inParameterList, "ai2_movetoflag", inErrorContext);
 		return UUcError_None;
@@ -995,7 +995,7 @@ static UUtError	AI2iScript_LookAtChar(SLtErrorContext *inErrorContext, UUtUns32 
 		}
 
 		// calculate the relative angle
-		angle = MUrATan2(target->actual_position.x - character->actual_position.x, 
+		angle = MUrATan2(target->actual_position.x - character->actual_position.x,
 						 target->actual_position.z - character->actual_position.z);
 		UUmTrig_ClipLow(angle);
 
@@ -1064,7 +1064,7 @@ static UUtError	AI2iScript_GivePowerup(SLtErrorContext *inErrorContext, UUtUns32
 
 		if (inParameterListLength < 3) {
 			amount = WPrPowerup_DefaultAmount(itr);
-		} 
+		}
 		else {
 			amount = (UUtUns16) inParameterList[2].val.i;
 		}
@@ -1379,7 +1379,7 @@ static UUtError	AI2iScript_Debug_SetAlert(SLtErrorContext *inErrorContext, UUtUn
 		AI2rScript_NoCharacterError(inParameterList, "ai2_setalert", inErrorContext);
 		return UUcError_None;
 	}
-	
+
 	UUmAssert(inParameterListLength >= 2);
 	for (itr = 0; itr < AI2cAlertStatus_Max; itr++) {
 		if (strcmp(inParameterList[1].val.str, AI2cAlertStatusName[itr]) == 0) {
@@ -1403,7 +1403,7 @@ static UUtError	AI2iScript_Debug_SetAlert(SLtErrorContext *inErrorContext, UUtUn
 	return UUcError_None;
 }
 
-// Game mechanics 
+// Game mechanics
 // triggers
 static UUtError
 AI2iScript_Trigger_Activate(
@@ -1464,7 +1464,7 @@ static UUtError			AI2iScript_Trigger_Hide(SLtErrorContext *inErrorContext, UUtUn
 										UUtBool *outStall, SLtParameter_Actual *ioReturnValue)
 {
 	UUtUns16 trigger_id = (UUtUns16) inParameterList[0].val.i;
-	
+
 	OBJrTrigger_Hide_ID(trigger_id);
 
 	return UUcError_None;
@@ -1475,7 +1475,7 @@ static UUtError			AI2iScript_Trigger_Show(SLtErrorContext *inErrorContext, UUtUn
 										UUtBool *outStall, SLtParameter_Actual *ioReturnValue)
 {
 	UUtUns16 trigger_id = (UUtUns16) inParameterList[0].val.i;
-	
+
 	OBJrTrigger_Show_ID(trigger_id);
 
 	return UUcError_None;
@@ -1487,7 +1487,7 @@ static UUtError			AI2iScript_Trigger_Speed(SLtErrorContext *inErrorContext, UUtU
 {
 	UUtUns16 trigger_id = (UUtUns16) inParameterList[0].val.i;
 	float speed = inParameterList[1].val.f;
-	
+
 	OBJrTrigger_SetSpeed_ID(trigger_id, speed);
 
 	return UUcError_None;
@@ -1673,7 +1673,7 @@ AI2iScript_Debug_Chump(
 	temp_osd->combat_id = 0;
 	temp_osd->melee_id = 0;
 	temp_osd->neutral_id = 0;
-	
+
 	// create the chump
 	error = ONrGameState_NewCharacter(temp_object, NULL, NULL, &chump_index);
 
@@ -1748,7 +1748,7 @@ static UUtError	AI2iScript_PathDebugSquare(SLtErrorContext *inErrorContext, UUtU
 	for (itr = 0, debug_info = room->debug_info; itr < room->debug_info_count; itr++, debug_info++) {
 		if ((debug_info->x != PHgDebugSquareX) || (debug_info->y != PHgDebugSquareY))
 			continue;
-		
+
 		if ((debug_info->event >= 0) && (debug_info->event < PHcDebugEvent_Max)) {
 			UUrString_Copy(event_name, PHcDebugEventName[debug_info->event], 32);
 		} else {
@@ -1873,9 +1873,9 @@ AI2iScript_FaceToFlag(
 	UUtInt32 flag_id = inParameterList[1].val.i;
 	ONtFlag	flag;
 	UUtBool found;
-	
+
 	found = ONrLevel_Flag_ID_To_Flag((UUtUns16) flag_id, &flag);
-	
+
 	if (NULL == character) {
 		AI2rScript_NoCharacterError(&inParameterList[0], "chr_facetoflag", inErrorContext);
 		return UUcError_None;
@@ -1889,7 +1889,7 @@ AI2iScript_FaceToFlag(
 		character->facingModifier = 0;
 		character->desiredFacing = flag.rotation;
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -1908,9 +1908,9 @@ AI2iScript_Teleport(
 	UUtInt32 flag_id = inParameterList[1].val.i;
 	ONtFlag	flag;
 	UUtBool found;
-	
+
 	found = ONrLevel_Flag_ID_To_Flag((UUtUns16) flag_id, &flag);
-	
+
 	if (NULL == character) {
 		AI2rScript_NoCharacterError(&inParameterList[0], "chr_teleport", inErrorContext);
 		return UUcError_None;
@@ -1922,7 +1922,7 @@ AI2iScript_Teleport(
 	} else {
 		ONrCharacter_Teleport(character, &flag.location, UUcTrue);
 	}
-		
+
 	return UUcError_None;
 }
 
@@ -1938,7 +1938,7 @@ static UUtError AI2iScript_NoCollision(SLtErrorContext *inErrorContext, UUtUns32
 		AI2rScript_NoCharacterError(&inParameterList[0], "chr_nocollision", inErrorContext);
 		return UUcError_None;
 	}
-	
+
 	if (inParameterList[1].val.i) {
 		character->flags |= ONcCharacterFlag_NoCollision;
 	} else {
@@ -1961,7 +1961,7 @@ static ONtFilm *AI2iScript_Playback_Internal(SLtErrorContext *inErrorContext, UU
 	UUtUns32		film_mode, interp_frames;
 	UUtBool			played_film;
 
-	if (character == NULL) { 
+	if (character == NULL) {
 		AI2rScript_NoCharacterError(inParameterList, "playback", inErrorContext);
 		return NULL;
 	}
@@ -1971,7 +1971,7 @@ static ONtFilm *AI2iScript_Playback_Internal(SLtErrorContext *inErrorContext, UU
 		SLrScript_ReportError(inErrorContext, "character (%s) cannot be made active!", character->player_name);
 		return NULL;
 	}
-	
+
 	AI2iScript_CancelEnvAnim(character, active_character);
 
 	film_name = inParameterList[1].val.str;
@@ -2029,7 +2029,7 @@ static UUtError AI2iScript_Playback(SLtErrorContext *inErrorContext, UUtUns32 in
 	ONtFilm*		film;
 
 	film = AI2iScript_Playback_Internal(inErrorContext, inParameterListLength, inParameterList);
-	if (film == NULL) { 
+	if (film == NULL) {
 		return UUcError_None;
 	} else {
 		return UUcError_None;
@@ -2048,7 +2048,7 @@ static UUtError AI2iScript_Playback_Block(SLtErrorContext *inErrorContext, UUtUn
 	ONtFilm*		film;
 
 	film = AI2iScript_Playback_Internal(inErrorContext, inParameterListLength, inParameterList);
-	if (film == NULL) { 
+	if (film == NULL) {
 		return UUcError_None;
 	} else {
 		*outTicksTillCompletion = film->length;
@@ -2102,18 +2102,18 @@ static UUtError AI2iScript_Animate_Internal(SLtErrorContext *inErrorContext, UUt
 	if ((active_character->animationLockFrames > 1) && (inBlock))
 	{
 		// stall until this character is unlocked
-		*outStall = UUcTrue;		
+		*outStall = UUcTrue;
 		return UUcError_None;
 	}
-	
+
 	{
-		char *animString;		
-		
+		char *animString;
+
 		animString = inParameterList[1].val.str;
 		animation = TRrAnimation_GetFromName(animString);
 
 		if (NULL == animation)
-		{ 
+		{
 			SLrScript_ReportError(inErrorContext, "failed to find animation \"%s\"", animString);
 			return UUcError_None;
 		}
@@ -2130,7 +2130,7 @@ static UUtError AI2iScript_Animate_Internal(SLtErrorContext *inErrorContext, UUt
 	}
 
 //	COrConsole_Printf("chr_animate %s %s %d %d", character->player_name, TRrAnimation_GetName(animation), numFramesOfAnimation, numFramesOfInterpolation);
-	
+
 	ONrCharacter_SetAnimation_External(character, active_character->curFromState, animation, numFramesOfInterpolation);
 	character->flags |= ONcCharacterFlag_ChrAnimate;
 
@@ -2143,7 +2143,7 @@ static UUtError AI2iScript_Animate_Internal(SLtErrorContext *inErrorContext, UUt
 	else {
 		active_character->animationLockFrames = 0;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2155,7 +2155,7 @@ static UUtError AI2iScript_Animate_Block(SLtErrorContext *inErrorContext, UUtUns
 										SLtParameter_Actual *inParameterList, UUtUns32 *outTicksTillCompletion,
 										UUtBool *outStall, SLtParameter_Actual *ioReturnValue)
 {
-	return AI2iScript_Animate_Internal(inErrorContext, inParameterListLength, inParameterList, 
+	return AI2iScript_Animate_Internal(inErrorContext, inParameterListLength, inParameterList,
 										outTicksTillCompletion, outStall, ioReturnValue, UUcTrue);
 }
 
@@ -2167,7 +2167,7 @@ static UUtError AI2iScript_Animate_NoBlock(SLtErrorContext *inErrorContext, UUtU
 										SLtParameter_Actual *inParameterList, UUtUns32 *outTicksTillCompletion,
 										UUtBool *outStall, SLtParameter_Actual *ioReturnValue)
 {
-	return AI2iScript_Animate_Internal(inErrorContext, inParameterListLength, inParameterList, 
+	return AI2iScript_Animate_Internal(inErrorContext, inParameterListLength, inParameterList,
 										outTicksTillCompletion, outStall, ioReturnValue, UUcFalse);
 }
 
@@ -2240,7 +2240,7 @@ static UUtError AI2iScript_EnvAnimate_Internal(SLtErrorContext *inErrorContext, 
 	if (inParameterListLength > 2)
 	{
 		const char *flag_string;
-		
+
 		flag_string = inParameterList[2].val.str;
 
 		if (UUmString_IsEqual(flag_string, "norotation"))
@@ -2510,7 +2510,7 @@ static UUtError AI2iScript_ChrCreate(SLtErrorContext *inErrorContext, UUtUns32 i
 	setupID = (UUtUns16)inParameterList[0].val.i;
 	setup = ONrLevel_CharacterSetup_ID_To_Pointer(setupID);
 	if (NULL == setup)
-	{ 
+	{
 		SLrScript_ReportError(inErrorContext, "can not find character id %d", inParameterList[0].val.i);
 
 		{
@@ -2526,7 +2526,7 @@ static UUtError AI2iScript_ChrCreate(SLtErrorContext *inErrorContext, UUtUns32 i
 
 		return UUcError_None;
 	}
-		
+
 	// CB: optional parameter 2 was start/create. 'create' was only ever used when spawning characters
 	// as part of gameplay (so the player doesn't see them). this command is only ever used for cinematics now
 	// so it's irrelevant.
@@ -2551,13 +2551,13 @@ static UUtError AI2iScript_ChrCreate(SLtErrorContext *inErrorContext, UUtUns32 i
 
 		return UUcError_None;
 	}
-	
+
 	error = ONrGameState_NewCharacter(NULL, setup, &flag, NULL);
 	if (error != UUcError_None) {
 		SLrScript_ReportError(inErrorContext, "failed to create a new character");
 		return UUcError_None;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2685,7 +2685,7 @@ static LItButtonBits AI2iScript_GetKeyMask(const char *inKeyName)
 			break;
 		}
 	}
-	
+
 	return tableptr->mask;
 }
 
@@ -2698,7 +2698,7 @@ static UUtError AI2iScript_HoldKey(SLtErrorContext *inErrorContext, UUtUns32 inP
 	ONtCharacter *character = AI2rScript_ParseCharacter(inParameterList, UUcFalse);
 	ONtActiveCharacter *active_character;
 	const char *keyname;
-	
+
 	if (character == NULL) {
 		AI2rScript_NoCharacterError(inParameterList, "chr_holdkey", inErrorContext);
 		return UUcError_None;
@@ -2715,7 +2715,7 @@ static UUtError AI2iScript_HoldKey(SLtErrorContext *inErrorContext, UUtUns32 inP
 		*outStall = UUcTrue;
 		return UUcError_None;
 	}
-	
+
 	// part 2 is what keys (or clear)
 	keyname = inParameterList[1].val.str;
 	if (UUmString_IsEqual("clear", keyname))
@@ -2772,7 +2772,7 @@ static UUtBool AI2iScript_TriggerVolume_Callback(OBJtObject *inObject, UUtUns32 
 #endif
 
 	trig_osd = (OBJtOSD_TriggerVolume *) inObject->object_data;
-	
+
 	if (UUmString_IsEqual(data->name, trig_osd->name)) {
 		data->found++;
 
@@ -3565,7 +3565,7 @@ static UUtError			AI2iScript_LockActive(SLtErrorContext *inErrorContext, UUtUns3
 
 		character->flags |= ONcCharacterFlag_ActiveLock;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3581,7 +3581,7 @@ static UUtError			AI2iScript_UnlockActive(SLtErrorContext *inErrorContext, UUtUn
 	else {
 		character->flags &= ~ONcCharacterFlag_ActiveLock;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3593,7 +3593,7 @@ static UUtError	AI2iScript_Unstoppable(SLtErrorContext *inErrorContext, UUtUns32
 {
 	ONtCharacter *character;
 	UUtBool unstoppable = UUcTrue;
-	
+
 	character = AI2rScript_ParseCharacter(&inParameterList[0], UUcFalse);
 	if (character == NULL) {
 		AI2rScript_NoCharacterError(&inParameterList[0], "chr_unstoppable", inErrorContext);
@@ -3605,7 +3605,7 @@ static UUtError	AI2iScript_Unstoppable(SLtErrorContext *inErrorContext, UUtUns32
 	} else {
 		character->flags &= ~ONcCharacterFlag_Unstoppable;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3617,7 +3617,7 @@ static UUtError	AI2iScript_Invincible(SLtErrorContext *inErrorContext, UUtUns32 
 {
 	ONtCharacter *character;
 	UUtBool unstoppable = UUcTrue;
-	
+
 	character = AI2rScript_ParseCharacter(&inParameterList[0], UUcFalse);
 	if (character == NULL) {
 		AI2rScript_NoCharacterError(&inParameterList[0], "chr_invincible", inErrorContext);
@@ -3629,7 +3629,7 @@ static UUtError	AI2iScript_Invincible(SLtErrorContext *inErrorContext, UUtUns32 
 	} else {
 		character->flags &= ~ONcCharacterFlag_Invincible;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3641,7 +3641,7 @@ static UUtError	AI2iScript_Unkillable(SLtErrorContext *inErrorContext, UUtUns32 
 {
 	ONtCharacter *character;
 	UUtBool unstoppable = UUcTrue;
-	
+
 	character = AI2rScript_ParseCharacter(&inParameterList[0], UUcFalse);
 	if (character == NULL) {
 		AI2rScript_NoCharacterError(&inParameterList[0], "chr_unkillable", inErrorContext);
@@ -3653,7 +3653,7 @@ static UUtError	AI2iScript_Unkillable(SLtErrorContext *inErrorContext, UUtUns32 
 	} else {
 		character->flags &= ~ONcCharacterFlag_Unkillable;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -3708,7 +3708,7 @@ static UUtError	AI2iScript_Who(SLtErrorContext *inErrorContext, UUtUns32 inParam
 	}
 
 	COrConsole_Printf("Listing all AIs near %s's location (%f %f %f)", location_type, cur_location.x, cur_location.y, cur_location.z);
-	
+
 	character_list = ONrGameState_PresentCharacterList_Get();
 	character_list_count = ONrGameState_PresentCharacterList_Count();
 
@@ -3720,7 +3720,7 @@ static UUtError	AI2iScript_Who(SLtErrorContext *inErrorContext, UUtUns32 inParam
 
 		sprintf(msgbuf, "  %s (class %s, #%d)", character->player_name, TMrInstance_GetInstanceName(character->characterClass),
 				ONrCharacter_GetIndex(character));
-		
+
 		if (character->charType == ONcChar_AI2) {
 			// print out a tiny amount of AI debugging information
 			sprintf(tempbuf, " (state %s)", AI2cGoalName[character->ai2State.currentGoal]);
@@ -3795,7 +3795,7 @@ static UUtError			AI2iScript_Holograph(SLtErrorContext *inErrorContext, UUtUns32
 {
 	ONtCharacter *character;
 	UUtBool holograph_mode;
-	
+
 	if (inParameterListLength != 2) {
 		COrConsole_Printf("chr_holograph had an invalid parameter list length");
 		goto exit;
@@ -3864,7 +3864,7 @@ static UUtError	AI2iScript_Talk(SLtErrorContext *inErrorContext, UUtUns32 inPara
 		return UUcError_None;
 	}
 
-	UUrString_Copy(AI2gScript_TalkBuffer[itr], inParameterList[1].val.str, BFcMaxFileNameLength);	
+	UUrString_Copy(AI2gScript_TalkBuffer[itr], inParameterList[1].val.str, BFcMaxFileNameLength);
 
 	if (inParameterListLength < 5) {
 		speech_type = ONcSpeechType_Override;
@@ -3924,7 +3924,7 @@ static UUtError AI2iScript_Vocalize(SLtErrorContext *inErrorContext, UUtUns32 in
 			COrConsole_Printf("  %s", AI2cVocalizationTypeName[itr]);
 		}
 		return UUcError_None;
-	}		
+	}
 
 	result = AI2rVocalize(character, itr, UUcTrue);
 	if (!result) {
@@ -4058,7 +4058,7 @@ static UUtError AI2iScript_Reset_Inventory(SLtErrorContext *inErrorContext, UUtU
 		if (NULL != character->inventory.weapons[0]) {
 			ONrCharacter_UseNewWeapon(character, NULL);
 		}
-		
+
 		UUmAssert(NULL == character->inventory.weapons[WPcPrimarySlot]);
 
 		{
@@ -4068,7 +4068,7 @@ static UUtError AI2iScript_Reset_Inventory(SLtErrorContext *inErrorContext, UUtU
 			{
 				WPtWeapon *weapon = character->inventory.weapons[itr];
 
-				if (weapon != NULL) {			
+				if (weapon != NULL) {
 					WPrDelete(weapon);
 				}
 
@@ -4268,8 +4268,8 @@ UUtError AI2rInstallConsoleVariables(void)
 		{"chr_forceholster",	NULL,		NULL,			"forces a character to holster their weapon",				"[ai_name:string | script_id:int] holster:int{0 | 1} [force_draw:int{0 | 1} | ]",					AI2iScript_ForceHolster},
 		{"chr_changeteam",		NULL,		NULL,			"changes a character's team",								"[ai_name:string | script_id:int] team_name:string",												AI2iScript_ChangeTeam},
 		{"chr_unstoppable",		NULL,		NULL,			"makes a character unstoppable",							"[ai_name:string | script_id:int] [on_off:int{0 | 1}]",												AI2iScript_Unstoppable},
-		{"chr_invincible",		NULL,		NULL,			"makes a character invincible",								"[ai_name:string | script_id:int] [on_off:int{0 | 1}]",												AI2iScript_Invincible},		
-		{"chr_unkillable",		NULL,		NULL,			"makes a character unkillable",								"[ai_name:string | script_id:int] [on_off:int{0 | 1}]",												AI2iScript_Unkillable},		
+		{"chr_invincible",		NULL,		NULL,			"makes a character invincible",								"[ai_name:string | script_id:int] [on_off:int{0 | 1}]",												AI2iScript_Invincible},
+		{"chr_unkillable",		NULL,		NULL,			"makes a character unkillable",								"[ai_name:string | script_id:int] [on_off:int{0 | 1}]",												AI2iScript_Unkillable},
 		{"chr_talk",			NULL,		NULL,			"causes a character to play a line of dialogue",			"[ai_name:string | script_id:int] sound_name:string pre_pause:int post_pause:int [priority:string | ]",	AI2iScript_Talk},
 		{"chr_vocalize",		NULL,		NULL,			"makes a character utter a vocalization",					"[ai_name:string | script_id:int] type:string",														AI2iScript_Vocalize},
 		{"chr_inv_reset",		NULL,		NULL,			"clears a characters inventory",							"[ai_name:string | script_id:int]",																	AI2iScript_Reset_Inventory},
@@ -4387,7 +4387,7 @@ UUtError AI2rInstallConsoleVariables(void)
 		{"trigvolume_reset",	NULL,		NULL,			"reset a trigger volume to its level-load state",			"name:string",																						AI2iScript_TriggerVolume_Reset},
 		{"trigvolume_corpse",	NULL,		NULL,			"kills all the corpses inside a trigger volume",			"trig_id:int",																						AI2iScript_TriggerVolume_DeleteCorpses},
 		{"trigvolume_kill",		NULL,		NULL,			"kills all the characters inside a trigger volume",			"trig_id:int",																						AI2iScript_TriggerVolume_DeleteCharacters},
-	
+
 		// powerups
 		{"weapon_spawn",		NULL,		NULL,			"creates a new weapon",										"weapontype:string flag:int",																		AI2iScript_WeaponSpawn},
 		{"powerup_spawn",		NULL,		NULL,			"creates a new powerup",									"poweruptype:string flag:int",																		AI2iScript_PowerupSpawn},
@@ -4434,7 +4434,7 @@ UUtError AI2rInstallConsoleVariables(void)
 		// pathfinding
 		{"ai2_showpaths",				SLcType_Bool,	"shows the path each AI is following",							&AI2gDrawPaths},
 		{"ai2_showgrids",				SLcType_Bool,	"turns on pathfinding grid rendering",							&AI2gShowPathfindingGrids},
-		{"ai2_showdynamicgrids",		SLcType_Bool,	"turns on pathfinding dynamic grid display",					&PHgRenderDynamicGrid},		
+		{"ai2_showdynamicgrids",		SLcType_Bool,	"turns on pathfinding dynamic grid display",					&PHgRenderDynamicGrid},
 		{"ai2_showpathfindingerrors",	SLcType_Bool,	"enables visual display of pathfinding errors",					&AI2gShowPathfindingErrors},
 		{"ai2_showconnections",			SLcType_Bool,	"turns on pathfinding connection rendering",					&AI2gDebugDisplayGraph},
 		{"ai2_showactivationpaths",		SLcType_Bool,	"turns on inactive -> active pathfinding rendering",			&AI2gDebug_ShowActivationPaths},
@@ -4495,7 +4495,7 @@ UUtError AI2rInstallConsoleVariables(void)
 		{"ai2_debug_localmove_lines",	SLcType_Int32,	"number of lines to cast to debug local-movement code",			&AI2gDebugLocalPath_LineCount},
 #endif
 		{"ai2_debug_showsettingIDs",	SLcType_Bool,	"shows ID numbers for combat, melee and neutral settings",		&AI2gDebugShowSettingIDs},
-#endif	
+#endif
 
 		{NULL,							SLcType_Void,	NULL,															NULL}
 	};

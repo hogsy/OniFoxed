@@ -1,12 +1,12 @@
 /*
 	FILE:	Oni_AI2_Patrol.c
-	
+
 	AUTHOR:	Michael Evans, Chris Butcher
-	
+
 	CREATED: November 15, 1999
-	
+
 	PURPOSE: Patrol AI for Oni
-	
+
 	Copyright (c) 1999
 
 */
@@ -517,7 +517,7 @@ static void AI2iPatrol_Shooting_Setup(ONtCharacter *ioCharacter, AI2tPatrolState
 				ioCharacter->characterClass->ai2_behavior.combat_parameters.shooting_skill);
 		ioPatrolState->targeting_setup = UUcTrue;
 	}
-	
+
 	// set up our current weapon state
 	ioPatrolState->current_weapon = NULL;
 	AI2iPatrol_CheckTargetingWeapon(ioCharacter, ioPatrolState);
@@ -712,7 +712,7 @@ static void AI2iPatrol_DoWaypoint(ONtCharacter *ioCharacter, AI2tPatrolState *io
 
 		case AI2cWaypointType_MoveToFlag:
 			found = ONrLevel_Flag_ID_To_Flag(waypoint->data.moveToFlag.flag, &flag);
-			
+
 			if (!found) {
 				AI2_ERROR(AI2cError, AI2cSubsystem_Patrol, AI2cError_Patrol_NoSuchFlag, ioCharacter,
 					      waypoint->data.moveToFlag.flag, inWaypointIndex, ioPatrolState, 0);
@@ -735,7 +735,7 @@ static void AI2iPatrol_DoWaypoint(ONtCharacter *ioCharacter, AI2tPatrolState *io
 
 		case AI2cWaypointType_LookAtFlag:
 			found = ONrLevel_Flag_ID_To_Flag(waypoint->data.lookAtFlag.lookFlag, &flag);
-		
+
 			if (!found) {
 				AI2_ERROR(AI2cError, AI2cSubsystem_Patrol, AI2cError_Patrol_NoSuchFlag, ioCharacter,
 					      waypoint->data.lookAtFlag.lookFlag, inWaypointIndex, ioPatrolState, 0);
@@ -750,7 +750,7 @@ static void AI2iPatrol_DoWaypoint(ONtCharacter *ioCharacter, AI2tPatrolState *io
 
 		case AI2cWaypointType_MoveAndFaceFlag:
 			found = ONrLevel_Flag_ID_To_Flag(waypoint->data.moveAndFaceFlag.faceFlag, &flag);
-		
+
 			if (!found) {
 				AI2_ERROR(AI2cError, AI2cSubsystem_Patrol, AI2cError_Patrol_NoSuchFlag, ioCharacter,
 					      waypoint->data.moveAndFaceFlag.faceFlag, inWaypointIndex,
@@ -789,7 +789,7 @@ static void AI2iPatrol_DoWaypoint(ONtCharacter *ioCharacter, AI2tPatrolState *io
 
 		case AI2cWaypointType_MoveThroughFlag:
 			found = ONrLevel_Flag_ID_To_Flag(waypoint->data.moveToFlag.flag, &flag);
-			
+
 			if (!found) {
 				AI2_ERROR(AI2cError, AI2cSubsystem_Patrol, AI2cError_Patrol_NoSuchFlag, ioCharacter,
 					      waypoint->data.moveToFlag.flag, inWaypointIndex,
@@ -828,7 +828,7 @@ static void AI2iPatrol_DoWaypoint(ONtCharacter *ioCharacter, AI2tPatrolState *io
 
 		case AI2cWaypointType_Guard:
 			found = ONrLevel_Flag_ID_To_Flag(waypoint->data.guard.flag, &flag);
-			
+
 			if (!found) {
 				AI2_ERROR(AI2cError, AI2cSubsystem_Patrol, AI2cError_Patrol_NoSuchFlag, ioCharacter,
 					      waypoint->data.guard.flag, inWaypointIndex, ioPatrolState, 0);
@@ -844,7 +844,7 @@ static void AI2iPatrol_DoWaypoint(ONtCharacter *ioCharacter, AI2tPatrolState *io
 
 		case AI2cWaypointType_MoveNearFlag:
 			found = ONrLevel_Flag_ID_To_Flag(waypoint->data.moveNearFlag.flag, &flag);
-			
+
 			if (!found) {
 				AI2_ERROR(AI2cError, AI2cSubsystem_Patrol, AI2cError_Patrol_NoSuchFlag, ioCharacter,
 					      waypoint->data.moveNearFlag.flag, inWaypointIndex,
@@ -884,7 +884,7 @@ static void AI2iPatrol_DoWaypoint(ONtCharacter *ioCharacter, AI2tPatrolState *io
 
 		case AI2cWaypointType_ShootAtFlag:
 			found = ONrLevel_Flag_ID_To_Flag(waypoint->data.shootAtFlag.flag, &flag);
-			
+
 			if (!found) {
 				AI2_ERROR(AI2cError, AI2cSubsystem_Patrol, AI2cError_Patrol_NoSuchFlag, ioCharacter,
 					      waypoint->data.shootAtFlag.flag, inWaypointIndex,

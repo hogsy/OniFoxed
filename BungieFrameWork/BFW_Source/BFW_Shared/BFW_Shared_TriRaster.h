@@ -1,12 +1,12 @@
 /*
 	FILE:	MS_TriRasterize.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: April 3, 1997
-	
+
 	PURPOSE:  Assert interface files
-	
+
 	Copyright 1997
 
 */
@@ -30,6 +30,6 @@
 #define MSmSubPixelUnits		(1<<MSmSubPixelBits)
 #define MSmHalfSubPixel		(MSmSubPixelUnits/2)
 
-#define MSmNumPerspectiveGuardBits	
+#define MSmNumPerspectiveGuardBits
 
 #endif

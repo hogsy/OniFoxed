@@ -63,19 +63,19 @@ enum
 	ONcLS_Btn_Load					= 100,
 	ONcLS_Btn_Save					= 101,
 	ONcLS_Btn_Film					= 102,
-	
+
 	ONcLS_Tab_Load					= 400,
 	ONcLSL_LB_SavedGames			= 401,
 	ONcLSL_EF_NewName				= 402,
 	ONcLSL_Btn_Delete				= 403,
 	ONcLSL_Btn_Rename				= 404,
 	ONcLSL_Btn_Load					= 405,
-	
+
 	ONcLS_Tab_Save					= 500,
 	ONcLSS_LB_SavedGames			= 501,
 	ONcLSS_EF_NewSavedGame			= 502,
 	ONcLSS_Btn_Save					= 503,
-	
+
 	ONcLS_Tab_Film					= 600,
 	ONcLSF_LB_SavedFilms			= 601,
 	ONcLSF_EF_NewName				= 602,
@@ -91,10 +91,10 @@ enum
 	ONcOptns_Btn_AV					= 100,
 	ONcOptns_Btn_Controls			= 101,
 	ONcOptns_Btn_Advanced			= 102,
-	
+
 	ONcOptns_Tab_Presets			= 400,
 	ONcOP_LB_Presets				= 401,
-	
+
 	ONcOptns_Tab_AV					= 500,
 	ONcOAV_Sldr_Volume				= 501,
 	ONcOAV_Sldr_Music				= 502,
@@ -103,7 +103,7 @@ enum
 	ONcOAV_List_Resolution			= 505,
 	ONcOAV_List_Driver				= 506,
 	ONcOAV_Sldr_Gamma				= 507,
-	
+
 	ONcOptns_Tab_Controls			= 600,
 	ONcOC_EF_Forward1				= 601,
 	ONcOC_EF_Forward2				= 602,
@@ -128,7 +128,7 @@ enum
 	ONcOC_EF_Special1				= 621,
 	ONcOC_EF_Special2				= 622,
 	ONcOC_CB_InvertMouse			= 624,
-	
+
 	ONcOptns_Tab_Advanced			= 700,
 	ONcOA_CB_Blood					= 701,
 	ONcOA_CB_MotionBlur				= 702,
@@ -142,21 +142,21 @@ enum
 	ONcMP_Btn_HostGame				= 100,
 	ONcMP_Btn_JoinGame				= 101,
 	ONcMP_Btn_Options				= 102,
-	
+
 	ONcMP_Tab_HostGame				= 500,
 	ONcMPHG_Btn_StartHost			= 501,
 	ONcMPHG_EF_HostName				= 502,
 	ONcMPHG_EF_Description			= 503,
 	ONcMPHG_LB_Level				= 504,
 	ONcMPHG_EF_NumBots				= 509,
-	
+
 	ONcMP_Tab_JoinGame				= 600,
 	ONcMPJG_Btn_Join				= 601,
 	ONcMPJG_EF_HostAddress			= 602,
 	ONcMPJG_EF_Password				= 603,
 	ONcMPJG_CB_RememberPassword		= 604,
 	ONcMPJG_LB_Hosts				= 605,
-	
+
 	ONcMP_Tab_Options				= 700,
 	ONcMPO_EF_PlayerName			= 701,
 	ONcMPO_EF_TeamName				= 702
@@ -186,7 +186,7 @@ ONrDialogCallback_Joining(
 	DMtMessage				inMessage,
 	UUtUns32				inParam1,
 	UUtUns32				inParam2);
-	
+
 UUtBool
 ONrDialogCallback_MainMenu(
 	DMtDialog				*inDialog,
@@ -229,16 +229,16 @@ ONrDialogCallback_Quit(
 	DMtMessage				inMessage,
 	UUtUns32				inParam1,
 	UUtUns32				inParam2);
-	
+
 // ----------------------------------------------------------------------
 void
 ONrDialog_MainMenu(
 	void);
-	
+
 void
 ONrDialog_SplashScreen(
 	void);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 ONrDialog_Initialize(

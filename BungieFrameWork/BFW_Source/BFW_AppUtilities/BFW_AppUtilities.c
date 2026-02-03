@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_AppUtilities.c
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: March 2, 1998
-	
+
 	PURPOSE: application utilities
-	
+
 	Copyright 1998
 
 */
@@ -59,7 +59,7 @@ struct AUtSharedElemArray
 	UUtUns32						elemSize;
 	AUtSharedElemArray_Equal		compareFunc;
 	UUtMemory_ParallelArray*		parallelArray;
-	
+
 	UUtMemory_ParallelArray_Member*	elemArray;
 	UUtMemory_ParallelArray_Member*	remapIndexArray;
 };
@@ -75,22 +75,22 @@ AUrSharedElemArray_New(
 	AUtSharedElemArray_Equal	inCompareFunc)
 {
 	AUtSharedElemArray*	newSharedElemArray;
-	
+
 	newSharedElemArray = UUrMemory_Block_New(sizeof(AUtSharedElemArray));
 	if(newSharedElemArray == NULL)
 	{
 		return NULL;
 	}
-	
+
 	newSharedElemArray->elemSize = inElemSize;
 	newSharedElemArray->compareFunc = inCompareFunc;
-	
+
 	newSharedElemArray->parallelArray = UUrMemory_ParallelArray_New(1000, 0, 1000);
 	if(newSharedElemArray->parallelArray == NULL)
 	{
 		return NULL;
 	}
-	
+
 	newSharedElemArray->elemArray =
 		UUrMemory_ParallelArray_Member_New(
 			newSharedElemArray->parallelArray,
@@ -99,7 +99,7 @@ AUrSharedElemArray_New(
 	{
 		return NULL;
 	}
-	
+
 	newSharedElemArray->remapIndexArray =
 		UUrMemory_ParallelArray_Member_New(
 			newSharedElemArray->parallelArray,
@@ -108,7 +108,7 @@ AUrSharedElemArray_New(
 	{
 		return NULL;
 	}
-	
+
 	return newSharedElemArray;
 }
 
@@ -141,29 +141,29 @@ AUrSharedElemArray_FindElem(
 	UUtUns32*	remapArray;
 	UUtUns32	remappedIndex;
 	UUtInt16	compareResult;
-	
+
 	UUmAssertReadPtr(outElemIndex, sizeof(UUtUns32));
-	
+
 	elemMemory = (char*)UUrMemory_ParallelArray_Member_GetMemory(inSharedElemArray->parallelArray, inSharedElemArray->elemArray);
 	remapArray = (UUtUns32*)UUrMemory_ParallelArray_Member_GetMemory(inSharedElemArray->parallelArray, inSharedElemArray->remapIndexArray);
 	elemSize = inSharedElemArray->elemSize;
-	
+
 	lowIndex = 0;
 	highIndex = (UUtUns32)UUrMemory_ParallelArray_GetNumUsedElems(inSharedElemArray->parallelArray);
-	
+
 	*outElemIndex = 0xFFFFFFFF;
-	
+
 	while(lowIndex < highIndex)
 	{
 		midIndex = (lowIndex + highIndex) >> 1;
-		
+
 		remappedIndex = remapArray[midIndex];
-		
+
 		targetElem = elemMemory + elemSize * remappedIndex;
 		UUmAssertReadPtr(targetElem, elemSize);
-		
+
 		compareResult = inSharedElemArray->compareFunc(inElem, targetElem);
-		
+
 		if(compareResult == 0)
 		{
 			if(outElemIndex != NULL) *outElemIndex = remappedIndex;
@@ -178,9 +178,9 @@ AUrSharedElemArray_FindElem(
 			highIndex = midIndex;
 		}
 	}
-	
+
 	*outElemIndex = lowIndex;
-	
+
 	return UUcFalse;
 }
 
@@ -198,34 +198,34 @@ AUrSharedElemArray_AddElem(
 	UUtUns32*	remapArray;
 	UUtUns32	numElems;
 	UUtUns32	lowIndex;
-	
+
 	elemMemory = (char*)UUrMemory_ParallelArray_Member_GetMemory(inSharedElemArray->parallelArray, inSharedElemArray->elemArray);
 	remapArray = (UUtUns32*)UUrMemory_ParallelArray_Member_GetMemory(inSharedElemArray->parallelArray, inSharedElemArray->remapIndexArray);
 	elemSize = inSharedElemArray->elemSize;
-	
+
 	if(AUrSharedElemArray_FindElem(
 		inSharedElemArray,
 		inElem,
 		outElemIndex) == UUcTrue) return UUcError_None;
-	
+
 	numElems = (UUtUns32)UUrMemory_ParallelArray_GetNumUsedElems(inSharedElemArray->parallelArray);
 	if((UUtUns32)(numElems + 1) < numElems)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "Can add more than MaxUns32 number elements");
 	}
-	
-	error = 
+
+	error =
 		UUrMemory_ParallelArray_AddNewElem(
 			inSharedElemArray->parallelArray,
 			&newIndex,
 			NULL);
 	UUmError_ReturnOnErrorMsg(error, "could not allocate new elem");
-	
+
 	elemMemory = (char*)UUrMemory_ParallelArray_Member_GetMemory(inSharedElemArray->parallelArray, inSharedElemArray->elemArray);
 	remapArray = (UUtUns32*)UUrMemory_ParallelArray_Member_GetMemory(inSharedElemArray->parallelArray, inSharedElemArray->remapIndexArray);
-	
+
 	lowIndex = *outElemIndex;
-	
+
 	if(lowIndex != newIndex)
 	{
 		UUrMemory_MoveOverlap(
@@ -233,13 +233,13 @@ AUrSharedElemArray_AddElem(
 			remapArray + lowIndex + 1,
 			(newIndex - lowIndex) * sizeof(UUtUns32));
 	}
-	
+
 	remapArray[lowIndex] = (UUtUns32)newIndex;
-	
+
 	newElem = (char*)elemMemory + newIndex * elemSize;
-	
+
 	UUrMemory_MoveFast(inElem, newElem, elemSize);
-	
+
 	if(outElemIndex != NULL)
 	{
 		*outElemIndex = (UUtUns32)newIndex;
@@ -258,9 +258,9 @@ AUiSharedElemArray_Compare(
 	char*		arrayBase;
 	UUtInt16	compare_function_result;
 	UUtBool		result;
-	
+
 	UUmAssertReadPtr(AUgSharedElem_Array, sizeof(AUtSharedElemArray));
-	
+
 	arrayBase = AUrSharedElemArray_GetList(AUgSharedElem_Array);
 
 	compare_function_result = AUgSharedElem_Array->compareFunc(
@@ -268,7 +268,7 @@ AUiSharedElemArray_Compare(
 					arrayBase + inB * AUgSharedElem_Array->elemSize);
 
 	result = compare_function_result > 0;
-	
+
 	return result;
 }
 
@@ -287,16 +287,16 @@ AUrSharedElemArray_Resort(
 	{
 		sortedIndexList[itr] = itr;
 	}
-	
+
 	AUgSharedElem_Array = inSharedElemArray;
-	
+
 	AUrQSort_32(
 		sortedIndexList,
 		numElems,
 		AUiSharedElemArray_Compare);
-	
+
 	AUgSharedElem_Array = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -310,31 +310,31 @@ AUrSharedElemArray_Reorder(
 	UUtUns32	numElems;
 	char*		originalList;
 	UUtUns32	itr;
-	
+
 	numElems = AUrSharedElemArray_GetNum(inSharedElemArray);
-	
+
 	tempMemory = UUrMemory_Block_New(inSharedElemArray->elemSize * numElems);
 	UUmError_ReturnOnNull(tempMemory);
-	
+
 	originalList = AUrSharedElemArray_GetList(inSharedElemArray);
 	UUmAssertReadPtr(originalList, sizeof(void*));
-	
+
 	UUrMemory_MoveFast(originalList, tempMemory, inSharedElemArray->elemSize * numElems);
-	
+
 	for(itr = 0; itr < numElems; itr++)
 	{
 		UUmAssert(inRemapArray[itr] < numElems);
-		
+
 		UUrMemory_MoveFast(
 			tempMemory + itr * inSharedElemArray->elemSize,
 			originalList + inRemapArray[itr] * inSharedElemArray->elemSize,
 			inSharedElemArray->elemSize);
 	}
-	
+
 	UUrMemory_Block_Delete(tempMemory);
-	
+
 	AUrSharedElemArray_Resort(inSharedElemArray);
-	
+
 	return UUcError_None;
 }
 
@@ -343,11 +343,11 @@ AUrSharedElemArray_GetList(
 	AUtSharedElemArray*	inSharedElemArray)
 {
 	void*	result;
-	
+
 	result = UUrMemory_ParallelArray_Member_GetMemory(inSharedElemArray->parallelArray, inSharedElemArray->elemArray);
 
 	UUmAssert(result != NULL);
-	
+
 	return result;
 }
 
@@ -395,7 +395,7 @@ AUiSharedPointArray_CompareFunc(
 	{
 		return (inPointA->x > inPointB->x) ? 1 : -1;
 	}
-	
+
 	return 0;
 }
 
@@ -435,16 +435,16 @@ void AUrSharedPointArray_RoundPoint(M3tPoint3D *ioPoint)
 	ioPoint->x*= one_over_epsilon;
 	ioPoint->y*= one_over_epsilon;
 	ioPoint->z*= one_over_epsilon;
-	
+
 	ioPoint->x = (float) MUrFloat_Round_To_Int(ioPoint->x);
 	ioPoint->y = (float) MUrFloat_Round_To_Int(ioPoint->y);
 	ioPoint->z = (float) MUrFloat_Round_To_Int(ioPoint->z);
-	
+
 	ioPoint->x *= UUcEpsilon;
 	ioPoint->y *= UUcEpsilon;
 	ioPoint->z *= UUcEpsilon;
 	#endif
-	
+
 	#if 0
 	ioPoint->x = inX;
 	ioPoint->y = inY;
@@ -467,9 +467,9 @@ AUrSharedPointArray_AddPoint(
 	point3D.x = inX;
 	point3D.y = inY;
 	point3D.z = inZ;
-	
+
 	AUrSharedPointArray_RoundPoint(&point3D);
-	
+
 	return
 		AUrSharedElemArray_AddElem(
 			(AUtSharedElemArray*)inSharedPointArray,
@@ -508,7 +508,7 @@ AUrSharedPointArray_Dump(
 {
 	UUtUns32	i;
 	M3tPoint3D*	curPoint;
-	
+
 	for(i = 0, curPoint = AUrSharedPointArray_GetList(inSharedPointArray);
 		i < AUrSharedPointArray_GetNum(inSharedPointArray);
 		i++, curPoint++)
@@ -536,110 +536,110 @@ AUrSharedPointArray_CreateTemplate(
 
 	sharedPoints = AUrSharedPointArray_GetList(inSharedPointArray);
 	numSharedPoints = AUrSharedPointArray_GetNum(inSharedPointArray);
-	
+
 	if(numSharedPoints > UUcMaxUns32)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Too many points in this array");
 	}
 
-	error = 
+	error =
 		TMrConstruction_Instance_Renew(
 			M3cTemplate_Point3DArray,
 			inName,
 			numSharedPoints + M3cExtraCoords,  // Hack - this is needed for Akira
 			outReference);
-			
+
 	if(error != UUcError_None)
 	{
 		UUmError_ReturnOnErrorMsg(error, "Could not create point array");
 	}
-	
+
 	pointArray = (*outReference)->points;
-	
+
 	for(i = 0; i < numSharedPoints; i++)
 	{
 		pointArray[i] = sharedPoints[i];
 	}
-	
+
 	(*outReference)->numPoints = numSharedPoints;
-	
+
 	return UUcError_None;
 }
 
 UUtError
 AUrSharedPointArray_InterpolatePoint(
 	AUtSharedPointArray*	inPointArray,
-	float					inA, 
-	float					inB, 
-	float					inC, 
-	float					inD, 
+	float					inA,
+	float					inB,
+	float					inC,
+	float					inD,
 	M3tPoint3D*				inInVertex,
 	M3tPoint3D*				inOutVertex,
 	UUtUns32				*outNewVertexIndex)
 {
 	/*
 		parametric equation of a line:
-		
+
 			X(t) = Xm * t + Xi
 			Y(t) = Ym * t + Yi
 			Z(t) = Zm * t + Zi
-			
+
 			F(t) = [X(t), Y(t), Z(t)]
-			
+
 			F(0) = inInVertex
 			F(1) = inOutVertex
-			
+
 			Xi = inInVertex->x, Xm = (inOutVertex->x - inInVertex->x)
 			Yi = inInVertex->y, Ym = (inOutVertex->y - inInVertex->y)
 			Zi = inInVertex->z, Zm = (inOutVertex->z - inInVertex->z)
-		
+
 		plane equation:
-		
+
 			a * X + b * Y + c * Z + d = 0
-			
+
 		substitute:
-		
+
 			a * X(t) + b * Y(t) + c * Z(t) + d = 0
-			
+
 			a * (Xm * t + Xi) + b * (Ym * t + Yi) + c * (Zm * t + Zi) + d = 0
-			
+
 			...
-			
+
 			t = -(a * Xi + b * Yi + c * Zi + d) / (a * Xm + b * Ym + c * Zm)
-			
+
 		plug t back into X(t), Y(t), Z(t) for final result
-		
+
 	*/
-	
+
 	UUtError	error;
 	float		Xi, Yi, Zi;
 	float		Xm, Ym, Zm;
 	float		Xn, Yn, Zn;
 	float		denom;
 	float		t;
-	
+
 	Xi = inInVertex->x;
 	Yi = inInVertex->y;
 	Zi = inInVertex->z;
-	
+
 	Xm = (inOutVertex->x - Xi);
 	Ym = (inOutVertex->y - Yi);
 	Zm = (inOutVertex->z - Zi);
-	
+
 	denom = inA * Xm + inB * Ym + inC * Zm;
-	
+
 	UUmAssert(denom != 0.0f);
-	
+
 	t = -(inA * Xi + inB * Yi + inC * Zi + inD) / denom;
-	
+
 	if(t > 0.0011f) t -= 0.0011f;
 	else t -= t * 0.1f;
-	
+
 	Xn = Xm * t + Xi;
 	Yn = Ym * t + Yi;
 	Zn = Zm * t + Zi;
-	
-	error = 
+
+	error =
 		AUrSharedPointArray_AddPoint(
 			inPointArray,
 			Xn,
@@ -647,7 +647,7 @@ AUrSharedPointArray_InterpolatePoint(
 			Zn,
 			outNewVertexIndex);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -695,7 +695,7 @@ AUiSharedPlaneEquArray_CompareFunc(
 	{
 		return UUmFloat_CompareGT(inPlaneEquA->a, inPlaneEquB->a) ? 1 : -1;
 	}
-	
+
 	return 0;
 }
 
@@ -737,7 +737,7 @@ AUrSharedPlaneEquArray_AddPlaneEqu(
 	UUtUns32			highBit;
 	M3tPlaneEquation	planeEqu;
 	AUtSharedElemArray*	sharedElemArray = (AUtSharedElemArray*)inSharedPlaneEquArray;
-	
+
 	if(inD != 0.0f)
 	{
 		if(inD < 0.0f)
@@ -746,9 +746,9 @@ AUrSharedPlaneEquArray_AddPlaneEqu(
 			planeEqu.b = -inB;
 			planeEqu.c = -inC;
 			planeEqu.d = -inD;
-			
+
 			highBit = 0x80000000;
-			
+
 		}
 		else
 		{
@@ -756,29 +756,29 @@ AUrSharedPlaneEquArray_AddPlaneEqu(
 			planeEqu.b = inB;
 			planeEqu.c = inC;
 			planeEqu.d = inD;
-			
+
 			highBit = 0;
 		}
-	
+
 		error =
 			AUrSharedElemArray_AddElem(
 				(AUtSharedElemArray*)inSharedPlaneEquArray,
 				&planeEqu,
 				&result);
 		UUmError_ReturnOnErrorMsg(error, "could not add new elem");
-		
+
 		if(outPlaneEquIndex != NULL)
 		{
 			*outPlaneEquIndex = result | highBit;
 		}
-		
+
 		UUmAssert(result < 0x7FFFFFFF);
 	}
 	else
 	{
 		UUtUns32			curPlaneEquIndex;
 		M3tPlaneEquation*	curPlaneEqu;
-		
+
 		for(curPlaneEquIndex = 0,
 				curPlaneEqu = (M3tPlaneEquation*)UUrMemory_ParallelArray_Member_GetMemory(sharedElemArray->parallelArray, sharedElemArray->elemArray);
 			curPlaneEquIndex < UUrMemory_ParallelArray_GetNumUsedElems(sharedElemArray->parallelArray);
@@ -824,10 +824,10 @@ AUrSharedPlaneEquArray_AddPlaneEqu(
 		{
 			*outPlaneEquIndex = result;
 		}
-		
+
 		UUmAssert(result < 0x7FFFFFFF);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -858,7 +858,7 @@ AUrSharedPlaneEquArray_Dump(
 {
 	UUtUns32			i;
 	M3tPlaneEquation*	curPlaneEqu;
-	
+
 	for(i = 0, curPlaneEqu = AUrSharedPlaneEquArray_GetList(inSharedPlaneEquArray);
 		i < AUrSharedPlaneEquArray_GetNum(inSharedPlaneEquArray);
 		i++, curPlaneEqu++)
@@ -887,25 +887,25 @@ AUrSharedPlaneEquArray_CreateTemplate(
 	sharedPlaneEqus = AUrSharedPlaneEquArray_GetList(inSharedPlaneEquArray);
 	numSharedPlaneEqus = AUrSharedPlaneEquArray_GetNum(inSharedPlaneEquArray);
 
-	error = 
+	error =
 		TMrConstruction_Instance_Renew(
 			M3cTemplate_PlaneEquationArray,
 			inName,
 			numSharedPlaneEqus,
 			outReference);
-			
+
 	if(error != UUcError_None)
 	{
 		UUmError_ReturnOnErrorMsg(error, "Could not create PlaneEqu array");
 	}
-	
+
 	planeEquArray = (*outReference)->planes;
-	
+
 	for(i = 0; i < numSharedPlaneEqus; i++)
 	{
 		planeEquArray[i] = sharedPlaneEqus[i];
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -930,7 +930,7 @@ AUrSharedPlaneEquArray_FindPlaneEqu(
 		planeEqu.b = -inB;
 		planeEqu.c = -inC;
 		planeEqu.d = -inD;
-		
+
 		highBit = 0x80000000;
 	}
 	else
@@ -939,10 +939,10 @@ AUrSharedPlaneEquArray_FindPlaneEqu(
 		planeEqu.b = inB;
 		planeEqu.c = inC;
 		planeEqu.d = inD;
-		
+
 		highBit = 0;
 	}
-	
+
 	if(AUrSharedElemArray_FindElem(
 		sharedElemArray,
 		&planeEqu,
@@ -954,13 +954,13 @@ AUrSharedPlaneEquArray_FindPlaneEqu(
 
 		return UUcTrue;
 	}
-	
+
 	if(inD == 0.0f)
 	{
 		planeEqu.a = -inA;
 		planeEqu.b = -inB;
 		planeEqu.c = -inC;
-		
+
 		if(AUrSharedElemArray_FindElem(
 			sharedElemArray,
 			&planeEqu,
@@ -973,13 +973,13 @@ AUrSharedPlaneEquArray_FindPlaneEqu(
 			return UUcTrue;
 		}
 	}
-	
+
 	remapArray = (UUtUns32*)UUrMemory_ParallelArray_Member_GetMemory(
 							sharedElemArray->parallelArray,
 							sharedElemArray->remapIndexArray);
-	
+
 	*outPlaneEquIndex = remapArray[*outPlaneEquIndex];
-	
+
 	return UUcFalse;
 }
 
@@ -992,77 +992,77 @@ AUiSharedQuadArray_CompareFunc(
 	M3tQuad*	inQuadB)
 {
 	if(
-		inQuadA->indices[0] == inQuadB->indices[0] && 
-		inQuadA->indices[1] == inQuadB->indices[1] && 
-		inQuadA->indices[2] == inQuadB->indices[2] && 
+		inQuadA->indices[0] == inQuadB->indices[0] &&
+		inQuadA->indices[1] == inQuadB->indices[1] &&
+		inQuadA->indices[2] == inQuadB->indices[2] &&
 		inQuadA->indices[3] == inQuadB->indices[3])
 	{
 		return 0;
 	}
 
 	if(
-		inQuadA->indices[0] == inQuadB->indices[1] && 
-		inQuadA->indices[1] == inQuadB->indices[2] && 
-		inQuadA->indices[2] == inQuadB->indices[3] && 
+		inQuadA->indices[0] == inQuadB->indices[1] &&
+		inQuadA->indices[1] == inQuadB->indices[2] &&
+		inQuadA->indices[2] == inQuadB->indices[3] &&
 		inQuadA->indices[3] == inQuadB->indices[0])
 	{
 		return 0;
 	}
 
 	if(
-		inQuadA->indices[0] == inQuadB->indices[2] && 
-		inQuadA->indices[1] == inQuadB->indices[3] && 
-		inQuadA->indices[2] == inQuadB->indices[0] && 
+		inQuadA->indices[0] == inQuadB->indices[2] &&
+		inQuadA->indices[1] == inQuadB->indices[3] &&
+		inQuadA->indices[2] == inQuadB->indices[0] &&
 		inQuadA->indices[3] == inQuadB->indices[1])
 	{
 		return 0;
 	}
 
 	if(
-		inQuadA->indices[0] == inQuadB->indices[3] && 
-		inQuadA->indices[1] == inQuadB->indices[0] && 
-		inQuadA->indices[2] == inQuadB->indices[1] && 
+		inQuadA->indices[0] == inQuadB->indices[3] &&
+		inQuadA->indices[1] == inQuadB->indices[0] &&
+		inQuadA->indices[2] == inQuadB->indices[1] &&
 		inQuadA->indices[3] == inQuadB->indices[2])
 	{
 		return 0;
 	}
 
 	if(
-		inQuadA->indices[0] == inQuadB->indices[3] && 
-		inQuadA->indices[1] == inQuadB->indices[2] && 
-		inQuadA->indices[2] == inQuadB->indices[1] && 
+		inQuadA->indices[0] == inQuadB->indices[3] &&
+		inQuadA->indices[1] == inQuadB->indices[2] &&
+		inQuadA->indices[2] == inQuadB->indices[1] &&
 		inQuadA->indices[3] == inQuadB->indices[0])
 	{
 		return 0;
 	}
 
 	if(
-		inQuadA->indices[0] == inQuadB->indices[2] && 
-		inQuadA->indices[1] == inQuadB->indices[1] && 
-		inQuadA->indices[2] == inQuadB->indices[0] && 
+		inQuadA->indices[0] == inQuadB->indices[2] &&
+		inQuadA->indices[1] == inQuadB->indices[1] &&
+		inQuadA->indices[2] == inQuadB->indices[0] &&
 		inQuadA->indices[3] == inQuadB->indices[3])
 	{
 		return 0;
 	}
 
 	if(
-		inQuadA->indices[0] == inQuadB->indices[1] && 
-		inQuadA->indices[1] == inQuadB->indices[0] && 
-		inQuadA->indices[2] == inQuadB->indices[3] && 
+		inQuadA->indices[0] == inQuadB->indices[1] &&
+		inQuadA->indices[1] == inQuadB->indices[0] &&
+		inQuadA->indices[2] == inQuadB->indices[3] &&
 		inQuadA->indices[3] == inQuadB->indices[2])
 	{
 		return 0;
 	}
 
 	if(
-		inQuadA->indices[0] == inQuadB->indices[0] && 
-		inQuadA->indices[1] == inQuadB->indices[3] && 
-		inQuadA->indices[2] == inQuadB->indices[2] && 
+		inQuadA->indices[0] == inQuadB->indices[0] &&
+		inQuadA->indices[1] == inQuadB->indices[3] &&
+		inQuadA->indices[2] == inQuadB->indices[2] &&
 		inQuadA->indices[3] == inQuadB->indices[1])
 	{
 		return 0;
 	}
-	
+
 	if(inQuadA->indices[0] == inQuadB->indices[0])
 	{
 		if(inQuadA->indices[1] == inQuadB->indices[1])
@@ -1085,7 +1085,7 @@ AUiSharedQuadArray_CompareFunc(
 	{
 		return inQuadA->indices[0] > inQuadB->indices[0] ? 1 : -1;
 	}
-	
+
 	return 0;
 }
 
@@ -1123,7 +1123,7 @@ AUrSharedQuadArray_AddQuad(
 	UUtUns32			*outQuadIndex)
 {
 	M3tQuad	quad;
-	
+
 	UUmAssert(inIndex0 < 0x80000000);
 	UUmAssert(inIndex1 < 0x80000000);
 	UUmAssert(inIndex2 < 0x80000000);
@@ -1133,7 +1133,7 @@ AUrSharedQuadArray_AddQuad(
 	quad.indices[1] = inIndex1;
 	quad.indices[2] = inIndex2;
 	quad.indices[3] = inIndex3;
-	
+
 	return
 		AUrSharedElemArray_AddElem(
 			(AUtSharedElemArray*)inSharedQuadArray,
@@ -1169,7 +1169,7 @@ AUrSharedQuadArray_Dump(
 {
 	UUtUns32			i;
 	M3tQuad*		curQuad;
-	
+
 	for(i = 0, curQuad = AUrSharedQuadArray_GetList(inSharedQuadArray);
 		i < AUrSharedQuadArray_GetNum(inSharedQuadArray);
 		i++, curQuad++)
@@ -1194,37 +1194,37 @@ AUrSharedQuadArray_CreateTemplate(
 	UUtUns32			numSharedQuads;
 	M3tQuad*			quadArray;
 	UUtUns32			i;
-	
+
 	sharedQuads = AUrSharedQuadArray_GetList(inSharedQuadArray);
 	numSharedQuads = AUrSharedQuadArray_GetNum(inSharedQuadArray);
 
-	error = 
+	error =
 		TMrConstruction_Instance_Renew(
 			M3cTemplate_QuadArray,
 			inName,
 			numSharedQuads,
 			outReference);
-			
+
 	if(error != UUcError_None)
 	{
 		UUmError_ReturnOnErrorMsg(error, "Could not create Quad array");
 	}
-	
+
 	quadArray = (*outReference)->quads;
-	
+
 	for(i = 0; i < numSharedQuads; i++)
 	{
 		UUmAssert(sharedQuads[i].indices[0] < UUcMaxUns32);
 		UUmAssert(sharedQuads[i].indices[1] < UUcMaxUns32);
 		UUmAssert(sharedQuads[i].indices[2] < UUcMaxUns32);
 		UUmAssert(sharedQuads[i].indices[3] < UUcMaxUns32);
-		
+
 		quadArray[i].indices[0] = sharedQuads[i].indices[0];
 		quadArray[i].indices[1] = sharedQuads[i].indices[1];
 		quadArray[i].indices[2] = sharedQuads[i].indices[2];
 		quadArray[i].indices[3] = sharedQuads[i].indices[3];
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1293,11 +1293,11 @@ AUrSharedVectorArray_AddVector(
 	UUtUns32				*outVectorIndex)
 {
 	M3tVector3D	vector3D;
-	
+
 	vector3D.x = inX;
 	vector3D.y = inY;
 	vector3D.z = inZ;
-	
+
 	return
 		AUrSharedElemArray_AddElem(
 			(AUtSharedElemArray*)inSharedVectorArray,
@@ -1326,7 +1326,7 @@ AUrSharedVectorArray_Dump(
 {
 	UUtUns32	i;
 	M3tVector3D*	curVector;
-	
+
 	for(i = 0, curVector = AUrSharedVectorArray_GetList(inSharedVectorArray);
 		i < AUrSharedVectorArray_GetNum(inSharedVectorArray);
 		i++, curVector++)
@@ -1354,25 +1354,25 @@ AUrSharedVectorArray_CreateTemplate(
 	sharedVectors = AUrSharedVectorArray_GetList(inSharedVectorArray);
 	numSharedVectors = AUrSharedVectorArray_GetNum(inSharedVectorArray);
 
-	error = 
+	error =
 		TMrConstruction_Instance_Renew(
 			M3cTemplate_Vector3DArray,
 			inName,
 			numSharedVectors,
 			outReference);
-			
+
 	if(error != UUcError_None)
 	{
 		UUmError_ReturnOnErrorMsg(error, "Could not create Vector array");
 	}
-	
+
 	vectorArray = (*outReference)->vectors;
-	
+
 	for(i = 0; i < numSharedVectors; i++)
 	{
 		vectorArray[i] = sharedVectors[i];
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1392,14 +1392,14 @@ AUiSharedTexCoordArray_CompareFunc(
 		}
 		else
 		{
-			return UUmFloat_CompareGT(inTexCoordA->v, inTexCoordB->v) ? 1 : -1;		
+			return UUmFloat_CompareGT(inTexCoordA->v, inTexCoordB->v) ? 1 : -1;
 		}
 	}
 	else
 	{
-		return UUmFloat_CompareGT(inTexCoordA->u, inTexCoordB->u) ? 1 : -1;		
+		return UUmFloat_CompareGT(inTexCoordA->u, inTexCoordB->u) ? 1 : -1;
 	}
-	
+
 	return 0;
 }
 
@@ -1435,21 +1435,21 @@ AUrSharedTexCoordArray_AddTexCoord(
 	UUtUns32				*outTexCoordIndex)
 {
 	M3tTextureCoord	texCoord;
-	
+
 	#if 0
 	inU *= 1.0f / UUcEpsilon;
 	inV *= 1.0f / UUcEpsilon;
-	
+
 	inU = UUmFloat_Round(inU);
 	inV = UUmFloat_Round(inV);
 
 	inU *= UUcEpsilon;
 	inV *= UUcEpsilon;
 	#endif
-	
+
 	texCoord.u = inU;
 	texCoord.v = inV;
-	
+
 	return
 		AUrSharedElemArray_AddElem(
 			(AUtSharedElemArray*)inSharedTexCoordArray,
@@ -1485,33 +1485,33 @@ AUrSharedTexCoordArray_CreateTemplate(
 
 	sharedTexCoords = AUrSharedTexCoordArray_GetList(inSharedTexCoordArray);
 	numSharedTexCoords = AUrSharedTexCoordArray_GetNum(inSharedTexCoordArray);
-	
+
 	if(numSharedTexCoords > UUcMaxUns32)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Too many texture coords");
 	}
 
-	error = 
+	error =
 		TMrConstruction_Instance_Renew(
 			M3cTemplate_TextureCoordArray,
 			inName,
 			numSharedTexCoords + M3cExtraCoords,
 			outReference);
-			
+
 	if(error != UUcError_None)
 	{
 		UUmError_ReturnOnErrorMsg(error, "Could not create TexCoord array");
 	}
-	
+
 	texCoordArray = (*outReference)->textureCoords;
-	
+
 	for(i = 0; i < numSharedTexCoords; i++)
 	{
 		texCoordArray[i] = sharedTexCoords[i];
 	}
-	
+
 	(*outReference)->numTextureCoords = numSharedTexCoords;
-	
+
 	return UUcError_None;
 }
 
@@ -1531,14 +1531,14 @@ AUiSharedEdgeArray_CompareFunc(
 		}
 		else
 		{
-			return inEdgeA->vIndex1 > inEdgeB->vIndex1 ? 1 : -1;		
+			return inEdgeA->vIndex1 > inEdgeB->vIndex1 ? 1 : -1;
 		}
 	}
 	else
 	{
-		return inEdgeA->vIndex0 > inEdgeB->vIndex0 ? 1 : -1;		
+		return inEdgeA->vIndex0 > inEdgeB->vIndex0 ? 1 : -1;
 	}
-	
+
 	return 0;
 }
 
@@ -1579,7 +1579,7 @@ AUrSharedEdgeArray_AddEdge(
 	UUtUns32	resultIndex;
 	AUtEdge*	resultEdge;
 	UUtUns32	i;
-	
+
 	if(inEdge0 < inEdge1)
 	{
 		edge.vIndex0 = inEdge0;
@@ -1590,22 +1590,22 @@ AUrSharedEdgeArray_AddEdge(
 		edge.vIndex0 = inEdge1;
 		edge.vIndex1 = inEdge0;
 	}
-	
+
 	for(i = 0; i < AUcMaxQuadsPerEdge; i++)
 	{
 		edge.quadIndices[i] = UUcMaxUns32;
 	}
-	
-	error = 
+
+	error =
 		AUrSharedElemArray_AddElem(
 			(AUtSharedElemArray*)inSharedEdgeArray,
 			&edge,
 			&resultIndex);
 	UUmError_ReturnOnError(error);
-	
-	resultEdge = 
+
+	resultEdge =
 		AUrSharedEdgeArray_GetList(inSharedEdgeArray) + resultIndex;
-	
+
 	for(i = 0; i < AUcMaxQuadsPerEdge; i++)
 	{
 		if(resultEdge->quadIndices[i] == UUcMaxUns32)
@@ -1614,17 +1614,17 @@ AUrSharedEdgeArray_AddEdge(
 			break;
 		}
 	}
-	
+
 	if(i >= AUcMaxQuadsPerEdge)
 	{
 		UUmError_ReturnOnErrorMsgP(UUcError_Generic, "An edge is shared by more then %d  quads, talk to brent", AUcMaxQuadsPerEdge, 0, 0);
 	}
-	
+
 	if(outEdgeIndex != NULL)
 	{
 		*outEdgeIndex = resultIndex;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1640,16 +1640,16 @@ AUrSharedEdgeArray_AddPoly(
 	UUtUns32	curVertexItr;
 	UUtUns32	vIndex0;
 	UUtUns32	vIndex1;
-	
+
 	UUmAssertReadPtr(inVertices, sizeof(UUtUns32) * inNumVertices);
 	UUmAssertWritePtr(outEdgeIndices, sizeof(UUtUns32) * inNumVertices);
-	
+
 	for(curVertexItr = 0; curVertexItr < inNumVertices; curVertexItr++)
 	{
 		vIndex0 = curVertexItr;
 		vIndex1 = (curVertexItr + 1) % inNumVertices;
-		
-		error = 	
+
+		error =
 			AUrSharedEdgeArray_AddEdge(
 				inSharedEdgeArray,
 				inVertices[vIndex0],
@@ -1658,7 +1658,7 @@ AUrSharedEdgeArray_AddPoly(
 				&outEdgeIndices[curVertexItr]);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1696,7 +1696,7 @@ AUrSharedEdge_FindOtherVertex(
 {
 	if(inEdge->vIndex0 == inVertexIndex) return inEdge->vIndex1;
 	else if(inEdge->vIndex1 == inVertexIndex) return inEdge->vIndex0;
-	
+
 	return UUcMaxUns32;
 }
 
@@ -1706,12 +1706,12 @@ AUrSharedEdge_GetOtherFaceIndex(
 	UUtUns32	inFaceIndex)
 {
 	UUtUns32	itr;
-	
+
 	for(itr = 0; itr < AUcMaxQuadsPerEdge; itr++)
 	{
 		if(inEdge->quadIndices[itr] != inFaceIndex) return inEdge->quadIndices[itr];
 	}
-	
+
 	return UUcMaxUns32;
 }
 
@@ -1725,16 +1725,16 @@ AUrSharedEdge_Triangle_FindEdge(
 	UUtUns32		itr;
 	AUtEdge*		targetEdge;
 	AUtEdge*		edgeList;
-	
+
 	edgeList = (AUtEdge*)AUrSharedElemArray_GetList((AUtSharedElemArray*)inSharedEdgeArray);
-	
+
 	for(itr = 0; itr < 3; itr++)
 	{
 		targetEdge = edgeList + inTriEdges->indices[itr];
 		if((targetEdge->vIndex0 == inIndex0 && targetEdge->vIndex1 == inIndex1) ||
 			(targetEdge->vIndex0 == inIndex1 && targetEdge->vIndex1 == inIndex0)) return targetEdge;
 	}
-	
+
 	return NULL;
 }
 
@@ -1780,17 +1780,17 @@ AUrSharedStringArray_AddString(
 
 	AUtSharedString	newString;
 	UUtUns32		stringIndex;
-	
+
 	if(strlen(inString) > AUcMaxStringLength)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_None, "String too long");
 	}
-	
+
 	if(outStringIndex == NULL) outStringIndex = &stringIndex;
 
 	UUrString_Copy(newString.string, inString, AUcMaxStringLength);
 	newString.data = inData;
-	
+
 	return AUrSharedElemArray_AddElem(
 			(AUtSharedElemArray*)inSharedStringArray,
 			&newString,
@@ -1818,14 +1818,14 @@ AUrSharedStringArray_GetIndex(
 	UUtUns32				*outIndex)
 {
 	AUtSharedString	newString;
-	
+
 	if(strlen(inString) > AUcMaxStringLength)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_None, "String too long");
 	}
-	
+
 	UUrString_Copy(newString.string, inString, AUcMaxStringLength);
-	
+
 	return AUrSharedElemArray_FindElem(
 			(AUtSharedElemArray*)inSharedStringArray,
 			&newString,
@@ -1840,8 +1840,8 @@ AUrSharedStringArray_GetData(
 {
 	UUtUns32			index;
 	AUtSharedString*	desiredString;
-	
-	
+
+
 	if(AUrSharedStringArray_GetIndex(
 		inSharedStringArray,
 		inString,
@@ -1849,11 +1849,11 @@ AUrSharedStringArray_GetData(
 	{
 		return UUcFalse;
 	}
-	
+
 	desiredString = AUrSharedStringArray_GetList(inSharedStringArray) + index;
-	
+
 	*outData = desiredString->data;
-	
+
 	return UUcTrue;
 }
 
@@ -2001,7 +2001,7 @@ AUrHashTable_Reset(
 {
 	UUmAssert(!"not implemented");
 }
-	
+
 void *
 AUrHashTable_Add(
 	AUtHashTable*	inHashTable,
@@ -2027,7 +2027,7 @@ AUrHashTable_Add(
 
 	return current_data_pointer;
 }
-	
+
 void*
 AUrHashTable_Find(
 	AUtHashTable*	inHashTable,
@@ -2078,7 +2078,7 @@ AUrQuad_FindMinMax(
 		curX = inPointList[inQuad->indices[i]].x;
 		curY = inPointList[inQuad->indices[i]].y;
 		curZ = inPointList[inQuad->indices[i]].z;
-		
+
 		if(curX < quadMinX) quadMinX = curX;
 		if(curY < quadMinY) quadMinY = curY;
 		if(curZ < quadMinZ) quadMinZ = curZ;
@@ -2086,7 +2086,7 @@ AUrQuad_FindMinMax(
 		if(curY > quadMaxY) quadMaxY = curY;
 		if(curZ > quadMaxZ) quadMaxZ = curZ;
 	}
-	
+
 	*outMinX = quadMinX;
 	*outMaxX = quadMaxX;
 	*outMinY = quadMinY;
@@ -2104,25 +2104,25 @@ AUrQuad_QuadOverlapsQuad(
 {
 	float	quadMinX, quadMaxX, quadMinY, quadMaxY, quadMinZ, quadMaxZ;
 	float	overlapMinX, overlapMaxX, overlapMinY, overlapMaxY, overlapMinZ, overlapMaxZ;
-	
+
 	if(inQuad == inQuadOverlapping) return UUcTrue;
-	
+
 	// XXX - HACK ALERT!
-	
+
 	AUrQuad_FindMinMax(
 		inPointList,
-		inQuad, 
+		inQuad,
 		&quadMinX, &quadMaxX,
 		&quadMinY, &quadMaxY,
 		&quadMinZ, &quadMaxZ);
 
 	AUrQuad_FindMinMax(
 		inPointList,
-		inQuadOverlapping, 
+		inQuadOverlapping,
 		&overlapMinX, &overlapMaxX,
 		&overlapMinY, &overlapMaxY,
 		&overlapMinZ, &overlapMaxZ);
-			
+
 	if(
 		overlapMinX > quadMaxX || overlapMaxX < quadMinX ||
 		overlapMinY > quadMaxY || overlapMaxY < quadMinY ||
@@ -2130,7 +2130,7 @@ AUrQuad_QuadOverlapsQuad(
 	{
 		return UUcFalse;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -2142,24 +2142,24 @@ AUrQuad_QuadWithinQuad(
 {
 	float	quadMinX, quadMaxX, quadMinY, quadMaxY, quadMinZ, quadMaxZ;
 	float	solidMinX, solidMaxX, solidMinY, solidMaxY, solidMinZ, solidMaxZ;
-	
-	
+
+
 	// XXX - HACK ALERT! eventually do a better quad within quad test
-	
+
 	AUrQuad_FindMinMax(
 		inPointList,
-		inQuad, 
+		inQuad,
 		&quadMinX, &quadMaxX,
 		&quadMinY, &quadMaxY,
 		&quadMinZ, &quadMaxZ);
 
 	AUrQuad_FindMinMax(
 		inPointList,
-		inQuadWithin, 
+		inQuadWithin,
 		&solidMinX, &solidMaxX,
 		&solidMinY, &solidMaxY,
 		&solidMinZ, &solidMaxZ);
-	
+
 	if(
 		UUmFloat_CompareLE(solidMinX, quadMinX) && UUmFloat_CompareGE(solidMaxX, quadMaxX) &&
 		UUmFloat_CompareLE(solidMinY, quadMinY) && UUmFloat_CompareGE(solidMaxY, quadMaxY) &&
@@ -2167,7 +2167,7 @@ AUrQuad_QuadWithinQuad(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -2180,14 +2180,14 @@ AUrQuad_ComputeCenter(
 	float				*outCenterZ)
 {
 	float	quadMinX, quadMaxX, quadMinY, quadMaxY, quadMinZ, quadMaxZ;
-	
+
 	AUrQuad_FindMinMax(
 		inPointList,
-		inQuad, 
+		inQuad,
 		&quadMinX, &quadMaxX,
 		&quadMinY, &quadMaxY,
 		&quadMinZ, &quadMaxZ);
-	
+
 	*outCenterX = (quadMinX + quadMaxX) * 0.5f;
 	*outCenterY = (quadMinY + quadMaxY) * 0.5f;
 	*outCenterZ = (quadMinZ + quadMaxZ) * 0.5f;
@@ -2206,18 +2206,18 @@ AUrParse_CoreGeometry(
 	UUtUns32	numTris;
 	UUtUns32	numQuads;
 	UUtUns32	i;
-	
+
 	float		x, y, z, nx, ny, nz, u, v;
 	UUtUns32	i0, i1, i2, i3;
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "num points");
 	UUmError_ReturnOnError(error);
-	
+
 	numPoints = BFrTextFile_GetUUtUns16(inTextFile);
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "x,y,z,nx,ny,nz,u,v");
 	UUmError_ReturnOnError(error);
-	
+
 	for(i = 0; i < numPoints; i++)
 	{
 		x = BFrTextFile_GetFloat(inTextFile);
@@ -2228,18 +2228,18 @@ AUrParse_CoreGeometry(
 		nz = BFrTextFile_GetFloat(inTextFile);
 		u = BFrTextFile_GetFloat(inTextFile);
 		v = BFrTextFile_GetFloat(inTextFile);
-		
+
 		error = BFrTextFile_VerifyNextStr(inTextFile, "");
 		UUmError_ReturnOnError(error);
-		
+
 		inAddPointFunc(inRefCon, i, x, y, z, nx, ny, nz, u, v);
 	}
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "num triangles");
 	UUmError_ReturnOnError(error);
-	
+
 	numTris = BFrTextFile_GetUUtUns16(inTextFile);
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "index, index, index, nx, ny, nz");
 	UUmError_ReturnOnError(error);
 
@@ -2251,19 +2251,19 @@ AUrParse_CoreGeometry(
 		nx = BFrTextFile_GetFloat(inTextFile);
 		ny = BFrTextFile_GetFloat(inTextFile);
 		nz = BFrTextFile_GetFloat(inTextFile);
-		
+
 		error = BFrTextFile_VerifyNextStr(inTextFile, "");
 		UUmError_ReturnOnError(error);
-		
+
 		error = inAddTriFunc(inRefCon, i0, i1, i2, nx, ny, nz);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "num quads");
 	UUmError_ReturnOnError(error);
-	
+
 	numQuads = BFrTextFile_GetUUtUns16(inTextFile);
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "index, index, index, index, nx, ny, nz");
 	UUmError_ReturnOnError(error);
 
@@ -2276,14 +2276,14 @@ AUrParse_CoreGeometry(
 		nx = BFrTextFile_GetFloat(inTextFile);
 		ny = BFrTextFile_GetFloat(inTextFile);
 		nz = BFrTextFile_GetFloat(inTextFile);
-		
+
 		error = BFrTextFile_VerifyNextStr(inTextFile, "");
 		UUmError_ReturnOnError(error);
-		
+
 		error = inAddQuadFunc(inRefCon, i0, i1, i2, i3, nx, ny, nz);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2294,28 +2294,28 @@ AUrParse_EnvGeometry(
 	AUtParseGeometry_AddPointFunc		inAddPointFunc,	// These can be NULL
 	AUtParseGeometry_AddEnvTriangleFunc	inAddTriFunc,
 	AUtParseGeometry_AddEnvQuadFunc		inAddQuadFunc,
-	void*								inRefCon)	
+	void*								inRefCon)
 {
 	UUtError	error;
 	UUtUns32	numPoints;
 	UUtUns32	numTris;
 	UUtUns32	numQuads;
 	UUtUns32	i;
-	
+
 	float		u, v;
 	UUtUns32	i0, i1, i2, i3;
 	char*		textureName;
 	M3tPoint3D point;
 	M3tVector3D normal;
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "num points");
 	UUmError_ReturnOnError(error);
-	
+
 	numPoints = BFrTextFile_GetUUtUns16(inTextFile);
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "x,y,z,nx,ny,nz,u,v");
 	UUmError_ReturnOnError(error);
-	
+
 	for(i = 0; i < numPoints; i++)
 	{
 		point.x = BFrTextFile_GetFloat(inTextFile);
@@ -2332,15 +2332,15 @@ AUrParse_EnvGeometry(
 
 		error = BFrTextFile_VerifyNextStr(inTextFile, "");
 		UUmError_ReturnOnError(error);
-		
+
 		if (inAddPointFunc) inAddPointFunc(inRefCon, i, point.x, point.y, point.z, normal.x, normal.y, normal.z, u, v);
 	}
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "num triangles");
 	UUmError_ReturnOnError(error);
-	
+
 	numTris = BFrTextFile_GetUUtUns16(inTextFile);
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "index, index, index, nx, ny, nz");
 	UUmError_ReturnOnError(error);
 
@@ -2355,22 +2355,22 @@ AUrParse_EnvGeometry(
 		textureName = BFrTextFile_GetNextStr(inTextFile);
 
 		MUrMatrix_MultiplyNormal(&normal, inMatrix, &normal);
-		
+
 		error = BFrTextFile_VerifyNextStr(inTextFile, "");
 		UUmError_ReturnOnError(error);
-		
+
 		if (inAddTriFunc)
 		{
 			error = inAddTriFunc(inRefCon, textureName, i0, i1, i2, normal.x, normal.y, normal.z);
 			UUmError_ReturnOnError(error);
 		}
 	}
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "num quads");
 	UUmError_ReturnOnError(error);
-	
+
 	numQuads = BFrTextFile_GetUUtUns16(inTextFile);
-	
+
 	error = BFrTextFile_VerifyNextStr(inTextFile, "index, index, index, index, nx, ny, nz");
 	UUmError_ReturnOnError(error);
 
@@ -2386,17 +2386,17 @@ AUrParse_EnvGeometry(
 		textureName = BFrTextFile_GetNextStr(inTextFile);
 
 		MUrMatrix_MultiplyNormal(&normal, inMatrix, &normal);
-		
+
 		error = BFrTextFile_VerifyNextStr(inTextFile, "");
 		UUmError_ReturnOnError(error);
-		
+
 		if (inAddQuadFunc)
 		{
 			error = inAddQuadFunc(inRefCon, textureName, i0, i1, i2, i3, normal.x, normal.y, normal.z);
 			UUmError_ReturnOnError(error);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2406,22 +2406,22 @@ AUrQuad_SharesAnEdge(
 	const M3tQuad*	inQuadB)
 {
 	UUtUns32	i, j;
-	
+
 	UUtUns32	indexA0, indexA1;
 	UUtUns32	indexB0, indexB1;
-	
+
 	for(i = 0; i < 4; i++)
 	{
 		indexA0 = inQuadA->indices[i];
 		indexA1 = inQuadA->indices[(i + 1) % 4];
-		
+
 		for(j = 0; j < 4; j++)
 		{
 			if(i == j) continue;
-			
+
 			indexB0 = inQuadB->indices[j];
 			indexB1 = inQuadB->indices[(j + 1) % 4];
-			
+
 			if(((indexA0 == indexB0) && (indexA1 == indexB1)) ||
 				((indexA0 == indexB1) && (indexA1 == indexB0)))
 			{
@@ -2429,7 +2429,7 @@ AUrQuad_SharesAnEdge(
 			}
 		}
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -2439,35 +2439,35 @@ void AUrPlane_ClosestPoint(
 	M3tPoint3D*					outPoint)
 {
 	/*
-		
+
 		Pcs = the point at the sphere center
 		dist = distance from Pcs to the plane
 		Pop = orthogonal projection of the center onto the plane J
-		
+
 		Jn = plane normal taken from a, b, c of plane equation
 		Jd = d component of plane equation
-		
+
 		dist = Jn . Pcs + Jd
-		
+
 		Pop = Pcs - dist(Jn)
-	
+
 	*/
-	
+
 	float				distance;
-	
+
 	UUmAssertReadPtr(inPlaneEqu, sizeof(M3tPlaneEquation));
 	UUmAssertReadPtr(inPoint, sizeof(M3tPoint3D));
 	UUmAssertWritePtr(outPoint, sizeof(M3tPoint3D));
 
 	distance = MUrSqrt(UUmSQR(inPlaneEqu->a) + UUmSQR(inPlaneEqu->b) + UUmSQR(inPlaneEqu->c));
 	UUmAssert((distance >= 0.95f) && (distance <= 1.05f));
-	
-	distance = 
-		(inPlaneEqu->a * inPoint->x) + 
-		(inPlaneEqu->b * inPoint->y) + 
-		(inPlaneEqu->c * inPoint->z) + 
+
+	distance =
+		(inPlaneEqu->a * inPoint->x) +
+		(inPlaneEqu->b * inPoint->y) +
+		(inPlaneEqu->c * inPoint->z) +
 		(inPlaneEqu->d);
-	
+
 	outPoint->x = inPoint->x - (distance * inPlaneEqu->a);
 	outPoint->y = inPoint->y - (distance * inPlaneEqu->b);
 	outPoint->z = inPoint->z - (distance * inPlaneEqu->c);
@@ -2480,14 +2480,14 @@ float AUrPlane_Distance_Squared(
 {
 	M3tPoint3D pointOnPlane;
 	float distance_squared;
-	
+
 	UUmAssertReadPtr(inPlaneEqu, sizeof(M3tPlaneEquation));
 	UUmAssertReadPtr(inPoint, sizeof(M3tPoint3D));
-	
+
 	AUrPlane_ClosestPoint(inPlaneEqu, inPoint, &pointOnPlane);
 
 	distance_squared = MUrPoint_Distance_Squared(inPoint, &pointOnPlane);
-	
+
 	if (NULL != outPoint) {
 		*outPoint = pointOnPlane;
 	}
@@ -2502,14 +2502,14 @@ float AUrPlane_Distance(
 {
 	M3tPoint3D pointOnPlane;
 	float distance;
-	
+
 	UUmAssertReadPtr(inPlaneEqu, sizeof(M3tPlaneEquation));
 	UUmAssertReadPtr(inPoint, sizeof(M3tPoint3D));
-	
+
 	AUrPlane_ClosestPoint(inPlaneEqu, inPoint, &pointOnPlane);
 
 	distance = MUrPoint_Distance(inPoint, &pointOnPlane);
-	
+
 	if (NULL != outPoint) {
 		*outPoint = pointOnPlane;
 	}
@@ -2530,11 +2530,11 @@ AUtMB_ButtonChoice UUcArglist_Call AUrMessageBox(AUtMB_ButtonType inButtonType, 
 	return_value= vsprintf(buffer, format, arglist);
 	va_end(arglist);
 
-	switch(inButtonType) 
+	switch(inButtonType)
 	{
 		case AUcMBType_AbortRetryIgnore:	type = MB_ABORTRETRYIGNORE; break;
 		case AUcMBType_OK:					type = MB_OK; break;
-		case AUcMBType_OKCancel:			type = MB_OKCANCEL; break; 
+		case AUcMBType_OKCancel:			type = MB_OKCANCEL; break;
 		case AUcMBType_RetryCancel:			type = MB_RETRYCANCEL; break;
 		case AUcMBType_YesNo:				type = MB_YESNO; break;
 		case AUcMBType_YesNoCancel:			type = MB_YESNOCANCEL; break;
@@ -2549,7 +2549,7 @@ AUtMB_ButtonChoice UUcArglist_Call AUrMessageBox(AUtMB_ButtonType inButtonType, 
 		{
 		case IDOK:		choice = AUcMBChoice_OK; break;
 		case IDCANCEL:	choice = AUcMBChoice_Cancel; break;
-		case IDABORT:	choice = AUcMBChoice_Abort; break; 
+		case IDABORT:	choice = AUcMBChoice_Abort; break;
 		case IDRETRY:	choice = AUcMBChoice_Retry; break;
 		case IDIGNORE:	choice = AUcMBChoice_Ignore; break;
 		case IDYES:		choice = AUcMBChoice_Yes; break;
@@ -2568,20 +2568,20 @@ AUtMB_ButtonChoice UUcArglist_Call AUrMessageBox(
 	va_list arglist;
 	int return_value;
 	AUtMB_ButtonChoice choice;
-	
+
 	extern void mac_hide_cursor(void);
 	extern void mac_show_cursor(void);
 
 	va_start(arglist, format);
 	return_value= vsprintf(buffer, format, arglist);
 	va_end(arglist);
-	
+
 	c2pstrcpy((StringPtr)buffer, buffer); // this can do in-place copies, so this is OK
 	ParamText((unsigned char*)buffer, NULL, NULL, NULL);
-	
+
 	mac_show_cursor();
 
-	switch(inButtonType) 
+	switch(inButtonType)
 	{
 		case AUcMBType_AbortRetryIgnore:
 			switch (Alert(MAC_ALERT_ABORT_RETRY_IGNORE_RES_ID, NULL))
@@ -2606,7 +2606,7 @@ AUtMB_ButtonChoice UUcArglist_Call AUrMessageBox(
 				case _button_cancel2: choice= AUcMBChoice_Cancel; break;
 				default: UUmAssert(0);
 			}
-			break; 
+			break;
 		case AUcMBType_RetryCancel:
 			switch (Alert(MAC_ALERT_RETRY_CANCEL, NULL))
 			{
@@ -2629,17 +2629,17 @@ AUtMB_ButtonChoice UUcArglist_Call AUrMessageBox(
 				case _button_yes: choice= AUcMBChoice_Yes; break;
 				case _button_no: choice= AUcMBChoice_No; break;
 				case _button_cancel3: choice= AUcMBChoice_Cancel; break;
-				default: UUmAssert(0); 
+				default: UUmAssert(0);
 			}
 			break;
 		default:
 			UUmAssert(0);
 	}
-	
+
 	mac_hide_cursor();
 
 	return choice;
-}	
+}
 //TODO: SDL_MessageBox
 #else
 AUtMB_ButtonChoice AUrMessageBox(AUtMB_ButtonType inButtonType, const char *format, ...)
@@ -2655,7 +2655,7 @@ AUtMB_ButtonChoice AUrMessageBox(AUtMB_ButtonType inButtonType, const char *form
 	fprintf(stderr, "%s"UUmNL, buffer);
 
 	UUrEnterDebugger("%s", buffer);
-	
+
 	return AUcMBChoice_Yes;		// (Just to get rid of a warning)
 }
 #endif
@@ -2664,7 +2664,7 @@ typedef struct
 {
 	UUtUns32	pixel;
 	double		weight;
-	
+
 } CONTRIB;
 
 typedef struct
@@ -2688,7 +2688,7 @@ void AUrBuildArgumentList(char *inString, UUtUns32 inMaxCount, UUtUns32 *outCoun
 	while (1)
 	{
 		while (UUrIsSpace(*stringPtr) || ('\0' == *stringPtr)) {
-			if ('\0' == *stringPtr) { 
+			if ('\0' == *stringPtr) {
 				return;
 			}
 
@@ -2699,7 +2699,7 @@ void AUrBuildArgumentList(char *inString, UUtUns32 inMaxCount, UUtUns32 *outCoun
 		*outCount += 1;
 
 		while (!UUrIsSpace(*stringPtr)) {
-			if ('\0' == *stringPtr) { 
+			if ('\0' == *stringPtr) {
 				return;
 			}
 
@@ -2726,9 +2726,9 @@ AUrFlags_GetTextName(
 {
 	AUtFlagElement		*curFlagElem;
 	const char			*textName;
-	
+
 	textName = NULL;
-	
+
 	for (curFlagElem = inFlagList;
 		 curFlagElem->textName != NULL;
 		 curFlagElem++)
@@ -2739,7 +2739,7 @@ AUrFlags_GetTextName(
 			break;
 		}
 	}
-	
+
 	return textName;
 }
 
@@ -2755,10 +2755,10 @@ AUrFlags_ParseFromGroupArray(
 	char*			elemFlagString;
 	AUtFlagElement*	curFlagElem;
 	UUtUns32		result = 0;
-	
+
 	UUmAssertReadPtr(inFlagList, sizeof(void*));
 	UUmAssertReadPtr(inElement, sizeof(void*));
-	
+
 	if(inElementType == GRcElementType_String)
 	{
 		for(curFlagElem = inFlagList;
@@ -2771,7 +2771,7 @@ AUrFlags_ParseFromGroupArray(
 				break;
 			}
 		}
-		
+
 		if(curFlagElem->textName == NULL)
 		{
 			return AUcError_FlagNotFound;
@@ -2788,7 +2788,7 @@ AUrFlags_ParseFromGroupArray(
 				curGroupElemIndex,
 				&groupType,
 				&elemFlagString);
-			
+
 			for(curFlagElem = inFlagList;
 				curFlagElem->textName != NULL;
 				curFlagElem++)
@@ -2799,7 +2799,7 @@ AUrFlags_ParseFromGroupArray(
 					break;
 				}
 			}
-			
+
 			if(curFlagElem->textName == NULL)
 			{
 				return AUcError_FlagNotFound;
@@ -2810,9 +2810,9 @@ AUrFlags_ParseFromGroupArray(
 	{
 		return UUcError_Generic;
 	}
-	
+
 	*outResult = result;
-	
+
 	return UUcError_None;
 }
 
@@ -2827,14 +2827,14 @@ AUrFlags_ParseFromString(
 	char*			curField;
 	UUtUns32		result = 0;
 	AUtFlagElement*	curFlagElem;
-	
+
 	*outResult = 0;
-	
+
 	for(;;)
 	{
 		curField = UUrString_Tokenize1(NULL, " ", &parseState);
 		if(curField == NULL) break;
-		
+
 		for(curFlagElem = inFlagList;
 			curFlagElem->textName != NULL;
 			curFlagElem++)
@@ -2849,18 +2849,18 @@ AUrFlags_ParseFromString(
 		{
 			return AUcError_FlagNotFound;
 		}
-		
+
 		curField = UUrString_Tokenize1(NULL, " ", &parseState);
 		if(curField == NULL) break;
-		
+
 		if(strcmp(curField, "|"))
 		{
 			return UUcError_Generic;
 		}
 	}
-	
+
 	*outResult = result;
-	
+
 	return UUcError_None;
 }
 
@@ -2872,13 +2872,13 @@ AUrFlags_PrintFromValue(
 	UUtUns32		inValue)
 {
 	UUtBool	first = UUcTrue;
-	
+
 	if(inValue == 0)
 	{
 		fprintf(inFile, "none");
 		return;
 	}
-	
+
 	if(inIsBitField)
 	{
 		while(inFlagList->textName != NULL)
@@ -2892,7 +2892,7 @@ AUrFlags_PrintFromValue(
 				fprintf(inFile, "%s", inFlagList->textName);
 				first = UUcFalse;
 			}
-			
+
 			inFlagList++;
 		}
 	}
@@ -2921,7 +2921,7 @@ UUtWindow AUrWindow_New(
 	Rect window_rect;
 	const RGBColor black_color= {0,0,0};
 	short vert_offset= GetMBarHeight();
-	
+
 	window_rect.top= inRect->top + vert_offset;
 	window_rect.left= inRect->left;
 	window_rect.bottom= inRect->bottom + vert_offset;
@@ -2934,7 +2934,7 @@ UUtWindow AUrWindow_New(
 		ShowWindow(new_window);
 		SetPort(GetWindowPort(new_window));
 	}
-	
+
 	return (UUtWindow)new_window;
 }
 
@@ -2945,7 +2945,7 @@ void AUrWindow_Delete(
 	{
 		DisposeWindow((WindowPtr)inWindow);
 	}
-	
+
 	return;
 }
 
@@ -3014,13 +3014,13 @@ UUtWindow AUrWindow_New(
 		if (window)
 		{
 			BOOL success;
-			
+
 			ShowWindow(window, SW_SHOW);
 			success= BringWindowToTop(window);
 			UUmAssert(success);
 		}
 	}
-	
+
 	return ((UUtWindow)window);
 }
 
@@ -3069,7 +3069,7 @@ void AUrWindow_EORImage(
 UUtWindow
 AUrWindow_New(
 	UUtRect*	inRect)
-{	
+{
 	return NULL;
 }
 
@@ -3147,7 +3147,7 @@ UUtUns8 AUrBits16_Count(UUtUns16 inBits)
 	UUtUns16 mask;
 	UUtUns8 count = 0;
 
-	for(itr = 0; itr < 16; itr++) 
+	for(itr = 0; itr < 16; itr++)
 	{
 		mask = 1 << itr;
 
@@ -3165,7 +3165,7 @@ UUtUns8 AUrBits32_Count(UUtUns32 inBits)
 	UUtUns32 mask;
 	UUtUns8 count = 0;
 
-	for(itr = 0; itr < 32; itr++) 
+	for(itr = 0; itr < 32; itr++)
 	{
 		mask = 1 << itr;
 
@@ -3183,7 +3183,7 @@ UUtUns8 AUrBits64_Count(UUtUns64 inBits)
 	UUtUns64 mask;
 	UUtUns8 count = 0;
 
-	for(itr = 0; itr < 64; itr++) 
+	for(itr = 0; itr < 64; itr++)
 	{
 		mask = 1 << itr;
 
@@ -3314,7 +3314,7 @@ void AUrQuad_LowestPoints(
 		}
 
 	}
-	
+
 	if (outPointLowest != NULL) {
 		UUmAssert(lowest != NULL);
 		*outPointLowest = lowest;
@@ -3361,7 +3361,7 @@ void AUrQuad_HighestPoints(
 		}
 
 	}
-	
+
 	if (outPointHighest != NULL) {
 		UUmAssert(highest != NULL);
 		*outPointHighest = highest;
@@ -3530,7 +3530,7 @@ __declspec( naked ) UUtBool __fastcall AUrDict_TestAndAdd(AUtDict *inDict, UUtUn
 
 		cmp			ecx, eax
 		jge			Dict_not_enough_pages		// if ecx (numpages) >= eax (maxpages) goto Dict_not_enough_pages
-		
+
 		mov         [esi]inDict.pages[ecx*4], edx
 		// inc         [esi]inDict.numPages
 		inc			ecx
@@ -3553,7 +3553,7 @@ UUtBool __fastcall AUrDict_TestAndAdd(AUtDict *inDict, UUtUns32 key)
 	UUtBool inDictionary;
 
 	UUmAssertWritePtr(inDict, sizeof(*inDict));
-	
+
 	inDictionary = UUrBitVector_TestAndSetBit(inDict->vector, key);
 
 	if (!inDictionary)
@@ -3577,8 +3577,8 @@ UUtBool AUrDict_TestAndAdd(AUtDict *inDict, UUtUns32 key)
 	UUtBool inDictionary;
 
 	UUmAssertWritePtr(inDict, sizeof(*inDict));
-	
-	
+
+
 	inDictionary = UUrBitVector_TestAndSetBit(inDict->vector, key);
 
 	if (!inDictionary)
@@ -3988,7 +3988,7 @@ recurse:
     else
         return;                 /* all subarrays done */
 }
- 	
+
 static void shortsort_32 (
     char *lo,
     char *hi,
@@ -4062,14 +4062,14 @@ UUtError AUrParseNumericalRangeString(
 	char		numBuffer[10];
 	UUtUns32	num, numStart = 0xFFFF;
 	UUtBool		inRange = 0;
-	
+
 	numBufferIndex = 0;
 	UUmAssert(ioBitVector);
 
 	while(1)
 	{
 		c = *inArg++;
-		
+
 		if(isdigit(c))
 		{
 			numBuffer[numBufferIndex++] = c;
@@ -4089,7 +4089,7 @@ UUtError AUrParseNumericalRangeString(
 			{
 				UUrBitVector_SetBit(ioBitVector, num);
 			}
-			
+
 			if(c == 0) return UUcError_None;
 			numBufferIndex = 0;
 			inRange = UUcFalse;
@@ -4109,7 +4109,7 @@ UUtError AUrParseNumericalRangeString(
 			goto error;
 		}
 	}
-	
+
 	return UUcError_None;
 
 error:

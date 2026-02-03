@@ -1,12 +1,12 @@
 /*
 	FILE:	GL_DrawContext_Private.h
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: August 10, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1999
 
 */
@@ -35,12 +35,12 @@ struct GLtDrawContextPrivate
 	UUtInt32				width;
 	UUtInt32				height;
 	UUtInt32				bitDepth;
-	
+
 	M3tDrawContextType		contextType;
-	
+
 	GLtVertex*				vertexList;
 	UUtUns32				vertexCount;
-	
+
 	M3tTextureMap*	curBaseMap;
 	M3tTextureMap*	curLightMap;
 	M3tTextureMap*	curEnvironmentMap;

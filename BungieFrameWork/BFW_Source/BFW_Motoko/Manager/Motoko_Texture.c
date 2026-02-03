@@ -64,7 +64,7 @@ M3iTextureByteSwapper(
 		// swap texels individually
 		numTexels = IMrImage_NumPixels(hasMipMap, inTextureMap->width, inTextureMap->height);
 	}
-	
+
 	switch(inTextureMap->texelType)
 	{
 		case IMcPixelType_DXT1:
@@ -86,14 +86,14 @@ M3iTextureByteSwapper(
 				UUrSwap_2Byte(sp++);
 			}
 			break;
-			
+
 		case IMcPixelType_I8:
 		case IMcPixelType_I1:
 		case IMcPixelType_A8:
 		case IMcPixelType_A4I4:
 			// does not need swapping
 			break;
-		
+
 		case IMcPixelType_ARGB8888:
 		case IMcPixelType_RGB888:
 			// needs 4 byte swapping
@@ -103,11 +103,11 @@ M3iTextureByteSwapper(
 				UUrSwap_4Byte(lp++);
 			}
 			break;
-			
+
 		default:
 			UUmAssert(!"Unknown texture format");
 	}
-	
+
 	return;
 }
 
@@ -121,7 +121,7 @@ M3rTextureMap_Prepare_Internal(
 			// CB: this texturemap has permanently-resident data that must be byte-swapped now
 			void *offset;
 			UUtBool swap;
-				
+
 			// CB: note that I changed this code so that it no longer sets the flag
 			// M3cTextureFlags_LittleEndian after it byte-swaps a texture. this means
 			// that we will incorrectly double byte-swap if someone clears the
@@ -208,7 +208,7 @@ M3rTextureMap_TemporarilyLoad_Internal(
 
 			if (error == UUcError_None) {
 				UUtBool swap;
-				
+
 				// set up the texture so that it points to the temporary storage
 				ioTextureMap->pixels = (void *) M3gManager_TextureStorage.temporaryStorage;
 				M3gManager_TextureStorage.temporaryTexture = ioTextureMap;
@@ -259,13 +259,13 @@ M3rTextureMap_New(
 	UUmAssert(inWidth > 0);
 	UUmAssert(inHeight > 0);
 	UUmAssertReadPtr(outTextureMap, sizeof(*outTextureMap));
-	
+
 	// calculate the width, height, and rowbytes of the texture
 	M3rTextureMap_GetTextureSize(inWidth, inHeight, &width, &height);
 
 	hasMipMap = (inFlags & M3cTextureFlags_HasMipMap) ? IMcHasMipMap : IMcNoMipMap;
 	size_of_texture = IMrImage_ComputeSize(inTexelType, hasMipMap, width, height);
-   
+
 	// create a new instance of the texture
 	if (inAllocMemory & M3cTexture_AllocMemory)
 	{
@@ -283,9 +283,9 @@ M3rTextureMap_New(
 	UUmError_ReturnOnErrorMsg(error, "Unable to create a new texture.");
 
 #if 0
-	UUrDebuggerMessage("texture %s ptr %x %s\n", 
-		inDebugName, 
-		new_texture_map, 
+	UUrDebuggerMessage("texture %s ptr %x %s\n",
+		inDebugName,
+		new_texture_map,
 		(inAllocMemory & M3cTexture_UseTempMem) ? "temporary" : "permanent");
 #endif
 
@@ -313,11 +313,11 @@ M3rTextureMap_New(
 	if (new_texture_map->pixels == NULL) {
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Unable to allocate the pixels.");
 	}
-	
+
 	// update the texture map data
 	error = TMrInstance_Update(new_texture_map);
 	UUmError_ReturnOnErrorMsg(error, "Unable to update the data of the texture.");
-	
+
 	// save the outgoing texture map
 	*outTextureMap = new_texture_map;
 
@@ -339,8 +339,8 @@ M3rTextureMap_Big_New(
 	M3tTextureMap_Big		*new_texture_map;
 
 	UUtUns16				num_x;
-	UUtUns16				num_y;	
-	
+	UUtUns16				num_y;
+
 	UUtUns16				x;
 	UUtUns16				y;
 
@@ -348,14 +348,14 @@ M3rTextureMap_Big_New(
 	UUmAssert(inWidth > 0);
 	UUmAssert(inHeight > 0);
 	UUmAssertReadPtr(outTextureMap, sizeof(*outTextureMap));
-	
+
 	// calculate the number of M3tTextureMaps it will take to hold the texture
 	num_x = inWidth / M3cTextureMap_MaxWidth;
 	num_y = inHeight / M3cTextureMap_MaxHeight;
-	
+
 	if ((inWidth & (M3cTextureMap_MaxWidth - 1)) > 0) num_x++;
 	if ((inHeight & (M3cTextureMap_MaxHeight - 1)) > 0) num_y++;
-	
+
 	// create a new instance of the M3tTextureMap_Big
 	error =
 		TMrInstance_Dynamic_New(
@@ -364,7 +364,7 @@ M3rTextureMap_Big_New(
 			num_x * num_y,
 			&new_texture_map);
 	UUmError_ReturnOnErrorMsg(error, "Unable to create a new texture.");
-	
+
 	// set up the texture map
 	new_texture_map->width		= inWidth;
 	new_texture_map->height		= inHeight;
@@ -381,20 +381,20 @@ M3rTextureMap_Big_New(
 			UUtUns16			top;
 			UUtUns16			texture_width;
 			UUtUns16			texture_height;
-			
+
 			UUtUns16			index;
-			
+
 			M3tTextureMap		*texture;
-			
+
 			// calculate the index number of the texture
 			index = x + (y * num_x);
-			
+
 			// calculate the texture width and height
 			left			= (x * M3cTextureMap_MaxWidth);
 			top				= (y * M3cTextureMap_MaxHeight);
 			texture_width	= UUmMin(M3cTextureMap_MaxWidth, inWidth - left);
 			texture_height	= UUmMin(M3cTextureMap_MaxHeight, inHeight - top);
-						
+
 			// create a new texture
 			error =
 				M3rTextureMap_New(
@@ -406,15 +406,15 @@ M3rTextureMap_Big_New(
 					inDebugName,
 					&texture);
 			UUmError_ReturnOnErrorMsg(error, "Unable to create texture map");
-			
+
 			// save the texture pointer
 			new_texture_map->textures[index] = texture;
 		}
 	}
-	
+
 	// save the new texture
 	*outTextureMap = new_texture_map;
-	
+
 	return UUcError_None;
 }
 
@@ -436,7 +436,7 @@ void M3rTextureMap_Big_Unload(M3tTextureMap_Big *inTextureMap)
 		if (NULL == texture) {
 			continue;
 		}
-		
+
 		M3rDraw_Texture_Unload(texture);
 	}
 
@@ -490,7 +490,7 @@ M3rTextureMap_Big_Fill(
 {
 	UUtUns16			x;
 	UUtUns16			y;
-	
+
 	for (y = 0; y < inTextureMap->num_y; y++)
 	{
 		for (x = 0; x < inTextureMap->num_x; x++)
@@ -499,13 +499,13 @@ M3rTextureMap_Big_Fill(
 			UUtRect 		*bounds_ptr;
 			UUtUns16		index;
 			M3tTextureMap	*texture;
-			
+
 			// calculate the index of the texture
 			index = x + (y * inTextureMap->num_x);
-			
+
 			// get a pointer to the current texture
 			texture = inTextureMap->textures[index];
-			
+
 			if (inBounds == M3cFillEntireMap)
 			{
 				// set bounds ptr
@@ -514,23 +514,23 @@ M3rTextureMap_Big_Fill(
 			else
 			{
 				UUtRect			texture_rect;
-				
+
 				// set bounds ptr
 				bounds_ptr = &bounds;
-				
+
 				// set the texture_rect
 				texture_rect.left	= x * M3cTextureMap_MaxWidth;
 				texture_rect.top	= y * M3cTextureMap_MaxHeight;
 				texture_rect.right	= texture_rect.left + texture->width;
 				texture_rect.bottom	= texture_rect.top + texture->height;
-				
+
 				// calculate the bounds to fill
 				IMrRect_Intersect(inBounds, &texture_rect, &bounds);
-				
+
 				// offset the rect to the origin of the bitmap
 				IMrRect_Offset(&bounds, -texture_rect.left, -texture_rect.top);
 			}
-			
+
 			// fill in the texture map
 			M3rTextureMap_Fill(
 				texture,
@@ -561,29 +561,29 @@ M3rTextureMap_Copy(
 //	UUtUns16			dst_height;
 	UUtUns16			dst_x;
 	UUtUns16			dst_y;
-	
+
 	// get the template tags
 	src_template_tag = TMrInstance_GetTemplateTag(inSrcTexture);
 	dst_template_tag = TMrInstance_GetTemplateTag(inDstTexture);
-	
+
 	if (src_template_tag == M3cTemplate_TextureMap)
 	{
 		M3tTextureMap	*src_texture = (M3tTextureMap*)inSrcTexture;
-		
+
 		M3rTextureMap_TemporarilyLoad(src_texture, 0);
 
 		// calculate the source width and height
 		src_width = (inSrcRect->right - inSrcRect->left);
 		src_height = (inSrcRect->bottom - inSrcRect->top);
-		
+
 		// set the source location
 		src_location.x = inSrcRect->left;
 		src_location.y = inSrcRect->top;
-		
+
 		if (dst_template_tag == M3cTemplate_TextureMap)
 		{
 			M3tTextureMap	*dst_texture = (M3tTextureMap*)inDstTexture;
-			
+
 			if ((src_texture->pixels == NULL) || (dst_texture->pixels == NULL)) {
 				// CB: we cannot copy texturemaps that are not loaded (i.e. templated
 				// data, not allocated data)
@@ -599,7 +599,7 @@ M3rTextureMap_Copy(
 				// set the destination location
 				dst_location.x = inDstRect->left;
 				dst_location.y = inDstRect->top;
-				
+
 				// copy the data
 				IMrImage_Copy(
 					src_width,
@@ -619,9 +619,9 @@ M3rTextureMap_Copy(
 		else if (dst_template_tag == M3cTemplate_TextureMap_Big)
 		{
 			M3tTextureMap_Big	*dst_texture = (M3tTextureMap_Big*)inDstTexture;
-			
+
 			UUmAssert_Untested();
-			
+
 			for (dst_y = 0; dst_y < dst_texture->num_y; dst_y++)
 			{
 				for (dst_x = 0; dst_x < dst_texture->num_x; dst_x++)
@@ -630,11 +630,11 @@ M3rTextureMap_Copy(
 					UUtUns16		index;
 					UUtRect			dst_bounds;
 					UUtRect			dst_rect;
-					
+
 					// get the texture[x][y]
 					index = dst_x + (dst_y * dst_texture->num_x);
 					texture = dst_texture->textures[index];
-					
+
 					if ((src_texture->pixels == NULL) || (texture->pixels == NULL)) {
 						// CB: we cannot copy texturemaps that are not loaded (i.e. templated
 						// data, not allocated data)
@@ -652,22 +652,22 @@ M3rTextureMap_Copy(
 						dst_bounds.top = dst_y * M3cTextureMap_MaxHeight;
 						dst_bounds.right = dst_bounds.left + texture->width;
 						dst_bounds.bottom = dst_bounds.top + texture->height;
-						
+
 						// calculate the intersection
 						IMrRect_Intersect(&dst_bounds, inDstRect, &dst_rect);
-						
+
 						// check to see if this texture map contains pixels that need
 						// to be copied
 						if (((dst_rect.right - dst_rect.left) == 0) ||
 							((dst_rect.bottom - dst_rect.top) == 0)) continue;
-						
+
 						// move the rect toward the origin
 						IMrRect_Offset(&dst_rect, -dst_bounds.left, -dst_bounds.top);
-						
+
 						// set the destination locatoin
 						dst_location.x = dst_rect.left;
 						dst_location.y = dst_rect.top;
-						
+
 						// copy the data
 						IMrImage_Copy(
 							src_width,
@@ -746,33 +746,33 @@ M3rTextureRef_GetSize(
 	TMtTemplateTag		template_tag;
 	UUtUns16			width;
 	UUtUns16			height;
-	
+
 	template_tag = TMrInstance_GetTemplateTag(inTextureRef);
-	
+
 	if (template_tag == M3cTemplate_TextureMap)
 	{
 		M3tTextureMap	*texture;
 
 		texture = (M3tTextureMap*)inTextureRef;
-		
+
 		width = texture->width;
 		height = texture->height;
 	}
 	else if (template_tag == M3cTemplate_TextureMap_Big)
 	{
 		M3tTextureMap_Big	*texture_big;
-		
+
 		texture_big = (M3tTextureMap_Big*)inTextureRef;
 
 		width = texture_big->width;
 		height = texture_big->height;
 	}
-	
+
 	if (outWidth)
 	{
 		*outWidth = width;
 	}
-	
+
 	if (outHeight)
 	{
 		*outHeight = height;
@@ -790,14 +790,14 @@ M3iTextureMap_CalcNearestPowerOfTwo(
 	UUtUns16			inSize)
 {
 	UUtInt16			num_bits = 15;
-	
+
 	if (inSize == 0) return 0;
-	
+
 	while(!(inSize & (1 << num_bits))) num_bits--;
 
 	if (inSize > (1 << num_bits))
 		num_bits++;
-	
+
 	return (1 << num_bits);
 }
 
@@ -822,7 +822,7 @@ M3rTextureMap_GetTextureSize(
 	{
 		height = width >> 3 /* S.S. / 8*/;
 	}
- 
+
 	if (width < (height >> 3 /* S.S. / 8*/))
 	{
 		width = height >> 3 /* S.S. / 8*/;
@@ -879,7 +879,7 @@ static void iBuildMipMapRGB555(M3tTextureMap *inTextureMap, UUtUns16 width, UUtU
 			red >>= 2; // S.S. /= 4;
 
 			boxFilter = (1 << 15) | (red << 10) | (grn << 5) | (blu << 0);
-			
+
 			*dst++ = boxFilter;
 		}
 	}
@@ -950,7 +950,7 @@ M3rTextureMap_BuildMipMap(
 		}
 
 		UUmError_ReturnOnError(error);
-		
+
 		width /= 2;
 		height /= 2;
 
@@ -959,7 +959,7 @@ M3rTextureMap_BuildMipMap(
 
 		srcPtr = dstPtr;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -976,27 +976,27 @@ M3rTextureCoord_FindMinMax(
 	float		minU, minV;
 	float		maxU, maxV;
 	float		curU, curV;
-	
+
 	UUmAssertReadPtr(outMinU, sizeof(float));
 	UUmAssertReadPtr(outMinV, sizeof(float));
 	UUmAssertReadPtr(outMaxU, sizeof(float));
 	UUmAssertReadPtr(outMaxV, sizeof(float));
-	
+
 	minU = minV = 1e9;
 	maxU = maxV = -1e9;
-	
+
 	for(itr = 0; itr < inNumCoords; itr++)
 	{
 		curU = inTextureCoords[itr].u;
 		curV = inTextureCoords[itr].v;
-		
+
 		if(curU < minU) minU = curU;
 		if(curV < minV) minV = curV;
-		
+
 		if(curU > maxU) maxU = curU;
 		if(curV > maxV) maxV = curV;
 	}
-	
+
 	*outMinU = minU;
 	*outMinV = minV;
 	*outMaxU = maxU;
@@ -1021,7 +1021,7 @@ M3rDraw_Sprite_Debug(
 	UUtInt32 endY = inStartY + inHeight;
 	UUtInt32 x;
 	UUtInt32 y;
-	
+
 	if (inTextureMap->pixels == NULL) {
 		// CB: we cannot display non-memory-resident texturemaps like this
 		UUmAssert(!"M3rDraw_Sprite_Debug: cannot display texture, not loaded");
@@ -1090,7 +1090,7 @@ M3rDraw_Sprite_Debug(
 			// br
 			points[3].x += 5;
 			points[3].y += 5;
-			
+
 			M3rDraw_Line(0, 3);	// tl - br
 			M3rDraw_Line(1, 2);	// tr - bl
 		}

@@ -58,7 +58,7 @@ UUtBool gl_draw_engine_initialize(
 	if ((success= opengl_available()))
 	{
 		UUtError error= UUcError_None;
-		
+
 		//gl->mode= NONE;
 		//gl->vertex_count= 0;
 		//gl->vertex_format_flags= NONE;
@@ -67,12 +67,12 @@ UUtBool gl_draw_engine_initialize(
 		gl->draw_engine_methods.contextPrivateNew= gl_context_private_new;
 		gl->draw_engine_methods.contextPrivateDelete= gl_context_private_delete;
 		gl->draw_engine_methods.textureResetAll= gl_texture_reset_all;
-		
+
 		gl->draw_engine_methods.privateStateSize= 0;
 		gl->draw_engine_methods.privateStateNew= gl_private_state_new;
 		gl->draw_engine_methods.privateStateDelete= gl_private_state_delete;
 		gl->draw_engine_methods.privateStateUpdate= gl_private_state_update;
-		
+
 		gl->draw_engine_caps.engineFlags= M3cDrawEngineFlag_3DOnly;
 		UUrString_Copy(gl->draw_engine_caps.engineName, M3cDrawEngine_OpenGL, M3cMaxNameLen);
 		gl->draw_engine_caps.engineDriver[0] = 0;
@@ -86,7 +86,7 @@ UUtBool gl_draw_engine_initialize(
 
 		error= M3rManager_Register_DrawEngine(&gl->draw_engine_caps,
 			&gl->draw_engine_methods);
-		
+
 		if (error != UUcError_None)
 		{
 			UUrError_Report(UUcError_Generic, "Could not setup engine caps");
@@ -139,7 +139,7 @@ static UUtError gl_context_private_new(
 	word active_device;
 	word active_mode;
 	M3tDrawEngineCaps *active_draw_engine_caps;
-	
+
 	UUrStartupMessage("creating new OpenGL context");
 	*out_api= M3cDrawAPI_OpenGL;
 
@@ -167,10 +167,10 @@ static UUtError gl_context_private_new(
 	gl->draw_context_methods.loadTexture= gl_texture_map_create;
 	gl->draw_context_methods.unloadTexture= gl_texture_map_delete;
 	gl->draw_context_methods.supportSinglePassMultitexture= gl_single_pass_multitexture_capable;
-	gl->draw_context_methods.supportPointVisible= gl_support_depth_reads;	
+	gl->draw_context_methods.supportPointVisible= gl_support_depth_reads;
 
 	*out_draw_context_funcs= &gl->draw_context_methods;
-		
+
 	gl->context_type= in_draw_context_descriptor->type;
 	gl->display_mode= active_draw_engine_caps->displayDevices[active_device].displayModes[active_mode];
 
@@ -197,7 +197,7 @@ static UUtError gl_context_private_new(
 		// force update of the camera
 		gl->camera_mode= _camera_mode_3d;
 		gl_camera_update(_camera_mode_2d);
-		
+
 		// create the texture private array
 		if (gl->texture_private_data == NULL)
 		{
@@ -225,7 +225,7 @@ static void gl_context_private_delete(
 			TMrTemplate_PrivateData_Delete(gl->texture_private_data);
 			gl->texture_private_data= NULL;
 		}
-		
+
 		if (gl->loaded_texture_array)
 		{
 			UUrMemory_Block_Delete(gl->loaded_texture_array);
@@ -268,9 +268,9 @@ static UUtError gl_change_mode(
 {
 	UUtError error= UUcError_None;
     M3tDisplayMode oldMode= gl->display_mode;
-        
+
 	gl->display_mode= mode;
-        
+
 	// this relies on gl_platform_initialize() doing the resolution
 	// switch for us without messing up anything else!!
 	if (gl_platform_initialize() == FALSE)
@@ -326,7 +326,7 @@ static UUtError gl_private_state_update(
 	}
 #endif
 
-#ifdef GL_ENABLE_ALPHA_FADE_CODE	
+#ifdef GL_ENABLE_ALPHA_FADE_CODE
 	// special frame buffer blend mode (for the invisibility powerup)
 	if (in_state_int_flags & (1<<M3cDrawStateIntType_FrameBufferBlendWithConstantAlpha))
 	{
@@ -340,7 +340,7 @@ static UUtError gl_private_state_update(
 		}
 	}
 #endif
-	
+
 	// set depth bias if required
 	/* nothing uses this - disabling 10/26/2000 S.S.
 	if ((in_state_int_flags & (1<<M3cDrawStateIntType_ZBias)) &&
@@ -358,15 +358,15 @@ static UUtError gl_private_state_update(
 		(in_state_int_flags & (1<<M3cDrawStateIntType_ZWrite)))
 	{
 		gl_depth_mode_set(
-			((UUtBool)(in_state_int[M3cDrawStateIntType_ZCompare]) == M3cDrawState_ZCompare_On), 
+			((UUtBool)(in_state_int[M3cDrawStateIntType_ZCompare]) == M3cDrawState_ZCompare_On),
 			((UUtBool)(in_state_int[M3cDrawStateIntType_ZWrite]) == M3cDrawState_ZWrite_On));
 	}
 
 	// setup texture maps
 	gl->texture0= gl->texture1= NULL;
-	
+
 	// set base texture map
-	if ((in_state_int[M3cDrawStateIntType_Appearence] != M3cDrawState_Appearence_Gouraud) && 
+	if ((in_state_int[M3cDrawStateIntType_Appearence] != M3cDrawState_Appearence_Gouraud) &&
 		(in_state_int[M3cDrawStateIntType_Fill] == M3cDrawState_Fill_Solid) &&
 		(in_state_ptr_flags & (1 << M3cDrawStatePtrType_BaseTextureMap)))
 	{
@@ -386,7 +386,7 @@ static UUtError gl_private_state_update(
 			constant_color_changed= TRUE;
 		}
 	}
-	
+
 	if (in_state_int_flags & ((1<<M3cDrawStateIntType_ConstantColor)))
 	{
 		gl->constant_color.r= (byte)((in_state_int[M3cDrawStateIntType_ConstantColor]&0x00FF0000)>>16);
@@ -394,19 +394,19 @@ static UUtError gl_private_state_update(
 		gl->constant_color.b= (byte)(in_state_int[M3cDrawStateIntType_ConstantColor]&0x000000FF);
 		constant_color_changed= TRUE;
 	}
-	
+
 	if (constant_color_changed)
 	{
 		GL_FXN(glColor4ub)(gl->constant_color.r, gl->constant_color.g, gl->constant_color.b, gl->constant_color.a);
 	}
-	
+
 	// what does this mean?
 	/*if (in_state_int_flags & ((1<<M3cDrawStateIntType_Appearence) |
 		(1<<M3cDrawStateIntType_Interpolation) |
 		(1<<M3cDrawStateIntType_Fill)))
 	{
 	}*/
-	
+
 	// determine the current geometry drawing mode
 	switch (in_state_int[M3cDrawStateIntType_Fill])
 	{
@@ -425,7 +425,7 @@ static UUtError gl_private_state_update(
 					break;
 				case M3cDrawState_Appearence_Texture_Lit:
 				case M3cDrawState_Appearence_Texture_Lit_EnvMap:
-				case M3cDrawState_Appearence_Texture_Unlit:	
+				case M3cDrawState_Appearence_Texture_Unlit:
 					switch (in_state_int[M3cDrawStateIntType_VertexFormat])
 					{
 						case M3cDrawStateVertex_Unified:
@@ -441,7 +441,7 @@ static UUtError gl_private_state_update(
 										gl->texture0= (M3tTextureMap*)in_state_ptr[M3cDrawStatePtrType_EnvTextureMap];
 										gl->texture1= (M3tTextureMap*)in_state_ptr[M3cDrawStatePtrType_BaseTextureMap];
 										UUmAssert(gl->texture1);
-										
+
 										if (gl_save_geom_draw_mode == NONE)
 										{
 											if (ONrMotoko_GraphicsQuality_SupportReflectionMapping() == FALSE)
@@ -487,7 +487,7 @@ static UUtError gl_private_state_update(
 			current_fill_mode= gl_fill_mode;
 		}
 	}
-	
+
 	if ((in_state_int_flags & (1<<M3cDrawStateIntType_BufferClear)) &&
 		(gl->buffer_clear= (boolean)in_state_int[M3cDrawStateIntType_BufferClear]))
 	{
@@ -497,7 +497,7 @@ static UUtError gl_private_state_update(
 		gl->clear_color.b= (float)((in_state_int[M3cDrawStateIntType_ClearColor]&0x000000FF) * ONE_OVER_255);
 		GL_FXN(glClearColor)(gl->clear_color.r, gl->clear_color.g, gl->clear_color.b, gl->clear_color.a);
 	}
-	
+
 	if (in_state_int_flags & (1<<M3cDrawStateIntType_DoubleBuffer))
 	{
 		gl->double_buffer= (boolean)in_state_int[M3cDrawStateIntType_DoubleBuffer];
@@ -533,7 +533,7 @@ void gl_finish_multipass(
 {
 	gl->geom_draw_mode= gl_save_geom_draw_mode;
 	gl_save_geom_draw_mode= NONE;
-	
+
 	return;
 }
 
@@ -634,11 +634,11 @@ static UUtError gl_frame_start(
 	{
 		gl->frame_count= 0;
 	}
-	
+
 //	COrConsole_Printf_Color(2, 0xFF30FF30, 0xFF307030, "texture memory used= %ld bytes", gl->current_texture_memory);
-	
+
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
-	
+
 	return UUcError_None;
 }
 
@@ -646,13 +646,13 @@ static UUtError gl_frame_end(
 	UUtUns32 *out_texture_bytes_downloaded)
 {
 	*out_texture_bytes_downloaded = 0;
-	
+
 	if (gl->double_buffer)
 	{
 		gl->gl_display_back_buffer();
 	}
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
-	
+
 	return UUcError_None;
 }
 
@@ -677,7 +677,7 @@ static UUtError gl_screen_capture(
 	GL_FXN(glReadPixels)(x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, out_buffer);
 
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
- 
+
 	return UUcError_None;
 }
 
@@ -688,11 +688,11 @@ static UUtBool gl_point_visible(
 	GLfloat depth_val;
 	GLint x= MUrUnsignedSmallFloat_To_Uns_Round(in_point->x);
 	GLint y= gl->display_mode.height - MUrUnsignedSmallFloat_To_Uns_Round(in_point->y);
-        
+
 	GL_FXN(glReadBuffer)(GL_BACK);
 	GL_FXN(glReadPixels)(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, (void *)&depth_val);
 	UUmAssert(gl_GetError() == GL_NO_ERROR);
-        
+
 	// visible if the point isn't behind the distance stored in the depth buffer
 	return (depth_val > in_point->z);
 }
@@ -841,7 +841,7 @@ static void gl_line(
 
 	our_screen_points[0]= screen_points + index0;
 	our_screen_points[1]= screen_points + index1;
-	
+
 	GL_FXN(glBegin)(GL_LINES);
 		GL_FXN(glVertex3f)(our_screen_points[0]->x, our_screen_points[0]->y, ZCOORD(our_screen_points[0]->z));
 		GL_FXN(glVertex3f)(our_screen_points[1]->x, our_screen_points[1]->y, ZCOORD(our_screen_points[1]->z));

@@ -23,12 +23,12 @@ enum
 	PScPartSpecType_BackgroundColor_Red			= 0x0003,
 	PScPartSpecType_BackgroundColor_Green		= 0x0004,
 	PScPartSpecType_BackgroundColor_Blue		= 0x0005,
-	
+
 	PScPartSpecType_BorderType_None				= 0x0000,
 	PScPartSpecType_BorderType_Square			= 0x0010,
 	PScPartSpecType_BorderType_Curved			= 0x0020,
 	PScPartSpecType_BorderType_Bevel			= 0x0030,
-	
+
 	PScPartSpecType_BorderColor_None			= 0x0000,
 	PScPartSpecType_BorderColor_Black			= 0x0100,
 	PScPartSpecType_BorderColor_White			= 0x0200,
@@ -56,7 +56,7 @@ enum
 	PScPart_MiddleRow		= PScPart_LeftMiddle | PScPart_MiddleMiddle | PScPart_RightMiddle,
 	PScPart_BottomRow		= PScPart_LeftBottom | PScPart_MiddleBottom | PScPart_RightBottom,
 	PScPart_All				= 0xFFFF
-	
+
 };
 
 enum
@@ -80,11 +80,11 @@ typedef UUtUns16			PStPartSpecType;
 typedef tm_template('P', 'S', 'p', 'c', "Part Specification")
 PStPartSpec
 {
-	
+
 	IMtPoint2D 							part_matrix_tl[3][3];	// [column][row]
 	IMtPoint2D 							part_matrix_br[3][3];	// [column][row]
 	tm_templateref						texture;
-	
+
 } PStPartSpec;
 
 typedef struct PStPartSpec_PrivateData
@@ -96,11 +96,11 @@ typedef struct PStPartSpec_PrivateData
 	M3tTextureCoord			mt[4];
 	M3tTextureCoord			mm[4];
 	M3tTextureCoord			mb[4];
-	
+
 	M3tTextureCoord			rt[4];
 	M3tTextureCoord			rm[4];
 	M3tTextureCoord			rb[4];
-	
+
 	UUtInt16				l_width;
 	UUtInt16				r_width;
 	UUtInt16				t_height;
@@ -115,7 +115,7 @@ typedef tm_struct PStPartSpecDesc
 {
 	UUtUns32				partspec_type;
 	tm_templateref			partspec;
-	
+
 } PStPartSpecDesc;
 
 #define PScTemplate_PartSpecList	UUm4CharToUns32('P', 'S', 'p', 'L')
@@ -123,10 +123,10 @@ typedef tm_template('P', 'S', 'p', 'L', "Part Specification List")
 PStPartSpecList
 {
 	tm_pad							pad[20];
-	
+
 	tm_varindex UUtUns32			num_partspec_descs;
 	tm_vararray PStPartSpecDesc		partspec_descs[1];
-	
+
 } PStPartSpecList;
 
 // ----------------------------------------------------------------------
@@ -139,82 +139,82 @@ PStPastSpecUI
 	PStPartSpec				*border;
 	PStPartSpec				*title;
 	PStPartSpec				*grow;
-	
+
 	PStPartSpec				*close_idle;
 	PStPartSpec				*close_pressed;
-	
+
 	PStPartSpec				*zoom_idle;
 	PStPartSpec				*zoom_pressed;
-	
+
 	PStPartSpec				*flatten_idle;
 	PStPartSpec				*flatten_pressed;
-	
+
 	// text
 	PStPartSpec				*text_caret;
-	
+
 	// box
 	PStPartSpec				*outline;
-	
+
 	// button
 	PStPartSpec				*button_off;
 	PStPartSpec				*default_button;
 	PStPartSpec				*button_on;
-	
+
 	// checkbox
 	PStPartSpec				*checkbox_on;
 	PStPartSpec				*checkbox_off;
-	
+
 	// editfield
 	PStPartSpec				*editfield;
 	PStPartSpec				*ef_hasfocus;
-	
+
 	// listbox uses editfield
-	
+
 	// menu uses background and outline
 	PStPartSpec				*hilite;
 	PStPartSpec				*divider;
 	PStPartSpec				*check;
-	
+
 	// menubar uses background and hilite
-	
+
 	// popup menu
 	PStPartSpec				*popup_menu;
-	
+
 	// progress bar
 	PStPartSpec				*progressbar_track;
 	PStPartSpec				*progressbar_fill;
-	
+
 	// radio button
 	PStPartSpec				*radiobutton_on;
 	PStPartSpec				*radiobutton_off;
-	
+
 	// scrollbar
 	PStPartSpec				*up_arrow;
 	PStPartSpec				*up_arrow_pressed;
 	PStPartSpec				*dn_arrow;
 	PStPartSpec				*dn_arrow_pressed;
 	PStPartSpec				*sb_v_track;
-	
+
 	PStPartSpec				*lt_arrow;
 	PStPartSpec				*lt_arrow_pressed;
 	PStPartSpec				*rt_arrow;
 	PStPartSpec				*rt_arrow_pressed;
 	PStPartSpec				*sb_h_track;
-	
+
 	PStPartSpec				*sb_thumb;
-	
+
 	// slider
 	PStPartSpec				*sl_thumb;
 	PStPartSpec				*sl_track;
-	
+
 	// Tab
 	PStPartSpec				*tab_active;
 	PStPartSpec				*tab_inactive;
-	
+
 	// files & folders
 	PStPartSpec				*file;
 	PStPartSpec				*folder;
-		
+
 } PStPartSpecUI;
 
 // ======================================================================
@@ -235,24 +235,24 @@ PSrPartSpec_GetSize(
 	UUtUns16				inPart,
 	UUtInt16				*outWidth,
 	UUtInt16				*outHeight);
-	
+
 PStPartSpec*
 PSrPartSpec_LoadByType(
 	PStPartSpecType			inPartSpecType);
-	
+
 // ----------------------------------------------------------------------
 PStPartSpecUI*
 PSrPartSpecUI_GetActive(
 	void);
-	
+
 PStPartSpecUI*
 PSrPartSpecUI_GetByName(
 	const char				*inName);
-	
+
 void
 PSrPartSpecUI_SetActive(
 	PStPartSpecUI			*inPartSpecUI);
-	
+
 // ----------------------------------------------------------------------
 UUtError
 PSrInitialize(

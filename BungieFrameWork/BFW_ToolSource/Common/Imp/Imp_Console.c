@@ -33,7 +33,7 @@
 static UUtError IMPiAddConsole( BFtFileRef* inSourceFileRef, GRtGroup* inGroup, char* inInstanceName)
 {
 	BFtFileRef				*file_ref;
-	UUtError				error;	
+	UUtError				error;
 	MXtHeader				*header;
 	OBJtFurnGeomArray		*geom_array;
 	M3tGeometry				*screen_geom;
@@ -53,7 +53,7 @@ static UUtError IMPiAddConsole( BFtFileRef* inSourceFileRef, GRtGroup* inGroup, 
 	M3tVector3D				action_point;
 	M3tVector3D				action_vector;
 	char					*default_basemap;
-	UUtUns32				gq_flags;			
+	UUtUns32				gq_flags;
 
 	// find the model name
 	error = GRrGroup_GetElement( inGroup, "model", &elementType, &model_path );
@@ -70,7 +70,7 @@ static UUtError IMPiAddConsole( BFtFileRef* inSourceFileRef, GRtGroup* inGroup, 
 	screen_node		= -1;
 	screen_geom		= NULL;
 	action_marker	= NULL;
-		
+
 	error = BFrFileRef_DuplicateAndReplaceName(inSourceFileRef, model_path, &file_ref);
 	IMPmError_ReturnOnError(error);
 
@@ -84,11 +84,11 @@ static UUtError IMPiAddConsole( BFtFileRef* inSourceFileRef, GRtGroup* inGroup, 
 	// parse the .env file
 	error = Imp_ParseEnvFile(file_ref, &header);
 	IMPmError_ReturnOnError(error);
-		
+
 	// copy the file name into name
 	UUrString_Copy(name, BFrFileRef_GetLeafName(file_ref), BFcMaxFileNameLength);
 	UUrString_StripExtension(name);
-		
+
 	// calculate the number of geometries, grab the screen node and action marker
 	for (i = 0; i < header->numNodes; i++)
 	{
@@ -115,7 +115,7 @@ static UUtError IMPiAddConsole( BFtFileRef* inSourceFileRef, GRtGroup* inGroup, 
 	// build the geometry array instance
 	error = TMrConstruction_Instance_NewUnique( OBJcTemplate_FurnGeomArray, num_geoms, &geom_array );
 	IMPmError_ReturnOnError(error);
-		
+
 	// initialize the geoms and get the flag and light data
 	for (i = 0, geom_index = 0; i < header->numNodes; i++)
 	{
@@ -126,37 +126,37 @@ static UUtError IMPiAddConsole( BFtFileRef* inSourceFileRef, GRtGroup* inGroup, 
 			geom_array->furn_geom[geom_index].gq_flags = AKcGQ_Flag_None;
 			geom_array->furn_geom[geom_index].geometry = NULL;
 			geom_array->furn_geom[geom_index].ls_data = NULL;
-			
+
 			// get the GQ flags
 			geom_array->furn_geom[geom_index].gq_flags = IMPrEnv_GetNodeFlags(&header->nodes[i]);
-			
+
 			// get the light data
 			IMPrFurniture_GetLightData( &header->nodes[i], i, &geom_array->furn_geom[geom_index]);
 		}
 	}
-		
+
 	for (i = 0, geom_index = 0; i < header->numNodes; i++)
 	{
 		if( i == (UUtUns32) screen_node )		continue;
 		for (m = 0; m < header->nodes[i].numMaterials; m++, geom_index++)
 		{
 			M3tGeometry		*geometry;
-			
+
 			// build the geometry instance
 			error = TMrConstruction_Instance_NewUnique( M3cTemplate_Geometry, 0, &geometry );
 			IMPmError_ReturnOnError(error);
-			
+
 			geometry->animation = NULL;
-			
+
 			// put the tris and quads associated with material m into a geometry
 			Imp_NodeMaterial_To_Geometry_ApplyMatrix(&header->nodes[i], (UUtUns16)m, geometry);
-			
+
 			// grab the texture basemap
 			if( default_basemap )
 				textureName = default_basemap;
 			else
 				textureName = header->nodes[i].materials[0].maps[MXcMapping_DI].name;
-			
+
 			// grab a placeholder to the texture
 			geometry->baseMap = M3rTextureMap_GetPlaceholder_StripExtension_UpperCase(textureName);
 			UUmAssert(geometry->baseMap);
@@ -177,7 +177,7 @@ static UUtError IMPiAddConsole( BFtFileRef* inSourceFileRef, GRtGroup* inGroup, 
 
 		error = Imp_Node_To_Geometry_ApplyMatrix( &header->nodes[screen_node], screen_geom );
 		UUmError_ReturnOnErrorMsg(error, "failed to build the geometry");
-				
+
 		// set a place holder for the default texture
 		textureName = header->nodes[screen_node].materials[0].maps[MXcMapping_DI].name;
 
@@ -233,7 +233,7 @@ static UUtError IMPiAddConsole( BFtFileRef* inSourceFileRef, GRtGroup* inGroup, 
 	{
 		UUrString_Copy( console->screen_inactive, textureName, BFcMaxFileNameLength );
 	}
-	
+
 	// active state
 	error = GRrGroup_GetElement( inGroup, "active_screen", &elementType, &textureName );
 	if(error != UUcError_None || elementType != GRcElementType_String)
@@ -263,7 +263,7 @@ static UUtError IMPiAddConsole( BFtFileRef* inSourceFileRef, GRtGroup* inGroup, 
 
 	// delete the header
 	Imp_EnvFile_Delete(header);
-	
+
 	return UUcError_None;
 }
 
@@ -275,7 +275,7 @@ UUtError Imp_AddConsole( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFileModDa
 
 	error = IMPiAddConsole( inSourceFileRef, inGroup, inInstanceName );
 	IMPmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 

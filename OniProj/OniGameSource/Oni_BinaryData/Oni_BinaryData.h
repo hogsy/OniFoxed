@@ -55,7 +55,7 @@ OBDrLevel_Load(
 void
 OBDrLevel_Unload(
 	void);
-	
+
 // ----------------------------------------------------------------------
 void
 OBDrMakeDirty(

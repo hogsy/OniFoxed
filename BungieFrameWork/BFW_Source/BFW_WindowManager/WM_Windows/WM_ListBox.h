@@ -28,7 +28,7 @@ enum
 											WMcListBoxStyle_HasScrollbar |
 											WMcListBoxStyle_HasStrings |
 											WMcListBoxStyle_Sort),
-	
+
 	WMcListBoxStyle_SimpleListBox		= (WMcListBoxStyle_HasStrings | WMcListBoxStyle_HasScrollbar),
 	WMcListBoxStyle_SortedListBox		= (WMcListBoxStyle_SimpleListBox | WMcListBoxStyle_Sort)
 };
@@ -72,7 +72,7 @@ typedef struct WMtListBox_DirectoryInfo
 	UUtUns32							flags;
 	char								prefix[BFcMaxFileNameLength];
 	char								suffix[BFcMaxFileNameLength];
-	
+
 } WMtListBox_DirectoryInfo;
 
 // ======================================================================
@@ -82,19 +82,19 @@ UUtError
 WMrListBox_Initialize(
 	void);
 
-void 
+void
 WMrListBox_Reset(WMtListBox *inListBox);
 
 #define LBcNotifyParent UUcTrue
 #define LBcDontNotifyParent UUcFalse
 
-void 
+void
 WMrListBox_SetSelection(WMtListBox *inListBox, UUtBool inNotifyParent, UUtUns32 inIndex);
 
 UUtUns32
 WMrListBox_AddString(WMtListBox *inListBox, const char *inString);
 
-void 
+void
 WMrListBox_SetItemData(WMtListBox *inListBox, UUtUns32 inItemData, UUtUns32 inIndex);
 
 UUtUns32
@@ -118,11 +118,11 @@ WMrListBox_SetDirectoryInfo(
 	const char					*inPrefix,
 	const char					*inSuffix,
 	UUtBool						inReset);
-	
+
 UUtUns32
 WMrListBox_SelectString(
 	WMtListBox					*inListBox,
 	const char					*inString);
-	
+
 // ======================================================================
 #endif /* WM_LISTBOX_H */

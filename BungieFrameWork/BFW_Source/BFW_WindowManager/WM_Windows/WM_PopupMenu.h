@@ -42,7 +42,7 @@ WMrPopupMenu_AppendItem_Light(
 UUtError
 WMrPopupMenu_AppendItem_Divider(
 	WMtPopupMenu			*inPopupMenu);
-	
+
 UUtError
 WMrPopupMenu_AppendItem(
 	WMtPopupMenu			*inPopupMenu,
@@ -59,13 +59,13 @@ WMrPopupMenu_GetItemID(
 	WMtPopupMenu			*inPopupMenu,
 	UUtInt16				inItemIndex,
 	UUtUns16				*outID);
-	
+
 UUtBool
 WMrPopupMenu_GetItemText(
 	WMtPopupMenu			*inPopupMenu,
 	UUtUns16				inItemID,
 	char					*outText);
-	
+
 UUtError
 WMrPopupMenu_Initialize(
 	void);
@@ -75,7 +75,7 @@ WMrPopupMenu_InsertItem(
 	WMtPopupMenu			*inPopupMenu,
 	WMtMenuItemData			*inMenuItemData,
 	UUtInt16				inPosition);
-	
+
 UUtError
 WMrPopupMenu_RemoveItem(
 	WMtPopupMenu			*inPopupMenu,
@@ -84,12 +84,12 @@ WMrPopupMenu_RemoveItem(
 UUtError
 WMrPopupMenu_Reset(
 	WMtPopupMenu			*inPopupMenu);
-	
+
 UUtError
 WMrPopupMenu_SetSelection(
 	WMtPopupMenu			*inPopupMenu,
 	UUtUns16				inItemID);
-	
+
 UUtError
 WMrPopupMenu_SelectString(
 	WMtPopupMenu			*inPopupMenu,
@@ -99,6 +99,6 @@ UUtError
 WMrPopupMenu_SelectString_NoCase(
 	WMtPopupMenu			*inPopupMenu,
 	char					*inString);
-	
+
 // ======================================================================
 #endif /* WM_POPUPMENU_H */

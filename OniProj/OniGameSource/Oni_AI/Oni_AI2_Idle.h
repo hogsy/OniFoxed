@@ -4,13 +4,13 @@
 
 /*
 	FILE:	Oni_AI2_Idle.h
-	
+
 	AUTHOR:	Chris Butcher
-	
+
 	CREATED: April 27, 2000
-	
+
 	PURPOSE: Idle AI for Oni
-	
+
 	Copyright (c) 2000
 
 */

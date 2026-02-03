@@ -1,12 +1,12 @@
 /*
 	FILE:	EM_DrawContext_Private.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 17, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -26,9 +26,9 @@ enum
 typedef struct EDtTextureMapPrivate
 {
 
-	UUtInt16 flags;					
+	UUtInt16 flags;
 	UUtInt16 width, height;
-	
+
 } EDtTextureMapPrivate;
 
 #define MGcStateStack_MaxDepth 3

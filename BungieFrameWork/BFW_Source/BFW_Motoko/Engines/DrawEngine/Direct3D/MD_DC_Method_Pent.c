@@ -5,8 +5,8 @@
 
 	CREATED: Sept 18, 1997
 
-	PURPOSE: 
-	
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -20,7 +20,7 @@
 #include "MD_DC_Method_Triangle.h"
 #include "MD_DC_Method_Pent.h"
 
-void 
+void
 MDrDrawContext_Method_PentGouraudInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -47,7 +47,7 @@ MDrDrawContext_Method_PentGouraudInterpolate(
 
 }
 
-void 
+void
 MDrDrawContext_Method_PentGouraudFlat(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,
@@ -78,7 +78,7 @@ MDrDrawContext_Method_PentGouraudFlat(
 
 }
 
-void 
+void
 MDrDrawContext_Method_PentTextureInterpolate(
 	M3tDrawContext*	inDrawContext,
 	UUtUns16		inVIndex0,

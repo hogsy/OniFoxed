@@ -43,15 +43,15 @@ SSiPlatform_SoundChannel_Callback(
 	SndCommand				*inSoundCommand)
 {
 	SStSoundChannel			*soundChannel;
-	
+
 	// get the sound channel being used
 	soundChannel = (SStSoundChannel*)inSoundCommand->param2;
-	
+
 	if (soundChannel->flags & SScFlag_Loop)
 	{
 		SndCommand			cmd;
 		OSErr				err;
-		
+
 		// play the sound again
 		SSmSetSndCommand(cmd, bufferCmd, 0, (UUtUns32)soundChannel->ps.sound);
 		err = SndDoImmediate(soundChannel->ps.sound_channel, &cmd);
@@ -73,16 +73,16 @@ SSiPlatform_SoundChannel_Terminate(
 	char					*inErrorString)
 {
 	OSErr					err;
-	
+
 	if (inErrorString)
 	{
 		UUrError_Report(UUcError_Generic, inErrorString);
 	}
-	
+
 	if (inSoundChannel->ps.sound_channel)
 	{
 		// stop the sound channel
-		err = 
+		err =
 			SndDisposeChannel(
 				inSoundChannel->ps.sound_channel,
 				UUcTrue);
@@ -125,16 +125,16 @@ SSrPlatform_SoundChannel_Initialize(
 {
 	OSErr					err;
 	ExtSoundHeaderPtr		sound;
-	
+
 	UUmAssert(SSgPlatformInitialized);
-	
+
 	// clear the vars
 	inSoundChannel->ps.sound_channel	= NULL;
 	inSoundChannel->ps.sound			= NULL;
 	inSoundChannel->ps.pan				= SScPan_Middle;
 	inSoundChannel->ps.volume			= SScVolume_Max;
 	inSoundChannel->ps.status			= SScStatus_None;
-	
+
 	// ------------------------------
 	// Sound Channel
 	// ------------------------------
@@ -152,7 +152,7 @@ SSrPlatform_SoundChannel_Initialize(
 			"Unable to initialize the sound channel");
 		return;
 	}
-	
+
 	// ------------------------------
 	// Sound
 	// ------------------------------
@@ -165,7 +165,7 @@ SSrPlatform_SoundChannel_Initialize(
 			inSoundChannel,
 			"Unable to allocate memory for the sound");
 	}
-	
+
 	// get a pointer to the sound
 	sound = inSoundChannel->ps.sound;
 
@@ -175,7 +175,7 @@ SSrPlatform_SoundChannel_Initialize(
 	sound->sampleRate			= 0;
 	sound->numFrames			= 0;
 	sound->sampleSize			= 0;
-	
+
 	sound->loopStart			= 0;
 	sound->loopEnd				= 0;
 	sound->encode				= extSH;
@@ -189,7 +189,7 @@ SSrPlatform_SoundChannel_GetStatus(
 	SStSoundChannel			*inSoundChannel)
 {
 	UUmAssert(SSgPlatformInitialized);
-	
+
 	return inSoundChannel->ps.status;
 }
 
@@ -200,32 +200,32 @@ SSrPlatform_SoundChannel_Play(
 {
 	SndCommand				cmd;
 	OSErr					err;
-	
+
 	UUmAssert(SSgPlatformInitialized);
-	
+
 	// flush the sound channels command buffer
 	SSmSetSndCommand(cmd, flushCmd, 0, 0);
 	err = SndDoImmediate(inSoundChannel->ps.sound_channel, &cmd);
 	SSmCheckSndError(err);
-	
+
 	// set the volume
 	SSrPlatform_SoundChannel_SetVolume(inSoundChannel, inSoundChannel->ps.volume);
-	
+
 	// set the pan
 	SSrPlatform_SoundChannel_SetPan(inSoundChannel, inSoundChannel->ps.pan);
-	
+
 	// set the status field
 	inSoundChannel->ps.status = SScStatus_Playing;
 	if (inSoundChannel->flags & SScFlag_Loop)
 	{
 		inSoundChannel->ps.status = SScStatus_Looping;
 	}
-	
+
 	// play the sound
 	SSmSetSndCommand(cmd, bufferCmd, 0, (UUtUns32)inSoundChannel->ps.sound);
 	err = SndDoImmediate(inSoundChannel->ps.sound_channel, &cmd);
 	SSmCheckSndError(err);
-	
+
 	// queue a callback
 	if (err == noErr)
 	{
@@ -257,16 +257,16 @@ SSrPlatform_SoundChannel_SetPan(
 	UUtUns16				right_volume;
 	UUtUns16				left_volume;
 	float					scale;
-	
+
 	UUmAssert(SSgPlatformInitialized);
-	
+
 	// set the new pan
 	inSoundChannel->ps.pan = inPan;
-	
+
 	// set up the volumes
 	right_volume = left_volume = inSoundChannel->ps.volume;
-	
-	
+
+
 	// calculate the new pan
 	if (inPan > SScPan_Middle)
 	{
@@ -280,7 +280,7 @@ SSrPlatform_SoundChannel_SetPan(
 		scale = (float)inPan / (float)(SScPan_Left - SScPan_Middle);
 		right_volume = (UUtUns32)((float)right_volume * scale);
 	}
-	
+
 	// set the sound channel's pan
 	SSmSetSndCommand(cmd, volumeCmd, 0, UUmMakeLong(right_volume, left_volume));
 	err = SndDoImmediate(inSoundChannel->ps.sound_channel, &cmd);
@@ -294,31 +294,31 @@ SSrPlatform_SoundChannel_SetSound(
 	SStSound				*inSound)
 {
 	ExtSoundHeaderPtr		sound;
-	
+
 	UUmAssert(SSgPlatformInitialized);
-	
+
 	// if inSound == NULL, then exit, the buffer has been cleared
 	if (inSound == NULL)
 	{
 		return UUcTrue;
 	}
-	
+
 	// get a pointer to the sound
 	sound = inSoundChannel->ps.sound;
-	
+
 	// set up the sound
 	sound->samplePtr			= (char*)inSound->data;
 	sound->numChannels			= inSound->numChannels;
 	sound->sampleRate			= inSound->sampleRate << 16;
-	sound->numFrames			= 
+	sound->numFrames			=
 		(inSound->numBits == 8) ?
 			(inSound->numBytes) / inSound->numChannels :
 			(inSound->numBytes / 2) / inSound->numChannels;
 	sound->sampleSize			= inSound->numBits;
-	
+
 	// set the sound
 	inSoundChannel->sound = inSound;
-	
+
 	return UUcTrue;
 }
 
@@ -329,10 +329,10 @@ SSrPlatform_SoundChannel_SetVolume(
 	UUtInt32				inVolume)
 {
 	UUmAssert(SSgPlatformInitialized);
-	
+
 	// set the volume variable
 	inSoundChannel->ps.volume = inVolume;
-	
+
 	// let SSrPlatform_SoundChannel_SetPan() set the volume for the
 	// left and right channels
 	SSrPlatform_SoundChannel_SetPan(
@@ -347,19 +347,19 @@ SSrPlatform_SoundChannel_Stop(
 {
 	OSErr					err;
 	SndCommand				cmd;
-	
+
 	UUmAssert(SSgPlatformInitialized);
-	
+
 	// stop the sound channel
 	SSmSetSndCommand(cmd, quietCmd, 0, 0);
 	err = SndDoImmediate(inSoundChannel->ps.sound_channel, &cmd);
 	SSmCheckSndError(err);
-	
+
 	// flush the queue
 	SSmSetSndCommand(cmd, flushCmd, 0, 0);
 	err = SndDoImmediate(inSoundChannel->ps.sound_channel, &cmd);
 	SSmCheckSndError(err);
-	
+
 	// set the status field
 	inSoundChannel->ps.status = SScStatus_None;
 }
@@ -400,25 +400,25 @@ SSrPlatform_Initialize(
 	NumVersion				sound_manager_version;
 	OSErr					err;
 	UUtInt32				response;
-	
+
 	// ------------------------------
 	// make sure the needed sound capabilities exist on this hardware
 	// ------------------------------
-	
+
 	// get the sound manager version
 	sound_manager_version = SndSoundManagerVersion();
 	if (sound_manager_version.majorRev < 3)	return UUcError_Generic;
-	
+
 	// gestalt the sound attributes
 	err = Gestalt(gestaltSoundAttr, &response);
 	if (err != noErr)	return UUcError_Generic;
-	
+
 	// check for needed properties
 	if (!(response & (1 << gestaltStereoCapability)))	return UUcError_Generic;
 	if (!(response & (1 << gestaltMultiChannels)))		return UUcError_Generic;
 	if (!(response & (1 << gestalt16BitSoundIO)))		return UUcError_Generic;
 	if (!(response & (1 << gestalt16BitAudioSupport)))	return UUcError_Generic;
-	
+
 	// ------------------------------
 	// Sound Callback
 	// ------------------------------
@@ -429,19 +429,19 @@ SSrPlatform_Initialize(
 		UUrError_Report(UUcError_Generic, "Unable to create sound callback UPP");
 		return UUcError_Generic;
 	}
-	
+
 	#if 0
 	// install the byte swapper
-	error = 
+	error =
 		TMrTemplate_InstallByteSwap(
 			SScTemplate_Sound,
 			SSiPlatform_SoundByteSwapper);
 	UUmError_ReturnOnErrorMsg(error, "Could not install sound byte swapper");
 	#endif
-	
+
 	// init the main vars
 	SSgPlatformInitialized	= UUcTrue;
-	
+
 	return UUcError_None;
 }
 
@@ -490,12 +490,12 @@ SSrPlatform_Sound_ProcHandler(
 {
 	SStSound				*sound;
 	SStSound_PrivateData	*private_data;
-	
+
 	// get the data
 	sound = (SStSound*)inInstancePtr;
 	private_data = (SStSound_PrivateData*)inPrivateData;
 	UUmAssert(private_data);
-	
+
 	// handle the message
 	switch(inMessage)
 	{
@@ -506,22 +506,22 @@ SSrPlatform_Sound_ProcHandler(
 				UUtUns32		i;
 				UUtUns32		num_shorts;
 				UUtUns16		*data;
-				
+
 				// setup the vars
 				num_shorts = sound->numBytes / 2;
 				data = (UUtUns16*)sound->data;
-				
+
 				// swap all of the data
 				for (i = 0; i < num_shorts; i++)
 				{
 					UUrSwap_2Byte(data++);
 				}
-				
+
 				private_data->byte_swapped = UUcTrue;
 			}
 		break;
 	}
-	
+
 	return UUcError_None;
 }
 

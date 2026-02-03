@@ -20,12 +20,12 @@ enum
 {
 	WMcMessageBox			= 50,
 	WMcGetString			= 51,
-	
+
 	MBcTxt_Message			= 100,
 	MBcBtn_1				= 101,
 	MBcBtn_2				= 102,
 	MBcBtn_3				= 103
-	
+
 };
 
 // ======================================================================
@@ -36,21 +36,21 @@ typedef struct WMtDialog_CreationData
 	WMtDialogData		*dialog_data;
 	WMtDialogCallback	dialog_callback;
 	UUtUns32			user_data;
-	
+
 } WMtDialog_CreationData;
 
 // ----------------------------------------------------------------------
 typedef struct WMtDialog_PrivateData
 {
 	WMtDialogCallback	dialog_callback;
-	
+
 	UUtBool				quit_dialog;
 	UUtUns32			out_message;
-	
+
 	UUtUns32			default_item_id;
-	
+
 	UUtUns32			user_data;
-	
+
 } WMtDialog_PrivateData;
 
 // ----------------------------------------------------------------------
@@ -58,7 +58,7 @@ typedef struct WMtMessageBox_Init
 {
 	char				*title;
 	char				*message;
-	WMtMessageBoxStyle	style;	
+	WMtMessageBoxStyle	style;
 } WMtMessageBox_Init;
 
 typedef struct WMtGetString_Private
@@ -87,13 +87,13 @@ WMiDialog_Center(
 	WMtDialog				*inDialog)
 {
 	WMtWindow				*parent;
-			
+
 	parent = WMrWindow_GetParent(inDialog);
 	if (parent == NULL)
 	{
 		parent = WMrGetDesktop();
 	}
-	
+
 	if (parent != NULL)
 	{
 		UUtInt16			parent_width;
@@ -107,10 +107,10 @@ WMiDialog_Center(
 		WMrWindow_GetRect(parent, &parent_rect);
 		WMrWindow_GetSize(parent, &parent_width, &parent_height);
 		WMrWindow_GetSize(inDialog, &dialog_width, &dialog_height);
-		
+
 		x = parent_rect.left + ((parent_width - dialog_width) >> 1);
 		y = parent_rect.top + ((parent_height - dialog_height) >> 1);
-		
+
 		WMrWindow_SetLocation(inDialog, x, y);
 	}
 }
@@ -123,21 +123,21 @@ WMiDialog_Create(
 {
 	UUtUns32				i;
 	WMtDialog_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtDialog_PrivateData*)UUrMemory_Block_NewClear(sizeof(WMtDialog_PrivateData));
 	if (private_data == NULL) { goto cleanup; }
 	WMrWindow_SetLong(inDialog, 0, (UUtUns32)private_data);
-	
+
 	if (inDialogCreationData == NULL) return WMcResult_Handled;
-	
+
 	private_data->dialog_callback = inDialogCreationData->dialog_callback;
 	private_data->user_data = inDialogCreationData->user_data;
-	
+
 	for (i = 0; i < inDialogCreationData->dialog_data->num_items; i++)
 	{
 		WMtWindow			*dialog_item;
-		
+
 		dialog_item =
 			WMrWindow_New(
 				inDialogCreationData->dialog_data->items[i].windowtype,
@@ -156,28 +156,28 @@ WMiDialog_Create(
 			UUmAssert(!"Unable to create the dialog item");
 			goto cleanup;
 		}
-		
+
 		WMrWindow_SetFontInfo(
 			dialog_item,
 			&inDialogCreationData->dialog_data->items[i].font_info);
 	}
-	
+
 	// set the position of the dialog
 	if (inDialogCreationData->dialog_data->style & WMcDialogStyle_Centered)
 	{
 		WMiDialog_Center(inDialog);
 	}
-	
+
 	return WMcResult_Handled;
 
 cleanup:
-	
+
 	if (private_data)
 	{
 		UUrMemory_Block_Delete(private_data);
 		WMrWindow_SetLong(inDialog, 0, 0);
 	}
-	
+
 	return WMcResult_Error;
 }
 
@@ -187,11 +187,11 @@ WMiDialog_Destroy(
 	WMtDialog				*inDialog)
 {
 	WMtDialog_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtDialog_PrivateData*)WMrWindow_GetLong(inDialog, 0);
 	if (private_data == NULL) { return; }
-	
+
 	UUrMemory_Block_Delete(private_data);
 	WMrWindow_SetLong(inDialog, 0, 0);
 }
@@ -202,11 +202,11 @@ WMiDialog_GetDefaultID(
 	WMtDialog				*inDialog)
 {
 	WMtDialog_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtDialog_PrivateData*)WMrWindow_GetLong(inDialog, 0);
 	if (private_data == NULL) { return WMcResult_Error; }
-	
+
 	return private_data->default_item_id;
 }
 
@@ -220,7 +220,7 @@ WMiDialog_HandleCommand(
 {
 	UUtBool					user_result;
 	WMtDialog_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtDialog_PrivateData*)WMrWindow_GetLong(inDialog, 0);
 	if (private_data == NULL) { return WMcResult_Error; }
@@ -246,7 +246,7 @@ WMiDialog_HandleCommand(
 			}
 		}
 	}
-	
+
 	return WMcResult_Handled;
 }
 
@@ -259,9 +259,9 @@ WMiDialog_HandleKeyEvent(
 	UUtUns32				inParam2)
 {
 	UUtUns32				result;
-	
+
 	if (inMessage == WMcMessage_KeyUp) { return; }
-	
+
 	switch (inParam1)
 	{
 		case LIcKeyCode_Return:
@@ -270,7 +270,7 @@ WMiDialog_HandleKeyEvent(
 			if (result != WMcDialogItem_None)
 			{
 				WMtWindow			*default_dialog_item;
-				
+
 				default_dialog_item = WMrDialog_GetItemByID(inDialog, (UUtUns16)result);
 				if ((default_dialog_item) &&
 					(WMrWindow_GetEnabled(default_dialog_item) == UUcTrue))
@@ -283,16 +283,16 @@ WMiDialog_HandleKeyEvent(
 				}
 			}
 		break;
-		
+
 		case LIcKeyCode_Escape:
 		case LIcKeyCode_Star:
 			WMrMessage_Post(inDialog, WMcMessage_Close, 0, 0);
 		break;
-		
+
 /*		case LIcKeyCode_Tab:
 		{
 			WMtWindow				*has_focus;
-			
+
 			has_focus = WMrWindow_GetFocus();
 			if (WMrWindow_IsChild(has_focus, inDialog))
 			{
@@ -320,18 +320,18 @@ WMiDialog_HandleDefault(
 {
 	WMtDialog_PrivateData	*private_data;
 	UUtBool					result;
-	
+
 	result = UUcFalse;
-	
+
 	// get the private data
 	private_data = (WMtDialog_PrivateData*)WMrWindow_GetLong(inDialog, 0);
 	if (private_data == NULL) { return result; }
-	
+
 	if (private_data->dialog_callback)
 	{
 		result = private_data->dialog_callback(inDialog, inMessage, inParam1, inParam2);
 	}
-	
+
 	return result;
 }
 
@@ -346,7 +346,7 @@ WMiDialog_HandleResolutionChanged(
 	UUtRect					rect;
 	UUtInt16				new_x;
 	UUtInt16				new_y;
-	
+
 	// if the window is suppose to be centered, re-center it
 	style = WMrWindow_GetStyle(inDialog);
 	if ((style & WMcDialogStyle_Centered) != 0)
@@ -359,7 +359,7 @@ WMiDialog_HandleResolutionChanged(
 		WMrWindow_GetRect(inDialog, &rect);
 		new_x = rect.left;
 		new_y = rect.top;
-		
+
 		if (rect.left >= inWidth)
 		{
 			new_x = inWidth - (rect.right - rect.left);
@@ -368,7 +368,7 @@ WMiDialog_HandleResolutionChanged(
 		{
 			new_y = 0;
 		}
-		
+
 		if (rect.top >= inHeight)
 		{
 			new_y = inHeight - (rect.bottom - rect.top);
@@ -377,7 +377,7 @@ WMiDialog_HandleResolutionChanged(
 		{
 			new_y = 0;
 		}
-		
+
 		WMrWindow_SetLocation(inDialog, new_x, new_y);
 	}
 }
@@ -389,11 +389,11 @@ WMiDialog_SetDefaultID(
 	UUtUns32				inParam1)
 {
 	WMtDialog_PrivateData	*private_data;
-	
+
 	// get the private data
 	private_data = (WMtDialog_PrivateData*)WMrWindow_GetLong(inDialog, 0);
 	if (private_data == NULL) { return; }
-	
+
 	private_data->default_item_id = inParam1;
 }
 
@@ -405,10 +405,10 @@ WMiDialog_TranslateModalEvent(
 {
 	// the event is already going to the dialog
 	if (ioEvent->window == inDialog) { return; }
-	
+
 	// if the event is going to a child window, don't interfere
 	if (WMrWindow_IsChild(ioEvent->window, inDialog)) { return; }
-	
+
 	// make any mouse events go to the dialog
 	switch (ioEvent->message)
 	{
@@ -450,7 +450,7 @@ WMiDialog_Callback(
 	UUtUns32				inParam2)
 {
 	UUtUns32				result;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_NC_Create:
@@ -471,12 +471,12 @@ WMiDialog_Callback(
 		case WMcMessage_NC_Update:
 		case WMcMessage_NC_CalcClientSize:
 		break;
-		
+
 		case WMcMessage_KeyDown:
 		case WMcMessage_KeyUp:
 			WMiDialog_HandleKeyEvent(inDialog, inMessage, inParam1, inParam2);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Close:
 			WMrMessage_Send(
 				inDialog,
@@ -484,49 +484,49 @@ WMiDialog_Callback(
 				UUmMakeLong(WMcNotify_Click, WMcDialogItem_Cancel),
 				(UUtUns32)NULL);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Create:
 			result = WMiDialog_Create(inDialog, (WMtDialog_CreationData*)inParam1);
 			WMmResult_ReturnOnError(result);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Destroy:
 			WMiDialog_HandleDefault(inDialog, inMessage, inParam1, inParam2);
 			WMiDialog_Destroy(inDialog);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Command:
 			result = WMiDialog_HandleCommand(inDialog, inMessage, inParam1, inParam2);
 			WMmResult_ReturnOnError(result);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_CompareItems:
 			result = WMiDialog_HandleDefault(inDialog, inMessage, inParam1, inParam2);
 			return result;
 		break;
-		
+
 		case WMcMessage_GetDefaultID:
 			result = WMiDialog_GetDefaultID(inDialog);
 			return result;
 		break;
-		
+
 		case WMcMessage_SetDefaultID:
 			WMiDialog_SetDefaultID(inDialog, inParam1);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_ResolutionChanged:
 			WMiDialog_HandleResolutionChanged(
 				inDialog,
 				(UUtInt16)UUmHighWord(inParam1),
 				(UUtInt16)UUmLowWord(inParam1));
 		return WMcResult_Handled;
-		
+
 		default:
 			result = WMiDialog_HandleDefault(inDialog, inMessage, inParam1, inParam2);
 			if (result == UUcTrue) { return WMcResult_Handled; }
 		break;
 	}
-	
+
 	return WMrWindow_DefaultCallback(inDialog, inMessage, inParam1, inParam2);
 }
 
@@ -544,19 +544,19 @@ WMiMessageBox_InitDialog(
 	WMtWindow				*btn_1;
 	WMtWindow				*btn_2;
 	WMtWindow				*btn_3;
-	
+
 	// save the dialog's style
 	WMrDialog_SetUserData(inDialog, WMgMessageBox_Init.style);
 
 	// set the title of the dialog
 	WMrWindow_SetTitle(inDialog, WMgMessageBox_Init.title, WMcMaxTitleLength);
-	
+
 	// get pointers to the child windows
 	message = WMrDialog_GetItemByID(inDialog, MBcTxt_Message);
 	btn_1 = WMrDialog_GetItemByID(inDialog, MBcBtn_1);
 	btn_2 = WMrDialog_GetItemByID(inDialog, MBcBtn_2);
 	btn_3 = WMrDialog_GetItemByID(inDialog, MBcBtn_3);
-	
+
 	// set up the child windows
 	WMrWindow_SetTitle(message, WMgMessageBox_Init.message, WMcMaxTitleLength);
 	WMrWindow_SetVisible(btn_2, UUcFalse);
@@ -572,12 +572,12 @@ WMiMessageBox_InitDialog(
 			WMrWindow_SetTitle(btn_1, "Cancel", WMcMaxTitleLength);
 			WMrWindow_SetVisible(btn_1, UUcTrue);
 		break;
-			
+
 		case WMcMessageBoxStyle_OK:
 			WMrWindow_SetTitle(btn_1, "OK", WMcMaxTitleLength);
 			WMrWindow_SetVisible(btn_1, UUcTrue);
 		break;
-		
+
 		case WMcMessageBoxStyle_Yes_No_Cancel:
 			WMrWindow_SetTitle(btn_3, "Yes", WMcMaxTitleLength);
 			WMrWindow_SetVisible(btn_3, UUcTrue);
@@ -588,7 +588,7 @@ WMiMessageBox_InitDialog(
 			WMrWindow_SetTitle(btn_1, "Cancel", WMcMaxTitleLength);
 			WMrWindow_SetVisible(btn_1, UUcTrue);
 		break;
-			
+
 		case WMcMessageBoxStyle_Yes_No:
 			WMrWindow_SetTitle(btn_2, "Yes", WMcMaxTitleLength);
 			WMrWindow_SetVisible(btn_2, UUcTrue);
@@ -607,9 +607,9 @@ WMiMessageBox_HandleCommand(
 	UUtUns32				inParam2)
 {
 	UUtUns32				style;
-	
+
 	style = WMrDialog_GetUserData(inDialog);
-	
+
 	switch (style)
 	{
 		case WMcMessageBoxStyle_OK:
@@ -632,28 +632,28 @@ WMiMessageBox_HandleCommand(
 				case MBcBtn_2:
 					WMrDialog_ModalEnd(inDialog, WMcDialogItem_OK);
 				break;
-				
+
 				case MBcBtn_1:
 					WMrDialog_ModalEnd(inDialog, WMcDialogItem_Cancel);
 				break;
-				
+
 				case MBcBtn_3:
 					UUmAssert(!"BLAM");
 				break;
 			}
 		break;
-		
+
 		case WMcMessageBoxStyle_Yes_No:
 			switch (UUmLowWord(inParam1))
 			{
 				case MBcBtn_2:
 					WMrDialog_ModalEnd(inDialog, WMcDialogItem_Yes);
 				break;
-				
+
 				case MBcBtn_1:
 					WMrDialog_ModalEnd(inDialog, WMcDialogItem_No);
 				break;
-				
+
 				case MBcBtn_3:
 					UUmAssert(!"BLAM");
 				break;
@@ -666,17 +666,17 @@ WMiMessageBox_HandleCommand(
 				case MBcBtn_3:
 					WMrDialog_ModalEnd(inDialog, WMcDialogItem_Yes);
 				break;
-				
+
 				case MBcBtn_2:
 					WMrDialog_ModalEnd(inDialog, WMcDialogItem_No);
 				break;
-				
+
 				case MBcBtn_1:
 					WMrDialog_ModalEnd(inDialog, WMcDialogItem_Cancel);
 				break;
 			}
 		break;
-	}	
+	}
 }
 
 // ----------------------------------------------------------------------
@@ -688,24 +688,24 @@ WMiMessageBox_Callback(
 	UUtUns32				inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			WMiMessageBox_InitDialog(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			WMiMessageBox_HandleCommand(inDialog, inParam1, inParam2);
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -722,7 +722,7 @@ static UUtBool WMiGetString_Callback(
 	WMtWindow				*edit_field = WMrDialog_GetItemByID(inDialog, 100);
 
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -736,11 +736,11 @@ static UUtBool WMiGetString_Callback(
 				WMrWindow_SetTitle(prompt, privateData->inPrompt, WMcMaxTitleLength);
 				WMrWindow_SetVisible(prompt, UUcTrue);
 			}
-			
+
 			WMrMessage_Send(edit_field, EFcMessage_SetText, (UUtUns32) privateData->ioBuffer, 0);
 			WMrMessage_Send(edit_field, EFcMessage_SetMaxChars, privateData->inBufferSize, 0);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -757,12 +757,12 @@ static UUtBool WMiGetString_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -786,10 +786,10 @@ WMrDialog_Create(
 	UUtUns32				num_dialog_data;
 	UUtUns32				i;
 	WMtDialog_CreationData	creation_data;
-	
+
 	// create the dialog
 	dialog = NULL;
-	
+
 	// get a list of dialogs
 	error =
 		TMrInstance_GetDataPtr_List(
@@ -798,7 +798,7 @@ WMrDialog_Create(
 			&num_dialog_data,
 			dialog_data);
 	UUmError_ReturnOnError(error);
-	
+
 	// find the desired dialog
 	for (i = 0; i < num_dialog_data; i++)
 	{
@@ -807,18 +807,18 @@ WMrDialog_Create(
 			break;
 		}
 	}
-	
+
 	if (i == num_dialog_data)
 	{
 		UUmAssert(!"dialog not found");
 		return UUcError_Generic;
 	}
-	
+
 	// create the dialog
 	creation_data.dialog_data = dialog_data[i];
 	creation_data.dialog_callback = inDialogCallback;
 	creation_data.user_data = inUserData;
-	
+
 	dialog =
 		WMrWindow_New(
 			WMcWindowType_Dialog,
@@ -837,16 +837,16 @@ WMrDialog_Create(
 		UUmAssert(!"unable to create the dialog");
 		return UUcError_Generic;
 	}
-	
+
 	// tell the dialog callback that the dialog has been created
 	inDialogCallback(
 		dialog,
 		WMcMessage_InitDialog,
 		0,
 		0);
-	
+
 	*outDialog = dialog;
-	
+
 	return UUcError_None;
 }
 
@@ -857,7 +857,7 @@ WMrDialog_GetItemByID(
 	UUtUns16				inID)
 {
 	WMtWindow				*child;
-	
+
 	child = inDialog->child;
 	while (child)
 	{
@@ -865,10 +865,10 @@ WMrDialog_GetItemByID(
 		{
 			break;
 		}
-		
+
 		child = child->next;
 	}
-	
+
 	return child;
 }
 
@@ -878,13 +878,13 @@ WMrDialog_GetUserData(
 	WMtDialog				*inDialog)
 {
 	WMtDialog_PrivateData	*private_data;
-	
+
 	UUmAssert(inDialog);
-	
+
 	// get the private data
 	private_data = (WMtDialog_PrivateData*)WMrWindow_GetLong(inDialog, 0);
 	UUmAssert(private_data);
-	
+
 	return private_data->user_data;
 }
 
@@ -898,12 +898,12 @@ WMrDialog_MessageBox(
 {
 	UUtError				error;
 	UUtUns32				message;
-	
+
 	// set the initialization parameters
 	WMgMessageBox_Init.title = inTitle;
 	WMgMessageBox_Init.message = inMessage;
 	WMgMessageBox_Init.style = inStyle;
-	
+
 	// run the message box
 	error =
 		WMrDialog_ModalBegin(
@@ -912,7 +912,7 @@ WMrDialog_MessageBox(
 			WMiMessageBox_Callback,
 			(UUtUns32) -1,
 			&message);
-	
+
 	return message;
 }
 
@@ -963,7 +963,7 @@ WMrDialog_ModalBegin(
 	UUtError				error;
 	WMtDialog				*dialog;
 	WMtDialog_PrivateData	*private_data;
-	
+
 	// load the dialog
 	error =
 		WMrDialog_Create(
@@ -973,15 +973,15 @@ WMrDialog_ModalBegin(
 			inUserData,
 			&dialog);
 	UUmError_ReturnOnError(error);
-	
+
 	// get the private data
 	private_data = (WMtDialog_PrivateData*)WMrWindow_GetLong(dialog, 0);
 	if (private_data == NULL) { return UUcError_Generic; }
-	
+
 	while (!private_data->quit_dialog)
 	{
 		WMtEvent			event;
-		
+
 		// setup state information so frame start will be happy
 		M3rDraw_State_SetInt(M3cDrawStateIntType_ZWrite, M3cDrawState_ZWrite_On);
 		M3rDraw_State_SetInt(M3cDrawStateIntType_ZCompare,	M3cDrawState_ZCompare_On);
@@ -998,31 +998,31 @@ WMrDialog_ModalBegin(
 
 		WMrDisplay();
 		M3rGeom_Frame_End();
-		
+
 		// update the window manager
 		WMrUpdate();
-		
+
 		while (WMrMessage_Get(&event))
 		{
 			WMiDialog_TranslateModalEvent(dialog, &event);
 			WMrMessage_Dispatch(&event);
 		}
 
-		// most likely error here is you are calling 
+		// most likely error here is you are calling
 		// WMrWindow_Delete instead of WMrDialog_ModalEnd
 		UUrMemory_Block_Verify(private_data);
 	}
-	
+
 	// set the output message
 	if (outMessage)
 	{
 		*outMessage = private_data->out_message;
 	}
-	
+
 	// close the dialog
 	WMrWindow_Delete(dialog);
 	dialog = NULL;
-	
+
 	return UUcError_None;
 }
 
@@ -1033,13 +1033,13 @@ WMrDialog_ModalEnd(
 	UUtUns32				inOutMessage)
 {
 	WMtDialog_PrivateData	*private_data;
-	
+
 	UUmAssert(inDialog);
-	
+
 	// get the private data
 	private_data = (WMtDialog_PrivateData*)WMrWindow_GetLong(inDialog, 0);
 	UUmAssert(private_data);
-	
+
 	private_data->out_message = inOutMessage;
 	private_data->quit_dialog = UUcTrue;
 }
@@ -1054,19 +1054,19 @@ WMrDialog_RadioButtonCheck(
 {
 	UUtUns16				i;
 	WMtRadioButton			*radiobutton;
-	
+
 	for (i = inFirstRadioButtonID; i <= inLastRadioButtonID; i++)
 	{
 		radiobutton = WMrDialog_GetItemByID(inDialog, i);
 		if (radiobutton == NULL) continue;
-		
+
 		WMrMessage_Send(
 			radiobutton,
 			RBcMessage_SetCheck,
 			(UUtUns32)UUcFalse,
 			0);
 	}
-	
+
 	radiobutton = WMrDialog_GetItemByID(inDialog, inCheckRadioButtonID);
 	if (radiobutton != NULL)
 	{
@@ -1088,19 +1088,19 @@ WMrDialog_ToggleButtonCheck(
 {
 	UUtUns16				i;
 	WMtWindow				*togglebutton;
-	
+
 	for (i = inFirstToggleButtonID; i <= inLastToggleButtonID; i++)
 	{
 		togglebutton = WMrDialog_GetItemByID(inDialog, i);
 		if (togglebutton == NULL) continue;
-		
+
 		WMrMessage_Send(
 			togglebutton,
 			TBcMessage_SetToggle,
 			(UUtUns32)UUcFalse,
 			0);
 	}
-	
+
 	togglebutton = WMrDialog_GetItemByID(inDialog, inSetToggleButtonID);
 	if (togglebutton != NULL)
 	{
@@ -1119,13 +1119,13 @@ WMrDialog_SetUserData(
 	UUtUns32				inUserData)
 {
 	WMtDialog_PrivateData	*private_data;
-	
+
 	UUmAssert(inDialog);
-	
+
 	// get the private data
 	private_data = (WMtDialog_PrivateData*)WMrWindow_GetLong(inDialog, 0);
 	UUmAssert(private_data);
-	
+
 	private_data->user_data = inUserData;
 }
 
@@ -1141,16 +1141,16 @@ WMrDialog_Initialize(
 {
 	UUtError				error;
 	WMtWindowClass			window_class;
-	
+
 	// register the window class
 	UUrMemory_Clear(&window_class, sizeof(WMtWindowClass));
 	window_class.type = WMcWindowType_Dialog;
 	window_class.callback = WMiDialog_Callback;
 	window_class.private_data_size = sizeof(WMtDialog_PrivateData*);
-	
+
 	error = WMrWindowClass_Register(&window_class);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -1160,7 +1160,7 @@ WMrDialog_RegisterTemplates(
 	void)
 {
 	UUtError				error;
-	
+
 	error =
 		TMrTemplate_Register(
 			WMcTemplate_DialogData,

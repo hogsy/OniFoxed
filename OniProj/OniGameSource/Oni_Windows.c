@@ -82,29 +82,29 @@ OWrLevelList_Initialize(
 	UUtError				error;
 	UUtUns32				num_descriptors;
 	UUtBool					vidmaster = UUcFalse;
-	
+
 	// get the number of descriptors
 	num_descriptors = (UUtUns16)TMrInstance_GetTagCount(ONcTemplate_Level_Descriptor);
 	if (num_descriptors > 0)
 	{
 		UUtUns32			i;
 		WMtListBox			*levels;
-		
+
 		// get a pointer to the level list
 		levels = WMrDialog_GetItemByID(inDialog, inItemID);
 		if (levels == NULL) return;
-		
+
 		for (i = 0; i < num_descriptors; i++)
 		{
 			ONtLevel_Descriptor		*descriptor;
 			UUtUns32				index;
-			
+
 			// get a pointer to the first descriptor
 			error =	TMrInstance_GetDataPtr_ByNumber(ONcTemplate_Level_Descriptor, i, &descriptor);
 			if (error != UUcError_None) {
 				return;
 			}
-			
+
 			// if the level in the descriptor doesn't exist, move on
 			// to the next descriptor
 			if (!TMrLevel_Exists(descriptor->level_number)) {
@@ -117,7 +117,7 @@ OWrLevelList_Initialize(
 					continue;
 				}
 			}
-#endif		
+#endif
 
 			// add the name of the level to the list
 			index = WMrListBox_AddString(levels, descriptor->level_name);
@@ -130,7 +130,7 @@ OWrLevelList_Initialize(
 				const ONtContinue *save_point;
 
 				for(save_point_index = 0; save_point_index < ONcPersist_NumContinues; save_point_index++)
-				{				
+				{
 					save_point = ONrPersist_GetContinue(descriptor->level_number, save_point_index);
 
 					if (save_point != NULL) {
@@ -160,11 +160,11 @@ OWrLevelList_GetLevelNumber(
 {
 	WMtWindow		*levels;
 	UUtUns16		level_number;
-	
+
 	// get a pointer to the levels listbox
 	levels = WMrDialog_GetItemByID(inDialog, inItemID);
 	if (levels == NULL) { return (UUtUns16)(-1); }
-	
+
 	// get the level number of the selected item
 	level_number = (UUtUns16)WMrListBox_GetItemData(levels, (UUtUns32)(-1));
 	return level_number;
@@ -178,10 +178,10 @@ OWrLevelList_GetLevelNumber(
 {
 	UUtUns16		num_descriptors;
 	UUtUns16		level_number;
-	
+
 	// set the level number to the default
 	level_number = (UUtUns16)(-1);
-	
+
 	// get the number of descriptors
 	num_descriptors = (UUtUns16)TMrInstance_GetTagCount(ONcTemplate_Level_Descriptor);
 	if (num_descriptors > 0)
@@ -190,18 +190,18 @@ OWrLevelList_GetLevelNumber(
 		WMtWindow		*levels;
 		char			level_name[ONcMaxLevelName];
 		UUtUns16		i;
-		
+
 		// get a pointer to the levels listbox
 		levels = WMrDialog_GetItemByID(inDialog, inItemID);
 		if (levels == NULL) return level_number;
-		
+
 		// get the current selection name
 		WMrMessage_Send(
 			levels,
 			LBcMessage_GetText,
 			(UUtUns32)(&level_name),
 			(UUtUns32)(-1));
-		
+
 		// find the level number
 		for (i = 0; i < num_descriptors; i++)
 		{
@@ -222,7 +222,7 @@ OWrLevelList_GetLevelNumber(
 			}
 		}
 	}
-	
+
 	return level_number;
 }
 */
@@ -236,7 +236,7 @@ static UUtBool OWiOKToQuit(void)
 {
 
 #if TOOL_VERSION
-	if (P3rAnyDirty()) {			
+	if (P3rAnyDirty()) {
 		UUtUns32 message;
 
 		message = WMrDialog_MessageBox(NULL, "Save particles?",
@@ -262,9 +262,9 @@ OWiLevelLoad_Init(
 	WMtDialog				*inDialog)
 {
 	WMtListBox				*levels;
-	
+
 	OWrLevelList_Initialize(inDialog, OWcLevelLoad_LB_Level);
-	
+
 	levels = WMrDialog_GetItemByID(inDialog, OWcLevelLoad_LB_Level);
 	if (levels)
 	{
@@ -277,10 +277,10 @@ void
 OWrLevelLoad_StartLevel(
 	UUtUns16				inLevel)
 {
-	UUtUns16				num_descriptors;	
+	UUtUns16				num_descriptors;
 	UUtUns16				level_number = inLevel & 0x00ff;
 	UUtUns16				save_point = (inLevel & 0xff00) >> 8;
-	
+
 	// get the number of descriptors
 	num_descriptors = (UUtUns16)TMrInstance_GetTagCount(ONcTemplate_Level_Descriptor);
 	if (num_descriptors > 0)
@@ -298,13 +298,13 @@ OWrLevelLoad_StartLevel(
 		{
 			ONrLevel_Unload();
 		}
-		
+
 		// try to load the new level
 		ONrGameState_ClearContinue();
 
 		if (save_point != 0) {
 			const ONtContinue *save_point_data = ONrPersist_GetContinue(level_number, save_point);
-			
+
 			UUmAssert(save_point_data != NULL);
 
 			if (NULL != save_point_data) {
@@ -312,7 +312,7 @@ OWrLevelLoad_StartLevel(
 			}
 		}
 
-		ONrLevel_Load(OWgLevelNumber, UUcTrue);	
+		ONrLevel_Load(OWgLevelNumber, UUcTrue);
 
 		// run the game
 		WMrMessage_Post(NULL, OWcMessage_RunGame, 0, 0);
@@ -329,15 +329,15 @@ OWiLevelLoad_Callback(
 {
 	UUtBool					handled;
 	UUtUns32				level;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
 			OWiLevelLoad_Init(inDialog);
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -345,12 +345,12 @@ OWiLevelLoad_Callback(
 					level = (UUtUns32)OWrLevelList_GetLevelNumber(inDialog, OWcLevelLoad_LB_Level);
 					WMrDialog_ModalEnd(inDialog, level);
 				break;
-				
+
 				case WMcDialogItem_Cancel:
 					level = (UUtUns32)(-1);
 					WMrDialog_ModalEnd(inDialog, level);
 				break;
-				
+
 				case OWcLevelLoad_LB_Level:
 					if (UUmHighWord(inParam1) == WMcNotify_DoubleClick)
 					{
@@ -360,12 +360,12 @@ OWiLevelLoad_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -383,9 +383,9 @@ OWiTest_Callback(
 	UUtUns32				inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_InitDialog:
@@ -394,26 +394,26 @@ OWiTest_Callback(
 			WMtWindow		*listbox;
 			WMtWindow		*button;
 			UUtUns32		i;
-			
+
 			WMrTimer_Start(10, 10, inDialog);
 			WMrDialog_RadioButtonCheck(
 				inDialog,
 				OWcTest_RadioButton_1,
 				OWcTest_RadioButton_2,
 				OWcTest_RadioButton_1);
-			
+
 			button = WMrDialog_GetItemByID(inDialog, WMcDialogItem_OK);
 			if (button)
 			{
 //				WMrWindow_SetLocation(button, 150, -3);
 			}
-			
+
 			slider = WMrDialog_GetItemByID(inDialog, OWcTest_Slider);
 			if (slider)
 			{
 				WMrSlider_SetRange(slider, 0, 100);
 			}
-			
+
 			listbox = WMrDialog_GetItemByID(inDialog, OWcTest_ListBox);
 			if (listbox)
 			{
@@ -422,20 +422,20 @@ OWiTest_Callback(
 				for (i = 0; i < 30; i++)
 				{
 					char		string[255];
-					
+
 					sprintf(string, "line %d", i);
-					
+
 					WMrMessage_Send(listbox, LBcMessage_AddString, (UUtUns32)string, 0);
 				}
 			}
-			
+
 			listbox = WMrDialog_GetItemByID(inDialog, OWcTest_ListBox2);
 			if (listbox)
 			{
 				UUtUns32		nothing[1];
-				
+
 				nothing[0] = 0;
-				
+
 				for (i = 0; i < 30; i++)
 				{
 					WMrMessage_Send(listbox, LBcMessage_AddString, (UUtUns32)nothing, 0);
@@ -443,25 +443,25 @@ OWiTest_Callback(
 			}
 		}
 		break;
-		
+
 		case WMcMessage_Destroy:
 			WMrTimer_Stop(10, inDialog);
 		break;
-		
+
 		case WMcMessage_Timer:
 		{
 			UUtUns32		current_val;
 			WMtWindow		*progressbar;
-			
+
 			progressbar = WMrDialog_GetItemByID(inDialog, OWcTest_ProgressBar);
 
 			current_val = WMrMessage_Send(progressbar, WMcMessage_GetValue, 0, 0) + 1;
 			if (current_val > 100) { current_val = 0; }
-			
+
 			WMrMessage_Send(progressbar, WMcMessage_SetValue, current_val, 0);
 		}
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -490,7 +490,7 @@ OWiTest_Callback(
 						"This is a test of the Yes No Cancel message box",
 						WMcMessageBoxStyle_Yes_No_Cancel);
 				break;
-				
+
 				case OWcTest_RadioButton_1:
 				case OWcTest_RadioButton_2:
 					if (UUmHighWord(inParam1) == WMcNotify_Click)
@@ -502,7 +502,7 @@ OWiTest_Callback(
 							(UUtUns16)UUmLowWord(inParam1));
 					}
 				break;
-				
+
 				case WMcDialogItem_Cancel:
 					if (UUmHighWord(inParam1) == WMcNotify_Click)
 					{
@@ -510,33 +510,33 @@ OWiTest_Callback(
 						WMrWindow_Delete(inDialog);
 					}
 				break;
-				
+
 				case OWcTest_TestChild:
 				{
 					WMtDialog			*dialog;
-					
+
 					WMrDialog_Create(OWcDialog_Test, inDialog, OWiTest_Callback, (UUtUns32) -1, &dialog);
 				}
 				break;
 			}
 		break;
-		
+
 		case WMcMessage_DrawItem:
 		{
 			WMtDrawItem			*draw_item;
 			UUtUns32			i;
 			IMtPoint2D			dest;
 			char				string[32];
-			
+
 			draw_item = (WMtDrawItem*)inParam2;
-			
+
 /*			if (draw_item->state & WMcDrawItemState_Selected)
 			{
 				PStPartSpecUI	*partspec_ui;
 				PStPartSpec		*draw_this;
-				
+
 				partspec_ui = PSrPartSpecUI_GetActive();
-				
+
 				if (WMrWindow_GetFocus() == draw_item->window)
 				{
 					draw_this = partspec_ui->hilite;
@@ -545,10 +545,10 @@ OWiTest_Callback(
 				{
 					draw_this = partspec_ui->background;
 				}
-				
+
 				dest.x = draw_item->rect.left;
 				dest.y = draw_item->rect.top;
-				
+
 				DCrDraw_PartSpec(
 					draw_item->draw_context,
 					draw_this,
@@ -561,7 +561,7 @@ OWiTest_Callback(
 
 			dest.x = draw_item->rect.left;
 			dest.y = draw_item->rect.top + DCrText_GetAscendingHeight();
-			
+
 			for (i = 0; i < 3; i++)
 			{
 				sprintf(string, "[%d][%d]", draw_item->item_id, i);
@@ -569,15 +569,15 @@ OWiTest_Callback(
 				DCrDraw_String(draw_item->draw_context, string, &draw_item->rect, &dest);
 				dest.x += 40;
 			}
-			
+
 		}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -592,14 +592,14 @@ OWiOniWindow_Create(
 	WMtWindow				*inWindow)
 {
 	WMtWindow				*menubar;
-	
+
 	// load the menu bar
 	menubar = WMrMenuBar_Create(inWindow, "menubar_oniwindow");
 	if (menubar == NULL)
 	{
 		return UUcError_Generic;
 	}
-	
+
 	WMrWindow_SetLong(inWindow, 0, (UUtUns32)menubar);
 
 	return UUcError_None;
@@ -613,10 +613,10 @@ OWiOniWindow_HandleMenuInit(
 	UUtUns32				inParam2)
 {
 	WMtMenu					*menu;
-	
+
 	menu = (WMtMenu*)inParam1;
 	if (menu == NULL) { return; }
-	
+
 	switch (UUmHighWord(inParam2))
 	{
 		case OWcMenu_Game:
@@ -625,19 +625,19 @@ OWiOniWindow_HandleMenuInit(
 
 		case OWcMenu_Settings:
 		break;
-		
+
 #if TOOL_VERSION
-		
+
 		case OWcMenu_Objects:
 		{
 			UUtUns32		num_objects;
-			
+
 			num_objects = OBJrSelectedObjects_GetNumSelected();
 
 			WMrMenu_EnableItem(menu, OWcMenu_Obj_New, !OWrObjNew_IsVisible());
 			WMrMenu_EnableItem(menu, OWcMenu_Obj_Duplicate, (num_objects >= 1));
 			WMrMenu_EnableItem(menu, OWcMenu_Obj_Save, UUcTrue);
-			
+
 			if (num_objects == 1)
 			{
 				WMrMenu_EnableItem(menu, OWcMenu_Obj_Delete, UUcTrue);
@@ -665,7 +665,7 @@ OWiOniWindow_HandleMenuInit(
 				OWrLightProp_HasLight());
 		}
 		break;
-		
+
 		case OWcMenu_Particle:
 			WMrMenu_EnableItem(menu, OWcMenu_Particle_Save,		P3rAnyDirty());
 			WMrMenu_EnableItem(menu, OWcMenu_Particle_Discard,	P3rAnyDirty());
@@ -690,12 +690,12 @@ OWiOniWindow_HandleMenuCommand(
 	WMtMenu					*menu;
 	UUtUns16				menu_item_id;
 	UUtUns32				message;
-	
+
 	menu = (WMtMenu*)inParam2;
 	UUmAssert(menu);
-	
+
 	menu_item_id = UUmLowWord(inParam1);
-	
+
 	switch (WMrWindow_GetID(menu))
 	{
 		// ------------------------------
@@ -708,7 +708,7 @@ OWiOniWindow_HandleMenuCommand(
 							OWcDialog_LevelLoad,
 							NULL,
 							OWiLevelLoad_Callback,
-							(UUtUns32) -1, 
+							(UUtUns32) -1,
 							&message);
 					if (error == UUcError_None)
 					{
@@ -718,21 +718,21 @@ OWiOniWindow_HandleMenuCommand(
 						}
 					}
 				break;
-								
+
 				case OWcMenu_Game_Resume:
 					if (OWgRunStartup == UUcFalse)
 					{
 						OWrOniWindow_Toggle();
 					}
 				break;
-				
+
 				case OWcMenu_Game_Quit:
 					WMrMessage_Post(NULL, WMcMessage_Quit, 0, 0);
 					WMrWindow_SetVisible(inWindow, UUcFalse);
 				break;
 			}
 		break;
-		
+
 
 #if TOOL_VERSION
 		// ------------------------------
@@ -748,25 +748,25 @@ OWiOniWindow_HandleMenuCommand(
 							(UUtUns32) -1,
 							&message);
 				break;
-				
+
 				case OWcMenu_Settings_Options:
 					ONrOutGameUI_Options_Display();
 				break;
-				
+
 				case OWcMenu_Settings_MainMenu:
 					ONrOutGameUI_MainMenu_Display();
 				break;
-				
+
 				case OWcMenu_Settings_LoadGame:
 					ONrOutGameUI_LoadGame_Display();
 				break;
-				
+
 				case OWcMenu_Settings_QuitGame:
 					ONrOutGameUI_QuitYesNo_Display();
 				break;
 			}
 		break;
-		
+
 		// ------------------------------
 		case OWcMenu_Objects:
 			switch (menu_item_id)
@@ -774,24 +774,24 @@ OWiOniWindow_HandleMenuCommand(
 				case OWcMenu_Obj_New:
 					OWrObjNew_Display();
 				break;
-				
+
 				case OWcMenu_Obj_Delete:
 					OBJrSelectedObjects_Delete();
 				break;
-				
+
 				case OWcMenu_Obj_Duplicate:
 					OWiDuplicateSelectedObjects();
 				break;
-				
+
 				case OWcMenu_Obj_Save:
 					OBJrSaveObjects(OBJcType_None);
 					WMrDialog_MessageBox(NULL, "Save Confirmation", "The Objects were saved.", WMcMessageBoxStyle_OK);
 				break;
-								
+
 				case OWcMenu_Obj_Position:
 					OWrEOPos_Display();
 				break;
-				
+
 				case OWcMenu_Obj_Properties:
 					OWrProp_Display(NULL);
 				break;
@@ -807,11 +807,11 @@ OWiOniWindow_HandleMenuCommand(
 						WMrDialog_MessageBox(NULL, "Unable to Save", "The .ENV file was not written.", WMcMessageBoxStyle_OK);
 					}
 				break;
-				
+
 				case OWcMenu_Obj_LightProperties:
 					OWrLightProp_Display();
 				break;
-				
+
 				case OWcMenu_Obj_ExportFlag:
 					error = OBJrFlagTXTFile_Write();
 					if (error == UUcError_None)
@@ -823,13 +823,13 @@ OWiOniWindow_HandleMenuCommand(
 						WMrDialog_MessageBox(NULL, "Unable to Save", "The LX_Flag.TXT file was not written.", WMcMessageBoxStyle_OK);
 					}
 				break;
-				
+
 				default:
 					OWrHandleObjectVisibilityMenu(menu, menu_item_id);
 				break;
 			}
 		break;
-		
+
 		// ------------------------------
 		case OWcMenu_Particle:
 			switch (menu_item_id)
@@ -852,8 +852,8 @@ OWiOniWindow_HandleMenuCommand(
 				break;
 			}
 		break;
-		
-		
+
+
 		// ------------------------------
 		case OWcMenu_Sound:
 			switch (menu_item_id)
@@ -861,28 +861,28 @@ OWiOniWindow_HandleMenuCommand(
 				case OWcMenu_Sound_Groups:
 					OWrSM_Display(OWcSMType_Group);
 				break;
-				
+
 
 				case OWcMenu_Ambient_Sounds:
 					OWrSM_Display(OWcSMType_Ambient);
 				break;
-				
+
 				case OWcMenu_Impulse_Sounds:
 					OWrSM_Display(OWcSMType_Impulse);
 				break;
-				
+
 				case OWcMenu_Animations:
 					OWrSoundToAnim_Display();
 				break;
-				
+
 				case OWcMenu_ExportSoundInfo:
 					SSrTextFile_Write();
 				break;
-				
+
 				case OWcMenu_CreateDialogue:
 					OWrCreateDialogue_Display();
 				break;
-				
+
 				case OWcMenu_CreateImpulse:
 					OWrCreateImpulse_Display();
 				break;
@@ -902,7 +902,7 @@ OWiOniWindow_HandleMenuCommand(
 				case OWcMenu_WriteNeutralAiffList:
 					OSrNeutralInteractions_WriteAiffList();
 				break;
-				
+
 				case OWcMenu_FixMinMaxDist:
 					OWrMinMax_Fixer();
 				break;
@@ -910,7 +910,7 @@ OWiOniWindow_HandleMenuCommand(
 				case OWcMenu_FindBrokenSound:
 					OSrListBrokenSounds();
 				break;
-				
+
 				case OWcMenu_FixSpeechAmbients:
 					OWrSpeech_Fixer();
 				break;
@@ -921,7 +921,7 @@ OWiOniWindow_HandleMenuCommand(
 		case OWcMenu_AI:
 			OWrAI_Menu_HandleMenuCommand(menu, menu_item_id);
 		break;
-		
+
 		// ------------------------------
 		case OWcMenu_Misc:
 			switch (menu_item_id)
@@ -929,11 +929,11 @@ OWiOniWindow_HandleMenuCommand(
 				case OWcMenu_Impact_Effect:
 					OWrImpactEffect_Display();
 				break;
-				
+
 				case OWcMenu_Texture_Materials:
 					OWrTextureToMaterial_Display();
 				break;
-				
+
 				case OWcMenu_Impact_Effect_Write:
 					ONrImpactEffects_WriteTextFile();
 				break;
@@ -963,15 +963,15 @@ OWiOniWindow_HandleResolutionChanged(
 	UUtInt16				inHeight)
 {
 	WMtWindow				*menubar;
-		
+
 	WMrWindow_SetSize(inWindow, inWidth, inHeight);
-	
+
 	// update the width of the main menu
 	menubar = (WMtWindow*)WMrWindow_GetLong(inWindow, 0);
 	if (menubar != NULL)
 	{
 		UUtInt16				menubar_height;
-		
+
 		WMrWindow_GetSize(menubar, NULL, &menubar_height);
 		WMrWindow_SetSize(menubar, inWidth, menubar_height);
 	}
@@ -990,22 +990,22 @@ OWiIsLockedInSelection(
 	UUtUns32				i;
 	UUtUns32				num_selected;
 	UUtUns32				num_locked;
-	
+
 	num_locked = 0;
-	
+
 	num_selected = OBJrSelectedObjects_GetNumSelected();
 	for (i = 0; i < num_selected; i++)
 	{
 		OBJtObject			*object;
-		
+
 		object = OBJrSelectedObjects_GetSelectedObject(i);
-		
+
 		if (OBJrObject_IsLocked(object)) { num_locked++; }
 	}
-	
+
 	if (num_locked == 0) { return 0; }
 	if (num_locked == num_selected) { return 2; }
-	
+
 	return 1;
 }
 
@@ -1026,29 +1026,29 @@ OWiOniWindow_Paint(
 	UUtInt16				part_bottom;
 	UUtRect					bounds;
 	UUtUns32				mode;
-	
+
 	// don't draw the status bar unless OBJgShowStatus is true
 	if (OBJgShowStatus == UUcFalse) { return; }
-	
+
 	// get a pointer to the partspec ui
 	partspec_ui = PSrPartSpecUI_GetActive();
 	if (partspec_ui == NULL) { return; }
-	
+
 	draw_context = DCrDraw_Begin(inWindow);
-	
+
 	// get the width
 	WMrWindow_GetSize(inWindow, &window_width, &window_height);
-	
+
 	PSrPartSpec_GetSize(partspec_ui->background, PScPart_LeftTop, &part_left, &part_top);
 	PSrPartSpec_GetSize(partspec_ui->background, PScPart_RightBottom, &part_right, &part_bottom);
-	
+
 	// calculate the height
 	height = DCrText_GetLineHeight() + part_top + part_bottom + 2;
-	
+
 	// set the dest
 	dest.x = 0;
 	dest.y = window_height - height;
-	
+
 	// draw the background
 	DCrDraw_PartSpec(
 		draw_context,
@@ -1058,14 +1058,14 @@ OWiOniWindow_Paint(
 		window_width,
 		height,
 		M3cMaxAlpha);
-	
+
 	DCrText_SetFormat(TSc_HLeft | TSc_VCenter);
 	DCrText_SetStyle(TScStyle_Plain);
 
 	// set the starting position for the status
 	dest.x = 0;
 	dest.y += part_top + DCrText_GetAscendingHeight();
-	
+
 	// set the bounds
 	bounds.left = 0;
 	bounds.top = window_height - height;
@@ -1076,7 +1076,7 @@ OWiOniWindow_Paint(
 	dest.x = window_width - (480 - 395);
 	DCrText_SetShade(IMcShade_Black);
 	DCrText_DrawText("Selection:", &bounds, &dest);
-	
+
 	dest.x = window_width - (480 - 440);
 	if (OBJrSelectedObjects_Lock_Get() == UUcTrue)
 	{
@@ -1087,7 +1087,7 @@ OWiOniWindow_Paint(
 		DCrText_SetShade(IMcShade_Gray75);
 		DCrText_DrawText("Locked", &bounds, &dest);
 	}
-	
+
 	// draw the rotation axis
 	dest.x = window_width - (480 - 335);
 	DCrText_SetShade(IMcShade_Black);
@@ -1100,25 +1100,25 @@ OWiOniWindow_Paint(
 		case OBJcRotateMode_XY:
 			DCrText_DrawText("Z", &bounds, &dest);
 		break;
-		
+
 		case OBJcRotateMode_XZ:
 			DCrText_DrawText("Y", &bounds, &dest);
 		break;
-		
+
 		case OBJcRotateMode_YZ:
 			DCrText_DrawText("X", &bounds, &dest);
 		break;
-		
+
 		case OBJcRotateMode_XYZ:
 			DCrText_DrawText("All", &bounds, &dest);
 		break;
 	}
-	
+
 	// draw the move axis
 	dest.x = window_width - (480 - 265);
 	DCrText_SetShade(IMcShade_Black);
 	DCrText_DrawText("Move:", &bounds, &dest);
-	
+
 	dest.x = window_width - (480 - 295);
 	mode = OBJrMoveMode_Get();
 	switch (mode)
@@ -1126,15 +1126,15 @@ OWiOniWindow_Paint(
 		case OBJcMoveMode_LR:
 			DCrText_DrawText("LR", &bounds, &dest);
 		break;
-		
+
 		case OBJcMoveMode_UD:
 			DCrText_DrawText("UD", &bounds, &dest);
 		break;
-		
+
 		case OBJcMoveMode_FB:
 			DCrText_DrawText("FB", &bounds, &dest);
 		break;
-		
+
 		case (OBJcMoveMode_LR | OBJcMoveMode_FB):
 			DCrText_DrawText("LR FB", &bounds, &dest);
 		break;
@@ -1151,14 +1151,14 @@ OWiOniWindow_Paint(
 			DCrText_DrawText("WALL", &bounds, &dest);
 		break;
 	}
-	
+
 	// draw the object locked status
 	if (OBJrSelectedObjects_GetNumSelected() > 0)
 	{
 		dest.x = 5;
 		DCrText_SetShade(IMcShade_Black);
 		DCrText_DrawText("Object:", &bounds, &dest);
-		
+
 		dest.x = 40;
 		switch (OWiIsLockedInSelection())
 		{
@@ -1166,19 +1166,19 @@ OWiOniWindow_Paint(
 				DCrText_SetShade(IMcShade_Gray25);
 				DCrText_DrawText("Unlocked", &bounds, &dest);
 			break;
-			
+
 			case 1:
 				DCrText_SetShade(IMcShade_Black);
 				DCrText_DrawText("Some Locked", &bounds, &dest);
 			break;
-			
+
 			case 2:
 				DCrText_SetShade(IMcShade_Black);
 				DCrText_DrawText("All Locked", &bounds, &dest);
 			break;
 		}
 	}
-	
+
 	DCrDraw_End(draw_context, inWindow);
 }
 
@@ -1191,7 +1191,7 @@ OWiOniWindow_Callback(
 	UUtUns32				inParam2)
 {
 	UUtError				error;
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_Create:
@@ -1201,15 +1201,15 @@ OWiOniWindow_Callback(
 				return WMcResult_Error;
 			}
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_MenuInit:
 			OWiOniWindow_HandleMenuInit(inWindow, inParam1, inParam2);
 		break;
-		
+
 		case WMcMessage_MenuCommand:
 			OWiOniWindow_HandleMenuCommand(inWindow, inParam1, inParam2);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_KeyDown:
 			if ((UUmLowWord(inParam1) == LIcKeyCode_Escape) ||
 				(UUmLowWord(inParam1) == LIcKeyCode_Star))
@@ -1221,15 +1221,15 @@ OWiOniWindow_Callback(
 				}
 			}
 		break;
-		
+
 		case WMcMessage_Activate:
 		{
 			WMtWindow			*menubar;
 //			WMtWindow			*menu;
-			
+
 			menubar = WMrDialog_GetItemByID(inWindow, OWcOniWindow_MenuBar);
 			if (menubar == NULL) { break; }
-			
+
 			// CB: the object and particle menus used to be disabled while on level 0...
 			// however sometimes we want to do some editing there so I'm re-enabling them; 13 July 2000
 /*			menu = WMrMenuBar_GetMenu(menubar, OWcMenu_Objects);
@@ -1237,7 +1237,7 @@ OWiOniWindow_Callback(
 			{
 				WMrWindow_SetEnabled(menu, (ONrLevel_GetCurrentLevel() != 0));
 			}
-			
+
 			menu = WMrMenuBar_GetMenu(menubar, OWcMenu_Particle);
 			if (menu)
 			{
@@ -1245,11 +1245,11 @@ OWiOniWindow_Callback(
 			}*/
 		}
 		break;
-		
+
 		case WMcMessage_Paint:
 			OWiOniWindow_Paint(inWindow);
 		break;
-		
+
 		case WMcMessage_ResolutionChanged:
 			OWiOniWindow_HandleResolutionChanged(
 				inWindow,
@@ -1257,7 +1257,7 @@ OWiOniWindow_Callback(
 				UUmLowWord(inParam1));
 		return WMcResult_Handled;
 	}
-	
+
 	return WMrWindow_DefaultCallback(inWindow, inMessage, inParam1, inParam2);
 }
 
@@ -1268,10 +1268,10 @@ OWrOniWindow_Startup(
 {
 	UUtError				error;
 	void					*splash_screen;
-	
+
 	// set the input to normal
 	LIrMode_Set(LIcMode_Normal);
-	
+
 	// set the desktop background
 	error =
 		TMrInstance_GetDataPtr(
@@ -1286,14 +1286,14 @@ OWrOniWindow_Startup(
 	{
 		WMrSetDesktopBackground(PSrPartSpec_LoadByType(PScPartSpecType_BackgroundColor_Blue));
 	}
-	
+
 	// activate the window manager's update
 	WMrActivate();
-	
+
 	// display the oni window
 	LIrMode_Set(LIcMode_Normal);
 	WMrWindow_SetVisible(OWgOniWindow, UUcTrue);
-	
+
 	OWgRunStartup = UUcTrue;
 	while ((OWgRunStartup) && (ONgTerminateGame == UUcFalse))
 	{
@@ -1304,7 +1304,7 @@ OWrOniWindow_Startup(
 		WMrUpdate();
 		OWrUpdate();
 	}
-	
+
 	// set the desktop background to none
 	WMrSetDesktopBackground(PSrPartSpec_LoadByType(PScPartSpecType_BackgroundColor_None));
 
@@ -1317,7 +1317,7 @@ OWrOniWindow_Toggle(
 	void)
 {
 	if (OWgOniWindow == NULL) return;
-	
+
 	if (WMrWindow_GetVisible(OWgOniWindow) == UUcFalse)
 	{
 		WMrActivate();
@@ -1340,7 +1340,7 @@ OWrOniWindow_Visible(
 	void)
 {
 	if (OWgOniWindow == NULL) return UUcFalse;
-	
+
 	return WMrWindow_GetVisible(OWgOniWindow);
 }
 
@@ -1373,7 +1373,7 @@ OWiDuplicateSelectedObjects(
 	UUtUns32			i;
 	OBJtObject			**sol_mem_array;
 	OBJtObject			**nol_mem_array;
-	
+
 	// build an vector by which the position of the selected objects will
 	// be offset so that they aren't exactly on top of the old ones
 /*	camera_facing = CArGetFacing();
@@ -1382,23 +1382,23 @@ OWiDuplicateSelectedObjects(
 	MUrNormalize(&offset_vector);
 	MUmVector_Scale(offset_vector, 5.0f);
 	offset_vector.y = 0.0f;*/
-	
+
 	// get the number of objects that are about to be duplicated
 	num_objects = OBJrSelectedObjects_GetNumSelected();
-	
+
 	// create the memory arrays
 	sol_mem_array = (OBJtObject**)UUrMemory_Block_New(sizeof(OBJtObject*) * num_objects);
 	if (sol_mem_array == NULL) { goto cleanup; }
-	
+
 	nol_mem_array = (OBJtObject**)UUrMemory_Block_New(sizeof(OBJtObject*) * num_objects);
 	if (nol_mem_array == NULL) { goto cleanup; }
-	
+
 	// put the selected object list into a new array
 	for (i = 0; i < num_objects; i++)
 	{
 		sol_mem_array[i] = OBJrSelectedObjects_GetSelectedObject(i);
 	}
-	
+
 	// duplicate all of the selected objects
 	for (i = 0; i < num_objects; i++)
 	{
@@ -1407,44 +1407,44 @@ OWiDuplicateSelectedObjects(
 		M3tPoint3D		position;
 		M3tPoint3D		rotation;
 		OBJtObjectType	object_type;
-		
+
 		object = sol_mem_array[i];
 		object_type = OBJrObject_GetType(object);
 		OBJrObject_GetPosition(object, &position, &rotation);
 		OBJrObject_GetObjectSpecificData(object, &osd_all);
-		
+
 		// flags' id numbers must be unique
 		if (object_type == OBJcType_Flag) {
 			osd_all.osd.flag_osd.id_number = OBJrFlag_GetUniqueID();
 		}
-		
+
 		// offset the position in the direction the camera is facing
 //		MUmVector_Increment(position, offset_vector);
-		
+
 		// create a new object with this data
 		OBJrObject_New(
 			OBJrObject_GetType(object),
 			&position,
 			&rotation,
 			&osd_all);
-		
+
 		// get the newly created object
 		nol_mem_array[i] = OBJrSelectedObjects_GetSelectedObject(0);
 	}
-	
+
 	// select all of the newly created objects
 	OBJrSelectedObjects_UnselectAll();
 	for (i = 0; i < num_objects; i++)
 	{
 		OBJrSelectedObjects_Select(nol_mem_array[i], UUcTrue);
 	}
-	
+
 cleanup:
 	if (nol_mem_array)
 	{
 		UUrMemory_Block_Delete(nol_mem_array);
 	}
-	
+
 	if (sol_mem_array)
 	{
 		UUrMemory_Block_Delete(sol_mem_array);
@@ -1461,13 +1461,13 @@ OWiEnumCallback(
 		(WMrWindow_GetVisible(inWindow) == UUcTrue))
 	{
 		UUtBool			*window_open;
-		
+
 		window_open = (UUtBool*)inUserData;
 		*window_open = UUcTrue;
-	
+
 		return UUcFalse;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -1481,13 +1481,13 @@ OWiEnumCallback_FindFirstWindow(
 		(WMrWindow_GetVisible(inWindow) == UUcTrue))
 	{
 		WMtWindow		**windowptr;
-		
+
 		windowptr = (WMtWindow **)inUserData;
 		*windowptr = inWindow;
-	
+
 		return UUcFalse;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -1544,12 +1544,12 @@ OWiTranslateKeyDown(
 	WMtEvent			*inEvent)
 {
 	UUtBool				window_open;
-	
+
 	// check for windows being open
 	window_open = UUcFalse;
 	WMrEnumWindows(OWiEnumCallback, (UUtUns32)&window_open);
 	if (window_open) { return; }
-	
+
 	inEvent->window = NULL;
 }
 
@@ -1559,71 +1559,71 @@ OWiHandleCameraMove(
 	UUtUns32			inParam1)
 {
 	LItAction			action;
-	
+
 	if (ONrLevel_GetCurrentLevel() == 0) { return; }
-	
+
 	UUrMemory_Clear(&action, sizeof(LItAction));
-	
+
 	switch (UUmLowWord(inParam1))
 	{
 		case LIcKeyCode_8:
 			action.analogValues[LIc_ManCam_Move_FB] = 1.0f;
 		break;
-		
+
 		case LIcKeyCode_5:
 			action.analogValues[LIc_ManCam_Move_FB] = -1.0f;
 		break;
-		
+
 		case LIcKeyCode_4:
 			action.analogValues[LIc_ManCam_Pan_LR] = -1.0f;
 		break;
-		
+
 		case LIcKeyCode_6:
 			action.analogValues[LIc_ManCam_Pan_LR] = 1.0f;
 		break;
-		
+
 		case LIcKeyCode_1:
 			action.analogValues[LIc_ManCam_Move_LR] = 1.0f;
 		break;
-		
+
 		case LIcKeyCode_3:
 			action.analogValues[LIc_ManCam_Move_LR] = -1.0f;
 		break;
-		
+
 		case LIcKeyCode_Minus:
 			action.analogValues[LIc_ManCam_Move_UD] = -1.0f;
 		break;
-		
+
 		case LIcKeyCode_Equals:
 		case LIcKeyCode_Plus:
 			action.analogValues[LIc_ManCam_Move_UD] = 1.0f;
 		break;
-		
+
 		case LIcKeyCode_W:
 			action.analogValues[LIc_ManCam_Move_FB] = 1.0f;
 		break;
-		
+
 		case LIcKeyCode_S:
 			action.analogValues[LIc_ManCam_Move_FB] = -1.0f;
 		break;
-		
+
 		case LIcKeyCode_A:
 			action.analogValues[LIc_ManCam_Move_LR] = 1.0f;
 		break;
-		
+
 		case LIcKeyCode_D:
 			action.analogValues[LIc_ManCam_Move_LR] = -1.0f;
 		break;
-		
+
 		case LIcKeyCode_UpArrow:
 			action.analogValues[LIc_ManCam_Pan_UD] = 1.0f;
 		break;
-		
+
 		case LIcKeyCode_DownArrow:
 			action.analogValues[LIc_ManCam_Pan_UD] = -1.0f;
 		break;
 	}
-	
+
 	CArUpdate(0, 1, &action);
 }
 
@@ -1633,14 +1633,14 @@ OWiHandleSelectedObjects_SetLock(
 	UUtBool						inLock)
 {
 	UUtUns32					i;
-	
+
 	for (i = 0; i < OBJrSelectedObjects_GetNumSelected(); i++)
 	{
 		OBJtObject					*object;
-		
+
 		object = OBJrSelectedObjects_GetSelectedObject(i);
 		if (object == NULL) { continue; }
-		
+
 		OBJrObject_SetLocked(object, inLock);
 	}
 }
@@ -1653,7 +1653,7 @@ OWiHandleObjectKeys(
 	UUtError	error;
 
 	if (ONrLevel_GetCurrentLevel() == 0) { return; }
-	
+
 	switch (UUmLowWord(inParam1))
 	{
 		case LIcKeyCode_F1:
@@ -1663,7 +1663,7 @@ OWiHandleObjectKeys(
 				OWrProp_Display(NULL);
 			}
 		break;
-		
+
 		case LIcKeyCode_F2:
 		case LIcKeyCode_Slash:
 			OBJrObjectType_SetVisible(OBJcType_Flag, UUcTrue);
@@ -1672,7 +1672,7 @@ OWiHandleObjectKeys(
 				OWrProp_Display(NULL);
 			}
 		break;
-		
+
 		case LIcKeyCode_F3:
 			OBJrObjectType_SetVisible(OBJcType_Trigger, UUcTrue);
 			error = OWrTools_CreateObject(OBJcType_Trigger, NULL);
@@ -1680,7 +1680,7 @@ OWiHandleObjectKeys(
 				OWrProp_Display(NULL);
 			}
 		break;
-		
+
 		case LIcKeyCode_F4:
 			OBJrObjectType_SetVisible(OBJcType_Turret, UUcTrue);
 			error = OWrTools_CreateObject(OBJcType_Turret, NULL);
@@ -1688,26 +1688,26 @@ OWiHandleObjectKeys(
 				OWrProp_Display(NULL);
 			}
 		break;
-		
+
 		case LIcKeyCode_F5:
 			OBJrDoor_JumpToNextDoor();
 		break;
-		
+
 		case LIcKeyCode_F6:
 			OBJrDoor_JumpToPrevDoor();
 		break;
-		
+
 		case LIcKeyCode_F7:
 			OWrProp_Display(NULL);
 		break;
-		
+
 		case LIcKeyCode_F8:
 		break;
-		
+
 		case LIcKeyCode_F9:
 			OWrEOPos_Display();
 		break;
-		
+
 		case LIcKeyCode_F10:
 			// focus the manual camera on the selected object
 			if (OBJrSelectedObjects_GetNumSelected() == 1)
@@ -1715,16 +1715,16 @@ OWiHandleObjectKeys(
 				OBJtObject			*object;
 				M3tPoint3D			position;
 				LItAction			action;
-				
+
 				object = OBJrSelectedObjects_GetSelectedObject(0);
 				OBJrObject_GetPosition(object, &position, NULL);
 				CArManual_LookAt(&position, 50.0f);
-				
+
 				UUrMemory_Clear(&action, sizeof(LItAction));
 				CArUpdate(0, 1, &action);
 			}
 		break;
-		
+
 		case LIcKeyCode_F11:
 			OWiDuplicateSelectedObjects();
 		break;
@@ -1738,14 +1738,14 @@ OWiHandleKeyDown(
 	UUtUns32			inParam2)
 {
 	UUtUns32			mode;
-	
+
 	switch (UUmLowWord(inParam1))
 	{
 		case LIcKeyCode_BackSpace:
 		case LIcKeyCode_Delete:
 			OBJrSelectedObjects_Delete();
 		break;
-		
+
 		case LIcKeyCode_Escape:
 		case LIcKeyCode_Star:
 		case LIcKeyCode_Multiply:
@@ -1754,7 +1754,7 @@ OWiHandleKeyDown(
 				OWrOniWindow_Toggle();
 			}
 		break;
-		
+
 		case LIcKeyCode_8:
 		case LIcKeyCode_5:
 		case LIcKeyCode_4:
@@ -1772,7 +1772,7 @@ OWiHandleKeyDown(
 		case LIcKeyCode_DownArrow:
 			OWiHandleCameraMove(inParam1);
 		break;
-		
+
 		case LIcKeyCode_Slash:
 		case LIcKeyCode_7:
 		case LIcKeyCode_F1:
@@ -1788,14 +1788,14 @@ OWiHandleKeyDown(
 		case LIcKeyCode_F11:
 			OWiHandleObjectKeys(inParam1);
 		break;
-		
+
 		case LIcKeyCode_Space:
 			if (OBJrSelectedObjects_GetNumSelected() != 0)
 			{
 				OBJrSelectedObjects_Lock_Set(!OBJrSelectedObjects_Lock_Get());
 			}
 		break;
-		
+
 		case LIcKeyCode_Tab:
 			mode = OBJrRotateMode_Get();
 			if (mode == OBJcRotateMode_XYZ)
@@ -1815,7 +1815,7 @@ OWiHandleKeyDown(
 				OBJrRotateMode_Set(OBJcRotateMode_XYZ);
 			}
 		break;
-		
+
 		case LIcKeyCode_Q:
 			mode = OBJrMoveMode_Get();
 			if (mode == OBJcMoveMode_LR)
@@ -1848,11 +1848,11 @@ OWiHandleKeyDown(
 				OBJrMoveMode_Set(OBJcMoveMode_Wall | OBJcMoveMode_LR);
 			}
 		break;
-		
+
 		case LIcKeyCode_9:
 			OWiHandleSelectedObjects_SetLock(UUcTrue);
 		break;
-		
+
 		case LIcKeyCode_0:
 			OWiHandleSelectedObjects_SetLock(UUcFalse);
 		break;
@@ -1868,22 +1868,22 @@ OWiHandleMouseMoveEvent(
 {
 	OBJtObject			*object;
 	UUtUns32			i;
-	
+
 	// don't process clicks outside of a window
 	if (OWrEOPos_IsVisible() || OWrProp_IsVisible() || OWrObjNew_IsVisible()) { return; }
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_MouseMove:
-			
+
 			if ((OWiIsLockedInSelection() == UUcFalse) &&
 				(OWgMoveDelta < UUrMachineTime_Sixtieths()))
 			{
 				UUtUns32	num_objects;
 				UUtUns32	move_mode;
-				
+
 				move_mode = OBJrMoveMode_Get();
-				
+
 				object = OBJrSelectedObjects_GetSelectedObject(0);
 				if ((object != NULL) && (OBJrObject_GetType(object) == OBJcType_Particle) &&
 					((OBJtOSD_Particle *) object->object_data)->is_decal) {
@@ -1913,20 +1913,20 @@ OWiHandleMouseMoveEvent(
 				for (i = 0; i < num_objects; i++)
 				{
 					object = OBJrSelectedObjects_GetSelectedObject(i);
-					
+
 					OBJrObject_MouseMove(
 						object,
 						&OWgPreviousMousePos,
-						inMousePos); 
+						inMousePos);
 				}
-				
+
 				OBJrMoveMode_Set(move_mode);
 			}
 		break;
-	
+
 		case WMcMessage_LMouseDown:
 			OWgMoveDelta = UUrMachineTime_Sixtieths() + OWcMoveDelta;
-			
+
 			object = OBJrGetObjectUnderPoint(inMousePos);
 			if (object == NULL)
 			{
@@ -1973,11 +1973,11 @@ OWiHandleMouseMoveEvent(
 				}
 			}
 		break;
-		
+
 		case WMcMessage_LMouseDblClck:
 			OWrProp_Display(NULL);
 		break;
-		
+
 		case WMcMessage_LMouseUp:
 		break;
 	}
@@ -1993,7 +1993,7 @@ OWiHandleMouseRotateEvent(
 	OBJtObject			*object;
 	OBJtObject			*selected;
 	UUtUns32			num_selected;
-	
+
 	// get the currently selected object if there is only one
 	num_selected = OBJrSelectedObjects_GetNumSelected();
 	if (num_selected == 1)
@@ -2004,7 +2004,7 @@ OWiHandleMouseRotateEvent(
 	{
 		selected = NULL;
 	}
-	
+
 	switch (inMessage)
 	{
 		case WMcMessage_MouseMove:
@@ -2012,20 +2012,20 @@ OWiHandleMouseRotateEvent(
 			if (selected != NULL)
 			{
 				IMtPoint2D		delta;
-				
+
 				// calculate the mouse movement delta
 				delta.x = inMousePos->x - OWgPreviousMousePos.x;
 				delta.y = inMousePos->y - OWgPreviousMousePos.y;
-				
+
 				// rotate the objects
 				OBJrObject_MouseRotate_Update(selected, &delta);
 			}
 		break;
-		
+
 		case WMcMessage_RMouseDown:
 			// get the object under the point
 			object = OBJrGetObjectUnderPoint(inMousePos);
-			
+
 			if (selected != NULL)
 			{
 				if (object == selected)
@@ -2059,12 +2059,12 @@ OWiHandleMouseRotateEvent(
 				OBJrSelectedObjects_Select(object, UUcFalse);
 			}
 		break;
-		
+
 		case WMcMessage_RMouseDblClck:
 			OBJrObject_MouseRotate_End();
 			OWrEOPos_Display();
 		break;
-		
+
 		case WMcMessage_RMouseUp:
 			OBJrObject_MouseRotate_End();
 		break;
@@ -2079,11 +2079,11 @@ OWiHandleMouseEvent(
 	UUtUns32			inParam2)
 {
 	IMtPoint2D			global_mouse;
-	
+
 	// get the global mouse location
 	global_mouse.x = UUmHighWord(inParam1);
 	global_mouse.y = UUmLowWord(inParam1);
-	
+
 	switch(inMessage)
 	{
 		case WMcMessage_MouseMove:
@@ -2101,14 +2101,14 @@ OWiHandleMouseEvent(
 			OWgPreviousMousePos = global_mouse;
 			OBJgMouseMoved = UUcTrue;
 		break;
-		
+
 		case WMcMessage_LMouseDown:
 		case WMcMessage_LMouseUp:
 		case WMcMessage_LMouseDblClck:
 			OWiHandleMouseMoveEvent(inMessage, &global_mouse, inParam2);
 			OBJgMouseMoved = UUcFalse;
 		break;
-		
+
 		case WMcMessage_RMouseDown:
 		case WMcMessage_RMouseDblClck:
 		case WMcMessage_RMouseUp:
@@ -2133,13 +2133,13 @@ OWrInitialize(
 	WMtWindow				*desktop;
 	UUtInt16				width;
 	UUtInt16				height;
-	
+
 	// ------------------------------
 	// startup the window manager
 	// ------------------------------
 	error = WMrStartup();
 	UUmError_ReturnOnError(error);
-	
+
 	// ------------------------------
 	// register the windows
 	// ------------------------------
@@ -2148,16 +2148,16 @@ OWrInitialize(
 	window_class.type = OWcWindowType_Oni;
 	window_class.callback = OWiOniWindow_Callback;
 	window_class.private_data_size = 4;
-	
+
 	error = WMrWindowClass_Register(&window_class);
 	UUmError_ReturnOnError(error);
-	
+
 	// get the size of the desktop window
 	desktop = WMrGetDesktop();
 	if (desktop == NULL) { return UUcError_Generic; }
-	
+
 	WMrWindow_GetSize(desktop, &width, &height);
-	
+
 	// create the oni window
 	OWgOniWindow =
 		WMrWindow_New(
@@ -2176,7 +2176,7 @@ OWrInitialize(
 	{
 		return UUcError_Generic;
 	}
-	
+
 	// ------------------------------
 	OBJgShowStatus = UUcTrue;
 
@@ -2188,13 +2188,13 @@ OWrInitialize(
 			&OBJgShowStatus);
 	UUmError_ReturnOnError(error);
 #endif
-	
+
 	// ------------------------------
 	// initialize the tools
 	// ------------------------------
 	error = OWrTools_Initialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// ------------------------------
 	// Initialize the settings dialogs
 	// ------------------------------
@@ -2223,16 +2223,16 @@ OWrInitialize(
 	OWgKeyboardCommands.commands[1] = LIcKeyCode_W;
 	OWgKeyboardCommands.commands[2] = LIcKeyCode_K;
 	OWgKeyboardCommands.commands[3] = LIcKeyCode_J;
-	
+
 	// ------------------------------
 	OWgPreviousMousePos.x = 0;
 	OWgPreviousMousePos.y = 0;
-	
+
 	// ------------------------------
 	OBJrMoveMode_Set(OBJcMoveMode_LR | OBJcMoveMode_FB);
 	OBJrRotateMode_Set(OBJcRotateMode_XYZ);
 	OBJrSelectedObjects_Lock_Set(UUcFalse);
-		
+
 	return UUcError_None;
 }
 
@@ -2243,7 +2243,7 @@ OWrInitialize(
 {
 	UUtBool success= UUcFalse;
 	WMtWindow *desktop= WMrGetDesktop();
-	
+
 	if (OWgOniWindow) WMrWindow_SetSize(OWgOniWindow, new_width, new_height);
 	if (desktop) WMrWindow_SetSize(desktop, new_width, new_height);
 	success= (ONrMotoko_SetupDrawing(&ONgPlatformData) == UUcError_None) ? UUcTrue : UUcFalse;
@@ -2282,24 +2282,24 @@ OWrLevelEnd(
 	void)
 {
 }
-	
+
 // ----------------------------------------------------------------------
 void
 OWrUpdate(
 	void)
 {
 	WMtEvent			event;
-	
+
 	while (WMrMessage_Get(&event))
 	{
 		UUtUns32		handled;
-		
+
 		WMrMessage_TranslateKeyCommand(&event, &OWgKeyboardCommands, NULL);
 		if (event.message == WMcMessage_KeyDown)
 		{
 			OWiTranslateKeyDown(&event);
 		}
-		
+
 		handled = WMrMessage_Dispatch(&event);
 		if (handled == WMcResult_NoWindow)
 		{
@@ -2308,13 +2308,13 @@ OWrUpdate(
 				case WMcMessage_KeyCommand:
 					OWiHandleKeyCommands(event.param1);
 				break;
-				
+
 				case WMcMessage_Quit:
 					if (OWiOKToQuit()) {
 						ONgTerminateGame = UUcTrue;
 					}
 				break;
-				
+
 				case WMcMessage_MouseMove:
 				case WMcMessage_LMouseDown:
 				case WMcMessage_LMouseUp:
@@ -2324,11 +2324,11 @@ OWrUpdate(
 				case WMcMessage_RMouseDblClck:
 					OWiHandleMouseEvent(event.message, event.param1, event.param2);
 				break;
-				
+
 				case WMcMessage_KeyDown:
 					OWiHandleKeyDown(event.param1, event.param2);
 				break;
-				
+
 				// Oni defined messages
 				case OWcMessage_RunGame:
 					OWrOniWindow_Toggle();
@@ -2384,7 +2384,7 @@ OWrGetMask_Callback(
 
 					WMrWindow_SetTitle(scratch, *current_string, WMcMaxTitleLength);
 					WMrCheckBox_SetCheck(scratch, checkbox_set);
-				}				
+				}
 
 				if (valid) {
 					count++;
@@ -2395,24 +2395,24 @@ OWrGetMask_Callback(
 			width = 300;
 			height = (count * 25) + 35;
 			WMrWindow_SetPosition(inDialog, NULL, 0, 0, width, height, WMcPosChangeFlag_NoMove | WMcPosChangeFlag_NoZOrder);
-			
+
 			WMrWindow_GetClientRect(inDialog, &client_rect);
 
-			WMrWindow_SetPosition(inDialog, NULL, 0, 0, 
-				width + (width - client_rect.right + client_rect.left), 
+			WMrWindow_SetPosition(inDialog, NULL, 0, 0,
+				width + (width - client_rect.right + client_rect.left),
 				height + (height - client_rect.bottom + client_rect.top),
 				WMcPosChangeFlag_NoMove | WMcPosChangeFlag_NoZOrder);
 
 			scratch = WMrDialog_GetItemByID(inDialog, 1);
 			WMrWindow_SetPosition(scratch, NULL, width - 80, height - 30, 0, 0, WMcPosChangeFlag_NoSize | WMcPosChangeFlag_NoZOrder);
-			
+
 			scratch = WMrDialog_GetItemByID(inDialog, 2);
-			WMrWindow_SetPosition(scratch, NULL, width - 160, height - 30, 0, 0, WMcPosChangeFlag_NoSize | WMcPosChangeFlag_NoZOrder);			
+			WMrWindow_SetPosition(scratch, NULL, width - 160, height - 30, 0, 0, WMcPosChangeFlag_NoSize | WMcPosChangeFlag_NoZOrder);
 		}
 		break;
 
 		case WMcMessage_Command:
-			switch(UUmLowWord(inParam1)) 
+			switch(UUmLowWord(inParam1))
 			{
 				case WMcDialogItem_OK:
 					WMrDialog_ModalEnd(inDialog, 0);
@@ -2461,7 +2461,7 @@ UUtUns32 OWrGetMask(UUtUns32 inMask, const char **inFlagList)
 	internals.inMask = inMask;
 	internals.inFlagList = inFlagList;
 	internals.outMask = inMask;
-	
+
 	WMrDialog_ModalBegin(OWcDialog_GetMask, NULL, OWrGetMask_Callback, (UUtUns32) &internals, NULL);
 
 	return internals.outMask;
@@ -2483,7 +2483,7 @@ void OWrMaskToString(UUtUns32 inMask, const char **inFlagList, UUtUns32 inString
 			UUtUns32 current_amount_to_copy = UUmMin(current_string_length, remaining_string_length);
 
 			UUrMemory_MoveFast(*current_flag, current_target_string, current_amount_to_copy);
-			
+
 			remaining_string_length -= current_amount_to_copy;
 			current_target_string += current_amount_to_copy;
 
@@ -2505,7 +2505,7 @@ typedef struct visibility_match
 	OBJtObjectType object_type;
 } visibility_match;
 
-const visibility_match visibility_match_list[] = 
+const visibility_match visibility_match_list[] =
 {
 	{ OWcMenu_Obj_ShowCharacters, OBJcType_Character },
 	{ OWcMenu_Obj_ShowPatrols, OBJcType_PatrolPath },
@@ -2541,7 +2541,7 @@ UUtBool OWrHandleObjectVisibilityMenu(WMtMenu *menu, UUtUns16 menu_item_id)
 
 			{
 				UUtBool new_visibility = !(flags & WMcMenuItemFlag_Checked);
-				
+
 				OBJrObjectType_SetVisible(cur_match->object_type, new_visibility);
 			}
 

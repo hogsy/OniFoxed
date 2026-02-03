@@ -29,11 +29,11 @@ VMiView_EditField_UpdateCaret(
 	VMtView_EditField_PrivateData	*inPrivateData)
 {
 	UUtUns32						time;
-	
+
 	if (inPrivateData->has_focus == UUcFalse) return;
-	
+
 	time = UUrMachineTime_Sixtieths();
-	
+
 	if (inPrivateData->caret_time < time)
 	{
 		// flash the caret if it is time
@@ -73,17 +73,17 @@ VMiView_EditField_UpdateTextures(
 			inPrivateData->string,
 			&bounds);
 	if (error != UUcError_None) return;
-	
+
 	inPrivateData->string_width = bounds.right;
 	inPrivateData->string_height = bounds.bottom;
-	
+
 	if ((inView->width > M3cTextureMap_MaxWidth) ||
 		(inView->height > M3cTextureMap_MaxHeight))
 	{
 		// erase the string texture
 		M3rTextureMap_Big_Fill(
 			inPrivateData->string_texture,
-			inPrivateData->erase_color, 
+			inPrivateData->erase_color,
 			&bounds);
 	}
 	else
@@ -91,14 +91,14 @@ VMiView_EditField_UpdateTextures(
 		// erase the string texture
 		M3rTextureMap_Fill(
 			inPrivateData->string_texture,
-			inPrivateData->erase_color, 
+			inPrivateData->erase_color,
 			&bounds);
 	}
-	
+
 	// set dest
 	dest.x = 0;
 	dest.y = 0;
-	
+
 	// draw the string
 	error =
 		TSrContext_DrawString(
@@ -130,20 +130,20 @@ VMiView_EditField_Create(
 
 	M3tTextureMap_Big	*texture_big;
 	M3tTextureMap		*texture;
-	
+
 	char				temp_string[2];
 	UUtRect				bounds;
 	IMtPoint2D			dest;
-	
+
 	UUtInt16			offset_x;
 	UUtInt16			offset_y;
-	
+
 	// ------------------------------
 	// set the colors to draw with
 	// ------------------------------
 	text_color = IMrPixel_FromShade(VMcControl_PixelType, VMcColor_Text);
 	inPrivateData->erase_color = IMrPixel_FromShade(VMcControl_PixelType, VMcColor_Background);
-	
+
 	// ------------------------------
 	// create the text context
 	// ------------------------------
@@ -154,7 +154,7 @@ VMiView_EditField_Create(
 			desired_font_family = TScFontFamily_RomanSmall;
 		else
 			desired_font_family = TScFontFamily_Roman;
-		
+
 		if (inEditField->flags & VMcCommonFlag_Text_Bold)
 			desired_font_style = TScStyle_Bold;
 		else if (inEditField->flags & VMcCommonFlag_Text_Italic)
@@ -169,7 +169,7 @@ VMiView_EditField_Create(
 				desired_font_family,
 				&font_family);
 		UUmError_ReturnOnErrorMsg(error, "Unable to load font family");
-		
+
 		// create a new text context
 		error =
 			TSrContext_New(
@@ -193,13 +193,13 @@ VMiView_EditField_Create(
 			inPrivateData->string[0] = 0;
 		}
 	}
-	
+
 	// ------------------------------
 	// create the string texture
 	// ------------------------------
 	if (inPrivateData->string_texture == NULL)
 	{
-		if ((inView->width > M3cTextureMap_MaxWidth) || 
+		if ((inView->width > M3cTextureMap_MaxWidth) ||
 			(inView->height > M3cTextureMap_MaxHeight))
 		{
 			// create a big texture map
@@ -213,7 +213,7 @@ VMiView_EditField_Create(
 					"edit field",
 					&texture_big);
 			UUmError_ReturnOnErrorMsg(error, "Unable to create texture map");
-			
+
 			// clear the texture
 			M3rTextureMap_Big_Fill(texture_big, inPrivateData->erase_color, M3cFillEntireMap);
 
@@ -241,7 +241,7 @@ VMiView_EditField_Create(
 			inPrivateData->string_texture = texture;
 		}
 	}
-	
+
 	// ------------------------------
 	// create the caret texture
 	// ------------------------------
@@ -256,10 +256,10 @@ VMiView_EditField_Create(
 				temp_string,
 				&bounds);
 		UUmError_ReturnOnErrorMsg(error, "Unable to get caret string rect");
-		
+
 		inPrivateData->caret_width = bounds.right;
 		inPrivateData->caret_height = bounds.bottom;
-		
+
 		// create the caret texture
 		error =
 			M3rTextureMap_New(
@@ -271,14 +271,14 @@ VMiView_EditField_Create(
 				"caret texture",
 				&texture);
 		UUmError_ReturnOnErrorMsg(error, "Unable to create texture map");
-		
+
 		// clear the texture
 		M3rTextureMap_Fill(texture, inPrivateData->erase_color, M3cFillEntireMap);
-		
+
 		// draw the caret into the texture
 		dest.x = 0;
 		dest.y = 0;
-		
+
 		error =
 			TSrContext_DrawString(
 				inPrivateData->text_context,
@@ -287,18 +287,18 @@ VMiView_EditField_Create(
 				&bounds,
 				&dest);
 		UUmError_ReturnOnErrorMsg(error, "Unable to draw string in texture");
-		
+
 		inPrivateData->caret_texture = texture;
 	}
-	
+
 	// ------------------------------
 	// calculate the text location
 	// ------------------------------
 	inPrivateData->string_width = 0;
 	inPrivateData->string_height =
 		TSrFont_GetLineHeight(
-			TSrContext_GetFont(inPrivateData->text_context, TScStyle_InUse));	
-	
+			TSrContext_GetFont(inPrivateData->text_context, TScStyle_InUse));
+
 	// calculate offset_x and offset_y
 	offset_x = offset_y = 0;
 	if (inEditField->flags & VMcCommonFlag_Text_HRight)
@@ -307,10 +307,10 @@ VMiView_EditField_Create(
 		offset_x = ((inView->width - inPrivateData->string_width) >> 1);
 	if (inEditField->flags & VMcCommonFlag_Text_VCenter)
 		offset_y = ((inView->height - inPrivateData->string_height) >> 1);
-	
+
 	inPrivateData->text_location.x = inEditField->text_location_offset.x + offset_x;
 	inPrivateData->text_location.y = inEditField->text_location_offset.y + offset_y;
-	
+
 	return UUcError_None;
 }
 
@@ -330,7 +330,7 @@ VMiView_EditField_Paint(
 		alpha = VUcAlpha_Enabled;
 	else
 		alpha = VUcAlpha_Disabled;
-	
+
 	// draw the outline
 	if (inEditField->outline)
 	{
@@ -342,14 +342,14 @@ VMiView_EditField_Paint(
 			inView->height,
 			alpha);
 	}
-	
+
 	// draw the string
 	if (inPrivateData->string_texture)
 	{
 		dest = *inDestination;
 		dest.x += (float)inPrivateData->text_location.x;
 		dest.y += (float)inPrivateData->text_location.y;
-		
+
 		VUrDrawTextureRef(
 			inPrivateData->string_texture,
 			&dest,
@@ -357,7 +357,7 @@ VMiView_EditField_Paint(
 			inPrivateData->string_height,
 			alpha);
 	}
-	
+
 	// draw the caret
 	if ((inPrivateData->caret_texture) &&
 		(inPrivateData->caret_displayed) &&
@@ -366,7 +366,7 @@ VMiView_EditField_Paint(
 		dest = *inDestination;
 		dest.x += (float)(inPrivateData->text_location.x + inPrivateData->string_width);
 		dest.y += (float)(inPrivateData->text_location.y);
-		
+
 		VUrDrawTextureRef(
 			inPrivateData->caret_texture,
 			&dest,
@@ -385,24 +385,24 @@ VMiVew_EditField_HandleKeyDown(
 	UUtUns16						inKey)
 {
 	UUtBool							handled;
-	
+
 	UUmAssert(inPrivateData->string);
 	UUmAssert(inPrivateData->string_texture);
 	UUmAssert(inPrivateData->text_context);
-	
+
 	// add the key to the string
 	handled =
 		TSrString_AppendChar(
 			inPrivateData->string,
 			inKey,
 			inEditField->max_chars);
-	
+
 	// update the textures
 	VMiView_EditField_UpdateTextures(inView, inEditField, inPrivateData);
-	
+
 	return handled;
 }
-	
+
 // ======================================================================
 #if 0
 #pragma mark -
@@ -420,29 +420,29 @@ VMrView_EditField_Callback(
 	VMtView_EditField_PrivateData	*private_data;
 	UUtUns32						result;
 	VMtView_PrivateData				*view_private_data;
-	
+
 	// get the views data
 	editfield = (VMtView_EditField*)inView->view_data;
 	private_data = (VMtView_EditField_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_EditField_PrivateData, editfield);
 	UUmAssert(private_data);
-	
+
 	// get the view's private data
 	view_private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inView);
 	UUmAssert(view_private_data);
-			
+
 	result = 0;
-	
+
 	switch (inMessage)
 	{
 		case VMcMessage_Create:
 			VMiView_EditField_Create(inView, editfield, private_data);
 
-			
+
 			private_data->has_focus = UUcFalse;
 			private_data->caret_displayed = UUcFalse;
 			private_data->string[0] = '\0';
 		return 0;
-		
+
 		case VMcMessage_KeyDown:
 			result =
 				VMiVew_EditField_HandleKeyDown(
@@ -462,7 +462,7 @@ VMrView_EditField_Callback(
 				(UUtUns32)inView);
 		}
 		return 0;
-		
+
 		case VMcMessage_SetFocus:
 			if (inParam1)
 			{
@@ -474,11 +474,11 @@ VMrView_EditField_Callback(
 				private_data->caret_displayed = UUcFalse;
 			}
 		return 0;
-		
+
 		case VMcMessage_Paint:
 			// update the caret
 			VMiView_EditField_UpdateCaret(inView, editfield, private_data);
-			
+
 			// draw the button
 			VMiView_EditField_Paint(
 				inView,
@@ -486,21 +486,21 @@ VMrView_EditField_Callback(
 				private_data,
 				(M3tPointScreen*)inParam2);
 		return 0;
-		
+
 		case VMcMessage_GetValue:
 		return (UUtUns32)private_data->string;
-		
+
 		case VMcMessage_SetValue:
 		{
 			// copy the string
 			UUrString_Copy(private_data->string, (char*)inParam1, editfield->max_chars);
-			
+
 			// update the textures
 			VMiView_EditField_UpdateTextures(inView, editfield, private_data);
 		}
 		return 0;
 	}
-	
+
 	return VMrView_DefaultCallback(inView, inMessage, inParam1, inParam2);
 }
 
@@ -513,54 +513,54 @@ VMrView_EditField_ProcHandler(
 {
 	VMtView_EditField				*editfield;
 	VMtView_EditField_PrivateData	*private_data;
-	
+
 	// get a pointer to the button data
 	editfield = (VMtView_EditField*)inInstancePtr;
 	private_data = (VMtView_EditField_PrivateData*)inPrivateData;
 	UUmAssert(private_data);
-	
+
 	switch (inMessage)
 	{
 		case TMcTemplateProcMessage_NewPostProcess:
 		case TMcTemplateProcMessage_LoadPostProcess:
 			// initalize the private data
 			private_data->text_context			= NULL;
-			private_data->string				= NULL;			
+			private_data->string				= NULL;
 
 			private_data->caret_texture			= NULL;
 			private_data->caret_width			= 0;
 			private_data->caret_height			= 0;
 			private_data->caret_displayed		= UUcFalse;
 			private_data->caret_time			= 0;
-			
+
 			private_data->string_texture		= NULL;
 			private_data->string_width			= editfield->text_location_offset.x;
 			private_data->string_height			= editfield->text_location_offset.y;
-			
+
 			private_data->has_focus				= UUcFalse;
 		break;
-		
+
 		case TMcTemplateProcMessage_DisposePreProcess:
 			if (private_data->text_context)
 			{
 				TSrContext_Delete(private_data->text_context);
 				private_data->text_context = NULL;
 			}
-			
+
 			if (private_data->string)
 			{
 				UUrMemory_Block_Delete(private_data->string);
 				private_data->string = NULL;
 			}
 		break;
-		
+
 		case TMcTemplateProcMessage_Update:
 		break;
-		
+
 		default:
 			UUmAssert(!"Illegal message");
 		break;
 	}
-	
+
 	return UUcError_None;
 }

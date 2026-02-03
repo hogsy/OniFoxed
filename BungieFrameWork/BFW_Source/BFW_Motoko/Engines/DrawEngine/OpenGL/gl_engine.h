@@ -112,15 +112,15 @@ enum {
 	_gl_initial_dfactor= GL_ZERO,
 
 	MAX_COMPRESSED_TEXTURE_FORMATS= 16,
-	
+
 	// S.S. 11/09/2000 added this for texture management
-	
+
 	MAX_INTERNAL_FRAME_COUNT_VALUE= 0x00FFFFFF, // storing in the 3 pad bytes for a Motoko texture
-	
+
 	KILO= 1024,
 	MEG= KILO * KILO,
 	GIG= KILO * MEG,
-	
+
 	// this regulates how many OpenGL textures we will keep loaded
 	// gl_macos.c contains code which regulates this based on graphics quality setting
 	MAX_DEFAULT_TEXTURE_MEMORY_LIMIT= 1 * GIG, // no limit
@@ -558,7 +558,7 @@ struct gl_api { // this is so we can load the apropriate OpenGL DLL on Windows, 
 	void (APIENTRY *glViewport)(GLint x, GLint y, GLsizei width, GLsizei height);
 
 #if defined(UUmPlatform) && (UUmPlatform == UUmPlatform_Win32)
-	
+
 	// WGL
 	BOOL (WINAPI *wglCopyContext)(HGLRC, HGLRC, UINT);
 	HGLRC (WINAPI *wglCreateContext)(HDC);
@@ -614,7 +614,7 @@ struct gl_api { // this is so we can load the apropriate OpenGL DLL on Windows, 
 
 struct gl_state_global {
 	boolean engine_initialized;
-	
+
 	M3tDrawEngineCaps draw_engine_caps;
 	M3tDrawEngineMethods draw_engine_methods;
 	M3tDrawContextMethods draw_context_methods;
@@ -623,7 +623,7 @@ struct gl_state_global {
 
 	M3tDrawContextType context_type;
 
-/* 09/01/2000 we will never be using vertex arrays for oni	
+/* 09/01/2000 we will never be using vertex arrays for oni
 	gl_vertex *vertices;
 	gl_color_4ub *vertex_colors;
 	gl_texture_coord *uvs0;
@@ -655,7 +655,7 @@ struct gl_state_global {
 	char *renderer;
 	char *version;
 	char *extensions;
-	
+
 	int multitexture;
 	int mipmap_offset;
 	GLint max_nvidia_general_combiners;

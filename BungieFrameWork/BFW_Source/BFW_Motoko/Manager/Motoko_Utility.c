@@ -1,12 +1,12 @@
 /*
 	FILE:	Motoko_Utility.c
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: May 5, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997-1999
 
 */
@@ -64,7 +64,7 @@ UUtBool M3rIntersect_BBox(
 {
 	M3tPoint3D bboxA[8];
 	M3tPoint3D bboxB[8];
-	UUtUns16   bboxEdgeList[12][2] = 
+	UUtUns16   bboxEdgeList[12][2] =
 	{
 		{0, 1},
 		{0, 2},
@@ -137,7 +137,7 @@ UUtBool M3rIntersect_BBox(
 	*	 | '           | /
 	*	 |'            |/
 	*	1*-------------*5
-	*	
+	*
 	*	quads		plane equ
 	*	=====		=======
 	*	0 1 3 2		-1, 0, 0, 0.x
@@ -169,7 +169,7 @@ const M3tQuad M3gBBox_QuadList[6] =	// Do NOT make this UUtUns8
 {		// Look-up table for which indices to use to form each box side
 	{ 0,1,3,2 }, // 0
 	{ 4,6,7,5 }, // 1
-	{ 0,4,5,1 }, // 2	
+	{ 0,4,5,1 }, // 2
 	{ 2,3,7,6 }, // 3
 	{ 0,2,6,4 }, // 4
 	{ 1,5,7,3 }	 // 5
@@ -214,41 +214,41 @@ const M3tQuad *M3rBBox_GetSide(
 
 	return result;
 }
-	
+
 void M3rMinMaxBBox_To_BBox(
-		const M3tBoundingBox_MinMax *inBBox, 
+		const M3tBoundingBox_MinMax *inBBox,
 		M3tBoundingBox *outBoundingBox)
 {
 	UUmAssertReadPtr(outBoundingBox, sizeof(*outBoundingBox));
-	
+
 	outBoundingBox->localPoints[0].x = inBBox->minPoint.x;
 	outBoundingBox->localPoints[0].y = inBBox->minPoint.y;
 	outBoundingBox->localPoints[0].z = inBBox->minPoint.z;
-	
+
 	outBoundingBox->localPoints[1].x = inBBox->minPoint.x;
 	outBoundingBox->localPoints[1].y = inBBox->minPoint.y;
 	outBoundingBox->localPoints[1].z = inBBox->maxPoint.z;
-	
+
 	outBoundingBox->localPoints[2].x = inBBox->minPoint.x;
 	outBoundingBox->localPoints[2].y = inBBox->maxPoint.y;
 	outBoundingBox->localPoints[2].z = inBBox->minPoint.z;
-	
+
 	outBoundingBox->localPoints[3].x = inBBox->minPoint.x;
 	outBoundingBox->localPoints[3].y = inBBox->maxPoint.y;
 	outBoundingBox->localPoints[3].z = inBBox->maxPoint.z;
-	
+
 	outBoundingBox->localPoints[4].x = inBBox->maxPoint.x;
 	outBoundingBox->localPoints[4].y = inBBox->minPoint.y;
 	outBoundingBox->localPoints[4].z = inBBox->minPoint.z;
-	
+
 	outBoundingBox->localPoints[5].x = inBBox->maxPoint.x;
 	outBoundingBox->localPoints[5].y = inBBox->minPoint.y;
 	outBoundingBox->localPoints[5].z = inBBox->maxPoint.z;
-	
+
 	outBoundingBox->localPoints[6].x = inBBox->maxPoint.x;
 	outBoundingBox->localPoints[6].y = inBBox->maxPoint.y;
 	outBoundingBox->localPoints[6].z = inBBox->minPoint.z;
-	
+
 	outBoundingBox->localPoints[7].x = inBBox->maxPoint.x;
 	outBoundingBox->localPoints[7].y = inBBox->maxPoint.y;
 	outBoundingBox->localPoints[7].z = inBBox->maxPoint.z;
@@ -331,7 +331,7 @@ void M3rBBox_To_EdgeBBox(
 		M3tBoundingBox_Edge *outBoundingBox)
 {
 	UUtUns16 edgeIndex;
-	
+
 	for (edgeIndex=0; edgeIndex<12; edgeIndex++)
 	{
 		outBoundingBox->edges[edgeIndex].a = inBoundingBox->localPoints[M3gBBox_EdgeList[edgeIndex][0]];
@@ -344,7 +344,7 @@ void M3rEdgeBBox_Offset(
 	M3tPoint3D *inOffset)
 {
 	UUtUns16 e;
-	
+
 	for (e=0; e<12; e++)
 	{
 		MUmVector_Increment(ioBoundingBox->edges[e].a,*inOffset);
@@ -362,7 +362,7 @@ void M3rMinMaxBBox_Draw_Line(
 
 	M3rMinMaxBBox_To_BBox(inMinMaxBBox, &bbox);
 
-	for(itr = 0; itr < 12; itr++) 
+	for(itr = 0; itr < 12; itr++)
 	{
 		magicPoints[0] = bbox.localPoints[M3gBBox_EdgeList[itr][0]];
 		magicPoints[1] = bbox.localPoints[M3gBBox_EdgeList[itr][1]];
@@ -378,8 +378,8 @@ void M3rBBox_Draw_Line(
 	UUtUns32 inShade)
 {
 	UUtUns8 itr;
-	
-	for(itr = 0; itr < 12; itr++) 
+
+	for(itr = 0; itr < 12; itr++)
 	{
 		M3tPoint3D *from, *to;
 
@@ -494,7 +494,7 @@ void M3rGeom_Line_Light(const M3tPoint3D *point1, const M3tPoint3D *point2, UUtU
 }
 
 
-void 
+void
 M3rDraw_Bitmap(
 	M3tTextureMap			*inBitmap,
 	const M3tPointScreen	*inDestPoint,
@@ -529,13 +529,13 @@ M3rDraw_Bitmap(
 	// bl
 	uv[2].u = 0.f;
 	uv[2].v = uv[3].v;
-	
+
 	M3rDraw_State_Push();
 
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_BaseTextureMap,
 		inBitmap);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Appearence,
 		M3cDrawState_Appearence_Texture_Unlit);
@@ -557,7 +557,7 @@ M3rDraw_Bitmap(
 		M3cDrawState_Fill_Solid);
 
 	M3rDraw_State_Commit();
-	
+
 	M3rDraw_Sprite(
 		screenPoints,
 		uv);
@@ -568,7 +568,7 @@ M3rDraw_Bitmap(
 }
 
 // ----------------------------------------------------------------------
-void 
+void
 M3rDraw_BitmapUV(
 	M3tTextureMap			*inBitmap,
 	const M3tTextureCoord	*inUV,
@@ -584,13 +584,13 @@ M3rDraw_BitmapUV(
 	screenPoints[1] = *inDestPoint;
 	screenPoints[1].x = screenPoints[0].x + inWidth;
 	screenPoints[1].y = screenPoints[0].y + inHeight;
-	
+
 	M3rDraw_State_Push();
 
 	M3rDraw_State_SetPtr(
 		M3cDrawStatePtrType_BaseTextureMap,
 		inBitmap);
-	
+
 	M3rDraw_State_SetInt(
 		M3cDrawStateIntType_Appearence,
 		M3cDrawState_Appearence_Texture_Unlit);
@@ -612,7 +612,7 @@ M3rDraw_BitmapUV(
 		inAlpha);
 
 	M3rDraw_State_Commit();
-	
+
 	M3rDraw_Sprite(
 		screenPoints,
 		inUV);
@@ -623,7 +623,7 @@ M3rDraw_BitmapUV(
 }
 
 // ----------------------------------------------------------------------
-void 
+void
 M3rDraw_BigBitmap(
 	M3tTextureMap_Big		*inBigBitmap,
 	const M3tPointScreen	*inDestPoint,
@@ -634,7 +634,7 @@ M3rDraw_BigBitmap(
 {
 	UUtUns16				x;
 	UUtUns16				y;
-	
+
 	// draw the subtextures that are visible
 	for (y = 0; y < inBigBitmap->num_y; y++)
 	{
@@ -645,30 +645,30 @@ M3rDraw_BigBitmap(
 			M3tPointScreen		dest_point;
 			UUtUns16			width;
 			UUtUns16			height;
-			
-			UUtInt16			temp;			
+
+			UUtInt16			temp;
 			UUtInt32			x_times_maxwidth;
 			UUtInt32			y_times_maxheight;
-			
+
 			// get a pointer to the texture to be drawn
 			index = x + (y * inBigBitmap->num_x);
 			texture = inBigBitmap->textures[index];
-			
+
 			x_times_maxwidth = x * M3cTextureMap_MaxWidth;
 			y_times_maxheight = y * M3cTextureMap_MaxHeight;
-			
+
 			// calculate the dest_point of the texture
 			dest_point.x = inDestPoint->x + (float)x_times_maxwidth;
 			dest_point.y = inDestPoint->y + (float)y_times_maxheight;
 			dest_point.z = inDestPoint->z;
 			dest_point.invW = inDestPoint->invW;
-			
+
 			// calculate the width and height
 			temp = (UUtInt16)UUmMax(0, (UUtInt32)inWidth - x_times_maxwidth);
 			width = UUmMin(M3cTextureMap_MaxWidth, (UUtUns16)temp);
 			temp = (UUtInt16)UUmMax(0, (UUtInt32)inHeight - y_times_maxheight);
 			height = UUmMin(M3cTextureMap_MaxHeight, (UUtUns16)temp);
-			
+
 			// draw the sub_texture
 			M3rDraw_Bitmap(
 				texture,
@@ -686,9 +686,9 @@ UUtError M3rDrawEngine_FindGrayscalePixelType(
 {
 #define numGrayscaleTextureFormats 6
 	UUtUns16 itr;
-	
+
 	// array is in order of preference
-	IMtPixelType table[numGrayscaleTextureFormats] = 
+	IMtPixelType table[numGrayscaleTextureFormats] =
 		{
 			IMcPixelType_I8,
 			IMcPixelType_A4I4,
@@ -724,27 +724,27 @@ M3rGroup_GetColor(
 	GRtElementType		elementType;
 	GRtElementArray*	array;
 	char*				string;
-	
+
 	error = GRrGroup_GetElement(inGroup, inVarName, &elementType, &array);
 	if(error != UUcError_None) return error;
-	
+
 	if(elementType != GRcElementType_Array) return UUcError_Generic;
-	
+
 	error = GRrGroup_Array_GetElement(array, 0, &elementType, &string);
 	if(error != UUcError_None) return error;
 	if(elementType != GRcElementType_String) return UUcError_Generic;
 	sscanf(string, "%f", &outColor->r);
-	
+
 	error = GRrGroup_Array_GetElement(array, 1, &elementType, &string);
 	if(error != UUcError_None) return error;
 	if(elementType != GRcElementType_String) return UUcError_Generic;
 	sscanf(string, "%f", &outColor->g);
-	
+
 	error = GRrGroup_Array_GetElement(array, 2, &elementType, &string);
 	if(error != UUcError_None) return error;
 	if(elementType != GRcElementType_String) return UUcError_Generic;
 	sscanf(string, "%f", &outColor->b);
-	
+
 	return UUcError_None;
 }
 
@@ -777,7 +777,7 @@ void M3rDisplay_Circle(M3tPoint3D *inCenter, float inRadius, UUtUns32 inShade)
 	/**************
 	* Draws a wireframe circle in the XZ plane
 	*/
-	
+
 	#define cNumPoints 16
 
 	M3tBoundingCircle circle;
@@ -834,7 +834,7 @@ M3tTextureMap *M3rTextureMap_GetFromName(const char *inTemplateName)
 
 	if (UUcError_None == error) {
 		texture = dataPtr;
-	}	
+	}
 
 	return texture;
 }
@@ -933,7 +933,7 @@ static void M3rOptimize_Setup(MXtNode *inNode)
 
 	M3gOptimizeTriangles = UUrMemory_Block_New(sizeof(OptimizeTriangle) * inNode->numTriangles);
 
-	// pass 1: setup the list 
+	// pass 1: setup the list
 	for(itr = 0; itr < inNode->numTriangles; itr++)
 	{
 		UUtUns32 edge_itr;
@@ -948,9 +948,9 @@ static void M3rOptimize_Setup(MXtNode *inNode)
 		dst_face->used = 0;
 
 		MUrVector_NormalFromPoints(
-			&inNode->points[src_face->indices[0]].point, 
-			&inNode->points[src_face->indices[1]].point, 
-			&inNode->points[src_face->indices[2]].point, 
+			&inNode->points[src_face->indices[0]].point,
+			&inNode->points[src_face->indices[1]].point,
+			&inNode->points[src_face->indices[2]].point,
 			&dst_face->normal);
 
 		if (MUrVector_DotProduct(&src_face->dont_use_this_normal, &dst_face->normal) < 0.f) {
@@ -1349,7 +1349,7 @@ static UUtBool build_quad(
 			&node->points[quad->indices[C]].point,
 			&node->points[quad->indices[D]].point,
 			&normal1);
-		
+
 		if (success) {
 			dot = normal0.x * normal1.x + normal0.y * normal1.y + normal0.z * normal1.z;
 			if (dot < 0.8f) {
@@ -1448,11 +1448,11 @@ void *M3rOptimizeNode(
 		a= node->triangles[i].indices[A];
 		b= node->triangles[i].indices[B];
 		c= node->triangles[i].indices[C];
-		
+
 		MUrVector_NormalFromPoints(&node->points[a].point,
 			&node->points[b].point, &node->points[c].point,
 			&triangle_datum[i].normal);
-		
+
 		length= triangle_datum[i].normal.x * triangle_datum[i].normal.x +
 			triangle_datum[i].normal.y * triangle_datum[i].normal.y +
 			triangle_datum[i].normal.z + triangle_datum[i].normal.z;
@@ -1503,7 +1503,7 @@ void *M3rOptimizeNode(
 					if they share an edge and are parallel, they are coplanar &
 					therefor can be combined into a quad
 				*/
-			
+
 				// ab == a'b'
 				if (edge_shared(t0_ab, t1_ab))
 				{
@@ -1699,7 +1699,7 @@ void *M3rOptimizeNode(
 		int sizeof_triangles= num_tris * sizeof(MXtFace);
 		int sizeof_quads= num_quads * sizeof(MXtFace);
 		char *buffer= UUrMemory_Block_New(sizeof_header + sizeof_points + sizeof_triangles + sizeof_quads);
-		
+
 		new_node= (MXtNode *) buffer;
 		UUmAssert(new_node);
 

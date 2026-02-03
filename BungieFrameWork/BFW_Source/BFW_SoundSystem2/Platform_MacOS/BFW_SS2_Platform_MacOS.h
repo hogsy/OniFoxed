@@ -27,7 +27,7 @@ typedef struct SStSoundChannel_PlatformData
 	UUtUns32					pitch;
 	float						left_pan;
 	float						right_pan;
-	
+
 } SStSoundChannel_PlatformData;
 
 // ======================================================================

@@ -1,13 +1,13 @@
 
 /*
 	FILE:	OGL_DrawGeom_Platform_MacOS.c
-	
+
 	AUTHOR:	Brent Pease, Kevin Armstrong, Michael Evans
-	
+
 	CREATED: January 5, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1998
 
 */
@@ -22,9 +22,9 @@ OGLrCommon_Platform_GetFunction(
 	const char *inString)
 {
 	void					*function;
-	
+
 	function = NULL;
-	
+
 	if (strcmp(inString, "glLockArraysEXT") == 0)
 	{
 		function = glLockArraysEXT;
@@ -53,7 +53,7 @@ OGLrCommon_Platform_GetFunction(
 	{
 		UUmAssert(!"Missing something here");
 	}
-		
+
 	return function;
 }
 

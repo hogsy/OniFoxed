@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Effects.c
-	
+
 	AUTHOR:	Brent Pease
-	
+
 	CREATED: Oct 8, 1999
-	
+
 	PURPOSE: effects engine
-	
+
 	Copyright 1999
 
  */

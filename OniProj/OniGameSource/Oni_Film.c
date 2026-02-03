@@ -1,8 +1,8 @@
 /*
 	Oni_Film.c
-	
+
 	Film recording stuff
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -41,7 +41,7 @@ ONiSetFocus(
 {
 	ONtCharacter *ch;
 	UUtUns16 playerNum;
-	
+
 	playerNum = (UUtUns16)inParameterList[0].val.i;
 
 	ONrGameState_SetPlayerNum(playerNum);
@@ -61,8 +61,8 @@ UUtError ONrFilm_Initialize(
 	/*******************
 	* Initializes film recording
 	*/
-	
-	UUtError error;	
+
+	UUtError error;
 
 	error;
 
@@ -70,7 +70,7 @@ UUtError ONrFilm_Initialize(
 	strcpy(ONgBoundF3, "");
 
 #if CONSOLE_DEBUGGING_COMMANDS
-	// Console	
+	// Console
 	error =	SLrScript_Command_Register_Void(
 		"sc_focus",
 		"sets which character we're authoring for a film",
@@ -112,7 +112,7 @@ void ONrFilm_GetFrame(const ONtFilmState *inFilmState, ONtInputState *outInputSt
 		}
 	}
 
-	
+
 
 	if (0 == itr) {
 		outInputState->turnLR = key->turnLR;
@@ -167,7 +167,7 @@ void ONrFilm_AppendFrame(ONtFilmState *inFilmState, ONtInputState *inInputState)
 	else {
 		const ONtFilmKey *oldKey  = curFilm->keys + curFilm->numKeys - 1;
 
-		addKey = 
+		addKey =
 			(inInputState->turnLR != 0.f) ||
 			(inInputState->turnUD != 0.f) ||
 			(oldKey->current != inInputState->buttonIsDown);
@@ -276,7 +276,7 @@ void ONrFilm_Swap(ONtFilm *ioFilm, ONtFilm_SwapSrc inSwapSrc)
 
 	for(itr = 0; itr < numKeys; itr++) {
 		ONtFilmKey *key = ioFilm->keys + itr;
-	
+
 		UUmSwapBig_4Byte(&key->turnUD);
 		UUmSwapBig_4Byte(&key->turnLR);
 		UUmSwapBig_8Byte(&key->current);
@@ -300,7 +300,7 @@ void ONrFilm_Swap_DiskFormat(ONtFilm_DiskFormat *ioFilm, ONtFilmKey *ioKeys)
 
 	for(itr = 0; itr < ioFilm->numKeys; itr++) {
 		ONtFilmKey *key = ioKeys + itr;
-	
+
 		UUmSwapBig_4Byte(&key->turnUD);
 		UUmSwapBig_4Byte(&key->turnLR);
 		UUmSwapBig_8Byte(&key->current);
@@ -353,7 +353,7 @@ void ONrFilm_WriteToDisk(ONtFilm *inFilm)
 				error = BFrFile_Write(file, fileLength, inFilm->keys);
 			}
 
-			if (UUcError_None != error) { 
+			if (UUcError_None != error) {
 				COrConsole_Printf("failed to write file");
 			}
 
@@ -392,11 +392,11 @@ void ONrFilm_DisplayStats(ONtFilm *inFilm)
 		instance_name = (NULL == instance_name) ? "no-name" : instance_name;
 
 		COrConsole_Printf("%s length %d keys %d loc %f,%f,%f",
-			instance_name, 
-			inFilm->length, 
-			inFilm->numKeys, 
-			inFilm->initialLocation.x, 
-			inFilm->initialLocation.y, 
+			instance_name,
+			inFilm->length,
+			inFilm->numKeys,
+			inFilm->initialLocation.x,
+			inFilm->initialLocation.y,
 			inFilm->initialLocation.z);
 	}
 }

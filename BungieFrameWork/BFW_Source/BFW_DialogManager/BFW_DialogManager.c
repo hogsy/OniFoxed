@@ -37,7 +37,7 @@
 enum
 {
 	DMcDialog_MessageBox			= 100,
-	
+
 	DMcMB_Title						= 1,
 	DMcMB_Message					= 2
 };
@@ -50,7 +50,7 @@ typedef struct DMtMouseEventMap
 	LItInputEventType			event_type;
 	UUtUns16					view_flags;
 	VMtMessage					view_message;
-	
+
 } DMtMouseEventMap;
 
 // ======================================================================
@@ -88,11 +88,11 @@ DMiDialog_FindViewToFocus(
 	UUtUns16			desired_flags;
 	VMtView				*found_view;
 	UUtBool				stop_on_next;
-	
+
 	// init the vars
 	found_view		= NULL;
 	stop_on_next	= UUcTrue;
-	
+
 	// these are the flags that are needed
 	desired_flags =
 		VMcViewFlag_Visible |
@@ -103,7 +103,7 @@ DMiDialog_FindViewToFocus(
 	for (i = 0; i < inDialog->num_child_views; i++)
 	{
 		VMtView			*child = inDialog->child_views[i].view_ref;
-		
+
 		// do the child's flags match the desired flags
 		if ((child->flags & desired_flags) == desired_flags)
 		{
@@ -116,7 +116,7 @@ DMiDialog_FindViewToFocus(
 			}
 		}
 	}
-	
+
 	return found_view;
 }
 
@@ -130,11 +130,11 @@ DMiDialog_HandleKeyEvent(
 	DMtMessage					message;
 	UUtUns32					param1;
 	UUtUns32					param2;
-	
+
 	// set param1 and param2
 	param1 = (UUtUns32)inInputEvent->key;
 	param2 = 0;
-	
+
 	// set the message
 	switch (inInputEvent->type)
 	{
@@ -142,16 +142,16 @@ DMiDialog_HandleKeyEvent(
 		case LIcInputEvent_KeyRepeat:
 			message = VMcMessage_KeyDown;
 		break;
-		
+
 		case LIcInputEvent_KeyUp:
 			message = VMcMessage_KeyUp;
 		break;
 	}
-	
+
 	// send a message to the focused view
 	VMrView_SendMessage(inDialog, message, param1, param2);
 }
-	
+
 // ----------------------------------------------------------------------
 static void
 DMiDialog_HandleMouseEvent(
@@ -166,12 +166,12 @@ DMiDialog_HandleMouseEvent(
 
 	DMtMouseEventMap			*event_map;
 	UUtUns16					flags;
-	
+
 	message = VMcMessage_None;
-	
+
 	// record the cursor position for the cursor drawing to happen later
 	inPrivateData->cursor_position = inInputEvent->where;
-	
+
 	// set the flags to test the control against
 	for (event_map = DMgMouseEventMap;
 		 event_map->view_message != VMcMessage_None;
@@ -184,11 +184,11 @@ DMiDialog_HandleMouseEvent(
 			break;
 		}
 	}
-	
+
 	// set param1 and param2
 	param1 = UUmMakeLong(inInputEvent->where.x, inInputEvent->where.y);
-	param2 = inInputEvent->modifiers;	
-	
+	param2 = inInputEvent->modifiers;
+
 	// set the view to send mouse messages to
 	if (inPrivateData->mouse_focus_view)
 	{
@@ -199,10 +199,10 @@ DMiDialog_HandleMouseEvent(
 		// get the view the mouse is currently over
 		view = VMrView_GetViewUnderPoint(inDialog, &inInputEvent->where, flags);
 	}
-	
+
 	// don't send messages to nothing
 	if (view == NULL) return;
-	
+
 	// check for double clicks
 	if ((message == VMcMessage_LMouseUp) ||
 		(message == VMcMessage_MMouseUp) ||
@@ -210,13 +210,13 @@ DMiDialog_HandleMouseEvent(
 	{
 		UUtUns32			time;
 		float				distance;
-		
+
 		time = UUrMachineTime_Sixtieths();
 		distance =
 			IMrPoint2D_Distance(
 				&inPrivateData->mouse_clicked_point,
 				&inInputEvent->where);
-		
+
 		if ((inPrivateData->mouse_clicked_view == view) &&
 			(inPrivateData->mouse_clicked_type == message) &&
 			(time < (inPrivateData->mouse_clicked_time + DMcDoubleClickDelta)) &&
@@ -228,7 +228,7 @@ DMiDialog_HandleMouseEvent(
 				message = VMcMessage_MMouseDblClck;
 			else if (message == VMcMessage_RMouseUp)
 				message = VMcMessage_RMouseDblClck;
-				
+
 			// clear the info
 			inPrivateData->mouse_clicked_view = NULL;
 			inPrivateData->mouse_clicked_time = 0;
@@ -243,10 +243,10 @@ DMiDialog_HandleMouseEvent(
 			inPrivateData->mouse_clicked_point = inInputEvent->where;
 		}
 	}
-	
+
 	// send a message to the view
 	VMrView_SendMessage(view, message, param1, param2);
-	
+
 	// send a mouse up message if message is a double clicked message
 	if ((message == VMcMessage_LMouseDblClck) ||
 		(message == VMcMessage_MMouseDblClck) ||
@@ -258,10 +258,10 @@ DMiDialog_HandleMouseEvent(
 			message = VMcMessage_MMouseUp;
 		else if (message == VMcMessage_RMouseDblClck)
 			message = VMcMessage_RMouseUp;
-		
+
 		VMrView_SendMessage(view, message, param1, param2);
 	}
-	
+
 	// send appropriate mouse_leave messages
 	if (inPrivateData->mouse_over_view != view)
 	{
@@ -274,7 +274,7 @@ DMiDialog_HandleMouseEvent(
 				0,
 				0);
 		}
-		
+
 		// save the new mouse_over_view
 		inPrivateData->mouse_over_view = view;
 	}
@@ -292,9 +292,9 @@ DMiDialog_Load(
 	DMtDialogList		*dialog_list;
 
 	UUmAssert(TMrInstance_GetTagCount(DMcTemplate_DialogList) == 1);
-	
+
 	*outDialog = NULL;
-		
+
 	// load the dialog list
 	error =
 		TMrInstance_GetDataPtr(
@@ -302,28 +302,28 @@ DMiDialog_Load(
 			"dialoglist",
 			&dialog_list);
 	UUmError_ReturnOnError(error);
-	
+
 	for (i = 0; i < dialog_list->num_dialogs; i++)
 	{
 		DMtDialog			*dialog;
-		
+
 		dialog = (DMtDialog*)dialog_list->dialogs[i].dialog_ref;
-		
+
 		if (dialog->id == inDialogID)
 		{
 			error = VMrView_Load(dialog, inParent);
 			UUmError_ReturnOnError(error);
-			
+
 			*outDialog = dialog;
 			break;
 		}
 	}
-	
+
 	if (*outDialog == NULL)	return UUcError_Generic;
-	
+
 	return UUcError_None;
 }
-	
+
 // ======================================================================
 #if 0
 #pragma mark -
@@ -335,20 +335,20 @@ DMiDialog_MessageBox_Initialize(
 	DMtDialog				*inDialog)
 {
 	VMtView					*child;
-	
+
 	if ((ONgMessageBox_Flags == DMcMBFlag_None) ||
 		(ONgMessageBox_Flags & DMcMBFlag_Ok) == DMcMBFlag_Ok)
 	{
 		child = DMrDialog_GetViewByID(inDialog, DMcMB_Ok);
 		VMrView_SetVisible(child, UUcTrue);
 	}
-	
+
 	if ((ONgMessageBox_Flags & DMcMBFlag_OkCancel) == DMcMBFlag_OkCancel)
 	{
 		child = DMrDialog_GetViewByID(inDialog, DMcMB_Cancel);
 		VMrView_SetVisible(child, UUcTrue);
 	}
-	
+
 	child = DMrDialog_GetViewByID(inDialog, DMcMB_Title);
 	VMrView_SetValue(child, (UUtUns32)ONgMessageBox_Title);
 
@@ -378,22 +378,22 @@ DMiDialog_MessageBox_Callback(
 	UUtUns32				inParam2)
 {
 	UUtBool					handled;
-	
+
 	handled = UUcTrue;
-	
+
 	switch (inMessage)
 	{
 		case DMcMessage_InitDialog:
 			DMiDialog_MessageBox_Initialize(inDialog);
 		break;
-		
+
 		case VMcMessage_Command:
 			DMiDialog_MessageBox_HandleCommand(
 				inDialog,
 				(UUtUns16)UUmHighWord(inParam1),
 				(UUtUns16)UUmLowWord(inParam1));
 		break;
-		
+
 		case VMcMessage_KeyDown:
 			if (inParam1 == LIcKeyCode_Return)
 			{
@@ -402,7 +402,7 @@ DMiDialog_MessageBox_Callback(
 			else if (inParam1 == LIcKeyCode_Escape)
 			{
 				VMtView		*cancel;
-				
+
 				// if the cancel button is visible, then escape returns
 				// cancel, otherwise it returns ok
 				cancel = DMrDialog_GetViewByID(inDialog, DMcMB_Cancel);
@@ -416,12 +416,12 @@ DMiDialog_MessageBox_Callback(
 				}
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
 	}
-	
+
 	return handled;
 }
 
@@ -440,14 +440,14 @@ DMrDialog_ActivateTab(
 	DMtDialogData_PrivateData	*private_data;
 	VMtView					*tab_group;
 	UUtUns16				i;
-	
+
 	UUmAssert(inDialog);
-	
+
 	// get a pointer to the dialog data
 	dialog_data = (DMtDialogData*)inDialog->view_data;
 	private_data = (DMtDialogData_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Dialog_PrivateData, dialog_data);
 	UUmAssert(private_data);
-	
+
 	// find the tab group of the dialog
 	tab_group = NULL;
 	for (i = 0; i < inDialog->num_child_views; i++)
@@ -461,7 +461,7 @@ DMrDialog_ActivateTab(
 		}
 	}
 	if (tab_group == NULL) return;
-	
+
 	// enable the desired tab
 	VMrView_TabGroup_ActivateTab(tab_group, inTabID);
 }
@@ -474,7 +474,7 @@ DMrDialog_Display(
 	M3tPointScreen			dest;
 	DMtDialogData			*dialog_data;
 	DMtDialogData_PrivateData	*private_data;
-	
+
 	UUmAssert(inDialog);
 
 	M3rDraw_State_Push();
@@ -486,15 +486,15 @@ DMrDialog_Display(
 	dest.y = (float)inDialog->location.y;
 	dest.z = DMcDialogLayer;
 	dest.invW = 1 / dest.z;
-	
+
 	// draw the view
 	VMrView_Draw(inDialog, &dest);
-	
+
 	// get a pointer to the dialog data
 	dialog_data = (DMtDialogData*)inDialog->view_data;
 	private_data = (DMtDialogData_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Dialog_PrivateData, dialog_data);
 	UUmAssert(private_data);
-	
+
 	// draw the cursor
 	if (dialog_data->flags & DMcDialogFlag_ShowCursor)
 	{
@@ -516,9 +516,9 @@ DMrDialog_GetParentDialog(
 {
 	DMtDialog				*dialog;
 	VMtView					*parent;
-	
+
 	UUmAssert(inView);
-	
+
 	// set the dialog
 	dialog = NULL;
 
@@ -532,7 +532,7 @@ DMrDialog_GetParentDialog(
 			dialog = parent;
 			break;
 		}
-		
+
 		// get the parent of the parent
 		parent = VMrView_GetParent(parent);
 	}
@@ -548,16 +548,16 @@ DMrDialog_GetViewByID(
 {
 	VMtView					*found_view;
 	UUtUns16				i;
-	
+
 	UUmAssert(inDialog);
-	
+
 	found_view = NULL;
-	
-	// go through the child views looking for one with this 
+
+	// go through the child views looking for one with this
 	for (i = 0; i < inDialog->num_child_views; i++)
 	{
 		VMtView		*child = (VMtView*)inDialog->child_views[i].view_ref;
-		
+
 		if (child->id == inViewID)
 		{
 			found_view = child;
@@ -568,7 +568,7 @@ DMrDialog_GetViewByID(
 		}
 		if (found_view) break;
 	}
-	
+
 	return found_view;
 }
 
@@ -579,14 +579,14 @@ DMrDialog_IsActive(
 {
 	DMtDialogData			*dialog_data;
 	DMtDialogData_PrivateData	*private_data;
-	
+
 	UUmAssert(inDialog);
 
 	// get a pointer to the dialog data
 	dialog_data = (DMtDialogData*)inDialog->view_data;
 	private_data = (DMtDialogData_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Dialog_PrivateData, dialog_data);
 	UUmAssert(private_data);
-	
+
 	return !private_data->quit_dialog;
 }
 
@@ -600,11 +600,11 @@ DMrDialog_MessageBox(
 {
 	UUtError				error;
 	UUtUns32				message;
-	
+
 	ONgMessageBox_Title		= inTitle;
 	ONgMessageBox_Message	= inMessage;
 	ONgMessageBox_Flags		= inFlags;
-	
+
 	error =
 		DMrDialog_Run(
 			DMcDialog_MessageBox,
@@ -612,7 +612,7 @@ DMrDialog_MessageBox(
 			inParent,
 			&message);
 	if (error != UUcError_None) return 0;
-	
+
 	return message;
 }
 
@@ -635,35 +635,35 @@ DMrDialog_Load(
 	UUtUns16				screen_width;
 	UUtUns16				screen_height;
 	IMtPoint2D				loc;
-	
+
 	UUmAssert(outDialog);
-	
+
 	// load the view
 	error = DMiDialog_Load(inDialogID, inParent, &dialog);
 	UUmError_ReturnOnErrorMsg(error, "Unable to load the dialog");
-	
+
 	// set the location of the dialog
 	M3rManager_GetActiveDrawEngine(
 		&activeDrawEngine,
 		&activeDevice,
 		&activeMode);
-		
+
  	drawEngineCaps = M3rDrawEngine_GetCaps(activeDrawEngine);
-	
+
 	screen_width = drawEngineCaps->displayDevices[activeDevice].displayModes[activeMode].width;
 	screen_height = drawEngineCaps->displayDevices[activeDevice].displayModes[activeMode].height;
-	
+
 	UUmAssert(screen_width > 0);
 	UUmAssert(screen_height > 0);
-	
+
 	loc.x = (screen_width - dialog->width) >> 1;
 	loc.y = (screen_height - dialog->height) >> 1;
-	
+
 	if(loc.x < 0) loc.x = 0;
 	if(loc.y < 0) loc.y = 0;
 
 	VMrView_SetLocation(dialog, &loc);
-	
+
 	// get the dialog data
 	dialog_data = (DMtDialogData*)dialog->view_data;
 	private_data = (DMtDialogData_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Dialog_PrivateData, dialog_data);
@@ -681,31 +681,31 @@ DMrDialog_Load(
 	private_data->mouse_clicked_time	= 0;
 	private_data->mouse_clicked_type	= VMcMessage_None;
 	private_data->prev_localinput_mode	= LIrMode_Get();
-	
+
 	// set the input to normal
 	LIrMode_Set(LIcMode_Normal);
-	
+
 	// load the cursor if necessary
 	if (dialog_data->flags & DMcDialogFlag_ShowCursor)
 	{
 		LItInputEvent	event;
-		
+
 		// load the cursor
 		error = DCrCursor_Load(DCcCursorType_Arrow, &private_data->cursor);
 		UUmError_ReturnOnErrorMsg(error, "Unable to laod the cursor");
-		
+
 		// set the cursor position
 		LIrInputEvent_GetMouse(&event);
 		private_data->cursor_position = event.where;
 	}
-	
+
 	// tell the dialog to initialize itself
 	if (inDialogCallback)
 	{
 		UUtBool				result;
-		
+
 		result = inDialogCallback(dialog, DMcMessage_InitDialog, 0, 0);
-		
+
 		// if the dialog returns UUcTrue, that means it set which
 		// view it wants to be the focus
 		if (result == UUcFalse)
@@ -713,10 +713,10 @@ DMrDialog_Load(
 			DMrDialog_SetFocus(dialog, NULL);
 		}
 	}
-	
+
 	// set outDialog
 	*outDialog = dialog;
-		
+
 	return UUcError_None;
 }
 
@@ -727,26 +727,26 @@ DMrDialog_ReleaseMouseFocusView(
 	VMtView					*inView)
 {
 	DMtDialog				*dialog;
-	
+
 	UUmAssert(inView);
-	
+
 	// set dialog
 	if (inDialog)
 		dialog = inDialog;
 	else
-		dialog = DMrDialog_GetParentDialog(inView);	
-	
+		dialog = DMrDialog_GetParentDialog(inView);
+
 	// clear the mouse focus
 	if (dialog)
 	{
 		DMtDialogData				*dialog_data;
 		DMtDialogData_PrivateData	*private_data;
-			
+
 		// get a pointer to the dialog data
 		dialog_data = (DMtDialogData*)dialog->view_data;
 		private_data = (DMtDialogData_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Dialog_PrivateData, dialog_data);
 		UUmAssert(private_data);
-		
+
 		private_data->mouse_focus_view = NULL;
 	}
 }
@@ -763,11 +763,11 @@ DMrDialog_Run(
 	DMtDialog				*dialog;
 	DMtDialogData				*dialog_data;
 	DMtDialogData_PrivateData	*private_data;
-	
+
 	UUmAssert(outMessage);
 
 	*outMessage = 0;
-	
+
 	// load the dialog
 	error =
 		DMrDialog_Load(
@@ -776,12 +776,12 @@ DMrDialog_Run(
 			inParent,
 			&dialog);
 	UUmError_ReturnOnErrorMsg(error, "Unable to load the dialog");
-	
+
 	// get the dialog data
 	dialog_data = (DMtDialogData*)dialog->view_data;
 	private_data = (DMtDialogData_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Dialog_PrivateData, dialog_data);
 	UUmAssert(private_data);
-	
+
 	// event loop
 	while (!private_data->quit_dialog)
 	{
@@ -793,10 +793,10 @@ DMrDialog_Run(
 		// update the dialog
 		DMrDialog_Update(dialog);
 	}
-	
+
 	// set the output message
 	*outMessage = private_data->out_message;
-	
+
 	return UUcError_None;
 }
 
@@ -809,20 +809,20 @@ DMrDialog_SetFocus(
 	DMtDialogData				*dialog_data;
 	DMtDialogData_PrivateData	*private_data;
 	VMtView						*view;
-	
+
 	UUmAssert(inDialog);
-	
+
 	// get the dialog data
 	dialog_data = (DMtDialogData*)inDialog->view_data;
 	private_data = (DMtDialogData_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Dialog_PrivateData, dialog_data);
 	UUmAssert(private_data);
-	
+
 	// find the view to focus
 	if (inView)
 		view = inView;
 	else
 		view = VMrView_GetNextFocusableView(inDialog, private_data->text_focus_view);
-	
+
 	// don't refocus on the same view
 	if (view != private_data->text_focus_view)
 	{
@@ -831,13 +831,13 @@ DMrDialog_SetFocus(
 		{
 			VMrView_SetFocus(private_data->text_focus_view, UUcFalse);
 		}
-		
+
 		// set the found view's focus to true
 		if (view)
 		{
 			VMrView_SetFocus(view, UUcTrue);
 		}
-		
+
 		// set the focused view
 		private_data->text_focus_view = view;
 	}
@@ -850,26 +850,26 @@ DMrDialog_SetMouseFocusView(
 	VMtView					*inView)
 {
 	DMtDialog				*dialog;
-	
+
 	UUmAssert(inView);
-	
+
 	// set dialog
 	if (inDialog)
 		dialog = inDialog;
 	else
-		dialog = DMrDialog_GetParentDialog(inView);	
-	
+		dialog = DMrDialog_GetParentDialog(inView);
+
 	// set the mouse focus
 	if (dialog)
 	{
 		DMtDialogData				*dialog_data;
 		DMtDialogData_PrivateData	*private_data;
-			
+
 		// get a pointer to the dialog data
 		dialog_data = (DMtDialogData*)dialog->view_data;
 		private_data = (DMtDialogData_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Dialog_PrivateData, dialog_data);
 		UUmAssert(private_data);
-		
+
 		private_data->mouse_focus_view = inView;
 	}
 }
@@ -882,14 +882,14 @@ DMrDialog_Stop(
 {
 	DMtDialogData				*dialog_data;
 	DMtDialogData_PrivateData	*private_data;
-	
+
 	UUmAssert(inDialog);
 
 	// get the dialog data
 	dialog_data = (DMtDialogData*)inDialog->view_data;
 	private_data = (DMtDialogData_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Dialog_PrivateData, dialog_data);
 	UUmAssert(private_data);
-	
+
 	// set the variables
 	private_data->quit_dialog = UUcTrue;
 	private_data->out_message = inMessage;
@@ -904,14 +904,14 @@ DMrDialog_Update(
 	LItInputEvent			input_event;
 	DMtDialogData				*dialog_data;
 	DMtDialogData_PrivateData	*private_data;
-	
+
 	UUmAssert(inDialog);
-	
+
 	// get the dialog data
 	dialog_data = (DMtDialogData*)inDialog->view_data;
 	private_data = (DMtDialogData_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_Dialog_PrivateData, dialog_data);
 	UUmAssert(private_data);
-	
+
 	// update the timer
 	VMrView_Timer_Update(inDialog);
 
@@ -919,7 +919,7 @@ DMrDialog_Update(
 	for (i = 0; i < DMcMaxEventsPerUpdate; i++)
 	{
 		UUtBool				event_avail;
-		
+
 		// get an event from the input context
 		event_avail =
 			LIrInputEvent_Get(
@@ -938,7 +938,7 @@ DMrDialog_Update(
 				case LIcInputEvent_RMouseUp:
 					DMiDialog_HandleMouseEvent(inDialog, private_data, &input_event);
 				break;
-				
+
 				case LIcInputEvent_KeyDown:
 		 		case LIcInputEvent_KeyRepeat:
 					DMiDialog_HandleKeyEvent(inDialog, private_data, &input_event);
@@ -950,20 +950,20 @@ DMrDialog_Update(
 			// no input events are available, exit input event processing
 			break;
 		}
-		
+
 		// if the dialog was closed, then exit the loop
 		if (private_data->quit_dialog) break;
 	}
-	
+
 	// reset the input context on closed dialogs
 	if (private_data->quit_dialog)
 	{
 		VMtView_PrivateData		*view_private_data;
-				
+
 		// get a pointer the the view's private data
 		view_private_data = (VMtView_PrivateData*)TMrTemplate_PrivateData_GetDataPtr(DMgTemplate_View_PrivateData, inDialog);
 		if (view_private_data == NULL) return;
-		
+
 		// clean up
 		if (view_private_data->parent == NULL)
 		{
@@ -974,7 +974,7 @@ DMrDialog_Update(
 		{
 			// get the current position of the mouse
 			LIrInputEvent_GetMouse(&input_event);
-			
+
 			// update the parent
 			VMrView_SendMessage(
 				view_private_data->parent,
@@ -999,28 +999,28 @@ DMrInitialize(
 	void)
 {
 	UUtError				error;
-	
+
 	// register the templates
 	error = DMVMrRegisterTemplates();
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the cursor
 	error = DCrInitialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// initialize the view manager
 	error = VMrInitialize();
 	UUmError_ReturnOnError(error);
-	
+
 	// install the private data and/or procs
-	error = 
+	error =
 		TMrTemplate_PrivateData_New(
 			DMcTemplate_DialogData,
 			sizeof(DMtDialogData_PrivateData),
 			DMrDialogData_ProcHandler,
 			&DMgTemplate_Dialog_PrivateData);
 	UUmError_ReturnOnErrorMsg(error, "Could not install dialog proc handler");
-	
+
 	return UUcError_None;
 }
 

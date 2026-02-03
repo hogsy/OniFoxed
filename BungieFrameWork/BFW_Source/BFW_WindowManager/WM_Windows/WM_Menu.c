@@ -36,7 +36,7 @@ typedef struct WMtMenuItem
 	WMtMenuItemData			item_data;
 	UUtInt16				line_height;
 	UUtInt16				line_width;
-	
+
 } WMtMenuItem;
 
 typedef struct WMtMenuColumn
@@ -58,10 +58,10 @@ typedef struct WMtMenu_PrivateData
 	UUtInt16				max_width;
 
 	UUtUns32				hilited_item;		// index of menu_item that the mouse is currently over
-	
-	UUtMemory_Array			*menu_items;		// array of menu items	
-	UUtMemory_Array			*menu_columns;		// array of menu columns	
-	
+
+	UUtMemory_Array			*menu_items;		// array of menu items
+	UUtMemory_Array			*menu_columns;		// array of menu columns
+
 } WMtMenu_PrivateData;
 
 // ======================================================================
@@ -94,7 +94,7 @@ WMiMenu_Layout(
 	UUtInt16				border_width;
 	UUtInt16				border_height;
 	WMtMenu_PrivateData		*private_data;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return; }
@@ -104,7 +104,7 @@ WMiMenu_Layout(
 	if (partspec_ui == NULL) {
 		return;
 	}
-	
+
 	// get the width and height of the border
 	PSrPartSpec_GetSize(partspec_ui->background, PScPart_LeftTop, &border_width, &border_height);
 
@@ -149,7 +149,7 @@ WMiMenu_Layout(
 			i++;
 		}
 	}
-	
+
 	// layout is done, don't need to recalculate again
 	inPrivateData->recalc_layout = UUcFalse;
 }
@@ -170,7 +170,7 @@ WMrMenu_Locate(
 	UUtInt16				border_width;
 	UUtInt16				border_height;
 	WMtMenu_PrivateData		*private_data;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return; }
@@ -191,7 +191,7 @@ WMrMenu_Locate(
 	if (partspec_ui == NULL) {
 		goto exit;
 	}
-	
+
 	// get the width and height of the border
 	PSrPartSpec_GetSize(partspec_ui->background, PScPart_LeftTop, &border_width, &border_height);
 
@@ -205,7 +205,7 @@ WMrMenu_Locate(
 	total_height = 2 * border_height;
 	for (i = 0; i < num_items; i++) {
 		total_height += menu_items[i].line_height;
-	}	
+	}
 
 	if (total_height + ioLocation->y + WMcMenu_Buffer_Bottom < desktop_rect.bottom) {
 		// we can place the menu at the desired location
@@ -264,7 +264,7 @@ WMrMenu_Locate(
 			private_data->rect_width = UUmMin(total_width, desktop_rect.right);
 			ioLocation->x = desktop_rect.right - private_data->rect_width;
 		}
-	}			
+	}
 
 exit:
 	WMrWindow_SetLocation(inMenu, ioLocation->x, ioLocation->y);
@@ -296,10 +296,10 @@ WMiMenu_GetItemUnderPoint(
 	// get the partspec ui
 	partspec_ui = PSrPartSpecUI_GetActive();
 	if (partspec_ui == NULL) { return WMcMenu_NoItem; }
-	
+
 	// get the width and height of the border
 	PSrPartSpec_GetSize(partspec_ui->background, PScPart_LeftTop, &border_width, &border_height);
-		
+
 	// set the bounds
 	column_bounds.left = 0;
 	column_bounds.top = border_height;
@@ -328,20 +328,20 @@ WMiMenu_GetItemUnderPoint(
 			for (i = menu_columns[c].item_baseindex; i < (UUtUns32) (menu_columns[c].item_baseindex + menu_columns[c].item_count); i++)
 			{
 				item_bounds.bottom = item_bounds.top + menu_items[i].line_height;
-				
+
 				// check the point
 				if (IMrRect_PointIn(&item_bounds, inPoint))
 				{
 					return i;
 				}
-				
-				item_bounds.top = item_bounds.bottom; 
+
+				item_bounds.top = item_bounds.bottom;
 			}
 		}
 
 		column_bounds.left = column_bounds.right;
 	}
-	
+
 	return WMcMenu_NoItem;
 }
 
@@ -355,22 +355,22 @@ WMiMenu_RecalcLineSizes(
 	UUtUns32				num_items;
 	WMtMenuItem				*menu_items;
 	UUtUns32				i;
-	
+
 	WMrWindow_GetFontInfo(inMenu, &font_info);
 	DCrText_SetFontInfo(&font_info);
-	
+
 	num_items = UUrMemory_Array_GetUsedElems(inPrivateData->menu_items);
 	menu_items = (WMtMenuItem *)UUrMemory_Array_GetMemory(inPrivateData->menu_items);
 	for (i = 0; i < num_items; i++)
 	{
 		UUtRect					rect;
-		
+
 		// calculate the dimensions of the string
 		DCrText_GetStringRect(menu_items[i].item_data.title, &rect);
 		menu_items[i].line_width = rect.right - rect.left;
 		menu_items[i].line_height = rect.bottom - rect.top;
 	}
-	
+
 	inPrivateData->recalc_layout = UUcTrue;
 }
 
@@ -387,18 +387,18 @@ WMiMenu_Create(
 {
 	UUtError				error;
 	WMtMenu_PrivateData		*private_data;
-	
+
 	// create the private data
 	private_data = (WMtMenu_PrivateData*)UUrMemory_Block_NewClear(sizeof(WMtMenu_PrivateData));
 	if (private_data == NULL) { goto cleanup; }
 	WMrWindow_SetLong(inMenu, 0, (UUtUns32)private_data);
-	
+
 	// initialize
 	private_data->rect_width		= 0;
 	private_data->rect_height		= 0;
 	private_data->recalc_layout		= UUcTrue;
 	private_data->hilited_item		= WMcMenu_NoItem;
-	
+
 	// ------------------------------
 	// allocate memory for the menu items
 	// ------------------------------
@@ -427,12 +427,12 @@ WMiMenu_Create(
 			if (error != UUcError_None) { goto cleanup; }
 		}
 	}
-	
+
 	return WMcResult_Handled;
 
 cleanup:
 	UUmAssert(0);
-	
+
 	if (private_data)
 	{
 		if (private_data->menu_items)
@@ -440,7 +440,7 @@ cleanup:
 			UUrMemory_Array_Delete(private_data->menu_items);
 			private_data->menu_items = NULL;
 		}
-		
+
 		if (private_data->menu_columns)
 		{
 			UUrMemory_Array_Delete(private_data->menu_columns);
@@ -451,7 +451,7 @@ cleanup:
 		private_data = NULL;
 	}
 	WMrWindow_SetLong(inMenu, 0, 0);
-	
+
 	return WMcResult_Error;
 }
 
@@ -461,17 +461,17 @@ WMiMenu_Destroy(
 	WMtMenu					*inMenu)
 {
 	WMtMenu_PrivateData		*private_data;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return; }
-	
+
 	if (private_data->menu_items)
 	{
 		UUrMemory_Array_Delete(private_data->menu_items);
 		private_data->menu_items = NULL;
 	}
-	
+
 	if (private_data->menu_columns)
 	{
 		UUrMemory_Array_Delete(private_data->menu_columns);
@@ -493,24 +493,24 @@ WMiMenu_HandleMouseEvent(
 	IMtPoint2D				global_mouse_location;
 	IMtPoint2D				mouse_location;
 	WMtMenu_PrivateData		*private_data;
-	
+
 	// only handle mouse events if the window is enabled
 	if (WMrWindow_GetEnabled(inMenu) == UUcFalse) { return; }
 
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return; }
-	
+
 	// get the global mouse location
 	global_mouse_location.x = (UUtInt16)UUmHighWord(inParam1);
 	global_mouse_location.y = (UUtInt16)UUmLowWord(inParam1);
-	
+
 	// make sure the mouse is within the menu's bounds
 	if (WMrWindow_PointInWindow(inMenu, &global_mouse_location) == UUcFalse)
 	{
 		return;
 	}
-	
+
 	WMrWindow_GlobalToLocal(inMenu, &global_mouse_location, &mouse_location);
 
 	switch (inMessage)
@@ -518,20 +518,20 @@ WMiMenu_HandleMouseEvent(
 		case WMcMessage_MouseMove:
 			private_data->hilited_item = WMiMenu_GetItemUnderPoint(inMenu, private_data, &mouse_location);
 		break;
-		
+
 		case WMcMessage_LMouseDown:
 			WMrWindow_SetFocus(inMenu);
 			// fall through
-			
+
 		case WMcMessage_LMouseUp:
 		{
 			UUtUns32		selected_item;
 			WMtMenuItem		*menu_items;
-						
+
 			// get the array pointer
 			menu_items = (WMtMenuItem*)UUrMemory_Array_GetMemory(private_data->menu_items);
 			if (menu_items == NULL) { break; }
-		
+
 			// send a MenuSelect message to the menu's parent if an enabled menu item was
 			// hilited when the mousebutton went up
 			selected_item = WMiMenu_GetItemUnderPoint(inMenu, private_data, &mouse_location);
@@ -543,7 +543,7 @@ WMiMenu_HandleMouseEvent(
 					WMrWindow_GetOwner(inMenu),
 					WMcMessage_MenuCommand,
 					UUmMakeLong(
-						menu_items[selected_item].item_data.flags, 
+						menu_items[selected_item].item_data.flags,
 						menu_items[selected_item].item_data.id),
 					(UUtUns32)inMenu);
 			}
@@ -558,7 +558,7 @@ WMiMenu_HandleVisible(
 	WMtMenu					*inMenu)
 {
 	WMtMenu_PrivateData		*private_data;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return; }
@@ -572,11 +572,11 @@ WMiMenu_HandleFontInfoChanged(
 	WMtMenu					*inMenu)
 {
 	WMtMenu_PrivateData		*private_data;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return; }
-	
+
 	WMiMenu_RecalcLineSizes(inMenu, private_data);
 }
 
@@ -599,7 +599,7 @@ WMiMenu_Paint(
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return; }
-		
+
 	// lay out our items if we have to
 	if (private_data->recalc_layout) {
 		WMiMenu_Layout(inMenu, private_data);
@@ -615,16 +615,16 @@ WMiMenu_Paint(
 
 	partspec_ui = PSrPartSpecUI_GetActive();
 	if (partspec_ui == NULL) { return; }
-	
+
 	// get the width and height of the border
 	PSrPartSpec_GetSize(partspec_ui->background, PScPart_LeftTop, &border_width, &border_height);
-	
+
 	draw_context = DCrDraw_Begin(inMenu);
-	
+
 	// get the font info
 	WMrWindow_GetFontInfo(inMenu, &font_info);
 	DCrText_SetFontInfo(&font_info);
-	
+
 	column_dest.x = 0;
 	column_dest.y = 0;
 	for (c = 0; c < num_columns; c++) {
@@ -639,12 +639,12 @@ WMiMenu_Paint(
 			if (menu_items[i].item_data.flags & WMcMenuItemFlag_Divider)
 			{
 				IMtPoint2D		divider_dest;
-				
+
 				item_dest.y += (menu_items[i].line_height >> 1);
-				
+
 				divider_dest.x = column_dest.x + border_width;
 				divider_dest.y = item_dest.y;
-				
+
 				// draw divider
 				DCrDraw_PartSpec(
 					draw_context,
@@ -654,13 +654,13 @@ WMiMenu_Paint(
 					menu_columns[c].column_width - 2*border_width,
 					menu_items[i].line_height,
 					M3cMaxAlpha);
-				
+
 				item_dest.y += (menu_items[i].line_height >> 1);
 			}
 			else
 			{
 				UUtBool						enabled;
-				
+
 				if (WMrWindow_GetEnabled(inMenu))
 				{
 					enabled = (menu_items[i].item_data.flags & WMcMenuItemFlag_Enabled) != 0;
@@ -669,15 +669,15 @@ WMiMenu_Paint(
 				{
 					enabled = UUcFalse;
 				}
-			
+
 				// draw hilite
 				if ((private_data->hilited_item == i) && (enabled))
 				{
 					IMtPoint2D				hilite_dest;
-					
+
 					hilite_dest.x = column_dest.x + border_width;
 					hilite_dest.y = item_dest.y;
-					
+
 					DCrDraw_PartSpec(
 						draw_context,
 						partspec_ui->hilite,
@@ -687,23 +687,23 @@ WMiMenu_Paint(
 						menu_items[i].line_height,
 						M3cMaxAlpha);
 				}
-				
+
 				// draw check
 				if ((menu_items[i].item_data.flags & WMcMenuItemFlag_Checked) != 0)
 				{
 					UUtInt16				check_width;
 					UUtInt16				check_height;
 					IMtPoint2D				check_dest;
-					
+
 					PSrPartSpec_GetSize(partspec_ui->check, PScPart_LeftTop, &check_width, &check_height);
 					if (check_height > menu_items[i].line_height)
 					{
 						check_height = menu_items[i].line_height;
 					}
-					
+
 					check_dest.x = column_dest.x + border_width;
 					check_dest.y = item_dest.y + ((menu_items[i].line_height - check_height) >> 1);
-					
+
 					DCrDraw_PartSpec(
 						draw_context,
 						partspec_ui->check,
@@ -713,7 +713,7 @@ WMiMenu_Paint(
 						check_height,
 						enabled ? (UUtUns16)WMcAlpha_Enabled : (UUtUns16)WMcAlpha_Disabled);
 				}
-				
+
 				item_dest.y += DCrText_GetAscendingHeight();
 				DCrText_SetShade(enabled ? font_info.font_shade : IMcShade_Gray50);
 				DCrText_SetFormat(TSc_HLeft);
@@ -723,14 +723,14 @@ WMiMenu_Paint(
 					NULL,
 					&item_dest);
 				item_dest.y -= DCrText_GetAscendingHeight();
-				
+
 				item_dest.y += menu_items[i].line_height;
 			}
 		}
 
 		column_dest.x += menu_columns[c].column_width;
 	}
-		
+
 	DCrDraw_End(draw_context, inMenu);
 }
 
@@ -748,39 +748,39 @@ WMiMenu_Callback(
 	UUtUns32				inParam2)
 {
 	UUtUns32				result;
-	
+
 	switch(inMessage)
 	{
 		case WMcMessage_NC_HitTest:
 		return WMcWindowArea_Client;
-		
+
 		case WMcMessage_Create:
 			result = WMiMenu_Create(inMenu, (WMtMenuData*)inParam1);
 		return result;
-		
+
 		case WMcMessage_Destroy:
 			WMiMenu_Destroy(inMenu);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_MouseMove:
 		case WMcMessage_LMouseDown:
 		case WMcMessage_LMouseUp:
 			WMiMenu_HandleMouseEvent(inMenu, inMessage, inParam1, inParam2);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Paint:
 			WMiMenu_Paint(inMenu);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_Visible:
 			WMiMenu_HandleVisible(inMenu);
 		return WMcResult_Handled;
-		
+
 		case WMcMessage_FontInfoChanged:
 			WMiMenu_HandleFontInfoChanged(inMenu);
 		break;
 	}
-	
+
 	return WMrWindow_DefaultCallback(inMenu, inMessage, inParam1, inParam2);
 }
 
@@ -805,7 +805,7 @@ WMrMenu_Create(
 	WMtWindow				*inParent)
 {
 	WMtMenu					*menu;
-	
+
 	menu =
 		WMrWindow_New(
 			WMcWindowType_Menu,
@@ -833,12 +833,12 @@ WMrMenu_CheckItem(
 	WMtMenu_PrivateData		*private_data;
 	WMtMenuItem				*menu_items;
 	UUtUns32				i;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return UUcFalse; }
 	if (private_data->menu_items == NULL) { return UUcFalse; }
-	
+
 	// get the array pointer
 	menu_items = (WMtMenuItem*)UUrMemory_Array_GetMemory(private_data->menu_items);
 	if (menu_items == NULL) { return UUcFalse; }
@@ -849,7 +849,7 @@ WMrMenu_CheckItem(
 		if (menu_items[i].item_data.id == inItemID) { break; }
 	}
 	if (i == UUrMemory_Array_GetUsedElems(private_data->menu_items)) { return UUcFalse; }
-	
+
 	// check/uncheck the menu item
 	if (inCheck)
 	{
@@ -859,7 +859,7 @@ WMrMenu_CheckItem(
 	{
 		menu_items[i].item_data.flags &= ~WMcMenuItemFlag_Checked;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -873,12 +873,12 @@ WMrMenu_EnableItem(
 	WMtMenu_PrivateData		*private_data;
 	WMtMenuItem				*menu_items;
 	UUtUns32				i;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return UUcFalse; }
 	if (private_data->menu_items == NULL) { return UUcFalse; }
-	
+
 	// get the array pointer
 	menu_items = (WMtMenuItem*)UUrMemory_Array_GetMemory(private_data->menu_items);
 	if (menu_items == NULL) { return UUcFalse; }
@@ -889,7 +889,7 @@ WMrMenu_EnableItem(
 		if (menu_items[i].item_data.id == inItemID) { break; }
 	}
 	if (i == UUrMemory_Array_GetUsedElems(private_data->menu_items)) { return UUcFalse; }
-	
+
 	// enable/disable the menu item
 	if (inEnable)
 	{
@@ -899,7 +899,7 @@ WMrMenu_EnableItem(
 	{
 		menu_items[i].item_data.flags &= ~WMcMenuItemFlag_Enabled;
 	}
-	
+
 	return UUcTrue;
 }
 
@@ -920,12 +920,12 @@ WMrMenu_FindItemByText_Internal(
 	WMtMenu_PrivateData		*private_data;
 	WMtMenuItem				*menu_items;
 	UUtUns32				i;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return UUcFalse; }
 	if (private_data->menu_items == NULL) { return UUcFalse; }
-	
+
 	// get the array pointer
 	menu_items = (WMtMenuItem*)UUrMemory_Array_GetMemory(private_data->menu_items);
 	if (menu_items == NULL) { return UUcFalse; }
@@ -946,7 +946,7 @@ WMrMenu_FindItemByText_Internal(
 		}
 	}
 	if (i == UUrMemory_Array_GetUsedElems(private_data->menu_items)) { return UUcFalse; }
-	
+
 	*outItemID = menu_items[i].item_data.id;
 	return UUcTrue;
 }
@@ -977,7 +977,7 @@ WMrMenu_FindItemByText_NoCase(
 	return result;
 }
 
-	
+
 // ----------------------------------------------------------------------
 UUtBool
 WMrMenu_GetItemFlags(
@@ -988,11 +988,11 @@ WMrMenu_GetItemFlags(
 	WMtMenu_PrivateData		*private_data;
 	WMtMenuItem				*menu_items;
 	UUtUns32				i;
-	
+
 	UUmAssert(inMenu);
-	
+
 	*outFlags = WMcMenuItemFlag_None;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return UUcFalse; }
@@ -1008,10 +1008,10 @@ WMrMenu_GetItemFlags(
 		if (menu_items[i].item_data.id == inItemID) { break; }
 	}
 	if (i == UUrMemory_Array_GetUsedElems(private_data->menu_items)) { return UUcFalse; }
-	
+
 	// set outFlags
 	*outFlags = menu_items[i].item_data.flags;
-	
+
 	return UUcTrue;
 }
 
@@ -1024,16 +1024,16 @@ WMrMenu_GetItemID(
 {
 	WMtMenu_PrivateData		*private_data;
 	WMtMenuItem				*menu_items;
-	
+
 	UUmAssert(inMenu);
-	
+
 	*outID = 0;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return UUcFalse; }
 	if (private_data->menu_items == NULL) { return UUcFalse; }
-	
+
 	// make sure item number is in range
 	if ((inItemIndex < 0) || (inItemIndex >= (UUtInt16)UUrMemory_Array_GetUsedElems(private_data->menu_items)))
 	{
@@ -1046,7 +1046,7 @@ WMrMenu_GetItemID(
 
 	// set the id
 	*outID = menu_items[inItemIndex].item_data.id;
-	
+
 	return UUcTrue;
 }
 
@@ -1060,17 +1060,17 @@ WMrMenu_GetItemText(
 	WMtMenu_PrivateData		*private_data;
 	WMtMenuItem				*menu_items;
 	UUtUns32				i;
-	
+
 	UUmAssert(inMenu);
 	UUmAssert(outText);
-	
+
 	outText[0] = '\0';
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return UUcFalse; }
 	if (private_data->menu_items == NULL) { return UUcFalse; }
-	
+
 	// get the array pointer
 	menu_items = (WMtMenuItem*)UUrMemory_Array_GetMemory(private_data->menu_items);
 	if (menu_items == NULL) { return UUcFalse; }
@@ -1081,13 +1081,13 @@ WMrMenu_GetItemText(
 		if (menu_items[i].item_data.id == inItemID) { break; }
 	}
 	if (i == UUrMemory_Array_GetUsedElems(private_data->menu_items)) { return UUcFalse; }
-	
+
 	// copy the title
 	UUrString_Copy(
 		outText,
 		menu_items[i].item_data.title,
 		WMcMaxTitleLength);
-	
+
 	return UUcTrue;
 }
 
@@ -1098,16 +1098,16 @@ WMrMenu_Initialize(
 {
 	UUtError				error;
 	WMtWindowClass			window_class;
-	
+
 	// register the window class
 	UUrMemory_Clear(&window_class, sizeof(WMtWindowClass));
 	window_class.type = WMcWindowType_Menu;
 	window_class.callback = WMiMenu_Callback;
 	window_class.private_data_size = sizeof(WMtMenu_PrivateData*);
-	
+
 	error = WMrWindowClass_Register(&window_class);
 	UUmError_ReturnOnError(error);
-	
+
 	return UUcError_None;
 }
 
@@ -1131,20 +1131,20 @@ WMrMenu_InsertItem(
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return UUcError_Generic; }
 	if (private_data->menu_items == NULL) { return UUcError_Generic; }
-	
+
 	// make sure inPosition is a valid number
 	if ((inPosition < -1) || (inPosition > (UUtInt16)UUrMemory_Array_GetUsedElems(private_data->menu_items)))
 	{
 		return UUcError_Generic;
 	}
-	
+
 	// get the partspec ui
 	partspec_ui = PSrPartSpecUI_GetActive();
 	if (partspec_ui == NULL) { return UUcError_Generic; }
-	
+
 	// get the width and height of the border
 	PSrPartSpec_GetSize(partspec_ui->background, PScPart_LeftTop, &border_width, &border_height);
-	
+
 	// insert the item at the specified position in the menu item list or
 	// append it to the end
 	index = WMcMenu_NoItem;
@@ -1162,7 +1162,7 @@ WMrMenu_InsertItem(
 	{
 		// set the index
 		index = (UUtUns32)inPosition;
-		
+
 		// insert the item into the array
 		error =
 			UUrMemory_Array_InsertElement(
@@ -1171,20 +1171,20 @@ WMrMenu_InsertItem(
 				&mem_moved);
 		UUmError_ReturnOnError(error);
 	}
-	
+
 	// get the array pointer
 	menu_items = (WMtMenuItem*)UUrMemory_Array_GetMemory(private_data->menu_items);
 	if (menu_items == NULL) { goto cleanup; }
-	
+
 	// initialize the menu item
 	menu_items[index].item_data		= *inMenuItemData;
 	menu_items[index].line_width	= 0;
 	menu_items[index].line_height	= 0;
-	
+
 	if (menu_items[index].item_data.flags & WMcMenuItemFlag_Divider)
 	{
 		UUtInt16				divider_height;
-		
+
 		// calculate the divider height
 		PSrPartSpec_GetSize(partspec_ui->divider, PScPart_LeftTop, NULL, &divider_height);
 
@@ -1195,11 +1195,11 @@ WMrMenu_InsertItem(
 	{
 		TStFontInfo			font_info;
 		UUtRect				rect;
-		
+
 		// get the font info
 		WMrWindow_GetFontInfo(inMenu, &font_info);
 		DCrText_SetFontInfo(&font_info);
-		
+
 		// get the dimensions of the string
 		DCrText_GetStringRect(menu_items[index].item_data.title, &rect);
 		menu_items[index].line_width = rect.right - rect.left;
@@ -1208,9 +1208,9 @@ WMrMenu_InsertItem(
 
 	// we must recalculate our layout before we can draw or accept mouse events
 	private_data->recalc_layout = UUcTrue;
-	
+
 	UUrMemory_Block_VerifyList();
-	
+
 	return UUcError_None;
 
 cleanup:
@@ -1218,7 +1218,7 @@ cleanup:
 	{
 		UUrMemory_Array_DeleteElement(private_data->menu_items, index);
 	}
-	
+
 	return UUcError_Generic;
 }
 
@@ -1228,7 +1228,7 @@ WMrMenu_RegisterTemplates(
 	void)
 {
 	UUtError				error;
-	
+
 	error =
 		TMrTemplate_Register(
 			WMcTemplate_MenuData,
@@ -1248,29 +1248,29 @@ WMrMenu_RemoveItem(
 	WMtMenu_PrivateData		*private_data;
 	WMtMenuItem				*menu_items;
 	UUtUns32				i;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return UUcError_Generic; }
 	if (private_data->menu_items == NULL) { return UUcError_Generic; }
-	
+
 	// get the array pointer
 	menu_items = (WMtMenuItem*)UUrMemory_Array_GetMemory(private_data->menu_items);
 	if (menu_items == NULL) { return UUcError_Generic; }
-	
+
 	// find the specified item by id
 	for (i = 0; i < UUrMemory_Array_GetUsedElems(private_data->menu_items); i++)
 	{
 		if (menu_items[i].item_data.id == inItemID) { break; }
 	}
 	if (i == UUrMemory_Array_GetUsedElems(private_data->menu_items)) { return UUcError_None; }
-	
+
 	// we must recalculate our layout before we can draw or accept mouse events
 	private_data->recalc_layout = UUcTrue;
-	
+
 	// remove the specified item
 	UUrMemory_Array_DeleteElement(private_data->menu_items, i);
-	
+
 	return UUcError_None;
 }
 
@@ -1280,17 +1280,17 @@ WMrMenu_Reset(
 	WMtMenu					*inMenu)
 {
 	WMtMenu_PrivateData		*private_data;
-	
+
 	// get the private data
 	private_data = (WMtMenu_PrivateData*)WMrWindow_GetLong(inMenu, 0);
 	if (private_data == NULL) { return UUcError_Generic; }
 	if (private_data->menu_items == NULL) { return UUcError_Generic; }
-	
+
 	// remove all of the menu items
 	UUrMemory_Array_SetUsedElems(private_data->menu_items, 0, NULL);
-	
+
 	// we must recalculate our layout before we can draw or accept mouse events
 	private_data->recalc_layout = UUcTrue;
-	
+
 	return UUcError_None;
 }

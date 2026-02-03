@@ -1,12 +1,12 @@
 /*
 	FILE:	Motoko_Private.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 13, 1997
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997
 
 */
@@ -21,15 +21,15 @@
 typedef struct M3tManagerDrawContext
 {
 	M3tDrawContextMethods*	drawFuncs;	// This is the context presented to the app
-	
+
 	UUtUns16				width;
 	UUtUns16				height;
 	UUtUns32*				bitVector;
-		
+
 	M3tPointScreen*			pointArray;
 	M3tTextureCoord*		baseUVArray;
 	UUtUns32*				shadeArray;
-	
+
 	M3tDrawAPI				apiIndex;
 
 } M3tManagerDrawContext;
@@ -37,7 +37,7 @@ typedef struct M3tManagerDrawContext
 typedef struct M3tManagerGeomContext
 {
 	M3tGeomContextMethods*	geomContext;
-	
+
 } M3tManagerGeomContext;
 
 typedef struct M3tManagerTextureData
@@ -52,14 +52,14 @@ typedef struct M3tManagerDrawEngine
 {
 	M3tDrawEngineCaps		caps;
 	M3tDrawEngineMethods	methods;
-	
+
 } M3tManagerDrawEngine;
 
 typedef struct M3tManagerGeomEngine
 {
 	M3tGeomEngineCaps		caps;
 	M3tGeomEngineMethods	methods;
-	
+
 } M3tManagerGeomEngine;
 
 extern M3tManagerDrawContext	M3gManagerDrawContext;
@@ -90,7 +90,7 @@ M3rDraw_State_Terminate(
 UUtError
 M3rGeom_State_Initialize(
 	void);
-	
+
 void
 M3rGeom_State_Terminate(
 	void);

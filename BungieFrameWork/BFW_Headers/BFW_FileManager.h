@@ -1,13 +1,13 @@
 #pragma once
 /*
 	FILE:	BFW_FileManager.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: June 28, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */
@@ -27,7 +27,7 @@ extern "C" {
  * Define some errors
  */
 
-	
+
 /*
  * The inMode parameter to BFrFile_Open can be one of the following
  *	"r" - open for reading
@@ -61,7 +61,7 @@ typedef struct BFtFileRef
 {
 	FSSpec		fsSpec;
 	char		leafName[64];	// This should only be the name of the base file or folder
-	
+
 } BFtFileRef;
 
 #elif UUmPlatform == UUmPlatform_Linux
@@ -98,17 +98,17 @@ BFrFile_CompletionFunc_Bool(
 	BFrFileRef_MakeFromFSSpec(
 		const FSSpec*	inFSSpec,
 		BFtFileRef*		*outFileRef);
-	
+
 	FSSpec*
 	BFrFileRef_GetFSSpec(
 		BFtFileRef		*inFileRef);
-	
+
 #elif UUmPlatform == UUmPlatform_Win32 || UUmPlatform == UUmPlatform_Linux
 
 #else
 
 	#error implement me
-	
+
 #endif
 
 UUtError
@@ -123,11 +123,11 @@ BFrFileRef_Search(
 
 BFtFileRef *
 BFrFileRef_MakeUnique(
-	const char	*inPrefix, 
-	const char	*inSuffix, 
-	UUtInt32	*ioNumber, 
+	const char	*inPrefix,
+	const char	*inSuffix,
+	UUtInt32	*ioNumber,
 	UUtInt32	inMaxNumber);
-	
+
 void
 BFrFileRef_Dispose(
 	BFtFileRef*		inFileRef);
@@ -149,7 +149,7 @@ UUtError
 BFrFileRef_GetParentDirectory(
 	BFtFileRef	*inFileRef,
 	BFtFileRef	**outParentDirectory);
-	
+
 const char *
 BFrFileRef_GetSuffixName(
 	const BFtFileRef*		inFileRef);
@@ -161,12 +161,12 @@ BFrFileRef_IsDirectory(
 UUtBool
 BFrFileRef_IsLocked(
 	BFtFileRef*		inFileRef);
-	
+
 UUtBool
 BFrFileRef_IsEqual(
 	const BFtFileRef	*inFileRef1,
 	const BFtFileRef	*inFileRef2);
-	
+
 UUtError
 BFrFileRef_SetName(
 	BFtFileRef*		inFileRef,
@@ -193,7 +193,7 @@ BFrFileRef_DuplicateAndReplaceName(
 	const BFtFileRef*	inOrigFileRef,
 	const char*			inReplaceName,		// Could be an absolute path or a relative path
 	BFtFileRef*			*outNewFileRef);
-	
+
 UUtError
 BFrFileRef_DuplicateAndAppendName(
 	const BFtFileRef*		inOrigFileRef,		// This had best be a directory...
@@ -213,7 +213,7 @@ UUtError
 BFrFileRef_GetModTime(
 	BFtFileRef*		inFileRef,
 	UUtUns32*		outSecsSince1900);
-	
+
 UUtError
 BFrFile_Create(
 	BFtFileRef*		inFileRef);
@@ -221,7 +221,7 @@ BFrFile_Create(
 UUtError
 BFrFile_Delete(
 	BFtFileRef*		inFileRef);
-	
+
 UUtError
 BFrFile_Open(
 	BFtFileRef*		inFileRef,
@@ -242,7 +242,7 @@ BFrFile_Map(
 void
 BFrFile_UnMap(
 	BFtFileMapping	*inMapping);
-	
+
 UUtError
 BFrFile_Flush(
 	BFtFile*		inFile);
@@ -259,7 +259,7 @@ BFrFile_GetLength(
 UUtError
 BFrFile_SetEOF(
 	BFtFile*		inFile);
-	
+
 UUtError
 BFrFile_SetPos(
 	BFtFile*		inFile,
@@ -277,7 +277,7 @@ BFrFile_Async_Read(
 	void*				inDataPtr,
 	BFtCompletion_Func	inCompletionFunc,
 	void*				inRefCon);
-	
+
 UUtError
 BFrFile_Async_Write(
 	BFtFile*			inFile,
@@ -330,11 +330,11 @@ BFrFile_WritePos(
 	UUtUns32	inLength,
 	void*		inDataPtr);
 
-UUtError 
-UUcArglist_Call 
+UUtError
+UUcArglist_Call
 BFrFile_Printf(
 	BFtFile*	inFile,
-	const char *format, 
+	const char *format,
 	...);
 
 UUtError
@@ -359,7 +359,7 @@ BFrTextFile_Close(
 char *
 BFrTextFile_GetCurStr(
 	BFtTextFile*	inTextFile);
-	
+
 char*
 BFrTextFile_GetNextStr(
 	BFtTextFile*	inTextFile);
@@ -394,7 +394,7 @@ BFrTextFile_VerifyNextNWords(
 	char			*inMatchString,
 	UUtUns16		inNumWordsToRead,
 	BFtTextFile*	inTextFile);
-	
+
 UUtUns32
 BFrTextFile_GetOSType(
 	BFtTextFile*	inTextFile);
@@ -408,8 +408,8 @@ BFrTextFile_VerifyNextStr(
 do {																		\
 	UUtError macroError = BFrTextFile_VerifyNextStr(inTextFile, inString);	\
 	if (macroError != UUcError_None) { return macroError; }					\
-} while(0)																	
-	
+} while(0)
+
 UUtError
 BFrFileRef_LoadIntoMemory(
 	BFtFileRef*	inFileRef,

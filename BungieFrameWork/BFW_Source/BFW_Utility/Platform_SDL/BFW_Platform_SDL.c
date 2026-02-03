@@ -35,16 +35,16 @@ UUtError UUrInterruptProc_Install(
 	UUtInterruptProcRef	**outInterruptProcRef)
 {
 	UUtInterruptProcRef *interruptProcRef;
-	
+
 	*outInterruptProcRef = NULL;
-	
+
 	interruptProcRef = UUrMemory_Block_New(sizeof(UUtInterruptProcRef));
-	
+
 	if(interruptProcRef == NULL)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_OutOfMemory, "UUrInterruptProc_Install(): Could not allocate memory for proc ref");
 	}
-	
+
 	interruptProcRef->interruptProc = interruptProc;
 	interruptProcRef->refCon = refCon;
 	Uint32 interval = 1000 / tiggersPerSec;
@@ -58,7 +58,7 @@ UUtError UUrInterruptProc_Install(
 	}
 
 	*outInterruptProcRef = interruptProcRef;
-	
+
 	return UUcError_None;
 }
 
@@ -73,7 +73,7 @@ FILE *UUrFOpen(
 	char	*name,
 	char	*mode)
 {
-	
+
 	return fopen(name, mode);
 }
 
@@ -110,7 +110,7 @@ static Uint64 iGetTickCount(void)
 }
 
 
-// NOTE: this function bails after: 
+// NOTE: this function bails after:
 // warps after ~2.26 years (32-bit 60th of a second timer wraps)
 // must be called once atleast about once every 10 days to notice the wrap
 // of the 1000th of a second timer
@@ -170,10 +170,10 @@ UUtUns32 UUrSystemToSecsSince1900(SYSTEMTIME time)
 		    days += MonthDays[i-1];
 		}
 		days += time.wDay - 1;
-	
+
 	// and calculate the seconds
 		secs =  (((((days * 24) + time.wHour) * 60) + time.wMinute) * 60) + time.wSecond;
-	
+
 	return secs;
 }
 #endif
@@ -198,9 +198,9 @@ UUrGetSecsSince1900(
 	secs = UUrSystemToSecsSince1900(time);
 #elif UUmPlatform == UUmPlatform_Mac
 	unsigned long	time;
-	
+
 	GetDateTime(&time);
-	
+
 	secs = (UUtUns32)time + UUc1904_To_1900_era_offset;
 #else
 	#error
@@ -236,7 +236,7 @@ void UUrPlatform_Idle(UUtWindow mainWindow, UUtUns32 inIdleTime)
 	while (was_event);
 #endif
 
-	if (inIdleTime > 0) { 
+	if (inIdleTime > 0) {
 		//Win32 does this, not sure what use this serves
 		//SDL_Delay(4);
 	}

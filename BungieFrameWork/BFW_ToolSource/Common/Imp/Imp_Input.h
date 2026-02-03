@@ -1,12 +1,12 @@
 /*
 	FILE:	Imp_Input.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Sept 3, 1997
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997
 
 */

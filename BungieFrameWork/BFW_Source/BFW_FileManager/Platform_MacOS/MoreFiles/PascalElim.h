@@ -21,5 +21,5 @@
 #endif
 
 #ifdef  __WANTPASCALELIMINATION
-#define pascal	
+#define pascal
 #endif

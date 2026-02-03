@@ -1,12 +1,12 @@
  /*
 	FILE:	BFW_String.c
-	
+
 	AUTHOR:	Brent H. Pease, Michael Evans
-	
+
 	CREATED: May 18, 1997
-	
+
 	PURPOSE: General utility files
-	
+
 	Copyright 1997, 1998
 
 */
@@ -21,10 +21,10 @@ UUrString_Capitalize(
 	UUtUns32	inLength)
 {
 	UUtUns32	itr;
-	
+
 	UUmAssert(ioString);
 	UUmAssert(strlen(ioString) < inLength);
-	
+
 	for(itr = 0;
 		(itr < inLength) && (*ioString != 0);
 		itr++, ioString++)
@@ -51,7 +51,7 @@ UUrString_StripDoubleQuotes(
 	if ('\0' == *ioString) {
 		return;
 	}
-	
+
 	for(itr = 0; itr < inLength; itr++)
 	{
 		*dst = *ioString;
@@ -67,10 +67,10 @@ UUrString_MakeLowerCase(
 	UUtUns32	inLength)
 {
 	UUtUns32	itr;
-	
+
 	UUmAssert(ioString);
 	UUmAssert(strlen(ioString) < inLength);
-	
+
 	for(itr = 0;
 		(itr < inLength) && (*ioString != 0);
 		itr++, ioString++)
@@ -89,12 +89,12 @@ UUrString_Substring(
 	UUtUns32	inLength)
 {
 	UUtUns32	itr;
-	
+
 	// Returns whether a substring exists in a string. Not fast.
 	// Here because ANSI's strstr is broken
-	
+
 	const char *s = inSub, *c = inString;
-	
+
 	UUmAssert(strlen(inString) < inLength);
 
 	for(itr = 0;
@@ -112,7 +112,7 @@ UUrString_Substring(
 			continue;
 		}
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -147,16 +147,16 @@ UUrString_NukeNumSuffix(
 	UUtUns32	len;
 	// Nukes any numerical suffix on the string
 	char *c = ioString;
-	
+
 	UUmAssert(strlen(ioString) < inLength);
 	UUmAssert(ioString);
 	UUmAssert(*ioString != '\0');
-	
+
 	len = strlen(ioString);
 	if(len > inLength) len = inLength;
-	
+
 	c += len - 1;
-	
+
 	while (isdigit(*c))
 	{
 		if (c == ioString) break;
@@ -164,7 +164,7 @@ UUrString_NukeNumSuffix(
 	}
 	*(c+1) = '\0';
 }
-	
+
 void
 UUrString_Copy(					// This copies the terminator as well
 	char*		inDst,
@@ -172,7 +172,7 @@ UUrString_Copy(					// This copies the terminator as well
 	UUtUns32	inDstLength)
 {
 	UUtUns32	itr;
-	
+
 	UUmAssertReadPtr(inDst, 1);
 	UUmAssertReadPtr(inSrc, 1);
 
@@ -190,7 +190,7 @@ UUrString_Copy(					// This copies the terminator as well
 	{
 		*inDst++ = *inSrc++;
 	}
-	
+
 	*inDst = 0;
 }
 
@@ -202,7 +202,7 @@ UUrString_Copy_Length(
 	UUtUns32	inCopyLength)
 {
 	UUtUns32	itr;
-	
+
 	UUmAssertReadPtr(inDst, 1);
 	UUmAssertReadPtr(inSrc, 1);
 
@@ -228,7 +228,7 @@ UUrString_Cat(
 {
 	UUtUns32 dstLength = strlen(inDst);
 	UUmAssert(strlen(inDst) + strlen(inSrc) < inLength);
-	
+
 	UUrString_Copy(
 		inDst + dstLength,
 		inSrc,
@@ -241,7 +241,7 @@ UUrString_IsSpace(
 {
 	UUtBool isSpace = UUcTrue;
 	const char *curChr;
-	
+
 	for(curChr = inString; (isSpace && (*curChr != '\0')); curChr++)
 	{
 		isSpace = UUrIsSpace(*curChr);
@@ -255,7 +255,7 @@ UUrString_StripExtension(
 	char*	inStr)
 {
 	char*	internal = NULL;
-	
+
 	UUrString_Tokenize(inStr, ".", &internal);
 }
 
@@ -277,17 +277,17 @@ UUrString_Compare_NoCase(
 {
 	char	ca;
 	char	cb;
-	
+
 	do
 	{
 		ca = *inStrA++;
 		cb = *inStrB++;
-		
+
 		ca = UUmChar_Upper(ca);
 		cb = UUmChar_Upper(cb);
-		
+
 	} while((ca == cb) && (ca != '\0'));
-	
+
 	return (ca - cb);
 }
 
@@ -299,17 +299,17 @@ UUrString_CompareLen_NoCase(
 {
 	char	ca;
 	char	cb;
-	
+
 	do
 	{
 		ca = *inStrA++;
 		cb = *inStrB++;
-		
+
 		ca = UUmChar_Upper(ca);
 		cb = UUmChar_Upper(cb);
-		
+
 	} while((ca == cb) && (ca != '\0') && (--inLength != 0));
-	
+
 	return (ca - cb);
 }
 
@@ -318,24 +318,24 @@ UUtInt32 UUrString_Compare_NoCase_NoSpace(const char *inStrA, const char *inStrB
 {
 	char	ca;
 	char	cb;
-	
+
 	do
 	{
 		do
 		{
 			ca = *inStrA++;
 		} while(UUrIsSpace(ca));
-		
+
 		do
 		{
 			cb = *inStrB++;
 		} while(UUrIsSpace(cb));
-		
+
 		ca = UUmChar_Upper(ca);
 		cb = UUmChar_Upper(cb);
-		
+
 	} while((ca == cb) && (ca != '\0'));
-	
+
 	return (ca - cb);
 }
 
@@ -472,11 +472,11 @@ UUtError UUrString_To_FloatRange(const char *inString, float *outLow, float *out
 
 		return UUcError_None;
 	}
-	
+
 	parsed = sscanf(inString,"%f",outLow);
 	*outHigh = *outLow;
 	if (parsed != 1) return UUcError_Generic;
-	
+
 	return UUcError_None;
 }
 
@@ -501,7 +501,7 @@ UUtBool	 UUrIsSpace(char c)
 
 	return isSpace;
 }
- 
+
 
 UUtUns32 UUrStringToOSType(char *inString)
 {
@@ -520,7 +520,7 @@ char *UUrString_Tokenize1(char *ioString, const char *inStrDelimit, char **inter
 	result = nextString;
 
 	// if there is more string to parse
-	if (NULL != nextString) { 
+	if (NULL != nextString) {
 		nextString = strpbrk(nextString, inStrDelimit);
 
 		if (NULL != nextString) {
@@ -550,7 +550,7 @@ char *UUrString_Tokenize(char *ioString, const char *inStrDelimit, char **intern
 	result = nextString;
 
 	// if there is more string to parse
-	if (NULL != nextString) { 
+	if (NULL != nextString) {
 		nextString = strpbrk(nextString, inStrDelimit);
 
 		if (NULL != nextString) {
@@ -574,18 +574,18 @@ UUrString_PStr2CStr(
 	UUtUns32	itr;
 	const unsigned char*		pp;
 	char*		cp;
-	
+
 	pp = inPStr;
 	count = *pp++;
 	cp = outCStr;
-	
+
 	for(itr = 0; itr < count; itr++)
 	{
 		if(itr >= inBufferSize-1) break;
-		
+
 		*cp++ = *pp++;
 	}
-	
+
 	*cp = 0;
 }
 
@@ -593,15 +593,15 @@ UUrString_PStr2CStr(
 
 UUtInt32 UUrString_CountDigits(UUtInt32 inNumber)
 {
-	UUtInt32 table[] = 
+	UUtInt32 table[] =
 	{
-		9, 
-		99, 
-		999, 
-		9999, 
-		99999, 
-		999999, 
-		9999999, 
+		9,
+		99,
+		999,
+		9999,
+		99999,
+		999999,
+		9999999,
 		99999999,
 		999999999,
 /*		2147483648 */

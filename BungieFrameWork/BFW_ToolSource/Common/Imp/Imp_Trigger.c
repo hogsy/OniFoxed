@@ -57,11 +57,11 @@ UUtError Imp_AddTriggerEmitter( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFi
 	// dispose of the file ref
 	BFrFileRef_Dispose( model_file );
 
-	if (header->numNodes > 1) 
+	if (header->numNodes > 1)
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Emitter file had > 1 node!");
 	}
-	
+
 	// build the geometry instance
 	error = TMrConstruction_Instance_NewUnique( M3cTemplate_Geometry, 0, &emitter->geometry );
 	IMPmError_ReturnOnError(error);
@@ -81,7 +81,7 @@ UUtError Imp_AddTriggerEmitter( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFi
 		MUmVector_Subtract(emitter->emit_vector, to, from);
 		MUrNormalize(&emitter->emit_vector);
 		MUmVector_Copy(emitter->emit_position, from);
-	}		
+	}
 	else
 	{
 		UUmError_ReturnOnErrorMsg(UUcError_Generic, "Trigger emitter did not have a 'Laser' marker!");
@@ -89,16 +89,16 @@ UUtError Imp_AddTriggerEmitter( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFi
 
 	// get the GQ flags
 	emitter->gq_flags = IMPrEnv_GetNodeFlags( header->nodes );
-		
+
 	// put the tris and quads associated with material m into a geometry
 	Imp_NodeMaterial_To_Geometry_ApplyMatrix( header->nodes, (UUtUns16)0, emitter->geometry );
-					
+
 	// get the texture name
 	temp_name = header->nodes[0].materials[0].maps[MXcMapping_DI].name;
 
 	emitter->geometry->baseMap = M3rTextureMap_GetPlaceholder_StripExtension_UpperCase(temp_name);
 	UUmAssert(emitter->geometry->baseMap);
-		
+
 	// delete the header
 	Imp_EnvFile_Delete(header);
 
@@ -133,7 +133,7 @@ UUtError Imp_AddTrigger( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFileModDa
 
 		BFrFileRef_Dispose(model_file);
 
-		if (header->numNodes > 1) 
+		if (header->numNodes > 1)
 		{
 			UUmError_ReturnOnErrorMsg(UUcError_Generic, "Trigger base model had > 1 node!");
 		}
@@ -143,13 +143,13 @@ UUtError Imp_AddTrigger( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFileModDa
 
 		// get the GQ flags
 		trigger->base_gq_flags = IMPrEnv_GetNodeFlags( header->nodes );
-		
+
 		error = Imp_Node_To_Geometry_ApplyMatrix( header->nodes, trigger->base_geometry );
 		UUmError_ReturnOnErrorMsg(error, "failed to build the geometry");
-				
+
 		// get the light data
 		//IMPiTurret_GetLightData( &header->nodes[0], 0, &trigger->base_ls_data );
-		
+
 		// get the texture name
 		temp_name = header->nodes[0].materials[0].maps[MXcMapping_DI].name;
 
@@ -160,8 +160,8 @@ UUtError Imp_AddTrigger( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFileModDa
 		// delete env file
 		Imp_EnvFile_Delete(header);
 	}
-	
-	// emitter 
+
+	// emitter
 	{
 		error = GRrGroup_GetString(inGroup, "emitter", &temp_name);
 		IMPmError_ReturnOnErrorMsg(error, "Trigger has no emitter");
@@ -190,7 +190,7 @@ UUtError Imp_AddTrigger( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFileModDa
 	trigger->time_on			= 0;
 	trigger->time_off			= 0;
 	trigger->color				= 0x7FFF0000;
-	
+
 	// read properties
 	error = GRrGroup_GetFloat( inGroup, "start_offset", &temp_float );
 	if(error == UUcError_None )
@@ -247,6 +247,6 @@ UUtError Imp_AddTrigger( BFtFileRef* inSourceFileRef, UUtUns32 inSourceFileModDa
 	trigger->active_sound = NULL;
 	trigger->trigger_sound = NULL;
 
-	return UUcError_None;	
+	return UUcError_None;
 }
 

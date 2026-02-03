@@ -1,8 +1,8 @@
 /*
 	Oni_AI_Setup.h
-	
+
 	This file contains all top-level AI header code
-	
+
 	Author: Quinn Dunki
 	Copyright 1998-1999 Bungie
 */
@@ -23,7 +23,7 @@
 /*
  * Character setup stuff
  */
- 
+
 enum {
 	AIcSetup_Flag_AI =			0x0001,
 	AIcSetup_Flag_AutoFreeze = 	0x0002,
@@ -45,7 +45,7 @@ typedef tm_template('A','I','W','A', "AI Imported Waypoint Array")
 AItWaypointArray
 {
 	tm_pad					pad0[22];
-	
+
 	tm_varindex UUtUns16	numWaypoints;
 	tm_vararray AItWaypoint	waypoints[1];
 } AItWaypointArray;
@@ -57,13 +57,13 @@ tm_struct AItCharacterSetup
 	UUtUns16			defaultScriptID;			// default scriptID (how you are refered)
 	UUtInt16			defaultFlagID;				// default flagID (location and facing)
 
-	UUtUns16			flags;					
-	UUtUns16			teamNumber;					// 
+	UUtUns16			flags;
+	UUtUns16			teamNumber;					//
 
 	ONtCharacterClass	*characterClass;
 
-	char				variable[32];				// variable to decrement on death or 
-	
+	char				variable[32];				// variable to decrement on death or
+
 	AItScriptTable		scripts;
 
 	WPtWeaponClass		*weapon;
@@ -80,7 +80,7 @@ typedef tm_template('A','I','S','A', "AI Character Setup Array")
 AItCharacterSetupArray
 {
 	tm_pad							pad0[22];
-	
+
 	tm_varindex UUtUns16			numCharacterSetups;
 	tm_vararray AItCharacterSetup	characterSetups[1];
 } AItCharacterSetupArray;
@@ -96,11 +96,11 @@ typedef tm_template('N','M','S','A', "Network Spawn Point Array")
 NMtSpawnPointArray
 {
 	tm_pad						pad0[22];
-	
+
 	tm_varindex UUtUns16		numSpawnPoints;
 	tm_vararray NMtSpawnPoint	spawnPoints[1];
 } NMtSpawnPointArray;
-	
+
 
 // Initialization
 UUtError AIrST_Initialize(void);

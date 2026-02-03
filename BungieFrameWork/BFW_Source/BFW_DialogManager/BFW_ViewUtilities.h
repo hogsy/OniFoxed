@@ -21,7 +21,7 @@ extern TMtPrivateData*	DMgTemplate_PartSpec_PrivateData;
 
 // ======================================================================
 // prototypes
-// ======================================================================	
+// ======================================================================
 void
 VUrDrawPartSpecification(
 	VMtPartSpec			*inPartSpec,
@@ -30,7 +30,7 @@ VUrDrawPartSpecification(
 	UUtUns16			inWidth,
 	UUtUns16			inHeight,
 	UUtUns16			inAlpha);
-	
+
 void
 VUrDrawTextureRef(
 	void				*inTextureRef,
@@ -52,7 +52,7 @@ VUrCreate_StringTexture(
 	UUtUns16			inFlags,
 	void				**outStringTexture,
 	UUtRect				*outStringBounds);
-	
+
 void
 VUrClearTexture(
 	void				*inTexture,

@@ -1,12 +1,12 @@
 /*
 	FILE:	MG_DrawEngine_Method_Ptrs.c
-	
+
 	AUTHOR:	Brent Pease
-	
+
 	CREATED: July 31, 1999
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1997 - 1999
 
 */
@@ -27,7 +27,7 @@ M3tDrawContextMethod_Line		MGgLineFuncs[M3cDrawState_Interpolation_Num] =
 {
 	// M3cDrawState_Interpolation_None
 		MGrLine_InterpNone,
-		
+
 	// M3cDrawState_Interpolation_Vertex
 		MGrLine_InterpVertex
 };
@@ -43,113 +43,113 @@ MGtDrawTri			MGgTriangleFuncs_VertexUnified
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Point
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Point
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Point
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Point
 		}
 	},
-	
+
 	// M3cDrawState_Fill_Line
 	{
 		// M3cDrawState_Appearence_Gouraud
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Line_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Line_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Line_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Line_InterpNone
 		}
-		
+
 	},
-	
+
 	// M3cDrawState_Fill_Solid
 	{
 		// M3cDrawState_Appearence_Gouraud
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Solid_Gouraud_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Solid_Gouraud_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Solid_TextureLit_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Solid_TextureLit_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Solid_TextureLit_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Solid_TextureLit_EnvMap_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrTriangle_Solid_TextureUnlit,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrTriangle_Solid_TextureUnlit
 		}
@@ -172,7 +172,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				(MGtDrawTriSplit)MGrTriangle_Point,	(MGtDrawTriSplit)MGrTriangle_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -180,7 +180,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				(MGtDrawTriSplit)MGrTriangle_Point,	(MGtDrawTriSplit)MGrTriangle_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -189,7 +189,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				(MGtDrawTriSplit)MGrTriangle_Point,	(MGtDrawTriSplit)MGrTriangle_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -197,7 +197,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				(MGtDrawTriSplit)MGrTriangle_Point,	(MGtDrawTriSplit)MGrTriangle_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -206,7 +206,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				(MGtDrawTriSplit)MGrTriangle_Point,	(MGtDrawTriSplit)MGrTriangle_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -214,7 +214,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				(MGtDrawTriSplit)MGrTriangle_Point,	(MGtDrawTriSplit)MGrTriangle_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -223,7 +223,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				(MGtDrawTriSplit)MGrTriangle_Point,	(MGtDrawTriSplit)MGrTriangle_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -231,9 +231,9 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				(MGtDrawTriSplit)MGrTriangle_Point,	(MGtDrawTriSplit)MGrTriangle_Point
 			}
 		}
-		
+
 	},
-	
+
 	// M3cDrawState_Fill_Line
 	{
 		// M3cDrawState_Appearence_Gouraud
@@ -244,7 +244,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawTriSplit)MGrTriangle_Line_InterpNone,	(MGtDrawTriSplit)MGrTriangle_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -252,7 +252,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				(MGtDrawTriSplit)MGrTriangle_Line_InterpVertex,	(MGtDrawTriSplit)MGrTriangle_Line_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -261,7 +261,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawTriSplit)MGrTriangle_Line_InterpNone,	(MGtDrawTriSplit)MGrTriangle_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -269,7 +269,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				(MGtDrawTriSplit)MGrTriangle_Line_InterpVertex,	(MGtDrawTriSplit)MGrTriangle_Line_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -278,7 +278,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawTriSplit)MGrTriangle_Line_InterpNone,	(MGtDrawTriSplit)MGrTriangle_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -286,7 +286,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				(MGtDrawTriSplit)MGrTriangle_Line_InterpVertex,	(MGtDrawTriSplit)MGrTriangle_Line_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -295,7 +295,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawTriSplit)MGrTriangle_Line_InterpNone,	(MGtDrawTriSplit)MGrTriangle_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -304,7 +304,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 			}
 		}
 	},
-	
+
 	// M3cDrawState_Fill_Solid
 	{
 		// M3cDrawState_Appearence_Gouraud
@@ -315,7 +315,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1 TMU								2 TMU
 				(MGtDrawTriSplit)MGrTriangle_Solid_Gouraud_InterpNone,	(MGtDrawTriSplit)MGrTriangle_Solid_Gouraud_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -323,7 +323,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				(MGtDrawTriSplit)MGrTriangle_Solid_Gouraud_InterpVertex,	(MGtDrawTriSplit)MGrTriangle_Solid_Gouraud_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -332,7 +332,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrTriSplit_Solid_TextureLit_InterpNone_LMOff,	MGrTriSplit_Solid_TextureLit_InterpNone_LMOff
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -340,7 +340,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				MGrTriSplit_Solid_TextureLit_InterpVertex_LMOff,	MGrTriSplit_Solid_TextureLit_InterpVertex_LMOff
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -349,7 +349,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrTriSplit_Solid_TextureLit_InterpNone_LMOff,	MGrTriSplit_Solid_TextureLit_InterpNone_LMOff
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -357,7 +357,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				MGrTriSplit_Solid_TextureLit_InterpVertex_LMOff,	MGrTriSplit_Solid_TextureLit_InterpVertex_LMOff
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -366,7 +366,7 @@ MGtDrawTriSplit	MGgTriangleFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrTriSplit_Solid_TextureUnlit_LMOff,	MGrTriSplit_Solid_TextureUnlit_LMOff
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -388,114 +388,114 @@ MGtDrawQuad	MGgQuadFuncs_VertexUnified
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Point
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Point
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Point
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Point
 		}
-		
+
 	},
-	
+
 	// M3cDrawState_Fill_Line
 	{
 		// M3cDrawState_Appearence_Gouraud
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Line_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Line_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Line_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Line_InterpNone
 		}
-		
+
 	},
-	
+
 	// M3cDrawState_Fill_Solid
 	{
 		// M3cDrawState_Appearence_Gouraud
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Solid_Gouraud_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Solid_Gouraud_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Solid_TextureLit_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Solid_TextureLit_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Solid_TextureLit_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Solid_TextureLit_EnvMap_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrQuad_Solid_TextureUnlit,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrQuad_Solid_TextureUnlit
 		}
@@ -519,7 +519,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				(MGtDrawQuadSplit)MGrQuad_Point,	(MGtDrawQuadSplit)MGrQuad_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -527,7 +527,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				(MGtDrawQuadSplit)MGrQuad_Point,	(MGtDrawQuadSplit)MGrQuad_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -536,7 +536,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				(MGtDrawQuadSplit)MGrQuad_Point,	(MGtDrawQuadSplit)MGrQuad_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -544,7 +544,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				(MGtDrawQuadSplit)MGrQuad_Point,	(MGtDrawQuadSplit)MGrQuad_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -553,7 +553,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				(MGtDrawQuadSplit)MGrQuad_Point,	(MGtDrawQuadSplit)MGrQuad_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -561,7 +561,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				(MGtDrawQuadSplit)MGrQuad_Point,	(MGtDrawQuadSplit)MGrQuad_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -570,7 +570,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				(MGtDrawQuadSplit)MGrQuad_Point,	(MGtDrawQuadSplit)MGrQuad_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -578,9 +578,9 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				(MGtDrawQuadSplit)MGrQuad_Point,	(MGtDrawQuadSplit)MGrQuad_Point
 			}
 		}
-		
+
 	},
-	
+
 	// M3cDrawState_Fill_Line
 	{
 		// M3cDrawState_Appearence_Gouraud
@@ -591,7 +591,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawQuadSplit)MGrQuad_Line_InterpNone,	(MGtDrawQuadSplit)MGrQuad_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -599,7 +599,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				(MGtDrawQuadSplit)MGrQuad_Line_InterpVertex,	(MGtDrawQuadSplit)MGrQuad_Line_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -608,7 +608,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawQuadSplit)MGrQuad_Line_InterpNone,	(MGtDrawQuadSplit)MGrQuad_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -616,7 +616,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				(MGtDrawQuadSplit)MGrQuad_Line_InterpVertex,	(MGtDrawQuadSplit)MGrQuad_Line_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -625,7 +625,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawQuadSplit)MGrQuad_Line_InterpNone,	(MGtDrawQuadSplit)MGrQuad_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -633,7 +633,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				(MGtDrawQuadSplit)MGrQuad_Line_InterpVertex,	(MGtDrawQuadSplit)MGrQuad_Line_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -642,7 +642,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawQuadSplit)MGrQuad_Line_InterpNone,	(MGtDrawQuadSplit)MGrQuad_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -651,7 +651,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 			}
 		}
 	},
-	
+
 	// M3cDrawState_Fill_Solid
 	{
 		// M3cDrawState_Appearence_Gouraud
@@ -662,7 +662,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1 TMU								2 TMU
 				(MGtDrawQuadSplit)MGrQuad_Solid_Gouraud_InterpNone,	(MGtDrawQuadSplit)MGrQuad_Solid_Gouraud_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -670,7 +670,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				(MGtDrawQuadSplit)MGrQuad_Solid_Gouraud_InterpVertex,	(MGtDrawQuadSplit)MGrQuad_Solid_Gouraud_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -679,7 +679,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrQuadSplit_Solid_TextureLit_InterpNone_LMOff,		MGrQuadSplit_Solid_TextureLit_InterpNone_LMOff
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -687,7 +687,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				MGrQuadSplit_Solid_TextureLit_InterpVertex_LMOff,	MGrQuadSplit_Solid_TextureLit_InterpVertex_LMOff
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -696,7 +696,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrQuadSplit_Solid_TextureLit_InterpNone_LMOff,		MGrQuadSplit_Solid_TextureLit_InterpNone_LMOff
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -704,7 +704,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				MGrQuadSplit_Solid_TextureLit_InterpVertex_LMOff,	MGrQuadSplit_Solid_TextureLit_InterpVertex_LMOff
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -713,7 +713,7 @@ MGtDrawQuadSplit	MGgQuadFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrQuadSplit_Solid_TextureUnlit_LMOff,			MGrQuadSplit_Solid_TextureUnlit_LMOff
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -735,114 +735,114 @@ MGtDrawPent	MGgPentFuncs_VertexUnified
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Point
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Point
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Point
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Point
 		}
-		
+
 	},
-	
+
 	// M3cDrawState_Fill_Line
 	{
 		// M3cDrawState_Appearence_Gouraud
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Line_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Line_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Line_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Line_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Line_InterpNone
 		}
-		
+
 	},
-	
+
 	// M3cDrawState_Fill_Solid
 	{
 		// M3cDrawState_Appearence_Gouraud
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Solid_Gouraud_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Solid_Gouraud_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Solid_TextureLit_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Solid_TextureLit_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Solid_TextureLit_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Solid_TextureLit_EnvMap_InterpVertex
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrPent_Solid_TextureUnlit,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrPent_Solid_TextureUnlit
 		}
@@ -866,7 +866,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				(MGtDrawPentSplit)MGrPent_Point,	(MGtDrawPentSplit)MGrPent_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -874,7 +874,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				(MGtDrawPentSplit)MGrPent_Point,	(MGtDrawPentSplit)MGrPent_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -882,7 +882,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 			{
 					(MGtDrawPentSplit)MGrPent_Point,	(MGtDrawPentSplit)MGrPent_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -890,7 +890,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				(MGtDrawPentSplit)MGrPent_Point,	(MGtDrawPentSplit)MGrPent_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -899,7 +899,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				(MGtDrawPentSplit)MGrPent_Point,	(MGtDrawPentSplit)MGrPent_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -907,7 +907,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				(MGtDrawPentSplit)MGrPent_Point,	(MGtDrawPentSplit)MGrPent_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -916,7 +916,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				(MGtDrawPentSplit)MGrPent_Point,	(MGtDrawPentSplit)MGrPent_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -924,9 +924,9 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				(MGtDrawPentSplit)MGrPent_Point,	(MGtDrawPentSplit)MGrPent_Point
 			}
 		}
-		
+
 	},
-	
+
 	// M3cDrawState_Fill_Line
 	{
 		// M3cDrawState_Appearence_Gouraud
@@ -937,7 +937,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawPentSplit)MGrPent_Line_InterpNone,	(MGtDrawPentSplit)MGrPent_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -945,7 +945,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				(MGtDrawPentSplit)MGrPent_Line_InterpVertex,	(MGtDrawPentSplit)MGrPent_Line_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -954,7 +954,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawPentSplit)MGrPent_Line_InterpNone,	(MGtDrawPentSplit)MGrPent_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -962,7 +962,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				(MGtDrawPentSplit)MGrPent_Line_InterpVertex,	(MGtDrawPentSplit)MGrPent_Line_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -971,7 +971,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawPentSplit)MGrPent_Line_InterpNone,	(MGtDrawPentSplit)MGrPent_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -979,7 +979,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				(MGtDrawPentSplit)MGrPent_Line_InterpVertex,	(MGtDrawPentSplit)MGrPent_Line_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -988,7 +988,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				(MGtDrawPentSplit)MGrPent_Line_InterpNone,	(MGtDrawPentSplit)MGrPent_Line_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -997,7 +997,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 			}
 		}
 	},
-	
+
 	// M3cDrawState_Fill_Solid
 	{
 		// M3cDrawState_Appearence_Gouraud
@@ -1008,7 +1008,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				// 1 TMU								2 TMU
 				(MGtDrawPentSplit)MGrPent_Solid_Gouraud_InterpNone,	(MGtDrawPentSplit)MGrPent_Solid_Gouraud_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1016,7 +1016,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				(MGtDrawPentSplit)MGrPent_Solid_Gouraud_InterpVertex,	(MGtDrawPentSplit)MGrPent_Solid_Gouraud_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -1025,7 +1025,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrPentSplit_Solid_TextureLit_InterpNone_LMOff,	MGrPentSplit_Solid_TextureLit_InterpNone_LMOff
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1033,7 +1033,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				MGrPentSplit_Solid_TextureLit_InterpVertex_LMOff,	MGrPentSplit_Solid_TextureLit_InterpVertex_LMOff
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -1042,7 +1042,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrPentSplit_Solid_TextureLit_InterpNone_LMOff,	MGrPentSplit_Solid_TextureLit_InterpNone_LMOff
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1050,7 +1050,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				MGrPentSplit_Solid_TextureLit_InterpVertex_LMOff,	MGrPentSplit_Solid_TextureLit_InterpVertex_LMOff
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -1059,7 +1059,7 @@ MGtDrawPentSplit	MGgPentFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrPentSplit_Solid_TextureUnlit_LMOff,	MGrPentSplit_Solid_TextureUnlit_LMOff
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1081,117 +1081,117 @@ MGtModeFunction	MGgModeFuncs_VertexUnified
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Point
 		},
-			
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Point
 		},
-			
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Point
 		},
-			
+
 		// M3cDrawState_Appearence_TextureUnlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Point,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Point
 		}
 	},
-	
+
 	// M3cDrawState_Fill_Line
 	{
 		// M3cDrawState_Appearence_Gouraud
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Line_Gouraud_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Line_Gouraud_InterpVertex
 		},
-			
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Line_Gouraud_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Line_Gouraud_InterpVertex
 		},
-			
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Line_Gouraud_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Line_Gouraud_InterpVertex
 		},
-			
+
 		// M3cDrawState_Appearence_TextureUnlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Line_Gouraud_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Line_Gouraud_InterpVertex
 		}
 	},
-	
-	
+
+
 	// M3cDrawState_Fill_Solid
 	{
 		// M3cDrawState_Appearence_Gouraud
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Solid_Gouraud_InterpNone,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Solid_Gouraud_InterpVertex
 		},
-			
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Solid_TextureLit_InterpNone_LMOn_1TMU,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Solid_TextureLit_InterpVertex_LMOn_1TMU
 		},
-			
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Solid_TextureLit_InterpNone_LMOn_1TMU,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Solid_TextureLit_InterpVertex_LMOn_1TMU
 		},
-			
+
 		// M3cDrawState_Appearence_TextureUnlit
 		{
 			// M3cDrawState_Interpolation_None
 			MGrMode_Solid_TextureUnlit_InterpNone_LMOn_1TMU,
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			MGrMode_Solid_TextureUnlit_InterpNone_LMOn_1TMU
 		}
-	}	
+	}
 
 };
 
@@ -1211,7 +1211,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				MGrMode_Point,	MGrMode_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1219,7 +1219,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				MGrMode_Point,	MGrMode_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -1228,7 +1228,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				MGrMode_Point,	MGrMode_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1236,7 +1236,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				MGrMode_Point,	MGrMode_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -1245,7 +1245,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				MGrMode_Point,	MGrMode_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1253,7 +1253,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				MGrMode_Point,	MGrMode_Point
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -1262,7 +1262,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				// 1 TMU			// 2 TMU
 				MGrMode_Point,	MGrMode_Point
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1270,9 +1270,9 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				MGrMode_Point,	MGrMode_Point
 			}
 		}
-		
+
 	},
-	
+
 	// M3cDrawState_Fill_Line
 	{
 		// M3cDrawState_Appearence_Gouraud
@@ -1283,7 +1283,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				MGrMode_Line_Gouraud_InterpNone,	MGrMode_Line_Gouraud_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1291,7 +1291,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				MGrMode_Line_Gouraud_InterpVertex,	MGrMode_Line_Gouraud_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -1300,7 +1300,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				MGrMode_Line_Gouraud_InterpNone,	MGrMode_Line_Gouraud_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1308,7 +1308,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				MGrMode_Line_Gouraud_InterpVertex,	MGrMode_Line_Gouraud_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -1317,7 +1317,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				// 1 TMU						// 2 TMU
 				MGrMode_Line_Gouraud_InterpNone,	MGrMode_Line_Gouraud_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1325,7 +1325,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				MGrMode_Line_Gouraud_InterpVertex,	MGrMode_Line_Gouraud_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -1333,7 +1333,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 			{
 					MGrMode_Line_Gouraud_InterpNone,	MGrMode_Line_Gouraud_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1342,7 +1342,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 			}
 		}
 	},
-	
+
 	// M3cDrawState_Fill_Solid
 	{
 		// M3cDrawState_Appearence_Gouraud
@@ -1353,7 +1353,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				// 1 TMU								2 TMU
 				MGrMode_Solid_Gouraud_InterpNone,	MGrMode_Solid_Gouraud_InterpNone
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1361,7 +1361,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				MGrMode_Solid_Gouraud_InterpVertex,	MGrMode_Solid_Gouraud_InterpVertex
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit
 		{
 			// M3cDrawState_Interpolation_None
@@ -1370,7 +1370,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrMode_Solid_TextureLit_InterpNone_LMOff_1TMU,	MGrMode_Solid_TextureLit_InterpNone_LMOff_2TMU
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1378,7 +1378,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				MGrMode_Solid_TextureLit_InterpVertex_LMOff_1TMU,	MGrMode_Solid_TextureLit_InterpVertex_LMOff_2TMU
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Lit_EnvMap
 		{
 			// M3cDrawState_Interpolation_None
@@ -1387,7 +1387,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrMode_Solid_TextureLit_InterpNone_LMOff_1TMU,	MGrMode_Solid_TextureLit_InterpNone_LMOff_2TMU
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1395,7 +1395,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				MGrMode_Solid_TextureLit_InterpVertex_LMOff_1TMU,	MGrMode_Solid_TextureLit_InterpVertex_LMOff_2TMU
 			}
 		},
-		
+
 		// M3cDrawState_Appearence_Texture_Unlit
 		{
 			// M3cDrawState_Interpolation_None
@@ -1404,7 +1404,7 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 				// 1TMU												// 2 TMU
 				MGrMode_Solid_TextureUnlit_InterpNone_LMOff_1TMU,	MGrMode_Solid_TextureUnlit_InterpNone_LMOff_2TMU
 			},
-			
+
 			// M3cDrawState_Interpolation_Vertex
 			{
 				// M3cDrawState_LightMapMode_Off
@@ -1417,40 +1417,40 @@ MGtModeFunction	MGgModeFuncs_VertexSplit
 
 MGtVertexCreateFunction	MGgVertexCreateFuncs_Unified
 	[M3cDrawState_Appearence_Num]
-	[M3cDrawState_Interpolation_Num] = 
+	[M3cDrawState_Interpolation_Num] =
 {
 	// M3cDrawState_Appearence_Gouraud
 	{
 		// M3cDrawState_Interpolation_None
 		MGrVertexCreate_XYZ,
-		
+
 		// M3cDrawState_Interpolation_Vertex
 		MGrVertexCreate_XYZ_RGB
 	},
-	
+
 	// M3cDrawState_Appearence_Texture_Lit
 	{
 		// M3cDrawState_Interpolation_None
 		MGrVertexCreate_XYZ_BaseUV,
-		
+
 		// M3cDrawState_Interpolation_Vertex
 		MGrVertexCreate_XYZ_RGB_BaseUV
 	},
-	
+
 	// M3cDrawState_Appearence_Texture_Lit_EnvMap
 	{
 		// M3cDrawState_Interpolation_None
 		MGrVertexCreate_XYZ_BaseUV,
-		
+
 		// M3cDrawState_Interpolation_Vertex
 		MGrVertexCreate_XYZ_RGB_BaseUV_EnvUV
 	},
-	
+
 	// M3cDrawState_Appearence_TextureUnlit
 	{
 		// M3cDrawState_Interpolation_None
 		MGrVertexCreate_XYZ_BaseUV,
-		
+
 		// M3cDrawState_Interpolation_Vertex
 		MGrVertexCreate_XYZ_BaseUV
 	}
@@ -1469,7 +1469,7 @@ MGtVertexCreateFunction	MGgVertexCreateFuncs_Split
 			// 1 TMU			// 2 TMU
 			MGrVertexCreate_XYZ,	MGrVertexCreate_XYZ
 		},
-		
+
 		// M3cDrawState_Interpolation_Vertex
 		{
 			// M3cDrawState_LightMapMode_Off
@@ -1477,7 +1477,7 @@ MGtVertexCreateFunction	MGgVertexCreateFuncs_Split
 			MGrVertexCreate_XYZ_RGB,	MGrVertexCreate_XYZ_RGB
 		}
 	},
-	
+
 	// M3cDrawState_Appearence_Texture_Lit
 	{
 		// M3cDrawState_Interpolation_None
@@ -1486,7 +1486,7 @@ MGtVertexCreateFunction	MGgVertexCreateFuncs_Split
 			// 1 TMU			// 2 TMU
 			MGrVertexCreate_XYZ,	MGrVertexCreate_XYZ
 		},
-		
+
 		// M3cDrawState_Interpolation_Vertex
 		{
 			// M3cDrawState_LightMapMode_Off
@@ -1494,7 +1494,7 @@ MGtVertexCreateFunction	MGgVertexCreateFuncs_Split
 			MGrVertexCreate_XYZ_RGB,	MGrVertexCreate_XYZ_RGB
 		}
 	},
-	
+
 	// M3cDrawState_Appearence_Texture_Lit_EnvMap
 	{
 		// M3cDrawState_Interpolation_None
@@ -1503,7 +1503,7 @@ MGtVertexCreateFunction	MGgVertexCreateFuncs_Split
 			// 1 TMU			// 2 TMU
 			MGrVertexCreate_XYZ,	MGrVertexCreate_XYZ
 		},
-		
+
 		// M3cDrawState_Interpolation_Vertex
 		{
 			// M3cDrawState_LightMapMode_Off
@@ -1511,7 +1511,7 @@ MGtVertexCreateFunction	MGgVertexCreateFuncs_Split
 			MGrVertexCreate_XYZ_RGB,	MGrVertexCreate_XYZ_RGB
 		}
 	},
-	
+
 	// M3cDrawState_Appearence_Texture_Unlit
 	{
 		// M3cDrawState_Interpolation_None
@@ -1520,7 +1520,7 @@ MGtVertexCreateFunction	MGgVertexCreateFuncs_Split
 			// 1 TMU			// 2 TMU
 			MGrVertexCreate_XYZ,	MGrVertexCreate_XYZ
 		},
-		
+
 		// M3cDrawState_Interpolation_Vertex
 		{
 			// M3cDrawState_LightMapMode_Off

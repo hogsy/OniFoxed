@@ -39,7 +39,7 @@ typedef enum {
 	MGcTextureCombine_Trilinear = 0x40000,
 	MGcTextureCombine_AlphaBlend = 0x80000,
 	MGcTextureCombine_EnvMap = 0x100000
-	
+
 } MGtTextureCombine;
 
 typedef enum {
@@ -60,7 +60,7 @@ typedef enum {
 	MGcZWrite_Invalid = 0x10,
 	MGcZWrite_On = 0x20,
 	MGcZWrite_Off = 0x30
-	
+
 } MGtZWriteMode;
 
 
@@ -118,7 +118,7 @@ struct MGtTextureMapPrivate
 	GrTexInfo hardware_format; // glide texture format
 
 	// block indicies in the lrar_cache on the card
-	short hardware_block_index_tmu0;	
+	short hardware_block_index_tmu0;
 	short hardware_block_index_tmu0_even;
 	short hardware_block_index_tmu1;
 	short hardware_block_index_tmu1_odd;
@@ -128,16 +128,16 @@ struct MGtTextureMapPrivate
 	long hardware_block_size_tmu1;
 	long hardware_block_size_tmu1_odd;
 
-	UUtBool hardware_block_dirty_tmu0;	
+	UUtBool hardware_block_dirty_tmu0;
 	UUtBool hardware_block_dirty_tmu0_even;
 	UUtBool hardware_block_dirty_tmu1;
 	UUtBool hardware_block_dirty_tmu1_odd;
 
-	short flags;					
+	short flags;
 	short width, height;
 };
 
-typedef struct 
+typedef struct
 {
 	GrTexInfo *current_texture_tmu0;
 	GrTexInfo *current_texture_tmu1;
@@ -213,7 +213,7 @@ void MGrSet_TextureMode(
 
 void MGrDrawPolygon( int nverts, const int ilist[], const GrVertex vlist[] );
 
-void MGrDrawTriangle(const GrVertex* a, const GrVertex* b, const GrVertex* c); 
+void MGrDrawTriangle(const GrVertex* a, const GrVertex* b, const GrVertex* c);
 
 /* ---------- prototypes/RASTERIZER_3DFX_WINDOWS.C */
 

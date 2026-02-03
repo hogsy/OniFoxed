@@ -1,8 +1,8 @@
 /*
 	Oni_AI.h
-	
+
 	Top level AI header stuff
-	
+
 	Author: Quinn Dunki
 	c1998 Bungie
 */
@@ -35,7 +35,7 @@ extern UUtBool						AIgBeCute;
 
 #define AIcMaxTeams 32
 
-typedef struct AItActivity AItActivity; 
+typedef struct AItActivity AItActivity;
 typedef struct AItBehaviour AItBehaviour;
 typedef struct AItGroup AItGroup;
 
@@ -87,7 +87,7 @@ typedef enum AItArmed
 enum
 {
 	AIcPath_Idle			= 0,
-	AIcPath_Follow			= 1	// on if path following is enabled	
+	AIcPath_Follow			= 1	// on if path following is enabled
 };
 
 
@@ -96,29 +96,29 @@ enum
 UUtError
 AIrInitialize(
 	void);
-	
+
 void
 AIrTerminate(
 	void);
 
 UUtError AIrRegisterTemplates(
 	void);
-				
+
 void AIrDisplay(
 	void);
 
 void AIrDisplay_Character(
-	ONtCharacter *inCharacter);	
-	
+	ONtCharacter *inCharacter);
+
 UUtBool AIrH2H_ShouldBlock(
 	ONtCharacter	*inCharacter);
-		
+
 void AIrFrameStart(
 	ONtCharacter *inCharacter);
 
 void AIrFrameEnd(
 	ONtCharacter *inCharacter);
-	
+
 UUtError AIrInitialize_Display(
 	void);
 
@@ -127,7 +127,7 @@ void AIrNotify_Collision_Object(
 
 void AIrNotify_Collision_Environment(
 	ONtCharacter *inCharacter);
-	
+
 
 UUtError AIrLevelBegin(
 	void);
@@ -139,5 +139,5 @@ void AIrDisplay_GraphNode(
 	AKtBNVNode *inNode,
 	UUtUns32 inShade);
 
-	
+
 #endif

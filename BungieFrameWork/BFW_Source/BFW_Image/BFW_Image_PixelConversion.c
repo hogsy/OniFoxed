@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Image_PixelConversion.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Nov 27, 1998
-	
-	PURPOSE: 
-	
+
+	PURPOSE:
+
 	Copyright 1998
 */
 
@@ -45,7 +45,7 @@ static UUtInt16	IMgDitherMatrix[IMcDitherDim][IMcDitherDim] =
 			r = IMmShiftDownAndMask8(pixel, 16);	\
 			g = IMmShiftDownAndMask8(pixel, 8);		\
 			b = IMmShiftDownAndMask8(pixel, 0);		\
-			
+
 #define IMmRGB888_to_rgb(pixel, r, g, b)		\
 			r = IMmShiftDownAndMask8(pixel, 16);	\
 			g = IMmShiftDownAndMask8(pixel, 8);		\
@@ -88,35 +88,35 @@ static UUtInt16	IMgDitherMatrix[IMcDitherDim][IMcDitherDim] =
 			pixel = IMmMask8AndShiftUp(r, 24); \
 			pixel |= IMmMask8AndShiftUp(g, 16); \
 			pixel |= IMmMask8AndShiftUp(b, 8); \
-		
+
 #define IMmARGB_to_ARGB1555(pixel, a, r, g, b) \
 			pixel = IMmMask1AndShiftUp(a, 15); \
 			pixel |= IMmMask5AndShiftUp(r, 10); \
 			pixel |= IMmMask5AndShiftUp(g, 5); \
 			pixel |= IMmMask5AndShiftUp(b, 0); \
-		
+
 #define IMmRGB_to_RGB555(pixel, r, g, b) \
 			pixel = IMmMask5AndShiftUp(r, 10); \
 			pixel |= IMmMask5AndShiftUp(g, 5); \
 			pixel |= IMmMask5AndShiftUp(b, 0); \
-		
+
 #define IMmARGB_to_ARGB4444(pixel, a, r, g, b) \
 			pixel = IMmMask8AndShiftUp(a, 12); \
 			pixel |= IMmMask8AndShiftUp(r, 8); \
 			pixel |= IMmMask8AndShiftUp(g, 4); \
 			pixel |= IMmMask8AndShiftUp(b, 0); \
-		
+
 #define IMmRGB888_to_I8(pixel, r, g, b) \
 			pixel = (r + g + b) / 3;
 
 #define IMmRGB555_to_I8(pixel, r, g, b) \
 			pixel = (r + g + b) / 3;	\
 			pixel = (pixel << 3) | (pixel & 0x7);
-		
+
 #define IMmRGB444_to_I8(pixel, r, g, b) \
 			pixel = (r + g + b) / 3;	\
 			pixel = (pixel << 4) | (pixel & 0xF);
-		
+
 typedef UUtError
 (*IMtConvertPixelType_Proc)(
 	IMtDitherMode	inDitherMode,
@@ -136,7 +136,7 @@ static void iBuild_ConvertPixelType_Table(void);
 typedef struct {
 	IMtPixelType				from;
 	IMtPixelType				to;
-	IMtConvertPixelType_Proc	function;	
+	IMtConvertPixelType_Proc	function;
 } IMtConverPixelType_LookupEntry;
 
 
@@ -153,37 +153,37 @@ IMiConvert_RGB555_to_I8(
 {
 	UUtUns16	x, y;
 	UUtUns16	r, g, b;
-	
+
 	UUtUns16*	srcPtr;
 	UUtUns8*	dstPtr;
 	UUtUns16	pixel;
-	
+
 	UUtUns8*	dstRowPtr;
 	UUtUns16	dstRowBytes;
 
 	dstRowBytes = IMrImage_ComputeRowBytes(IMcPixelType_I8, inWidth);
-	
+
 	srcPtr = inSrcData;
 	dstRowPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		dstPtr = dstRowPtr;
-		
+
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			IMmARGB1555_to_rgb(pixel, r, g, b);
-			
+
 			IMmRGB555_to_I8(pixel, r, g, b);
-			
+
 			*dstPtr++ = (UUtUns8)pixel;
 		}
-		
+
 		dstRowPtr += dstRowBytes;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -200,28 +200,28 @@ IMiConvert_ARGB4444_to_RGB555(
 {
 	UUtUns16	x, y;
 	UUtUns16	a, r, g, b;
-	
+
 	UUtUns16*	srcPtr;
 	UUtUns16*	dstPtr;
 	UUtUns16	pixel;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			IMmARGB4444_to_argb(pixel, a, r, g, b);
-			
+
 			if(a == 0xF)
 			{
 				r = (r << 1) | (r & 0x01);
 				g = (g << 1) | (g & 0x01);
 				b = (b << 1) | (b & 0x01);
-				
+
 				IMmARGB_to_ARGB1555(pixel, 0x1, r, g, b);
 			}
 			else
@@ -231,7 +231,7 @@ IMiConvert_ARGB4444_to_RGB555(
 			*dstPtr++ = pixel;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -268,7 +268,7 @@ IMiCopy_Row_ARGB8888(
 {
 	UUtUns16	x;
 	UUtUns32	pixel;
-	
+
 	for(x = 0; x < inWidth; x++)
 	{
 		pixel = *inSrcData++;
@@ -288,7 +288,7 @@ IMiCopy_Row_RGB888(
 {
 	UUtUns16	x;
 	UUtUns32	pixel;
-	
+
 	for(x = 0; x < inWidth; x++)
 	{
 		pixel = *inSrcData++;
@@ -313,23 +313,23 @@ IMiConvert_RGB555_to_ARGB4444(
 {
 	UUtUns16	x, y;
 	UUtInt16	r, g, b;
-	
+
 	UUtUns16*	srcPtr;
 	UUtUns16*	dstPtr;
 	UUtUns16	pixel;
 	UUtInt16	bias;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			IMmARGB1555_to_rgb(pixel, r, g, b);
-			
+
 			if(inDitherMode == IMcDitherMode_On)
 			{
 				// S.S. bias = IMgDitherMatrix[x & (IMcDitherDim-1)][y & (IMcDitherDim-1)] / 2;
@@ -341,17 +341,17 @@ IMiConvert_RGB555_to_ARGB4444(
 				g = UUmPin(g, 0, 31);
 				b = UUmPin(b, 0, 31);
 			}
-			
+
 			r >>= 1;
 			g >>= 1;
 			b >>= 1;
-			
+
 			IMmARGB_to_ARGB1555(pixel, 0xF, r, g, b);
-			
+
 			*dstPtr++ = pixel;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -366,14 +366,14 @@ IMiConvert_A8_to_RGBA4444(
 	void*			outDstData)
 {
 	UUtUns16	x, y;
-	
+
 	UUtUns8*	srcPtr;
 	UUtUns16*	dstPtr;
 	UUtUns16	pixel;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
@@ -384,7 +384,7 @@ IMiConvert_A8_to_RGBA4444(
 			*dstPtr++ = pixel | 0xFFF0;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -399,19 +399,19 @@ IMiConvert_A8_to_RGBA_Bytes(
 	void*			outDstData)
 {
 	UUtUns16	x, y;
-	
+
 	UUtUns8*	srcPtr;
 	UUtUns8*	dstPtr;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			UUtUns8 alpha = *srcPtr;
-			
+
 			dstPtr[0] = 0xff; // r
 			dstPtr[1] = 0xff; // g
 			dstPtr[2] = 0xff; // b
@@ -421,7 +421,7 @@ IMiConvert_A8_to_RGBA_Bytes(
 			dstPtr += 4;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -441,15 +441,15 @@ IMiConvert_RGB555_to_ARGB1555(
 	UUtUns32		alphas;
 	// calculate the number of pixels in the image
 	num_pixels = inWidth * inHeight >> 1;
-	
+
 	// copy the data and add an alpha
 	src_data = inSrcData;
 	dst_data = outDstData;
 	alphas = 0x80008000;
-	
+
 	while (num_pixels--)
 		*dst_data++ = *src_data++ | alphas;
-	
+
 	return UUcError_None;
 }
 
@@ -466,23 +466,23 @@ IMiConvert_ARGB8888_to_ARGB4444(
 {
 	UUtUns16	x, y;
 	UUtInt16	a, r, g, b;
-	
+
 	UUtUns32*	srcPtr;
 	UUtUns16*	dstPtr;
 	UUtUns32	pixel;
 	UUtInt16	bias;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			IMmARGB8888_to_argb(pixel, a, r, g, b);
-			
+
 			if(inDitherMode == IMcDitherMode_On)
 			{
 				bias = IMgDitherMatrix[x & (IMcDitherDim-1)][y & (IMcDitherDim-1)];
@@ -495,18 +495,18 @@ IMiConvert_ARGB8888_to_ARGB4444(
 				g = UUmPin(g, 0, UUcMaxUns8);
 				b = UUmPin(b, 0, UUcMaxUns8);
 			}
-			
+
 			a >>= 4;
 			r >>= 4;
 			g >>= 4;
 			b >>= 4;
-			
+
 			IMmARGB_to_ARGB4444(pixel, a, r, g, b);
-			
+
 			*dstPtr++ = (UUtUns16)pixel;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -522,53 +522,53 @@ IMiConvert_ARGB8888_to_RGB555(
 {
 	UUtUns16	x, y;
 	UUtInt16	a, r, g, b;
-	
+
 	UUtUns32*	srcPtr;
 	UUtUns16*	dstPtr;
 	UUtUns32	pixel;
 	UUtInt16	bias;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			IMmARGB8888_to_argb(pixel, a, r, g, b);
-			
+
 			if(a == 0xFF)
 			{
 				if(inDitherMode == IMcDitherMode_On)
 				{
 					bias = IMgDitherMatrix[x & (IMcDitherDim-1)][y & (IMcDitherDim-1)];
-					
+
 					r += bias;
 					g += bias;
 					b += bias;
-					
+
 					r = UUmPin(r, 0, UUcMaxUns8);
 					g = UUmPin(g, 0, UUcMaxUns8);
 					b = UUmPin(b, 0, UUcMaxUns8);
 				}
-			
+
 				r >>= 3;
 				g >>= 3;
 				b >>= 3;
-				
+
 				IMmARGB_to_ARGB1555(pixel, 0x1, r, g, b);
 			}
 			else
 			{
 				pixel = 0;
 			}
-			
+
 			*dstPtr++ = (UUtUns16)pixel;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -584,23 +584,23 @@ IMiConvert_ARGB8888_to_ARGB1555(
 {
 	UUtUns16	x, y;
 	UUtInt16	a, r, g, b;
-	
+
 	UUtUns32*	srcPtr;
 	UUtUns16*	dstPtr;
 	UUtUns32	pixel;
 	UUtInt16	bias;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			IMmARGB8888_to_argb(pixel, a, r, g, b);
-			
+
 			if(inDitherMode == IMcDitherMode_On)
 			{
 				bias = IMgDitherMatrix[x & (IMcDitherDim-1)][y & (IMcDitherDim-1)];
@@ -611,18 +611,18 @@ IMiConvert_ARGB8888_to_ARGB1555(
 				g = UUmPin(g, 0, UUcMaxUns8);
 				b = UUmPin(b, 0, UUcMaxUns8);
 			}
-			
+
 			a = a == 0xFF;
 			r >>= 3;
 			g >>= 3;
 			b >>= 3;
-			
+
 			IMmARGB_to_ARGB1555(pixel, a, r, g, b);
-			
+
 			*dstPtr++ = (UUtUns16)pixel;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -639,48 +639,48 @@ IMiConvert_RGB888_to_ARGB4444(
 {
 	UUtUns16	x, y;
 	UUtInt16	a, r, g, b;
-	
+
 	UUtUns32*	srcPtr;
 	UUtUns16*	dstPtr;
 	UUtUns32	pixel;
 	UUtInt16	bias;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			IMmARGB8888_to_rgb(pixel, r, g, b);
 			a = UUcMaxUns8;
 
 			if(inDitherMode == IMcDitherMode_On)
 			{
 				bias = IMgDitherMatrix[x & (IMcDitherDim-1)][y & (IMcDitherDim-1)];
-				
+
 				r += bias;
 				g += bias;
 				b += bias;
-				
+
 				r = UUmPin(r, 0, UUcMaxUns8);
 				g = UUmPin(g, 0, UUcMaxUns8);
 				b = UUmPin(b, 0, UUcMaxUns8);
 			}
-			
+
 			a >>= 4;
 			r >>= 4;
 			g >>= 4;
 			b >>= 4;
-			
+
 			IMmARGB_to_ARGB4444(pixel, a, r, g, b);
-			
+
 			*dstPtr++ = (UUtUns16)pixel;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -696,25 +696,25 @@ IMiConvert_RGB888_to_RGB555(
 {
 	UUtUns16	x, y;
 	UUtInt16	r, g, b;
-	
+
 	UUtUns32*	srcPtr;
 	UUtUns16*	dstPtr;
 	UUtUns32	pixel;
 	UUtInt16	bias;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			r = (UUtUns16)((pixel >> 16) & 0xFF);
 			g = (UUtUns16)((pixel >> 8) & 0xFF);
 			b = (UUtUns16)((pixel >> 0) & 0xFF);
-			
+
 			if(inDitherMode == IMcDitherMode_On)
 			{
 				bias = IMgDitherMatrix[x & (IMcDitherDim-1)][y & (IMcDitherDim-1)];
@@ -725,16 +725,16 @@ IMiConvert_RGB888_to_RGB555(
 				g = UUmPin(g, 0, UUcMaxUns8);
 				b = UUmPin(b, 0, UUcMaxUns8);
 			}
-			
+
 			r >>= 3;
 			g >>= 3;
 			b >>= 3;
-			
+
 			*dstPtr++ = (r << 10) | (g << 5) | (b);
 		}
 	}
 
-	
+
 	return UUcError_None;
 }
 
@@ -749,34 +749,34 @@ IMiConvert_I8_to_RGB555(
 	void*			outDstData)
 {
 	UUtUns16	x, y;
-	
+
 	UUtUns8*	srcPtr;
 	UUtUns16*	dstPtr;
 	UUtUns16	pixel;
 	UUtInt16	bias;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			if(inDitherMode == IMcDitherMode_On)
 			{
 				bias = IMgDitherMatrix[x & (IMcDitherDim-1)][y & (IMcDitherDim-1)];
 				pixel += bias;
 				pixel = UUmPin(pixel, 0, UUcMaxUns8);
 			}
-			
+
 			pixel >>= 3;
-			
+
 			*dstPtr++ = (pixel << 10) | (pixel << 5) | (pixel);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -791,12 +791,12 @@ IMiConvert_I8_to_RGB_Bytes(
 	void*			outDstData)
 {
 	UUtUns32	count = inWidth * inHeight;
-	
+
 	UUtUns8*	endPtr;
 	UUtUns8*	srcPtr;
 	UUtUns8*	dstPtr;
 	UUtUns8		pixel;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
 	endPtr = srcPtr + count;
@@ -804,14 +804,14 @@ IMiConvert_I8_to_RGB_Bytes(
 	while(srcPtr < endPtr)
 	{
 		pixel = *srcPtr++;
-						
+
 		dstPtr[0] = pixel;
 		dstPtr[1] = pixel;
 		dstPtr[2] = pixel;
 
 		dstPtr += 3;
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -827,25 +827,25 @@ IMiConvert_RGB888_to_ARGB1555(
 {
 	UUtUns16	x, y;
 	UUtInt16	r, g, b;
-	
+
 	UUtUns32*	srcPtr;
 	UUtUns16*	dstPtr;
 	UUtUns32	pixel;
 	UUtInt16	bias;
-	
+
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			r = (UUtUns16)((pixel >> 16) & 0xFF);
 			g = (UUtUns16)((pixel >> 8) & 0xFF);
 			b = (UUtUns16)((pixel >> 0) & 0xFF);
-			
+
 			if(inDitherMode == IMcDitherMode_On)
 			{
 				bias = IMgDitherMatrix[x & (IMcDitherDim-1)][y & (IMcDitherDim-1)];
@@ -856,15 +856,15 @@ IMiConvert_RGB888_to_ARGB1555(
 				g = UUmPin(g, 0, UUcMaxUns8);
 				b = UUmPin(b, 0, UUcMaxUns8);
 			}
-			
+
 			r >>= 3;
 			g >>= 3;
 			b >>= 3;
-			
+
 			*dstPtr++ = (1 << 15) | (r << 10) | (g << 5) | (b);
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -1252,7 +1252,7 @@ static void DecodeDXT1Block_To_RGBBytes(
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,2)], out0 + 3, 3);
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,4)], out0 + 6, 3);
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,6)], out0 + 9, 3);
-	
+
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,8)], out1 + 0, 3);
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,10)], out1 + 3, 3);
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,12)], out1 + 6, 3);
@@ -1263,7 +1263,7 @@ static void DecodeDXT1Block_To_RGBBytes(
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,2)], out2 + 3, 3);
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,4)], out2 + 6, 3);
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,6)], out2 + 9, 3);
-	
+
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,8)], out3 + 0, 3);
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,10)], out3 + 3, 3);
 	UUrMemory_MoveFast(rgb_colors[IMmShiftDownAndMask2(*inSrc,12)], out3 + 6, 3);
@@ -1369,7 +1369,7 @@ static void DecodeDXT1Block_To_RGBABytes(
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,2)], out0 + 4, 4);
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,4)], out0 + 8, 4);
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,6)], out0 + 12, 4);
-	
+
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,8)], out1 + 0, 4);
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,10)], out1 + 4, 4);
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,12)], out1 + 8, 4);
@@ -1380,7 +1380,7 @@ static void DecodeDXT1Block_To_RGBABytes(
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,2)], out2 + 4, 4);
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,4)], out2 + 8, 4);
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,6)], out2 + 12, 4);
-	
+
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,8)], out3 + 0, 4);
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,10)], out3 + 4, 4);
 	UUrMemory_MoveFast(rgba_colors[IMmShiftDownAndMask2(*inSrc,12)], out3 + 8, 4);
@@ -1436,7 +1436,7 @@ static UUtUns16 SelectColor(
 	UUtInt16 rwish = (wish & (UUtUns16)(0x1f << 10)) >> 10;
 	UUtInt16 gwish = (wish & (UUtUns16)(0x1f <<  5)) >> 5;
 	UUtInt16 bwish = (wish & (UUtUns16)(0x1f <<  0)) >> 0;
-	
+
 	UUtInt16 choice = 0;
 	UUtInt16 delta = UUcMaxInt16;
 	UUtUns8 itr;
@@ -1449,8 +1449,8 @@ static UUtUns16 SelectColor(
 		r = (colors[itr] & rmask) >> 11;
 		g = (colors[itr] & gmask) >> 6;
 		b = (colors[itr] & bmask) >> 0;
-		
-		curDelta = abs(r - rwish); 
+
+		curDelta = abs(r - rwish);
 		curDelta += abs(g - gwish);
 		curDelta += abs(b - bwish);
 
@@ -1528,10 +1528,10 @@ static void EncodeDXT1Block_From_ARGB1555(
 					const UUtUns16 *inRow2,
 					const UUtUns16 *inRow3,
 					UUtUns16 *outDst)
-{ 
+{
 	UUtUns16 rgb565_1, rgb565_2;
 	UUtUns16 rgb555_1, rgb555_2;
-	
+
 	// find the two best colors
 	rgb555_1 = FindFarColor(inRow0[0], inRow0, inRow1, inRow2, inRow3);
 	rgb555_2 = FindFarColor(rgb555_1, inRow0, inRow1, inRow2, inRow3);
@@ -1547,7 +1547,7 @@ static void EncodeDXT1Block_From_ARGB1555(
 		r2 = rgb555_2 & (UUtUns16) (0x1f << 10);
 		g2 = rgb555_2 & (UUtUns16) (0x1f <<  5);
 		b2 = rgb555_2 & (UUtUns16) (0x1f <<  0);
-		
+
 		rgb565_1 = (r << 1) | (g << 1) | (b << 0);
 		rgb565_2 = (r2 << 1) | (g2 << 1) | (b2 << 0);
 	}
@@ -1560,7 +1560,7 @@ static void EncodeDXT1Block_From_ARGB1555(
 		*outDst++ = 0x0000;
 		*outDst++ = 0x0000;
 	}
-	else 
+	else
 	{
 		UUtUns16 colors[4];
 
@@ -1638,13 +1638,13 @@ IMiConvert_ARGB1555_to_DXT1(
 			rows[2] = rows[1] + inWidth;
 			rows[3] = rows[2] + inWidth;
 
-			for(x = 0; x < blockWidth; x++) 
+			for(x = 0; x < blockWidth; x++)
 			{
 				UUtUns16 src_x, src_y;
 				UUtUns16 dst_x, dst_y;
 				UUtUns16 data[4][4];
 
-				UUrMemory_Set16(data, rows[0][0], sizeof(UUtUns16) * 4 * 4); 
+				UUrMemory_Set16(data, rows[0][0], sizeof(UUtUns16) * 4 * 4);
 
 				// copy, the clipped part in
 				for(src_y = 0, dst_y = y * 4; dst_y < UUmMin(y * 4 + 4, inHeight); src_y++, dst_y++)
@@ -1679,7 +1679,7 @@ IMiConvert_ARGB1555_to_DXT1(
 			rows[2] = rows[1] + inWidth;
 			rows[3] = rows[2] + inWidth;
 
-			for(x = 0; x < blockWidth; x++) 
+			for(x = 0; x < blockWidth; x++)
 			{
 				EncodeDXT1Block_From_ARGB1555(rows[0], rows[1], rows[2], rows[3], curOutPtr);
 
@@ -1760,7 +1760,7 @@ IMiConvert_DXT1_to_NByte(
 			rows[2] = ((char *) rows[1]) + (inWidth * dst_size);
 			rows[3] = ((char *) rows[2]) + (inWidth * dst_size);
 
-			for(x = 0; x < blockWidth; x++) 
+			for(x = 0; x < blockWidth; x++)
 			{
 				UUtUns16 src_x, src_y;
 				UUtUns16 dst_x, dst_y;
@@ -1813,7 +1813,7 @@ IMiConvert_DXT1_to_NByte(
 			row2 = ((char *) row1) + (inWidth * dst_size);
 			row3 = ((char *) row2) + (inWidth * dst_size);
 
-			for(x = 0; x < blockWidth; x++) 
+			for(x = 0; x < blockWidth; x++)
 			{
 				block_decode(curInPtr, row0, row1, row2, row3);
 
@@ -1844,7 +1844,7 @@ IMrPixel_Convert(
 	UUtUns8			r;
 	UUtUns8			g;
 	UUtUns8			b;
-	
+
 	switch (inSrcPixelType)
 	{
 		case IMcPixelType_ARGB4444:
@@ -1854,14 +1854,14 @@ IMrPixel_Convert(
 				case IMcPixelType_ARGB4444:
 					*outDstPixel = inSrcPixel;
 				break;
-				
+
 				case IMcPixelType_RGB555:
 					r <<= 1;
 					g <<= 1;
 					b <<= 1;
 					IMmRGB_to_RGB555(outDstPixel->value, r, g, b);
 				break;
-				
+
 				case IMcPixelType_ARGB1555:
 					(a > 0) ? (a = 1) : (a = 0);
 					r <<= 1;
@@ -1869,14 +1869,14 @@ IMrPixel_Convert(
 					b <<= 1;
 					IMmARGB_to_ARGB1555(outDstPixel->value, a, r, g, b);
 				break;
-				
+
 				case IMcPixelType_I8:
 				case IMcPixelType_I1:
 				case IMcPixelType_A8:
 				case IMcPixelType_A4I4:
 					UUmAssert(!"Unimplemented");
 				break;
-				
+
 				case IMcPixelType_ARGB8888:
 					a <<= 4;
 					r <<= 4;
@@ -1884,7 +1884,7 @@ IMrPixel_Convert(
 					b <<= 4;
 					IMmARGB_to_ARGB8888(outDstPixel->value, a, r, g, b);
 				break;
-				
+
 				case IMcPixelType_RGB888:
 					r <<= 4;
 					g <<= 4;
@@ -1893,7 +1893,7 @@ IMrPixel_Convert(
 				break;
 			}
 		break;
-		
+
 		case IMcPixelType_RGB555:
 			IMmRGB555_to_rgb(inSrcPixel.value, r, g, b);
 			switch (inDstPixelType)
@@ -1905,22 +1905,22 @@ IMrPixel_Convert(
 					b >>= 1;
 					IMmARGB_to_ARGB4444(outDstPixel->value, a, r, g, b);
 				break;
-				
+
 				case IMcPixelType_RGB555:
 					*outDstPixel = inSrcPixel;
 				break;
-				
+
 				case IMcPixelType_ARGB1555:
 					outDstPixel->value = inSrcPixel.value | 0x8000;
 				break;
-				
+
 				case IMcPixelType_I8:
 				case IMcPixelType_I1:
 				case IMcPixelType_A8:
 				case IMcPixelType_A4I4:
 					UUmAssert(!"Unimplemented");
 				break;
-				
+
 				case IMcPixelType_ARGB8888:
 					a = 0xFF;
 					r <<= 3;
@@ -1928,7 +1928,7 @@ IMrPixel_Convert(
 					b <<= 3;
 					IMmARGB_to_ARGB8888(outDstPixel->value, a, r, g, b);
 				break;
-				
+
 				case IMcPixelType_RGB888:
 					r <<= 3;
 					g <<= 3;
@@ -1937,7 +1937,7 @@ IMrPixel_Convert(
 				break;
 			}
 		break;
-		
+
 		case IMcPixelType_ARGB1555:
 			IMmARGB1555_to_argb(inSrcPixel.value, a, r, g, b);
 			switch (inDstPixelType)
@@ -1949,22 +1949,22 @@ IMrPixel_Convert(
 					b >>= 1;
 					IMmARGB_to_ARGB4444(outDstPixel->value, a, r, g, b);
 				break;
-				
+
 				case IMcPixelType_RGB555:
 					*outDstPixel = inSrcPixel;
 				break;
-				
+
 				case IMcPixelType_ARGB1555:
 					*outDstPixel = inSrcPixel;
 				break;
-				
+
 				case IMcPixelType_I8:
 				case IMcPixelType_I1:
 				case IMcPixelType_A8:
 				case IMcPixelType_A4I4:
 					UUmAssert(!"Unimplemented");
 				break;
-				
+
 				case IMcPixelType_ARGB8888:
 					(a == 1) ? (a = 0xFF) : (a = 0);
 					r <<= 3;
@@ -1972,7 +1972,7 @@ IMrPixel_Convert(
 					b <<= 3;
 					IMmARGB_to_ARGB8888(outDstPixel->value, a, r, g, b);
 				break;
-				
+
 				case IMcPixelType_RGB888:
 					r <<= 3;
 					g <<= 3;
@@ -1981,14 +1981,14 @@ IMrPixel_Convert(
 				break;
 			}
 		break;
-		
+
 		case IMcPixelType_I8:
 		case IMcPixelType_I1:
 		case IMcPixelType_A8:
 		case IMcPixelType_A4I4:
 			UUmAssert(!"Unimplemented");
 		break;
-		
+
 		case IMcPixelType_ARGB8888:
 			IMmARGB8888_to_argb(inSrcPixel.value, a, r, g, b);
 			switch (inDstPixelType)
@@ -2000,14 +2000,14 @@ IMrPixel_Convert(
 					b >>= 4;
 					IMmARGB_to_ARGB4444(outDstPixel->value, a, r, g, b);
 				break;
-				
+
 				case IMcPixelType_RGB555:
 					r >>= 3;
 					g >>= 3;
 					b >>= 3;
 					IMmRGB_to_RGB555(outDstPixel->value, r, g, b);
 				break;
-				
+
 				case IMcPixelType_ARGB1555:
 					(a > 0) ? (a = 1) : (a = 0);
 					r >>= 3;
@@ -2015,24 +2015,24 @@ IMrPixel_Convert(
 					b >>= 3;
 					IMmARGB_to_ARGB1555(outDstPixel->value, a, r, g, b);
 				break;
-				
+
 				case IMcPixelType_I8:
 				case IMcPixelType_I1:
 				case IMcPixelType_A8:
 				case IMcPixelType_A4I4:
 					UUmAssert(!"Unimplemented");
 				break;
-				
+
 				case IMcPixelType_ARGB8888:
 					*outDstPixel = inSrcPixel;
 				break;
-				
+
 				case IMcPixelType_RGB888:
 					*outDstPixel = inSrcPixel;
 				break;
 			}
 		break;
-		
+
 		case IMcPixelType_RGB888:
 			IMmRGB888_to_rgb(inSrcPixel.value, r, g, b);
 			a = 0xFF;
@@ -2045,7 +2045,7 @@ IMrPixel_Convert(
 					b >>= 4;
 					IMmARGB_to_ARGB4444(outDstPixel->value, a, r, g, b);
 				break;
-				
+
 				case IMcPixelType_RGB555:
 					a = 0xF;
 					r >>= 3;
@@ -2053,7 +2053,7 @@ IMrPixel_Convert(
 					b >>= 3;
 					IMmRGB_to_RGB555(outDstPixel->value, r, g, b);
 				break;
-				
+
 				case IMcPixelType_ARGB1555:
 					a = 1;
 					r >>= 3;
@@ -2061,18 +2061,18 @@ IMrPixel_Convert(
 					b >>= 3;
 					IMmARGB_to_ARGB1555(outDstPixel->value, a, r, g, b);
 				break;
-				
+
 				case IMcPixelType_I8:
 				case IMcPixelType_I1:
 				case IMcPixelType_A8:
 				case IMcPixelType_A4I4:
 					UUmAssert(!"Unimplemented");
 				break;
-				
+
 				case IMcPixelType_ARGB8888:
 					*outDstPixel = inSrcPixel;
 				break;
-				
+
 				case IMcPixelType_RGB888:
 					*outDstPixel = inSrcPixel;
 				break;
@@ -2102,8 +2102,8 @@ IMrImage_ConvertPixelType(
 	}
 
 	conversionProc = IMgConvertPixelType_Table[inDstPixelType][inSrcPixelType];
-	
-	if (NULL != conversionProc) 
+
+	if (NULL != conversionProc)
 	{
 		UUtUns16 width = inWidth;
 		UUtUns16 height = inHeight;
@@ -2156,18 +2156,18 @@ IMiConvert_ARGB4444_to_ARGB8888(
 {
 	UUtUns16	x, y;
 	UUtUns32	a, r, g, b;
-	
+
 	UUtUns16*	srcPtr;
 	UUtUns32*	dstPtr;
 	UUtUns16	srcPixel;
 	UUtUns32	dstPixel;
-	
+
 	UUmAssertReadPtr(inSrcData, 2 * inWidth * inHeight);
 	UUmAssertWritePtr(outDstData, 4 * inWidth * inHeight);
 
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
@@ -2183,13 +2183,13 @@ IMiConvert_ARGB4444_to_ARGB8888(
 			r = (r << 4) | r;
 			g = (g << 4) | g;
 			b = (b << 4) | b;
-			
+
 			dstPixel = (a << 24) | (r << 16) | (g << 8) | (b << 0);
 
 			*dstPtr++ = dstPixel;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2205,36 +2205,36 @@ IMiConvert_RGB555_to_RGB888(
 {
 	UUtUns16	x, y;
 	UUtUns16	r, g, b;
-	
+
 	UUtUns16*	srcPtr;
 	UUtUns32*	dstPtr;
 	UUtUns16	pixel;
 	UUtUns32	dstPixel;
-	
+
 	UUmAssertReadPtr(inSrcData, 2 * inWidth * inHeight);
 	UUmAssertWritePtr(outDstData, 4 * inWidth * inHeight);
 
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			IMmARGB1555_to_rgb(pixel, r, g, b);
-			
+
 			r = (r << 3) | r;
 			g = (g << 3) | g;
 			b = (b << 3) | b;
-			
+
 			IMmARGB_to_ARGB8888(dstPixel, 0xFF, r, g, b);
-			
+
 			*dstPtr++ = dstPixel;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2250,27 +2250,27 @@ IMiConvert_RGB555_to_RGB_Bytes(
 {
 	UUtUns16	x, y;
 	UUtUns8	r, g, b;
-	
+
 	UUtUns16*	srcPtr;
 	UUtUns8*	dstPtr;
 	UUtUns16	pixel;
-	
+
 	UUmAssertReadPtr(inSrcData, 2 * inWidth * inHeight);
 	UUmAssertWritePtr(outDstData, 4 * inWidth * inHeight);
 
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = srcPtr[0];
-			
+
 			r = (UUtUns8) (((pixel & (0x3f << 10)) >> 10) << 3);
 			g = (UUtUns8) (((pixel & (0x3f <<  5)) >>  5) << 3);
 			b = (UUtUns8) (((pixel & (0x3f <<  0)) >>  0) << 3);
-						
+
 			dstPtr[0] = r;
 			dstPtr[1] = g;
 			dstPtr[2] = b;
@@ -2279,7 +2279,7 @@ IMiConvert_RGB555_to_RGB_Bytes(
 			dstPtr += 3;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2295,27 +2295,27 @@ IMiConvert_RGB555_to_RGBA_Bytes(
 {
 	UUtUns16	x, y;
 	UUtUns8	r, g, b;
-	
+
 	UUtUns16*	srcPtr;
 	UUtUns8*	dstPtr;
 	UUtUns16	pixel;
-	
+
 	UUmAssertReadPtr(inSrcData, 2 * inWidth * inHeight);
 	UUmAssertWritePtr(outDstData, 4 * inWidth * inHeight);
 
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = srcPtr[0];
-			
+
 			r = (UUtUns8) (((pixel & (0x3f << 10)) >> 10) << 3);
 			g = (UUtUns8) (((pixel & (0x3f <<  5)) >>  5) << 3);
 			b = (UUtUns8) (((pixel & (0x3f <<  0)) >>  0) << 3);
-						
+
 			dstPtr[0] = r;
 			dstPtr[1] = g;
 			dstPtr[2] = b;
@@ -2325,7 +2325,7 @@ IMiConvert_RGB555_to_RGBA_Bytes(
 			dstPtr += 4;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 static UUtError
@@ -2340,36 +2340,36 @@ IMiConvert_ARGB1555_to_ARGB8888(
 {
 	UUtUns16	x, y;
 	UUtUns16	r, g, b;
-	
+
 	UUtUns16*	srcPtr;
 	UUtUns32*	dstPtr;
 	UUtUns16	pixel;
 	UUtUns32	dstPixel;
-	
+
 	UUmAssertReadPtr(inSrcData, 2 * inWidth * inHeight);
 	UUmAssertWritePtr(outDstData, 4 * inWidth * inHeight);
 
 	srcPtr = inSrcData;
 	dstPtr = outDstData;
-	
+
 	for(y = 0; y < inHeight; y++)
 	{
 		for(x = 0; x < inWidth; x++)
 		{
 			pixel = *srcPtr++;
-			
+
 			IMmARGB1555_to_rgb(pixel, r, g, b);
-			
+
 			r = (r << 3) | r;
 			g = (g << 3) | g;
 			b = (b << 3) | b;
-			
+
 			IMmARGB_to_ARGB8888(dstPixel, 0xFF, r, g, b);
-			
+
 			*dstPtr++ = dstPixel;
 		}
 	}
-	
+
 	return UUcError_None;
 }
 
@@ -2388,7 +2388,7 @@ IMiConvert_ARGB4444_to_RGBA_Bytes(
 	UUtUns16 *pSrc = inSrcData;
 	UUtUns8 *pDst = outDstData;
 
-	for(loop = 0; loop < count; loop++) 
+	for(loop = 0; loop < count; loop++)
 	{
 		UUtUns8 a,r,g,b;
 
@@ -2429,7 +2429,7 @@ IMiConvert_ARGB1555_to_RGBA_Bytes(
 	UUtUns16 *pSrc = inSrcData;
 	UUtUns8 *pDst = outDstData;
 
-	for(loop = 0; loop < count; loop++) 
+	for(loop = 0; loop < count; loop++)
 	{
 		UUtUns8 a,r,g,b;
 
@@ -2472,7 +2472,7 @@ IMiConvert_RGB555_to_RGBA_5551(
 	UUtUns16 *pSrc = inSrcData;
 	UUtUns16 *pDst = outDstData;
 
-	for(loop = 0; loop < count; loop++) 
+	for(loop = 0; loop < count; loop++)
 	{
 		UUtUns16 block;
 
@@ -2502,7 +2502,7 @@ IMiConvert_ARGB1555_to_RGBA_5551(
 	UUtUns16 *pSrc = inSrcData;
 	UUtUns16 *pDst = outDstData;
 
-	for(loop = 0; loop < count; loop++) 
+	for(loop = 0; loop < count; loop++)
 	{
 		UUtUns16 block;
 
@@ -2533,7 +2533,7 @@ IMiConvert_ARGB4444_to_RGBA_4444(
 	UUtUns16 *pSrc = inSrcData;
 	UUtUns16 *pDst = outDstData;
 
-	for(loop = 0; loop < count; loop++) 
+	for(loop = 0; loop < count; loop++)
 	{
 		UUtUns16 block;
 
@@ -2563,7 +2563,7 @@ static UUtError IMiConvert_RGB888_to_RGB_Bytes(
 	UUtUns32 *pSrc = inSrcData;
 	UUtUns8 *pDst = outDstData;
 
-	for(loop = 0; loop < count; loop++) 
+	for(loop = 0; loop < count; loop++)
 	{
 		UUtUns32 chunk = *pSrc;
 		UUtUns32 r = (chunk >> 16) & 0xFF;
@@ -2654,7 +2654,7 @@ static IMtConverPixelType_LookupEntry IMgConvertPixelType_List[] =
 	{	IMcPixelType_DXT1,		IMcPixelType_RGBA_Bytes,IMiConvert_DXT1_to_NByte},
 
 	//{	IMcPixelType_DXT1,		IMcPixelType_RGB_Bytes,	IMiConvert_DXT1_to_RGB_Bytes},
-	
+
 	{	IMcPixelType_ARGB1555,	IMcPixelType_DXT1,		IMiConvert_ARGB1555_to_DXT1},
 	{	IMcPixelType_RGB555,	IMcPixelType_DXT1,		IMiConvert_ARGB1555_to_DXT1},
 
@@ -2684,7 +2684,7 @@ static void iBuild_ConvertPixelType_Table(void)
 		UUmAssert(curEntry->to < IMcNumPixelTypes);
 		UUmAssert(curEntry->from < IMcNumPixelTypes);
 		UUmAssert(NULL == IMgConvertPixelType_Table[curEntry->to][curEntry->from]);
-		
+
 		IMgConvertPixelType_Table[curEntry->to][curEntry->from] = curEntry->function;
 	}
 

@@ -33,12 +33,12 @@ void M3rSetGamma(
 	float power= 0.4f + (1.2f * (1.f - inGamma));
 
 	UUmAssert(sizeof(WORD) == sizeof(UUtUns16));
-	
+
 	if (gamma_ramp_supported)
 	{
 		UUtInt32 itr;
 		WORD new_gamma_ramp[256 * 3];
-		
+
 		for (itr= 0; itr<(256*3); itr++)
 		{
 			// WORD src_gamma = (itr % 256) << 8 | (itr % 256);
@@ -162,7 +162,7 @@ static boolean set_display_settings(
     desired_display_mode.dmPelsWidth= width;
     desired_display_mode.dmPelsHeight= height;
     desired_display_mode.dmFields= DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-	
+
 	if (M3gResolutionSwitch && // look before you leap!
 		(ChangeDisplaySettings(&desired_display_mode, CDS_TEST) == DISP_CHANGE_SUCCESSFUL))
 	{
@@ -215,7 +215,7 @@ void make_pixel_format_descriptor(
 	switch (bit_depth)
 	{
 		case 16:
-			pfd->cColorBits= 16; 
+			pfd->cColorBits= 16;
 			pfd->cDepthBits= 16;
 			break;
 		case 32:
@@ -267,25 +267,25 @@ boolean gl_create_render_context(
 	void)
 {
 	boolean success= FALSE;
-	
+
 	if (gl && gl->device_context)
 	{
 		PIXELFORMATDESCRIPTOR pfd;
 		short pixel_format;
-		
+
 		make_pixel_format_descriptor(&pfd, gl->display_mode.bitDepth);
 		pixel_format= GDI_FXN(ChoosePixelFormat)(gl->device_context, &pfd);
-		
+
 		if (pixel_format)
 		{
 			success= (UUtBool)GDI_FXN(SetPixelFormat)(gl->device_context, pixel_format, &pfd);
-			
+
 			if (success)
 			{
 				/*	Matrox cards decided to stop running with this line uncommented.
 					They used to work.. but now they don't.
 					And now, a Windows Haiku for your reading pleasure...
-					
+
 					Yesterday it worked.
 					Today it is not working.
 					Windows is like that.
@@ -480,7 +480,7 @@ void gl_platform_dispose(
 	UUmAssert(gl->render_context);
 	success= WGL_FXN(wglDeleteContext)(gl->render_context);
 	UUmAssert(success);
-	
+
 	UUmAssert(ONgPlatformData.gameWindow && (ONgPlatformData.gameWindow != INVALID_HANDLE_VALUE));
 	ReleaseDC(ONgPlatformData.gameWindow, gl->device_context);
 
@@ -497,7 +497,7 @@ void gl_platform_dispose(
 	gl_unload_opengl_dll();
 #endif
 
-	return;	
+	return;
 }
 
 
@@ -598,9 +598,9 @@ static char *gl_find_opengl_dll_from_registry(
 	{
 		HKEY registry_key= NULL;
 		long ret;
-		
+
 		ret= RegOpenKeyEx(HKEY_LOCAL_MACHINE, registry_subkey[i], 0, KEY_READ, &registry_key);
-		
+
 		if (ret == ERROR_SUCCESS)
 		{
 			long length= 256, type= REG_SZ;
@@ -610,7 +610,7 @@ static char *gl_find_opengl_dll_from_registry(
 			while ((names[j] != NULL) && !success)
 			{
 				int ret2= RegQueryValueEx(registry_key, names[j], NULL, (unsigned long*)&type, (unsigned char*)dll_filename, (unsigned long*)&length);
-				
+
 				if (ret2 == ERROR_SUCCESS)
 				{
 					success= TRUE; // found it
@@ -1162,7 +1162,7 @@ boolean gl_load_opengl_dll(
 		// 3Dfx gamma extensions (optional)
 		LOAD_GL_FUNCTION(wglSetDeviceGammaRamp3DFX);
 		LOAD_GL_FUNCTION(wglGetDeviceGammaRamp3DFX);
-	
+
 		n= sizeof(struct gl_api)/sizeof(void *);
 		for (i=0; i<n; i++)
 		{

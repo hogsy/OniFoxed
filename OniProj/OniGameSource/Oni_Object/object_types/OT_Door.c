@@ -10,7 +10,7 @@
 #include "EulerAngles.h"
 #include "Oni_Object.h"
 #include "Oni_Object_Private.h"
-#include "Oni_BinaryData.h"		
+#include "Oni_BinaryData.h"
 #include "Oni_GameStatePrivate.h"
 #include "BFW_TM_Construction.h"
 #include "Oni_Mechanics.h"
@@ -52,7 +52,7 @@ static UUtUns32					OBJgDoor_CurrentDoor;
 // ======================================================================
 // prototypes
 // ======================================================================
-	
+
 #define OBcDoorFaceAngle			1.4f // 80 degrees
 #define OBcDoorOpenUpwardsHeight	15.0f
 
@@ -107,7 +107,7 @@ static void OBJiDoor_CreateBoundingSphere( OBJtObject *inObject, OBJtOSD_Door *i
 	M3tPoint3D				new_center;
 	float					new_radius;
 	OBJtOSD_Door			*door_osd;
-	
+
 	new_center.x = 0.0f;
 	new_center.y = 0.0f;
 	new_center.z = 0.0f;
@@ -127,20 +127,20 @@ static void OBJiDoor_CreateBoundingSphere( OBJtObject *inObject, OBJtOSD_Door *i
 			sphere = &door_osd->door_class->geometry_array[0]->furn_geom[i].geometry->pointArray->boundingSphere;
 			MUmVector_Increment(new_center, sphere->center);
 		}
-	
+
 		new_center.x /= door_osd->door_class->geometry_array[0]->num_furn_geoms;
 		new_center.y /= door_osd->door_class->geometry_array[0]->num_furn_geoms;
 		new_center.z /= door_osd->door_class->geometry_array[0]->num_furn_geoms;
-		
+
 		// caculate the new radius
 		new_radius = 0.0f;
 		for (i = 0; i < door_osd->door_class->geometry_array[0]->num_furn_geoms; i++)
 		{
-			M3tVector3D			vector;			
+			M3tVector3D			vector;
 			float				temp_radius;
 			sphere = &door_osd->door_class->geometry_array[0]->furn_geom[i].geometry->pointArray->boundingSphere;
 			MUmVector_Subtract(vector, new_center, sphere->center);
-			temp_radius = MUrVector_Length(&vector) + sphere->radius;						
+			temp_radius = MUrVector_Length(&vector) + sphere->radius;
 			new_radius = UUmMax(new_radius, temp_radius);
 		}
 		if( door_osd->flags & OBJcDoorFlag_DoubleDoors )
@@ -225,7 +225,7 @@ static AKtDoorFrame* OBJrDoor_FindDoorFrameAt( M3tPoint3D *position )
 	AKtDoorFrame*	door_frame;
 	UUtUns32		i;
 	UUtUns32		door_count;
-	
+
 	door_count = ONgLevel->environment->door_frames->door_count;
 
 	for( i = 0; i < door_count; i++ )
@@ -335,7 +335,7 @@ UUtError OBJrDoor_Lock_ID( UUtUns16 inID )
 		COrConsole_Printf("locking doors of id %d", inID);
 	}
 
-	OBJrObjectType_EnumerateObjects( OBJcType_Door, OBJiDoor_LockDoors_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Door, OBJiDoor_LockDoors_Enum, (UUtUns32) inID );
 
 	return UUcError_None;
 }
@@ -350,7 +350,7 @@ UUtError OBJrDoor_Unlock_ID( UUtUns16 inID )
 		COrConsole_Printf("unlocking doors of id %d", inID);
 	}
 
-	OBJrObjectType_EnumerateObjects( OBJcType_Door, OBJiDoor_UnlockDoors_Enum, (UUtUns32) inID ); 
+	OBJrObjectType_EnumerateObjects( OBJcType_Door, OBJiDoor_UnlockDoors_Enum, (UUtUns32) inID );
 
 	return UUcError_None;
 }
@@ -507,7 +507,7 @@ void OBJrDoor_MakeConnectionLink(struct PHtConnection *ioConnection, M3tPoint3D 
 	user_data.connection = ioConnection;
 	user_data.side_test_point = inSidePoint;
 
-	OBJrObjectType_EnumerateObjects(OBJcType_Door, OBJiDoor_MakeConnectionLink_Enum, (UUtUns32) &user_data); 
+	OBJrObjectType_EnumerateObjects(OBJcType_Door, OBJiDoor_MakeConnectionLink_Enum, (UUtUns32) &user_data);
 }
 
 // ----------------------------------------------------------------------
@@ -527,17 +527,17 @@ static void OBJiDoor_DrawName( OBJtObject *inObject, M3tPoint3D *inLocation )
 		M3rTextureMap_Fill( OBJgDoor_Texture, OBJgDoor_WhiteColor, NULL);
 
 		TSrContext_SetShade(OBJgDoor_TextContext, IMcShade_Black);
-		
+
 		// get the flag's title
 		OBJrObject_GetName(inObject, name, OBJcMaxNameLength);
-		
+
 		// draw the string to the texture
 		TSrContext_DrawString( OBJgDoor_TextContext, OBJgDoor_Texture, name, &OBJgDoor_TextureBounds, &OBJgDoor_Dest);
-		
+
 		// draw the sprite
 		M3rSimpleSprite_Draw( OBJgDoor_Texture, inLocation, OBJgDoor_WidthRatio, 1.0f, IMcShade_White, M3cMaxAlpha );
 	}
-	
+
 	return;
 }
 
@@ -549,7 +549,7 @@ static void OBJiDoor_Draw_Frame( OBJtObject *inObject, UUtUns32 inDrawFlags)
 	AKtDoorFrame			*frame;
 	M3tPoint3D				center_point = { 0,0,0 };
 
-	M3tPoint3D points[4] = 
+	M3tPoint3D points[4] =
 	{
 		{ 0.0f,  0.0f,  0.0f },
 		{ 0.0f,  0.0f,  0.0f },
@@ -560,7 +560,7 @@ static void OBJiDoor_Draw_Frame( OBJtObject *inObject, UUtUns32 inDrawFlags)
 	door_osd = (OBJtOSD_Door*)inObject->object_data;
 
 	center_point	= door_osd->center_offset;
-	
+
 	frame = door_osd->door_frame;
 
 	UUmAssert( frame );
@@ -576,7 +576,7 @@ static void OBJiDoor_Draw_Frame( OBJtObject *inObject, UUtUns32 inDrawFlags)
 		door_osd->general_quad->flags &= ~AKcGQ_Flag_Invisible;
 	}
 
-	M3rMatrixStack_Push();		
+	M3rMatrixStack_Push();
 	M3rMatrixStack_ApplyTranslate(inObject->position);
 	M3rMatrixStack_Multiply(&door_osd->rotation_matrix);
 
@@ -604,7 +604,7 @@ static void OBJiDoor_Draw_Frame( OBJtObject *inObject, UUtUns32 inDrawFlags)
 
 	M3rGeom_Line_Light(&points[0], &points[2], shade);
 	M3rGeom_Line_Light(&points[1], &points[3], shade);
-	
+
 	camera_location = CArGetLocation();
 	if( MUrPoint_Distance( &frame->position, &camera_location ) < 300 )
 	{
@@ -639,7 +639,7 @@ static void _OBJrFurniture_DrawArray( OBJtFurnGeomArray* inGeometryArray, M3tMat
 		if (inDrawFlags & OBJcDrawFlag_Selected)
 		{
 			M3rMinMaxBBox_To_BBox( &inGeometryArray->furn_geom[i].geometry->pointArray->minmax_boundingBox, &bBox);
-			
+
 			M3rBBox_Draw_Line(&bBox, IMcShade_White);
 		}
 		// draw the geometry
@@ -678,7 +678,7 @@ static void OBJiDoor_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 
 	OBJtFurnGeomArray		*geometry_array;
 
-	M3tPoint3D points[4] = 
+	M3tPoint3D points[4] =
 	{
 		{ 0.0f,  0.0f,  0.0f },
 		{ 0.0f,  0.0f,  0.0f },
@@ -686,7 +686,7 @@ static void OBJiDoor_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 		{ 0.0f,  0.0f,  0.0f }
 	};
 
-	if( !OBJgDoor_DrawDoor )						return;	
+	if( !OBJgDoor_DrawDoor )						return;
 
 	door_osd = (OBJtOSD_Door*)inObject->object_data;
 
@@ -706,21 +706,21 @@ static void OBJiDoor_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 		M3tMatrix4x3 matrix_stack[2];
 
 		UUmAssert(door_osd->door_class->geometry_array[0]);
-		
+
 		if (door_osd->door_class->geometry_array[0] == NULL)	return;
-		
+
 		{
 			MUrMatrix_BuildTranslate(inObject->position.x, inObject->position.y, inObject->position.z, matrix_stack + 0);
 			MUrMatrixStack_Matrix(matrix_stack + 0, &door_osd->rotation_matrix);
-		
+
 			MUrMatrix_BuildRotateX(M3c2Pi -M3cHalfPi,&m1);
-			
+
 			// door 1
 			{
 				matrix_stack[1] = matrix_stack[0];
-				MUrMatrixStack_Matrix(matrix_stack + 1, &door_osd->door_matrix[0]);	
+				MUrMatrixStack_Matrix(matrix_stack + 1, &door_osd->door_matrix[0]);
 				MUrMatrixStack_Matrix(matrix_stack + 1, &m1);
-				MUrMatrixStack_Matrix(matrix_stack + 1, &door_osd->animation_matrix);				
+				MUrMatrixStack_Matrix(matrix_stack + 1, &door_osd->animation_matrix);
 
 				_OBJrFurniture_DrawArray(door_osd->door_class->geometry_array[0], matrix_stack + 1, inDrawFlags, door_osd->door_texture_ptr[0] );
 			}
@@ -734,7 +734,7 @@ static void OBJiDoor_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 				MUrMatrixStack_Matrix(matrix_stack + 1, &m1);
 
 				if( door_osd->flags & OBJcDoorFlag_TestMode )
-				{				
+				{
 					MUrMatrix_BuildRotateY( M3cPi, &m1 );
 					MUrMatrix_RotateZ( &m1, M3cPi );
 					MUrMatrixStack_Matrix(matrix_stack + 1, &m1);
@@ -760,7 +760,7 @@ static void OBJiDoor_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 	// draw the rotation rings if this is the selected object
 	if (inDrawFlags & OBJcDrawFlag_Selected)
 	{
-		M3rMatrixStack_Push();		
+		M3rMatrixStack_Push();
 		{
 			MUrMatrix_BuildRotateX(M3c2Pi-M3cHalfPi,&m1);
 			M3rMatrixStack_ApplyTranslate(inObject->position);
@@ -771,30 +771,30 @@ static void OBJiDoor_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 
 			if( door_osd->door_class )
 			{
-				M3rMatrixStack_Push();		
+				M3rMatrixStack_Push();
 				M3rMatrixStack_Multiply(&door_osd->door_matrix[0]);
 				M3rMatrixStack_Multiply(&m1);
 				for (i = 0; i < door_osd->door_class->geometry_array[0]->num_furn_geoms; i++)
 				{
 					M3rMinMaxBBox_To_BBox( &door_osd->door_class->geometry_array[0]->furn_geom[i].geometry->pointArray->minmax_boundingBox, &bBox);
-				
+
 					M3rBBox_Draw_Line(&bBox, IMcShade_White);
-				}				
-				M3rMatrixStack_Pop();		
+				}
+				M3rMatrixStack_Pop();
 				if( door_osd->flags & OBJcDoorFlag_DoubleDoors )
 				{
 					geometry_array = door_osd->door_class->geometry_array[1] ? door_osd->door_class->geometry_array[1] : door_osd->door_class->geometry_array[0];
-					M3rMatrixStack_Push();		
+					M3rMatrixStack_Push();
 					M3rMatrixStack_Multiply(&door_osd->door_matrix[1]);
 					M3rMatrixStack_Multiply(&m1);
 					for (i = 0; i < geometry_array->num_furn_geoms; i++)
 					{
 						M3rMinMaxBBox_To_BBox( &geometry_array->furn_geom[i].geometry->pointArray->minmax_boundingBox, &bBox);
-					
+
 						M3rBBox_Draw_Line(&bBox, IMcShade_White);
 					}
-					M3rMatrixStack_Pop();		
-				}				
+					M3rMatrixStack_Pop();
+				}
 			}
 			else if( door_osd->door_frame )
 			{
@@ -805,7 +805,7 @@ static void OBJiDoor_Draw( OBJtObject *inObject, UUtUns32 inDrawFlags)
 	else if( OBJgDoor_ShowActivationCircles )
 	{
 		M3tPoint3D				circle_center = { 0,0.5,0 };
-		M3rMatrixStack_Push();		
+		M3rMatrixStack_Push();
 			M3rMatrixStack_ApplyTranslate(inObject->position);
 			M3rMatrixStack_Multiply(&door_osd->rotation_matrix);
 			M3rGeom_State_Commit();
@@ -825,7 +825,7 @@ static UUtError OBJiDoor_Enumerate( OBJtObject *inObject, OBJtEnumCallback_Objec
 static void OBJiDoor_GetBoundingSphere( const OBJtObject *inObject, M3tBoundingSphere *outBoundingSphere )
 {
 	OBJtOSD_Door		*door_osd;
-	
+
 	door_osd = (OBJtOSD_Door*)inObject->object_data;
 
 	*outBoundingSphere = door_osd->bounding_sphere;
@@ -838,20 +838,20 @@ static void OBJiDoor_OSDGetName( const OBJtOSD_All *inObject, char *outName, UUt
 	char				name[100];
 
 	if( door_osd->door_class )
-		sprintf( name, "door_%02d", door_osd->id );	
+		sprintf( name, "door_%02d", door_osd->id );
 	else
-		sprintf( name, "door_frame_%02d", door_osd->id );	
+		sprintf( name, "door_frame_%02d", door_osd->id );
 
-	UUrString_Copy(outName, name, inNameLength);	
+	UUrString_Copy(outName, name, inNameLength);
 
 }
 // ----------------------------------------------------------------------
 static void OBJiDoor_GetOSD( const OBJtObject *inObject, OBJtOSD_All *outOSD)
 {
 	OBJtOSD_Door		*door_osd;
-	
+
 	door_osd = (OBJtOSD_Door*)inObject->object_data;
-	
+
 	UUrMemory_MoveFast( door_osd, &outOSD->osd.door_osd, sizeof(OBJtOSD_Door) );
 
 	ONrEventList_Copy( &door_osd->event_list, &outOSD->osd.door_osd.event_list );
@@ -868,14 +868,14 @@ static UUtBool OBJiDoor_IntersectsLine( const OBJtObject	*inObject, const M3tPoi
 	{
 
 		UUrMemory_Clear(&sphere, sizeof(M3tBoundingSphere));
-		
+
 		// get the bounding sphere
 		OBJiDoor_GetBoundingSphere(inObject, &sphere);
-		
+
 		sphere.center.x += inObject->position.x;
 		sphere.center.y += inObject->position.y;
 		sphere.center.z += inObject->position.z;
-		
+
 		// do the fast test to see if the line is colliding with the bounding sphere
 		result = CLrSphere_Line(inStartPoint, inEndPoint, &sphere);
 		if (result == UUcTrue)
@@ -910,7 +910,7 @@ static UUtBool OBJiDoor_IntersectsLine( const OBJtObject	*inObject, const M3tPoi
 			// calculate a start point and an end poing in object space
 			MUrMatrix_MultiplyPoint(inStartPoint, &inverse_matrix, &start_point);
 			MUrMatrix_MultiplyPoint(inEndPoint, &inverse_matrix, &end_point);
-		
+
 			if (door_osd->door_class == NULL) {
 				// CB: just a door frame... return TRUE if intersects anywhere on bounding sphere
 				// this isn't the best solution, but it's quick and doesn't crash
@@ -922,7 +922,7 @@ static UUtBool OBJiDoor_IntersectsLine( const OBJtObject	*inObject, const M3tPoi
 					if (result == UUcTrue)  break;
 				}
 			}
-			
+
 			if( !result && ( door_osd->flags & OBJcDoorFlag_DoubleDoors ) && (door_osd->door_class != NULL))
 			{
 				geometry_array = door_osd->door_class->geometry_array[1] ? door_osd->door_class->geometry_array[1] : door_osd->door_class->geometry_array[0];
@@ -937,7 +937,7 @@ static UUtBool OBJiDoor_IntersectsLine( const OBJtObject	*inObject, const M3tPoi
 				MUrMatrix_Translate(&inverse_matrix, &neg_position);
 
 				MUrMatrix_Multiply( &max_matrix, &inverse_matrix, &inverse_matrix );
-			
+
 				// calculate a start point and an end poing in object space
 				MUrMatrix_MultiplyPoint(inStartPoint, &inverse_matrix, &start_point);
 				MUrMatrix_MultiplyPoint(inEndPoint, &inverse_matrix, &end_point);
@@ -963,20 +963,20 @@ static UUtError OBJiDoor_SetDefaults(OBJtOSD_All *outOSD)
 	void					*instances[OBJcMaxInstances];
 	UUtUns32				num_instances;
 	char					*instance_name;
-	
+
 	// clear the osd
 	UUrMemory_Clear(&outOSD->osd.door_osd, sizeof(OBJtOSD_Door));
-	
+
 	// get a list of instances of the class
 	error = TMrInstance_GetDataPtr_List( OBJcTemplate_DoorClass, OBJcMaxInstances, &num_instances, instances);
 	UUmError_ReturnOnError(error);
-	
+
 	// error out if we have no door instances
 	if(!num_instances)			return UUcError_Generic;
 
 	// copy the name of the first door template name
-	instance_name = TMrInstance_GetInstanceName(instances[0]);		
-	
+	instance_name = TMrInstance_GetInstanceName(instances[0]);
+
 	UUrString_Copy( outOSD->osd.door_osd.door_class_name, instance_name, OBJcMaxNameLength);
 
 	// default initial data
@@ -985,7 +985,7 @@ static UUtError OBJiDoor_SetDefaults(OBJtOSD_All *outOSD)
 	outOSD->osd.door_osd.activation_radius_squared	= UUmSQR( UUmFeetToUnits( 10 ) );
 	outOSD->osd.door_osd.door_texture[0][0]			= 0;
 	outOSD->osd.door_osd.door_texture[1][0]			= 0;
-	
+
 	// initialize the event list
 	ONrEventList_Initialize( &outOSD->osd.door_osd.event_list );
 
@@ -997,9 +997,9 @@ static UUtError OBJiDoor_New( OBJtObject *inObject, const OBJtOSD_All *inOSD)
 {
 	OBJtOSD_All				osd_all;
 	UUtError				error;
-	
+
 	if (inOSD == NULL)
-	{	
+	{
 		error = OBJiDoor_SetDefaults(&osd_all);
 		UUmError_ReturnOnError(error);
 
@@ -1007,8 +1007,8 @@ static UUtError OBJiDoor_New( OBJtObject *inObject, const OBJtOSD_All *inOSD)
 	}
 	else
 	{
-		// this is a door frame created at level load 
-		if( inOSD->osd.door_osd.id == 0xFFFF ) 
+		// this is a door frame created at level load
+		if( inOSD->osd.door_osd.id == 0xFFFF )
 		{
 			osd_all.osd.door_osd.id							= ONrMechanics_GetNextID( OBJcType_Door );
 			osd_all.osd.door_osd.flags						= OBJcDoorFlag_InDoorFrame | OBJcDoorFlag_TestMode;
@@ -1022,17 +1022,17 @@ static UUtError OBJiDoor_New( OBJtObject *inObject, const OBJtOSD_All *inOSD)
 			osd_all.osd.door_osd.activation_radius_squared	= inOSD->osd.door_osd.activation_radius_squared;
 			UUrString_Copy( osd_all.osd.door_osd.door_texture[0],	inOSD->osd.door_osd.door_texture[0],			OBJcMaxNameLength );
 			UUrString_Copy( osd_all.osd.door_osd.door_texture[1],	inOSD->osd.door_osd.door_texture[1],			OBJcMaxNameLength );
-			
+
 			ONrEventList_Initialize( &osd_all.osd.door_osd.event_list );
 
 			inOSD = &osd_all;
 		}
 	}
-	
+
 	// set the object specific data and position
 	OBJiDoor_SetOSD(inObject, inOSD);
 	OBJiDoor_UpdatePosition(inObject);
-	
+
 	return UUcError_None;
 }
 // ----------------------------------------------------------------------
@@ -1115,7 +1115,7 @@ static UUtError OBJiDoor_SetOSD( OBJtObject *inObject, const OBJtOSD_All *inOSD)
 		door_osd->center_offset.x = 0;
 		door_osd->center_offset.z = 0;
 	}
-	
+
 	if( door_osd->flags & OBJcDoorFlag_DoubleDoors )
 	{
 		//door_osd->center_offset
@@ -1200,12 +1200,12 @@ static void OBJiDoor_UpdatePosition( OBJtObject *inObject)
 
 	// get a pointer to the object osd
 	door_osd = (OBJtOSD_Door*)inObject->object_data;
-	
+
 	// convert the rotation to radians
 	rot_x = inObject->rotation.x * M3cDegToRad;
 	rot_y = inObject->rotation.y * M3cDegToRad;
 	rot_z = inObject->rotation.z * M3cDegToRad;
-	
+
 	// update the rotation matrix
 	euler.order = MUcEulerOrderXYZs;
 	euler.x = rot_x;
@@ -1238,14 +1238,14 @@ static UUtUns32 OBJiDoor_Read_v1( OBJtObject *inObject, UUtUns16 inVersion, UUtB
 
 	door_osd->flags &= OBJcDoorFlag_Persist;
 
-	num_bytes = 
-		OBJcMaxNameLength + 
-		sizeof(UUtUns16) + 
+	num_bytes =
+		OBJcMaxNameLength +
 		sizeof(UUtUns16) +
 		sizeof(UUtUns16) +
-		sizeof(float) + 
-		sizeof(float) + 
-		sizeof(float) + 
+		sizeof(UUtUns16) +
+		sizeof(float) +
+		sizeof(float) +
+		sizeof(float) +
 		sizeof(float);
 
 	// initialize and read the event list
@@ -1256,7 +1256,7 @@ static UUtUns32 OBJiDoor_Read_v1( OBJtObject *inObject, UUtUns16 inVersion, UUtB
 	OBJiDoor_SetOSD(inObject, &osd_all);
 
 	OBJiDoor_UpdatePosition(inObject);
-		
+
 	return num_bytes;
 }
 
@@ -1286,16 +1286,16 @@ static UUtUns32 OBJiDoor_Read_v2( OBJtObject *inObject, UUtUns16 inVersion, UUtB
 
 	door_osd->flags &= OBJcDoorFlag_Persist;
 
-	num_bytes = 
-		OBJcMaxNameLength + 
-		sizeof(UUtUns16) + 
+	num_bytes =
+		OBJcMaxNameLength +
 		sizeof(UUtUns16) +
 		sizeof(UUtUns16) +
-		sizeof(float) + 
-		sizeof(float) + 
-		sizeof(float) + 
+		sizeof(UUtUns16) +
 		sizeof(float) +
-		OBJcMaxNameLength + 
+		sizeof(float) +
+		sizeof(float) +
+		sizeof(float) +
+		OBJcMaxNameLength +
 		OBJcMaxNameLength;
 
 	// initialize and read the event list
@@ -1306,7 +1306,7 @@ static UUtUns32 OBJiDoor_Read_v2( OBJtObject *inObject, UUtUns16 inVersion, UUtB
 	OBJiDoor_SetOSD(inObject, &osd_all);
 
 	OBJiDoor_UpdatePosition(inObject);
-		
+
 	return num_bytes;
 }
 
@@ -1332,10 +1332,10 @@ static UUtError OBJiDoor_Write( OBJtObject *inObject, UUtUns8 *ioBuffer, UUtUns3
 	UUtUns32				bytes_available;
 
 	door_osd = (OBJtOSD_Door*)inObject->object_data;
-	
+
 	// set the number of bytes available
 	bytes_available = *ioBufferSize;
-		
+
 	// put the geometry name in the buffer
 	OBJmWriteStringToBuffer(ioBuffer, door_osd->door_class_name,				OBJcMaxNameLength, bytes_available, OBJcWrite_Little);
 	OBJmWrite2BytesToBuffer(ioBuffer, door_osd->id,								UUtUns16, bytes_available, OBJcWrite_Little);
@@ -1352,7 +1352,7 @@ static UUtError OBJiDoor_Write( OBJtObject *inObject, UUtUns8 *ioBuffer, UUtUns3
 
 	// set ioBufferSize to the number of bytes written to the buffer
 	*ioBufferSize = *ioBufferSize - bytes_available;
-	
+
 	return UUcError_None;
 }
 // ----------------------------------------------------------------------
@@ -1360,21 +1360,21 @@ static UUtUns32 OBJiDoor_GetOSDWriteSize( const OBJtObject *inObject )
 {
 	OBJtOSD_Door		*door_osd;
 	UUtUns32				size;
-	
+
 	// get a pointer to the door_osd
 	door_osd = (OBJtOSD_Door*)inObject->object_data;
-	
+
 	// calculate the number of bytes needed to save the OSD
-	size = 
-		OBJcMaxNameLength + 
-		sizeof(UUtUns16) + 
-		sizeof(UUtUns16) + 
+	size =
+		OBJcMaxNameLength +
+		sizeof(UUtUns16) +
+		sizeof(UUtUns16) +
 		sizeof(UUtUns16) +
 		sizeof(float) +
 		sizeof(float) +
 		sizeof(float) +
 		sizeof(float) +
-		OBJcMaxNameLength + 
+		OBJcMaxNameLength +
 		OBJcMaxNameLength;
 
 	size += ONrEventList_GetWriteSize( &door_osd->event_list );
@@ -1391,10 +1391,10 @@ static UUtBool OBJiDoor_Search( const OBJtObject *inObject, const UUtUns32 inSea
 {
 	OBJtOSD_Door		*door_osd;
 	UUtBool				found;
-	
+
 	// get a pointer to the object osd
 	door_osd = (OBJtOSD_Door *) inObject->object_data;
-	
+
 	// perform the check
 	switch (inSearchType)
 	{
@@ -1406,7 +1406,7 @@ static UUtBool OBJiDoor_Search( const OBJtObject *inObject, const UUtUns32 inSea
 			found = UUcFalse;
 		break;
 	}
-	
+
 	return found;
 }
 
@@ -1447,9 +1447,9 @@ UUtError OBJrDoor_DrawInitialize(void)
 		UUtError				error;
 		TStFontFamily			*font_family;
 		IMtPixelType			textureFormat;
-		
+
 		M3rDrawEngine_FindGrayscalePixelType(&textureFormat);
-		
+
 		OBJgDoor_WhiteColor = IMrPixel_FromShade(textureFormat, IMcShade_White);
 
 		error = TSrFontFamily_Get(TScFontFamily_Default, &font_family);
@@ -1457,23 +1457,23 @@ UUtError OBJrDoor_DrawInitialize(void)
 		{
 			goto cleanup;
 		}
-		
+
 		error = TSrContext_New(font_family, TScFontSize_Default, TScStyle_Bold, TSc_HLeft, UUcFalse, &OBJgDoor_TextContext);
 		if (error != UUcError_None)
 		{
 			goto cleanup;
 		}
-		
+
 		OBJgDoor_Dest.x = 2;
 		OBJgDoor_Dest.y = TSrFont_GetLeadingHeight(TSrContext_GetFont(OBJgDoor_TextContext, TScStyle_InUse)) + TSrFont_GetAscendingHeight(TSrContext_GetFont(OBJgDoor_TextContext, TScStyle_InUse));
-		
+
 		TSrContext_GetStringRect(OBJgDoor_TextContext, "XXXX-XXXXX-XX", &OBJgDoor_TextureBounds);
-		
+
 		OBJgDoor_TextureWidth = OBJgDoor_TextureBounds.right;
 		OBJgDoor_TextureHeight = OBJgDoor_TextureBounds.bottom;
-		
+
 		OBJgDoor_WidthRatio = (float)OBJgDoor_TextureWidth / (float)OBJgDoor_TextureHeight;
-		
+
 		error = M3rTextureMap_New( OBJgDoor_TextureWidth, OBJgDoor_TextureHeight, textureFormat, M3cTexture_AllocMemory, M3cTextureFlags_None, "Door texture", &OBJgDoor_Texture);
 		if (error != UUcError_None)
 		{
@@ -1482,7 +1482,7 @@ UUtError OBJrDoor_DrawInitialize(void)
 
 		OBJgDoor_DrawInitialized = UUcTrue;
 	}
-	
+
 	return UUcError_None;
 
 cleanup:
@@ -1515,13 +1515,13 @@ OBJrDoor_DrawTerminate(
 // ==========================================================================================
 
 static UUtError OBJrDoor_AddEvent( OBJtOSD_Door *inDoor_osd, ONtEvent *inEvent )
-{	
+{
 	ONrEventList_AddEvent( &inDoor_osd->event_list, inEvent );
 	return UUcError_None;
 }
 
 static UUtError OBJrDoor_DeleteEvent( OBJtOSD_Door *inDoor_osd, UUtUns32 inIndex )
-{	
+{
 	ONrEventList_DeleteEvent( &inDoor_osd->event_list, inIndex );
 	return UUcError_None;
 }
@@ -1588,7 +1588,7 @@ static UUtBool OBJrDoor_CharacterOnSide( ONtCharacter* inCharacter, OBJtObject *
 static UUtBool OBJrDoor_NeedToCheckNearbyCharacters(OBJtObject *inObject)
 {
 	OBJtOSD_Door			*door_osd;
-	
+
 	UUmAssert( inObject->object_type == OBJcType_Door );
 
 	door_osd = (OBJtOSD_Door*)inObject->object_data;
@@ -1624,29 +1624,29 @@ static UUtBool OBJrDoor_NeedToCheckNearbyCharacters(OBJtObject *inObject)
 UUtBool OBJrDoor_IsOpen(OBJtObject *inObject)
 {
 	OBJtOSD_Door			*door_osd;
-	
+
 	UUmAssert( inObject->object_type == OBJcType_Door );
 
 	door_osd = (OBJtOSD_Door*)inObject->object_data;
-	
+
 	return (door_osd->state == OBJcDoorState_Open);
 }
 
 UUtBool OBJrDoor_OpensManually(OBJtObject *inObject)
 {
 	OBJtOSD_Door			*door_osd;
-	
+
 	UUmAssert( inObject->object_type == OBJcType_Door );
 
 	door_osd = (OBJtOSD_Door*)inObject->object_data;
-	
+
 	return (door_osd->flags & OBJcDoorFlag_Manual);
 }
 
 UUtBool OBJrDoor_CharacterCanOpen( ONtCharacter* inCharacter, OBJtObject *inObject, UUtUns8 inSide )
 {
 	OBJtOSD_Door			*door_osd;
-	
+
 	UUmAssert( inObject->object_type == OBJcType_Door );
 
 	door_osd = (OBJtOSD_Door*)inObject->object_data;
@@ -1687,7 +1687,7 @@ UUtBool OBJrDoor_CharacterOpen( ONtCharacter* inCharacter, OBJtObject *inObject 
 {
 	UUtUns8 side = OBJrDoor_CharacterOnSide(inCharacter, inObject);
 
-	// see if we can open 
+	// see if we can open
 	if (OBJrDoor_CharacterCanOpen( inCharacter, inObject, side))
 	{
 		OBJrDoor_Open( inObject, inCharacter );
@@ -1721,7 +1721,7 @@ static void OBJrDoor_Close( OBJtObject *inObject )
 	}
 
 	if( door_osd->state != OBJcDoorState_Closed )
-	{		
+	{
 		door_osd->state	= OBJcDoorState_Closed;
 
 		if (door_osd->flags & OBJcDoorFlag_Busy) {
@@ -1828,7 +1828,7 @@ static void OBJrDoor_HideShowGunk(OBJtOSD_Door *door_osd, OBJtDoor_HideShowGunk 
 		UUtUns32 itr;
 
 		if (OBJcDoor_HideGunk == hideShow) {
-			for(itr = 0; itr < count; itr++) 
+			for(itr = 0; itr < count; itr++)
 			{
 				UUtUns32 gq_index = indices[itr];
 
@@ -1836,7 +1836,7 @@ static void OBJrDoor_HideShowGunk(OBJtOSD_Door *door_osd, OBJtDoor_HideShowGunk 
 			}
 		}
 		else {
-			for(itr = 0; itr < count; itr++) 
+			for(itr = 0; itr < count; itr++)
 			{
 				UUtUns32 gq_index = indices[itr];
 
@@ -1852,7 +1852,7 @@ exit:
 
 void OBJrDoor_Open( OBJtObject *inObject, ONtCharacter *inCharacter )
 {
-	
+
 	OBJtOSD_Door			*door_osd;
 	UUtUns16				frame_start;
 	UUtUns16				frame_stop;
@@ -1863,18 +1863,18 @@ void OBJrDoor_Open( OBJtObject *inObject, ONtCharacter *inCharacter )
 
 	UUmAssert( inObject->object_type == OBJcType_Door );
 
-	door_osd = (OBJtOSD_Door*) inObject->object_data;	
+	door_osd = (OBJtOSD_Door*) inObject->object_data;
 	if (door_osd->door_class == NULL) {
 		goto exit;
 	}
-	
+
 	anim = door_osd->door_class->animation;
 	if (!anim) {
 		goto exit;
 	}
 
 	if( door_osd->state != OBJcDoorState_Open )
-	{		
+	{
 		if (door_osd->flags & OBJcDoorFlag_Busy) {
 			// we are opening a door that was in the process of closing
 			UUmAssert(door_osd->internal_door_object[0] != NULL);
@@ -1902,7 +1902,7 @@ void OBJrDoor_Open( OBJtObject *inObject, ONtCharacter *inCharacter )
 
 				door_object		= door_osd->internal_door_object[0];
 				anim_context	= &door_object->physics->animContext;
-			
+
 	//			if( anim_context->animationFrame == 0 )	// Handles doors that have never animated yet
 	//				anim_context->animationFrame = anim->numFrames-1;
 
@@ -1911,14 +1911,14 @@ void OBJrDoor_Open( OBJtObject *inObject, ONtCharacter *inCharacter )
 
 				OBrSetAnimation( door_object, anim, frame_start, frame_stop );
 	//			anim_context->animationFrame = anim->numFrames - anim_context->animationFrame - 1;
-					
+
 				OBrShow( door_object, UUcTrue );
 
 				if( door_osd->internal_door_object[1] )
 				{
 					door_object		= door_osd->internal_door_object[1];
 					anim_context	= &door_object->physics->animContext;
-			
+
 	//				if( anim_context->animationFrame == 0 )	// Handles doors that have never animated yet
 	//					anim_context->animationFrame = anim->numFrames-1;
 
@@ -1927,10 +1927,10 @@ void OBJrDoor_Open( OBJtObject *inObject, ONtCharacter *inCharacter )
 
 					OBrSetAnimation( door_object, anim, frame_start, frame_stop );
 	//				anim_context->animationFrame = anim->numFrames - anim_context->animationFrame - 1;
-					
+
 					OBrShow( door_object, UUcTrue );
 				}
-				
+
 			}
 			else
 			{
@@ -2002,7 +2002,7 @@ UUtBool OBJrDoor_CharacterProximity( OBJtObject *inObject, ONtCharacter *inChara
 	float				distance_squared;
 	UUtBool				proximate;
 	OBJtOSD_Door		*door_osd;
-	
+
 	UUmAssert( inObject );
 	UUmAssert( inObject->object_type == OBJcType_Door );
 
@@ -2035,7 +2035,7 @@ static ONtCharacter* OBJiDoor_ProximityDetection( OBJtObject* inObject )
 			UUmAssert( character->flags & ONcCharacterFlag_InUse );
 			UUmAssert(!(character->flags & ONcCharacterFlag_Dead));
 
-			if (OBJrDoor_CharacterProximity(inObject,character)) 
+			if (OBJrDoor_CharacterProximity(inObject,character))
 			{
 				side = OBJrDoor_CharacterOnSide(character, inObject);
 				if (OBJrDoor_CharacterCanOpen(character, inObject, side)) {
@@ -2107,7 +2107,7 @@ static void OBJiDoor_UpdateAnimation( OBJtObject *inObject )
 	{
 		anim_context->animationFrame = anim_context->animationStop;
 	}
-	
+
 	anim_context->animation = anim;
 
 	OBrAnim_Matrix( anim_context, &door_osd->animation_matrix);
@@ -2119,7 +2119,7 @@ static void OBJrDoor_Update( OBJtObject *inObject )
 	ONtCharacter		*character;
 	UUtUns16			anim_frame;
 	PHtPhysicsContext	*blocking_context;
-	
+
 	UUmAssert( inObject && inObject->object_type == OBJcType_Door );
 
 	door_osd = (OBJtOSD_Door*) inObject->object_data;
@@ -2127,7 +2127,7 @@ static void OBJrDoor_Update( OBJtObject *inObject )
 	// ok, we skip out of this function immediately if the door is in a closed state
 	if( !door_osd->internal_door_object[0] && !door_osd->door_class )
 	{
-		return;	
+		return;
 	}
 	else if( door_osd->internal_door_object[0] )
 	{
@@ -2236,12 +2236,12 @@ static void OBJrDoor_Update( OBJtObject *inObject )
 		character = OBJiDoor_ProximityDetection(inObject);
 		if (character)
 		{
-			if( door_osd->state == OBJcDoorState_Closed ) 
+			if( door_osd->state == OBJcDoorState_Closed )
 				OBJrDoor_Open(inObject, character);
 		}
 		else if ((door_osd->flags & OBJcDoorFlag_Busy) == 0)
 		{
-			if( door_osd->state == OBJcDoorState_Open ) 
+			if( door_osd->state == OBJcDoorState_Open )
 				OBJrDoor_Close( inObject );
 		}
 	}
@@ -2342,7 +2342,7 @@ UUtBool OBJrDoor_TryDoorAction(ONtCharacter *inCharacter, OBJtObject **outCloses
 	user_data.best_door = NULL;
 	user_data.best_door_canopen = UUcFalse;
 
-	OBJrObjectType_EnumerateObjects(OBJcType_Door, OBJiDoor_TryActionEvent_Enum, (UUtUns32) &user_data); 
+	OBJrObjectType_EnumerateObjects(OBJcType_Door, OBJiDoor_TryActionEvent_Enum, (UUtUns32) &user_data);
 
 	*outClosestDoor = user_data.best_door;
 	return user_data.best_door_canopen;
@@ -2399,7 +2399,7 @@ static void OBJrDoor_JumpToDoor( UUtUns32 inIndex )
 void OBJrDoor_JumpToNextDoor()
 {
 	UUtUns32		count;
-	
+
 	count = OBJrObjectType_GetNumObjects( OBJcType_Door );
 
 	if( count == 0 )
@@ -2415,7 +2415,7 @@ void OBJrDoor_JumpToNextDoor()
 void OBJrDoor_JumpToPrevDoor()
 {
 	UUtUns32		count;
-	
+
 	count = OBJrObjectType_GetNumObjects( OBJcType_Door );
 
 	if( count == 0 )
@@ -2497,7 +2497,7 @@ static OBJtObject* OBJrDoor_CreateDoorFrame( AKtDoorFrame* inDoorFrame )
 	osd									= &door_osd;
 
 	level								= ONgLevel;
-	env									= level->environment;	
+	env									= level->environment;
 
 	door_frame							= inDoorFrame;
 	gq_index							= door_frame->gq_index;
@@ -2538,8 +2538,8 @@ static OBJtObject* OBJrDoor_CreateDoorFrame( AKtDoorFrame* inDoorFrame )
 
 	object								= OBJrSelectedObjects_GetSelectedObject(0);
 
-	object->flags						|= OBJcObjectFlag_Temporary;		
-	
+	object->flags						|= OBJcObjectFlag_Temporary;
+
 	OBJiDoor_CreateBoundingSphere( object, &door_osd );
 
 	return UUcError_None;
@@ -2550,20 +2550,20 @@ static OBtObjectSetup *GetDoorSetup(UUtUns16 inID)
 	/******************
 	* obj_create id id
 	*/
-		
+
 	OBtObjectSetup *setup = NULL;
 	UUtUns32 i;
-	
+
 	for (i=0; i < ONgGameState->level->objectSetupArray->numObjects; i++)
 	{
 		OBtObjectSetup *test_setup = ONgGameState->level->objectSetupArray->objects + i;
 
-		if (inID == test_setup->doorScriptID) {		
+		if (inID == test_setup->doorScriptID) {
 			setup = test_setup;
 			break;
 		}
 	}
-	
+
 	return setup;
 }
 
@@ -2575,9 +2575,9 @@ static void CreateDoorObjects(OBJtObject *inDoor)
 	if (door_osd->internal_door_object_setup[0]) {
 		door_osd->internal_door_object_setup[0]->flags = OBcFlags_InUse | OBcFlags_FaceCollision;
 		object = OBrList_Add(ONgGameState->objects);
-		
-		OBrInit(object, door_osd->internal_door_object_setup[0]);	
-		
+
+		OBrInit(object, door_osd->internal_door_object_setup[0]);
+
 		object->flags |= OBcFlags_FlatLighting;
 		object->flat_lighting_shade = door_osd->shade;
 
@@ -2588,7 +2588,7 @@ static void CreateDoorObjects(OBJtObject *inDoor)
 		door_osd->internal_door_object_setup[1]->flags = OBcFlags_InUse | OBcFlags_FaceCollision;
 		object = OBrList_Add(ONgGameState->objects);
 
-		OBrInit(object, door_osd->internal_door_object_setup[1]);			
+		OBrInit(object, door_osd->internal_door_object_setup[1]);
 
 		object->flags |= OBcFlags_FlatLighting;
 		object->flat_lighting_shade = door_osd->shade;
@@ -2652,7 +2652,7 @@ static UUtError OBJrDoor_LevelBegin( OBJtObject* object )
 	OBJtOSD_Door*			osd;
 	UUtUns32				gq_index;
 	UUtUns32				tag;
-	ONtObjectGunk*			gunk;		
+	ONtObjectGunk*			gunk;
 
 	UUmAssert( ONgLevel && ONgLevel->environment );
 
@@ -2661,12 +2661,12 @@ static UUtError OBJrDoor_LevelBegin( OBJtObject* object )
 	env			= level->environment;
 
 	osd			= (OBJtOSD_Door*) object->object_data;
-	
+
 	// if this door has a frame, setup frame attachment
 	if( osd->flags & OBJcDoorFlag_InDoorFrame )
 	{
 		door_frame	= OBJrDoor_FindDoorFrameAt( &osd->door_frame_position );
-		
+
 		if( !door_frame) {
 			osd->door_frame		= NULL;
 			osd->render_quad	= NULL;
@@ -2678,7 +2678,7 @@ static UUtError OBJrDoor_LevelBegin( OBJtObject* object )
 			quad				= &env->gqGeneralArray->gqGeneral[ gq_index ];
 			rend				= &env->gqRenderArray->gqRender[ gq_index ];
 			collision			= &env->gqCollisionArray->gqCollision[ gq_index ];
-			
+
 			osd->door_frame		= door_frame;
 			osd->render_quad	= rend;
 			osd->general_quad	= quad;
@@ -2717,7 +2717,7 @@ static UUtError OBJrDoor_LevelBegin( OBJtObject* object )
 	}
 
 	osd->flags |= OBJcDoorFlag_TestMode;
-	
+
 	OBJtDoor_Reset( object );
 
 	return UUcError_None;
@@ -2744,7 +2744,7 @@ static UUtError OBJtDoor_Mechanics_LevelBegin( ONtMechanicsClass* inClass )
 	// init all the loaded objects
 	ONrMechanics_Default_ClassMethod_LevelBegin( inClass );
 
-	if( !OBJrObjectType_IsLocked(OBJcTemplate_DoorClass) ) 
+	if( !OBJrObjectType_IsLocked(OBJcTemplate_DoorClass) )
 	{
 		// setup empty door frames...
 		for( i = 0; i < env->door_frames->door_count; i++ )
@@ -2774,7 +2774,7 @@ void OBJrDoor_GetExportMatricies( OBJtObject *inObject, M3tMatrix4x3 *ioMatrix1A
 	osd						= (OBJtOSD_Door*) inObject->object_data;
 
 	if( osd->flags & OBJcDoorFlag_DoubleDoors )
-	{	
+	{
 		width				= OBJiDoor_GetGeometryWidth( inObject );
 		offset_pos[0].x		= osd->center_offset.x + ( width / 2 );
 		offset_pos[1].x		= osd->center_offset.x - ( width / 2 );
@@ -2808,7 +2808,7 @@ void OBJrDoor_GetExportMatricies( OBJtObject *inObject, M3tMatrix4x3 *ioMatrix1A
 	}
 
 	if( ioMatrix1B )
-	{	
+	{
 		// build door 1 closed matrix
 		MUrMatrix_Identity(ioMatrix1B);
 		MUrMatrixStack_Translate(ioMatrix1B,	&inObject->position);
@@ -2823,22 +2823,22 @@ void OBJrDoor_GetExportMatricies( OBJtObject *inObject, M3tMatrix4x3 *ioMatrix1A
 	{
 		// build door 2 closed matrix
 		MUrMatrix_Identity(ioMatrix2A);
-		MUrMatrixStack_Translate(ioMatrix2A,	&inObject->position);	
-		MUrMatrixStack_Matrix(ioMatrix2A,		&rotation_matrix);		
+		MUrMatrixStack_Translate(ioMatrix2A,	&inObject->position);
+		MUrMatrixStack_Matrix(ioMatrix2A,		&rotation_matrix);
 		MUrMatrixStack_Translate(ioMatrix2A,	&offset_pos[1]);
 		if( !(osd->flags & OBJcDoorFlag_Mirror) )
 			MUrMatrixStack_RotateY( ioMatrix2A,	M3cPi );
-		MUrMatrixStack_Matrix(ioMatrix2A,		&max_matrix);			
+		MUrMatrixStack_Matrix(ioMatrix2A,		&max_matrix);
 	}
 
 	if( ioMatrix2B )
 	{
 		// build door 2 opening matrix
 		MUrMatrix_Identity(ioMatrix2B);
-		MUrMatrixStack_Translate(ioMatrix2B,	&inObject->position);	
-		MUrMatrixStack_Matrix(ioMatrix2B,		&rotation_matrix);		
+		MUrMatrixStack_Translate(ioMatrix2B,	&inObject->position);
+		MUrMatrixStack_Matrix(ioMatrix2B,		&rotation_matrix);
 		MUrMatrixStack_Translate(ioMatrix2B,	&offset_pos[1]);
-		MUrMatrixStack_Matrix(ioMatrix2B,		&max_matrix);			
+		MUrMatrixStack_Matrix(ioMatrix2B,		&max_matrix);
 		if( !(osd->flags & OBJcDoorFlag_Mirror) )
 			MUrMatrixStack_RotateY( ioMatrix2B,	M3cPi );
 	}
@@ -2897,10 +2897,10 @@ UUtUns32 OBJrDoor_ComputeObstruction(OBJtObject *inObject, UUtUns32 *outDoorID, 
 		// the rotation is a homomorphism)
 		MUrMatrix_BuildRotateX(M3cPi, &doubledoor_matrix);
 
-		MUrMatrix_MultiplyPoints(2, &doubledoor_matrix, &outDoorPoints[2], &outDoorPoints[2]); 
+		MUrMatrix_MultiplyPoints(2, &doubledoor_matrix, &outDoorPoints[2], &outDoorPoints[2]);
 		MUrMatrix_MultiplyPoints(2, &door_anim_matrix, &outDoorPoints[2], &outDoorPoints[2]);
-		MUrMatrix_MultiplyPoints(2, &doubledoor_matrix, &outDoorPoints[2], &outDoorPoints[2]); 
-	}	
+		MUrMatrix_MultiplyPoints(2, &doubledoor_matrix, &outDoorPoints[2], &outDoorPoints[2]);
+	}
 
 	// apply the rotation from Max space to Oni space
 	for (itr = 0; itr < num_points; itr++) {
@@ -3072,7 +3072,7 @@ UUtError OBJrDoor_DumpAll(void)
 		}
 	}
 
-	OBJrObjectType_EnumerateObjects(OBJcType_Door, OBJiDoor_DebugDump_Enum, (UUtUns32) &dump_structure); 
+	OBJrObjectType_EnumerateObjects(OBJcType_Door, OBJiDoor_DebugDump_Enum, (UUtUns32) &dump_structure);
 
 	if (dump_structure.dump_file != NULL) {
 		BFrFile_Close(dump_structure.dump_file);
@@ -3090,7 +3090,7 @@ UUtError OBJrDoor_DumpNearby(M3tPoint3D *inPoint, float inRadius)
 	dump_structure.radius = inRadius;
 	dump_structure.dump_file = NULL;
 
-	OBJrObjectType_EnumerateObjects(OBJcType_Door, OBJiDoor_DebugDump_Enum, (UUtUns32) &dump_structure); 
+	OBJrObjectType_EnumerateObjects(OBJcType_Door, OBJiDoor_DebugDump_Enum, (UUtUns32) &dump_structure);
 
 	return UUcError_None;
 }
@@ -3107,7 +3107,7 @@ UUtError OBJrDoor_Initialize( )
 	ONtMechanicsMethods		mechanics_methods;
 
 	// initialize globals
-	OBJgDoor_DrawDoor					= UUcTrue;	
+	OBJgDoor_DrawDoor					= UUcTrue;
 	OBJgDoor_CurrentDoor				= 0xFFFF;
 	OBJgDoor_Shade						= IMcShade_White;
 	OBJgDoor_IgnoreLocks				= UUcFalse;
@@ -3116,7 +3116,7 @@ UUtError OBJrDoor_Initialize( )
 
 	// clear the methods structure
 	UUrMemory_Clear(&methods, sizeof(OBJtMethods));
-	
+
 	// set up the methods structure
 	methods.rNew						= OBJiDoor_New;
 	methods.rSetDefaults				= OBJiDoor_SetDefaults;
@@ -3132,12 +3132,12 @@ UUtError OBJrDoor_Initialize( )
 	methods.rSetOSD						= OBJiDoor_SetOSD;
 	methods.rRead						= OBJiDoor_Read;
 	methods.rWrite						= OBJiDoor_Write;
-	
+
 	// set up the type methods
 	methods.rGetClassVisible			= OBJiDoor_GetVisible;
 	methods.rSearch						= OBJiDoor_Search;
 	methods.rSetClassVisible			= OBJiDoor_SetVisible;
-		
+
 	// set up the mechanics methods
 	mechanics_methods.rInitialize		= OBJrDoor_LevelBegin;
 	mechanics_methods.rTerminate		= OBJtDoor_Mechanics_Terminate;
@@ -3153,7 +3153,7 @@ UUtError OBJrDoor_Initialize( )
 	// register the door methods
 	error = ONrMechanics_Register( OBJcType_Door, OBJcTypeIndex_Door, "Door", sizeof(OBJtOSD_Door), &methods, 0, &mechanics_methods );
 	UUmError_ReturnOnError(error);
-	
+
 #if CONSOLE_DEBUGGING_COMMANDS
 	error = SLrGlobalVariable_Register_Bool( "door_show_debug", "Shows debug geometry", &OBJgDoor_ShowDebug );
 	UUmError_ReturnOnError(error);

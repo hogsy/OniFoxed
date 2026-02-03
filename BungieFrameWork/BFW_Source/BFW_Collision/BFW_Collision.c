@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Collision.c
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: May 10, 1998
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1998
 
 */
@@ -57,12 +57,12 @@ void CLrPlaneEquationFromQuad(
 	UUmAssert(normal.y >= -1.0f && normal.y <= 1.0f);
 	UUmAssert(normal.z >= -1.0f && normal.z <= 1.0f);
 	UUmAssert(!AKmNoIntersection(normal));
-	
+
 	outPlaneEquation->a = normal.x;
 	outPlaneEquation->b = normal.y;
 	outPlaneEquation->c = normal.z;
-	outPlaneEquation->d = -(	outPlaneEquation->a * inPointArray[inQuad->indices[0]].x + 
-								outPlaneEquation->b * inPointArray[inQuad->indices[0]].y + 
+	outPlaneEquation->d = -(	outPlaneEquation->a * inPointArray[inQuad->indices[0]].x +
+								outPlaneEquation->b * inPointArray[inQuad->indices[0]].y +
 								outPlaneEquation->c * inPointArray[inQuad->indices[0]].z);
 
 	return;
@@ -83,9 +83,9 @@ UUtBool CLrSphere_Ray(
 {
 	float disc, a, b, c, t;
 	M3tVector3D relative_pos;
-	
+
 	UUmAssert(inSphere);
-	
+
 	MUmVector_Subtract(relative_pos, *inRayStart, inSphere->center);
 	a = MUmVector_GetLengthSquared(*inRayDir);
 	b = 2*MUrVector_DotProduct(&relative_pos, inRayDir);
@@ -94,7 +94,7 @@ UUtBool CLrSphere_Ray(
 	disc = UUmSQR(b) - 4*a*c;
 	if (disc < 0)
 		return UUcFalse;
-	
+
 	if (c < 0) {
 		// we are inside the sphere, use the greater of the two t-values
 		t = (-b + MUrSqrt(disc)) / (2*a);
@@ -127,7 +127,7 @@ CLrSphere_Line(
 	float u;
 
 	// ****** TRIVIAL REJECT ? ******
-	
+
 	// step 1: test start
 	distanceSquared = 0;
 	distanceSquared += UUmSQR(inStart->x - inSphere->center.x);
@@ -153,7 +153,7 @@ CLrSphere_Line(
 
 	if ((u > 0) && (u < 1.f)) {
 		M3tPoint3D closestPoint;
-		
+
 		MUrLineSegment_ComputePoint(inStart, inEnd, u, &closestPoint);
 
 		distanceSquared = 0;
@@ -167,7 +167,7 @@ CLrSphere_Line(
 	}
 
 	return UUcFalse;
-} 
+}
 
 UUtBool CLrHotdog_Sphere(
 	M3tBoundingHotdog *inDog,
@@ -211,11 +211,11 @@ static UUtBool CLrPoint_In_Cylinder(
 
 	if ((inPoint->y >= inCylinder->bottom) && (inPoint->y <= inCylinder->top))
 	{
-		float distance_squared = 
-			UUmSQR(inPoint->x - inCylinder->circle.center.x) + 
+		float distance_squared =
+			UUmSQR(inPoint->x - inCylinder->circle.center.x) +
 			UUmSQR(inPoint->z - inCylinder->circle.center.z);
 
-		if (distance_squared < UUmSQR(inCylinder->circle.radius)) 
+		if (distance_squared < UUmSQR(inCylinder->circle.radius))
 		{
 			inside = UUcTrue;
 		}
@@ -225,25 +225,25 @@ static UUtBool CLrPoint_In_Cylinder(
 }
 
 static void iCircle_LineSegment_Intersections(
-	const M3tPoint3D *inP1, 
-	const M3tPoint3D *inP2, 
-	const M3tBoundingCircle *circle, 
-	UUtUns8 *outCount, 
+	const M3tPoint3D *inP1,
+	const M3tPoint3D *inP2,
+	const M3tBoundingCircle *circle,
+	UUtUns8 *outCount,
 	M3tPoint3D *outIntersections)
 {
-    // Given a ray defined as:        
+    // Given a ray defined as:
 	// x = x1 + (x2 - x1)*t = x1 + i*t
 	// z = z1 + (z2 - z1)*t = z1 + k*t
 	//
-    //and a sphere defined as:        
+    //and a sphere defined as:
 	//
 	//(x - l)**2 + (z - n)**2 = r**2
 	//
-	//Substituting in gives the quadratic equation:  
+	//Substituting in gives the quadratic equation:
 	//
 	//a*t**2 + b*t + c = 0
 	//
-	//where:        
+	//where:
 	//
 	//a = i**2 + j**2 + k**2
 	//b = 2*i*(x1 - l) + 2*k*(z1 - n)
@@ -295,14 +295,14 @@ static void iCircle_LineSegment_Intersections(
 		else {
 			line_min_z = inP2->z;
 			line_max_z = inP1->z;
-		}	
+		}
 
 		if (line_min_x > (circle->center.x + r)) {
 			goto exit;
 		}
 
 		if (line_max_x < (circle->center.x - r)) {
-			goto exit;		
+			goto exit;
 		}
 
 		if (line_min_z > (circle->center.z + r)) {
@@ -314,7 +314,7 @@ static void iCircle_LineSegment_Intersections(
 		}
 
 	}
-	
+
 	// quadratic equation values
 	a = UUmSQR(i) + UUmSQR(k);
 	b = 2 * i * (x1 - l) + 2 * k * (z1 - n);
@@ -387,13 +387,13 @@ UUtBool CLrQuad_Cylinder(
 		switch(intersection_count)
 		{
 			case 2:
-				if ((intersections[1].y >= inCylinder->bottom) && 
+				if ((intersections[1].y >= inCylinder->bottom) &&
 					(intersections[1].y <= inCylinder->top))
 				{
 					goto exit;
 				}
 			case 1:
-				if ((intersections[0].y >= inCylinder->bottom) && 
+				if ((intersections[0].y >= inCylinder->bottom) &&
 					(intersections[0].y <= inCylinder->top))
 				{
 					goto exit;
@@ -432,7 +432,7 @@ CLrQuad_Quad(
 	// If you do not request the line of intersection, edges are returned as face collisions. In an edge
 	// case, the line of intersection returned is the edge on B that collided. This may not be what you
 	// expect, but deal with it. It's what's most useful for physics.
-	
+
 	M3tPlaneEquation planeA,planeB;
 	UUtUns32 left,right;
 	UUtUns32 foundL=0xFFFFFFFF;
@@ -443,10 +443,10 @@ CLrQuad_Quad(
 	const M3tPoint3D *edgeBL;
 	const M3tPoint3D *edgeBR;
 	UUtBool wantLine,foundLeft,foundRight;
-	
+
 	wantLine = outIntersectionL ? UUcTrue : UUcFalse;
 	foundLeft = foundRight = UUcFalse;
-	
+
 	// Start by finding the planes of the two quads if we don't know them
 	if (!inPlaneArrayA)
 	{
@@ -456,7 +456,7 @@ CLrQuad_Quad(
 	{
 		AKmPlaneEqu_GetComponents(inPlaneEquIndexA,(M3tPlaneEquation *)inPlaneArrayA,planeA.a,planeA.b,planeA.c,planeA.d);
 	}
-	
+
 	if (!inPlaneArrayB)
 	{
 		CLrPlaneEquationFromQuad(inQuadB, inPointArrayB, &planeB);
@@ -465,7 +465,7 @@ CLrQuad_Quad(
 	{
 		AKmPlaneEqu_GetComponents(inPlaneEquIndexB,(M3tPlaneEquation *)inPlaneArrayB,planeB.a,planeB.b,planeB.c,planeB.d);
 	}
-	
+
 	// Next, check all the edges of A against quad B
 	left = 0;
 	right = 1;
@@ -506,7 +506,7 @@ CLrQuad_Quad(
 		left = right;
 		right = (right+1) % 4;
 	} while (right != 1);
-	
+
 	// If we haven't found enough intersections yet, then check edges of B against A
 	if ((wantLine && (!foundLeft || !foundRight)) ||
 		(!wantLine && !foundLeft))
@@ -522,7 +522,7 @@ CLrQuad_Quad(
 			if (CLrQuad_Line(inProjectionA,inPointArrayA,&planeA,0,inQuadA,L,R,&inter))
 			{
 				if (wantLine)
-				{	
+				{
 					if (!AKmNoIntersection(inter))
 					{
 						if (!foundLeft)
@@ -553,7 +553,7 @@ CLrQuad_Quad(
 			right = (right+1) % 4;
 		} while (right != 1);
 	}
-	
+
 	// Return results
 	if (foundLeft || foundRight)
 	{
@@ -568,7 +568,7 @@ CLrQuad_Quad(
 				return CLcCollision_None;
 			}
 		}
-		
+
 		// Calculate point of initial contact
 		/*switch(outEdgeCaseList[v])
 		{
@@ -578,13 +578,13 @@ CLrQuad_Quad(
 				MUmVector_Add(AKgCollisionList[passes].collisionPoint,outPoints[v][0],outPoints[v][1]);
 				MUmVector_Scale(AKgCollisionList[passes].collisionPoint,0.5f);
 				break;
-			
+
 			case CLcCollision_Edge:
 				// Collision is point of contact of integral quad on destination edge
 				AKgCollisionList[passes].collisionPoint = outPoints[v][1];
 				break;
 		}*/
-		
+
 		if (outPlaneA) *outPlaneA = planeA;
 		if (outPlaneB) *outPlaneB = planeB;
 		if (foundL == foundR)
@@ -614,7 +614,7 @@ CLrQuad_Quad(
 			return CLcCollision_Edge;
 		}
 	}
-	
+
 	return CLcCollision_None;
 }
 
@@ -642,7 +642,7 @@ CLrQuad_Line(
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Enter(CLgQuad_Line_Timer);
 #endif
-	
+
 	// Find the plane of the quad
 	if (!inPlaneArray) {
 		CLrPlaneEquationFromQuad(inQuad, inPointArray, &plane);
@@ -650,16 +650,16 @@ CLrQuad_Line(
 	else {
 		AKmPlaneEqu_GetComponents(inPlaneEquIndex,(M3tPlaneEquation *)inPlaneArray,plane.a,plane.b,plane.c,plane.d);
 	}
-		
+
 	// Now check for collision
 	Xi = inStartPoint->x;
 	Yi = inStartPoint->y;
 	Zi = inStartPoint->z;
-	
+
 	Xf = inEndPoint->x;
 	Yf = inEndPoint->y;
 	Zf = inEndPoint->z;
-	
+
 	// if both points are on the plane then the line is on the plane
 	if (UUmFloat_CompareEqu(plane.a * Xi + plane.b * Yi + plane.c * Zi + plane.d, 0.0f) &&
 		UUmFloat_CompareEqu(plane.a * Xf + plane.b * Yf + plane.c * Zf + plane.d, 0.0f))
@@ -668,14 +668,14 @@ CLrQuad_Line(
 		float	Vi0, Vi1, Vi2, Vi3;
 		float	Um0, Um1, Um2, Um3;
 		float	Vm0, Vm1, Vm2, Vm3;
-		
+
 		float	Uit, Vit;
 		float	Umt, Vmt;
-		
+
 		float	tt, tn;
-		
+
 		const M3tPoint3D*	curPoint;
-		
+
 		// XXX - This code could be speed up a bit
 
 		if (inProjection == CLcProjection_Unknown) {
@@ -685,30 +685,30 @@ CLrQuad_Line(
 				goto no_intersection;
 			}
 		}
-		
+
 		if (CLrQuad_PointInQuad(inProjection, inPointArray, inQuad, inEndPoint)) {
 			intersection = *inEndPoint;
 			goto has_intersection;
 		}
-		
+
 		// now we need to see if the line intersects with the edges of the quad
 		if (CLcProjection_XY == inProjection) {
 			curPoint = inPointArray + inQuad->indices[0];
 			Ui0 = curPoint->x;
 			Vi0 = curPoint->y;
-			
+
 			curPoint = inPointArray + inQuad->indices[1];
 			Ui1 = curPoint->x;
 			Vi1 = curPoint->y;
 			Um0 = (Ui1 - Ui0);
 			Vm0 = (Vi1 - Vi0);
-			
+
 			curPoint = inPointArray + inQuad->indices[2];
 			Ui2 = curPoint->x;
 			Vi2 = curPoint->y;
 			Um1 = (Ui2 - Ui1);
 			Vm1 = (Vi2 - Vi1);
-			
+
 			curPoint = inPointArray + inQuad->indices[3];
 			Ui3 = curPoint->x;
 			Vi3 = curPoint->y;
@@ -717,10 +717,10 @@ CLrQuad_Line(
 
 			Um3 = (Ui0 - Ui3);
 			Vm3 = (Vi0 - Vi3);
-			
+
 			Uit = Xi;
 			Vit = Yi;
-			
+
 			Umt = (Xf - Xi);
 			Vmt = (Yf - Yi);
 		}
@@ -728,19 +728,19 @@ CLrQuad_Line(
 			curPoint = inPointArray + inQuad->indices[0];
 			Ui0 = curPoint->x;
 			Vi0 = curPoint->z;
-			
+
 			curPoint = inPointArray + inQuad->indices[1];
 			Ui1 = curPoint->x;
 			Vi1 = curPoint->z;
 			Um0 = (Ui1 - Ui0);
 			Vm0 = (Vi1 - Vi0);
-			
+
 			curPoint = inPointArray + inQuad->indices[2];
 			Ui2 = curPoint->x;
 			Vi2 = curPoint->z;
 			Um1 = (Ui2 - Ui1);
 			Vm1 = (Vi2 - Vi1);
-			
+
 			curPoint = inPointArray + inQuad->indices[3];
 			Ui3 = curPoint->x;
 			Vi3 = curPoint->z;
@@ -749,10 +749,10 @@ CLrQuad_Line(
 
 			Um3 = (Ui0 - Ui3);
 			Vm3 = (Vi0 - Vi3);
-			
+
 			Uit = Xi;
 			Vit = Zi;
-			
+
 			Umt = (Xf - Xi);
 			Vmt = (Zf - Zi);
 		}
@@ -760,19 +760,19 @@ CLrQuad_Line(
 			curPoint = inPointArray + inQuad->indices[0];
 			Ui0 = curPoint->y;
 			Vi0 = curPoint->z;
-			
+
 			curPoint = inPointArray + inQuad->indices[1];
 			Ui1 = curPoint->y;
 			Vi1 = curPoint->z;
 			Um0 = (Ui1 - Ui0);
 			Vm0 = (Vi1 - Vi0);
-			
+
 			curPoint = inPointArray + inQuad->indices[2];
 			Ui2 = curPoint->y;
 			Vi2 = curPoint->z;
 			Um1 = (Ui2 - Ui1);
 			Vm1 = (Vi2 - Vi1);
-			
+
 			curPoint = inPointArray + inQuad->indices[3];
 			Ui3 = curPoint->y;
 			Vi3 = curPoint->z;
@@ -781,48 +781,48 @@ CLrQuad_Line(
 
 			Um3 = (Ui0 - Ui3);
 			Vm3 = (Vi0 - Vi3);
-			
+
 			Uit = Yi;
 			Vit = Zi;
-			
+
 			Umt = (Yf - Yi);
 			Vmt = (Zf - Zi);
 		}
-		
+
 		/*
 			Uin + tn * Umn = Uit + tt * Umt
 			Vin + tn * Vmn = Vit + tt * Vmt
-			
+
 			tn = (Uit + tt * Umt - Uin) / Umn
 			tn = (Vit + tt * Vmt - Vin) / Vmn
-			
+
 			(Uit + tt * Umt - Uin) / Umn = (Vit + tt * Vmt - Vin) / Vmn
-			
+
 			(Uit + tt * Umt - Uin) * Vmn = (Vit + tt * Vmt - Vin) * Umn
-			
+
 			Uit * Vmn + tt * Umt * Vmn - Uin * Vmn = Vit * Umn + tt * Vmt * Umn - Vin * Umn
-			
+
 			tt * Umt * Vmn - tt * Vmt * Umn = Vit * Umn - Vin * Umn - Uit * Vmn + Uin * Vmn
-			
+
 			tt * (Umt * Vmn - Vmt * Umn) = Vit * Umn - Vin * Umn - Uit * Vmn + Uin * Vmn
-			
+
 			tt = (Vit * Umn - Vin * Umn - Uit * Vmn + Uin * Vmn) / (Umt * Vmn - Vmt * Umn)
 		*/
-		
+
 		tt = (Vit * Um0 - Vi0 * Um0 - Uit * Vm0 + Ui0 * Vm0) / (Umt * Vm0 - Vmt * Um0);
-		if (tt >= 0.0f && tt <= 1.0) { 
+		if (tt >= 0.0f && tt <= 1.0) {
 			if (UUmFloat_CompareEqu(Um0, 0.0f)) {
 				tn = (Vit + tt * Vmt - Vi0) / Vm0;
 			}
 			else {
 				tn = (Uit + tt * Umt - Ui0) / Um0;
 			}
-			
+
 			if (tn >= 0.0f && tn <= 1.0f) {
 				goto calc_plane_intersection;
 			}
 		}
-		
+
 		tt = (Vit * Um1 - Vi1 * Um1 - Uit * Vm1 + Ui1 * Vm1) / (Umt * Vm1 - Vmt * Um1);
 		if (tt >= 0.0f && tt <= 1.0) {
 			if (UUmFloat_CompareEqu(Um1, 0.0f)) {
@@ -831,12 +831,12 @@ CLrQuad_Line(
 			else {
 				tn = (Uit + tt * Umt - Ui1) / Um1;
 			}
-			
+
 			if (tn >= 0.0f && tn <= 1.0f) {
 				goto calc_plane_intersection;
 			}
 		}
-		
+
 		tt = (Vit * Um2 - Vi2 * Um2 - Uit * Vm2 + Ui2 * Vm2) / (Umt * Vm2 - Vmt * Um2);
 		if (tt >= 0.0f && tt <= 1.0) {
 			if (UUmFloat_CompareEqu(Um2, 0.0f)) {
@@ -845,12 +845,12 @@ CLrQuad_Line(
 			else {
 				tn = (Uit + tt * Umt - Ui2) / Um2;
 			}
-			
+
 			if (tn >= 0.0f && tn <= 1.0f) {
 				goto calc_plane_intersection;
 			}
 		}
-		
+
 		tt = (Vit * Um3 - Vi3 * Um3 - Uit * Vm3 + Ui3 * Vm3) / (Umt * Vm3 - Vmt * Um3);
 		if (tt >= 0.0f && tt <= 1.0) {
 			if (UUmFloat_CompareEqu(Um3, 0.0f)) {
@@ -859,12 +859,12 @@ CLrQuad_Line(
 			else {
 				tn = (Uit + tt * Umt - Ui3) / Um3;
 			}
-			
+
 			if (tn >= 0.0f && tn <= 1.0f) {
 				goto calc_plane_intersection;
 			}
 		}
-		
+
 		goto no_intersection;
 
 calc_plane_intersection:
@@ -882,36 +882,36 @@ calc_plane_intersection:
 		Xm = (Xf - Xi);
 		Ym = (Yf - Yi);
 		Zm = (Zf - Zi);
-		
+
 		denom = plane.a * Xm + plane.b * Ym + plane.c * Zm;
-		
+
 		if (UUmFloat_CompareEqu(denom,0.0f)) {
 			goto no_intersection;
 		}
-		
+
 		num1 = -(plane.a * Xi + plane.b * Yi + plane.c * Zi + plane.d);
-		
+
 		if (UUmFloat_CompareGT((float)fabs(num1),(float)fabs(denom)) ||
 			((UUmFloat_CompareLT(denom,0.0f)) && (UUmFloat_CompareGT(num1,0.0f))) ||
 			((UUmFloat_CompareGT(denom,0.0f)) && (UUmFloat_CompareLT(num1,0.0f))))
 		{
 			goto no_intersection;
 		}
-		
+
 		t = num1 / denom;
-		
+
 		//UUmAssert(UUmFloat_CompareGESloppy(t,0.0f) && UUmFloat_CompareLESloppy(t,1.0f));
-		
+
 		intersection.x = Xm * t + Xi;
 		intersection.y = Ym * t + Yi;
 		intersection.z = Zm * t + Zi;
-		
+
 		if (CLrQuad_PointInQuad(inProjection, inPointArray, inQuad, &intersection)) {
 			UUmAssert(intersection.x > -10000.0f && intersection.x < 10000.0f);
 			goto has_intersection;
 		}
 	}
-	
+
 no_intersection:
 	intersected = UUcFalse;
 
@@ -936,29 +936,29 @@ CLrLine_Plane(
 {
 	float Xm,Ym,Zm,denom,t;
 	M3tPoint3D newPoint;
-	
+
 	Xm = (inLineB->x - inLineA->x);
 	Ym = (inLineB->y - inLineA->y);
 	Zm = (inLineB->z - inLineA->z);
-	
+
 	denom = inPlane->a * Xm +inPlane-> b * Ym + inPlane->c * Zm;
-	
+
 	if (denom == 0.0f)
 	{
 		return UUcFalse;
 	}
-	
+
 	t = -(inPlane->a * inLineA->x + inPlane->b * inLineA->y + inPlane->c * inLineA->z + inPlane->d) / denom;
 
 	if (t < 0.0f || t > 1.0f)
 	{
 		return UUcFalse;
 	}
-	
+
 	newPoint.x = Xm * t + inLineA->x;
 	newPoint.y = Ym * t + inLineA->y;
 	newPoint.z = Zm * t + inLineA->z;
-	
+
 	if (outIntersection) *outIntersection = newPoint;
 	return UUcTrue;
 }
@@ -1041,22 +1041,22 @@ CLrQuad_Sphere(
 	M3tPoint3D					*outCollisionPoint)	// optional
 {
 	/*
-		XXX - This algorithm is not quite right. We need to test the min distance to 
+		XXX - This algorithm is not quite right. We need to test the min distance to
 		each edge of the quad also
-		
+
 		Pcs = the point at the sphere center
 		dist = distance from Pcs to the plane
 		Pop = orthogonal projection of the center onto the plane J
-		
+
 		Jn = plane normal taken from a, b, c of plane equation
 		Jd = d component of plane equation
-		
+
 		dist = (Jn . Pcs) + Jd
-		
+
 		Pop = Pcs - dist(Jn)
-	
+
 	*/
-	
+
 	float				dist;
 	float				a, b, c, d;
 	float				cX, cY, cZ;
@@ -1066,14 +1066,14 @@ CLrQuad_Sphere(
 	float				t;
 	UUtUns16			curPointIndex;
 	const M3tPoint3D*	curPoint;
-	
+
 	r2 = inSphere->radius;
 	r2 *= r2;
-	
+
 	cX = inSphere->center.x;
 	cY = inSphere->center.y;
 	cZ = inSphere->center.z;
-	
+
 	// Start by finding the plane of the quad if we don't know it
 	if (!inPlaneArray)
 	{
@@ -1087,36 +1087,36 @@ CLrQuad_Sphere(
 	a = planeEqu.a;
 	b = planeEqu.b;
 	c = planeEqu.c;
-	d = planeEqu.d;	
-	
+	d = planeEqu.d;
+
 	// First check if we are far away from the plane
-		
+
 		dist = a * cX + b * cY + c * cZ + d;
-		
+
 		if ((float)fabs(dist) > inSphere->radius)
 		{
 			return UUcFalse;
 		}
-	
+
 	// Now check if we are close to any of the corners
 		for(curPointIndex = 0; curPointIndex < 4; curPointIndex++)
 		{
 			curPoint = inPointArray + inQuad->indices[curPointIndex];
-			
+
 			d2 = 0.0f;
-			
+
 			t = curPoint->x - cX;
 			t *= t;
 			d2 += t;
-			
+
 			t = curPoint->y - cY;
 			t *= t;
 			d2 += t;
-			
+
 			t = curPoint->z - cZ;
 			t *= t;
 			d2 += t;
-			
+
 			// if the distance^2 is less then the radius^2 then we are penetrating the sphere
 			if (d2 < r2)
 			{
@@ -1129,23 +1129,23 @@ CLrQuad_Sphere(
 				return UUcTrue;
 			}
 		}
-				
+
 	Pop.x = cX - dist * a;
 	Pop.y = cY - dist * b;
 	Pop.z = cZ - dist * c;
-	
+
 	if (CLrQuad_PointInQuad(inProjection, inPointArray, inQuad, &Pop))
 	{
 		if (outCollisionPoint) *outCollisionPoint = Pop;
 		return UUcTrue;
 	}
-	
+
 	// Okay, those all failed. Now comes the expensive part. Check the
 	// minimum distance from the sphere center to each of the quad edges
 	{
 		const M3tPoint3D *startPoint,*endPoint;
 		UUtUns16 st=0,ed=1;
-		
+
 		// Intersect each edge with the sphere
 		do
 		{
@@ -1156,12 +1156,12 @@ CLrQuad_Sphere(
 				if (outCollisionPoint) *outCollisionPoint = Pop;
 				return UUcTrue;
 			}
-				
+
 			st++;
 			ed = (ed+1)%4;
 		} while (ed!=1);
 	}
-		
+
 	return UUcFalse;
 }
 
@@ -1198,12 +1198,12 @@ CLrQuad_FindProjection_Slow(
 	float				minX, minY, minZ;
 	float				maxX, maxY, maxZ;
 	float				dX, dY, dZ;
-	
-	
+
+
 	// Find a legit 2D plane to project quad onto
 	// A legit 2D plane does not collapse any of the points into the same point
 	// or onto a flat line
-	
+
 	for(i = 0; i < 4; i++)
 	{
 		for(j = i+1; j < 4; j++)
@@ -1231,7 +1231,7 @@ CLrQuad_FindProjection_Slow(
 			sameY = UUmFloat_CompareEqu(targetPoint0->y, targetPoint1->y);
 			sameZ = UUmFloat_CompareEqu(targetPoint0->z, targetPoint1->z);
 
-			if (sameX && sameY && sameZ) 
+			if (sameX && sameY && sameZ)
 			{
 				continue;
 			}
@@ -1258,10 +1258,10 @@ CLrQuad_FindProjection_Slow(
 	for(curPointIndex = 0; curPointIndex < 4; curPointIndex++)
 	{
 		curPoint = inPointArray + inQuad->indices[curPointIndex];
-		
+
 		if (minX > curPoint->x) minX = curPoint->x;
 		if (maxX < curPoint->x) maxX = curPoint->x;
-			
+
 		if (minY > curPoint->y) minY = curPoint->y;
 		if (maxY < curPoint->y) maxY = curPoint->y;
 
@@ -1272,7 +1272,7 @@ CLrQuad_FindProjection_Slow(
 	dX = maxX - minX;
 	dY = maxY - minY;
 	dZ = maxZ - minZ;
-	
+
 	if (UUmFloat_CompareGT(dX, 0.0f) && UUmFloat_CompareGT(dY, 0.0f) && xyPlane)
 	{
 		return CLcProjection_XY;
@@ -1303,8 +1303,8 @@ CLrQuad_FindProjection_Fast(
 	float			minX1, minY1, minZ1;
 	float			maxX1, maxY1, maxZ1;
 
-	UUtUns32			index0, index1, index2, index3; 
-	const M3tPoint3D	*point0, *point1, *point2, *point3; 
+	UUtUns32			index0, index1, index2, index3;
+	const M3tPoint3D	*point0, *point1, *point2, *point3;
 	float			x0,x1,x2,x3;
 	float			y0,y1,y2,y3;
 	float			z0,z1,z2,z3;
@@ -1328,7 +1328,7 @@ CLrQuad_FindProjection_Fast(
 	x2 = point2->x;	y2 = point2->y;	z2 = point2->z;
 	x3 = point3->x;	y3 = point3->y;	z3 = point3->z;
 #else
-	x0 = point0->x;	x1 = point1->x;	x2 = point2->x;	x3 = point3->x;	
+	x0 = point0->x;	x1 = point1->x;	x2 = point2->x;	x3 = point3->x;
 	y0 = point0->y;	y1 = point1->y;	y2 = point2->y; y3 = point3->y;
 	z0 = point0->z;	z1 = point1->z;	z2 = point2->z;	z3 = point3->z;
 #endif
@@ -1362,7 +1362,7 @@ CLrQuad_FindProjection_Fast(
 
 		// noting in the above code might make this faster, legibility
 		// binary or should be slightly faster here
-		not_xy_plane = global_same_x | global_same_y;	
+		not_xy_plane = global_same_x | global_same_y;
 		not_xz_plane = global_same_x | global_same_z;
 		not_yz_plane = global_same_y | global_same_z;
 	}
@@ -1396,7 +1396,7 @@ CLrQuad_FindProjection_Fast(
 
 	// (2,3)
 	CLr_Quad_FindProject_HandleCaseMacro(x2, y2, z2, x3, y3, z3);
-	
+
 	if (!not_xy_plane)
 	{
 		projection = CLcProjection_XY;
@@ -1413,7 +1413,7 @@ CLrQuad_FindProjection_Fast(
 	{
 		projection = CLcProjection_Unknown;
 	}
-	
+
 	return projection;
 }
 
@@ -1444,11 +1444,11 @@ static UUcInline UUtBool CLrQuad_PointInQuad_Internal(
 	float			u0, u1, u2, u3, ut;
 	float			v0, v1, v2, v3, vt;
 	float			w0, w1, w2, w3, wt;
-	
+
 	const M3tPoint3D*		curPoint;
-	
+
 	UUtBool			result;
-	
+
 	if (inProjection == CLcProjection_Unknown)
 	{
 		inProjection = CLrQuad_FindProjection(inPointArray, inQuad);
@@ -1457,13 +1457,13 @@ static UUcInline UUtBool CLrQuad_PointInQuad_Internal(
 			return UUcFalse;
 		}
 	}
-	
+
 	if (inProjection == CLcProjection_XY)
 	{
 		ut = inPoint->x;
 		vt = inPoint->y;
 		wt = inPoint->z;
-		
+
 		curPoint = inPointArray + inQuad->indices[0];
 		u0 = curPoint->x;
 		v0 = curPoint->y;
@@ -1480,7 +1480,7 @@ static UUcInline UUtBool CLrQuad_PointInQuad_Internal(
 		u3 = curPoint->x;
 		v3 = curPoint->y;
 		w3 = curPoint->z;
-		
+
 		if (UUmFloat_CompareLTSloppy(wt, w0) &&
 			UUmFloat_CompareLTSloppy(wt, w1) &&
 			UUmFloat_CompareLTSloppy(wt, w2) &&
@@ -1495,7 +1495,7 @@ static UUcInline UUtBool CLrQuad_PointInQuad_Internal(
 		ut = inPoint->x;
 		vt = inPoint->z;
 		wt = inPoint->y;
-		
+
 		curPoint = inPointArray + inQuad->indices[0];
 		u0 = curPoint->x;
 		v0 = curPoint->z;
@@ -1512,7 +1512,7 @@ static UUcInline UUtBool CLrQuad_PointInQuad_Internal(
 		u3 = curPoint->x;
 		v3 = curPoint->z;
 		w3 = curPoint->y;
-		
+
 		if (UUmFloat_CompareLTSloppy(wt, w0) &&
 			UUmFloat_CompareLTSloppy(wt, w1) &&
 			UUmFloat_CompareLTSloppy(wt, w2) &&
@@ -1527,7 +1527,7 @@ static UUcInline UUtBool CLrQuad_PointInQuad_Internal(
 		ut = inPoint->y;
 		vt = inPoint->z;
 		wt = inPoint->x;
-		
+
 		curPoint = inPointArray + inQuad->indices[0];
 		u0 = curPoint->y;
 		v0 = curPoint->z;
@@ -1544,7 +1544,7 @@ static UUcInline UUtBool CLrQuad_PointInQuad_Internal(
 		u3 = curPoint->y;
 		v3 = curPoint->z;
 		w3 = curPoint->x;
-		
+
 		if (UUmFloat_CompareLTSloppy(wt, w0) &&
 			UUmFloat_CompareLTSloppy(wt, w1) &&
 			UUmFloat_CompareLTSloppy(wt, w2) &&
@@ -1554,10 +1554,10 @@ static UUcInline UUtBool CLrQuad_PointInQuad_Internal(
 			UUmFloat_CompareGTSloppy(wt, w2) &&
 			UUmFloat_CompareGTSloppy(wt, w3)) return UUcFalse;
 	}
-	
+
 	/*
 		If the point is in the quad we have something like this
-		
+
 	                     *0
 	                    /|\
 	                   / | \
@@ -1572,47 +1572,47 @@ static UUcInline UUtBool CLrQuad_PointInQuad_Internal(
 	                    \|/
 	                     *2
 	  either:
-	  
+
 	  |t0 x t1| <= 0 &&
 	  |t1 x t2| <= 0 &&
 	  |t2 x t3| <= 0 &&
 	  |t3 x t0| <= 0
-	  
+
 	  or
-	  
+
 	  |t0 x t1| >= 0 &&
 	  |t1 x t2| >= 0 &&
 	  |t2 x t3| >= 0 &&
 	  |t3 x t0| >= 0
-	  
+
 	  (It depends on the orientation of the vertices)
-	 
+
 	  if the above conditions are not met the point is outside the quad
-	  
+
 	*/
 
 	tr0 = (u0 - ut) * (v1 - vt) - (v0 - vt) * (u1 - ut);
 	tr1 = (u1 - ut) * (v2 - vt) - (v1 - vt) * (u2 - ut);
 	tr2 = (u2 - ut) * (v3 - vt) - (v2 - vt) * (u3 - ut);
 	tr3 = (u3 - ut) * (v0 - vt) - (v3 - vt) * (u0 - ut);
-	
+
 	result =
 		UUmFloat_CompareGE(tr0, 0.0f) &&
 		UUmFloat_CompareGE(tr1, 0.0f) &&
 		UUmFloat_CompareGE(tr2, 0.0f) &&
 		UUmFloat_CompareGE(tr3, 0.0f);
-	
+
 	if (result == UUcTrue)
 	{
 		return UUcTrue;
 	}
-	
+
 	result =
 		UUmFloat_CompareLE(tr0, 0.0f) &&
 		UUmFloat_CompareLE(tr1, 0.0f) &&
 		UUmFloat_CompareLE(tr2, 0.0f) &&
 		UUmFloat_CompareLE(tr3, 0.0f);
-	
+
 	return result;
 }
 
@@ -1623,7 +1623,7 @@ UUtBool CLrQuad_PointInQuad(
 	const M3tPoint3D*	inPoint)
 {
 	UUtBool result;
-	
+
 #if PERFORMANCE_TIMER
 	UUrPerformanceTimer_Enter(CLgQuad_PointInQuad_Timer);
 #endif
@@ -1650,12 +1650,12 @@ CLrQuad_Box(
 	M3tPoint3D	startPoint;
 	M3tPoint3D	endPoint;
 	UUtUns16	curPointIndex;
-	
+
 	// First check if any of the vertices are within the box
 		for(curPointIndex = 0; curPointIndex < 4; curPointIndex++)
 		{
 			curPoint = inPointArray + inQuad->indices[curPointIndex];
-			
+
 			if (UUmFloat_CompareGE(curPoint->x, inBBox->minPoint.x) &&
 				UUmFloat_CompareLE(curPoint->x, inBBox->maxPoint.x) &&
 				UUmFloat_CompareGE(curPoint->y, inBBox->minPoint.y) &&
@@ -1666,7 +1666,7 @@ CLrQuad_Box(
 				return UUcTrue;
 			}
 		}
-	
+
 	if (inProjection == CLcProjection_Unknown)
 	{
 		inProjection = CLrQuad_FindProjection(inPointArray, inQuad);
@@ -1675,12 +1675,12 @@ CLrQuad_Box(
 			return UUcFalse;
 		}
 	}
-	
+
 	// Now check for the line intersection of each box edge with the quad
-		
+
 	/*
 		0 - min, 1 - max
-		
+
 		v	X	Y	Z
 		==	=========
 		0	0	0	0
@@ -1691,7 +1691,7 @@ CLrQuad_Box(
 		5	1	0	1
 		6	1	1	0
 		7	1	1	1
-		
+
 		Edges
 		=====
 		0 -> 1
@@ -1707,16 +1707,16 @@ CLrQuad_Box(
 		5 -> 7
 		6 -> 7
 	*/
-	
+
 	// 0 -> 1
 		startPoint.x = inBBox->minPoint.x;
 		startPoint.y = inBBox->minPoint.y;
 		startPoint.z = inBBox->minPoint.z;
-		
+
 		endPoint.x = inBBox->minPoint.x;
 		endPoint.y = inBBox->minPoint.y;
 		endPoint.z = inBBox->maxPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1726,20 +1726,20 @@ CLrQuad_Box(
 			&startPoint,
 			&endPoint,
 			NULL))
-		
+
 		{
 			return UUcTrue;
 		}
-		
+
 	// 0 -> 2
 		startPoint.x = inBBox->minPoint.x;
 		startPoint.y = inBBox->minPoint.y;
 		startPoint.z = inBBox->minPoint.z;
-		
+
 		endPoint.x = inBBox->minPoint.x;
 		endPoint.y = inBBox->maxPoint.y;
 		endPoint.z = inBBox->minPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1749,20 +1749,20 @@ CLrQuad_Box(
 			&startPoint,
 			&endPoint,
 			NULL))
-		
+
 		{
 			return UUcTrue;
 		}
-		
+
 	// 0 -> 4
 		startPoint.x = inBBox->minPoint.x;
 		startPoint.y = inBBox->minPoint.y;
 		startPoint.z = inBBox->minPoint.z;
-		
+
 		endPoint.x = inBBox->maxPoint.x;
 		endPoint.y = inBBox->minPoint.y;
 		endPoint.z = inBBox->minPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1772,20 +1772,20 @@ CLrQuad_Box(
 			&startPoint,
 			&endPoint,
 			NULL))
-		
+
 		{
 			return UUcTrue;
 		}
-		
+
 	// 1 -> 3
 		startPoint.x = inBBox->minPoint.x;
 		startPoint.y = inBBox->minPoint.y;
 		startPoint.z = inBBox->maxPoint.z;
-		
+
 		endPoint.x = inBBox->minPoint.x;
 		endPoint.y = inBBox->maxPoint.y;
 		endPoint.z = inBBox->maxPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1795,20 +1795,20 @@ CLrQuad_Box(
 			&startPoint,
 			&endPoint,
 			NULL))
-		
+
 		{
 			return UUcTrue;
 		}
-		
+
 	// 1 -> 5
 		startPoint.x = inBBox->minPoint.x;
 		startPoint.y = inBBox->minPoint.y;
 		startPoint.z = inBBox->maxPoint.z;
-		
+
 		endPoint.x = inBBox->maxPoint.x;
 		endPoint.y = inBBox->minPoint.y;
 		endPoint.z = inBBox->maxPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1818,20 +1818,20 @@ CLrQuad_Box(
 			&startPoint,
 			&endPoint,
 			NULL))
-		
+
 		{
 			return UUcTrue;
 		}
-		
+
 	// 2 -> 3
 		startPoint.x = inBBox->minPoint.x;
 		startPoint.y = inBBox->maxPoint.y;
 		startPoint.z = inBBox->minPoint.z;
-		
+
 		endPoint.x = inBBox->minPoint.x;
 		endPoint.y = inBBox->maxPoint.y;
 		endPoint.z = inBBox->maxPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1841,20 +1841,20 @@ CLrQuad_Box(
 			&startPoint,
 			&endPoint,
 			NULL))
-		
+
 		{
 			return UUcTrue;
 		}
-		
+
 	// 2 -> 6
 		startPoint.x = inBBox->minPoint.x;
 		startPoint.y = inBBox->maxPoint.y;
 		startPoint.z = inBBox->minPoint.z;
-		
+
 		endPoint.x = inBBox->maxPoint.x;
 		endPoint.y = inBBox->maxPoint.y;
 		endPoint.z = inBBox->minPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1864,20 +1864,20 @@ CLrQuad_Box(
 			&startPoint,
 			&endPoint,
 			NULL))
-		
+
 		{
 			return UUcTrue;
 		}
-		
+
 	// 3 -> 7
 		startPoint.x = inBBox->minPoint.x;
 		startPoint.y = inBBox->maxPoint.y;
 		startPoint.z = inBBox->maxPoint.z;
-		
+
 		endPoint.x = inBBox->maxPoint.x;
 		endPoint.y = inBBox->maxPoint.y;
 		endPoint.z = inBBox->maxPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1887,20 +1887,20 @@ CLrQuad_Box(
 			&startPoint,
 			&endPoint,
 			NULL))
-		
+
 		{
 			return UUcTrue;
 		}
-		
+
 	// 4 -> 5
 		startPoint.x = inBBox->maxPoint.x;
 		startPoint.y = inBBox->minPoint.y;
 		startPoint.z = inBBox->minPoint.z;
-		
+
 		endPoint.x = inBBox->maxPoint.x;
 		endPoint.y = inBBox->minPoint.y;
 		endPoint.z = inBBox->maxPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1910,20 +1910,20 @@ CLrQuad_Box(
 			&startPoint,
 			&endPoint,
 			NULL))
-		
+
 		{
 			return UUcTrue;
 		}
-		
+
 	// 4 -> 6
 		startPoint.x = inBBox->maxPoint.x;
 		startPoint.y = inBBox->minPoint.y;
 		startPoint.z = inBBox->minPoint.z;
-		
+
 		endPoint.x = inBBox->maxPoint.x;
 		endPoint.y = inBBox->maxPoint.y;
 		endPoint.z = inBBox->minPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1933,20 +1933,20 @@ CLrQuad_Box(
 			&startPoint,
 			&endPoint,
 			NULL))
-		
+
 		{
 			return UUcTrue;
 		}
-		
+
 	// 5 -> 7
 		startPoint.x = inBBox->maxPoint.x;
 		startPoint.y = inBBox->minPoint.y;
 		startPoint.z = inBBox->maxPoint.z;
-		
+
 		endPoint.x = inBBox->maxPoint.x;
 		endPoint.y = inBBox->maxPoint.y;
 		endPoint.z = inBBox->maxPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1956,20 +1956,20 @@ CLrQuad_Box(
 			&startPoint,
 			&endPoint,
 			NULL))
-		
+
 		{
 			return UUcTrue;
 		}
-		
+
 	// 6 -> 7
 		startPoint.x = inBBox->maxPoint.x;
 		startPoint.y = inBBox->maxPoint.y;
 		startPoint.z = inBBox->minPoint.z;
-		
+
 		endPoint.x = inBBox->maxPoint.x;
 		endPoint.y = inBBox->maxPoint.y;
 		endPoint.z = inBBox->maxPoint.z;
-		
+
 		if (CLrQuad_Line(
 			inProjection,
 			inPointArray,
@@ -1982,7 +1982,7 @@ CLrQuad_Box(
 		{
 			return UUcTrue;
 		}
-	
+
 	// now we need to loop through each edge of the quad to see if it penetrates the box
 		for(curPointIndex = 0; curPointIndex < 4; curPointIndex++)
 		{
@@ -1993,9 +1993,9 @@ CLrQuad_Box(
 			{
 				return UUcTrue;
 			}
-				
+
 		}
-	
+
 	return UUcFalse;
 }
 
@@ -2013,7 +2013,7 @@ CLrBox_Point(
 	{
 		return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -2024,7 +2024,7 @@ CLrBox_Box(
 {
 	// Lame intersection, not totally correct. For debugging of same size boxes only.
 	UUtUns16 indexA;
-	
+
 	for (indexA=0; indexA<8; indexA++)
 	{
 		if (CLrBox_Point(inBoxB,&inBoxA->localPoints[indexA])) UUmAssert(0);//return UUcTrue;
@@ -2033,10 +2033,10 @@ CLrBox_Box(
 	{
 		if (CLrBox_Point(inBoxA,&inBoxB->localPoints[indexA])) UUmAssert(0);//return UUcTrue;
 	}
-	
+
 	return UUcFalse;
 }
-	
+
 static UUtBool
 CLrBox_Line_Slower(
 	const M3tBoundingBox_MinMax*	inBox,
@@ -2046,29 +2046,29 @@ CLrBox_Line_Slower(
 	float		Xi, Yi, Zi;
 	float		Xm, Ym, Zm;
 	float		Xmi, Ymi, Zmi;
-	
+
 	float		Xf, Yf, Zf;
-	
+
 	float		ut, vt;
-	
+
 	float		minX, minY, minZ;
 	float		maxX, maxY, maxZ;
 	float		t;
-	
+
 	//return UUcTrue;
-	
+
 	minX = inBox->minPoint.x;
 	minY = inBox->minPoint.y;
 	minZ = inBox->minPoint.z;
-	
+
 	maxX = inBox->maxPoint.x;
 	maxY = inBox->maxPoint.y;
 	maxZ = inBox->maxPoint.z;
-	
+
 	Xi = inStartPoint->x;
 	Yi = inStartPoint->y;
 	Zi = inStartPoint->z;
-	
+
 	// If either of the points are in the box then duh.
 		if (minX <= Xi && Xi <= maxX &&
 			minY <= Yi && Yi <= maxY &&
@@ -2076,7 +2076,7 @@ CLrBox_Line_Slower(
 		{
 			return UUcTrue;
 		}
-		
+
 		Xf = inEndPoint->x;
 		Yf = inEndPoint->y;
 		Zf = inEndPoint->z;
@@ -2087,7 +2087,7 @@ CLrBox_Line_Slower(
 		{
 			return UUcTrue;
 		}
-	
+
 	// Check for trivial reject
 		if (Xi < minX && Xf < minX ||
 			Yi < minY && Yf < minY ||
@@ -2098,14 +2098,14 @@ CLrBox_Line_Slower(
 		{
 			return UUcFalse;
 		}
-	
+
 	Xm = (inEndPoint->x - Xi);
 	Ym = (inEndPoint->y - Yi);
 	Zm = (inEndPoint->z - Zi);
 
 	/*
 		0 - min, 1 - max
-		
+
 		v	X	Y	Z
 		==	=========
 		0	0	0	0
@@ -2116,7 +2116,7 @@ CLrBox_Line_Slower(
 		5	1	0	1
 		6	1	1	0
 		7	1	1	1
-		
+
 		      Y
 		      ^
 		      |
@@ -2141,7 +2141,7 @@ CLrBox_Line_Slower(
 		 | '           | /
 		 |'            |/
 		1*-------------*5
-		
+
 		quads		plane equ
 		=====		=======
 		0 1 3 2		-1, 0, 0, 0.x
@@ -2151,7 +2151,7 @@ CLrBox_Line_Slower(
 		0 2 6 4		0, 0, -1, 0.z
 		1 5 7 3		0, 0, 1, -1.z
 	*/
-	
+
 	if (Xm != 0.0f)
 	{
 		// Quad 0 1 3 2
@@ -2162,7 +2162,7 @@ CLrBox_Line_Slower(
 			{
 				ut = Ym * t + Yi;
 				vt = Zm * t + Zi;
-				
+
 				if (minY <= ut && ut <= maxY &&
 					minZ <= vt && vt <= maxZ)
 				{
@@ -2171,11 +2171,11 @@ CLrBox_Line_Slower(
 
 					UUmAssert((minZ - Zi) * Xm <= Zm * (minX - Xi));
 					UUmAssert(Zm * (minX - Xi) <= (maxZ - Zi) * Xm);
-					
+
 					return UUcTrue;
 				}
 			}
-			
+
 		// Quad 4 6 7 5
 
 			// t = -(1 * Xi - maxX) / Xm
@@ -2184,7 +2184,7 @@ CLrBox_Line_Slower(
 			{
 				ut = Ym * t + Yi;
 				vt = Zm * t + Zi;
-				
+
 				if (minY <= ut && ut <= maxY &&
 					minZ <= vt && vt <= maxZ)
 				{
@@ -2198,11 +2198,11 @@ CLrBox_Line_Slower(
 				}
 			}
 	}
-	
+
 	if (Ym != 0.0f)
 	{
 		// Quad 0 4 5 1
-			
+
 			Ymi = 1.f / Ym;
 			// t = -(-1 * Yi + minY) / -Ym
 			t = (minY - Yi) * Ymi;
@@ -2210,7 +2210,7 @@ CLrBox_Line_Slower(
 			{
 				ut = Xm * t + Xi;
 				vt = Zm * t + Zi;
-				
+
 				if (minX <= ut && ut <= maxX &&
 					minZ <= vt && vt <= maxZ)
 				{
@@ -2230,11 +2230,11 @@ CLrBox_Line_Slower(
 						UUmAssert((minZ - Zi) * Ym >= Zm * (minY - Yi));
 						UUmAssert(Zm * (minY - Yi) >= (maxZ - Zi) * Ym);
 					}
-					
+
 					return UUcTrue;
 				}
 			}
-			
+
 		// Quad 2 3 7 6
 
 			// t = -(1 * Xi - maxX) / Xm
@@ -2243,7 +2243,7 @@ CLrBox_Line_Slower(
 			{
 				ut = Xm * t + Xi;
 				vt = Zm * t + Zi;
-				
+
 				if (minX <= ut && ut <= maxX &&
 					minZ <= vt && vt <= maxZ)
 				{
@@ -2251,11 +2251,11 @@ CLrBox_Line_Slower(
 				}
 			}
 	}
-	
+
 	if (Zm != 0.0f)
 	{
 		// Quad 0 2 6 4
-			
+
 			Zmi = 1.f / Zm;
 			// t = -(-1 * Zi + minZ) / -Zm
 			t = (minZ - Zi) * Zmi;
@@ -2263,14 +2263,14 @@ CLrBox_Line_Slower(
 			{
 				ut = Xm * t + Xi;
 				vt = Ym * t + Yi;
-				
+
 				if (minX <= ut && ut <= maxX &&
 					minY <= vt && vt <= maxY)
 				{
 					return UUcTrue;
 				}
 			}
-			
+
 		// Quad 1 5 7 3
 
 			// t = -(1 * Zi - maxZ) / Zm
@@ -2279,7 +2279,7 @@ CLrBox_Line_Slower(
 			{
 				ut = Xm * t + Xi;
 				vt = Ym * t + Yi;
-				
+
 				if (minX <= ut && ut <= maxX &&
 					minY <= vt && vt <= maxY)
 				{
@@ -2287,7 +2287,7 @@ CLrBox_Line_Slower(
 				}
 			}
 	}
-	
+
 	return UUcFalse;
 }
 
@@ -2299,27 +2299,27 @@ CLrBox_Line(
 {
 	float		Xi, Yi, Zi;
 	float		Xm, Ym, Zm;
-	
+
 	float		Xf, Yf, Zf;
-	
+
 	float		minX, minY, minZ;
 	float		maxX, maxY, maxZ;
 	float		t, t2;
-	
+
 	//return UUcTrue;
-	
+
 	minX = inBox->minPoint.x;
 	minY = inBox->minPoint.y;
 	minZ = inBox->minPoint.z;
-	
+
 	maxX = inBox->maxPoint.x;
 	maxY = inBox->maxPoint.y;
 	maxZ = inBox->maxPoint.z;
-	
+
 	Xi = inStartPoint->x;
 	Yi = inStartPoint->y;
 	Zi = inStartPoint->z;
-	
+
 	// If either of the points are in the box then duh.
 		if (minX <= Xi && Xi <= maxX &&
 			minY <= Yi && Yi <= maxY &&
@@ -2327,7 +2327,7 @@ CLrBox_Line(
 		{
 			return UUcTrue;
 		}
-		
+
 		Xf = inEndPoint->x;
 		Yf = inEndPoint->y;
 		Zf = inEndPoint->z;
@@ -2338,7 +2338,7 @@ CLrBox_Line(
 		{
 			return UUcTrue;
 		}
-	
+
 	// Check for trivial reject
 		if (Xi < minX && Xf < minX ||
 			Yi < minY && Yf < minY ||
@@ -2349,23 +2349,23 @@ CLrBox_Line(
 		{
 			return UUcFalse;
 		}
-	
+
 	/*
 		The following crap would take a long time to explain
 		so you will just have to take my word for it that its
 		completely broken and you have no hope of fixing it.
 	*/
-	
+
 	Xm = (Xf - Xi);
 	Ym = (Yf - Yi);
 	Zm = (Zf - Zi);
-	
+
 	minY -= Yi;
 	maxY -= Yi;
-	
+
 	minX -= Xi;
 	maxX -= Xi;
-	
+
 	minZ -= Zi;
 	maxZ -= Zi;
 
@@ -2373,16 +2373,16 @@ CLrBox_Line(
 	{
 		t = Ym * minX;
 		t2 = Zm * minX;
-		
+
 		if (minY * Xm <= t && t <= maxY * Xm &&
 			minZ * Xm <= t2 && t2 <= maxZ * Xm)
 		{
 			return UUcTrue;
 		}
-			
+
 		t = Ym * maxX;
 		t2 = Zm * maxX;
-		
+
 		if (minY * Xm <= t && t <= maxY * Xm &&
 			minZ * Xm <= t2 && t2 <= maxZ * Xm)
 		{
@@ -2393,37 +2393,37 @@ CLrBox_Line(
 	{
 		t = Ym * minX;
 		t2 = Zm * minX;
-		
+
 		if (minY * Xm >= t && t >= maxY * Xm &&
 			minZ * Xm >= t2 && t2 >= maxZ * Xm)
 		{
 			return UUcTrue;
 		}
-			
+
 		t = Ym * maxX;
 		t2 = Zm * maxX;
-		
+
 		if (minY * Xm >= t && t >= maxY * Xm &&
 			minZ * Xm >= t2 && t2 >= maxZ * Xm)
 		{
 			return UUcTrue;
 		}
 	}
-	
+
 	if (Ym > 0.0f)
 	{
 		t = Xm * minY;
 		t2 = Zm * minY;
-		
+
 		if (minX * Ym <= t && t <= maxX * Ym &&
 			minZ * Ym <= t2 && t2 <= maxZ * Ym)
 		{
 			return UUcTrue;
 		}
-			
+
 		t = Xm * maxY;
 		t2 = Zm * maxY;
-		
+
 		if (minX * Ym <= t && t <= maxX * Ym &&
 			minZ * Ym <= t2 && t2 <= maxZ * Ym)
 		{
@@ -2434,37 +2434,37 @@ CLrBox_Line(
 	{
 		t = Xm * minY;
 		t2 = Zm * minY;
-		
+
 		if (minX * Ym >= t && t >= maxX * Ym &&
 			minZ * Ym >= t2 && t2 >= maxZ * Ym)
 		{
 			return UUcTrue;
 		}
-			
+
 		t = Xm * maxY;
 		t2 = Zm * maxY;
-		
+
 		if (minX * Ym >= t && t >= maxX * Ym &&
 			minZ * Ym >= t2 && t2 >= maxZ * Ym)
 		{
 			return UUcTrue;
 		}
 	}
-	
+
 	if (Zm > 0.0f)
 	{
 		t = Xm * minZ;
 		t2 = Ym * minZ;
-		
+
 		if (minX * Zm <= t && t <= maxX * Zm &&
 			minY * Zm <= t2 && t2 <= maxY * Zm)
 		{
 			return UUcTrue;
 		}
-			
+
 		t = Xm * maxZ;
 		t2 = Ym * maxZ;
-		
+
 		if (minX * Zm <= t && t <= maxX * Zm &&
 			minY * Zm <= t2 && t2 <= maxY * Zm)
 		{
@@ -2475,23 +2475,23 @@ CLrBox_Line(
 	{
 		t = Xm * minZ;
 		t2 = Ym * minZ;
-		
+
 		if (minX * Zm >= t && t >= maxX * Zm &&
 			minY * Zm >= t2 && t2 >= maxY * Zm)
 		{
 			return UUcTrue;
 		}
-			
+
 		t = Xm * maxZ;
 		t2 = Ym * maxZ;
-		
+
 		if (minX * Zm >= t && t >= maxX * Zm &&
 			minY * Zm >= t2 && t2 >= maxY * Zm)
 		{
 			return UUcTrue;
 		}
 	}
-		
+
 	return UUcFalse;
 }
 
@@ -2503,21 +2503,21 @@ CLrBox_Sphere(
 	float	r2 = inSphere->radius;
 	float	dmin = 0.0f;
 	float	t;
-	
+
 	float	cX, cY, cZ;
 	float	minX, minY, minZ;
 	float	maxX, maxY, maxZ;
-	
+
 	r2 *= r2;
-	
+
 	cX = inSphere->center.x;
 	cY = inSphere->center.y;
 	cZ = inSphere->center.z;
-	
+
 	minX = inBox->minPoint.x;
 	minY = inBox->minPoint.y;
 	minZ = inBox->minPoint.z;
-	
+
 	maxX = inBox->maxPoint.x;
 	maxY = inBox->maxPoint.y;
 	maxZ = inBox->maxPoint.z;
@@ -2528,9 +2528,9 @@ CLrBox_Sphere(
 	{
 		return UUcTrue;
 	}
-	
+
 	// Don't ask me - I got it from Gems I
-	
+
 	if (cX < minX)
 	{
 		t = cX - minX;
@@ -2543,7 +2543,7 @@ CLrBox_Sphere(
 		t *= t;
 		dmin += t;
 	}
-	
+
 	if (cY < minY)
 	{
 		t = cY - minY;
@@ -2556,7 +2556,7 @@ CLrBox_Sphere(
 		t *= t;
 		dmin += t;
 	}
-	
+
 	if (cZ < minZ)
 	{
 		t = cZ - minZ;
@@ -2569,7 +2569,7 @@ CLrBox_Sphere(
 		t *= t;
 		dmin += t;
 	}
-	
+
 	return (UUtBool)(dmin <= r2);
 }
 
@@ -2609,7 +2609,7 @@ UUtBool PHrCollision_Volume_Ray(
 	M3tPlaneEquation *outPlane,	// optional
 	M3tPoint3D *outPoint)		// optional
 {
-	/**********		
+	/**********
 	* Intersects a point that moves 'inV' with the given bounding volume
 	*/
 
@@ -2623,7 +2623,7 @@ UUtBool PHrCollision_Volume_Ray(
 
 	normalV = *inV;
 	d = MUmVector_GetLength(normalV);
-	
+
 	if (d!=0.0f) {
 		MUmVector_Scale(normalV,1.0f/d);
 	}
@@ -2665,7 +2665,7 @@ UUtBool PHrCollision_Volume_Ray(
 			*outPlane = *collisionPlane;
 		}
 
-		if (outPoint != NULL) { 
+		if (outPoint != NULL) {
 			*outPoint = collisionPoint;
 		}
 	}

@@ -28,27 +28,27 @@ boolean available_opengl_platform(
 {
 	static boolean first_time= TRUE;
 	static boolean has_opengl= FALSE;
-		
+
 	if (first_time)
 	{
 		PIXELFORMATDESCRIPTOR pfd;
 		HDC device_context;
 		short pixel_format;
-		
+
 		first_time= FALSE;
-				
+
 		memset(&pfd,0,sizeof(PIXELFORMATDESCRIPTOR));
-		
+
 		pfd.nSize= sizeof(PIXELFORMATDESCRIPTOR);
 		pfd.nVersion= 1;
 		pfd.dwFlags= PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-		
+
 		UUmAssert(ONgPlatformData.gameWindow && (ONgPlatformData.gameWindow != INVALID_HANDLE_VALUE));
 		device_context= GetDC(ONgPlatformData.gameWindow);
 		UUmAssert(device_context);
-		
+
 		pixel_format= ChoosePixelFormat(device_context,&pfd);
-		
+
 		if (
 			DescribePixelFormat(device_context,pixel_format,sizeof(PIXELFORMATDESCRIPTOR),&pfd) &&
 			(pfd.dwFlags & PFD_DRAW_TO_WINDOW) &&
@@ -58,10 +58,10 @@ boolean available_opengl_platform(
 		) {
 			has_opengl= TRUE;
 		}
-		
+
 		ReleaseDC(ONgPlatformData.gameWindow,device_context);
 	}
-	
+
 	return has_opengl;
 }
 
@@ -71,17 +71,17 @@ static UUtBool fullscreenCandidate(HWND hwnd) {
     UUtBool status = UUcFalse;
     DWORD style = GetWindowLong (hwnd, GWL_STYLE);
 
-    // Quake II sets   (WS_POPUP | WS_VISIBLE | 
+    // Quake II sets   (WS_POPUP | WS_VISIBLE |
     //                  WS_CLIPSIBLINGS)
-    // Heretic II sets (WS_POPUP | WS_VISIBLE | 
-    //                  WS_CLIPSIBLINGS | 
+    // Heretic II sets (WS_POPUP | WS_VISIBLE |
+    //                  WS_CLIPSIBLINGS |
     //                  WS_SYSMENU)
-    // TrueSpace4 sets (WS_POPUP | WS_VISIBLE | 
-    //                  WS_CLIPSIBLINGS | WS_CLIPCHILDREN | 
+    // TrueSpace4 sets (WS_POPUP | WS_VISIBLE |
+    //                  WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
     //                  WS_BORDER |
     //                  WS_SYSMENU | WS_THICKFRAME)
-    // This function needs to 
-    // return 0 for TrueSpace4, which wants a window and 
+    // This function needs to
+    // return 0 for TrueSpace4, which wants a window and
     // return 1 for Quake II and Heretic II, which want fullscreen
 
     if ( (style & WS_POPUP) && !(style & (WS_BORDER | WS_THICKFRAME)))
@@ -97,7 +97,7 @@ static UUtBool fullscreenCandidate(HWND hwnd) {
 }
 
 static DEVMODE original_display_mode;
- 
+
 static void GLrSetDisplaySettings(UUtInt32 width, UUtInt32 height, UUtInt32 depth)
 {
 	BOOL success;
@@ -115,7 +115,7 @@ static void GLrSetDisplaySettings(UUtInt32 width, UUtInt32 height, UUtInt32 dept
     desired_display_mode.dmPelsHeight = height;
     desired_display_mode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
     desired_display_mode.dmDriverExtra = 0;
-	
+
 	if (M3gResolutionSwitch) {
 		LONG result;
 
@@ -159,7 +159,7 @@ GLrPlatform_Initialize(
 	if (M3gResolutionSwitch) {
 		UUmAssert(fullscreenCandidate(ONgPlatformData.gameWindow));
 	}
-	
+
 	UUmAssert(ONgPlatformData.gameWindow && (ONgPlatformData.gameWindow != INVALID_HANDLE_VALUE));
 	gDeviceContext= GetDC(ONgPlatformData.gameWindow);
 	UUmAssert(gDeviceContext);
@@ -253,7 +253,7 @@ GLrPlatform_Dispose(
 	UUmAssert(gRenderContext);
 	success = wglDeleteContext(gRenderContext);
 	UUmAssert(success);
-	
+
 	UUmAssert(ONgPlatformData.gameWindow && (ONgPlatformData.gameWindow != INVALID_HANDLE_VALUE));
 	ReleaseDC(ONgPlatformData.gameWindow,gDeviceContext);
 
@@ -270,8 +270,8 @@ GLrPlatform_Dispose(
 		screen_width,
 		screen_height,
 		SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOZORDER);
-	
-	return;	
+
+	return;
 }
 
 

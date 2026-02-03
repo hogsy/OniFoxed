@@ -32,32 +32,32 @@ M3tQuaternion MUrEulerToQuat(const MUtEuler *inEuler)
     int i,j,k,h,n,s,f;
     iEuler_GetOrder(ea.order,i,j,k,h,n,s,f);
 
-    if (f==EulFrmR) { 
-		float t = ea.x; 
-		ea.x = ea.z; 
-		ea.z = t; 
+    if (f==EulFrmR) {
+		float t = ea.x;
+		ea.x = ea.z;
+		ea.z = t;
 	}
 
-    if (n==EulParOdd) { 
-		ea.y = - ea.y; 
+    if (n==EulParOdd) {
+		ea.y = - ea.y;
 		UUmTrig_ClipLow(ea.y);
 	}
 
-    ti = ea.x * 0.5f; 
-	tj = ea.y * 0.5f; 
+    ti = ea.x * 0.5f;
+	tj = ea.y * 0.5f;
 	th = ea.z * 0.5f;
 
-    ci = MUrCos(ti);  
-	cj = MUrCos(tj);  
+    ci = MUrCos(ti);
+	cj = MUrCos(tj);
 	ch = MUrCos(th);
 
-    si = MUrSin(ti);  
-	sj = MUrSin(tj);  
+    si = MUrSin(ti);
+	sj = MUrSin(tj);
 	sh = MUrSin(th);
 
-    cc = ci*ch; 
-	cs = ci*sh; 
-	sc = si*ch; 
+    cc = ci*ch;
+	cs = ci*sh;
+	sc = si*ch;
 	ss = si*sh;
 
     if (s==EulRepYes) {
@@ -72,12 +72,12 @@ M3tQuaternion MUrEulerToQuat(const MUtEuler *inEuler)
 		qu.w = -(cj*cc + sj*ss);
     }
 
-    if (n==EulParOdd) { 
+    if (n==EulParOdd) {
 		a[j] = -a[j];
 	}
 
-    qu.x = a[0]; 
-	qu.y = a[1]; 
+    qu.x = a[0];
+	qu.y = a[1];
 	qu.z = a[2];
 
     return (qu);
@@ -90,21 +90,21 @@ void MUrXYZrEulerToQuat(float inX, float inY, float inZ, M3tQuaternion *outQuat)
 	float si, sj, sh;
 	float cc, cs, sc, ss;
 
-    ti = inZ * 0.5f; 
-	tj = M3c2Pi - (inY * 0.5f); 
+    ti = inZ * 0.5f;
+	tj = M3c2Pi - (inY * 0.5f);
 	th = inX * 0.5f;
 
-    ci = MUrCos(ti);  
-	cj = MUrCos(tj);  
+    ci = MUrCos(ti);
+	cj = MUrCos(tj);
 	ch = MUrCos(th);
 
-    si = MUrSin(ti);  
-	sj = MUrSin(tj);  
+    si = MUrSin(ti);
+	sj = MUrSin(tj);
 	sh = MUrSin(th);
 
-    cc = ci*ch; 
-	cs = ci*sh; 
-	sc = si*ch; 
+    cc = ci*ch;
+	cs = ci*sh;
+	sc = si*ch;
 	ss = si*sh;
 
     outQuat->x = cj*cs - sj*sc;
@@ -138,21 +138,21 @@ void MUrXYXsEulerToQuat(float inX, float inY, float inZ, M3tQuaternion *outQuat)
 	float si, sj, sh;
 	float cc, cs, sc, ss;
 
-    ti = inX * 0.5f; 
-	tj = inY * 0.5f; 
+    ti = inX * 0.5f;
+	tj = inY * 0.5f;
 	th = inZ * 0.5f;
 
-    ci = MUrCos(ti);  
-	cj = MUrCos(tj);  
+    ci = MUrCos(ti);
+	cj = MUrCos(tj);
 	ch = MUrCos(th);
 
-    si = MUrSin(ti);  
-	sj = MUrSin(tj);  
+    si = MUrSin(ti);
+	sj = MUrSin(tj);
 	sh = MUrSin(th);
 
-    cc = ci * ch; 
-	cs = ci * sh; 
-	sc = si * ch; 
+    cc = ci * ch;
+	cs = ci * sh;
+	sc = si * ch;
 	ss = si * sh;
 
     outQuat->x = cj * (cs + sc);
@@ -198,7 +198,7 @@ void MUrEulerToMatrix(const MUtEuler *inEuler, M3tMatrix4x3 *inMatrix)
     if (f==EulFrmR) {float t = ea.x; ea.x = ea.z; ea.z = t;}
 
     if (n==EulParOdd) {
-		ea.x = -ea.x; 
+		ea.x = -ea.x;
 		ea.y = -ea.y;
 		ea.z = -ea.z;
 
@@ -216,7 +216,7 @@ void MUrEulerToMatrix(const MUtEuler *inEuler, M3tMatrix4x3 *inMatrix)
 		inMatrix->m[i][i] = cj;		inMatrix->m[j][i] =  sj*si;    inMatrix->m[k][i] =  sj*ci;
 		inMatrix->m[i][j] = sj*sh;	inMatrix->m[j][j] = -cj*ss+cc; inMatrix->m[k][j] = -cj*cs-sc;
 		inMatrix->m[i][k] = -sj*ch;	inMatrix->m[j][k] =  cj*sc+cs; inMatrix->m[k][k] =  cj*cc-ss;
-    } 
+    }
 	else {
 		inMatrix->m[i][i] = cj*ch;	inMatrix->m[j][i] = sj*sc-cs; inMatrix->m[k][i] = sj*cc+ss;
 		inMatrix->m[i][j] = cj*sh;	inMatrix->m[j][j] = sj*ss+cc; inMatrix->m[k][j] = sj*cs-sc;
@@ -238,12 +238,12 @@ MUtEuler MUrMatrixToEuler(const M3tMatrix4x3 *inMatrix, int order)
 	if (s==EulRepYes) {
 		float sy = MUrSqrt(UUmSQR(inMatrix->m[j][i]) + UUmSQR(inMatrix->m[k][i]));
 
-		if (sy > 16 * EULER_EPSILON) 
+		if (sy > 16 * EULER_EPSILON)
 		{
 			ea.x = MUrATan2(inMatrix->m[j][i], inMatrix->m[k][i]);
 			ea.y = MUrATan2(sy, inMatrix->m[i][i]);
 			ea.z = MUrATan2(inMatrix->m[i][j], -inMatrix->m[i][k]);
-		} 
+		}
 		else {
 			ea.x = MUrATan2(-inMatrix->m[k][j], inMatrix->m[j][j]);
 			ea.y = MUrATan2(sy, inMatrix->m[i][i]);
@@ -257,7 +257,7 @@ MUtEuler MUrMatrixToEuler(const M3tMatrix4x3 *inMatrix, int order)
 			ea.x = MUrATan2(inMatrix->m[j][k], inMatrix->m[k][k]);
 			ea.y = MUrATan2(-inMatrix->m[i][k], cy);
 			ea.z = MUrATan2(inMatrix->m[i][j], inMatrix->m[i][i]);
-		} 
+		}
 		else {
 			ea.x = MUrATan2(-inMatrix->m[k][j], inMatrix->m[j][j]);
 			ea.y = MUrATan2(-inMatrix->m[i][k], cy);
@@ -272,11 +272,11 @@ MUtEuler MUrMatrixToEuler(const M3tMatrix4x3 *inMatrix, int order)
 	}
 
     if (f==EulFrmR) {
-		float t = ea.x; 
-		ea.x = ea.z; 
+		float t = ea.x;
+		ea.x = ea.z;
 		ea.z = t;
 	}
-    
+
 	UUmTrig_ClipLow(ea.x);
 	UUmTrig_ClipLow(ea.y);
 	UUmTrig_ClipLow(ea.z);

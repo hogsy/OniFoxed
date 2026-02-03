@@ -49,12 +49,12 @@ typedef struct tag_header // 64 bytes
 	// unsigned long flags...
 	word tag_version;
 	word flags;
-	
+
 	long offset, size;
-	
+
 	unsigned long user_data;
 
-	file_tag tag;	
+	file_tag tag;
 } tag_header;
 
 enum // styles
@@ -72,7 +72,7 @@ enum
 {
 	FONT_DEFINITION_VERSION_NUMBER= 1,
 	MAXIMUM_FONT_DEFINITIONS_PER_MAP= 16,
-	
+
 	NUMBER_OF_LEAD_BYTE_CHARACTER_TABLES= 256,
 	NUMBER_OF_TRAILING_CHARACTERS_PER_TABLE= 256
 };
@@ -83,21 +83,21 @@ enum
 typedef struct font_definition
 {
 	unsigned long flags;
-	
+
 	short ascending_height, descending_height; // character_height == ascending_height + descending_height
 	short leading_height; // line_height == character_height + leading_height
 	short leading_width; // amount to inset from left edge of rectangle
-	
+
 	int number_of_characters, characters_offset, characters_size;
-	
+
 	file_tag style_font_tags[NUMBER_OF_FONT_STYLES];
-	
+
 	short unused[2];
-	
+
 	struct bitmap_data *hardware_bitmap;
-	
+
 	short style_font_indexes[NUMBER_OF_FONT_STYLES];
-	
+
 	struct font_character *characters; // memory-based
 	struct font_character ***lead_byte_character_tables; // memory-based
 } font_definition;
@@ -111,9 +111,9 @@ typedef struct font_character
 
 	short bitmap_width, bitmap_height; // of bitmap
 	short bitmap_origin_x, bitmap_origin_y; // in bitmap coordinates, can be outside of bitmap
-	
+
 	short hardware_texture_origin_x, hardware_texture_origin_y;
-	
+
 	// bitmap_width*bitmap_height bytes of 8-bit bitmap data follows
 	// zero is transparent, 255 is opaque
 	u_byte pixels[];

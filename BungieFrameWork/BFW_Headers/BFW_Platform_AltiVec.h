@@ -1,12 +1,12 @@
 /*
 	FILE:	BFW_Platform_AltiVec.h
-	
+
 	AUTHOR:	Brent H. Pease
-	
+
 	CREATED: Aug 6, 1999
-	
+
 	PURPOSE: Interface to the Motoko 3D engine
-	
+
 	Copyright 1997-1999
 
 */

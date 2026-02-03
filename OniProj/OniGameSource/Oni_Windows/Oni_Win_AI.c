@@ -1,13 +1,13 @@
 #if TOOL_VERSION
 /*
 	FILE:	Oni_Win_AI.c
-	
+
 	AUTHOR:	Michael Evans
-	
+
 	CREATED: April 11, 2000
-	
+
 	PURPOSE: AI Windows
-	
+
 	Copyright (c) Bungie Software 2000
 
 */
@@ -85,7 +85,7 @@ OWiChooseFlag_Callback(
 
 			// ok, scan and select the correct current flag
 		break;
-		
+
 		case WMcMessage_Destroy:
 		break;
 
@@ -94,7 +94,7 @@ OWiChooseFlag_Callback(
 			{
 			}
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -111,7 +111,7 @@ OWiChooseFlag_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
@@ -128,7 +128,7 @@ OWiChooseFlag_Callback(
 
 		WMrDialog_ModalEnd(inDialog, result_flag_id);
 	}
-	
+
 	return handled;
 }
 
@@ -187,7 +187,7 @@ OWiChoosePath_Callback(
 
 			// ok, scan and select the correct current flag
 		break;
-		
+
 		case WMcMessage_Destroy:
 		break;
 
@@ -196,7 +196,7 @@ OWiChoosePath_Callback(
 			{
 			}
 		break;
-		
+
 		case WMcMessage_Command:
 			switch (UUmLowWord(inParam1))
 			{
@@ -216,7 +216,7 @@ OWiChoosePath_Callback(
 				break;
 			}
 		break;
-		
+
 		default:
 			handled = UUcFalse;
 		break;
@@ -233,7 +233,7 @@ OWiChoosePath_Callback(
 
 		WMrDialog_ModalEnd(inDialog, result_path_id);
 	}
-	
+
 	return handled;
 }
 
@@ -245,7 +245,7 @@ UUtInt16 OWrChooseFlag(UUtInt16 inFlagID)
 
 	object_specific_data.osd.flag_osd.id_number = inFlagID;
 	object = OBJrObjectType_Search(OBJcType_Flag, OBJcSearch_FlagID, &object_specific_data);
-	
+
 	object = OWrSelectObject(OBJcType_Flag, object, UUcFalse, UUcTrue);
 
 	if (NULL != object) {
@@ -264,7 +264,7 @@ UUtUns16 OWrChoosePath(UUtUns16	inPathID)
 
 	object_specific_data.osd.patrolpath_osd.id_number = inPathID;
 	object = OBJrObjectType_Search(OBJcType_PatrolPath, OBJcSearch_PatrolPathID, &object_specific_data);
-	
+
 	object = OWrSelectObject(OBJcType_PatrolPath, object, UUcFalse, UUcFalse);
 
 	if (NULL != object) {
@@ -291,7 +291,7 @@ static UUtBool OWiIsPathNameValid(WMtDialog *inDialog, char *inString)
 	}
 
 	return string_is_valid;
-}	
+}
 
 enum
 {
@@ -395,10 +395,10 @@ void OWrAI_FindCurrentPath(void)
 {
 	OBJtOSD_All					osd_all;
 	OBJtObject					*object;
-	
+
 	// search for the currently selected patrol path
 	osd_all.osd.patrolpath_osd.id_number = OWgCurrentPatrolPathID;
-	
+
 	// find the object
 	object = OBJrObjectType_Search(OBJcType_PatrolPath, OBJcSearch_PatrolPathID, &osd_all);
 	if (object == NULL) {
