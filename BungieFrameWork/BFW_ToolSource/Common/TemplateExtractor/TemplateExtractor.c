@@ -27,9 +27,9 @@
 
 #include "Oni_Platform.h" // For ONtPlatformData
 
-#define TEcInputFileName				"..\\..\\TemplateFileList.txt"
-#define TEcTemplateDatFileName			"..\\..\\GameDataFolder\\template.dat"
-#define TEcTemplateNameDatFileName		"..\\..\\GameDataFolder\\template.nam"
+#define TEcInputFileName				"../../TemplateFileList.txt"
+#define TEcTemplateDatFileName			"../../GameDataFolder/template.dat"
+#define TEcTemplateNameDatFileName		"../../GameDataFolder/template.nam"
 
 UUtBool		TEgError = UUcFalse;
 

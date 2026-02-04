@@ -1,6 +1,6 @@
 project(TEVCProj)
 
-set(BFW_SOURCE_FILES
+add_executable(TEVCProj
         ../../../BungieFrameWork/BFW_Source/BFW_AppUtilities/BFW_AppUtilities.c
         ../../../BungieFrameWork/BFW_Source/BFW_FileManager/BFW_FileManager_Common.c
         ../../../BungieFrameWork/BFW_Source/BFW_Group/BFW_Group.c
@@ -21,21 +21,39 @@ set(BFW_SOURCE_FILES
         ../../../BungieFrameWork/BFW_ToolSource/Common/TemplateExtractor/TE_Extract.c
         ../../../BungieFrameWork/BFW_ToolSource/Common/TemplateExtractor/TE_Parser.c
         ../../../BungieFrameWork/BFW_ToolSource/Common/TemplateExtractor/TE_Symbol.c
+
+        # shoved here for now
+        ../../OniWin32Projs/ImpConsole/templatechecksum.c
 )
 
-if (WIN32)
-    add_executable(TEVCProj
-            ${BFW_SOURCE_FILES}
-            ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/BFW_DebuggerSymbols_Win32.c
-            ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_Win32/BFW_FileManager_Win32.c
-            ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_Win32/BFW_Platform_Win32.c
+target_precompile_headers(TEVCProj PRIVATE ../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h)
 
-            # shoved here for now
-            ../../OniWin32Projs/ImpConsole/templatechecksum.c
+if(LINUX)
+    endif()
+
+if (Platform_SDL)
+    target_sources(TEVCProj PRIVATE
+        ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_SDL/BFW_Platform_SDL.c
     )
+    target_compile_definitions(TEVCProj PRIVATE UUmSDL=1)
+    target_link_libraries(TEVCProj PRIVATE
+        SDL2::SDL2
+    )
+endif()
 
-    target_precompile_headers(TEVCProj PRIVATE ../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h)
-endif ()
+if (LINUX)
+    target_sources(TEVCProj PRIVATE
+        ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_Linux/BFW_FileManager_Linux.c
+        ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/BFW_DebuggerSymbols_Win32.c
+    )
+    target_link_libraries(TEVCProj PRIVATE m)
+elseif (WIN32)
+    target_sources(TEVCProj PRIVATE
+        ../../../BungieFrameWork/BFW_Source/BFW_DebuggerSymbols/BFW_DebuggerSymbols_Win32.c
+        ../../../BungieFrameWork/BFW_Source/BFW_FileManager/Platform_Win32/BFW_FileManager_Win32.c
+        ../../../BungieFrameWork/BFW_Source/BFW_Utility/Platform_Win32/BFW_Platform_Win32.c
+    )
+endif()
 
 if (MSVC)
     target_compile_options(TEVCProj

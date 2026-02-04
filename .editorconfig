@@ -10,3 +10,6 @@ end_of_line = lf
 [*.yml]
 indent_style = space
 indent_size = 2
+
+[{CMakeLists.txt,*.cmake}]
+indent_style = space

@@ -884,6 +884,8 @@ BFrFileRef_MakeFromName(
 	UUtError error = UUcError_None;
 	BFtFileRef *new_file_ref = UUrMemory_Block_New(sizeof(BFtFileRef));
 
+	*outFileRef = NULL;
+
 	if (NULL == new_file_ref) {
 		error = UUcError_OutOfMemory;
 		goto exit;
