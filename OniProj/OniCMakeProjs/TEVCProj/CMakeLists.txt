@@ -1,5 +1,7 @@
 project(TEVCProj)
 
+set(templatechecksum_path "${OniAll_SOURCE_DIR}/OniProj/OniWin32Projs/ImpConsole/templatechecksum.c")
+
 add_executable(TEVCProj
         ../../../BungieFrameWork/BFW_Source/BFW_AppUtilities/BFW_AppUtilities.c
         ../../../BungieFrameWork/BFW_Source/BFW_FileManager/BFW_FileManager_Common.c
@@ -23,13 +25,10 @@ add_executable(TEVCProj
         ../../../BungieFrameWork/BFW_ToolSource/Common/TemplateExtractor/TE_Symbol.c
 
         # shoved here for now
-        ../../OniWin32Projs/ImpConsole/templatechecksum.c
+        ${templatechecksum_path}
 )
 
 target_precompile_headers(TEVCProj PRIVATE ../../../BungieFrameWork/BFW_Headers/BFW_MasterHeader.h)
-
-if(LINUX)
-    endif()
 
 if (Platform_SDL)
     target_sources(TEVCProj PRIVATE
@@ -62,31 +61,29 @@ if (MSVC)
     )
 endif ()
 
-set(TEVCWorkingDirectory "${CMAKE_SOURCE_DIR}/OniProj/OniCMakeProjs/TEVCProj")
-
 if (TARGET TEVCProj AND NOT CMAKE_CROSSCOMPILING)
-    message("Found TEVCProj under output directory, attempting to update templatechecksum.c")
-    execute_process(
-            COMMAND TEVCProj
-            WORKING_DIRECTORY "${TEVCWorkingDirectory}")
+    set(TEVCWorkingDirectory "${OniAll_SOURCE_DIR}/OniProj/OniCMakeProjs/TEVCProj")
+    set(intermediate_templatechecksum_path "${TEVCWorkingDirectory}/templatechecksum.c")
 
-    # check if anything was spat out
-    if (EXISTS "${TEVCWorkingDirectory}/templatechecksum.c")
-        message("Overwriting templatechecksum.c with new copy...")
-        # remove it, overwrite is unreliable/unsupported with cmake?
-        file(REMOVE "${CMAKE_SOURCE_DIR}/OniProj/OniWin32Projs/ImpConsole/templatechecksum.c")
-        # and now copy the new file over
-        file(COPY_FILE
-                "${TEVCWorkingDirectory}/templatechecksum.c"
-                "${CMAKE_SOURCE_DIR}/OniProj/OniWin32Projs/ImpConsole/templatechecksum.c"
-                RESULT error
-        )
-        if (NOT ${error} EQUAL 0)
-            message(FATAL_ERROR "Failed to copy templatechecksum.c to destination!")
-        endif ()
-    else ()
-        message("No output found, likely checksum match.")
-    endif ()
+    # Create list of headers contributing to templates
+    set(path_template_file_list_txt "${OniAll_SOURCE_DIR}/OniProj/TemplateFileList.txt")
+    file(STRINGS "${path_template_file_list_txt}" header_paths)
+    list(TRANSFORM header_paths REPLACE "[\\]" "/")
+    list(TRANSFORM header_paths PREPEND "${TEVCWorkingDirectory}/")
+
+    # Automatically regenerate templatechecksum.c
+    add_custom_command(
+        OUTPUT "${intermediate_templatechecksum_path}"
+        COMMAND TEVCProj
+        COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${intermediate_templatechecksum_path}" "${templatechecksum_path}"
+        DEPENDS TEVCProj "${path_template_file_list_txt}" ${header_paths}
+        WORKING_DIRECTORY "${TEVCWorkingDirectory}")
+    # Add manual regenerate-templatechecksum target to force regeneration
+    add_custom_target(regenerate-templatechecksum
+        COMMAND TEVCProj
+        COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${intermediate_templatechecksum_path}" "${templatechecksum_path}"
+        DEPENDS TEVCProj
+        WORKING_DIRECTORY "${TEVCWorkingDirectory}")
 else ()
-    message(" Failed to find TEVCProj under output directory (${CMAKE_RUNTIME_OUTPUT_DIRECTORY}) !")
+    message(STATUS "TEVCProj not available: templatechecksum.c will not be regenerated")
 endif ()
