@@ -158,11 +158,11 @@ TEiExtract_WriteSwapCodes_Recursive(
 			if(inType->baseType != NULL)
 			{
 				UUmAssert(inType->baseType->kind == TEcTypeKind_Template);
-				*(UUtUns32*)curSwapCodePtr = inType->baseType->u.templateInfo.templateTag;
+				memcpy(curSwapCodePtr, &inType->baseType->u.templateInfo.templateTag, sizeof(UUtUns32));
 			}
 			else
 			{
-				*(UUtUns32*)curSwapCodePtr = 0;
+				memset(curSwapCodePtr, 0, sizeof(UUtUns32));
 			}
 			curSwapCodePtr += 4;
 			break;

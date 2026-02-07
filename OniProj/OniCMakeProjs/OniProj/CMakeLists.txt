@@ -479,9 +479,6 @@ set(SOURCE_FILES
         ../../OniGameSource/Oni_Weapon.h)
 
 if(Platform_SDL)
-    find_package(OpenGL REQUIRED)
-    find_package(OpenAL REQUIRED)
-    find_package(SDL2 REQUIRED)
     find_package(PkgConfig)
     if(PKG_CONFIG_FOUND)
         pkg_check_modules(LIBAV REQUIRED IMPORTED_TARGET libavcodec libavutil)

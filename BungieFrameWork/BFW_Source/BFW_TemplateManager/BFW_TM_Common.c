@@ -83,6 +83,7 @@ TMiSwapCode_Dump_Recursive(
 	UUtBool					stop;
 	UUtUns8					count;
 	UUtUns32				savedDataOffset;
+	UUtUns32				value;
 
 	curSwapCode = *ioSwapCode;
 
@@ -179,11 +180,12 @@ TMiSwapCode_Dump_Recursive(
 
 			case TMcSwapCode_TemplatePtr:
 				TMiSwapCode_Dump_Indent(inFile, inIndent, curDataOffset, curSwapCode - inSwapCodeBase - 1);
+				memcpy(&value, curSwapCode, sizeof(UUtUns32));
 				fprintf(inFile, "templatePtr(%02x): %c%c%c%c\n", TMcSwapCode_TemplatePtr,
-					(*(UUtUns32*)curSwapCode >> 24) & 0xFF,
-					(*(UUtUns32*)curSwapCode >> 16) & 0xFF,
-					(*(UUtUns32*)curSwapCode >> 8) & 0xFF,
-					(*(UUtUns32*)curSwapCode >> 0) & 0xFF);
+					(value >> 24) & 0xFF,
+					(value >> 16) & 0xFF,
+					(value >> 8) & 0xFF,
+					(value >> 0) & 0xFF);
 
 				curSwapCode += 4;
 				curDataOffset += 4;

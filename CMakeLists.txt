@@ -85,10 +85,13 @@ include_directories(
 )
 
 if (Platform_SDL)
-	include_directories(
-		OniProj/OniGameSource/Platform_SDL/
-		BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_OpenAL/
-	)
+    find_package(OpenGL REQUIRED)
+    find_package(OpenAL REQUIRED)
+    find_package(SDL2 REQUIRED)
+    include_directories(
+        OniProj/OniGameSource/Platform_SDL/
+        BungieFrameWork/BFW_Source/BFW_SoundSystem2/Platform_OpenAL/
+    )
 elseif(WIN32)
     include_directories(
             BungieFrameWork/BFW_Source/BFW_LocalInput/Platform_Win32/
